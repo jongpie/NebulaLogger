@@ -17,22 +17,22 @@ private class ComponentLogger_Tests {
 
         ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
 
-        System.assertEquals(loggerSettings.IsEnabled__c, componentLoggerSettings.isEnabled);
-        System.assertEquals(loggerSettings.LoggingLevel__c, componentLoggerSettings.userLoggingLevel.name);
-        LoggingLevel userLoggingLevel = Logger.getLoggingLevel(loggerSettings.LoggingLevel__c);
-        System.assertEquals(userLoggingLevel.name(), componentLoggerSettings.userLoggingLevel.name);
-        System.assertEquals(userLoggingLevel.ordinal(), componentLoggerSettings.userLoggingLevel.ordinal);
-        for (LoggingLevel currentLoggingLevel : LoggingLevel.values()) {
+        System.Assert.areEqual(loggerSettings.IsEnabled__c, componentLoggerSettings.isEnabled);
+        System.Assert.areEqual(loggerSettings.LoggingLevel__c, componentLoggerSettings.userLoggingLevel.name);
+        System.LoggingLevel userLoggingLevel = Logger.getLoggingLevel(loggerSettings.LoggingLevel__c);
+        System.Assert.areEqual(userLoggingLevel.name(), componentLoggerSettings.userLoggingLevel.name);
+        System.Assert.areEqual(userLoggingLevel.ordinal(), componentLoggerSettings.userLoggingLevel.ordinal);
+        for (System.LoggingLevel currentLoggingLevel : System.LoggingLevel.values()) {
             // We don't care about logging level NONE, or the secret/undocumented INTERNAL logging level
-            if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
+            if (currentLoggingLevel == System.LoggingLevel.NONE || currentLoggingLevel == System.LoggingLevel.INTERNAL) {
                 continue;
             }
-            System.assert(
+            System.Assert.isTrue(
                 componentLoggerSettings.supportedLoggingLevels.containsKey(currentLoggingLevel.name()),
                 'Cmp settings did not contain level: ' + currentLoggingLevel
             );
             Integer returnedOrdinal = componentLoggerSettings.supportedLoggingLevels.get(currentLoggingLevel.name());
-            System.assertEquals(currentLoggingLevel.ordinal(), returnedOrdinal);
+            System.Assert.areEqual(currentLoggingLevel.ordinal(), returnedOrdinal);
         }
     }
 
@@ -40,173 +40,175 @@ private class ComponentLogger_Tests {
     static void it_should_return_aura_exception_when_it_breaks() {
         try {
             ComponentLogger.saveComponentLogEntries(null, null);
-            System.assert(false, 'This assert shouldn\'t run since this is a negative test');
-        } catch (Exception apexException) {
-            System.assertEquals(AuraHandledException.class.getName(), apexException.getTypeName());
+            System.Assert.fail('This assert shouldn\'t run since this is a negative test');
+        } catch (System.Exception apexException) {
+            System.Assert.isInstanceOfType(apexException, System.AuraHandledException.class);
         }
     }
 
     @IsTest
     static void it_should_save_component_log_entry() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
 
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(componentLogEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
-        System.assertEquals(JSON.serializePretty(currentUser), publishedLogEntryEvent.RecordJson__c);
-        System.assertEquals(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
-        System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
+        System.Assert.areEqual(JSON.serializePretty(currentUser), publishedLogEntryEvent.RecordJson__c);
+        System.Assert.areEqual(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
     @IsTest
     static void it_should_save_component_log_entry_with_queueable_job() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
         System.Test.startTest();
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
-        System.assertEquals(0, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
 
         ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, Logger.SaveMethod.QUEUEABLE.name());
-        System.assertEquals(1, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
+        System.Assert.areEqual(1, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
         LoggerMockDataStore.getJobQueue().executeJobs();
 
-        System.assertEquals(Logger.SaveMethod.QUEUEABLE.name(), Logger.lastSaveMethodNameUsed);
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(Logger.SaveMethod.QUEUEABLE.name(), Logger.lastSaveMethodNameUsed);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(componentLogEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
-        System.assertEquals(JSON.serializePretty(currentUser), publishedLogEntryEvent.RecordJson__c);
-        System.assertEquals(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
-        System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
+        System.Assert.areEqual(JSON.serializePretty(currentUser), publishedLogEntryEvent.RecordJson__c);
+        System.Assert.areEqual(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
     @IsTest
     static void it_should_save_component_log_entry_with_javascript_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = 'some JavaScript error message';
         mockComponentError.stack = 'some \nstack \ntrace \nstring';
         mockComponentError.type = 'JavaScript.ReferenceError';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.error = mockComponentError;
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
 
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(componentLogEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
-        System.assertEquals(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
-        System.assertEquals(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
-        System.assertEquals(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        System.Assert.areEqual(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
+        System.Assert.areEqual(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
     }
 
     @IsTest
     static void it_should_save_component_log_entry_with_apex_controller_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        Exception mockApexException = new DmlException('It is with much sadness that I must inform you that this DML statement was most unsuccessful');
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        System.Exception mockApexException = new System.DmlException(
+            'It is with much sadness that I must inform you that this DML statement was most unsuccessful'
+        );
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = mockApexException.getMessage();
         mockComponentError.stack = mockApexException.getStackTraceString();
         mockComponentError.type = mockApexException.getTypeName();
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.error = mockComponentError;
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
 
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(componentLogEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
-        System.assertEquals(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
-        System.assertEquals(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
-        System.assertEquals(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        System.Assert.areEqual(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
+        System.Assert.areEqual(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
     }
 
     @IsTest
     static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.scenario = 'Some scenario';
         componentLogEntry.timestamp = System.now();
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
 
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(componentLogEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
-        System.assertEquals(componentLogEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
+        System.Assert.areEqual(componentLogEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
     }
 
     @IsTest
@@ -216,30 +218,30 @@ private class ComponentLogger_Tests {
         String expectedComponentApiName = 'c/loggerAuraDemo';
         String expectedComponentFunctionName = 'saveLogAuraExample';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.stack = getMockAuraComponentStackTrace();
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
 
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(componentLogEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
         // TODO Move these asserts to LogEntryHandler_Tests
-        // System.assertEquals(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
-        // System.assertEquals(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
-        System.assertEquals(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
-        System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
+        // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
+        System.Assert.areEqual(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
     @IsTest
@@ -249,30 +251,30 @@ private class ComponentLogger_Tests {
         String expectedComponentApiName = 'c/loggerLWCDemo';
         String expectedComponentFunctionName = 'saveLogWebExample';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.stack = getMockWebComponentStackTrace();
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
 
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(componentLogEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
-        System.assertEquals(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
         // TODO Move these asserts to LogEntryHandler_Tests
-        // System.assertEquals(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
-        // System.assertEquals(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
-        System.assertEquals(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
-        System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
+        // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
+        System.Assert.areEqual(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
     private static String getMockAuraComponentStackTrace() {

@@ -13,7 +13,7 @@ private class LogBatchPurger_Tests_Database {
     static void setupData() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = false;
-        settings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         insert settings;
 
         Date scheduledDeletionDate = System.today().addDays(-7);
@@ -22,7 +22,7 @@ private class LogBatchPurger_Tests_Database {
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES; i++) {
-            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.INFO.name());
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name());
 
             logEntries.add(logEntry);
         }
@@ -45,17 +45,17 @@ private class LogBatchPurger_Tests_Database {
 
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
-            System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
+            System.Assert.isFalse(Schema.Log__c.SObjectType.getDescribe().isDeletable());
 
             try {
                 System.Test.startTest();
                 Database.executeBatch(new LogBatchPurger());
                 System.Test.stopTest();
             } catch (NoAccessException ex) {
-                System.assertEquals(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
+                System.Assert.areEqual(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
             }
         }
         Integer updatedCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(originalCountOfLogEntries, updatedCountOfLogEntries);
+        System.Assert.areEqual(originalCountOfLogEntries, updatedCountOfLogEntries);
     }
 }

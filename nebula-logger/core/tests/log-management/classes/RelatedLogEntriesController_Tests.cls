@@ -28,7 +28,7 @@ private class RelatedLogEntriesController_Tests {
         for (Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
             LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'test ' + i);
             if (i <= TOTAL_RELATED_LOG_ENTRIES) {
-                logEntry.RecordId__c = UserInfo.getUserId();
+                logEntry.RecordId__c = System.UserInfo.getUserId();
             }
             LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
@@ -39,7 +39,7 @@ private class RelatedLogEntriesController_Tests {
 
     @IsTest
     static void it_should_return_matching_logEntryQueryResult() {
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         String fieldSetName = getFieldSetName();
         Integer rowLimit = 10;
         Integer rowOffset = 0;
@@ -60,18 +60,18 @@ private class RelatedLogEntriesController_Tests {
         );
         System.Test.stopTest();
 
-        System.assertEquals(fieldSetName, result.fieldSet.name);
+        System.Assert.areEqual(fieldSetName, result.fieldSet.name);
 
         // Requery the log entries so we can check additional fields that may not be in the field set
         List<LogEntry__c> logEntries = [SELECT Id, RecordId__c FROM LogEntry__c WHERE Id IN :result.records];
         for (LogEntry__c logEntry : logEntries) {
-            System.assertEquals(recordId, logEntry.RecordId__c);
+            System.Assert.areEqual(recordId, logEntry.RecordId__c);
         }
     }
 
     @IsTest
     static void it_should_return_matching_logEntryQueryResult_when_search_provided() {
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         String fieldSetName = getFieldSetName();
         Integer rowLimit = 10;
         Integer rowOffset = 0;
@@ -82,18 +82,18 @@ private class RelatedLogEntriesController_Tests {
         Log__c log = [SELECT Id FROM Log__c];
         LogEntry__c logEntryWithSearchTerm = new LogEntry__c(Log__c = log.Id, Message__c = search);
         insert logEntryWithSearchTerm;
-        System.assert(logEntryWithSearchTerm.Message__c.contains(search));
+        System.Assert.isTrue(logEntryWithSearchTerm.Message__c.contains(search));
 
         // Quick sanity check on test data setup to make sure that only 1 log entry matches the search term
         List<LogEntry__c> logEntries = [SELECT Id, Message__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(TOTAL_LOG_ENTRIES + 1, logEntries.size());
+        System.Assert.areEqual(TOTAL_LOG_ENTRIES + 1, logEntries.size());
         Integer countOfMatches = 0;
         for (LogEntry__c logEntry : logEntries) {
             if (logEntry.Message__c.contains(search)) {
                 countOfMatches = countOfMatches + 1;
             }
         }
-        System.assertEquals(1, countOfMatches, logEntries);
+        System.Assert.areEqual(1, countOfMatches, JSON.serializePretty(logEntries));
 
         System.Test.startTest();
 
@@ -108,11 +108,11 @@ private class RelatedLogEntriesController_Tests {
         );
         System.Test.stopTest();
 
-        System.assertEquals(fieldSetName, result.fieldSet.name);
+        System.Assert.areEqual(fieldSetName, result.fieldSet.name);
         // FIXME
-        // System.assertEquals(1, result.records.size());
+        // System.Assert.areEqual(1, result.records.size());
         // for(LogEntry__c logEntry : result.records) {
-        //     System.assertEquals(recordId, logEntry.RecordId__c);
+        //     System.Assert.areEqual(recordId, logEntry.RecordId__c);
         // }
     }
 }

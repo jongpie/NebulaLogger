@@ -202,7 +202,7 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`.
+     * @description Generates an instance of the class `MockHttpCallout` that implements the interface `System.HttpCalloutMock`.
      *              This can be used when testing batch jobs.
      * @return      The instance of `MockHttpCallout`
      */
@@ -214,8 +214,8 @@ public class LoggerMockDataCreator {
      * @description Generates an instance of `HttpRequest`. This can be used when testing logging capabilities for instances of `HttpRequest`.
      * @return      The instance of `HttpRequest`
      */
-    public static HttpRequest createHttpRequest() {
-        HttpRequest request = new HttpRequest();
+    public static System.HttpRequest createHttpRequest() {
+        System.HttpRequest request = new System.HttpRequest();
         request.setBody('Hello, world!');
         request.setCompressed(true);
         request.setEndpoint('https://fake.salesforce.com');
@@ -227,8 +227,8 @@ public class LoggerMockDataCreator {
      * @description Generates an instance of `HttpResponse`. This can be used when testing logging capabilities for instances of `HttpResponse`.
      * @return      The instance of `HttpResponse`
      */
-    public static HttpResponse createHttpResponse() {
-        HttpResponse response = new HttpResponse();
+    public static System.HttpResponse createHttpResponse() {
+        System.HttpResponse response = new System.HttpResponse();
         response.setBody('Hello, world!');
         response.setHeader('someKey', 'some string value');
         response.setHeader('anotherKey', 'an amazing example value, wow');
@@ -281,7 +281,7 @@ public class LoggerMockDataCreator {
      * @return   The generated `User` record - it is not automatically inserted into the database.
      */
     public static User createUser() {
-        return createUser(UserInfo.getProfileId());
+        return createUser(System.UserInfo.getProfileId());
     }
 
     /**
@@ -338,7 +338,7 @@ public class LoggerMockDataCreator {
      * @return   The matching `User` record
      */
     public static User getUser() {
-        return getUser(UserInfo.getUserId());
+        return getUser(System.UserInfo.getUserId());
     }
 
     /**
@@ -365,7 +365,7 @@ public class LoggerMockDataCreator {
         insert queue;
 
         // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
-        System.runAs(new User(Id = UserInfo.getUserId())) {
+        System.runAs(new User(Id = System.UserInfo.getUserId())) {
             QueueSObject queueSObject = new QueueSObject(QueueId = queue.Id, SObjectType = sobjectType.getDescribe().getName());
             insert queueSObject;
         }
@@ -430,9 +430,9 @@ public class LoggerMockDataCreator {
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-    public class MockHttpCallout implements HttpCalloutMock {
-        public HttpRequest request { get; private set; }
-        public HttpResponse response { get; private set; }
+    public class MockHttpCallout implements System.HttpCalloutMock {
+        public System.HttpRequest request { get; private set; }
+        public System.HttpResponse response { get; private set; }
         public String responseBody { get; private set; }
         public Integer statusCode { get; private set; }
 
@@ -449,10 +449,10 @@ public class LoggerMockDataCreator {
             return this;
         }
 
-        public HttpResponse respond(HttpRequest request) {
+        public System.HttpResponse respond(System.HttpRequest request) {
             this.request = request;
 
-            this.response = new HttpResponse();
+            this.response = new System.HttpResponse();
             if (String.isNotBlank(this.responseBody) == true) {
                 response.setBody(this.responseBody);
             }

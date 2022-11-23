@@ -10,7 +10,7 @@ private class LoggerInstallHandler_Tests {
     static void it_should_initialize_logger_settings_when_installed() {
         // Quick sanity check to make sure there are no existing records
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
-        System.assertEquals(0, existingSettings.size());
+        System.Assert.areEqual(0, existingSettings.size());
 
         // Currently, there's no logic in LoggerInstallerHandler that checks for a specific version number or upgrades...
         // so null/false are fine for this test right now
@@ -25,11 +25,11 @@ private class LoggerInstallHandler_Tests {
 
         // Verify that we now have 1 record...
         List<LoggerSettings__c> loggerSettings = [SELECT Id FROM LoggerSettings__c];
-        System.assertEquals(1, loggerSettings.size());
+        System.Assert.areEqual(1, loggerSettings.size());
 
         // ..and verify that it's the org defaults
         LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        System.assertEquals(orgDefaults.Id, loggerSettings.get(0).Id);
+        System.Assert.areEqual(orgDefaults.Id, loggerSettings.get(0).Id);
     }
 
     @IsTest
@@ -39,12 +39,12 @@ private class LoggerInstallHandler_Tests {
 
         // Quick sanity check to make sure there are no existing records
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
-        System.assertEquals(0, existingSettings.size());
+        System.Assert.areEqual(0, existingSettings.size());
 
         List<LoggerSettings__c> mockSettings = new List<LoggerSettings__c>{
             LoggerSettings__c.getOrgDefaults(),
-            LoggerSettings__c.getInstance(UserInfo.getProfileId()),
-            LoggerSettings__c.getInstance(UserInfo.getUserId())
+            LoggerSettings__c.getInstance(System.UserInfo.getProfileId()),
+            LoggerSettings__c.getInstance(System.UserInfo.getUserId())
         };
         for (LoggerSettings__c setting : mockSettings) {
             setting.DefaultSaveMethod__c = null;
@@ -66,14 +66,14 @@ private class LoggerInstallHandler_Tests {
         System.Test.stopTest();
 
         for (LoggerSettings__c setting : mockSettings) {
-            System.assertNotEquals(null, setting.DefaultSaveMethod__c);
+            System.Assert.isNotNull(setting.DefaultSaveMethod__c);
         }
 
         // Verify that all records have been updated with a default save method
         List<LoggerSettings__c> loggerSettings = [SELECT Id, DefaultSaveMethod__c FROM LoggerSettings__c];
-        System.assertEquals(3, loggerSettings.size());
+        System.Assert.areEqual(3, loggerSettings.size());
         for (LoggerSettings__c setting : loggerSettings) {
-            System.assertNotEquals(null, setting.DefaultSaveMethod__c);
+            System.Assert.isNotNull(setting.DefaultSaveMethod__c);
         }
     }
 }

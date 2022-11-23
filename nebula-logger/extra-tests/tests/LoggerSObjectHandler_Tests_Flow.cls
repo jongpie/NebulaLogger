@@ -27,12 +27,12 @@ private class LoggerSObjectHandler_Tests_Flow {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations());
-        System.assertEquals(1, mockHandler.getExecutedFlowPlugins().size(), mockHandler.getExecutedFlowPlugins());
+        System.Assert.areEqual(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations().toString());
+        System.Assert.areEqual(1, mockHandler.getExecutedFlowPlugins().size(), mockHandler.getExecutedFlowPlugins().toString());
         Flow.Interview executedFlowPlugin = mockHandler.getExecutedFlowPlugins().get(0);
-        System.assertEquals(mockPluginConfiguration, executedFlowPlugin.getVariableValue('pluginConfiguration'));
-        System.assertEquals(mockHandler.input, executedFlowPlugin.getVariableValue('pluginInput'));
-        System.assertEquals(MOCK_FLOW_OUTPUT_VARIABLE_VALUE, executedFlowPlugin.getVariableValue('someExampleVariable'));
+        System.Assert.areEqual(mockPluginConfiguration, executedFlowPlugin.getVariableValue('pluginConfiguration'));
+        System.Assert.areEqual(mockHandler.input, executedFlowPlugin.getVariableValue('pluginInput'));
+        System.Assert.areEqual(MOCK_FLOW_OUTPUT_VARIABLE_VALUE, executedFlowPlugin.getVariableValue('someExampleVariable'));
     }
 
     private class MockLogHandler extends LoggerSObjectHandler {

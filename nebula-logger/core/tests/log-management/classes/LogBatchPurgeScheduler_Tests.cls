@@ -20,7 +20,7 @@ private class LogBatchPurgeScheduler_Tests {
         LogBatchPurgeScheduler scheduler = new LogBatchPurgeScheduler(specifiedBatchSize);
         scheduler.execute(null);
 
-        System.assertEquals(specifiedBatchSize, scheduler.batchSize);
+        System.Assert.areEqual(specifiedBatchSize, scheduler.batchSize);
     }
 
     @IsTest
@@ -30,7 +30,7 @@ private class LogBatchPurgeScheduler_Tests {
         LogBatchPurgeScheduler scheduler = new LogBatchPurgeScheduler(nullBatchSize);
         scheduler.execute(null);
 
-        System.assertEquals(LogBatchPurger.getDefaultBatchSize(), scheduler.batchSize);
+        System.Assert.areEqual(LogBatchPurger.getDefaultBatchSize(), scheduler.batchSize);
     }
 
     @IsTest
@@ -45,7 +45,7 @@ private class LogBatchPurgeScheduler_Tests {
         System.Test.stopTest();
 
         List<Log__c> logs = [SELECT Id FROM Log__c];
-        System.assertEquals(0, logs.size());
+        System.Assert.areEqual(0, logs.size());
     }
 
     @IsTest
@@ -60,9 +60,9 @@ private class LogBatchPurgeScheduler_Tests {
         System.Test.stopTest();
 
         List<Log__c> logs = [SELECT Id FROM Log__c];
-        System.assertEquals(1, logs.size());
+        System.Assert.areEqual(1, logs.size());
         List<LogEntry__c> logEntries = [SELECT Id, Message__c FROM LogEntry__c];
-        System.assertNotEquals(0, logEntries.size());
+        System.Assert.areNotEqual(0, logEntries.size());
         Boolean foundExpectedMessage = false;
         String expectedMessage = new LogMessage(LogBatchPurgeScheduler.SCHEDULER_SYSTEM_MESSAGE_TEMPLATE, (System.SchedulableContext) null).getMessage();
         for (LogEntry__c logEntry : logEntries) {
@@ -70,6 +70,6 @@ private class LogBatchPurgeScheduler_Tests {
                 foundExpectedMessage = true;
             }
         }
-        System.assertEquals(true, foundExpectedMessage, 'Expected system message not found');
+        System.Assert.isTrue(foundExpectedMessage, 'Expected system message not found');
     }
 }

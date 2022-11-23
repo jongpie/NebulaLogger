@@ -24,7 +24,7 @@ private class Logger_Tests_Network {
         }
 
         Profile loggerSiteProfile = matchingProfiles.get(0);
-        System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
+        System.Assert.areEqual('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
         List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
@@ -58,10 +58,10 @@ private class Logger_Tests_Network {
         try {
             log.OwnerId = guestUser.Id;
             update log;
-            System.assert(false, 'Expected exception, this exception should not occur');
-        } catch (Exception ex) {
+            System.Assert.fail('Expected exception, this exception should not occur');
+        } catch (System.Exception ex) {
             String expectedExceptionMessage = 'FIELD_INTEGRITY_EXCEPTION, field integrity exception (Guest users cannot be record owners.)';
-            System.assert(ex.getMessage().contains(expectedExceptionMessage), 'Exception did not contain expected message.');
+            System.Assert.isTrue(ex.getMessage().contains(expectedExceptionMessage), 'System.Exception did not contain expected message.');
         }
         System.Test.stopTest();
     }
@@ -97,10 +97,10 @@ private class Logger_Tests_Network {
             SELECT Id, Log__r.LoggedBy__c, Log__r.OwnerId, Log__r.UserLicenseDefinitionKey__c, Log__r.UserType__c, Message__c
             FROM LogEntry__c
         ];
-        System.assertEquals(guestUser.Id, logEntry.Log__r.LoggedBy__c, 'LoggedBy was set to the wrong user ID');
-        System.assertNotEquals(guestUser.Id, logEntry.Log__r.OwnerId, 'Log owner ID was incorrect');
-        System.assertEquals(GUEST_USER_TYPE, logEntry.Log__r.UserType__c, 'UserType was incorrect');
-        System.assertEquals('PID_Guest_User', logEntry.Log__r.UserLicenseDefinitionKey__c, 'UserLicenseDefinitionKey was incorrect');
-        System.assertEquals(message, logEntry.Message__c, 'Log Entry message was incorrect');
+        System.Assert.areEqual(guestUser.Id, logEntry.Log__r.LoggedBy__c, 'LoggedBy was set to the wrong user ID');
+        System.Assert.areNotEqual(guestUser.Id, logEntry.Log__r.OwnerId, 'Log owner ID was incorrect');
+        System.Assert.areEqual(GUEST_USER_TYPE, logEntry.Log__r.UserType__c, 'UserType was incorrect');
+        System.Assert.areEqual('PID_Guest_User', logEntry.Log__r.UserLicenseDefinitionKey__c, 'UserLicenseDefinitionKey was incorrect');
+        System.Assert.areEqual(message, logEntry.Message__c, 'Log Entry message was incorrect');
     }
 }

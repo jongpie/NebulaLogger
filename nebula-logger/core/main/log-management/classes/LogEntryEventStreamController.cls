@@ -30,8 +30,8 @@ public with sharing class LogEntryEventStreamController {
     public static List<String> getDatatableDisplayFields() {
         try {
             return LoggerParameter.getStringList(DISPLAY_FIELDS_PARAMETER_NAME, DEFAULT_DISPLAY_FIELDS);
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
+        } catch (System.Exception e) {
+            throw new System.AuraHandledException(e.getMessage());
         }
     }
 }

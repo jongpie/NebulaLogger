@@ -11,6 +11,6 @@ public with sharing class ChangePasswordControllerTest {
         controller.newPassword = 'qwerty1';
         controller.verifyNewPassword = 'qwerty1';
 
-        System.assertEquals(controller.changePassword(), null);
+        System.Assert.areEqual(controller.changePassword(), null);
     }
 }

@@ -14,7 +14,7 @@ Builder class that generates each `LogEntryEvent__e` record
 
 ### Constructors
 
-#### `LogEntryEventBuilder(LoggerSettings__c userSettings, LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins)`
+#### `LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins)`
 
 Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
@@ -305,15 +305,15 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setExceptionDetails(Exception apexException)` → `LogEntryEventBuilder`
+#### `setExceptionDetails(System.Exception apexException)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s exception fields
 
 ##### Parameters
 
-| Param           | Description                            |
-| --------------- | -------------------------------------- |
-| `apexException` | The instance of an `Exception` to use. |
+| Param           | Description                                   |
+| --------------- | --------------------------------------------- |
+| `apexException` | The instance of an `System.Exception` to use. |
 
 ##### Return
 
@@ -325,7 +325,7 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setHttpRequestDetails(HttpRequest request)` → `LogEntryEventBuilder`
+#### `setHttpRequestDetails(System.HttpRequest request)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s HTTP Request fields
 
@@ -345,7 +345,7 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setHttpResponseDetails(HttpResponse response)` → `LogEntryEventBuilder`
+#### `setHttpResponseDetails(System.HttpResponse response)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s HTTP Response fields
 

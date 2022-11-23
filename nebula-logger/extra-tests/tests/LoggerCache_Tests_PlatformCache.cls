@@ -16,168 +16,168 @@ private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_adds_new_key_to_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
 
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        System.assertEquals(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.Assert.areEqual(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_adds_new_key_with_null_value_to_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
         User mockValue = null;
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
 
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.Assert.areEqual(LoggerCache.PLATFORM_CACHE_NULL_VALUE, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_updates_value_for_existing_key_in_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User oldMockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerCache.getOrganizationCache().put(mockKey, oldMockValue);
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
         Account newMockValue = new Account(Name = 'Some fake account');
 
         LoggerCache.getOrganizationCache().put(mockKey, newMockValue);
 
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        System.assertEquals(newMockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.Assert.areEqual(newMockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_removes_value_for_existing_key_in_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        System.assertEquals(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.Assert.areEqual(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
 
         LoggerCache.getOrganizationCache().remove(mockKey);
 
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(false, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.isFalse(Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
     }
 
     @IsTest
     static void it_adds_new_key_to_session_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
         LoggerCache.getSessionCache().put(mockKey, mockValue);
 
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
         if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
-            System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-            System.assertEquals(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+            System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+            System.Assert.areEqual(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_adds_new_key_with_null_value_to_session_and_transaction_cache() {
         String mockKey = 'SomeKey';
         User mockValue = null;
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
         LoggerCache.getSessionCache().put(mockKey, mockValue);
 
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
         if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
-            System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-            System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+            System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+            System.Assert.areEqual(LoggerCache.PLATFORM_CACHE_NULL_VALUE, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_updates_value_for_existing_key_in_session_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User oldMockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerCache.getSessionCache().put(mockKey, oldMockValue);
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getSessionCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
         Account newMockValue = new Account(Name = 'Some fake account');
 
         LoggerCache.getSessionCache().put(mockKey, newMockValue);
 
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
         if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
-            System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-            System.assertEquals(newMockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+            System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+            System.Assert.areEqual(newMockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_removes_value_for_existing_key_in_session_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getSessionCache().put(mockKey, mockValue);
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
         if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
-            System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-            System.assertEquals(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+            System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+            System.Assert.areEqual(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
 
         LoggerCache.getSessionCache().remove(mockKey);
 
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(false, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.isFalse(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
     }
 }

@@ -9,6 +9,6 @@ public with sharing class ForgotPasswordControllerTest {
         ForgotPasswordController controller = new ForgotPasswordController();
         controller.username = 'test@salesforce.com';
 
-        System.assertEquals(controller.forgotPassword(), null);
+        System.Assert.areEqual(controller.forgotPassword(), null);
     }
 }

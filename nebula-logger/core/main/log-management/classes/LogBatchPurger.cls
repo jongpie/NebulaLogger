@@ -120,7 +120,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
             LoggerDataStore.getDatabase().hardDeleteRecords(scopeRecords);
             Logger.saveLog();
-        } catch (Exception apexException) {
+        } catch (System.Exception apexException) {
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                 Logger.error('Logger - Error deleting logs', apexException);
             }

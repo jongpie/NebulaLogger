@@ -23,7 +23,7 @@ global with sharing class ExampleInboundEmailHandler implements Messaging.Inboun
         try {
             String nullString = null;
             nullString.length();
-        } catch (Exception apexException) {
+        } catch (System.Exception apexException) {
             Logger.error(logEntryMessage, apexException);
         } finally {
             result.success = true;

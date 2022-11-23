@@ -16,23 +16,23 @@ private class LogEntryEventBuilder_Tests_Network {
             return;
         }
 
-        System.assertEquals(true, LoggerParameter.QUERY_NETWORK_DATA);
+        System.Assert.isTrue(LoggerParameter.QUERY_NETWORK_DATA);
         SObject networkRecord = getExperienceCloudNetwork();
-        System.assertNotEquals(null, networkRecord.Id);
+        System.Assert.isNotNull(networkRecord.Id);
         LogEntryEventBuilder.networkId = networkRecord.Id;
         User experienceSiteUser = setupExperienceSiteUser();
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
-            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).getLogEntryEvent();
+            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).getLogEntryEvent();
         }
 
-        System.assertEquals(networkRecord.get('Id'), logEntryEvent.NetworkId__c);
-        System.assertEquals((String) networkRecord.get('Name'), logEntryEvent.NetworkName__c);
-        System.assertEquals(System.Network.getLoginUrl(networkRecord.Id), logEntryEvent.NetworkLoginUrl__c);
-        System.assertEquals(System.Network.getLogoutUrl(networkRecord.Id), logEntryEvent.NetworkLogoutUrl__c);
-        System.assertEquals(System.Network.getSelfRegUrl(networkRecord.Id), logEntryEvent.NetworkSelfRegistrationUrl__c);
-        System.assertEquals((String) networkRecord.get('UrlPathPrefix'), logEntryEvent.NetworkUrlPathPrefix__c);
+        System.Assert.areEqual(networkRecord.get('Id'), logEntryEvent.NetworkId__c);
+        System.Assert.areEqual((String) networkRecord.get('Name'), logEntryEvent.NetworkName__c);
+        System.Assert.areEqual(System.Network.getLoginUrl(networkRecord.Id), logEntryEvent.NetworkLoginUrl__c);
+        System.Assert.areEqual(System.Network.getLogoutUrl(networkRecord.Id), logEntryEvent.NetworkLogoutUrl__c);
+        System.Assert.areEqual(System.Network.getSelfRegUrl(networkRecord.Id), logEntryEvent.NetworkSelfRegistrationUrl__c);
+        System.Assert.areEqual((String) networkRecord.get('UrlPathPrefix'), logEntryEvent.NetworkUrlPathPrefix__c);
     }
 
     @IsTest
@@ -43,22 +43,22 @@ private class LogEntryEventBuilder_Tests_Network {
         }
 
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = String.valueOf(false)));
-        System.assertEquals(false, LoggerParameter.QUERY_NETWORK_DATA);
+        System.Assert.isFalse(LoggerParameter.QUERY_NETWORK_DATA);
         SObject networkRecord = getExperienceCloudNetwork();
-        System.assertNotEquals(null, networkRecord.Id);
+        System.Assert.isNotNull(networkRecord.Id);
         LogEntryEventBuilder.networkId = networkRecord.Id;
         User experienceSiteUser = setupExperienceSiteUser();
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
-            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).getLogEntryEvent();
+            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).getLogEntryEvent();
         }
 
-        System.assertEquals(null, logEntryEvent.NetworkName__c);
-        System.assertEquals(null, logEntryEvent.NetworkLoginUrl__c);
-        System.assertEquals(null, logEntryEvent.NetworkLogoutUrl__c);
-        System.assertEquals(null, logEntryEvent.NetworkSelfRegistrationUrl__c);
-        System.assertEquals(null, logEntryEvent.NetworkUrlPathPrefix__c);
+        System.Assert.isNull(logEntryEvent.NetworkName__c);
+        System.Assert.isNull(logEntryEvent.NetworkLoginUrl__c);
+        System.Assert.isNull(logEntryEvent.NetworkLogoutUrl__c);
+        System.Assert.isNull(logEntryEvent.NetworkSelfRegistrationUrl__c);
+        System.Assert.isNull(logEntryEvent.NetworkUrlPathPrefix__c);
     }
 
     static SObject getExperienceCloudNetwork() {
@@ -67,14 +67,14 @@ private class LogEntryEventBuilder_Tests_Network {
 
     static LoggerSettings__c getUserSettings() {
         LoggerSettings__c userSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
-        userSettings.SetupOwnerId = UserInfo.getUserId();
+        userSettings.SetupOwnerId = System.UserInfo.getUserId();
         return userSettings;
     }
 
     static User setupExperienceSiteUser() {
         UserRole userRole = new UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
         insert userRole;
-        User currentUser = new User(Id = UserInfo.getUserId(), UserRoleId = userRole.Id);
+        User currentUser = new User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
         update currentUser;
         User experienceSiteUser;
         System.runAs(currentUser) {

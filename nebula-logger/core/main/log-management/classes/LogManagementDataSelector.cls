@@ -138,7 +138,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return           The matching `List<UserRecordAccess>` records
      */
     public virtual List<UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
-        return [SELECT RecordId FROM UserRecordAccess WHERE UserId = :UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE];
+        return [SELECT RecordId FROM UserRecordAccess WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE];
     }
 
     /**

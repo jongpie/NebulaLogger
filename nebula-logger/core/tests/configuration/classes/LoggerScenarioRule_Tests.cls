@@ -9,16 +9,16 @@ private class LoggerScenarioRule_Tests {
     @IsTest
     static void it_should_throw_exception_when_mock_record_scenario_is_null() {
         LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(Scenario__c = null);
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
 
         try {
             LoggerScenarioRule.setMock(mockRule);
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
-        System.assertNotEquals(null, thrownIllegalArgumentException);
-        System.assertEquals(true, thrownIllegalArgumentException.getMessage().startsWith('Scenario__c is required on `LoggerScenarioRule__mdt'));
+        System.Assert.isNotNull(thrownIllegalArgumentException);
+        System.Assert.isTrue(thrownIllegalArgumentException.getMessage().startsWith('Scenario__c is required on `LoggerScenarioRule__mdt'));
     }
 
     @IsTest
@@ -32,10 +32,10 @@ private class LoggerScenarioRule_Tests {
 
         Map<String, LoggerScenarioRule__mdt> returnedScenariosToRule = LoggerScenarioRule.getAll();
 
-        System.assertEquals(mockRules.size(), returnedScenariosToRule.size());
+        System.Assert.areEqual(mockRules.size(), returnedScenariosToRule.size());
         for (LoggerScenarioRule__mdt mockRule : mockRules) {
-            System.assertEquals(true, returnedScenariosToRule.containsKey(mockRule.Scenario__c));
-            System.assertEquals(mockRule, returnedScenariosToRule.get(mockRule.Scenario__c));
+            System.Assert.isTrue(returnedScenariosToRule.containsKey(mockRule.Scenario__c));
+            System.Assert.areEqual(mockRule, returnedScenariosToRule.get(mockRule.Scenario__c));
         }
     }
 
@@ -51,7 +51,7 @@ private class LoggerScenarioRule_Tests {
 
         LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
-        System.assertEquals(mockRule, returnedRule);
+        System.Assert.areEqual(mockRule, returnedRule);
     }
 
     @IsTest
@@ -66,7 +66,7 @@ private class LoggerScenarioRule_Tests {
 
         LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
-        System.assertEquals(mockRule, returnedRule);
+        System.Assert.areEqual(mockRule, returnedRule);
     }
 
     @IsTest
@@ -80,7 +80,7 @@ private class LoggerScenarioRule_Tests {
 
         LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
-        System.assertEquals(mockRule, returnedRule);
+        System.Assert.areEqual(mockRule, returnedRule);
     }
 
     @IsTest
@@ -95,7 +95,7 @@ private class LoggerScenarioRule_Tests {
 
         LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
-        System.assertEquals(mockRule, returnedRule);
+        System.Assert.areEqual(mockRule, returnedRule);
     }
 
     @IsTest
@@ -110,7 +110,7 @@ private class LoggerScenarioRule_Tests {
 
         LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
-        System.assertEquals(null, returnedRule);
+        System.Assert.isNull(returnedRule);
     }
 
     @IsTest
@@ -124,6 +124,6 @@ private class LoggerScenarioRule_Tests {
 
         LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
-        System.assertEquals(null, returnedRule);
+        System.Assert.isNull(returnedRule);
     }
 }

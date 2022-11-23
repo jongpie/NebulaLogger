@@ -23,7 +23,7 @@ Sends an error email notification to the org&apos;s list of Apex Exception Email
 
 #### `sendErrorEmail(Schema.SObjectType sobjectType, List<Database.UpsertResult> upsertResults)` → `void`
 
-Sends an error email notification to the org&apos;s list of Apex Exception Email recipients, configured under Setup --&gt; Email --&gt; Apex Exception Email
+Sends an error email notification to the org&apos;s list of Apex System.Exception Email recipients, configured under Setup --&gt; Email --&gt; Apex System.Exception Email
 
 ##### Parameters
 

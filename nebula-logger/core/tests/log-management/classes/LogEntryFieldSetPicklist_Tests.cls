@@ -13,7 +13,7 @@ private class LogEntryFieldSetPicklist_Tests {
         LogEntryFieldSetPicklist instance = new LogEntryFieldSetPicklist();
         System.Test.stopTest();
 
-        System.assertEquals(null, instance.getDefaultValue());
+        System.Assert.isNull(instance.getDefaultValue());
     }
 
     @IsTest
@@ -25,15 +25,15 @@ private class LogEntryFieldSetPicklist_Tests {
         System.Test.stopTest();
 
         List<VisualEditor.DataRow> dataRows = instance.getValues().getDataRows();
-        System.assertEquals(expectedFieldSets.size(), dataRows.size());
+        System.Assert.areEqual(expectedFieldSets.size(), dataRows.size());
         for (VisualEditor.DataRow dataRow : dataRows) {
             String fieldSetName = (String) dataRow.getValue();
             String fieldSetLabel = (String) dataRow.getLabel();
 
-            System.assert(expectedFieldSets.containsKey(fieldSetName));
+            System.Assert.isTrue(expectedFieldSets.containsKey(fieldSetName));
 
             Schema.FieldSet fieldSet = expectedFieldSets.get(fieldSetName);
-            System.assertEquals(fieldSet.getLabel(), fieldSetLabel);
+            System.Assert.areEqual(fieldSet.getLabel(), fieldSetLabel);
         }
     }
 }

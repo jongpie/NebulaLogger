@@ -13,14 +13,14 @@
 )
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
-    private static final User CURRENT_USER = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+    private static final User CURRENT_USER = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     private static final String NEW_LINE_DELIMITER = '\n';
 
     @TestVisible
     private static Id networkId = System.Network.getNetworkId();
 
     private final LogEntryEvent__e logEntryEvent;
-    private final LoggingLevel entryLoggingLevel;
+    private final System.LoggingLevel entryLoggingLevel;
     private final LoggerSettings__c userSettings;
 
     @TestVisible
@@ -99,7 +99,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  ignoredOrigins    A `Set<String>` of the names of any Apex classes that should be ignored when parsing the entry's origin
      */
     @SuppressWarnings('PMD.ExcessiveParameterList, PMD.NcssConstructorCount')
-    public LogEntryEventBuilder(LoggerSettings__c userSettings, LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
+    public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
         this.shouldSave = shouldSave;
         if (this.shouldSave() == false) {
             return;
@@ -179,10 +179,10 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Sets the log entry event's exception fields
-     * @param  apexException The instance of an `Exception` to use.
+     * @param  apexException The instance of an `System.Exception` to use.
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setExceptionDetails(Exception apexException) {
+    global LogEntryEventBuilder setExceptionDetails(System.Exception apexException) {
         if (this.shouldSave() == false) {
             return this;
         }
@@ -499,7 +499,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  request The instance of `HttpRequest` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setHttpRequestDetails(HttpRequest request) {
+    global LogEntryEventBuilder setHttpRequestDetails(System.HttpRequest request) {
         if (this.shouldSave() == false || request == null) {
             return this;
         }
@@ -520,7 +520,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  response The instance of `HttpResponse` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setHttpResponseDetails(HttpResponse response) {
+    global LogEntryEventBuilder setHttpResponseDetails(System.HttpResponse response) {
         if (this.shouldSave() == false || response == null) {
             return this;
         }
@@ -712,7 +712,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        DmlException stackTraceException = new DmlException();
+        System.DmlException stackTraceException = new System.DmlException();
         this.parseStackTrace(stackTraceException.getStackTraceString());
     }
 
@@ -862,14 +862,14 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
-        templateLogEntryEvent.Locale__c = UserInfo.getLocale();
-        templateLogEntryEvent.LoggedById__c = UserInfo.getUserId();
-        templateLogEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        templateLogEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
-        templateLogEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
-        templateLogEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
-        templateLogEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
-        templateLogEntryEvent.UserType__c = UserInfo.getUserType();
+        templateLogEntryEvent.Locale__c = System.UserInfo.getLocale();
+        templateLogEntryEvent.LoggedById__c = System.UserInfo.getUserId();
+        templateLogEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
+        templateLogEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
+        templateLogEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();
+        templateLogEntryEvent.TimeZoneName__c = System.UserInfo.getTimeZone().getDisplayName();
+        templateLogEntryEvent.UserRoleId__c = System.UserInfo.getUserRoleId();
+        templateLogEntryEvent.UserType__c = System.UserInfo.getUserType();
     }
 
     // Private static helper methods
@@ -911,10 +911,10 @@ global with sharing class LogEntryEventBuilder {
     private static String getOrganizationApiVersion() {
         // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
         // Serializing any SObject w/ an ID will include the API version
-        // So, use UserInfo.getUserId() to create the current user's record without querying
+        // So, use System.UserInfo.getUserId() to create the current user's record without querying
         // Then parse the JSON to get the API version
         // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
+        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
@@ -1050,7 +1050,7 @@ global with sharing class LogEntryEventBuilder {
             return records;
         }
 
-        SObjectAccessDecision securityDecision = System.Security.stripInaccessible(AccessType.READABLE, records, false);
+        System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(System.AccessType.READABLE, records, false);
         return securityDecision.getRecords();
     }
 

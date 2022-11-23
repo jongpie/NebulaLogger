@@ -17,18 +17,18 @@ private class Logger_Tests_InboundEmailHandler {
         System.Test.startTest();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         String transactionId = Logger.getTransactionId();
-        System.assertNotEquals(1, Logger.saveLogCallCount, 'No logging should have occurred yet');
+        System.Assert.areNotEqual(1, Logger.saveLogCallCount, 'No logging should have occurred yet');
 
         Messaging.InboundEmailResult result = emailHandler.handleInboundEmail(email, envelope);
 
-        System.assertNotEquals(0, Logger.saveLogCallCount, 'ExampleInboundEmailHandler class should have logged & saved some logging data');
+        System.Assert.areNotEqual(0, Logger.saveLogCallCount, 'ExampleInboundEmailHandler class should have logged & saved some logging data');
         System.Test.stopTest();
-        System.assertEquals(true, result.success, 'InboundEmailResult returned a failure message');
+        System.Assert.isTrue(result.success, 'InboundEmailResult returned a failure message');
         List<Log__c> logs = [SELECT Id, TransactionId__c FROM Log__c];
-        System.assertEquals(1, logs.size(), 'Logs size did not match expected value of 1.');
-        System.assertEquals(transactionId, logs.get(0).TransactionId__c, 'Transaction Id does match expected value');
+        System.Assert.areEqual(1, logs.size(), 'Logs size did not match expected value of 1.');
+        System.Assert.areEqual(transactionId, logs.get(0).TransactionId__c, 'Transaction Id does match expected value');
         List<LogEntry__c> logEntries = [SELECT Id, Message__c FROM LogEntry__c];
-        System.assertEquals(2, logEntries.size(), 'Log entries size did not match expected value of 2 ' + JSON.serializePretty(logEntries));
-        System.assertEquals(ExampleInboundEmailHandler.logEntryMessage, logEntries.get(0).Message__c, 'Log entries message did not match expected value');
+        System.Assert.areEqual(2, logEntries.size(), 'Log entries size did not match expected value of 2 ' + JSON.serializePretty(logEntries));
+        System.Assert.areEqual(ExampleInboundEmailHandler.logEntryMessage, logEntries.get(0).Message__c, 'Log entries message did not match expected value');
     }
 }

@@ -417,7 +417,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
         if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
-            logOwnerId = UserInfo.getUserId();
+            logOwnerId = System.UserInfo.getUserId();
         }
 
         if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
@@ -652,11 +652,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
-        HttpRequest request = new HttpRequest();
+        System.HttpRequest request = new System.HttpRequest();
         request.setEndpoint(statusApiEndpoint);
         request.setMethod('GET');
 
-        HttpResponse response = new Http().send(request);
+        System.HttpResponse response = new System.Http().send(request);
         if (response.getStatusCode() >= 400) {
             String errorMessage =
                 'Callout failed for ' +
@@ -665,7 +665,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 response.getStatusCode() +
                 ', status message: ' +
                 response.getStatus();
-            throw new CalloutException(errorMessage);
+            throw new System.CalloutException(errorMessage);
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);

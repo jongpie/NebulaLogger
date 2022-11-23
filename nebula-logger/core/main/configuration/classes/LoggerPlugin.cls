@@ -91,7 +91,7 @@ public without sharing class LoggerPlugin {
     @TestVisible
     private static void setMock(LoggerPlugin__mdt pluginConfiguration) {
         if (String.isBlank(pluginConfiguration.DeveloperName) == true) {
-            throw new IllegalArgumentException('DeveloperName is required on mock LoggerPlugin__mdt: \n' + JSON.serializePretty(pluginConfiguration));
+            throw new System.IllegalArgumentException('DeveloperName is required on mock LoggerPlugin__mdt: \n' + JSON.serializePretty(pluginConfiguration));
         }
         if (pluginConfiguration.IsEnabled__c == true) {
             DEVELOPER_NAME_TO_RECORD.put(pluginConfiguration.DeveloperName, pluginConfiguration);

@@ -7,21 +7,21 @@
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
     private static User getUserRecord() {
-        return new User(Id = UserInfo.getUserId(), Username = UserInfo.getUserName());
+        return new User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     }
 
     @IsTest
     static void it_should_throw_exception_when_mock_record_developer_name_is_null() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = null);
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
 
         try {
             LoggerParameter.setMock(mockParameter);
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
-        System.assertNotEquals(null, thrownIllegalArgumentException);
+        System.Assert.isNotNull(thrownIllegalArgumentException);
     }
 
     @IsTest
@@ -31,8 +31,8 @@ private class LoggerParameter_Tests {
 
         String returnedValue = LoggerParameter.getString(mockParameter.DeveloperName, null);
 
-        System.assertNotEquals(null, returnedValue);
-        System.assertEquals(mockParameter.Value__c, returnedValue);
+        System.Assert.isNotNull(returnedValue);
+        System.Assert.areEqual(mockParameter.Value__c, returnedValue);
     }
 
     @IsTest
@@ -43,7 +43,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -54,7 +54,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -65,7 +65,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -76,7 +76,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -87,7 +87,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -101,7 +101,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -112,7 +112,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -123,7 +123,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -134,7 +134,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -145,7 +145,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -159,7 +159,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -170,7 +170,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -181,7 +181,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -192,7 +192,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -203,7 +203,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -215,7 +215,7 @@ private class LoggerParameter_Tests {
 
         String returnedValue = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT;
 
-        System.assertEquals(configuredValue, returnedValue);
+        System.Assert.areEqual(configuredValue, returnedValue);
     }
 
     @IsTest
@@ -226,7 +226,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -237,7 +237,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -248,7 +248,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.getBoolean(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -259,7 +259,7 @@ private class LoggerParameter_Tests {
 
         List<Boolean> returnedValue = LoggerParameter.getBooleanList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -271,9 +271,9 @@ private class LoggerParameter_Tests {
 
         List<Boolean> returnedValue = LoggerParameter.getBooleanList(mockParameter.DeveloperName, defaultParameterValue);
 
-        System.assertEquals(null, parameterValue);
-        System.assertNotEquals(parameterValue, returnedValue, 'Returned value should not match configured null parameter value');
-        System.assertEquals(defaultParameterValue, returnedValue, 'Returned value does not match expected default parameter value');
+        System.Assert.isNull(parameterValue);
+        System.Assert.areNotEqual(parameterValue, returnedValue, 'Returned value should not match configured null parameter value');
+        System.Assert.areEqual(defaultParameterValue, returnedValue, 'Returned value does not match expected default parameter value');
     }
 
     @IsTest
@@ -284,7 +284,7 @@ private class LoggerParameter_Tests {
 
         Date returnedValue = LoggerParameter.getDate(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -295,7 +295,7 @@ private class LoggerParameter_Tests {
 
         List<Date> returnedValue = LoggerParameter.getDateList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -306,7 +306,7 @@ private class LoggerParameter_Tests {
 
         Datetime returnedValue = LoggerParameter.getDatetime(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -317,7 +317,7 @@ private class LoggerParameter_Tests {
 
         List<Datetime> returnedValue = LoggerParameter.getDatetimeList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -328,7 +328,7 @@ private class LoggerParameter_Tests {
 
         Decimal returnedValue = LoggerParameter.getDecimal(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -339,7 +339,7 @@ private class LoggerParameter_Tests {
 
         List<Decimal> returnedValue = LoggerParameter.getDecimalList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -350,7 +350,7 @@ private class LoggerParameter_Tests {
 
         Double returnedValue = LoggerParameter.getDouble(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -361,29 +361,29 @@ private class LoggerParameter_Tests {
 
         List<Double> returnedValue = LoggerParameter.getDoubleList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
     static void it_should_return_id_parameter() {
-        Id parameterValue = UserInfo.getUserId();
+        Id parameterValue = System.UserInfo.getUserId();
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyId', Value__c = JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Id returnedValue = LoggerParameter.getId(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
     static void it_should_return_id_list_parameter() {
-        List<Id> parameterValue = new List<Id>{ UserInfo.getUserId() };
+        List<Id> parameterValue = new List<Id>{ System.UserInfo.getUserId() };
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyIdList', Value__c = JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Id> returnedValue = LoggerParameter.getIdList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -394,7 +394,7 @@ private class LoggerParameter_Tests {
 
         Integer returnedValue = LoggerParameter.getInteger(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -405,7 +405,7 @@ private class LoggerParameter_Tests {
 
         List<Integer> returnedValue = LoggerParameter.getIntegerList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -416,7 +416,7 @@ private class LoggerParameter_Tests {
 
         Long returnedValue = LoggerParameter.getLong(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -427,7 +427,7 @@ private class LoggerParameter_Tests {
 
         List<Long> returnedValue = LoggerParameter.getLongList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -438,7 +438,7 @@ private class LoggerParameter_Tests {
 
         SObject returnedValue = LoggerParameter.getSObject(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -449,7 +449,7 @@ private class LoggerParameter_Tests {
 
         List<SObject> returnedValue = LoggerParameter.getSObjectList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -460,7 +460,7 @@ private class LoggerParameter_Tests {
 
         String returnedValue = LoggerParameter.getString(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -471,7 +471,7 @@ private class LoggerParameter_Tests {
 
         List<String> returnedValue = LoggerParameter.getStringList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -486,9 +486,9 @@ private class LoggerParameter_Tests {
 
         List<LoggerParameter__mdt> matchingParameters = LoggerParameter.matchOnPrefix(developerNamePrefix);
 
-        System.assertEquals(2, matchingParameters.size());
+        System.Assert.areEqual(2, matchingParameters.size());
         for (LoggerParameter__mdt matchingParameter : matchingParameters) {
-            System.assertEquals(
+            System.Assert.areEqual(
                 true,
                 matchingParameter.DeveloperName == firstMatchingMockParameter.DeveloperName ||
                 matchingParameter.DeveloperName == secondMatchingMockParameter.DeveloperName,

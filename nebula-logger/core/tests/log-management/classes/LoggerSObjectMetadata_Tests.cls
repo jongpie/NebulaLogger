@@ -29,22 +29,22 @@ private class LoggerSObjectMetadata_Tests {
 
     private static void validateSObjectDetails(Schema.SObjectType sobjectType, LoggerSObjectMetadata.SObjectSchema sobjectSchema) {
         // SObject details
-        System.assertEquals(sobjectType.getDescribe().getLabel(), sobjectSchema.label);
-        System.assertEquals(sobjectType.getDescribe().getLabelPlural(), sobjectSchema.labelPlural);
-        System.assertEquals(sobjectType.getDescribe().getLocalName(), sobjectSchema.localApiName);
-        System.assertEquals(sobjectType.getDescribe().getName(), sobjectSchema.apiName);
-        System.assertEquals(sobjectType.getDescribe().fields.getMap().size(), sobjectSchema.fields.size());
+        System.Assert.areEqual(sobjectType.getDescribe().getLabel(), sobjectSchema.label);
+        System.Assert.areEqual(sobjectType.getDescribe().getLabelPlural(), sobjectSchema.labelPlural);
+        System.Assert.areEqual(sobjectType.getDescribe().getLocalName(), sobjectSchema.localApiName);
+        System.Assert.areEqual(sobjectType.getDescribe().getName(), sobjectSchema.apiName);
+        System.Assert.areEqual(sobjectType.getDescribe().fields.getMap().size(), sobjectSchema.fields.size());
 
         // Field details
         for (Schema.SObjectField field : sobjectType.getDescribe().fields.getMap().values()) {
-            System.assert(sobjectSchema.fields.containsKey(field.getDescribe().getLocalName()));
+            System.Assert.isTrue(sobjectSchema.fields.containsKey(field.getDescribe().getLocalName()));
         }
         for (LoggerSObjectMetadata.FieldSchema fieldSchema : sobjectSchema.fields.values()) {
             Schema.SObjectField matchingField = sobjectType.getDescribe().fields.getMap().get(fieldSchema.apiName);
-            System.assertEquals(matchingField.getDescribe().getLocalName(), fieldSchema.localApiName);
-            System.assertEquals(matchingField.getDescribe().getInlineHelpText(), fieldSchema.inlineHelpText);
-            System.assertEquals(matchingField.getDescribe().getLabel(), fieldSchema.label);
-            System.assertEquals(matchingField.getDescribe().getType().name().toLowerCase(), fieldSchema.type);
+            System.Assert.areEqual(matchingField.getDescribe().getLocalName(), fieldSchema.localApiName);
+            System.Assert.areEqual(matchingField.getDescribe().getInlineHelpText(), fieldSchema.inlineHelpText);
+            System.Assert.areEqual(matchingField.getDescribe().getLabel(), fieldSchema.label);
+            System.Assert.areEqual(matchingField.getDescribe().getType().name().toLowerCase(), fieldSchema.type);
         }
     }
 }

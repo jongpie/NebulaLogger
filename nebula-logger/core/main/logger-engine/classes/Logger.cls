@@ -15,8 +15,8 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.9.3';
-    private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
+    private static final String CURRENT_VERSION_NUMBER = 'v4.9.4';
+    private static final System.LoggingLevel DEFAULT_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
@@ -48,9 +48,9 @@ global with sharing class Logger {
     private static final String USER_SESSION_ID {
         get {
             if (USER_SESSION_ID == null) {
-                USER_SESSION_ID = UserInfo.getSessionId();
-                // If UserInfo.getSessionId() returns null, set to an empty string to
-                // avoid calling UserInfo.getSessionId() again
+                USER_SESSION_ID = System.UserInfo.getSessionId();
+                // If System.UserInfo.getSessionId() returns null, set to an empty string to
+                // avoid calling System.UserInfo.getSessionId() again
                 USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
             }
             return USER_SESSION_ID;
@@ -68,7 +68,7 @@ global with sharing class Logger {
         set;
     }
 
-    private static LoggingLevel userLoggingLevel {
+    private static System.LoggingLevel userLoggingLevel {
         get {
             if (userLoggingLevel == null || userLoggingLevel.name() != getUserSettings().LoggingLevel__c) {
                 userLoggingLevel = getLoggingLevel(getUserSettings().LoggingLevel__c);
@@ -81,8 +81,8 @@ global with sharing class Logger {
     static {
         // 1 of 2 places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
-        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
-        System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
+        System.debug(System.LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
+        System.debug(System.LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -165,7 +165,7 @@ global with sharing class Logger {
      * @param  loggingLevel - The logging level to check
      * @return Boolean
      */
-    global static Boolean isEnabled(LoggingLevel loggingLevel) {
+    global static Boolean isEnabled(System.LoggingLevel loggingLevel) {
         return isEnabled() && meetsUserLoggingLevel(loggingLevel);
     }
 
@@ -174,7 +174,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isErrorEnabled() {
-        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.ERROR);
+        return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.ERROR);
     }
 
     /**
@@ -182,7 +182,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isWarnEnabled() {
-        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.WARN);
+        return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.WARN);
     }
 
     /**
@@ -190,7 +190,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isInfoEnabled() {
-        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.INFO);
+        return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.INFO);
     }
 
     /**
@@ -198,7 +198,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isDebugEnabled() {
-        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.DEBUG);
+        return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.DEBUG);
     }
 
     /**
@@ -206,7 +206,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isFineEnabled() {
-        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINE);
+        return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINE);
     }
 
     /**
@@ -214,7 +214,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isFinerEnabled() {
-        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINER);
+        return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINER);
     }
 
     /**
@@ -222,7 +222,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isFinestEnabled() {
-        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINEST);
+        return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINEST);
     }
 
     /**
@@ -230,15 +230,15 @@ global with sharing class Logger {
      * @param logEntryLoggingLevel the logging level to check.
      * @return Boolean
      */
-    global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
+    global static Boolean meetsUserLoggingLevel(System.LoggingLevel logEntryLoggingLevel) {
         return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
     /**
      * @description Returns the logging level for the current user, based on the custom setting LoggerSettings__c
-     * @return LoggingLevel - The matching instance of LoggingLevel
+     * @return System.LoggingLevel - The matching instance of LoggingLevel
      */
-    global static LoggingLevel getUserLoggingLevel() {
+    global static System.LoggingLevel getUserLoggingLevel() {
         return userLoggingLevel;
     }
 
@@ -250,7 +250,7 @@ global with sharing class Logger {
     public static LoggerSettings__c getUserSettings() {
         // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
         if (userSettings == null) {
-            User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+            User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
             userSettings = getUserSettings(currentUser);
         }
         return userSettings;
@@ -337,7 +337,7 @@ global with sharing class Logger {
 
     // ERROR logging level methods
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -347,7 +347,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -357,7 +357,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -367,7 +367,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage     The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -377,7 +377,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -387,7 +387,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -397,7 +397,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -407,7 +407,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults The instance of `List<Database.SaveResult>` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -417,7 +417,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -427,7 +427,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -437,28 +437,28 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, System.Exception apexException) {
         return error().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, System.Exception apexException) {
         return error().setRecordId(recordId).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -468,18 +468,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, System.Exception apexException) {
         return error().setRecordId(record).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  record     The `SObject` record to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -489,18 +489,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records, System.Exception apexException) {
         return error().setRecord(records).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  records    The list of `SObject` records to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -510,7 +510,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -519,7 +519,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message   The string to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -529,7 +529,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message     The string to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -539,7 +539,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message    The string to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -549,7 +549,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message        The string to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -559,7 +559,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message      The string to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -569,7 +569,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The list of `Database.DeleteResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -579,7 +579,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The list of `Database.MergeResult` instances to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -589,7 +589,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message     The string to use to set the entry's message field
      * @param  saveResults The list of `Database.SaveResult` instances to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -599,7 +599,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -609,7 +609,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The list of `Database.UpsertResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -619,28 +619,28 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, System.Exception apexException) {
         return error().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, Id recordId, System.Exception apexException) {
         return error().setRecordId(recordId).setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -650,18 +650,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, SObject record, System.Exception apexException) {
         return error().setRecordId(record).setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message The string to use to set the entry's message field
      * @param  record  The `SObject` record to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -671,18 +671,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, List<SObject> records, System.Exception apexException) {
         return error().setRecord(records).setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message The string to use to set the entry's message field
      * @param  records The list of `SObject` records to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -692,7 +692,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -702,7 +702,7 @@ global with sharing class Logger {
 
     // WARN logging level methods
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -712,7 +712,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -722,7 +722,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -732,7 +732,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage     The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -742,7 +742,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -752,7 +752,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -762,7 +762,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -772,7 +772,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults The instance of `List<Database.SaveResult>` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -782,7 +782,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -792,7 +792,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -802,28 +802,28 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, System.Exception apexException) {
         return warn().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, System.Exception apexException) {
         return warn().setRecordId(recordId).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -833,18 +833,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, System.Exception apexException) {
         return warn().setRecordId(record).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  record     The `SObject` record to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -854,18 +854,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records, System.Exception apexException) {
         return warn().setRecord(records).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  records    The list of `SObject` records to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -875,7 +875,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -884,7 +884,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message   The string to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -894,7 +894,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message     The string to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -904,7 +904,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message    The string to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -914,7 +914,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message        The string to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -924,7 +924,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message      The string to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -934,7 +934,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The list of `Database.DeleteResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -944,7 +944,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The list of `Database.MergeResult` instances to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -954,7 +954,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message     The string to use to set the entry's message field
      * @param  saveResults The list of `Database.SaveResult` instances to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -964,7 +964,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -974,7 +974,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The list of `Database.UpsertResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -984,28 +984,28 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, System.Exception apexException) {
         return warn().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, Id recordId, System.Exception apexException) {
         return warn().setRecordId(recordId).setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1015,18 +1015,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, SObject record, System.Exception apexException) {
         return warn().setRecordId(record).setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message The string to use to set the entry's message field
      * @param  record  The `SObject` record to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1036,18 +1036,18 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, List<SObject> records, System.Exception apexException) {
         return warn().setRecord(records).setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message The string to use to set the entry's message field
      * @param  records The list of `SObject` records to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1057,7 +1057,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1066,7 +1066,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1076,7 +1076,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1086,7 +1086,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1096,7 +1096,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage     The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1106,7 +1106,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1116,7 +1116,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1126,7 +1126,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1136,7 +1136,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults The instance of `List<Database.SaveResult>` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1146,7 +1146,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1156,7 +1156,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1166,7 +1166,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1176,7 +1176,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  record     The `SObject` record to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1186,7 +1186,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  records    The list of `SObject` records to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1196,7 +1196,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1205,7 +1205,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message   The string to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1215,7 +1215,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message     The string to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1225,7 +1225,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message    The string to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1235,7 +1235,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message        The string to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1245,7 +1245,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message      The string to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1255,7 +1255,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The list of `Database.DeleteResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1265,7 +1265,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The list of `Database.MergeResult` instances to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1275,7 +1275,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message     The string to use to set the entry's message field
      * @param  saveResults The list of `Database.SaveResult` instances to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1285,7 +1285,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1295,7 +1295,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The list of `Database.UpsertResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1305,7 +1305,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1315,7 +1315,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message The string to use to set the entry's message field
      * @param  record  The `SObject` record to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1325,7 +1325,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message The string to use to set the entry's message field
      * @param  records The list of `SObject` records to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1335,7 +1335,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1345,7 +1345,7 @@ global with sharing class Logger {
 
     // DEBUG log level methods
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1355,7 +1355,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1365,7 +1365,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1375,7 +1375,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage     The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1385,7 +1385,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1395,7 +1395,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1405,7 +1405,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1415,7 +1415,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults The instance of `List<Database.SaveResult>` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1425,7 +1425,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1435,7 +1435,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1445,7 +1445,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1455,7 +1455,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  record     The `SObject` record to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1465,7 +1465,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  records    The list of `SObject` records to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1475,7 +1475,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1484,7 +1484,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message   The string to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1494,7 +1494,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message     The string to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1504,7 +1504,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message    The string to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1514,7 +1514,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message        The string to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1524,7 +1524,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message      The string to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1534,7 +1534,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The list of `Database.DeleteResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1544,7 +1544,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The list of `Database.MergeResult` instances to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1554,7 +1554,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message     The string to use to set the entry's message field
      * @param  saveResults The list of `Database.SaveResult` instances to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1564,7 +1564,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1574,7 +1574,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The list of `Database.UpsertResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1584,7 +1584,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1594,7 +1594,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message The string to use to set the entry's message field
      * @param  record  The `SObject` record to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1604,7 +1604,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message The string to use to set the entry's message field
      * @param  records The list of `SObject` records to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1614,7 +1614,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1624,7 +1624,7 @@ global with sharing class Logger {
 
     // FINE log level methods
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1634,7 +1634,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1644,7 +1644,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1654,7 +1654,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage     The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1664,7 +1664,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1674,7 +1674,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1684,7 +1684,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1694,7 +1694,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults The instance of `List<Database.SaveResult>` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1704,7 +1704,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1714,7 +1714,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1724,7 +1724,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1734,7 +1734,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  record     The `SObject` record to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1744,7 +1744,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  records    The list of `SObject` records to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1754,7 +1754,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1763,7 +1763,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message   The string to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1773,7 +1773,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message     The string to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1783,7 +1783,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message    The string to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1793,7 +1793,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message        The string to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1803,7 +1803,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message      The string to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1813,7 +1813,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The list of `Database.DeleteResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1823,7 +1823,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The list of `Database.MergeResult` instances to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1833,7 +1833,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message     The string to use to set the entry's message field
      * @param  saveResults The list of `Database.SaveResult` instances to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1843,7 +1843,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1853,7 +1853,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The list of `Database.UpsertResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1863,7 +1863,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1873,7 +1873,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message The string to use to set the entry's message field
      * @param  record  The `SObject` record to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1883,7 +1883,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message The string to use to set the entry's message field
      * @param  records The list of `SObject` records to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1893,7 +1893,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1903,7 +1903,7 @@ global with sharing class Logger {
 
     // FINER log level methods
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1913,7 +1913,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1923,7 +1923,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1933,7 +1933,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage     The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1943,7 +1943,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1953,7 +1953,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1963,7 +1963,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1973,7 +1973,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults The instance of `List<Database.SaveResult>` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1983,7 +1983,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -1993,7 +1993,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2003,7 +2003,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2013,7 +2013,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  record     The `SObject` record to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2023,7 +2023,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  records    The list of `SObject` records to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2033,7 +2033,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -2042,7 +2042,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message   The string to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2052,7 +2052,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message     The string to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2062,7 +2062,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message    The string to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2072,7 +2072,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message        The string to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2082,7 +2082,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message      The string to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2092,7 +2092,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The list of `Database.DeleteResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2102,7 +2102,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The list of `Database.MergeResult` instances to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2112,7 +2112,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message     The string to use to set the entry's message field
      * @param  saveResults The list of `Database.SaveResult` instances to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2122,7 +2122,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2132,7 +2132,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The list of `Database.UpsertResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2142,7 +2142,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2152,7 +2152,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message The string to use to set the entry's message field
      * @param  record  The `SObject` record to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2162,7 +2162,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message The string to use to set the entry's message field
      * @param  records The list of `SObject` records to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2172,7 +2172,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -2182,7 +2182,7 @@ global with sharing class Logger {
 
     // FINEST log level methods
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2192,7 +2192,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2202,7 +2202,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2212,7 +2212,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage     The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2222,7 +2222,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2232,7 +2232,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2242,7 +2242,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2252,7 +2252,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults The instance of `List<Database.SaveResult>` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2262,7 +2262,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2272,7 +2272,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2282,7 +2282,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2292,7 +2292,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  record     The `SObject` record to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2302,7 +2302,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  records    The list of `SObject` records to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2312,7 +2312,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -2321,7 +2321,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message   The string to use to set the entry's message field
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2331,7 +2331,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message     The string to use to set the entry's message field
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2341,7 +2341,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message    The string to use to set the entry's message field
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2351,7 +2351,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message        The string to use to set the entry's message field
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2361,7 +2361,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message      The string to use to set the entry's message field
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2371,7 +2371,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The list of `Database.DeleteResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2381,7 +2381,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The list of `Database.MergeResult` instances to log
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2391,7 +2391,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message     The string to use to set the entry's message field
      * @param  saveResults The list of `Database.SaveResult` instances to log
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2401,7 +2401,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
      * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2411,7 +2411,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The list of `Database.UpsertResult` instances to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2421,7 +2421,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2431,7 +2431,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message The string to use to set the entry's message field
      * @param  record  The `SObject` record to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2441,7 +2441,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message The string to use to set the entry's message field
      * @param  records The list of `SObject` records to log
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2451,7 +2451,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @description Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -2466,7 +2466,7 @@ global with sharing class Logger {
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
         return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults);
     }
 
@@ -2477,7 +2477,7 @@ global with sharing class Logger {
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults) {
         List<Database.DeleteResult> resultsToLog = new List<Database.DeleteResult>();
         for (Database.DeleteResult deleteResult : deleteResults) {
             if (deleteResult.isSuccess() == false) {
@@ -2496,7 +2496,7 @@ global with sharing class Logger {
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
         return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults);
     }
 
@@ -2507,7 +2507,7 @@ global with sharing class Logger {
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults) {
         List<Database.MergeResult> resultsToLog = new List<Database.MergeResult>();
         for (Database.MergeResult mergeResult : mergeResults) {
             if (mergeResult.isSuccess() == false) {
@@ -2526,7 +2526,7 @@ global with sharing class Logger {
      * @param  saveResults  The instance of `List<Database.SaveResult>` to log
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
         return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults);
     }
 
@@ -2537,7 +2537,7 @@ global with sharing class Logger {
      * @param  saveResults  The instance of `List<Database.SaveResult>` to log
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults) {
         List<Database.SaveResult> resultsToLog = new List<Database.SaveResult>();
         for (Database.SaveResult saveResult : saveResults) {
             if (saveResult.isSuccess() == false) {
@@ -2556,7 +2556,7 @@ global with sharing class Logger {
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
         return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults);
     }
 
@@ -2567,7 +2567,7 @@ global with sharing class Logger {
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults) {
         List<Database.UpsertResult> resultsToLog = new List<Database.UpsertResult>();
         for (Database.UpsertResult upsertResult : upsertResults) {
             if (upsertResult.isSuccess() == false) {
@@ -2586,7 +2586,11 @@ global with sharing class Logger {
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(
+        System.LoggingLevel loggingLevel,
+        LogMessage logMessage,
+        List<Database.UndeleteResult> undeleteResults
+    ) {
         return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults);
     }
 
@@ -2597,7 +2601,7 @@ global with sharing class Logger {
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
      * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults) {
         List<Database.UndeleteResult> resultsToLog = new List<Database.UndeleteResult>();
         for (Database.UndeleteResult undeleteResult : undeleteResults) {
             if (undeleteResult.isSuccess() == false) {
@@ -2616,7 +2620,7 @@ global with sharing class Logger {
      * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
      * @return              The new entry's instance of LogEntryEventBuilder
      */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage, Boolean shouldSave) {
+    global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, LogMessage logMessage, Boolean shouldSave) {
         return newEntry(loggingLevel, shouldSave).setMessage(logMessage);
     }
 
@@ -2626,7 +2630,7 @@ global with sharing class Logger {
      * @param  logMessage   The instance of LogMessage to use as the entry's message
      * @return              The new entry's instance of LogEntryEventBuilder
      */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage) {
+    global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, LogMessage logMessage) {
         return newEntry(loggingLevel).setMessage(logMessage);
     }
 
@@ -2637,7 +2641,7 @@ global with sharing class Logger {
      * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
      * @return              The new entry's instance of LogEntryEventBuilder
      */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message, Boolean shouldSave) {
+    global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, String message, Boolean shouldSave) {
         return newEntry(loggingLevel, shouldSave).setMessage(message);
     }
 
@@ -2647,7 +2651,7 @@ global with sharing class Logger {
      * @param  message      The string to use as the entry's message
      * @return              The new entry's instance of LogEntryEventBuilder
      */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message) {
+    global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, String message) {
         return newEntry(loggingLevel).setMessage(message);
     }
 
@@ -2866,9 +2870,9 @@ global with sharing class Logger {
     /**
      * @description Converts a String to an instance of LoggingLevel
      * @param  loggingLevelName The string name of an Apex logging level
-     * @return                  The matching instance of LoggingLevel (or a default value if a match is not found)
+     * @return                  The matching instance of System.LoggingLevel (or a default value if a match is not found)
      */
-    global static LoggingLevel getLoggingLevel(String loggingLevelName) {
+    global static System.LoggingLevel getLoggingLevel(String loggingLevelName) {
         try {
             return System.LoggingLevel.valueOf(loggingLevelName?.trim().toUpperCase());
         } catch (NoSuchElementException ex) {
@@ -2886,38 +2890,38 @@ global with sharing class Logger {
 
     // Private logging level methods to keep global methods simpler/cleaner
     private static LogEntryEventBuilder error() {
-        return newEntry(LoggingLevel.ERROR);
+        return newEntry(System.LoggingLevel.ERROR);
     }
 
     private static LogEntryEventBuilder warn() {
-        return newEntry(LoggingLevel.WARN);
+        return newEntry(System.LoggingLevel.WARN);
     }
 
     private static LogEntryEventBuilder info() {
-        return newEntry(LoggingLevel.INFO);
+        return newEntry(System.LoggingLevel.INFO);
     }
 
     private static LogEntryEventBuilder debug() {
-        return newEntry(LoggingLevel.DEBUG);
+        return newEntry(System.LoggingLevel.DEBUG);
     }
 
     private static LogEntryEventBuilder fine() {
-        return newEntry(LoggingLevel.FINE);
+        return newEntry(System.LoggingLevel.FINE);
     }
 
     private static LogEntryEventBuilder finer() {
-        return newEntry(LoggingLevel.FINER);
+        return newEntry(System.LoggingLevel.FINER);
     }
 
     private static LogEntryEventBuilder finest() {
-        return newEntry(LoggingLevel.FINEST);
+        return newEntry(System.LoggingLevel.FINEST);
     }
 
-    private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel) {
+    private static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel) {
         return newEntry(loggingLevel, isEnabled(loggingLevel));
     }
 
-    private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
+    private static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
         if (logEntryEventBuilder.shouldSave() == true) {
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
@@ -3044,7 +3048,7 @@ global with sharing class Logger {
          * @param records The records to save.
          */
         public void insertRecords(List<SObject> records) {
-            HttpRequest request = new HttpRequest();
+            System.HttpRequest request = new System.HttpRequest();
             request.setEndpoint(baseURL + compositeEndpoint);
             request.setHeader('Authorization', 'Bearer ' + USER_SESSION_ID);
             request.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -3054,15 +3058,15 @@ global with sharing class Logger {
             RestSaveRequest saveRequest = new RestSaveRequest(records, allOrNone);
             request.setBody(JSON.serialize(saveRequest));
 
-            HttpResponse response = new Http().send(request);
+            System.HttpResponse response = new System.Http().send(request);
             this.validateResponse(response);
         }
 
-        private void validateResponse(Httpresponse response) {
+        private void validateResponse(System.HttpResponse response) {
             Integer statusCode = response.getStatusCode();
             if (statusCode >= 400) {
                 String errorMessage = 'Saving via REST API failed. Received request status code ' + statusCode + ', status message: ' + response.getStatus();
-                throw new CalloutException(errorMessage);
+                throw new System.CalloutException(errorMessage);
             }
         }
     }

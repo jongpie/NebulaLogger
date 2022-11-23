@@ -19,19 +19,19 @@ private class LogManagementDataSelector_Tests_Flow {
 
         List<FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_does_not_query_flow_definition_views_when_disabled_via_logger_parameter() {
         List<String> targetFlowApiNames = new List<String>{ TEST_FLOW_NAME };
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = String.valueOf(false)));
-        System.assertEquals(false, LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA);
+        System.Assert.isFalse(LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA);
         Integer originalQueryCount = System.Limits.getQueries();
 
         List<FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
 
-        System.assertEquals(originalQueryCount, System.Limits.getQueries());
-        System.assertEquals(0, returnedResults.size());
+        System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
+        System.Assert.areEqual(0, returnedResults.size());
     }
 }

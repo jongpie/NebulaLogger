@@ -16,17 +16,17 @@ private class LogEntryEventStreamController_Tests {
         List<String> displayFields = LogEntryEventStreamController.getDatatableDisplayFields();
 
         System.Assert.areEqual(mockDisplayFields.size(), displayFields.size(), 'fields count mismatch');
-        for (String aField : mockDisplayFields) {
-            System.Assert.areEqual(true, displayFields.contains(aField), 'field not found');
+        for (String fieldName : mockDisplayFields) {
+            System.Assert.areEqual(true, displayFields.contains(fieldName), 'field not found: ' + fieldName);
         }
     }
     @isTest
     static void it_should_return_default_fields_when_List_of_Fields_not_configured_in_logParameters() {
         List<String> displayFields = LogEntryEventStreamController.getDatatableDisplayFields();
 
-        System.assertEquals(LogEntryEventStreamController.DEFAULT_DISPLAY_FIELDS.size(), displayFields.size(), 'fields count mismatch');
-        for (String aField : LogEntryEventStreamController.DEFAULT_DISPLAY_FIELDS) {
-            System.assertEquals(true, displayFields.contains(aField), 'field not found');
+        System.Assert.areEqual(LogEntryEventStreamController.DEFAULT_DISPLAY_FIELDS.size(), displayFields.size(), 'fields count mismatch');
+        for (String fieldName : LogEntryEventStreamController.DEFAULT_DISPLAY_FIELDS) {
+            System.Assert.isTrue(displayFields.contains(fieldName), 'field not found: ' + fieldName);
         }
     }
 }

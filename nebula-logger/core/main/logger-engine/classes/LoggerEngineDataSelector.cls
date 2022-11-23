@@ -73,7 +73,7 @@ public without sharing virtual class LoggerEngineDataSelector {
             return null;
         }
 
-        Id userId = UserInfo.getUserId();
+        Id userId = System.UserInfo.getUserId();
         String cacheKey = 'AuthSession' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey) == true) {
             return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
@@ -183,7 +183,7 @@ public without sharing virtual class LoggerEngineDataSelector {
             return null;
         }
 
-        Id userId = UserInfo.getUserId();
+        Id userId = System.UserInfo.getUserId();
         String cacheKey = 'User' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey) == true) {
             return (User) LoggerCache.getSessionCache().get(cacheKey);

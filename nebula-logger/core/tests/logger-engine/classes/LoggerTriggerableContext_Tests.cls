@@ -26,16 +26,16 @@ private class LoggerTriggerableContext_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, newUsers, null, null);
 
-        System.assertEquals(sobjectType, context.sobjectType);
-        System.assertEquals(sobjectType.getDescribe().getName(), context.sobjectTypeName);
-        System.assertEquals(triggerOperationType, context.triggerOperationType);
-        System.assertEquals(newUsers, context.triggerNew);
-        System.assertEquals(null, context.triggerNewMap);
-        System.assertEquals(null, context.triggerOldMap);
-        System.assertEquals(newUsers.size(), context.triggerRecords.size());
+        System.Assert.areEqual(sobjectType, context.sobjectType);
+        System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+        System.Assert.areEqual(triggerOperationType, context.triggerOperationType);
+        System.Assert.areEqual(newUsers, context.triggerNew);
+        System.Assert.isNull(context.triggerNewMap);
+        System.Assert.isNull(context.triggerOldMap);
+        System.Assert.areEqual(newUsers.size(), context.triggerRecords.size());
         for (Integer i = 0; i < newUsers.size(); i++) {
-            System.assertEquals(newUsers.get(i), context.triggerRecords.get(i).triggerRecordNew);
-            System.assertEquals(null, context.triggerRecords.get(i).triggerRecordOld);
+            System.Assert.areEqual(newUsers.get(i), context.triggerRecords.get(i).triggerRecordNew);
+            System.Assert.isNull(context.triggerRecords.get(i).triggerRecordOld);
         }
     }
 
@@ -54,17 +54,17 @@ private class LoggerTriggerableContext_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, updatedUsers, newUsersMap, oldUsersMap);
 
-        System.assertEquals(sobjectType, context.sobjectType);
-        System.assertEquals(sobjectType.getDescribe().getName(), context.sobjectTypeName);
-        System.assertEquals(triggerOperationType, context.triggerOperationType);
-        System.assertEquals(updatedUsers, context.triggerNew);
-        System.assertEquals(newUsersMap, context.triggerNewMap);
-        System.assertEquals(oldUsersMap, context.triggerOldMap);
-        System.assertEquals(updatedUsers.size(), context.triggerRecords.size());
+        System.Assert.areEqual(sobjectType, context.sobjectType);
+        System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+        System.Assert.areEqual(triggerOperationType, context.triggerOperationType);
+        System.Assert.areEqual(updatedUsers, context.triggerNew);
+        System.Assert.areEqual(newUsersMap, context.triggerNewMap);
+        System.Assert.areEqual(oldUsersMap, context.triggerOldMap);
+        System.Assert.areEqual(updatedUsers.size(), context.triggerRecords.size());
         for (Integer i = 0; i < updatedUsers.size(); i++) {
             User user = updatedUsers.get(i);
-            System.assertEquals(user, context.triggerRecords.get(i).triggerRecordNew);
-            System.assertEquals(oldUsersMap.get(user.Id), context.triggerRecords.get(i).triggerRecordOld);
+            System.Assert.areEqual(user, context.triggerRecords.get(i).triggerRecordNew);
+            System.Assert.areEqual(oldUsersMap.get(user.Id), context.triggerRecords.get(i).triggerRecordOld);
         }
     }
 
@@ -81,17 +81,17 @@ private class LoggerTriggerableContext_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, null, null, deletedLogsMap);
 
-        System.assertEquals(sobjectType, context.sobjectType);
-        System.assertEquals(sobjectType.getDescribe().getName(), context.sobjectTypeName);
-        System.assertEquals(triggerOperationType, context.triggerOperationType);
-        System.assertEquals(null, context.triggerNew);
-        System.assertEquals(null, context.triggerNewMap);
-        System.assertEquals(deletedLogsMap, context.triggerOldMap);
-        System.assertEquals(deletedLogsMap.size(), context.triggerRecords.size());
+        System.Assert.areEqual(sobjectType, context.sobjectType);
+        System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+        System.Assert.areEqual(triggerOperationType, context.triggerOperationType);
+        System.Assert.isNull(context.triggerNew);
+        System.Assert.isNull(context.triggerNewMap);
+        System.Assert.areEqual(deletedLogsMap, context.triggerOldMap);
+        System.Assert.areEqual(deletedLogsMap.size(), context.triggerRecords.size());
         for (Integer i = 0; i < deletedLogsMap.size(); i++) {
             User deletedLog = deletedLogsMap.values().get(i);
-            System.assertEquals(null, context.triggerRecords.get(i).triggerRecordNew);
-            System.assertEquals(deletedLog, context.triggerRecords.get(i).triggerRecordOld);
+            System.Assert.isNull(context.triggerRecords.get(i).triggerRecordNew);
+            System.Assert.areEqual(deletedLog, context.triggerRecords.get(i).triggerRecordOld);
         }
     }
 }

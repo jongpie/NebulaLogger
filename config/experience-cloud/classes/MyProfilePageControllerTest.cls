@@ -13,47 +13,47 @@ public with sharing class MyProfilePageControllerTest {
             User currentUser = [
                 SELECT id, title, firstname, lastname, email, phone, mobilephone, fax, street, city, state, postalcode, country
                 FROM User
-                WHERE id = :UserInfo.getUserId()
+                WHERE id = :System.UserInfo.getUserId()
             ];
             MyProfilePageController controller = new MyProfilePageController();
-            System.assertEquals(currentUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
-            System.assert(controller.getIsEdit() == false, 'isEdit should default to false');
+            System.Assert.areEqual(currentUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
+            System.Assert.isTrue(controller.getIsEdit() == false, 'isEdit should default to false');
             controller.edit();
-            System.assert(controller.getIsEdit() == true);
+            System.Assert.isTrue(controller.getIsEdit() == true);
             controller.cancel();
-            System.assert(controller.getIsEdit() == false);
+            System.Assert.isTrue(controller.getIsEdit() == false);
 
-            System.assert(Page.ChangePassword.getUrl().equals(controller.changePassword().getUrl()));
+            System.Assert.isTrue(Page.ChangePassword.getUrl().equals(controller.changePassword().getUrl()));
 
             String randFax = Math.rint(Math.random() * 1000) + '5551234';
             controller.getUser().Fax = randFax;
             controller.save();
-            System.assert(controller.getIsEdit() == false);
+            System.Assert.isTrue(controller.getIsEdit() == false);
 
             currentUser = [SELECT id, fax FROM User WHERE id = :currentUser.Id];
-            System.assert(currentUser.fax == randFax);
+            System.Assert.isTrue(currentUser.fax == randFax);
         } else {
             User existingPortalUser = existingPortalUsers[0];
             String randFax = Math.rint(Math.random() * 1000) + '5551234';
 
             System.runAs(existingPortalUser) {
                 MyProfilePageController controller = new MyProfilePageController();
-                System.assertEquals(existingPortalUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
-                System.assert(controller.getIsEdit() == false, 'isEdit should default to false');
+                System.Assert.areEqual(existingPortalUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
+                System.Assert.isTrue(controller.getIsEdit() == false, 'isEdit should default to false');
                 controller.edit();
-                System.assert(controller.getIsEdit() == true);
+                System.Assert.isTrue(controller.getIsEdit() == true);
 
                 controller.cancel();
-                System.assert(controller.getIsEdit() == false);
+                System.Assert.isTrue(controller.getIsEdit() == false);
 
                 controller.getUser().Fax = randFax;
                 controller.save();
-                System.assert(controller.getIsEdit() == false);
+                System.Assert.isTrue(controller.getIsEdit() == false);
             }
 
             // verify that the user was updated
             existingPortalUser = [SELECT id, fax FROM User WHERE id = :existingPortalUser.Id];
-            System.assert(existingPortalUser.fax == randFax);
+            System.Assert.isTrue(existingPortalUser.fax == randFax);
         }
     }
 }
