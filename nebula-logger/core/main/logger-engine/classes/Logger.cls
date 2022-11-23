@@ -439,10 +439,10 @@ global with sharing class Logger {
     /**
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, System.Exception apexException) {
         return error().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -450,10 +450,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, System.Exception apexException) {
         return error().setRecordId(recordId).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -471,10 +471,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, System.Exception apexException) {
         return error().setRecordId(record).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -492,10 +492,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records, System.Exception apexException) {
         return error().setRecord(records).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -621,10 +621,10 @@ global with sharing class Logger {
     /**
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, System.Exception apexException) {
         return error().setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -632,10 +632,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, Id recordId, System.Exception apexException) {
         return error().setRecordId(recordId).setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -653,10 +653,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message       The string to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, SObject record, System.Exception apexException) {
         return error().setRecordId(record).setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -674,10 +674,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
      * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder error(String message, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, List<SObject> records, System.Exception apexException) {
         return error().setRecord(records).setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -804,10 +804,10 @@ global with sharing class Logger {
     /**
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, System.Exception apexException) {
         return warn().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -815,10 +815,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, System.Exception apexException) {
         return warn().setRecordId(recordId).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -836,10 +836,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, System.Exception apexException) {
         return warn().setRecordId(record).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -857,10 +857,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records, System.Exception apexException) {
         return warn().setRecord(records).setExceptionDetails(apexException).setMessage(logMessage);
     }
 
@@ -986,10 +986,10 @@ global with sharing class Logger {
     /**
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, System.Exception apexException) {
         return warn().setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -997,10 +997,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, Id recordId, System.Exception apexException) {
         return warn().setRecordId(recordId).setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -1018,10 +1018,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message       The string to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, SObject record, System.Exception apexException) {
         return warn().setRecordId(record).setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -1039,10 +1039,10 @@ global with sharing class Logger {
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
      * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `Exception` to log
+     * @param  apexException The instance of `System.Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global static LogEntryEventBuilder warn(String message, List<SObject> records, Exception apexException) {
+    global static LogEntryEventBuilder warn(String message, List<SObject> records, System.Exception apexException) {
         return warn().setRecord(records).setExceptionDetails(apexException).setMessage(message);
     }
 
@@ -3048,7 +3048,7 @@ global with sharing class Logger {
          * @param records The records to save.
          */
         public void insertRecords(List<SObject> records) {
-            HttpRequest request = new HttpRequest();
+            System.HttpRequest request = new System.HttpRequest();
             request.setEndpoint(baseURL + compositeEndpoint);
             request.setHeader('Authorization', 'Bearer ' + USER_SESSION_ID);
             request.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -3058,15 +3058,15 @@ global with sharing class Logger {
             RestSaveRequest saveRequest = new RestSaveRequest(records, allOrNone);
             request.setBody(JSON.serialize(saveRequest));
 
-            HttpResponse response = new Http().send(request);
+            System.HttpResponse response = new System.Http().send(request);
             this.validateResponse(response);
         }
 
-        private void validateResponse(Httpresponse response) {
+        private void validateResponse(System.HttpResponse response) {
             Integer statusCode = response.getStatusCode();
             if (statusCode >= 400) {
                 String errorMessage = 'Saving via REST API failed. Received request status code ' + statusCode + ', status message: ' + response.getStatus();
-                throw new CalloutException(errorMessage);
+                throw new System.CalloutException(errorMessage);
             }
         }
     }

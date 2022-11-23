@@ -821,7 +821,10 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(createStatusApiResponseJson()));
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(createStatusApiResponseJson())
+        );
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
@@ -892,7 +895,10 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson())
+        );
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
@@ -927,7 +933,10 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson())
+        );
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
@@ -940,11 +949,11 @@ private class LogEntryEventHandler_Tests {
             saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
             LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
             System.Test.stopTest();
-            System.Assert.fail('Exception expected, this assert should not run');
-        } catch (Exception ex) {
-            System.Assert.areEqual(CalloutException.class.getName(), ex.getTypeName());
+            System.Assert.fail('System.Exception expected, this assert should not run');
+        } catch (System.Exception apexException) {
+            System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
             String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
-            System.Assert.isTrue(ex.getMessage().contains(expectedErrorMessage));
+            System.Assert.isTrue(apexException.getMessage().contains(expectedErrorMessage));
         }
 
         System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());

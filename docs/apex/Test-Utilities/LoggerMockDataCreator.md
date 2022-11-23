@@ -299,7 +299,7 @@ The mock instance of `Database.UpsertResult`
 
 #### `createHttpCallout()` → `MockHttpCallout`
 
-Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`. This can be used when testing batch jobs.
+Generates an instance of the class `MockHttpCallout` that implements the interface `System.HttpCalloutMock`. This can be used when testing batch jobs.
 
 ##### Return
 
@@ -311,7 +311,7 @@ MockHttpCallout
 
 The instance of `MockHttpCallout`
 
-#### `createHttpRequest()` → `HttpRequest`
+#### `createHttpRequest()` → `System.HttpRequest`
 
 Generates an instance of `HttpRequest`. This can be used when testing logging capabilities for instances of `HttpRequest`.
 
@@ -319,13 +319,13 @@ Generates an instance of `HttpRequest`. This can be used when testing logging ca
 
 **Type**
 
-HttpRequest
+System.HttpRequest
 
 **Description**
 
 The instance of `HttpRequest`
 
-#### `createHttpResponse()` → `HttpResponse`
+#### `createHttpResponse()` → `System.HttpResponse`
 
 Generates an instance of `HttpResponse`. This can be used when testing logging capabilities for instances of `HttpResponse`.
 
@@ -333,7 +333,7 @@ Generates an instance of `HttpResponse`. This can be used when testing logging c
 
 **Type**
 
-HttpResponse
+System.HttpResponse
 
 **Description**
 
@@ -555,9 +555,9 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Properties
 
-###### `request` → `HttpRequest`
+###### `request` → `System.HttpRequest`
 
-###### `response` → `HttpResponse`
+###### `response` → `System.HttpResponse`
 
 ###### `responseBody` → `String`
 
@@ -567,7 +567,7 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Methods
 
-###### `respond(HttpRequest request)` → `HttpResponse`
+###### `respond(System.HttpRequest request)` → `System.HttpResponse`
 
 ###### `setResponseBody(String responseBody)` → `MockHttpCallout`
 

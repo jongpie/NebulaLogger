@@ -161,10 +161,10 @@ private class LogRetentionFilter_Tests {
         LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
         mockLogEntry.Timestamp__c = mockTimestamp;
 
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
         try {
             new LogRetentionFilter(mockLogEntry, rule, conditions).getFilterResult();
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
@@ -314,10 +314,10 @@ private class LogRetentionFilter_Tests {
         };
         LogEntry__c mockLogEntry = new LogEntry__c(LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal);
 
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
         try {
             new LogRetentionFilter(mockLogEntry, rule, conditions).getFilterResult();
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
@@ -422,10 +422,10 @@ private class LogRetentionFilter_Tests {
         };
         LogEntry__c mockLogEntry = new LogEntry__c(Message__c = mockStringValue);
 
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
         try {
             new LogRetentionFilter(mockLogEntry, rule, conditions).getFilterResult();
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 

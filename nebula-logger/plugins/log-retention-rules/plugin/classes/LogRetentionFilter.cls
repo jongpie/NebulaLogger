@@ -192,7 +192,7 @@ public without sharing class LogRetentionFilter {
                     return this.compareString((String) recordFieldValue, String.valueOf(comparisonValue));
                 }
                 when else {
-                    throw new IllegalArgumentException('Could not process field path: ' + this.filterCondition.FieldPath__c);
+                    throw new System.IllegalArgumentException('Could not process field path: ' + this.filterCondition.FieldPath__c);
                 }
             }
         }
@@ -218,7 +218,7 @@ public without sharing class LogRetentionFilter {
                     return this.filterCondition.Value__c;
                 }
                 when else {
-                    throw new IllegalArgumentException('Unknown Value Type, cannot parse comparison value');
+                    throw new System.IllegalArgumentException('Unknown Value Type, cannot parse comparison value');
                 }
             }
         }
@@ -275,7 +275,7 @@ public without sharing class LogRetentionFilter {
                     return recordFieldValue >= comparisonValue;
                 }
                 when else {
-                    throw new IllegalArgumentException('Unsupported operator for Datetime: ' + this.filterCondition.Operator__c);
+                    throw new System.IllegalArgumentException('Unsupported operator for Datetime: ' + this.filterCondition.Operator__c);
                 }
             }
         }
@@ -303,7 +303,7 @@ public without sharing class LogRetentionFilter {
                     return recordFieldValue >= comparisonValue;
                 }
                 when else {
-                    throw new IllegalArgumentException('Unsupported operator for Decimal: ' + this.filterCondition.Operator__c);
+                    throw new System.IllegalArgumentException('Unsupported operator for Decimal: ' + this.filterCondition.Operator__c);
                 }
             }
         }
@@ -328,7 +328,7 @@ public without sharing class LogRetentionFilter {
                     return recordFieldValue.endsWith(comparisonValue);
                 }
                 when else {
-                    throw new IllegalArgumentException('Unsupported operator for String: ' + this.filterCondition.Operator__c);
+                    throw new System.IllegalArgumentException('Unsupported operator for String: ' + this.filterCondition.Operator__c);
                 }
             }
         }

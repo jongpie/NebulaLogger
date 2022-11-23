@@ -34,14 +34,14 @@ private class LoggerEngineDataSelector_Tests {
             WHERE UsersId = :System.UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
         ];
         LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
-        System.assertEquals(1, System.Limits.getQueries());
+        System.Assert.areEqual(1, System.Limits.getQueries());
 
         LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
 
-        System.assertEquals(2, System.Limits.getQueries());
+        System.Assert.areEqual(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
-        System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
-        System.assertEquals(expectedAuthSessionProxy, returnedAuthSessionProxy);
+        System.Assert.areEqual(2, System.Limits.getQueries(), 'Query results should have been cached');
+        System.Assert.areEqual(expectedAuthSessionProxy, returnedAuthSessionProxy);
     }
 
     @IsTest

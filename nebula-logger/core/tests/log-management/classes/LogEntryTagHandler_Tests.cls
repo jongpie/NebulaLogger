@@ -104,12 +104,12 @@ private class LogEntryTagHandler_Tests {
         LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
         LoggerDataStore.getDatabase().insertRecord(logEntryTag);
         LogEntryTag__c duplicateLogEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
-        Exception thrownException;
+        System.Exception thrownException;
 
         try {
             insert duplicateLogEntryTag;
-            System.Assert.fail('Exception expected on previous line');
-        } catch (Exception ex) {
+            System.Assert.fail('System.Exception expected on previous line');
+        } catch (System.Exception ex) {
             thrownException = ex;
         }
 

@@ -15,7 +15,7 @@ private class LogEntryEventBuilder_Tests {
         // Run all public and global methods to make sure no errors occur when not enabled (it's happened before)
         System.Assert.isNull(builder.setMessage(getLogMessage()).getLogEntryEvent());
         System.Assert.isNull(builder.setMessage(getMessage()).getLogEntryEvent());
-        System.Assert.isNull(builder.setExceptionDetails(new DmlException()).getLogEntryEvent());
+        System.Assert.isNull(builder.setExceptionDetails(new System.DmlException()).getLogEntryEvent());
         System.Assert.isNull(builder.setDatabaseResult((Database.DeleteResult) null).getLogEntryEvent());
         System.Assert.isNull(builder.setDatabaseResult((Database.MergeResult) null).getLogEntryEvent());
         System.Assert.isNull(builder.setDatabaseResult((Database.SaveResult) null).getLogEntryEvent());
@@ -32,7 +32,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.setRecord(new User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
         System.Assert.isNull(builder.setRecord(new List<User>{ new User(Id = System.UserInfo.getUserId()) }).getLogEntryEvent());
         System.Assert.isNull(builder.addTags(new List<String>{ 'tag-1', 'tag-2' }).getLogEntryEvent());
-        System.Assert.isNull(builder.parseStackTrace(new DmlException().getStackTraceString()).getLogEntryEvent());
+        System.Assert.isNull(builder.parseStackTrace(new System.DmlException().getStackTraceString()).getLogEntryEvent());
     }
 
     @IsTest
@@ -377,7 +377,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
-        HttpRequest httpRequest = LoggerMockDataCreator.createHttpRequest();
+        System.HttpRequest httpRequest = LoggerMockDataCreator.createHttpRequest();
         httpRequest.setBody(sensitiveString);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
@@ -396,7 +396,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
-        HttpResponse httpResponse = LoggerMockDataCreator.createHttpResponse();
+        System.HttpResponse httpResponse = LoggerMockDataCreator.createHttpResponse();
         httpResponse.setBody(sensitiveString);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
@@ -447,7 +447,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(builder.getLogEntryEvent().ExceptionType__c);
 
-        DmlException dmlException = new DmlException('Test DML exception');
+        System.DmlException dmlException = new System.DmlException('Test DML exception');
         builder.setExceptionDetails(dmlException);
 
         System.Assert.areEqual(dmlException.getMessage(), builder.getLogEntryEvent().ExceptionMessage__c);
@@ -644,22 +644,22 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_set_record_fields_for_recordId_when_template_standard_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
-        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
         Id templateSObjectRecordId = LoggerMockDataCreator.createId(Schema.CaseComment.SObjectType);
         builder.setRecordId(templateSObjectRecordId);
 
-        System.assertEquals(1, builder.getLogEntryEvent().RecordCollectionSize__c);
-        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
-        System.assertEquals(templateSObjectRecordId, builder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
-        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+        System.Assert.areEqual(1, builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.Assert.areEqual('Single', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.Assert.areEqual(templateSObjectRecordId, builder.getLogEntryEvent().RecordId__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
     }
 
     @IsTest
@@ -922,7 +922,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isFalse(builder.getLogEntryEvent().HttpRequestCompressed__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
-        HttpRequest request = null;
+        System.HttpRequest request = null;
 
         builder.setHttpRequestDetails(request);
 
@@ -938,7 +938,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
-        HttpRequest request = new HttpRequest();
+        System.HttpRequest request = new System.HttpRequest();
         request.setBody('Hello, world!');
         request.setCompressed(true);
         request.setEndpoint('https://fake.salesforce.com');
@@ -958,7 +958,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
-        HttpResponse response = null;
+        System.HttpResponse response = null;
 
         builder.setHttpResponseDetails(response);
 
@@ -974,7 +974,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
-        HttpResponse response = new HttpResponse();
+        System.HttpResponse response = new System.HttpResponse();
         response.setBody('Hello, world!');
         response.setHeader('someKey', 'some string value');
         response.setHeader('anotherKey', 'an amazing example value, wow');
@@ -1083,7 +1083,7 @@ private class LogEntryEventBuilder_Tests {
             return;
         }
 
-        DmlException stackTraceHandler = new DmlException();
+        System.DmlException stackTraceHandler = new System.DmlException();
         String qualifiedClassName = LogEntryEventBuilder_Tests.class.getName();
         String expectedOriginLocation = qualifiedClassName + '.it_should_set_stack_trace_and_origin_location_for_method_stack_trace_string';
         String expectedStackTrace = stackTraceHandler.getStackTraceString();
@@ -1307,10 +1307,10 @@ private class LogEntryEventBuilder_Tests {
 
     private class DebugStringExample {
         public final String loggingString = 'Inside DebugStringExample.myMethod!';
-        private Exception stackTraceHandler;
+        private System.Exception stackTraceHandler;
 
         public DebugStringExample() {
-            this.stackTraceHandler = new DmlException();
+            this.stackTraceHandler = new System.DmlException();
             Logger.debug('Logging in a constructor');
         }
 

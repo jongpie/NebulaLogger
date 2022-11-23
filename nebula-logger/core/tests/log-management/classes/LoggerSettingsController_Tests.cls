@@ -231,8 +231,8 @@ private class LoggerSettingsController_Tests {
         try {
             LoggerSettingsController.saveRecord(invalidRecord);
             System.Assert.fail('Expected exception from previous line, this assert should not run');
-        } catch (Exception ex) {
-            System.Assert.areEqual(AuraHandledException.class.getName(), ex.getTypeName());
+        } catch (System.Exception apexException) {
+            System.Assert.isInstanceOfType(apexException, System.AuraHandledException.class);
         }
     }
 
@@ -255,17 +255,17 @@ private class LoggerSettingsController_Tests {
         String expectedExceptionMessage;
         try {
             LoggerDataStore.getDatabase().deleteRecord(invalidRecord);
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             expectedExceptionMessage = ex.getMessage();
         }
 
         try {
             LoggerSettingsController.deleteRecord(invalidRecord);
             System.Assert.fail('Expected exception from previous line, this assert should not run');
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             System.Assert.isTrue(
                 ex.getMessage().contains(expectedExceptionMessage),
-                'Exception did not contain expected message, received: ' + ex.getMessage()
+                'System.Exception did not contain expected message, received: ' + ex.getMessage()
             );
         }
     }
@@ -341,10 +341,10 @@ private class LoggerSettingsController_Tests {
         try {
             LoggerSettingsController.searchForSetupOwner(invalidSetupOwnerType, searchTerm);
             System.Assert.fail('Expected exception from previous line, this assert should not run');
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             System.Assert.isTrue(
                 ex.getMessage().contains(expectedExceptionMessage),
-                'Exception did not contain expected message, received: ' + ex.getMessage()
+                'System.Exception did not contain expected message, received: ' + ex.getMessage()
             );
         }
     }

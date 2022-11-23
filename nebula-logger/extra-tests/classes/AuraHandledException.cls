@@ -3,8 +3,8 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-// This class intentionally does nothing - it's here to ensure that any references
-// in Nebula Logger's codebase use `Schema.Network` instead of just `Network`
+// This interface intentionally does nothing - it's here to ensure that any references
+// in Nebula Logger's codebase use `System.AuraHandledException` instead of just `AuraHandledException`
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-public without sharing class Network {
+public interface AuraHandledException {
 }

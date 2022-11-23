@@ -98,7 +98,7 @@ public without sharing class LoggerSettingsController {
             if (canUserModifyLoggerSettings() == true) {
                 LoggerDataStore.getDatabase().upsertRecord(settingsRecord, Schema.LoggerSettings__c.Id);
             }
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
@@ -113,7 +113,7 @@ public without sharing class LoggerSettingsController {
             if (canUserModifyLoggerSettings() == true) {
                 LoggerDataStore.getDatabase().deleteRecord(settingsRecord);
             }
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
@@ -162,17 +162,17 @@ public without sharing class LoggerSettingsController {
                     }
                 }
                 when else {
-                    throw new IllegalArgumentException('Invalid SetupOwnerType: ' + setupOwnerType);
+                    throw new System.IllegalArgumentException('Invalid SetupOwnerType: ' + setupOwnerType);
                 }
             }
             return searchResults;
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
 
-    private static AuraHandledException createAuraHandledException(Exception ex) {
-        AuraHandledException auraHandledException = new AuraHandledException(ex.getMessage());
+    private static System.AuraHandledException createAuraHandledException(System.Exception ex) {
+        System.AuraHandledException auraHandledException = new System.AuraHandledException(ex.getMessage());
         auraHandledException.setMessage(ex.getMessage());
         return auraHandledException;
     }

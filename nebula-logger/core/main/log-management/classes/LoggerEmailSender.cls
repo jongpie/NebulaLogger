@@ -59,8 +59,8 @@ public without sharing class LoggerEmailSender {
     }
 
     /**
-     * @description Sends an error email notification to the org's list of Apex Exception Email recipients,
-     *              configured under Setup --> Email --> Apex Exception Email
+     * @description Sends an error email notification to the org's list of Apex System.Exception Email recipients,
+     *              configured under Setup --> Email --> Apex System.Exception Email
      * @param  sobjectType The SObjectType of records being saved.
      * @param  upsertResults The list of Database.UpsertResult instances to use in the email.
      *                     If no errors are found in the provided list, then no email will be sent.

@@ -13,11 +13,11 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_throw_exception_when_mock_record_developer_name_is_null() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = null);
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
 
         try {
             LoggerParameter.setMock(mockParameter);
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 

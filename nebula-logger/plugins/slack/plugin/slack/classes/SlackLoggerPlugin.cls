@@ -73,7 +73,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
                 // add them to the unsentLogs list, which will be queued as a separate job
                 unsentLogs.add(log);
             } else {
-                HttpRequest request = this.createSlackHttpRequest();
+                System.HttpRequest request = this.createSlackHttpRequest();
 
                 NotificationDto notification = new NotificationDto();
                 notification.text = 'Salesforce Log Alert';
@@ -86,7 +86,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
                     Logger.finest('Sending log entries to Slack endpoint').setHttpRequestDetails(request);
                 }
 
-                HttpResponse response = new Http().send(request);
+                System.HttpResponse response = new System.Http().send(request);
                 if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                     Logger.finest('Sent log entries to Slack endpoint').setHttpResponseDetails(response);
                 }
@@ -173,8 +173,8 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         ];
     }
 
-    private HttpRequest createSlackHttpRequest() {
-        HttpRequest request = new HttpRequest();
+    private System.HttpRequest createSlackHttpRequest() {
+        System.HttpRequest request = new System.HttpRequest();
         request.setEndpoint(ENDPOINT);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');

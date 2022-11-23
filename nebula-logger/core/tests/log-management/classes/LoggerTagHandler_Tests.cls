@@ -64,12 +64,12 @@ private class LoggerTagHandler_Tests {
         LoggerTag__c duplicateTag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(new LoggerTag__c(Name = tag.Name))
             .populateRequiredFields()
             .getRecord();
-        Exception thrownException;
+        System.Exception thrownException;
 
         try {
             insert duplicateTag;
-            System.Assert.fail('Exception expected on previous line');
-        } catch (Exception ex) {
+            System.Assert.fail('System.Exception expected on previous line');
+        } catch (System.Exception ex) {
             thrownException = ex;
         }
 

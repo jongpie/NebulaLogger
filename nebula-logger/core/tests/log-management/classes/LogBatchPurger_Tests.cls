@@ -60,7 +60,7 @@ private class LogBatchPurger_Tests {
         batchJobInstance.currentSObjectType = Schema.Log__c.SObjectType;
         List<Log__c> nullLogsList = null;
         Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
-        Exception thrownNullPointerException;
+        System.Exception thrownNullPointerException;
 
         try {
             batchJobInstance.execute(mockBatchableContext, nullLogsList);

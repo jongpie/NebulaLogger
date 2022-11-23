@@ -202,7 +202,7 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`.
+     * @description Generates an instance of the class `MockHttpCallout` that implements the interface `System.HttpCalloutMock`.
      *              This can be used when testing batch jobs.
      * @return      The instance of `MockHttpCallout`
      */
@@ -214,8 +214,8 @@ public class LoggerMockDataCreator {
      * @description Generates an instance of `HttpRequest`. This can be used when testing logging capabilities for instances of `HttpRequest`.
      * @return      The instance of `HttpRequest`
      */
-    public static HttpRequest createHttpRequest() {
-        HttpRequest request = new HttpRequest();
+    public static System.HttpRequest createHttpRequest() {
+        System.HttpRequest request = new System.HttpRequest();
         request.setBody('Hello, world!');
         request.setCompressed(true);
         request.setEndpoint('https://fake.salesforce.com');
@@ -227,8 +227,8 @@ public class LoggerMockDataCreator {
      * @description Generates an instance of `HttpResponse`. This can be used when testing logging capabilities for instances of `HttpResponse`.
      * @return      The instance of `HttpResponse`
      */
-    public static HttpResponse createHttpResponse() {
-        HttpResponse response = new HttpResponse();
+    public static System.HttpResponse createHttpResponse() {
+        System.HttpResponse response = new System.HttpResponse();
         response.setBody('Hello, world!');
         response.setHeader('someKey', 'some string value');
         response.setHeader('anotherKey', 'an amazing example value, wow');
@@ -430,9 +430,9 @@ public class LoggerMockDataCreator {
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-    public class MockHttpCallout implements HttpCalloutMock {
-        public HttpRequest request { get; private set; }
-        public HttpResponse response { get; private set; }
+    public class MockHttpCallout implements System.HttpCalloutMock {
+        public System.HttpRequest request { get; private set; }
+        public System.HttpResponse response { get; private set; }
         public String responseBody { get; private set; }
         public Integer statusCode { get; private set; }
 
@@ -449,10 +449,10 @@ public class LoggerMockDataCreator {
             return this;
         }
 
-        public HttpResponse respond(HttpRequest request) {
+        public System.HttpResponse respond(System.HttpRequest request) {
             this.request = request;
 
-            this.response = new HttpResponse();
+            this.response = new System.HttpResponse();
             if (String.isNotBlank(this.responseBody) == true) {
                 response.setBody(this.responseBody);
             }

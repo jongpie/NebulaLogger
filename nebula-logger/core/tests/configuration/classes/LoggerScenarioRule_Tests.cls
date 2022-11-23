@@ -9,11 +9,11 @@ private class LoggerScenarioRule_Tests {
     @IsTest
     static void it_should_throw_exception_when_mock_record_scenario_is_null() {
         LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(Scenario__c = null);
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
 
         try {
             LoggerScenarioRule.setMock(mockRule);
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 

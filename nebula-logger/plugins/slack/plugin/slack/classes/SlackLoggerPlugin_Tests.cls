@@ -30,7 +30,7 @@ private class SlackLoggerPlugin_Tests {
         System.Assert.isNull(log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
         System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        System.Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         System.LoggingLevel slackLoggingLevel = System.LoggingLevel.ERROR;
         System.Assert.isTrue(logEntryLoggingLevel.ordinal() < slackLoggingLevel.ordinal(), 'Slack logging level ordinal was incorrect.');
@@ -80,7 +80,7 @@ private class SlackLoggerPlugin_Tests {
         System.Assert.isNull(log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
         System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        System.Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
         System.Assert.isTrue(
@@ -128,7 +128,7 @@ private class SlackLoggerPlugin_Tests {
         System.Assert.isNull(log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
         System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        System.Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
         System.Assert.isTrue(
@@ -176,7 +176,7 @@ private class SlackLoggerPlugin_Tests {
         System.Assert.isNull(log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
         System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        System.Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
         System.Assert.isTrue(

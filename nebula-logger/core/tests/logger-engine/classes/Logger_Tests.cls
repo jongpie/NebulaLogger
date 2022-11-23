@@ -966,7 +966,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_save_via_rest_api_when_defaulted() {
         // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
+        System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
@@ -996,7 +996,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_settings() {
         // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
+        System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
@@ -1022,7 +1022,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_setSaveMethod() {
         // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
+        System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
@@ -1051,7 +1051,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_throw_exception_when_save_via_rest_api_fails() {
         // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400));
+        System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
@@ -1067,8 +1067,8 @@ private class Logger_Tests {
 
         try {
             Logger.saveLog(Logger.SaveMethod.REST);
-        } catch (Exception ex) {
-            System.Assert.areEqual(CalloutException.class.getName(), ex.getTypeName());
+        } catch (System.Exception apexException) {
+            System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
         }
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
@@ -6939,8 +6939,8 @@ private class Logger_Tests {
         );
     }
 
-    static Exception getException() {
-        return new DmlException('Example DML Exception');
+    static System.Exception getException() {
+        return new System.DmlException('Example DML System.Exception');
     }
 
     static List<Database.DeleteResult> getDeleteResultList() {
@@ -6977,7 +6977,7 @@ private class Logger_Tests {
 
     static String getOriginLocation() {
         String originLocation;
-        for (String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
+        for (String currentStackTraceLine : new System.DmlException().getStackTraceString().split('\n')) {
             if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation')) {
                 continue;
             }

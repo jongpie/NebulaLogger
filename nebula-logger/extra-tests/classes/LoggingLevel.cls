@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // This class intentionally does nothing - it's here to ensure that any references
-// in Nebula Logger's codebase use `Schema.LoggingLevel` instead of just `LoggingLevel`
+// in Nebula Logger's codebase use `System.LoggingLevel` instead of just `LoggingLevel`
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
 public without sharing class LoggingLevel {
 }

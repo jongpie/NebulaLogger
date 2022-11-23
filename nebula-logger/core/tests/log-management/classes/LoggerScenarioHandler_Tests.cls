@@ -55,12 +55,12 @@ private class LoggerScenarioHandler_Tests {
         LoggerScenario__c duplicateScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(new LoggerScenario__c(Name = loggerScenario.Name))
             .populateRequiredFields()
             .getRecord();
-        Exception thrownException;
+        System.Exception thrownException;
 
         try {
             insert duplicateScenario;
-            System.Assert.fail('Exception expected on previous line');
-        } catch (Exception ex) {
+            System.Assert.fail('System.Exception expected on previous line');
+        } catch (System.Exception ex) {
             thrownException = ex;
         }
 

@@ -22,7 +22,7 @@ private class LogFinalizer_Tests {
             System.Test.startTest();
             System.enqueueJob(new ExampleFailedQueueable());
             System.Test.stopTest();
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             System.Assert.areEqual(EXPECTED_ERROR_MESSAGE, ex.getMessage());
         }
         System.Test.getEventBus().deliver();
@@ -49,7 +49,7 @@ private class LogFinalizer_Tests {
 
     private virtual class ExampleFailedQueueable extends ExampleQueueable {
         protected override void innerExecute() {
-            throw new IllegalArgumentException(EXPECTED_ERROR_MESSAGE);
+            throw new System.IllegalArgumentException(EXPECTED_ERROR_MESSAGE);
         }
     }
 }

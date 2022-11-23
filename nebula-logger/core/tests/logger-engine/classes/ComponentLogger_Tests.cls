@@ -41,8 +41,8 @@ private class ComponentLogger_Tests {
         try {
             ComponentLogger.saveComponentLogEntries(null, null);
             System.Assert.fail('This assert shouldn\'t run since this is a negative test');
-        } catch (Exception apexException) {
-            System.Assert.areEqual(AuraHandledException.class.getName(), apexException.getTypeName());
+        } catch (System.Exception apexException) {
+            System.Assert.isInstanceOfType(apexException, System.AuraHandledException.class);
         }
     }
 
@@ -153,7 +153,9 @@ private class ComponentLogger_Tests {
     static void it_should_save_component_log_entry_with_apex_controller_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        Exception mockApexException = new DmlException('It is with much sadness that I must inform you that this DML statement was most unsuccessful');
+        System.Exception mockApexException = new System.DmlException(
+            'It is with much sadness that I must inform you that this DML statement was most unsuccessful'
+        );
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = mockApexException.getMessage();
         mockComponentError.stack = mockApexException.getStackTraceString();

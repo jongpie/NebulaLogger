@@ -72,7 +72,7 @@ public with sharing class LogBatchPurgeController {
             result.put('LogEntry__c', getLogEntryObjectSummary(dateFilterOption));
             result.put('LogEntryTag__c', getLogEntryTagObjectSummary(dateFilterOption));
             return result;
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
@@ -120,7 +120,7 @@ public with sharing class LogBatchPurgeController {
                 LIMIT 50
             ];
             return purgeBatchJobs;
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
@@ -144,13 +144,13 @@ public with sharing class LogBatchPurgeController {
         try {
             String jobId = Database.executeBatch(new LogBatchPurger(), PURGE_BATCH_SIZE);
             return jobId;
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
 
-    private static AuraHandledException createAuraHandledException(Exception ex) {
-        AuraHandledException auraHandledException = new AuraHandledException(ex.getMessage());
+    private static System.AuraHandledException createAuraHandledException(System.Exception ex) {
+        System.AuraHandledException auraHandledException = new System.AuraHandledException(ex.getMessage());
         auraHandledException.setMessage(ex.getMessage());
         return auraHandledException;
     }

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // This class intentionally does nothing - it's here to ensure that any references
-// in Nebula Logger's codebase use `Schema.Assert` instead of just `Assert`
+// in Nebula Logger's codebase use `System.Assert` instead of just `Assert`
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
 public without sharing class Assert {
 }

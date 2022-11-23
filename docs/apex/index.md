@@ -76,6 +76,10 @@ Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c &lt;= 
 
 Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
 
+### [LogEntryEventStreamController](Log-Management/LogEntryEventStreamController)
+
+Controller class for lwc `logEntryEventStream`, used to stream Log Entries in console and Tabular view.
+
 ### [LogEntryFieldSetPicklist](Log-Management/LogEntryFieldSetPicklist)
 
 Dynamically returns `LogEntry__c` field sets in App Builder when configuring the component RelatedLogEntries

@@ -59,9 +59,9 @@ private class Logger_Tests_Network {
             log.OwnerId = guestUser.Id;
             update log;
             System.Assert.fail('Expected exception, this exception should not occur');
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             String expectedExceptionMessage = 'FIELD_INTEGRITY_EXCEPTION, field integrity exception (Guest users cannot be record owners.)';
-            System.Assert.isTrue(ex.getMessage().contains(expectedExceptionMessage), 'Exception did not contain expected message.');
+            System.Assert.isTrue(ex.getMessage().contains(expectedExceptionMessage), 'System.Exception did not contain expected message.');
         }
         System.Test.stopTest();
     }

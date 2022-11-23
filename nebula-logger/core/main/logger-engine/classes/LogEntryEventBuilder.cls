@@ -179,10 +179,10 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Sets the log entry event's exception fields
-     * @param  apexException The instance of an `Exception` to use.
+     * @param  apexException The instance of an `System.Exception` to use.
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setExceptionDetails(Exception apexException) {
+    global LogEntryEventBuilder setExceptionDetails(System.Exception apexException) {
         if (this.shouldSave() == false) {
             return this;
         }
@@ -499,7 +499,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  request The instance of `HttpRequest` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setHttpRequestDetails(HttpRequest request) {
+    global LogEntryEventBuilder setHttpRequestDetails(System.HttpRequest request) {
         if (this.shouldSave() == false || request == null) {
             return this;
         }
@@ -520,7 +520,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  response The instance of `HttpResponse` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setHttpResponseDetails(HttpResponse response) {
+    global LogEntryEventBuilder setHttpResponseDetails(System.HttpResponse response) {
         if (this.shouldSave() == false || response == null) {
             return this;
         }
@@ -712,7 +712,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        DmlException stackTraceException = new DmlException();
+        System.DmlException stackTraceException = new System.DmlException();
         this.parseStackTrace(stackTraceException.getStackTraceString());
     }
 

@@ -56,9 +56,9 @@ public inherited sharing class ComponentLogger {
             }
             Logger.saveLog(saveMethod);
             return Logger.getTransactionId();
-        } catch (Exception apexException) {
+        } catch (System.Exception apexException) {
             String errorMessage = apexException.getMessage() + '\n' + apexException.getStackTraceString();
-            AuraHandledException auraException = new AuraHandledException(errorMessage);
+            System.AuraHandledException auraException = new System.AuraHandledException(errorMessage);
             auraException.setMessage(errorMessage);
             throw auraException;
         }

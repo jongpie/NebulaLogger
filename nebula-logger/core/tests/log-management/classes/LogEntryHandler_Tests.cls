@@ -96,14 +96,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(templateSObjectRecordId, logEntry.RecordId__c);
-        System.assertEquals(null, logEntry.RecordName__c);
+        System.Assert.areEqual(templateSObjectRecordId, logEntry.RecordId__c);
+        System.Assert.isNull(logEntry.RecordName__c);
     }
 
     @IsTest

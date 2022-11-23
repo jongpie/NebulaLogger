@@ -39,7 +39,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
             System.Test.startTest();
             Database.executeBatch(new LogBatchApexErrorEventHandler_Tests(phase));
             System.Test.stopTest();
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             // via https://salesforce.stackexchange.com/questions/263419/testing-batchapexerrorevent-trigger
         }
         // at this point, we're still two async-levels deep into Platform Event-land; we need to call "deliver()" twice
@@ -90,7 +90,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
 
     private void throwOnLocationMatch(Phase phase) {
         if (this.throwLocation == phase) {
-            throw new IllegalArgumentException(this.throwLocation.name());
+            throw new System.IllegalArgumentException(this.throwLocation.name());
         }
     }
 

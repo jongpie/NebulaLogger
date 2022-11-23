@@ -55,7 +55,7 @@ public with sharing class MyProfilePageController {
         try {
             update user;
             isEdit = false;
-        } catch (DmlException e) {
+        } catch (System.DmlException e) {
             ApexPages.addMessages(e);
         }
     }
