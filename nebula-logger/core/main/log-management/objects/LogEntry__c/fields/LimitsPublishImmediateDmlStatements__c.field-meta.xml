@@ -4,28 +4,17 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <formula>IMAGE(
-        CASE(
-            IF(
-                (LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100) &gt;= 90,
-                &quot;red&quot;,
-                IF(
-                (LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100) &lt; 90 &amp;&amp; (LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100) &gt;= 80,
-                &quot;yellow&quot;,
-                &quot;green&quot;
-                )
-            ),
-            &quot;green&quot;, &quot;/img/samples/flag_green.gif&quot;,
-            &quot;yellow&quot;, &quot;/img/samples/flag_yellow.gif&quot;,
-            &quot;red&quot;, &quot;/img/samples/flag_red.gif&quot;,
-            &quot;/s.gif&quot;
-        ),
-        &apos;&apos;, 16, 16
+    <formula>IF(
+        (LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100) &gt;= 90,
+        &quot;⛔&quot;,
+        IF(
+            (LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100) &lt; 90 &amp;&amp; (LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100) &gt;= 80,
+            &quot;⚠️&quot;,
+            &quot;✅&quot;
+        )
     )
-
-    + &apos; &apos; +
-
-    TEXT(LimitsPublishImmediateDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsPublishImmediateDmlStatementsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsPublishImmediateDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsPublishImmediateDmlStatementsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Publish Immediate DML Statements</label>
     <required>false</required>

@@ -4,28 +4,17 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <formula>IMAGE(
-        CASE(
-            IF(
-                (LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100) &gt;= 90,
-                &quot;red&quot;,
-                IF(
-                (LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100) &lt; 90 &amp;&amp; (LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100) &gt;= 80,
-                &quot;yellow&quot;,
-                &quot;green&quot;
-                )
-            ),
-            &quot;green&quot;, &quot;/img/samples/flag_green.gif&quot;,
-            &quot;yellow&quot;, &quot;/img/samples/flag_yellow.gif&quot;,
-            &quot;red&quot;, &quot;/img/samples/flag_red.gif&quot;,
-            &quot;/s.gif&quot;
-        ),
-        &apos;&apos;, 16, 16
+    <formula>IF(
+        (LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100) &gt;= 90,
+        &quot;⛔&quot;,
+        IF(
+            (LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100) &lt; 90 &amp;&amp; (LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100) &gt;= 80,
+            &quot;⚠️&quot;,
+            &quot;✅&quot;
+        )
     )
-
-    + &apos; &apos; +
-
-    TEXT(LimitsEmailInvocationsUsed__c) + &apos; / &apos; + TEXT(LimitsEmailInvocationsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsEmailInvocationsUsed__c) + &apos; / &apos; + TEXT(LimitsEmailInvocationsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Email Invocations</label>
     <required>false</required>

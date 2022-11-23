@@ -6,9 +6,9 @@
     <externalId>false</externalId>
     <formula>CASE(
     TEXT(LoggingLevel__c),
-    &apos;ERROR&apos;, IMAGE(&apos;/img/samples/flag_red.gif&apos;, &apos;&apos;, 16, 16),
-    &apos;WARN&apos;, IMAGE(&apos;/img/samples/flag_yellow.gif&apos;, &apos;&apos;, 16, 16),
-    IMAGE(&apos;/img/samples/flag_green.gif&apos;, &apos;&apos;, 16, 16)
+    &apos;ERROR&apos;, &apos;⛔&apos;,
+    &apos;WARN&apos;, &apos;⚠️&apos;,
+    &apos;✅&apos;
 )
 + &apos; &apos; + TEXT(LoggingLevel__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
