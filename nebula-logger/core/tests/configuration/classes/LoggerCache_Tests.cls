@@ -369,7 +369,7 @@ private class LoggerCache_Tests {
         public Integer removeMethodCallCount = 0;
 
         private MockPlatformCachePartitionDelegate(Boolean isAvailable) {
-            super(null);
+            super(null, null);
             this.isAvailable = isAvailable;
         }
 
