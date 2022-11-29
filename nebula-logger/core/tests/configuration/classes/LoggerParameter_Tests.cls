@@ -69,9 +69,9 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_platform_cache_partition_Name() {
+    static void it_should_return_constant_value_for_platform_cache_partition_name() {
         String mockValue = 'SomeValue';
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'PlatformCachePartitionName', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'PlatformCachePartitionName', Value__c = mockValue);
         LoggerParameter.setMock(mockParameter);
 
         String returnedValue = LoggerParameter.PLATFORM_CACHE_PARTITION_NAME;

@@ -123,19 +123,29 @@ public without sharing class LoggerCache {
      * @description Manages interacting with platform cache partitions, and can be mocked during unit tests
      *              so that tests don't have to rely on the actual platform cache partitions configured in the org.
      */
-    @SuppressWarnings('PMD.ApexDoc')
+    @SuppressWarnings('PMD.ApexDoc, PMD.EmptyCatchBlock')
     @TestVisible
     private virtual class PlatformCachePartitionDelegate {
         private final Cache.Partition platformCachePartition;
 
         protected PlatformCachePartitionDelegate(PlatformCachePartitionType partitionType, String partitionName) {
-            switch on partitionType {
-                when ORGANIZATION {
-                    this.platformCachePartition = Cache.Org.getPartition(partitionName);
+            // Since orgs can customize the platform cache partition (via LoggerParameter__mdt.PlatformCachePartitionName),
+            // some orgs could have problematic configurations (or may have even deleted the included LoggerCache partition),
+            // and it seems better to eat the exceptions & fallback to the transaction cache (which doesn't rely on Platform Cache).
+            // The alternative is a runtime exception, which isn't ideal.
+            try {
+                switch on partitionType {
+                    when ORGANIZATION {
+                        this.platformCachePartition = Cache.Org.getPartition(partitionName);
+                    }
+                    when SESSION {
+                        this.platformCachePartition = Cache.Session.getPartition(partitionName);
+                    }
                 }
-                when SESSION {
-                    this.platformCachePartition = Cache.Session.getPartition(partitionName);
-                }
+            } catch (Cache.Org.OrgCacheException orgCacheException) {
+                // No-op if the partition can't be found - the rest of the code will fallback to using the transaction cache
+            } catch (Cache.Session.SessionCacheException sessionCacheException) {
+                // No-op if the partition can't be found - the rest of the code will fallback to using the transaction cache
             }
         }
 
