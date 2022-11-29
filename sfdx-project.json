@@ -14,8 +14,8 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.9.5.NEXT",
-            "versionName": "Configurable Platform Cache Partition Name",
+            "versionNumber": "4.9.6.NEXT",
+            "versionName": "Environment-Aware Default Field Values For Logger Settings",
             "versionDescription": "Added new CMDT record LoggerParameter.PlatformCachePartitionName to control which platform cache partition is used for caching",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {

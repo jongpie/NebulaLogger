@@ -15,8 +15,8 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.9.5';
-    private static final System.LoggingLevel DEFAULT_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
+    private static final String CURRENT_VERSION_NUMBER = 'v4.9.6';
+    private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
@@ -289,6 +289,16 @@ global with sharing class Logger {
         if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
             loggingUserSettings.Id = null;
             loggingUserSettings.SetupOwnerId = loggingUser.Id;
+        }
+
+        if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == true) {
+            loggingUserSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+            loggingUserSettings.IsApexSystemDebugLoggingEnabled__c = true;
+            loggingUserSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+        } else {
+            loggingUserSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
+            loggingUserSettings.IsApexSystemDebugLoggingEnabled__c = false;
+            loggingUserSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
         }
 
         return loggingUserSettings;
@@ -2880,11 +2890,11 @@ global with sharing class Logger {
                 LogMessage logMessage = new LogMessage(
                     'Logger - Unknown logging level {0} specified, using {1}',
                     loggingLevelName,
-                    DEFAULT_LOGGING_LEVEL.name()
+                    FALLBACK_LOGGING_LEVEL.name()
                 );
                 finest(logMessage);
             }
-            return DEFAULT_LOGGING_LEVEL;
+            return FALLBACK_LOGGING_LEVEL;
         }
     }
 
