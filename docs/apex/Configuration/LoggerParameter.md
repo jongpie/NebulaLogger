@@ -26,6 +26,10 @@ Indicates if Nebula Logger will append its own log entries about the logging sys
 
 Indicates if Nebula Logger&apos;s tagging system is enabled. Controlled by the custom metadata record `LoggerParameter.EnableTagging`, or `true` as the default
 
+#### `PLATFORM_CACHE_PARTITION_NAME` → `String`
+
+The name of the Platform Cache partition to use for caching (when platform cache is enabled). Controlled by the custom metadata record `LoggerParameter.PlatformCachePartitionName`, or `LoggerCache` as the default
+
 #### `QUERY_APEX_CLASS_DATA` → `Boolean`
 
 Controls if Nebula Logger queries `ApexClass` data. When set to `false`, any `ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default

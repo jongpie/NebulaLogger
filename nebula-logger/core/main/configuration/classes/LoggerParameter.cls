@@ -74,6 +74,20 @@ public class LoggerParameter {
     }
 
     /**
+     * @description The name of the Platform Cache partition to use for caching (when platform cache is enabled).
+     *              Controlled by the custom metadata record `LoggerParameter.PlatformCachePartitionName`, or `LoggerCache` as the default
+     */
+    public static final String PLATFORM_CACHE_PARTITION_NAME {
+        get {
+            if (PLATFORM_CACHE_PARTITION_NAME == null) {
+                PLATFORM_CACHE_PARTITION_NAME = getString('PlatformCachePartitionName', 'LoggerCache');
+            }
+            return PLATFORM_CACHE_PARTITION_NAME;
+        }
+        private set;
+    }
+
+    /**
      * @description Controls if Nebula Logger queries `ApexClass` data.
      *              When set to `false`, any `ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default

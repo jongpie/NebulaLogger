@@ -9,22 +9,31 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class LoggerCache {
+    private static final String DEFAULT_PARTITION_NAME = 'LoggerCache';
     private static final Boolean PLATFORM_CACHE_IS_IMMUTABLE = false;
     @TestVisible
     private static final String PLATFORM_CACHE_NULL_VALUE = '<{(CACHE_VALUE_IS_NULL)}>'; // Presumably, no one will ever use this as an actual value
     @TestVisible
-    private static final String PLATFORM_CACHE_PARTITION_NAME = getQualifiedParitionName('LoggerCache');
+    private static final String PLATFORM_CACHE_PARTITION_NAME = getQualifiedParitionName(LoggerParameter.PLATFORM_CACHE_PARTITION_NAME);
     private static final Cache.Visibility PLATFORM_CACHE_VISIBILITY = Cache.Visibility.NAMESPACE;
     private static final TransactionCache TRANSACTION_CACHE_INSTANCE = new TransactionCache();
 
     private static PlatformCachePartitionDelegate organizationPartitionDelegate = new PlatformCachePartitionDelegate(
-        Cache.Org.getPartition(PLATFORM_CACHE_PARTITION_NAME)
+        PlatformCachePartitionType.ORGANIZATION,
+        PLATFORM_CACHE_PARTITION_NAME
     );
     private static PlatformCachePartitionDelegate sessionPartitionDelegate = new PlatformCachePartitionDelegate(
-        Cache.Session.getPartition(PLATFORM_CACHE_PARTITION_NAME)
+        PlatformCachePartitionType.SESSION,
+        PLATFORM_CACHE_PARTITION_NAME
     );
     private static PlatformCache organizationCacheInstance;
     private static PlatformCache sessionCacheInstance;
+
+    @TestVisible
+    private enum PlatformCachePartitionType {
+        ORGANIZATION,
+        SESSION
+    }
 
     /**
      * @description Interface used to define caches that can be used to store values via different mechanisms
@@ -96,8 +105,15 @@ public without sharing class LoggerCache {
     }
 
     private static String getQualifiedParitionName(String unqualifiedPartitionName) {
-        String className = LoggerCache.class.getName();
-        String namespacePrefix = className.contains('.') ? className.substringBefore('.') + '.' : '';
+        // Since Nebula Logger includes a cache partition (LoggerCache), the included partition's name
+        // needs to be qualified in order to work in the managed package. If a custom partition is being
+        // used instead, then just use the partition name as-is - no namespace is added.
+        if (unqualifiedPartitionName != DEFAULT_PARTITION_NAME) {
+            return unqualifiedPartitionName;
+        }
+
+        String qualifiedClassName = LoggerCache.class.getName();
+        String namespacePrefix = qualifiedClassName.contains('.') ? qualifiedClassName.substringBefore('.') + '.' : '';
         return namespacePrefix + unqualifiedPartitionName;
     }
 
@@ -115,34 +131,51 @@ public without sharing class LoggerCache {
      * @description Manages interacting with platform cache partitions, and can be mocked during unit tests
      *              so that tests don't have to rely on the actual platform cache partitions configured in the org.
      */
-    @SuppressWarnings('PMD.ApexDoc')
+    @SuppressWarnings('PMD.ApexDoc, PMD.EmptyCatchBlock')
     @TestVisible
     private virtual class PlatformCachePartitionDelegate {
         private final Cache.Partition platformCachePartition;
 
-        protected PlatformCachePartitionDelegate(Cache.Partition platformCachePartition) {
-            this.platformCachePartition = platformCachePartition;
+        protected PlatformCachePartitionDelegate(PlatformCachePartitionType partitionType, String partitionName) {
+            // Since orgs can customize the platform cache partition (via LoggerParameter__mdt.PlatformCachePartitionName),
+            // some orgs could have problematic configurations (or may have even deleted the included LoggerCache partition),
+            // and it seems better to eat the exceptions & fallback to the transaction cache (which doesn't rely on Platform Cache).
+            // The alternative is a runtime exception, which isn't ideal.
+            try {
+                switch on partitionType {
+                    when ORGANIZATION {
+                        this.platformCachePartition = Cache.Org.getPartition(partitionName);
+                    }
+                    when SESSION {
+                        this.platformCachePartition = Cache.Session.getPartition(partitionName);
+                    }
+                }
+            } catch (Cache.Org.OrgCacheException orgCacheException) {
+                // No-op if the partition can't be found - the rest of the code will fallback to using the transaction cache
+            } catch (Cache.Session.SessionCacheException sessionCacheException) {
+                // No-op if the partition can't be found - the rest of the code will fallback to using the transaction cache
+            }
         }
 
         public virtual Boolean contains(String key) {
-            return this.platformCachePartition.contains(key);
+            return this.platformCachePartition != null && this.platformCachePartition.contains(key);
         }
 
         public virtual Object get(String key) {
-            return this.platformCachePartition.get(key);
+            return this.platformCachePartition?.get(key);
         }
 
         public virtual Boolean isAvailable() {
-            return this.platformCachePartition.isAvailable();
+            return this.platformCachePartition != null && this.platformCachePartition.isAvailable();
         }
 
         @SuppressWarnings('PMD.ExcessiveParameterList')
         public virtual void put(String key, Object value, Integer cacheTtlSeconds, Cache.Visibility cacheVisiblity, Boolean isCacheImmutable) {
-            this.platformCachePartition.put(key, value, cacheTtlSeconds, cacheVisiblity, isCacheImmutable);
+            this.platformCachePartition?.put(key, value, cacheTtlSeconds, cacheVisiblity, isCacheImmutable);
         }
 
         public virtual void remove(String key) {
-            this.platformCachePartition.remove(key);
+            this.platformCachePartition?.remove(key);
         }
     }
 
@@ -152,7 +185,6 @@ public without sharing class LoggerCache {
      */
     @SuppressWarnings('PMD.ApexDoc')
     private class PlatformCache implements Cacheable {
-        private final Cache.Partition cachePartition;
         private final PlatformCachePartitionDelegate cachePartitionDelegate;
         private final Integer cacheTtlSeconds;
         private final Cacheable transactionCache;

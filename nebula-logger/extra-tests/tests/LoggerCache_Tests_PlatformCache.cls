@@ -14,6 +14,92 @@
 @IsTest(IsParallel=true)
 private class LoggerCache_Tests_PlatformCache {
     @IsTest
+    static void it_gracefully_handles_nonexistent_platform_cache_partition_name_for_organization_cache() {
+        LoggerParameter__mdt platformCachePartitionNameParameter = new LoggerParameter__mdt(
+            DeveloperName = 'PlatformCachePartitionName',
+            Value__c = 'SomeValueThatWillHopefullyAndProbablyNeverExistForAPlatformCachePartitionName'
+        );
+        LoggerParameter.setMock(platformCachePartitionNameParameter);
+
+        LoggerCache.Cacheable organizationCache = LoggerCache.getOrganizationCache();
+
+        // Run the different Cacheable methods to ensure everything works
+        String testKey = 'someKey';
+        Object testValue = System.now();
+        System.Assert.isNotNull(organizationCache);
+        System.Assert.isFalse(organizationCache.contains(testKey));
+        System.Assert.areEqual(
+            organizationCache.contains(testKey),
+            LoggerCache.getTransactionCache().contains(testKey),
+            'Organization and transaction cache should be in sync'
+        );
+        System.Assert.isNull(organizationCache.get(testKey));
+        System.Assert.areEqual(
+            organizationCache.get(testKey),
+            LoggerCache.getTransactionCache().get(testKey),
+            'Organization and transaction cache should be in sync'
+        );
+        organizationCache.remove(testKey);
+        organizationCache.put(testKey, testValue);
+        System.Assert.isTrue(organizationCache.contains(testKey));
+        System.Assert.areEqual(
+            organizationCache.contains(testKey),
+            LoggerCache.getTransactionCache().contains(testKey),
+            'Organization and transaction cache should be in sync'
+        );
+        System.Assert.areEqual(testValue, organizationCache.get(testKey));
+        System.Assert.areEqual(
+            organizationCache.get(testKey),
+            LoggerCache.getTransactionCache().get(testKey),
+            'Organization and transaction cache should be in sync'
+        );
+        organizationCache.remove(testKey);
+        System.Assert.isNull(organizationCache.get(testKey));
+        System.Assert.areEqual(
+            organizationCache.get(testKey),
+            LoggerCache.getTransactionCache().get(testKey),
+            'Organization and transaction cache should be in sync'
+        );
+    }
+
+    @IsTest
+    static void it_gracefully_handles_nonexistent_platform_cache_partition_name_for_session_cache() {
+        LoggerParameter__mdt platformCachePartitionNameParameter = new LoggerParameter__mdt(
+            DeveloperName = 'PlatformCachePartitionName',
+            Value__c = 'SomeValueThatWillHopefullyAndProbablyNeverExistForAPlatformCachePartitionName'
+        );
+        LoggerParameter.setMock(platformCachePartitionNameParameter);
+
+        LoggerCache.Cacheable sessionCache = LoggerCache.getSessionCache();
+
+        // Run the different Cacheable methods to ensure everything works
+        String testKey = 'someKey';
+        Object testValue = System.now();
+        System.Assert.isNotNull(sessionCache);
+        System.Assert.isFalse(sessionCache.contains(testKey));
+        System.Assert.areEqual(
+            sessionCache.contains(testKey),
+            LoggerCache.getTransactionCache().contains(testKey),
+            'Session and transaction cache should be in sync'
+        );
+        System.Assert.isNull(sessionCache.get(testKey));
+        System.Assert.areEqual(sessionCache.get(testKey), LoggerCache.getTransactionCache().get(testKey), 'Session and transaction cache should be in sync');
+        sessionCache.remove(testKey);
+        sessionCache.put(testKey, testValue);
+        System.Assert.isTrue(sessionCache.contains(testKey));
+        System.Assert.areEqual(
+            sessionCache.contains(testKey),
+            LoggerCache.getTransactionCache().contains(testKey),
+            'Session and transaction cache should be in sync'
+        );
+        System.Assert.areEqual(testValue, sessionCache.get(testKey));
+        System.Assert.areEqual(sessionCache.get(testKey), LoggerCache.getTransactionCache().get(testKey), 'Session and transaction cache should be in sync');
+        sessionCache.remove(testKey);
+        System.Assert.isNull(sessionCache.get(testKey));
+        System.Assert.areEqual(sessionCache.get(testKey), LoggerCache.getTransactionCache().get(testKey), 'Session and transaction cache should be in sync');
+    }
+
+    @IsTest
     static void it_adds_new_key_to_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());

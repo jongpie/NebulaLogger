@@ -69,6 +69,17 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_platform_cache_partition_name() {
+        String mockValue = 'SomeValue';
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'PlatformCachePartitionName', Value__c = mockValue);
+        LoggerParameter.setMock(mockParameter);
+
+        String returnedValue = LoggerParameter.PLATFORM_CACHE_PARTITION_NAME;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_query_apex_class_data() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(mockValue));
