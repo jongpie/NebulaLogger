@@ -336,7 +336,10 @@ private class LogBatchPurgeController_Tests {
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
 
         System.runAs(standardUser) {
-            System.Assert.isTrue(FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), JSON.serializePretty(permissionSetAssignment));
+            System.Assert.isTrue(
+                System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION),
+                JSON.serializePretty(permissionSetAssignment)
+            );
             System.Assert.areEqual(
                 true,
                 LogBatchPurgeController.canUserRunLogBatchPurger(),
@@ -375,7 +378,7 @@ private class LogBatchPurgeController_Tests {
         insert new List<SObject>{ setupEntityAccess };
 
         System.runAs(standardUser) {
-            System.Assert.isFalse(FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), 'permission set assigned');
+            System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), 'permission set assigned');
             System.Assert.areEqual(
                 false,
                 LogBatchPurgeController.canUserRunLogBatchPurger(),
