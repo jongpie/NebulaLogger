@@ -9,6 +9,7 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class LoggerCache {
+    private static final String DEFAULT_PARTITION_NAME = 'LoggerCache';
     private static final Boolean PLATFORM_CACHE_IS_IMMUTABLE = false;
     @TestVisible
     private static final String PLATFORM_CACHE_NULL_VALUE = '<{(CACHE_VALUE_IS_NULL)}>'; // Presumably, no one will ever use this as an actual value
@@ -104,8 +105,15 @@ public without sharing class LoggerCache {
     }
 
     private static String getQualifiedParitionName(String unqualifiedPartitionName) {
-        String className = LoggerCache.class.getName();
-        String namespacePrefix = unqualifiedPartitionName == 'LoggerCache' && className.contains('.') ? className.substringBefore('.') + '.' : '';
+        // Since Nebula Logger includes a cache partition (LoggerCache), the included partition's name
+        // needs to be qualified in order to work in the managed package. If a custom partition is being
+        // used instead, then just use the partition name as-is - no namespace is added.
+        if (unqualifiedPartitionName != DEFAULT_PARTITION_NAME) {
+            return unqualifiedPartitionName;
+        }
+
+        String qualifiedClassName = LoggerCache.class.getName();
+        String namespacePrefix = qualifiedClassName.contains('.') ? qualifiedClassName.substringBefore('.') + '.' : '';
         return namespacePrefix + unqualifiedPartitionName;
     }
 
