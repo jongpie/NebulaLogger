@@ -3,7 +3,7 @@
     <fullName>IsApexSystemDebugLoggingEnabled__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>CCPA;GDPR;PII</complianceGroup>
-    <defaultValue>true</defaultValue>
+    <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <inlineHelpText
     >When enabled, Logger will automatically call Apex&apos;s System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.</inlineHelpText>

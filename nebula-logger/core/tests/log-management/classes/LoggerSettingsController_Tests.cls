@@ -8,9 +8,10 @@
 private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_return_loggingLevel_picklist_options() {
-        //
         Integer expectedLoggingLevelSize = System.LoggingLevel.values().size() - 1; // LoggingLEVEL.NONE and System.LoggingLevel.INTERNAL are ignored, '--NONE--' is automatically included
+
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().loggingLevelOptions;
+
         System.Assert.areEqual(expectedLoggingLevelSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
             if (String.isBlank(picklistOption.value) == true) {
@@ -54,7 +55,9 @@ private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_return_loggerSaveMethod_picklist_options() {
         Integer expectedLoggerSaveMethodSize = Logger.SaveMethod.values().size() + 1; // '--NONE--' is automatically included
+
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().saveMethodOptions;
+
         System.Assert.areEqual(expectedLoggerSaveMethodSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
             if (String.isBlank(picklistOption.value) == true) {
@@ -127,7 +130,9 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_setupOwnerType_picklist_options() {
         Set<String> expectedSetupOwnerType = new Set<String>{ 'Organization', 'Profile', 'User' };
         Integer expectedSetupOwnerTypeSize = 4; // Options are org, profile, and user, and '--NONE--' is automatically included
+
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().setupOwnerTypeOptions;
+
         System.Assert.areEqual(expectedSetupOwnerTypeSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
             if (String.isBlank(picklistOption.value) == true) {
@@ -149,7 +154,9 @@ private class LoggerSettingsController_Tests {
             }
         }
         Integer expectedShareAccessLevelSize = expectedShareAccessLevels.size() + 1; // 'All' value is ignored, and '--NONE--' is automatically included
+
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().shareAccessLevelOptions;
+
         System.Assert.areEqual(expectedShareAccessLevelSize, picklistOptions.size(), picklistOptions.toString());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
             if (String.isBlank(picklistOption.value) == true) {
@@ -164,7 +171,9 @@ private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_return_empty_settings_records_list_when_not_configured() {
         System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerSettings__c]);
+
         List<LoggerSettingsController.SettingsRecordResult> records = LoggerSettingsController.getRecords();
+
         System.Assert.areEqual(0, records.size());
     }
 
@@ -179,6 +188,7 @@ private class LoggerSettingsController_Tests {
         Map<Id, LoggerSettings__c> testSettingsRecordsById = queryLoggerSettingsRecords(testSettingsRecords);
 
         List<LoggerSettingsController.SettingsRecordResult> recordResults = LoggerSettingsController.getRecords();
+
         System.Assert.isFalse(recordResults.isEmpty());
         System.Assert.areEqual(testSettingsRecordsById.size(), recordResults.size());
         for (LoggerSettingsController.SettingsRecordResult result : recordResults) {
@@ -192,8 +202,10 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_create_new_record() {
-        LoggerSettings__c expectedNewRecord = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+        LoggerSettings__c expectedNewRecord = Logger.getUserSettings(new User());
+
         LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
+
         System.Assert.areEqual(expectedNewRecord, newRecord);
         System.Assert.isNull(newRecord.Id);
         System.Assert.isNull(newRecord.SetupOwnerId);
@@ -206,6 +218,7 @@ private class LoggerSettingsController_Tests {
         System.Assert.isNull(newRecord.Id);
 
         LoggerSettingsController.saveRecord(newRecord);
+
         System.Assert.isNotNull(newRecord.Id);
     }
 
@@ -291,6 +304,7 @@ private class LoggerSettingsController_Tests {
         Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
         String searchTerm = '%' + currentProfile.Name.left(4) + '%';
         Map<Id, Profile> expectedResultsById = new Map<Id, Profile>([SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm]);
+
         List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Profile', searchTerm);
 
         System.Assert.isFalse(results.isEmpty());
@@ -308,7 +322,9 @@ private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_return_empty_user_search_results_list_when_no_matches_found() {
         String nonsenseSearchTerm = 'asdfqwert;lkhpoiy';
+
         List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('User', nonsenseSearchTerm);
+
         System.Assert.areEqual(0, results.size());
     }
 
@@ -318,6 +334,7 @@ private class LoggerSettingsController_Tests {
         Map<Id, User> expectedResultsById = new Map<Id, User>(
             [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm]
         );
+
         List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('User', searchTerm);
 
         System.Assert.isFalse(results.isEmpty());
@@ -349,7 +366,6 @@ private class LoggerSettingsController_Tests {
         }
     }
 
-    // Helper methods
     private static Map<Id, LoggerSettings__c> queryLoggerSettingsRecords(List<LoggerSettings__c> recordsToQuery) {
         return new Map<Id, LoggerSettings__c>(
             [

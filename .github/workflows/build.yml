@@ -175,10 +175,10 @@ jobs:
             # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
             # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
             - name: 'Run Apex Tests Asynchronously'
-              run: npm run test:apex
+              run: npm run test:apex:nocoverage
 
             - name: 'Run Apex Tests Synchronously'
-              run: npm run test:apex -- --synchronous
+              run: npm run test:apex:nocoverage -- --synchronous
 
             - name: 'Delete Base Scratch Org'
               run: npm run org:delete:noprompt
@@ -239,7 +239,7 @@ jobs:
             # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
             # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
             - name: 'Run Apex Tests Asynchronously'
-              run: npm run test:apex
+              run: npm run test:apex:nocoverage
 
             - name: 'Run Apex Tests Synchronously'
               run: npm run test:apex -- --synchronous

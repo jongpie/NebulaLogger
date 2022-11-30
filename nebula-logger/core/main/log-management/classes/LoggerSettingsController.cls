@@ -29,7 +29,7 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled(cacheable=true)
     public static Boolean canUserModifyLoggerSettings() {
         return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() == true ||
-            FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
+            System.FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
     }
 
     /**
@@ -85,7 +85,9 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static LoggerSettings__c createRecord() {
-        return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+        // By passing an empty User record, it ensures that the returned LoggerSettings__c record
+        // is not tied to a specific User or Profile (or Organization)
+        return Logger.getUserSettings(new User());
     }
 
     /**

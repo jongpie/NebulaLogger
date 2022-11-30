@@ -130,9 +130,9 @@ public with sharing class LogBatchPurgeController {
      * @return true if the current user has delete permission on the Log__c object.
      */
     @AuraEnabled
-    public static boolean canUserRunLogBatchPurger() {
+    public static Boolean canUserRunLogBatchPurger() {
         return Schema.Log__c.SObjectType.getDescribe().isDeletable() == true ||
-            FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION) == true;
+            System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION) == true;
     }
 
     /**

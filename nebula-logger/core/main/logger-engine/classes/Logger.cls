@@ -15,8 +15,8 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.9.5';
-    private static final System.LoggingLevel DEFAULT_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
+    private static final String CURRENT_VERSION_NUMBER = 'v4.9.6';
+    private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
@@ -106,6 +106,7 @@ global with sharing class Logger {
         return CURRENT_VERSION_NUMBER;
     }
 
+    // TODO delete
     /**
      * @description Returns the current namespace of Nebula Logger
      * @return   The current namespace prefix, or an empty string when no namespace is being used
@@ -281,6 +282,14 @@ global with sharing class Logger {
             loggingUserSettings = LoggerSettings__c.getOrgDefaults();
         } else {
             loggingUserSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+            if (
+                LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == true &&
+                LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == true
+            ) {
+                loggingUserSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+                loggingUserSettings.IsApexSystemDebugLoggingEnabled__c = true;
+                loggingUserSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+            }
         }
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
@@ -2880,11 +2889,11 @@ global with sharing class Logger {
                 LogMessage logMessage = new LogMessage(
                     'Logger - Unknown logging level {0} specified, using {1}',
                     loggingLevelName,
-                    DEFAULT_LOGGING_LEVEL.name()
+                    FALLBACK_LOGGING_LEVEL.name()
                 );
                 finest(logMessage);
             }
-            return DEFAULT_LOGGING_LEVEL;
+            return FALLBACK_LOGGING_LEVEL;
         }
     }
 

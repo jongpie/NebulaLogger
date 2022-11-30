@@ -28,20 +28,85 @@ private class Logger_Tests {
     @IsTest
     static void it_should_use_in_memory_default_settings_when_not_configured() {
         LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == true) {
+            expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+            expectedSettings.IsApexSystemDebugLoggingEnabled__c = true;
+            expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+        }
         expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
-        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
-        System.Assert.areEqual(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
         System.Assert.areEqual(expectedSettings, returnedSettings);
         System.Assert.isNull(returnedSettings.Id);
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
+    }
+
+    @IsTest
+    static void it_should_settings_default_field_values_when_organization_is_a_sandbox() {
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
+        System.Assert.isTrue(mockOrganization.IsSandbox);
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        mockSelector.setCachedOrganization(mockOrganization);
+        LoggerEngineDataSelector.setMock(mockSelector);
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+        expectedSettings.IsApexSystemDebugLoggingEnabled__c = true;
+        expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
+    }
+
+    @IsTest
+    static void it_should_settings_default_field_values_when_organization_is_not_a_sandbox() {
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
+        System.Assert.isFalse(mockOrganization.IsSandbox);
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        mockSelector.setCachedOrganization(mockOrganization);
+        LoggerEngineDataSelector.setMock(mockSelector);
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
+        expectedSettings.IsApexSystemDebugLoggingEnabled__c = false;
+        expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
+    }
+
+    @IsTest
+    static void it_should_settings_default_field_values_when_querying_organization_synchronously_is_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
+        System.Assert.isFalse(LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
+        expectedSettings.IsApexSystemDebugLoggingEnabled__c = false;
+        expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
     }
 
     @IsTest
     static void it_should_use_org_default_settings_when_configured() {
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
-        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINE.name();
         insert expectedSettings;
         expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
@@ -743,8 +808,9 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_the_buffer_size() {
         System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.isTrue(Logger.isInfoEnabled());
 
-        Logger.debug('test log entry');
+        Logger.info('test log entry');
         Logger.warn('another test log entry');
 
         System.Assert.areEqual(2, Logger.getBufferSize());
@@ -1144,8 +1210,9 @@ private class Logger_Tests {
             )
         );
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
-        logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
+        System.Assert.isTrue(Logger.isInfoEnabled());
+        logEntryEvents.add(Logger.info('test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.info('another test log entry').getLogEntryEvent());
         System.Test.startTest();
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
@@ -1196,8 +1263,8 @@ private class Logger_Tests {
             )
         );
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
-        logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.info('test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.info('another test log entry').getLogEntryEvent());
         System.Test.startTest();
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
@@ -1238,8 +1305,8 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_flush_buffer() {
-        Logger.debug('test log entry');
-        Logger.debug('another test log entry');
+        Logger.info('test log entry');
+        Logger.info('another test log entry');
         System.Assert.areEqual(2, Logger.getBufferSize());
 
         Logger.flushBuffer();
@@ -7000,6 +7067,18 @@ private class Logger_Tests {
     public class MockClassWithLogging {
         public LogEntryEventBuilder logSomething() {
             return Logger.info('Hello, world');
+        }
+    }
+
+    private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
+        private Organization cachedOrganization;
+
+        public override Organization getCachedOrganization() {
+            return this.cachedOrganization;
+        }
+
+        public void setCachedOrganization(Schema.Organization organization) {
+            this.cachedOrganization = organization;
         }
     }
 
