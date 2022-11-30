@@ -74,14 +74,13 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_hasComments_field_on_update_when_comments_field_is_null() {
         setupConfigurations();
-        setupConfigurations();
         String exampleComment = 'some comment';
         Log__c log = new Log__c(Comments__c = exampleComment, TransactionId__c = '1234');
         LoggerDataStore.getDatabase().insertRecord(log);
         log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(exampleComment, log.Comments__c);
         System.Assert.isTrue(log.HasComments__c);
-        log.Comments__c = exampleComment;
+        log.Comments__c = null;
 
         LoggerDataStore.getDatabase().updateRecord(log);
 
