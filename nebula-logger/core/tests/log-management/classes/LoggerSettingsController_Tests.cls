@@ -202,7 +202,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_create_new_record() {
-        LoggerSettings__c expectedNewRecord = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+        LoggerSettings__c expectedNewRecord = Logger.getUserSettings(new User());
 
         LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
 

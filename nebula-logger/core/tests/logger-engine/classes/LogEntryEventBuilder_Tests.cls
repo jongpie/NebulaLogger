@@ -48,18 +48,23 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_not_run_queries_when_logging_disabled() {
+    static void it_should_not_run_queries_when_logging_is_disabled_via_logger_settings() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(true)));
+        System.Assert.isTrue(LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = String.valueOf(true)));
+        System.Assert.isTrue(LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY);
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
+        System.Assert.isTrue(LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
-        Logger.getUserSettings().IsEnabled__c = false;
-        System.Assert.isFalse(Logger.isEnabled());
+        System.Assert.isTrue(LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY);
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsEnabled__c = false;
         System.Assert.areEqual(0, System.Limits.getQueries());
 
-        new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, Logger.getUserSettings().IsEnabled__c, new Set<String>())
+        new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, userSettings.IsEnabled__c, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
+
         System.Assert.areEqual(0, System.Limits.getQueries());
     }
 
@@ -276,7 +281,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_apply_data_mask_rule_when_rule_disabled() {
-        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.IsEnabled__c = false;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
@@ -284,7 +290,7 @@ private class LogEntryEventBuilder_Tests {
         Account account = new Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setMessage(message).setRecord(account);
 
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c, builder.getLogEntryEvent().Message__c);
@@ -295,7 +301,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_apply_data_mask_rule_when_disabled_for_user() {
-        Logger.getUserSettings().IsDataMaskingEnabled__c = false;
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = false;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
@@ -303,7 +310,7 @@ private class LogEntryEventBuilder_Tests {
         Account account = new Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setMessage(message).setRecord(account);
 
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
@@ -314,14 +321,15 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_message_when_enabled() {
-        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setMessage(sensitiveString);
 
         System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
@@ -331,7 +339,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_record_json_when_enabled() {
-        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
@@ -341,7 +350,7 @@ private class LogEntryEventBuilder_Tests {
         String accountJson = JSON.serializePretty(account);
         String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = expectedSanitizedString));
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(account);
 
         System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonMasked__c);
@@ -351,7 +360,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_record_list_json_when_enabled() {
-        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
@@ -361,7 +371,7 @@ private class LogEntryEventBuilder_Tests {
         List<Account> accounts = new List<Account>{ new Account(Name = sensitiveString) };
         String accountListJson = JSON.serializePretty(accounts);
         String expectedSanitizedAccountListJson = JSON.serializePretty(new List<Account>{ new Account(Name = expectedSanitizedString) });
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(accounts);
 
         System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonMasked__c);
@@ -371,7 +381,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_http_request_body_when_enabled() {
-        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
@@ -380,7 +391,7 @@ private class LogEntryEventBuilder_Tests {
         System.HttpRequest httpRequest = LoggerMockDataCreator.createHttpRequest();
         httpRequest.setBody(sensitiveString);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setHttpRequestDetails(httpRequest);
 
         System.Assert.isTrue(builder.getLogEntryEvent().HttpRequestBodyMasked__c);
@@ -390,7 +401,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_http_response_body_when_enabled() {
-        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
@@ -399,7 +411,7 @@ private class LogEntryEventBuilder_Tests {
         System.HttpResponse httpResponse = LoggerMockDataCreator.createHttpResponse();
         httpResponse.setBody(sensitiveString);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setHttpResponseDetails(httpResponse);
 
         System.Assert.isTrue(builder.getLogEntryEvent().HttpResponseBodyMasked__c);
@@ -813,8 +825,9 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResult);
+            LoggerSettings__c userSettings = getUserSettings();
+            userSettings.IsRecordFieldStrippingEnabled__c = true;
+            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResult);
         }
 
         System.Assert.areEqual(JSON.serializePretty(mockAggregateResult), builder.getLogEntryEvent().RecordJson__c);
@@ -827,8 +840,9 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResults);
+            LoggerSettings__c userSettings = getUserSettings();
+            userSettings.IsRecordFieldStrippingEnabled__c = true;
+            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResults);
         }
 
         System.Assert.areEqual(JSON.serializePretty(mockAggregateResults), builder.getLogEntryEvent().RecordJson__c);
@@ -1018,7 +1032,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_set_stack_trace_for_new_builder_instance_when_disabled_via_logger_parameter() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
             return;
         }
 
@@ -1036,7 +1050,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_set_stack_trace_for_parseStackTrace_method_when_disabled_via_logger_parameter() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
             return;
         }
 
@@ -1055,7 +1069,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_stack_trace_and_origin_location_for_class_constructor_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
             return;
         }
 
@@ -1079,7 +1093,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_stack_trace_and_origin_location_for_method_stack_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
             return;
         }
 
@@ -1218,10 +1232,11 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_not_set_user_fields_when_anonymous_mode_enabled() {
-        Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
+    static void it_should_not_set_user_fields_when_anonymous_mode_is_enabled() {
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsAnonymousModeEnabled__c = true;
 
-        LogEntryEventBuilder builder = Logger.debug('test log entry');
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.DEBUG, true, new Set<String>());
 
         System.Assert.isNull(builder.getLogEntryEvent().Locale__c);
         System.Assert.isNull(builder.getLogEntryEvent().LoggedById__c);
@@ -1253,7 +1268,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
             return;
         }
 
@@ -1262,7 +1277,9 @@ private class LogEntryEventBuilder_Tests {
         );
 
         DebugStringExample example = new DebugStringExample();
-        LogEntryEventBuilder builder = example.myMethod();
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsApexSystemDebugLoggingEnabled__c = true;
+        LogEntryEventBuilder builder = example.myMethod(userSettings);
 
         System.Assert.areEqual(
             DebugStringExample.class.getName() +
@@ -1311,15 +1328,15 @@ private class LogEntryEventBuilder_Tests {
 
         public DebugStringExample() {
             this.stackTraceHandler = new System.DmlException();
-            Logger.debug('Logging in a constructor');
         }
 
         public String getStackTraceString() {
             return this.stackTraceHandler.getStackTraceString();
         }
 
-        public LogEntryEventBuilder myMethod() {
-            return Logger.debug(loggingString);
+        public LogEntryEventBuilder myMethod(LoggerSettings__c userSettings) {
+            return new LogEntryEventBuilder(userSettings, System.LoggingLevel.DEBUG, true, new Set<String>{ LogEntryEventBuilder.class.getName() })
+                .setMessage(loggingString);
         }
     }
 

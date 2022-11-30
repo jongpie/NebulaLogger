@@ -16,11 +16,14 @@ global with sharing class LogEntryEventBuilder {
     private static final User CURRENT_USER = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     private static final String NEW_LINE_DELIMITER = '\n';
 
+    private static String cachedOrganizationEnvironmentType;
+
     @TestVisible
     private static Id networkId = System.Network.getNetworkId();
 
     private final LogEntryEvent__e logEntryEvent;
     private final System.LoggingLevel entryLoggingLevel;
+    private final String organizationEnvironmentType;
     private final LoggerSettings__c userSettings;
 
     @TestVisible
@@ -37,16 +40,6 @@ global with sharing class LogEntryEventBuilder {
                 CACHED_DATA_MASK_RULES = loadDataMaskRules();
             }
             return CACHED_DATA_MASK_RULES;
-        }
-        set;
-    }
-
-    private static final String CACHED_ORGANIZATION_ENVIRONMENT_TYPE {
-        get {
-            if (CACHED_ORGANIZATION_ENVIRONMENT_TYPE == null) {
-                CACHED_ORGANIZATION_ENVIRONMENT_TYPE = getOrganizationEnvironmentType();
-            }
-            return CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
         }
         set;
     }
@@ -106,6 +99,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.userSettings = userSettings;
+        this.organizationEnvironmentType = getOrganizationEnvironmentType(userSettings);
         this.entryLoggingLevel = entryLoggingLevel;
         if (ignoredOrigins != null) {
             this.ignoredApexClasses.addAll(ignoredOrigins);
@@ -655,6 +649,13 @@ global with sharing class LogEntryEventBuilder {
             for (String fieldName : LOG_ENTRY_EVENT_TEMPLATE.getPopulatedFieldsAsMap().keySet()) {
                 this.logEntryEvent.put(fieldName, LOG_ENTRY_EVENT_TEMPLATE.get(fieldName));
             }
+            if (this.userSettings.IsAnonymousModeEnabled__c == false) {
+                setUserInfoDetails(this.logEntryEvent);
+                setQueriedAuthSessionDetails(this.logEntryEvent, this.userSettings);
+                setQueriedUserDetails(this.logEntryEvent, this.userSettings);
+            }
+            setQueriedNetworkDetails(this.logEntryEvent, this.userSettings);
+            setQueriedOrganizationDetails(this.logEntryEvent, this.userSettings);
             this.detailsAreSet = true;
         }
 
@@ -679,7 +680,7 @@ global with sharing class LogEntryEventBuilder {
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private void logToApexDebug(String message) {
-        if (Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c == false) {
+        if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false) {
             return;
         }
 
@@ -769,19 +770,11 @@ global with sharing class LogEntryEventBuilder {
             OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm()
         );
 
-        if (Logger.getUserSettings().IsAnonymousModeEnabled__c == false) {
-            setUserInfoDetails(templateLogEntryEvent);
-            setQueriedAuthSessionDetails(templateLogEntryEvent);
-            setQueriedUserDetails(templateLogEntryEvent);
-        }
-        setQueriedNetworkDetails(templateLogEntryEvent);
-        setQueriedOrganizationDetails(templateLogEntryEvent);
-
         return templateLogEntryEvent;
     }
 
-    private static void setQueriedAuthSessionDetails(LogEntryEvent__e logEntryEvent) {
-        if (LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == false) {
+    private static void setQueriedAuthSessionDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == false) {
             return;
         }
 
@@ -806,8 +799,8 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent) {
-        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false || String.isBlank(networkId) == true) {
+    private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false || String.isBlank(networkId) == true) {
             return;
         }
 
@@ -824,8 +817,8 @@ global with sharing class LogEntryEventBuilder {
         logEntryEvent.NetworkUrlPathPrefix__c = cachedNetworkProxy.UrlPathPrefix;
     }
 
-    private static void setQueriedOrganizationDetails(LogEntryEvent__e logEntryEvent) {
-        if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
+    private static void setQueriedOrganizationDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
             return;
         }
 
@@ -834,7 +827,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        logEntryEvent.OrganizationEnvironmentType__c = CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
+        logEntryEvent.OrganizationEnvironmentType__c = getOrganizationEnvironmentType(userSettings);
         logEntryEvent.OrganizationId__c = cachedOrganization?.Id;
         logEntryEvent.OrganizationInstanceName__c = cachedOrganization?.InstanceName;
         logEntryEvent.OrganizationName__c = cachedOrganization?.Name;
@@ -842,13 +835,12 @@ global with sharing class LogEntryEventBuilder {
         logEntryEvent.OrganizationType__c = cachedOrganization?.OrganizationType;
     }
 
-    private static void setQueriedUserDetails(LogEntryEvent__e logEntryEvent) {
-        if (LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY == false) {
+    private static void setQueriedUserDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY == false) {
             return;
         }
 
         User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
-
         if (cachedUser == null) {
             return;
         }
@@ -878,8 +870,8 @@ global with sharing class LogEntryEventBuilder {
         CACHED_DATA_MASK_RULES.put(dataMaskRule.DeveloperName, dataMaskRule);
     }
 
-    private static String applyDataMaskRules(String dataInput) {
-        if (Logger.getUserSettings().IsDataMaskingEnabled__c == false || String.isBlank(dataInput) == true) {
+    private String applyDataMaskRules(String dataInput) {
+        if (this.userSettings.IsDataMaskingEnabled__c == false || String.isBlank(dataInput) == true) {
             return dataInput;
         }
 
@@ -918,19 +910,27 @@ global with sharing class LogEntryEventBuilder {
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
-    private static String getOrganizationEnvironmentType() {
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        String orgEnvironmentType;
-        if (cachedOrganization == null) {
-            return '';
-        } else if (cachedOrganization.IsSandbox == true && cachedOrganization.TrialExpirationDate != null) {
-            orgEnvironmentType = 'Scratch Org';
-        } else if (cachedOrganization.IsSandbox == true) {
-            orgEnvironmentType = 'Sandbox';
-        } else {
-            orgEnvironmentType = 'Production';
+    private static String getOrganizationEnvironmentType(LoggerSettings__c userSettings) {
+        if (cachedOrganizationEnvironmentType != null) {
+            return cachedOrganizationEnvironmentType;
         }
-        return orgEnvironmentType;
+
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
+            return '';
+        }
+
+        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        String cachedOrganizationEnvironmentType;
+        if (cachedOrganization == null) {
+            cachedOrganizationEnvironmentType = '';
+        } else if (cachedOrganization.IsSandbox == true && cachedOrganization.TrialExpirationDate != null) {
+            cachedOrganizationEnvironmentType = 'Scratch Org';
+        } else if (cachedOrganization.IsSandbox == true) {
+            cachedOrganizationEnvironmentType = 'Sandbox';
+        } else {
+            cachedOrganizationEnvironmentType = 'Production';
+        }
+        return cachedOrganizationEnvironmentType;
     }
 
     private static String getNamespacePrefix() {

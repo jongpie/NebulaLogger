@@ -69,18 +69,17 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @return   The cached `AuthSession` record
      */
     public virtual LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
-        if (LoggerParameter.QUERY_AUTH_SESSION_DATA == false) {
-            return null;
-        }
-
         Id userId = System.UserInfo.getUserId();
         String cacheKey = 'AuthSession' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey) == true) {
             return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
         }
 
-        LoggerSObjectProxy.AuthSession authSession = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
-        LoggerCache.getSessionCache().put(cacheKey, authSession);
+        LoggerSObjectProxy.AuthSession authSession;
+        if (LoggerParameter.QUERY_AUTH_SESSION_DATA == true) {
+            authSession = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
+            LoggerCache.getSessionCache().put(cacheKey, authSession);
+        }
         return authSession;
     }
 
@@ -111,10 +110,6 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @return           The cached `Network` record
      */
     public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
-        if (LoggerParameter.QUERY_NETWORK_DATA == false) {
-            return null;
-        }
-
         if (networkId == null || IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return null;
         }
@@ -124,8 +119,11 @@ public without sharing virtual class LoggerEngineDataSelector {
             return (LoggerSObjectProxy.Network) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        LoggerSObjectProxy.Network networkProxy = getNetworkProxies(new List<Id>{ networkId }).get(networkId);
-        LoggerCache.getOrganizationCache().put(cacheKey, networkProxy);
+        LoggerSObjectProxy.Network networkProxy;
+        if (LoggerParameter.QUERY_NETWORK_DATA == false) {
+            networkProxy = getNetworkProxies(new List<Id>{ networkId }).get(networkId);
+            LoggerCache.getOrganizationCache().put(cacheKey, networkProxy);
+        }
         return networkProxy;
     }
 
@@ -134,17 +132,16 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @return   The cached `Organization` record
      */
     public virtual Organization getCachedOrganization() {
-        if (LoggerParameter.QUERY_ORGANIZATION_DATA == false) {
-            return null;
-        }
-
         String cacheKey = 'Organization';
         if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
             return (Organization) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        Organization organization = [SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
-        LoggerCache.getOrganizationCache().put(cacheKey, organization);
+        Organization organization;
+        if (LoggerParameter.QUERY_ORGANIZATION_DATA == true) {
+            organization = [SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+            LoggerCache.getOrganizationCache().put(cacheKey, organization);
+        }
         return organization;
     }
 
@@ -179,18 +176,17 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @return   The cached `User` record for the current user
      */
     public virtual User getCachedUser() {
-        if (LoggerParameter.QUERY_USER_DATA == false) {
-            return null;
-        }
-
         Id userId = System.UserInfo.getUserId();
         String cacheKey = 'User' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey) == true) {
             return (User) LoggerCache.getSessionCache().get(cacheKey);
         }
 
-        User user = getUsers(new List<Id>{ userId }).get(userId);
-        LoggerCache.getSessionCache().put(cacheKey, user);
+        User user;
+        if (LoggerParameter.QUERY_USER_DATA == true) {
+            user = getUsers(new List<Id>{ userId }).get(userId);
+            LoggerCache.getSessionCache().put(cacheKey, user);
+        }
         return user;
     }
 

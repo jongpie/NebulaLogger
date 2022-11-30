@@ -106,6 +106,7 @@ global with sharing class Logger {
         return CURRENT_VERSION_NUMBER;
     }
 
+    // TODO delete
     /**
      * @description Returns the current namespace of Nebula Logger
      * @return   The current namespace prefix, or an empty string when no namespace is being used
@@ -281,6 +282,14 @@ global with sharing class Logger {
             loggingUserSettings = LoggerSettings__c.getOrgDefaults();
         } else {
             loggingUserSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+            if (
+                LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == true &&
+                LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == true
+            ) {
+                loggingUserSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+                loggingUserSettings.IsApexSystemDebugLoggingEnabled__c = true;
+                loggingUserSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+            }
         }
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
@@ -289,16 +298,6 @@ global with sharing class Logger {
         if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
             loggingUserSettings.Id = null;
             loggingUserSettings.SetupOwnerId = loggingUser.Id;
-        }
-
-        if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == true) {
-            loggingUserSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-            loggingUserSettings.IsApexSystemDebugLoggingEnabled__c = true;
-            loggingUserSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
-        } else {
-            loggingUserSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
-            loggingUserSettings.IsApexSystemDebugLoggingEnabled__c = false;
-            loggingUserSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
         }
 
         return loggingUserSettings;
