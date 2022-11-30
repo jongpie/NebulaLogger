@@ -37,6 +37,87 @@ private class LogHandler_Tests {
     }
 
     @IsTest
+    static void it_should_set_hasComments_field_on_insert_when_comments_field_is_null() {
+        setupConfigurations();
+        Log__c log = new Log__c(Comments__c = null, TransactionId__c = '1234');
+
+        LoggerDataStore.getDatabase().insertRecord(log);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isNull(log.Comments__c);
+        System.Assert.isFalse(log.HasComments__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasComments_field_on_insert_when_comments_field_is_not_null() {
+        setupConfigurations();
+        String exampleComment = 'some comment';
+        Log__c log = new Log__c(Comments__c = exampleComment, TransactionId__c = '1234');
+
+        LoggerDataStore.getDatabase().insertRecord(log);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.areEqual(exampleComment, log.Comments__c);
+        System.Assert.isTrue(log.HasComments__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasComments_field_on_update_when_comments_field_is_null() {
+        setupConfigurations();
+        String exampleComment = 'some comment';
+        Log__c log = new Log__c(Comments__c = exampleComment, TransactionId__c = '1234');
+        LoggerDataStore.getDatabase().insertRecord(log);
+        log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.areEqual(exampleComment, log.Comments__c);
+        System.Assert.isTrue(log.HasComments__c);
+        log.Comments__c = null;
+
+        LoggerDataStore.getDatabase().updateRecord(log);
+
+        System.Assert.areEqual(
+            4,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed four times - once for BEFORE_INSERT, AFTER_INSERT, BEFORE_UPDATE, and AFTER_UPDATE'
+        );
+        log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isNull(log.Comments__c);
+        System.Assert.isFalse(log.HasComments__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasComments_field_on_update_when_comments_field_is_not_null() {
+        setupConfigurations();
+        Log__c log = new Log__c(Comments__c = null, TransactionId__c = '1234');
+        LoggerDataStore.getDatabase().insertRecord(log);
+        log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isNull(log.Comments__c);
+        System.Assert.isFalse(log.HasComments__c);
+        String exampleComment = 'some comment';
+        log.Comments__c = exampleComment;
+
+        LoggerDataStore.getDatabase().updateRecord(log);
+
+        System.Assert.areEqual(
+            4,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed four times - once for BEFORE_INSERT, AFTER_INSERT, BEFORE_UPDATE, and AFTER_UPDATE'
+        );
+        log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.areEqual(exampleComment, log.Comments__c);
+        System.Assert.isTrue(log.HasComments__c);
+    }
+
+    @IsTest
     static void it_should_clear_closed_status_fields_when_open() {
         setupConfigurations();
         Log__c log = new Log__c(
