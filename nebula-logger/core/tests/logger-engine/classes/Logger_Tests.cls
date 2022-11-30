@@ -808,8 +808,9 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_the_buffer_size() {
         System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.isTrue(Logger.isInfoEnabled());
 
-        Logger.debug('test log entry');
+        Logger.info('test log entry');
         Logger.warn('another test log entry');
 
         System.Assert.areEqual(2, Logger.getBufferSize());
@@ -1209,8 +1210,9 @@ private class Logger_Tests {
             )
         );
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
-        logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
+        System.Assert.isTrue(Logger.isInfoEnabled());
+        logEntryEvents.add(Logger.info('test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.info('another test log entry').getLogEntryEvent());
         System.Test.startTest();
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
@@ -1261,8 +1263,8 @@ private class Logger_Tests {
             )
         );
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
-        logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.info('test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.info('another test log entry').getLogEntryEvent());
         System.Test.startTest();
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
@@ -1303,8 +1305,8 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_flush_buffer() {
-        Logger.debug('test log entry');
-        Logger.debug('another test log entry');
+        Logger.info('test log entry');
+        Logger.info('another test log entry');
         System.Assert.areEqual(2, Logger.getBufferSize());
 
         Logger.flushBuffer();
