@@ -7,8 +7,8 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 
 ## Unlocked Package - v4.9.7
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023R9eQAE)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023R9eQAE)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023R9yQAE)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023R9yQAE)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ## Managed Package - v4.9.0
