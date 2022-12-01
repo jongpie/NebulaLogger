@@ -727,27 +727,6 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(sortedTags, NEW_LINE_DELIMITER));
     }
 
-    private void setTransactionDetails() {
-        this.logEntryEvent.ApiVersion__c = ORGANIZATION_API_VERSION;
-        this.logEntryEvent.LimitsAggregateQueriesMax__c = System.Limits.getLimitAggregateQueries();
-        this.logEntryEvent.LimitsAsyncCallsMax__c = System.Limits.getLimitAsyncCalls();
-        this.logEntryEvent.LimitsCalloutsMax__c = System.Limits.getLimitCallouts();
-        this.logEntryEvent.LimitsCpuTimeMax__c = System.Limits.getLimitCpuTime();
-        this.logEntryEvent.LimitsDmlRowsMax__c = System.Limits.getLimitDmlRows();
-        this.logEntryEvent.LimitsDmlStatementsMax__c = System.Limits.getLimitDmlStatements();
-        this.logEntryEvent.LimitsEmailInvocationsMax__c = System.Limits.getLimitEmailInvocations();
-        this.logEntryEvent.LimitsFutureCallsMax__c = System.Limits.getLimitFutureCalls();
-        this.logEntryEvent.LimitsHeapSizeMax__c = System.Limits.getLimitHeapSize();
-        this.logEntryEvent.LimitsMobilePushApexCallsMax__c = System.Limits.getLimitMobilePushApexCalls();
-        this.logEntryEvent.LimitsQueueableJobsMax__c = System.Limits.getLimitQueueableJobs();
-        this.logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c = System.Limits.getLimitPublishImmediateDML();
-        this.logEntryEvent.LimitsSoqlQueriesMax__c = System.Limits.getLimitQueries();
-        this.logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = System.Limits.getLimitQueryLocatorRows();
-        this.logEntryEvent.LimitsSoqlQueryRowsMax__c = System.Limits.getLimitQueryRows();
-        this.logEntryEvent.LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries();
-        this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
-    }
-
     private static LogEntryEvent__e getLogEntryEventTemplate() {
         LogEntryEvent__e templateLogEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = ORGANIZATION_API_VERSION,
