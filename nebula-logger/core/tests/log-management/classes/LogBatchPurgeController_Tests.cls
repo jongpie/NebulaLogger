@@ -2,12 +2,12 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions,PMD.CognitiveComplexity')
+@SuppressWarnings('PMD.ApexDoc, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogBatchPurgeController_Tests {
-    static final String CUSTOM_PURGE_ACTION = 'Custom';
-    static final String DEFAULT_PURGE_ACTION = 'Delete';
-    static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';
+    private static final String CUSTOM_PURGE_ACTION = 'Custom';
+    private static final String DEFAULT_PURGE_ACTION = 'Delete';
+    private static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @IsTest
@@ -180,6 +180,7 @@ private class LogBatchPurgeController_Tests {
         Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
         createLogEntryRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
         createLogEntryRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('THIS_MONTH');
 
         Integer expectedAggregateResultSize = 2;
