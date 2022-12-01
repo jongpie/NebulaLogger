@@ -218,6 +218,28 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_store_scenarios_in_custom_object() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreScenariosInCustomObject', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_tags_in_custom_objects() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreTagsInCustomObjects', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.STORE_TAGS_IN_CUSTOM_OBJECTS;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_system_debug_message_format() {
         // The constant LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT is unique - its value should always be
         // loaded from LoggerParameter__mdt, even in a test context so that orgs can control the output of debug

@@ -1313,7 +1313,7 @@
                 <identifier>force_relatedListSingleContainer</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.ShouldDisplayLogEntryTagRelatedList__c}</leftValue>
+                        <leftValue>{!Record.ShouldDisplayRelatedLogEntryTags__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
@@ -1334,7 +1334,7 @@
                 <identifier>flexipage_fieldSection11</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.ShouldDisplayLogEntryTagRelatedList__c}</leftValue>
+                        <leftValue>{!Record.ShouldDisplayRelatedLogEntryTags__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>false</rightValue>
                     </criteria>

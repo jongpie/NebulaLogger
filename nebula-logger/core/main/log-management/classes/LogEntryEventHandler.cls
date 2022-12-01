@@ -93,11 +93,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
                 if (String.isBlank(scenario) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
                     continue;
+                } else if (LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT == true) {
+                    LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
+                    loggerScenario.setOptions(DML_OPTIONS);
+                    SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
                 }
-
-                LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
-                loggerScenario.setOptions(DML_OPTIONS);
-                SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
             }
         }
 
@@ -180,6 +180,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UserRoleName__c = logEntryEvent.UserRoleName__c,
                 UserType__c = logEntryEvent.UserType__c
             );
+
+            if (LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT == false) {
+                log.TransactionScenarioName__c = logEntryEvent.TransactionScenario__c;
+            }
 
             if (
                 String.isNotBlank(logEntryEvent.TransactionScenario__c) == true &&
@@ -307,11 +311,19 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
             );
 
-            if (
-                String.isNotBlank(logEntryEvent.EntryScenario__c) == true &&
-                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true
-            ) {
-                logEntry.EntryScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.EntryScenario__c).Id;
+            if (String.isNotBlank(logEntryEvent.EntryScenario__c) == true) {
+                if (
+                    LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT == true &&
+                    SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true
+                ) {
+                    logEntry.EntryScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.EntryScenario__c).Id;
+                } else {
+                    logEntry.EntryScenarioName__c = logEntryEvent.EntryScenario__c;
+                }
+            }
+
+            if (String.isNotBlank(logEntryEvent.Tags__c) == true && LoggerParameter.STORE_TAGS_IN_CUSTOM_OBJECTS == false) {
+                logEntry.Tags__c = logEntryEvent.Tags__c;
             }
 
             logEntry.setOptions(DML_OPTIONS);
@@ -358,7 +370,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLogEntryTags() {
-        if (LoggerParameter.ENABLE_TAGGING == false || this.tagNames.isEmpty() == true) {
+        if (LoggerParameter.ENABLE_TAGGING == false || LoggerParameter.STORE_TAGS_IN_CUSTOM_OBJECTS == false || this.tagNames.isEmpty() == true) {
             return;
         }
 

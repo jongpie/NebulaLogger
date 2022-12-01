@@ -76,7 +76,15 @@ Indicates if Nebula Logger queries `User` data is queried synchronously &amp; po
 
 #### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
 
-Indicates if Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default
+Indicates if Nebula Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default
+
+#### `STORE_SCENARIOS_IN_CUSTOM_OBJECT` → `Boolean`
+
+Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`, or in the fields `Log__c.TransactionScenarioName__c` &amp; `LogEntry__c.EntryScenario__c`. Controlled by the custom metadata record `LoggerParameter.StoreScenariosInCustomObject`, or `true` as the default
+
+#### `STORE_TAGS_IN_CUSTOM_OBJECTS` → `Boolean`
+
+Indicates if Nebula Logger will store tags in the custom objects `LoggerTag__c` &amp; `LogEntryTag__c`, or in the field `LogEntry__c.Tags__c`. Controlled by the custom metadata record `LoggerParameter.StoreTagsInCustomObjects`, or `true` as the default
 
 #### `SYSTEM_DEBUG_MESSAGE_FORMAT` → `String`
 
