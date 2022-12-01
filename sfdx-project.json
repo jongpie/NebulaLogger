@@ -14,9 +14,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.9.7.NEXT",
-            "versionName": "New Log Field HasComments",
-            "versionDescription": "Added new field Log__c.HasComments__c to make it easier to filter on Log__c records that have a value populated in the long textarea field Log__c.Comments__c",
+            "versionNumber": "4.9.8.NEXT",
+            "versionName": "Test Coverage Improvements",
+            "versionDescription": "Improved code coverage by making improvements to several test methods & by cleaning up some legacy code that's no longer needed",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
