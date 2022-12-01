@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ShortValue__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText
+    >Provides a place to store an optional supplemental value that can be referenced in places that the Value long textarea field cannot be used, such as in formula fields.</inlineHelpText>
+    <label>Short Value</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

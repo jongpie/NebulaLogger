@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TransactionScenarioLink__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+    ISBLANK(TransactionScenario__c),
+    TransactionScenarioName__c,
+    HYPERLINK(
+        '/' + TransactionScenario__c,
+        TransactionScenario__r.Name,
+        &apos;_top&apos;
+    )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Transaction Scenario</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -14,9 +14,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.9.8.NEXT",
-            "versionName": "Test Coverage Improvements",
-            "versionDescription": "Improved code coverage by making improvements to several test methods & by cleaning up some legacy code that's no longer needed",
+            "versionNumber": "4.9.7.NEXT",
+            "versionName": "Scenario and Tags Storage Configurations",
+            "versionDescription": "Added new CMDT records LoggerParmeter__mdt.StoreScenariosInCustomObject and LoggerParmeter__mdt.StoreTagsInCustomObjects to control if scenarios & tags are stored in custom objects (default) or text fields (denormalized data)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

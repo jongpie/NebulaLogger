@@ -13,6 +13,10 @@
         >When set to &apos;true&apos; (default), an async callout is made to https://api.status.salesforce.com to get additional details about the current org, including the org&apos;s release version and release number. This information is then stored on the Log__c record.</value>
     </values>
     <values>
+        <field>ShortValue__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">true</value>
     </values>

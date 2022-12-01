@@ -11,6 +11,10 @@
         <value xsi:type="xsd:string">Controls the format of the Apex Log System Debug messages with fields from LogEntryEvent__e</value>
     </values>
     <values>
+        <field>ShortValue__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">{OriginLocation__c}\n{Message__c}</value>
     </values>

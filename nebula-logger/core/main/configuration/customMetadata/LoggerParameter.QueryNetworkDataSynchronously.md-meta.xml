@@ -15,6 +15,10 @@
 When set to &apos;false&apos;, the Network object will only be queried asynchronously, and the related fields will be null on LogEntryEvent__e but populated on Log__c. This is useful if you want to reduce the syncronous queries used by Nebula Logger you do not rely on the related LogEntryEvent__e fields being populated.</value>
     </values>
     <values>
+        <field>ShortValue__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">true</value>
     </values>

@@ -15,6 +15,10 @@
 When set to &apos;false&apos;, stack traces will not be parsed - this can conserve CPU usage, at the expense of losing some data about log entries.</value>
     </values>
     <values>
+        <field>ShortValue__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">true</value>
     </values>

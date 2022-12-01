@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ShouldDisplayLogEntryTagRelatedList__c</fullName>
+    <externalId>false</externalId>
+    <formula>$CustomMetadata.LoggerParameter__mdt.StoreTagsInCustomObjects.ShortValue__c == &apos;true&apos;</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Should Display Log Entry Tag Related Lis</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

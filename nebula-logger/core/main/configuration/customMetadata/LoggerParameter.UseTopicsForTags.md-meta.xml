@@ -13,6 +13,10 @@
 When set to &apos;false&apos; (default), any custom Logger tags will use the custom objects LoggerTag__c and LogEntryTag__c</value>
     </values>
     <values>
+        <field>ShortValue__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">false</value>
     </values>
