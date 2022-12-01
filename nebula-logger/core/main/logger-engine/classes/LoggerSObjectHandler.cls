@@ -184,17 +184,11 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
-        try {
-            LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
-            apexPlugin?.execute(configuration, this.input);
+        LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
+        apexPlugin?.execute(configuration, this.input);
 
-            if (System.Test.isRunningTest() == true && apexPlugin != null) {
-                this.executedApexPlugins.add(apexPlugin);
-            }
-        } catch (TypeException ex) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                Logger.warn('Unknown Apex class ' + configuration.SObjectHandlerApexClass__c + ', skipping plugin execution', configuration, ex);
-            }
+        if (System.Test.isRunningTest() == true && apexPlugin != null) {
+            this.executedApexPlugins.add(apexPlugin);
         }
     }
 

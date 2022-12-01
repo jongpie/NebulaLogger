@@ -73,7 +73,14 @@ private class LoggerPlugin_Tests {
     }
 
     @IsTest
-    static void it_should_return_null_batchable_apex_plugin_instance_for_invalid_class() {
+    static void it_should_return_null_batchable_apex_plugin_instance_for_class_that_does_not_implement_batchable_plugin_interface() {
+        LoggerPlugin.Batchable batchableApexPlugin = LoggerPlugin.newBatchableInstance(NotABatchablePlugin.class.getName());
+
+        System.Assert.isNull(batchableApexPlugin);
+    }
+
+    @IsTest
+    static void it_should_return_null_batchable_apex_plugin_instance_for_nonexistent_class() {
         LoggerPlugin.Batchable batchableApexPlugin = LoggerPlugin.newBatchableInstance('Some fake class, this definitely doesn\'t exist');
 
         System.Assert.isNull(batchableApexPlugin);
@@ -88,7 +95,14 @@ private class LoggerPlugin_Tests {
     }
 
     @IsTest
-    static void it_should_return_null_triggerable_apex_plugin_instance_for_invalid_class() {
+    static void it_should_return_null_triggerable_apex_plugin_instance_for_class_that_does_not_implement_triggerable_plugin_interface() {
+        LoggerPlugin.Triggerable triggerableApexPlugin = LoggerPlugin.newTriggerableInstance(NotATriggerablePlugin.class.getName());
+
+        System.Assert.isNull(triggerableApexPlugin);
+    }
+
+    @IsTest
+    static void it_should_return_null_triggerable_apex_plugin_instance_for_nonexistent_class() {
         LoggerPlugin.Triggerable triggerableApexPlugin = LoggerPlugin.newTriggerableInstance('Some fake class, this definitely doesn\'t exist');
 
         System.Assert.isNull(triggerableApexPlugin);
@@ -118,6 +132,18 @@ private class LoggerPlugin_Tests {
                     }
                 }
             }
+        }
+    }
+
+    public class NotABatchablePlugin {
+        public NotABatchablePlugin() {
+            System.Assert.isNotInstanceOfType(this, LoggerPlugin.Batchable.class);
+        }
+    }
+
+    public class NotATriggerablePlugin {
+        public NotATriggerablePlugin() {
+            System.Assert.isNotInstanceOfType(this, LoggerPlugin.Triggerable.class);
         }
     }
 }
