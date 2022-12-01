@@ -14,5 +14,4 @@
     <testClassName>Logger_Tests_MergeResult</testClassName>
     <testClassName>Logger_Tests_Network</testClassName>
     <testClassName>LogManagementDataSelector_Tests_Flow</testClassName>
-    <testClassName>LogMassDeleteExtension_Tests_Security</testClassName>
 </ApexTestSuite>

@@ -20,6 +20,32 @@ private class LogMassDeleteExtension_Tests {
     }
 
     @IsTest
+    static void it_should_add_error_to_page_when_user_does_not_have_delete_access() {
+        List<Log__c> logs = [SELECT Id, Name FROM Log__c];
+        List<Log__c> logsToDelete = new List<Log__c>();
+        List<Log__c> logsToKeep = new List<Log__c>();
+        Integer numberToKeep = 3;
+        for (Integer i = 0; i < logs.size(); i++) {
+            if (i < numberToKeep) {
+                logsToDelete.add(logs.get(i));
+            } else {
+                logsToKeep.add(logs.get(i));
+            }
+        }
+        ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
+        controller.setSelected(logsToDelete);
+        PageReference pageReference = Page.LogMassDelete;
+        System.Test.setCurrentPage(pageReference);
+        LogMassDeleteExtension.userHasLogDeleteAccess = false;
+
+        new LogMassDeleteExtension(controller);
+
+        System.Assert.isTrue(ApexPages.hasMessages(ApexPages.SEVERITY.ERROR));
+        System.Assert.isNotNull(LogMassDeleteExtension.DELETE_ACCESS_ERROR);
+        System.Assert.areEqual(LogMassDeleteExtension.DELETE_ACCESS_ERROR, ApexPages.getMessages().get(0).getSummary());
+    }
+
+    @IsTest
     static void it_should_return_deletable_logs() {
         List<Log__c> logs = [SELECT Id, Name FROM Log__c];
         List<String> logIds = new List<String>();
