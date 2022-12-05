@@ -9,7 +9,7 @@
     <isSortingDisabled>false</isSortingDisabled>
     <label>Request ID</label>
     <length>36</length>
-    <required>true</required>
+    <required>false</required>
     <securityClassification>Confidential</securityClassification>
     <type>Text</type>
     <unique>false</unique>
