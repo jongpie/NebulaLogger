@@ -224,9 +224,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             // Salesforce does not provide precise datetimes in Apex triggers for platform events
             // Use the string value of timestamp to set the actual datetime field as a workaround
             // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
-            Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
-                ? Datetime.valueOf(Long.valueOf(logEntryEvent.TimestampString__c))
-                : logEntryEvent.Timestamp__c;
+            Datetime timestamp = logEntryEvent.Timestamp__c;
+            if (String.isNotBlank(logEntryEvent.TimestampString__c) == true) {
+                timestamp = Datetime.valueOf(Long.valueOf(logEntryEvent.TimestampString__c));
+            }
 
             LogEntry__c logEntry = new LogEntry__c(
                 ComponentType__c = logEntryEvent.ComponentType__c,

@@ -31,6 +31,40 @@ private class LoggerEngineDataSelector_Tests_Network {
         System.Assert.areEqual(expectedNetworkId, returnedNetworkProxy?.Id);
     }
 
+    @IsTest
+    static void it_returns_null_when_network_id_is_null() {
+        if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false) {
+            return;
+        }
+
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = String.valueOf(false)));
+        System.Assert.isFalse(LoggerParameter.QUERY_NETWORK_DATA);
+        Id expectedNetworkId = null;
+        System.Assert.areEqual(0, System.Limits.getQueries());
+
+        LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
+
+        System.Assert.areEqual(0, System.Limits.getQueries());
+        System.Assert.isNull(returnedNetworkProxy);
+    }
+
+    @IsTest
+    static void it_returns_null_when_querying_network_is_disabled() {
+        if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false) {
+            return;
+        }
+
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = String.valueOf(false)));
+        System.Assert.isFalse(LoggerParameter.QUERY_NETWORK_DATA);
+        Id expectedNetworkId = (Id) getExperienceCloudNetwork().get('Id');
+        System.Assert.areEqual(1, System.Limits.getQueries());
+
+        LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
+
+        System.Assert.areEqual(1, System.Limits.getQueries());
+        System.Assert.isNull(returnedNetworkProxy);
+    }
+
     static SObject getExperienceCloudNetwork() {
         return Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME');
     }
