@@ -78,12 +78,12 @@ jobs:
               run: npm run package:version:number:verify
 
             - name: 'Verify LWC with ESLint'
-              run: npm run lint:verify:lwc
+              run: npm run scan:lwc
 
             - name: 'Verify Apex with SFDX Scanner'
               run: |
                   npm run sfdx:plugins:link:scanner
-                  npm run lint:verify:apex
+                  npm run scan:apex
 
             # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
             # - name: 'Verify docs are updated'
