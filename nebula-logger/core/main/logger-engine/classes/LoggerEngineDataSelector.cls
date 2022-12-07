@@ -120,7 +120,7 @@ public without sharing virtual class LoggerEngineDataSelector {
         }
 
         LoggerSObjectProxy.Network networkProxy;
-        if (LoggerParameter.QUERY_NETWORK_DATA == false) {
+        if (LoggerParameter.QUERY_NETWORK_DATA == true) {
             networkProxy = getNetworkProxies(new List<Id>{ networkId }).get(networkId);
             LoggerCache.getOrganizationCache().put(cacheKey, networkProxy);
         }

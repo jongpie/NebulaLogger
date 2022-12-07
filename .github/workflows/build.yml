@@ -78,12 +78,12 @@ jobs:
               run: npm run package:version:number:verify
 
             - name: 'Verify LWC with ESLint'
-              run: npm run lint:verify:lwc
+              run: npm run scan:lwc
 
             - name: 'Verify Apex with SFDX Scanner'
               run: |
                   npm run sfdx:plugins:link:scanner
-                  npm run lint:verify:apex
+                  npm run scan:apex
 
             # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
             # - name: 'Verify docs are updated'
@@ -160,8 +160,8 @@ jobs:
             - name: 'Create Base Scratch Org'
               run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/base-scratch-def.json --wait 20 --setdefaultusername --json
 
-            - name: 'Push Source to Scratch Org'
-              run: npx sfdx force:source:push --forceoverwrite
+            - name: 'Deploy Source to Scratch Org'
+              run: npx sfdx force:source:deploy --sourcepath ./nebula-logger/
 
             - name: 'Assign Logger Admin Permission Set'
               run: npm run permset:assign:admin
@@ -224,8 +224,8 @@ jobs:
             - name: 'Deploy Test Experience Site Metadata'
               run: npm run experience:deploy
 
-            - name: 'Push Source to Scratch Org'
-              run: npx sfdx force:source:push --forceoverwrite
+            - name: 'Deploy Source to Scratch Org'
+              run: npx sfdx force:source:deploy --sourcepath ./nebula-logger/
 
             - name: 'Assign Logger Admin Permission Set'
               run: npm run permset:assign:admin

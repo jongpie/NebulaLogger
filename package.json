@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.9.7",
+    "version": "4.9.8",
     "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -40,10 +40,6 @@
         "experience:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
         "experience:deploy": "sfdx force:source:deploy --sourcepath ./config/experience-cloud --wait 30",
         "husky:pre-commit": "lint-staged --config ./config/linters/lint-staged.config.js",
-        "lint:fix:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/** --fix && eslint --config ./config/linters/.eslintrc.json **/aura/** --fix",
-        "lint:verify": "npm run lint:verify:apex && npm run lint:verify:lwc",
-        "lint:verify:apex": "sfdx scanner:run --pmdconfig ./config/linters/pmd-ruleset.xml --target ./nebula-logger/ --engine pmd --severity-threshold 3",
-        "lint:verify:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/** && eslint --config ./config/linters/.eslintrc.json **/aura/**",
         "org:create:base": "pwsh ./scripts/build/create-scratch-org.ps1 -definitionfile ./config/scratch-orgs/base-scratch-def.json && sfdx force:apex:execute --apexcodefile ./scripts/build/enable-debug-mode.apex",
         "org:create:experience-cloud": "pwsh ./scripts/build/create-scratch-org.ps1 -definitionfile ./config/scratch-orgs/experience-cloud-scratch-def.json && sfdx force:apex:execute --apexcodefile ./scripts/build/enable-debug-mode.apex",
         "org:delete": "sfdx force:org:delete --json",
@@ -68,6 +64,10 @@
         "prepare": "husky install && chmod +x ./.husky/pre-commit",
         "prettier:fix": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "scan:fix:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/** --fix && eslint --config ./config/linters/.eslintrc.json **/aura/** --fix",
+        "scan": "npm run scan:apex && npm run scan:lwc",
+        "scan:apex": "sfdx scanner:run --pmdconfig ./config/linters/pmd-ruleset.xml --target ./nebula-logger/ --engine pmd --severity-threshold 3",
+        "scan:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/** && eslint --config ./config/linters/.eslintrc.json **/aura/**",
         "sfdx:plugins:link:bummer": "npx sfdx plugins:link ./node_modules/@jongpie/sfdx-bummer-plugin",
         "sfdx:plugins:link:prettier": "npx sfdx plugins:link ./node_modules/@jayree/sfdx-plugin-prettier",
         "sfdx:plugins:link:scanner": "npx sfdx plugins:link ./node_modules/@salesforce/sfdx-scanner",
@@ -84,6 +84,7 @@
         "test:nocoverage": "npm run test:lwc && npm run test:apex"
     },
     "dependencies": {
+        "@xmldom/xmldom": ">=0.8.4",
         "ansi-regex": ">=5.0.1",
         "async": ">=2.6.4",
         "ejs": ">=3.1.7",

@@ -20,18 +20,13 @@ public with sharing class LogEntryEventStreamController {
         Schema.LogEntryEvent__e.Message__c.getDescribe().getLocalName()
     };
     /**
-     * @description Returns the list of columns to be displayed in
-     * LogEntryEventStream Datatable.  The fields are configured
-     * in the Custom Meta Data (LoggerParameter.LogEntryEventStreamDisplayFields).
+     * @description Returns the list of columns to be displayed in LogEntryEventStream datatable.
+     *              The fields are configured in the custom metadata record LoggerParameter__mdt.LogEntryEventStreamDisplayFields.
      * @return   The instance of `List<String>`, containing the list of columns to be displayed in
-     * LogEntryEventStream Datatable .
+     *           LogEntryEventStream datatable.
      */
     @AuraEnabled
     public static List<String> getDatatableDisplayFields() {
-        try {
-            return LoggerParameter.getStringList(DISPLAY_FIELDS_PARAMETER_NAME, DEFAULT_DISPLAY_FIELDS);
-        } catch (System.Exception e) {
-            throw new System.AuraHandledException(e.getMessage());
-        }
+        return LoggerParameter.getStringList(DISPLAY_FIELDS_PARAMETER_NAME, DEFAULT_DISPLAY_FIELDS);
     }
 }

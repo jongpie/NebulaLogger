@@ -45,6 +45,17 @@ private class LoggerEngineDataSelector_Tests {
     }
 
     @IsTest
+    static void it_returns_null_when_querying_auth_session_is_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = String.valueOf(false)));
+        System.Assert.isFalse(LoggerParameter.QUERY_AUTH_SESSION_DATA);
+
+        LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+
+        System.Assert.areEqual(0, System.Limits.getQueries());
+        System.Assert.isNull(returnedAuthSessionProxy);
+    }
+
+    @IsTest
     static void it_does_not_query_auth_session_when_disabled_via_logger_parameter() {
         MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
         LoggerEngineDataSelector.setMock(mockSelector);
@@ -141,6 +152,17 @@ private class LoggerEngineDataSelector_Tests {
         LoggerEngineDataSelector.getInstance().getCachedUser();
         System.Assert.areEqual(2, System.Limits.getQueries(), 'Query results should have been cached');
         System.Assert.areEqual(expectedUser, returnedUser);
+    }
+
+    @IsTest
+    static void it_returns_null_when_querying_user_is_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = String.valueOf(false)));
+        System.Assert.isFalse(LoggerParameter.QUERY_USER_DATA);
+
+        User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+
+        System.Assert.areEqual(0, System.Limits.getQueries());
+        System.Assert.isNull(returnedUser);
     }
 
     private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {

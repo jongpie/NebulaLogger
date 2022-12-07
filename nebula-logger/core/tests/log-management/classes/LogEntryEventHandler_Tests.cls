@@ -353,6 +353,30 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_save_log_entries_when_event_uuid_is_not_populated() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(logEntryEvent, Schema.LogEntryEvent__e.EventUuid, null);
+        System.Assert.isNull(logEntryEvent.EventUuid);
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        List<LogEntry__c> logEntries = [SELECT Id, EventUuid__c FROM LogEntry__c];
+        System.Assert.areEqual(1, logEntries.size());
+        System.Assert.isNull(logEntries.get(0).EventUuid__c);
+    }
+
+    @IsTest
     static void it_should_upsert_log_entries_when_event_uuid_is_populated() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();

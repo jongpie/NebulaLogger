@@ -258,6 +258,7 @@ export default class LogEntryEventStream extends LightningElement {
         }
         return matches;
     }
+
     _handleError = error => {
         const errorMessage = error.body ? error.body.message : error.message;
         /* eslint-disable-next-line no-console */
