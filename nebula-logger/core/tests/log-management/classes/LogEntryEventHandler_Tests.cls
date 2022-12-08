@@ -225,7 +225,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_not_normalize_scenario_data_when_custom_object_storage_is_disabled() {
+    static void it_should_not_normalize_scenario_data_when_data_normalization_is_disabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
@@ -233,8 +233,8 @@ private class LogEntryEventHandler_Tests {
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.EntryScenario__c = 'some entry scenario';
         logEntryEvent.TransactionScenario__c = 'some transaction scenario';
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreScenariosInCustomObject', Value__c = JSON.serialize(false)));
-        System.Assert.isFalse(LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT);
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.NORMALIZE_SCENARIO_DATA);
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -636,15 +636,15 @@ private class LogEntryEventHandler_Tests {
     // }
 
     @IsTest
-    static void it_should_not_normalize_tag_data_when_custom_object_storage_is_disabled() {
+    static void it_should_not_normalize_tag_data_when_data_normalization_is_disabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Tags__c = 'some entry scenario';
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTagsInCustomObjects', Value__c = JSON.serialize(false)));
-        System.Assert.isFalse(LoggerParameter.STORE_TAGS_IN_CUSTOM_OBJECTS);
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.NORMALIZE_TAG_DATA);
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -664,7 +664,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_create_tag_records_when_enabled() {
+    static void it_should_create_tag_records_when_tagging_is_enabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;

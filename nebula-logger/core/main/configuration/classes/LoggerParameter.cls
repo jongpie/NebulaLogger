@@ -74,6 +74,36 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`,
+     *              or in the fields `Log__c.TransactionScenarioName__c` & `LogEntry__c.EntryScenario__c`.
+     *              Controlled by the custom metadata record `LoggerParameter.NormalizeScenarioData`, or `true` as the default
+     */
+    public static final Boolean NORMALIZE_SCENARIO_DATA {
+        get {
+            if (NORMALIZE_SCENARIO_DATA == null) {
+                NORMALIZE_SCENARIO_DATA = getBoolean('NormalizeScenarioData', true);
+            }
+            return NORMALIZE_SCENARIO_DATA;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger will store tags in the custom objects `LoggerTag__c` & `LogEntryTag__c`,
+     *              or in the field `LogEntry__c.Tags__c`.
+     *              Controlled by the custom metadata record `LoggerParameter.NormalizeTagData`, or `true` as the default
+     */
+    public static final Boolean NORMALIZE_TAG_DATA {
+        get {
+            if (NORMALIZE_TAG_DATA == null) {
+                NORMALIZE_TAG_DATA = getBoolean('NormalizeTagData', true);
+            }
+            return NORMALIZE_TAG_DATA;
+        }
+        private set;
+    }
+
+    /**
      * @description The name of the Platform Cache partition to use for caching (when platform cache is enabled).
      *              Controlled by the custom metadata record `LoggerParameter.PlatformCachePartitionName`, or `LoggerCache` as the default
      */
@@ -266,36 +296,6 @@ public class LoggerParameter {
                 SEND_ERROR_EMAIL_NOTIFICATIONS = getBoolean('SendErrorEmailNotifications', true);
             }
             return SEND_ERROR_EMAIL_NOTIFICATIONS;
-        }
-        private set;
-    }
-
-    /**
-     * @description Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`,
-     *              or in the fields `Log__c.TransactionScenarioName__c` & `LogEntry__c.EntryScenario__c`.
-     *              Controlled by the custom metadata record `LoggerParameter.StoreScenariosInCustomObject`, or `true` as the default
-     */
-    public static final Boolean STORE_SCENARIOS_IN_CUSTOM_OBJECT {
-        get {
-            if (STORE_SCENARIOS_IN_CUSTOM_OBJECT == null) {
-                STORE_SCENARIOS_IN_CUSTOM_OBJECT = getBoolean('StoreScenariosInCustomObject', true);
-            }
-            return STORE_SCENARIOS_IN_CUSTOM_OBJECT;
-        }
-        private set;
-    }
-
-    /**
-     * @description Indicates if Nebula Logger will store tags in the custom objects `LoggerTag__c` & `LogEntryTag__c`,
-     *              or in the field `LogEntry__c.Tags__c`.
-     *              Controlled by the custom metadata record `LoggerParameter.StoreTagsInCustomObjects`, or `true` as the default
-     */
-    public static final Boolean STORE_TAGS_IN_CUSTOM_OBJECTS {
-        get {
-            if (STORE_TAGS_IN_CUSTOM_OBJECTS == null) {
-                STORE_TAGS_IN_CUSTOM_OBJECTS = getBoolean('StoreTagsInCustomObjects', true);
-            }
-            return STORE_TAGS_IN_CUSTOM_OBJECTS;
         }
         private set;
     }

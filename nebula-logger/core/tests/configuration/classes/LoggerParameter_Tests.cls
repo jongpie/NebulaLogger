@@ -69,6 +69,28 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_normalize_scenario_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_SCENARIO_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_normalize_tag_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_TAG_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_platform_cache_partition_name() {
         String mockValue = 'SomeValue';
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'PlatformCachePartitionName', Value__c = mockValue);
@@ -213,28 +235,6 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
-
-        System.Assert.areEqual(mockValue, returnedValue);
-    }
-
-    @IsTest
-    static void it_should_return_constant_value_for_store_scenarios_in_custom_object() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreScenariosInCustomObject', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
-
-        Boolean returnedValue = LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT;
-
-        System.Assert.areEqual(mockValue, returnedValue);
-    }
-
-    @IsTest
-    static void it_should_return_constant_value_for_store_tags_in_custom_objects() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreTagsInCustomObjects', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
-
-        Boolean returnedValue = LoggerParameter.STORE_TAGS_IN_CUSTOM_OBJECTS;
 
         System.Assert.areEqual(mockValue, returnedValue);
     }

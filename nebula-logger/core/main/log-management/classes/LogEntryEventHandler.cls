@@ -93,7 +93,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
                 if (String.isBlank(scenario) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
                     continue;
-                } else if (LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT == true) {
+                } else if (LoggerParameter.NORMALIZE_SCENARIO_DATA == true) {
                     LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
                     loggerScenario.setOptions(DML_OPTIONS);
                     SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
@@ -181,7 +181,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UserType__c = logEntryEvent.UserType__c
             );
 
-            if (LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT == false) {
+            if (LoggerParameter.NORMALIZE_SCENARIO_DATA == false) {
                 log.TransactionScenarioName__c = logEntryEvent.TransactionScenario__c;
             }
 
@@ -312,17 +312,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             );
 
             if (String.isNotBlank(logEntryEvent.EntryScenario__c) == true) {
-                if (
-                    LoggerParameter.STORE_SCENARIOS_IN_CUSTOM_OBJECT == true &&
-                    SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true
-                ) {
+                if (LoggerParameter.NORMALIZE_SCENARIO_DATA == true && SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true) {
                     logEntry.EntryScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.EntryScenario__c).Id;
                 } else {
                     logEntry.EntryScenarioName__c = logEntryEvent.EntryScenario__c;
                 }
             }
 
-            if (String.isNotBlank(logEntryEvent.Tags__c) == true && LoggerParameter.STORE_TAGS_IN_CUSTOM_OBJECTS == false) {
+            if (String.isNotBlank(logEntryEvent.Tags__c) == true && LoggerParameter.NORMALIZE_TAG_DATA == false) {
                 logEntry.Tags__c = logEntryEvent.Tags__c;
             }
 
@@ -370,7 +367,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLogEntryTags() {
-        if (LoggerParameter.ENABLE_TAGGING == false || LoggerParameter.STORE_TAGS_IN_CUSTOM_OBJECTS == false || this.tagNames.isEmpty() == true) {
+        if (LoggerParameter.ENABLE_TAGGING == false || LoggerParameter.NORMALIZE_TAG_DATA == false || this.tagNames.isEmpty() == true) {
             return;
         }
 
