@@ -126,6 +126,90 @@ private class LogEntryHandler_Tests {
     }
 
     @IsTest
+    static void it_should_set_hasInlineTags_to_true_when_populated_on_insert() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        String inlineTags = String.join(new List<String>{ 'some tag', 'another tag' }, '\n');
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = inlineTags);
+        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+
+        LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.Assert.areEqual(true, logEntry.HasInlineTags__c);
+        System.Assert.areEqual(inlineTags, logEntry.Tags__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasInlineTags_to_false_when_not_populated_on_insert() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        String inlineTags = null;
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = inlineTags);
+        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+
+        LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.Assert.areEqual(false, logEntry.HasInlineTags__c);
+        System.Assert.isNull(logEntry.Tags__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasInlineTags_to_true_when_populated_on_updated() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = null);
+        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+        LoggerDataStore.getDatabase().insertRecord(logEntry);
+        logEntry = [SELECT Id, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.Assert.isNull(logEntry.Tags__c);
+        String inlineTags = String.join(new List<String>{ 'some tag', 'another tag' }, '\n');
+        logEntry.Tags__c = inlineTags;
+
+        update logEntry;
+
+        System.Assert.areEqual(
+            4,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+        );
+        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.Assert.areEqual(true, logEntry.HasInlineTags__c);
+        System.Assert.areEqual(inlineTags, logEntry.Tags__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasInlineTags_to_false_when_not_populated_on_updated() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        String inlineTags = String.join(new List<String>{ 'some tag', 'another tag' }, '\n');
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = inlineTags);
+        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+        LoggerDataStore.getDatabase().insertRecord(logEntry);
+        logEntry = [SELECT Id, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.Assert.areEqual(inlineTags, logEntry.Tags__c);
+        logEntry.Tags__c = null;
+
+        update logEntry;
+
+        System.Assert.areEqual(
+            4,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+        );
+        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.Assert.areEqual(false, logEntry.HasInlineTags__c);
+        System.Assert.isNull(logEntry.Tags__c);
+    }
+
+    @IsTest
     static void it_should_set_hasRecordJson_to_true_when_populated_on_insert() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         String recordJson = '{}';

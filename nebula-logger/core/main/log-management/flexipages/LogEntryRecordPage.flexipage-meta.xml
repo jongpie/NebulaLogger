@@ -1313,9 +1313,9 @@
                 <identifier>force_relatedListSingleContainer</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.ShouldDisplayRelatedLogEntryTags__c}</leftValue>
+                        <leftValue>{!Record.HasInlineTags__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
+                        <rightValue>false</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -1334,9 +1334,9 @@
                 <identifier>flexipage_fieldSection11</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.ShouldDisplayRelatedLogEntryTags__c}</leftValue>
+                        <leftValue>{!Record.HasInlineTags__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>false</rightValue>
+                        <rightValue>true</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

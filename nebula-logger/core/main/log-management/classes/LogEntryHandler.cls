@@ -48,6 +48,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         // So, this code handles maintaing some checkbox fields via Apex instead
         for (LogEntry__c logEntry : this.logEntries) {
             logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
+            logEntry.HasInlineTags__c = logEntry.Tags__c != null;
             logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
             logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
         }

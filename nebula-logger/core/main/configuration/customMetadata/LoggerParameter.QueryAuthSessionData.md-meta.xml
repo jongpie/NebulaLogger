@@ -15,10 +15,6 @@
 When set to &apos;false&apos;, the AuthSession object will not be queried, and the related fields will be null.</value>
     </values>
     <values>
-        <field>ShortValue__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">true</value>
     </values>

@@ -13,10 +13,6 @@
 By default, the included cache partition &apos;LoggerCache&apos; is used.</value>
     </values>
     <values>
-        <field>ShortValue__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">LoggerCache</value>
     </values>

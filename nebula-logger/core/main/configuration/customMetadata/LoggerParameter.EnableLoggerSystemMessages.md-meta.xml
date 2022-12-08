@@ -11,10 +11,6 @@
         <value xsi:type="xsd:string">When enabled, log entries may be generated that contain additional details about the logging system.</value>
     </values>
     <values>
-        <field>ShortValue__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">true</value>
     </values>

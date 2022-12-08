@@ -11,10 +11,6 @@
         <value xsi:type="xsd:string">Contains the fields to be displayed in the Tabular view of the Log Entry Event Stream Tab under the Logger Console.</value>
     </values>
     <values>
-        <field>ShortValue__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>Value__c</field>
         <value
             xsi:type="xsd:string"
