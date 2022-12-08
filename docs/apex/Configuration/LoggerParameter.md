@@ -26,6 +26,14 @@ Indicates if Nebula Logger will append its own log entries about the logging sys
 
 Indicates if Nebula Logger&apos;s tagging system is enabled. Controlled by the custom metadata record `LoggerParameter.EnableTagging`, or `true` as the default
 
+#### `NORMALIZE_SCENARIO_DATA` → `Boolean`
+
+Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`, or in the fields `Log__c.TransactionScenarioName__c` &amp; `LogEntry__c.EntryScenario__c`. Controlled by the custom metadata record `LoggerParameter.NormalizeScenarioData`, or `true` as the default
+
+#### `NORMALIZE_TAG_DATA` → `Boolean`
+
+Indicates if Nebula Logger will store tags in the custom objects `LoggerTag__c` &amp; `LogEntryTag__c`, or in the field `LogEntry__c.Tags__c`. Controlled by the custom metadata record `LoggerParameter.NormalizeTagData`, or `true` as the default
+
 #### `PLATFORM_CACHE_PARTITION_NAME` → `String`
 
 The name of the Platform Cache partition to use for caching (when platform cache is enabled). Controlled by the custom metadata record `LoggerParameter.PlatformCachePartitionName`, or `LoggerCache` as the default
@@ -76,7 +84,7 @@ Indicates if Nebula Logger queries `User` data is queried synchronously &amp; po
 
 #### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
 
-Indicates if Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default
+Indicates if Nebula Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default
 
 #### `SYSTEM_DEBUG_MESSAGE_FORMAT` → `String`
 

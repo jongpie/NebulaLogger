@@ -262,8 +262,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.TransactionScenario__c</fieldItem>
-                <identifier>RecordTransactionScenario__cField</identifier>
+                <fieldItem>Record.TransactionScenarioLink__c</fieldItem>
+                <identifier>RecordTransactionScenarioLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

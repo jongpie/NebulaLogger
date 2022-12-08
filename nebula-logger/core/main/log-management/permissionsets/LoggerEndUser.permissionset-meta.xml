@@ -100,6 +100,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.EntryScenarioLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.EntryScenarioName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.EntryScenario__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -906,6 +916,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TransactionId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TransactionScenarioLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TransactionScenarioName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

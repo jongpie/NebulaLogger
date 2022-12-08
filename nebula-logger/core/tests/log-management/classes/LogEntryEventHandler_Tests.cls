@@ -225,6 +225,37 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_normalize_scenario_data_when_data_normalization_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.EntryScenario__c = 'some entry scenario';
+        logEntryEvent.TransactionScenario__c = 'some transaction scenario';
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.NORMALIZE_SCENARIO_DATA);
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerScenario__c]);
+        Log__c log = getLog();
+        System.Assert.isNull(log.TransactionScenario__c);
+        System.Assert.areEqual(logEntryEvent.TransactionScenario__c, log.TransactionScenarioName__c);
+        System.Assert.areEqual(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+        System.Assert.isNull(logEntry.EntryScenario__c);
+        System.Assert.areEqual(logEntryEvent.EntryScenario__c, logEntry.EntryScenarioName__c);
+    }
+
+    @IsTest
     static void it_should_upsert_logger_scenarios_when_transaction_scenario_specified() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -605,7 +636,35 @@ private class LogEntryEventHandler_Tests {
     // }
 
     @IsTest
-    static void it_should_create_tag_records_when_enabled() {
+    static void it_should_not_normalize_tag_data_when_data_normalization_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.Tags__c = 'some entry scenario';
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.NORMALIZE_TAG_DATA);
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerTag__c]);
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntryTag__c]);
+        Log__c log = getLog();
+        System.Assert.areEqual(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+        System.Assert.areEqual(logEntryEvent.Tags__c, logEntry.Tags__c);
+    }
+
+    @IsTest
+    static void it_should_create_tag_records_when_tagging_is_enabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
@@ -1075,6 +1134,7 @@ private class LogEntryEventHandler_Tests {
                 TransactionScenario__c,
                 TransactionScenario__r.Name,
                 TransactionScenario__r.UniqueId__c,
+                TransactionScenarioName__c,
                 UserLicenseDefinitionKey__c,
                 UserLicenseId__c,
                 UserLicenseName__c,
@@ -1093,6 +1153,7 @@ private class LogEntryEventHandler_Tests {
                         EntryScenario__c,
                         EntryScenario__r.Name,
                         EntryScenario__r.UniqueId__c,
+                        EntryScenarioName__c,
                         EpochTimestamp__c,
                         ExceptionStackTrace__c,
                         ExceptionType__c,
@@ -1156,6 +1217,7 @@ private class LogEntryEventHandler_Tests {
                         RecordSObjectType__c,
                         RecordSObjectTypeNamespace__c,
                         StackTrace__c,
+                        Tags__c,
                         Timestamp__c,
                         TransactionEntryNumber__c,
                         TriggerIsExecuting__c,
