@@ -330,7 +330,8 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_user_search_results_list_when_matches_found() {
-        String searchTerm = '%' + System.UserInfo.getFirstName() + '%';
+        // Using lastName (required field) instead of the optional field firstName
+        String searchTerm = '%' + System.UserInfo.getLastName() + '%'; 
         Map<Id, User> expectedResultsById = new Map<Id, User>(
             [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm]
         );
