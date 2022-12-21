@@ -12,9 +12,26 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     @TestVisible
     private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
     @TestVisible
+    private static final String FIELD_SET_NAME = LoggerParameter.getString('SlackFieldSet', 'SlackNotificationFields');
+    @TestVisible
+    private static final Boolean IGNORE_NULL_FIELDS = true;
+    @TestVisible
+    private static final List<Schema.SObjectField> LOG_ENTRY_FIELDS = new List<Schema.SObjectField>{
+        Schema.LogEntry__c.ExceptionStackTrace__c,
+        Schema.LogEntry__c.StackTrace__c
+    };
+    @TestVisible
+    private static final String NOTIFICATION_COLOR_RED = '#FF7373';
+    @TestVisible
+    private static final String NOTIFICATION_COLOR_ORANGE = '#FFC873';
+    @TestVisible
+    private static final String NOTIFICATION_COLOR_GREEN = '#7CD197';
+    @TestVisible
     private static final System.LoggingLevel NOTIFICATION_LOGGING_LEVEL = Logger.getLoggingLevel(
-        LoggerParameter.getString('SlackNotificationLoggingLevel', null)
+        LoggerParameter.getString('SlackNotificationLoggingLevel', System.LoggingLevel.WARN.name())
     );
+    @TestVisible
+    private static final String NOTIFICATION_TITLE = 'Salesforce Log Alert';
 
     private List<Log__c> logs;
 
@@ -35,15 +52,13 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
      * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
      */
-    @SuppressWarnings('PMD.ExcessiveParameterList')
-    public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
-        if (input.sobjectType != Schema.Log__c.SObjectType || String.isBlank(ENDPOINT) == true) {
+    public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext context) {
+        if (context.sobjectType != Schema.Log__c.SObjectType || String.isBlank(ENDPOINT) == true) {
             return;
         }
 
-        this.logs = (List<Log__c>) input.triggerNew;
-
-        switch on input.triggerOperationType {
+        this.logs = (List<Log__c>) context.triggerNew;
+        switch on context.triggerOperationType {
             when BEFORE_INSERT, BEFORE_UPDATE {
                 this.flagLogsForSlackNotification();
             }
@@ -60,6 +75,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     public void execute(System.QueueableContext queueableContext) {
         // Since this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();
+        // this.requeryTags();
 
         if (this.logs.isEmpty() == true) {
             return;
@@ -72,34 +88,33 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
                 // If there are too many logs to send in the same transaction
                 // add them to the unsentLogs list, which will be queued as a separate job
                 unsentLogs.add(log);
-            } else {
-                System.HttpRequest request = this.createSlackHttpRequest();
-
-                NotificationDto notification = new NotificationDto();
-                notification.text = 'Salesforce Log Alert';
-                notification.attachments = new List<LogDto>{ this.convertLog(log) };
-
-                // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
-                String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
-                request.setBody(notificationJson);
-                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                    Logger.finest('Sending log entries to Slack endpoint').setHttpRequestDetails(request);
-                }
-
-                System.HttpResponse response = new System.Http().send(request);
-                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                    Logger.finest('Sent log entries to Slack endpoint').setHttpResponseDetails(response);
-                }
-
-                log.SlackNotificationDate__c = System.now();
-                sentLogs.add(log);
+                continue;
             }
+
+            System.HttpRequest request = this.createSlackHttpRequest();
+            NotificationDto notification = new NotificationDto();
+            notification.text = NOTIFICATION_TITLE;
+            notification.attachments = new List<LogDto>{ this.convertLog(log) };
+            // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
+            String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
+            request.setBody(notificationJson);
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                Logger.finest('Sending log entries to Slack endpoint').setHttpRequestDetails(request);
+            }
+
+            System.HttpResponse response = new System.Http().send(request);
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                Logger.finest('Sent log entries to Slack endpoint').setHttpResponseDetails(response);
+            }
+
+            log.SlackNotificationDate__c = System.now();
+            sentLogs.add(log);
         }
         Logger.saveLog();
         update sentLogs;
 
         // If any logs couldn't be sent due to governor limits, start a new instance of the job
-        if (unsentLogs.isEmpty() == false) {
+        if (unsentLogs.size() > 0) {
             System.enqueueJob(new SlackLoggerPlugin(unsentLogs));
         }
     }
@@ -123,7 +138,6 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
                 logsToSend.add(log);
             }
         }
-
         // Since plugins are called from trigger handlers, and triggers can't make callouts
         // run this class as a queueable (async) job
         if (logsToSend.isEmpty() == false) {
@@ -131,46 +145,35 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         }
     }
 
+    private Schema.FieldSet getFieldSet() {
+        return Schema.SObjectType.Log__c.fieldSets.getMap().get(FIELD_SET_NAME);
+    }
+
     private void requeryLogs() {
-        // TODO: switch to dynamically querying based on a new `Log__c` field set parameter
-        this.logs = [
-            SELECT
-                Id,
-                Name,
-                ApiVersion__c,
-                LoggedBy__c,
-                LoggedBy__r.Username,
-                OwnerId,
-                TYPEOF Owner
-                    WHEN User THEN Username
-                    ELSE Name
-                END,
-                MaxLogEntryLoggingLevelOrdinal__c,
-                OrganizationId__c,
-                OrganizationEnvironmentType__c,
-                OrganizationInstanceName__c,
-                OrganizationName__c,
-                Priority__c,
-                StartTime__c,
-                TimeZoneId__c,
-                TotalLogEntries__c,
-                TotalERRORLogEntries__c,
-                TotalWARNLogEntries__c,
-                TransactionId__c,
-                (
-                    SELECT Id, LoggingLevel__c, Message__c, ExceptionStackTrace__c, StackTrace__c
-                    FROM LogEntries__r
-                    WHERE LoggingLevelOrdinal__c >= :NOTIFICATION_LOGGING_LEVEL.ordinal()
-                    ORDER BY Timestamp__c DESC
-                    LIMIT 1
-                )
-            FROM Log__c
-            WHERE
-                Id IN :this.logs
-                AND MaxLogEntryLoggingLevelOrdinal__c >= :NOTIFICATION_LOGGING_LEVEL.ordinal()
-                AND SendSlackNotification__c = TRUE
-                AND SlackNotificationDate__c = NULL
-        ];
+        Integer loggingLevelOrdinal = NOTIFICATION_LOGGING_LEVEL.ordinal();
+        String logEntryChildQuery =
+            '\n(' +
+            '\nSELECT Id, LoggingLevel__c, Message__c, ExceptionStackTrace__c, StackTrace__c' +
+            '\nFROM LogEntries__r' +
+            '\nWHERE LoggingLevelOrdinal__c >= :loggingLevelOrdinal' +
+            '\nORDER BY Timestamp__c DESC' +
+            '\nLIMIT 1' +
+            '\n)';
+        List<String> fieldNames = new List<String>{ logEntryChildQuery, 'LoggedBy__r.Username', 'TYPEOF Owner WHEN User THEN Username ELSE Name END' };
+        for (Schema.FieldSetMember fieldSetMember : getFieldSet().getFields()) {
+            fieldNames.add(fieldSetMember.getFieldPath());
+        }
+        // Deduplicate the list of field names
+        fieldNames = new List<String>(new Set<String>(fieldNames));
+        String query =
+            'SELECT ' +
+            String.join(fieldNames, ', ') +
+            ' FROM Log__c' +
+            '\nWHERE Id IN :logs' +
+            '\nAND MaxLogEntryLoggingLevelOrdinal__c >= :loggingLevelOrdinal' +
+            '\nAND SendSlackNotification__c = TRUE' +
+            '\nAND SlackNotificationDate__c = NULL';
+        this.logs = (List<Log__c>) Database.query(query);
     }
 
     private System.HttpRequest createSlackHttpRequest() {
@@ -178,139 +181,139 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         request.setEndpoint(ENDPOINT);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
-
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.finest('Created Slack HTTP Request').setHttpRequestDetails(request);
         }
-
         return request;
     }
 
     @SuppressWarnings('PMD.NcssMethodCount')
     private LogDto convertLog(Log__c log) {
-        LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
-        String messageText = 'Last Log Entry Message' + '\n```' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '```';
+        LogDto notification = createNotification(log);
 
+        notification.fields = new List<FieldDto>();
+        notification.fields.addAll(createNotificationFields(LOG_ENTRY_FIELDS, log.LogEntries__r.get(0)));
+        notification.fields.addAll(createNotificationFields(getFieldSet().getFields(), log));
+        // notification.fields.addAll(createTagsNotificationFields(log));
+
+        return notification;
+    }
+
+    private LogDto createNotification(Log__c log) {
+        LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
+        String lastLogEntryMessage = 'Last Log Entry Message' + '\n```' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '```';
         LogDto notification = new LogDto();
         notification.author_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
         notification.author_name = log.LoggedBy__r.Username;
         notification.color = this.getNotificationColor(log);
         notification.fields = new List<FieldDto>();
-        notification.text = messageText; //Schema.Log__c.TotalLogEntries__c.getDescribe().getLabel() + ': `' + String.valueOf(log.TotalLogEntries__c) + '`';
+        notification.text = lastLogEntryMessage;
         notification.title = log.Name;
-        notification.title_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
-
-        if (String.isNotBlank(lastLogEntry.ExceptionStackTrace__c) == true) {
-            FieldDto exceptionStackTraceField = new FieldDto();
-            exceptionStackTraceField.isShort = false;
-            exceptionStackTraceField.title = Schema.LogEntry__c.ExceptionStackTrace__c.getDescribe().getLabel();
-            exceptionStackTraceField.value = '```\n' + lastLogEntry.ExceptionStackTrace__c + '\n```';
-            notification.fields.add(exceptionStackTraceField);
-        }
-
-        FieldDto stackTraceField = new FieldDto();
-        stackTraceField.isShort = false;
-        stackTraceField.title = Schema.LogEntry__c.StackTrace__c.getDescribe().getLabel();
-        stackTraceField.value = '```\n' + lastLogEntry.StackTrace__c + '\n```';
-        notification.fields.add(stackTraceField);
-
-        // TODO: switch to dynamically creating Slack DTO fields based on a new `Log__c` field set parameter
-        FieldDto startTimeField = new FieldDto();
-        startTimeField.isShort = true;
-        startTimeField.title = Schema.Log__c.StartTime__c.getDescribe().getLabel();
-        startTimeField.value = '`' + log.StartTime__c.format() + ' ' + log.TimeZoneId__c + '`';
-        notification.fields.add(startTimeField);
-
-        FieldDto transactionIdField = new FieldDto();
-        transactionIdField.isShort = true;
-        transactionIdField.title = Schema.Log__c.TransactionId__c.getDescribe().getLabel();
-        transactionIdField.value = '`' + log.TransactionId__c + '`';
-        notification.fields.add(transactionIdField);
-
-        FieldDto totalERROREntriesField = new FieldDto();
-        totalERROREntriesField.isShort = true;
-        totalERROREntriesField.title = Schema.Log__c.TotalERRORLogEntries__c.getDescribe().getLabel();
-        totalERROREntriesField.value = '`' + String.valueOf(log.TotalERRORLogEntries__c) + '`';
-        notification.fields.add(totalERROREntriesField);
-
-        FieldDto totalWARNEntriesField = new FieldDto();
-        totalWARNEntriesField.isShort = true;
-        totalWARNEntriesField.title = Schema.Log__c.TotalWARNLogEntries__c.getDescribe().getLabel();
-        totalWARNEntriesField.value = '`' + String.valueOf(log.TotalWARNLogEntries__c) + '`';
-        notification.fields.add(totalWARNEntriesField);
-
-        // TODO Add Scenario__c field
-
-        String logOwnerType = log.OwnerId.getSObjectType().getDescribe().getName();
-        FieldDto logOwnerNameField = new FieldDto();
-        logOwnerNameField.isShort = true;
-        logOwnerNameField.title = 'Log Owner';
-        logOwnerNameField.value = logOwnerType == 'Group' ? '`Queue: ' + log.Owner.Name + '`' : '`User: ' + log.Owner.Username + '`';
-        notification.fields.add(logOwnerNameField);
-
-        FieldDto priorityField = new FieldDto();
-        priorityField.isShort = true;
-        priorityField.title = Schema.Log__c.Priority__c.getDescribe().getLabel();
-        priorityField.value = '`' + log.Priority__c + '`';
-        notification.fields.add(priorityField);
-
-        FieldDto orgIdField = new FieldDto();
-        orgIdField.isShort = true;
-        orgIdField.title = 'Org ID';
-        orgIdField.value = '`' + log.OrganizationId__c + '`';
-        notification.fields.add(orgIdField);
-
-        FieldDto orgNameField = new FieldDto();
-        orgNameField.isShort = true;
-        orgNameField.title = 'Org Name';
-        orgNameField.value = '`' + log.OrganizationName__c + '`';
-        notification.fields.add(orgNameField);
-
-        FieldDto orgTypeField = new FieldDto();
-        orgTypeField.isShort = true;
-        orgTypeField.title = 'Org Type & Instance';
-        orgTypeField.value = '`' + log.OrganizationEnvironmentType__c + ' - ' + log.OrganizationInstanceName__c + '`';
-        notification.fields.add(orgTypeField);
-
-        FieldDto orgApiVersion = new FieldDto();
-        orgApiVersion.isShort = true;
-        orgApiVersion.title = Schema.Log__c.ApiVersion__c.getDescribe().getLabel();
-        orgApiVersion.value = '`' + log.ApiVersion__c + '`';
-        notification.fields.add(orgApiVersion);
-
-        // TODO Possible include to LogEntryTag__c (tag names)
+        notification.title_link = System.Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
 
         return notification;
     }
 
     private String getNotificationColor(Log__c log) {
-        String color;
-
         if (log.TotalERRORLogEntries__c >= 1) {
-            color = '#FF7373'; // Red
+            return NOTIFICATION_COLOR_RED;
         } else if (log.TotalWARNLogEntries__c >= 1) {
-            color = '#FFC873'; // Orange
+            return NOTIFICATION_COLOR_ORANGE;
         } else {
-            color = '#7CD197'; // Green
+            return NOTIFICATION_COLOR_GREEN;
+        }
+    }
+
+    private List<FieldDto> createNotificationFields(List<Schema.FieldSetMember> fieldSetMembers, SObject record) {
+        List<FieldDto> notificationFields = new List<FieldDto>();
+        for (Schema.FieldSetMember fieldSetMember : fieldSetMembers) {
+            FieldDto notificationField = this.createRecordFieldDto(fieldSetMember.getFieldPath(), fieldSetMember.getSObjectField(), record);
+            if (notificationField != null) {
+                notificationFields.add(notificationField);
+            }
+        }
+        return notificationFields;
+    }
+
+    private List<FieldDto> createNotificationFields(List<Schema.SObjectField> fields, SObject record) {
+        List<FieldDto> notificationFields = new List<FieldDto>();
+        for (Schema.SObjectField field : fields) {
+            FieldDto notificationField = this.createRecordFieldDto(field.getDescribe().getName(), field, record);
+            if (notificationField != null) {
+                notificationFields.add(notificationField);
+            }
+        }
+        return notificationFields;
+    }
+
+    private List<FieldDto> createTagsNotificationFields(Log__c log) {
+        List<FieldDto> notificationFields = new List<FieldDto>();
+        // TODO Add Scenario__c field
+        // TODO Possible include to LogEntryTag__c (tag names)
+        // TODO bulkify! this is a query within a query
+        List<String> tagNames = new List<String>();
+        List<LoggerTag__c> tags = [
+            SELECT UniqueId__c
+            FROM LoggerTag__c
+            WHERE Id IN (SELECT Tag__c FROM LogEntryTag__c WHERE LogEntry__r.Log__c = :log.Id)
+            ORDER BY UniqueId__c
+        ];
+        for (LoggerTag__c tag : tags) {
+            tagNames.add('`' + tag.UniqueId__c + '`');
+        }
+        if (tags.isEmpty() == false) {
+            FieldDto tagNamesField = new FieldDto();
+            tagNamesField.isShort = false;
+            tagNamesField.fieldPath = 'TODO';
+            tagNamesField.title = 'Tags';
+            tagNamesField.value = String.join(tagNames, '');
+            notificationFields.add(tagNamesField);
+        }
+        return notificationFields;
+    }
+
+    private FieldDto createRecordFieldDto(String fieldPath, Schema.SObjectField field, SObject record) {
+        Integer maxShortLength = 255;
+        Boolean isShort = field.getDescribe().getSoapType() != Schema.SoapType.STRING || field.getDescribe().getLength() > maxShortLength;
+        String valueWrapper = isShort ? '`' : '\n```\n';
+
+        FieldDto fieldDto = new FieldDto();
+        fieldDto.isShort = isShort;
+        fieldDto.fieldPath = fieldPath;
+        fieldDto.title = field.getDescribe().getLabel();
+
+        Object fieldValue;
+        List<String> fieldPieces = fieldPath.split('\\.');
+        if (fieldPieces.size() == 2) {
+            // Field set members can only go up 1 level, so no need to check for multiple
+            // hops to grandparent records
+            SObject parentRecord = record.getSObject(fieldPieces.get(0));
+            fieldValue = parentRecord?.get(fieldPieces.get(1));
+        } else {
+            fieldValue = record.get(fieldPath);
         }
 
-        return color;
+        if (IGNORE_NULL_FIELDS == true && fieldValue == null) {
+            return null;
+        }
+
+        fieldDto.value = String.valueOf(fieldValue);
+        return fieldDto;
     }
 
     // Private DTO classes that match Slack's API
+    @TestVisible
     private class NotificationDto {
         public List<LogDto> attachments;
         public String text;
     }
 
     @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
+    @TestVisible
     private class LogDto {
-        public List<ActionDto> actions;
         public String author_name;
         public String author_link;
-        public String author_icon;
         public String color;
-        public String fallback;
         public List<FieldDto> fields;
         public String pretext;
         public String text;
@@ -318,14 +321,10 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         public String title_link;
     }
 
-    private class ActionDto {
-        public String text;
-        public String type;
-        public String url;
-    }
-
+    @TestVisible
     private class FieldDto {
         public Boolean isShort;
+        public String fieldPath;
         public String title;
         public String value;
     }
