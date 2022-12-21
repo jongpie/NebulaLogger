@@ -239,12 +239,6 @@ private class SlackLoggerPlugin_Tests {
         );
         System.Assert.areEqual(SlackLoggerPlugin.NOTIFICATION_TITLE, slackNotification.text);
         System.Assert.areEqual(1, slackNotification.attachments.size());
-        SlackLoggerPlugin.LogDto logDto = slackNotification.attachments.get(0);
-        Schema.FieldSet fieldSet = Schema.SObjectType.Log__c.fieldSets.SlackNotificationFields;
-        // TODO consider if 1 field is added for tags?
-        Integer expectedFieldSize = fieldSet.fields.size() + SlackLoggerPlugin.LOG_ENTRY_FIELDS.size();
-        // System.Assert.areEqual(expectedFieldSize, logDto.fields.size(), JSON.serializePretty(slackNotification));
-        // System.Assert.fail(JSON.serializePretty(slackNotification));
         validateSlackNotificationFields(slackNotification, log);
 
         return slackNotification;

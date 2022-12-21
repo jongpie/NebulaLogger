@@ -12,7 +12,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     @TestVisible
     private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
     @TestVisible
-    private static final String FIELD_SET_NAME = LoggerParameter.getString('SlackFieldSet', 'SlackNotificationFields');
+    private static final String FIELD_SET_NAME = LoggerParameter.getString('SlackFieldSet', 'SlackLogNotificationFields');
     @TestVisible
     private static final Boolean IGNORE_NULL_FIELDS = true;
     @TestVisible
