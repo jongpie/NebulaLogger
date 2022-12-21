@@ -930,6 +930,94 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_record_fields_for_map_of_sobject_records_when_map_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Map<Id, SObject> userIdToUser;
+        System.assertEquals(null, userIdToUser);
+        builder.setRecord(userIdToUser);
+
+        System.assertEquals(null, builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.assertEquals('Map', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
+    static void it_should_set_record_fields_for_map_of_sobject_records_when_map_is_empty() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Map<Id, SObject> userIdToUser = new Map<Id, SObject>();
+        System.assertEquals(true, userIdToUser.isEmpty());
+        builder.setRecord(userIdToUser);
+
+        System.assertEquals(userIdToUser.size(), builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.assertEquals('Map', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(userIdToUser), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
+    static void it_should_set_record_fields_for_map_of_sobject_records_when_first_record_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Id mockUserId = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        User nullUser;
+        Map<Id, SObject> userIdToUser = new Map<Id, SObject>{
+            mockUserId => nullUser,
+            System.UserInfo.getUserId() => new User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername())
+        };
+        builder.setRecord(userIdToUser);
+
+        String expectedJson = JSON.serializePretty(userIdToUser);
+        System.assertEquals(userIdToUser.size(), builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.assertEquals('Map', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(expectedJson, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
+    static void it_should_set_record_fields_for_map_of_user_records_when_populated() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Map<Id, User> userIdToUser = new Map<Id, User>([SELECT Id, Name, Username, IsActive FROM User LIMIT 5]);
+        builder.setRecord(userIdToUser);
+
+        System.assertEquals(userIdToUser.size(), builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.assertEquals('Map', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(userIdToUser), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
     static void it_should_skip_setting_http_request_fields_when_request_is_null() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
