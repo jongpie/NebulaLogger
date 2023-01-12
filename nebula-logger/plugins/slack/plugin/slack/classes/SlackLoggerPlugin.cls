@@ -75,6 +75,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     public void execute(System.QueueableContext queueableContext) {
         // Since this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();
+        // TODO bulkify tags querying
         // this.requeryTags();
 
         if (this.logs.isEmpty() == true) {
@@ -159,7 +160,12 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             '\nORDER BY Timestamp__c DESC' +
             '\nLIMIT 1' +
             '\n)';
-        List<String> fieldNames = new List<String>{ logEntryChildQuery, 'LoggedBy__r.Username', 'TYPEOF Owner WHEN User THEN Username ELSE Name END' };
+        List<String> fieldNames = new List<String>{
+            Schema.Log__c.Name.getDescribe().getName(),
+            logEntryChildQuery,
+            'LoggedBy__r.Username',
+            'TYPEOF Owner WHEN User THEN Username ELSE Name END'
+        };
         for (Schema.FieldSetMember fieldSetMember : getFieldSet().getFields()) {
             fieldNames.add(fieldSetMember.getFieldPath());
         }
@@ -192,9 +198,9 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         LogDto notification = createNotification(log);
 
         notification.fields = new List<FieldDto>();
-        notification.fields.addAll(createNotificationFields(LOG_ENTRY_FIELDS, log.LogEntries__r.get(0)));
-        notification.fields.addAll(createNotificationFields(getFieldSet().getFields(), log));
-        // notification.fields.addAll(createTagsNotificationFields(log));
+        notification.fields.addAll(createRecordNotificationFields(LOG_ENTRY_FIELDS, log.LogEntries__r.get(0)));
+        notification.fields.addAll(createRecordNotificationFields(getFieldSet().getFields(), log));
+        notification.fields.addAll(createTagsNotificationFields(log));
 
         return notification;
     }
@@ -224,10 +230,10 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         }
     }
 
-    private List<FieldDto> createNotificationFields(List<Schema.FieldSetMember> fieldSetMembers, SObject record) {
+    private List<FieldDto> createRecordNotificationFields(List<Schema.FieldSetMember> fieldSetMembers, SObject record) {
         List<FieldDto> notificationFields = new List<FieldDto>();
         for (Schema.FieldSetMember fieldSetMember : fieldSetMembers) {
-            FieldDto notificationField = this.createRecordFieldDto(fieldSetMember.getFieldPath(), fieldSetMember.getSObjectField(), record);
+            FieldDto notificationField = this.createRecordNotificationField(fieldSetMember.getFieldPath(), fieldSetMember.getSObjectField(), record);
             if (notificationField != null) {
                 notificationFields.add(notificationField);
             }
@@ -235,10 +241,10 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         return notificationFields;
     }
 
-    private List<FieldDto> createNotificationFields(List<Schema.SObjectField> fields, SObject record) {
+    private List<FieldDto> createRecordNotificationFields(List<Schema.SObjectField> fields, SObject record) {
         List<FieldDto> notificationFields = new List<FieldDto>();
         for (Schema.SObjectField field : fields) {
-            FieldDto notificationField = this.createRecordFieldDto(field.getDescribe().getName(), field, record);
+            FieldDto notificationField = this.createRecordNotificationField(field.getDescribe().getName(), field, record);
             if (notificationField != null) {
                 notificationFields.add(notificationField);
             }
@@ -246,39 +252,8 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         return notificationFields;
     }
 
-    private List<FieldDto> createTagsNotificationFields(Log__c log) {
-        List<FieldDto> notificationFields = new List<FieldDto>();
-        // TODO Add Scenario__c field
-        // TODO Possible include to LogEntryTag__c (tag names)
-        // TODO bulkify! this is a query within a query
-        List<String> tagNames = new List<String>();
-        List<LoggerTag__c> tags = [
-            SELECT UniqueId__c
-            FROM LoggerTag__c
-            WHERE Id IN (SELECT Tag__c FROM LogEntryTag__c WHERE LogEntry__r.Log__c = :log.Id)
-            ORDER BY UniqueId__c
-        ];
-        for (LoggerTag__c tag : tags) {
-            tagNames.add('`' + tag.UniqueId__c + '`');
-        }
-        if (tags.isEmpty() == false) {
-            FieldDto tagNamesField = new FieldDto();
-            tagNamesField.isShort = false;
-            tagNamesField.fieldPath = 'TODO';
-            tagNamesField.title = 'Tags';
-            tagNamesField.value = String.join(tagNames, '');
-            notificationFields.add(tagNamesField);
-        }
-        return notificationFields;
-    }
-
-    private FieldDto createRecordFieldDto(String fieldPath, Schema.SObjectField field, SObject record) {
-        Integer maxShortLength = 255;
-        Boolean isShort = field.getDescribe().getSoapType() != Schema.SoapType.STRING || field.getDescribe().getLength() > maxShortLength;
-        String valueWrapper = isShort ? '`' : '\n```\n';
-
+    private FieldDto createRecordNotificationField(String fieldPath, Schema.SObjectField field, SObject record) {
         FieldDto fieldDto = new FieldDto();
-        fieldDto.isShort = isShort;
         fieldDto.fieldPath = fieldPath;
         fieldDto.title = field.getDescribe().getLabel();
 
@@ -297,8 +272,58 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             return null;
         }
 
-        fieldDto.value = String.valueOf(fieldValue);
+        String stringValue = String.valueOf(fieldValue);
+        Integer maxShortLength = 255;
+        fieldDto.isShort = stringValue.contains('\n') == false || stringValue.length() <= maxShortLength;
+        String valueWrapper = fieldDto.isShort == true ? '`' : '\n```\n';
+        fieldDto.value = valueWrapper + stringValue + valueWrapper;
         return fieldDto;
+    }
+
+    private List<FieldDto> createTagsNotificationFields(Log__c log) {
+        List<FieldDto> notificationFields = new List<FieldDto>();
+        // TODO bulkify! this is a query within a query
+        List<String> tagNames = new List<String>();
+        List<LoggerTag__c> tags = [
+            SELECT UniqueId__c
+            FROM LoggerTag__c
+            WHERE Id IN (SELECT Tag__c FROM LogEntryTag__c WHERE LogEntry__r.Log__c = :log.Id)
+            ORDER BY UniqueId__c
+        ];
+        for (LoggerTag__c tag : tags) {
+            tagNames.add('`' + tag.UniqueId__c + '`');
+        }
+        if (tags.isEmpty() == false) {
+            FieldDto tagNamesField = new FieldDto();
+            tagNamesField.isShort = false;
+            tagNamesField.fieldPath = null;
+            tagNamesField.title = 'Tags';
+            tagNamesField.value = String.join(tagNames, ' ');
+            notificationFields.add(tagNamesField);
+        }
+        return notificationFields;
+    }
+
+    private String createTagsField(Log__c log) {
+        // TODO Add Scenario__c field
+        // TODO Possible include to LogEntryTag__c (tag names)
+        // TODO bulkify! this is a query within a query
+        List<String> tagNames = new List<String>();
+        List<LoggerTag__c> tags = [
+            SELECT UniqueId__c
+            FROM LoggerTag__c
+            WHERE Id IN (SELECT Tag__c FROM LogEntryTag__c WHERE LogEntry__r.Log__c = :log.Id)
+            ORDER BY UniqueId__c
+        ];
+
+        if (tagNames.isEmpty() == true) {
+            return null;
+        }
+
+        for (LoggerTag__c tag : tags) {
+            tagNames.add('`' + tag.UniqueId__c + '`');
+        }
+        return String.join(tagNames, ' ');
     }
 
     // Private DTO classes that match Slack's API
@@ -315,6 +340,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         public String author_link;
         public String color;
         public List<FieldDto> fields;
+        public String footer;
         public String pretext;
         public String text;
         public String title;
