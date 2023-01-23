@@ -149,6 +149,8 @@
     <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>LoggerScenarioCompactLayout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description
+    >Used by Nebula Logger to store unique scenarios (text/String) that can be used to identify Log__c and LogEntry__c records via the lookup fields Log__c.TransactionScenario__c and LogEntry__c.EntryScenario__c</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>true</enableFeeds>
@@ -169,8 +171,8 @@
     <pluralLabel>Logger Scenarios</pluralLabel>
     <searchLayouts>
         <excludedStandardButtons>Accept</excludedStandardButtons>
-        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <excludedStandardButtons>Import</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <searchResultsAdditionalFields>UniqueId__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>

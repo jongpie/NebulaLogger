@@ -14,9 +14,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.9.9.NEXT",
-            "versionName": "Scenario and Tag Storage Configurations",
-            "versionDescription": "Added new CMDT records LoggerParameter__mdt.NormalizeScenarioData and LoggerParameter__mdt.NormalizeTagData to control if scenarios & tags are stored in custom objects (default) or text fields (denormalized data)",
+            "versionNumber": "4.9.10.NEXT",
+            "versionName": "Added search result fields for all custom objects",
+            "versionDescription": "Added meaningful fields to each of the included objects' search results layouts - previously, several objects were only showing the Name field. Descriptions have also been added to all custom objects.",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

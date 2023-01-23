@@ -149,6 +149,8 @@
     <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description
+    >Used by Nebula Logger as a junction object to represent a unique relationship between a LogEntry__c record and a LoggerTag__c record</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>true</enableFeeds>
@@ -172,8 +174,8 @@
         <customTabListAdditionalFields>LogEntry__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Tag__c</customTabListAdditionalFields>
         <excludedStandardButtons>Accept</excludedStandardButtons>
-        <excludedStandardButtons>Import</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>Import</excludedStandardButtons>
         <lookupDialogsAdditionalFields>LogEntry__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Tag__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LogEntry__c</lookupPhoneDialogsAdditionalFields>
@@ -181,6 +183,12 @@
         <searchFilterFields>NAME</searchFilterFields>
         <searchFilterFields>LogEntry__c</searchFilterFields>
         <searchFilterFields>Tag__c</searchFilterFields>
+        <searchResultsAdditionalFields>LoggedByUsernameLink__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LogLink__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LogEntryTimestamp__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LogEntry__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LogEntryOrigin__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Tag__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
