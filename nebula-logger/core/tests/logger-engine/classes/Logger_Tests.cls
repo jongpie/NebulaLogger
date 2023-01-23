@@ -44,7 +44,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_settings_default_field_values_when_organization_is_a_sandbox() {
+    static void it_should_properly_set_default_field_values_for_settings_when_organization_is_a_sandbox() {
         Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
         System.Assert.isTrue(mockOrganization.IsSandbox);
         MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
@@ -65,7 +65,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_settings_default_field_values_when_organization_is_not_a_sandbox() {
+    static void it_should_properly_set_default_field_values_for_settings_when_organization_is_not_a_sandbox() {
         Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
         System.Assert.isFalse(mockOrganization.IsSandbox);
         MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
@@ -86,7 +86,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_settings_default_field_values_when_querying_organization_synchronously_is_disabled() {
+    static void it_should_properly_set_default_field_values_for_settings_when_querying_organization_synchronously_is_disabled() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
         System.Assert.isFalse(LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
         LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
@@ -97,6 +97,7 @@ private class Logger_Tests {
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
+        System.Assert.areEqual(0, System.Limits.getQueries());
         System.Assert.areEqual(expectedSettings, returnedSettings);
         System.Assert.isNull(returnedSettings.Id);
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
