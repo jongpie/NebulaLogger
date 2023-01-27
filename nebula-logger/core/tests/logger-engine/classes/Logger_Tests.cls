@@ -164,6 +164,126 @@ private class Logger_Tests {
         System.Assert.areEqual(expectedSettings.Id, returnedSettings.Id);
     }
 
+
+    @IsTest
+    static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_async_in_a_sandbox() {
+        LoggerParameter.setMock(
+                new LoggerParameter__mdt(
+                        DeveloperName = 'QueryOrganizationDataSynchronously',
+                        Value__c = String.valueOf(false)
+                )
+        );
+
+        Organization mockOrganization =
+                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+                    new Organization(),
+                    Schema.Organization.IsSandbox,
+                    true
+                );
+
+        System.Assert.isTrue(mockOrganization.IsSandbox);
+
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        mockSelector.setCachedOrganization(mockOrganization);
+        LoggerEngineDataSelector.setMock(mockSelector);
+
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+    }
+
+    @IsTest
+    static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_async_not_in_a_sandbox() {
+        LoggerParameter.setMock(
+                new LoggerParameter__mdt(
+                        DeveloperName = 'QueryOrganizationDataSynchronously',
+                        Value__c = String.valueOf(false)
+                )
+        );
+
+        Organization mockOrganization =
+                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+                        new Organization(),
+                        Schema.Organization.IsSandbox,
+                        false
+                );
+
+        System.Assert.isFalse(mockOrganization.IsSandbox);
+
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        mockSelector.setCachedOrganization(mockOrganization);
+        LoggerEngineDataSelector.setMock(mockSelector);
+
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+    }
+
+    @IsTest
+    static void it_should_return_new_settings_with_defaults_when_org_default_exists_and_user_id_is_null_and_sync_in_a_sandbox() {
+        LoggerParameter.setMock(
+                new LoggerParameter__mdt(
+                        DeveloperName = 'QueryOrganizationDataSynchronously',
+                        Value__c = String.valueOf(true)
+                )
+        );
+
+        Organization mockOrganization =
+                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+                        new Organization(),
+                        Schema.Organization.IsSandbox,
+                        true
+                );
+
+        System.Assert.isTrue(mockOrganization.IsSandbox);
+
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        mockSelector.setCachedOrganization(mockOrganization);
+        LoggerEngineDataSelector.setMock(mockSelector);
+
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+        expectedSettings.IsApexSystemDebugLoggingEnabled__c = true;
+        expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+    }
+
+    @IsTest
+    static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_sync_not_in_a_sandbox() {
+        LoggerParameter.setMock(
+                new LoggerParameter__mdt(
+                        DeveloperName = 'QueryOrganizationDataSynchronously',
+                        Value__c = String.valueOf(true)
+                )
+        );
+
+        Organization mockOrganization =
+                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+                        new Organization(),
+                        Schema.Organization.IsSandbox,
+                        false
+                );
+
+        System.Assert.isFalse(mockOrganization.IsSandbox);
+
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        mockSelector.setCachedOrganization(mockOrganization);
+        LoggerEngineDataSelector.setMock(mockSelector);
+
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+    }
+
     @IsTest
     static void it_should_generate_a_valid_uuid() {
         Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');

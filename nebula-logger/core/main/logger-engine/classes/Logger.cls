@@ -277,7 +277,7 @@ global with sharing class Logger {
         } else if (loggingUserSettings == null && loggingUser.ProfileId != null && LoggerSettings__c.getValues(loggingUser.ProfileId) != null) {
             // Next, check for Profile-level settings
             loggingUserSettings = LoggerSettings__c.getValues(loggingUser.ProfileId);
-        } else if (LoggerSettings__c.getOrgDefaults().Id != null) {
+        } else if (loggingUser.Id != null && LoggerSettings__c.getOrgDefaults().Id != null) {
             // Next, use the org defaults (if configured)
             loggingUserSettings = LoggerSettings__c.getOrgDefaults();
         } else {
