@@ -20,25 +20,21 @@
     </customValue>
     <customValue>
         <fullName>DEBUG</fullName>
-        <color>#CCFFCC</color>
         <default>false</default>
         <label>DEBUG</label>
     </customValue>
     <customValue>
         <fullName>FINE</fullName>
-        <color>#CCFFCC</color>
         <default>false</default>
         <label>FINE</label>
     </customValue>
     <customValue>
         <fullName>FINER</fullName>
-        <color>#CCFFCC</color>
         <default>false</default>
         <label>FINER</label>
     </customValue>
     <customValue>
         <fullName>FINEST</fullName>
-        <color>#CCFFCC</color>
         <default>false</default>
         <label>FINEST</label>
     </customValue>

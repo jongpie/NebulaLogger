@@ -8,7 +8,8 @@
     TEXT(LoggingLevel__c),
     &apos;ERROR&apos;, &apos;⛔&apos;,
     &apos;WARN&apos;, &apos;⚠️&apos;,
-    &apos;✅&apos;
+    &apos;INFO&apos;, &apos;✅&apos;,
+    &apos;⚙️&apos;
 )
 + &apos; &apos; + TEXT(LoggingLevel__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
