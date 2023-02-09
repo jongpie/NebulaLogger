@@ -164,22 +164,11 @@ private class Logger_Tests {
         System.Assert.areEqual(expectedSettings.Id, returnedSettings.Id);
     }
 
-
     @IsTest
     static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_async_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(false)
-                )
-        );
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
 
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                    new Organization(),
-                    Schema.Organization.IsSandbox,
-                    true
-                );
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
 
         System.Assert.isTrue(mockOrganization.IsSandbox);
 
@@ -196,19 +185,9 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_async_not_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(false)
-                )
-        );
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
 
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                        new Organization(),
-                        Schema.Organization.IsSandbox,
-                        false
-                );
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
 
         System.Assert.isFalse(mockOrganization.IsSandbox);
 
@@ -225,19 +204,9 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_new_settings_with_defaults_when_org_default_exists_and_user_id_is_null_and_sync_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(true)
-                )
-        );
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
 
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                        new Organization(),
-                        Schema.Organization.IsSandbox,
-                        true
-                );
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
 
         System.Assert.isTrue(mockOrganization.IsSandbox);
 
@@ -257,19 +226,9 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_sync_not_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(true)
-                )
-        );
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
 
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                        new Organization(),
-                        Schema.Organization.IsSandbox,
-                        false
-                );
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
 
         System.Assert.isFalse(mockOrganization.IsSandbox);
 

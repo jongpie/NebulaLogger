@@ -16,8 +16,7 @@
             "pathAssistantEnabled": false
         },
         "securitySettings": {
-            "enableAdminLoginAsAnyUser": false,
-            "lockerServiceNext": false
+            "enableAdminLoginAsAnyUser": false
         },
         "userManagementSettings": {
             "enableEnhancedPermsetMgmt": true,
