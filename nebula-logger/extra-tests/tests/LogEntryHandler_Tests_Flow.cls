@@ -56,9 +56,7 @@ private class LogEntryHandler_Tests_Flow {
         System.Assert.areEqual(flowDefinitionView.ProcessType, logEntry.FlowProcessType__c, 'FlowProcessType was incorrect.');
         System.Assert.areEqual(flowDefinitionView.TriggerType, logEntry.FlowTriggerType__c, 'FlowTriggerType was incorrect.');
         System.Assert.areEqual(
-            'v' +
-            flowVersion.ApiVersionRuntime +
-            '.0',
+            'v' + flowVersion.ApiVersionRuntime + '.0',
             logEntry.FlowVersionApiVersionRuntime__c,
             'FlowVersionApiVersionRuntime was incorrect.'
         );

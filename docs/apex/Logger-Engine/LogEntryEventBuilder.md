@@ -465,6 +465,26 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `setRecord(Map<Id, SObject> recordIdToRecord)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s record fields
+
+##### Parameters
+
+| Param              | Description                                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `recordIdToRecord` | The map of `SObject` records related to the entry. The JSON of the map is automatically added to the entry |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `setRecordId(Id recordId)` → `LogEntryEventBuilder`
 
 Deprecated - use `setRecord(Id recordId)` instead

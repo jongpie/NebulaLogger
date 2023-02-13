@@ -276,6 +276,7 @@ private class SlackLoggerPlugin_Tests {
         }
     }
 
+    @SuppressWarnings('PMD.UnusedLocalVariable')
     private static List<Log__c> queryLogs(System.LoggingLevel notificationLoggingLevel) {
         List<String> fieldNames = new List<String>{
             Schema.Log__c.MaxLogEntryLoggingLevelOrdinal__c.getDescribe().getName(),

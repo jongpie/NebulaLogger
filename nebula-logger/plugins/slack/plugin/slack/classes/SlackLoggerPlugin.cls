@@ -7,7 +7,7 @@
  * @group Plugins
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
-@SuppressWarnings('PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerable, Queueable, Database.AllowsCallouts {
     @TestVisible
     private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
@@ -50,7 +50,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     /**
      * @description Handles the integration with Slack. This method is automatically called by Nebula Logger's plugin framework.
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
-     * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
+     * @param  context The instance of `LoggerTriggerableContext`, provided by the logging system
      */
     public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext context) {
         if (context.sobjectType != Schema.Log__c.SObjectType || String.isBlank(ENDPOINT) == true) {
@@ -150,6 +150,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         return Schema.SObjectType.Log__c.fieldSets.getMap().get(FIELD_SET_NAME);
     }
 
+    @SuppressWarnings('PMD.UnusedLocalVariable')
     private void requeryLogs() {
         Integer loggingLevelOrdinal = NOTIFICATION_LOGGING_LEVEL.ordinal();
         String logEntryChildQuery =

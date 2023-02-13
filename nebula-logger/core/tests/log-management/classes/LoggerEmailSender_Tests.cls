@@ -23,9 +23,9 @@ private class LoggerEmailSender_Tests {
                 true,
                 matchesUserNotification || matchesEmailListNotification,
                 'Returned recipient ' +
-                recipient +
-                ' should match either the user notification or the email list notification\n' +
-                JSON.serializePretty(LoggerEmailSender.MOCK_NOTIFICATIONS)
+                    recipient +
+                    ' should match either the user notification or the email list notification\n' +
+                    JSON.serializePretty(LoggerEmailSender.MOCK_NOTIFICATIONS)
             );
         }
     }

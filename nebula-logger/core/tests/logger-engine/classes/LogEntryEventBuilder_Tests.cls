@@ -1370,12 +1370,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = example.myMethod(userSettings);
 
         System.Assert.areEqual(
-            DebugStringExample.class.getName() +
-            '.myMethod' +
-            '\n' +
-            example.loggingString +
-            ': ' +
-            System.LoggingLevel.DEBUG.name(),
+            DebugStringExample.class.getName() + '.myMethod' + '\n' + example.loggingString + ': ' + System.LoggingLevel.DEBUG.name(),
             builder.debugMessage
         );
     }
