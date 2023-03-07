@@ -93,7 +93,7 @@ Nebula Logger is available as both an unlocked package and a managed package. Th
 
 ## Getting Started
 
-After deploying Nebula Logger to your org, there are a few additional configuration changes needed...
+After installing Nebula Logger in your org, there are a few additional configuration changes needed...
 
 -   Assign permission set(s) to users
     -   `LoggerLogCreator` provides the minimum access needed for users to generate logs via Apex, Lightning Components, Flow or Process Builder

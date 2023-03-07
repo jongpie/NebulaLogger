@@ -16,6 +16,8 @@
     + &apos; &apos; + TEXT(ROUND(LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100, 2)) + &apos;% (&apos;
     + TEXT(LimitsEmailInvocationsUsed__c) + &apos; / &apos; + TEXT(LimitsEmailInvocationsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText
+    >✅when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>
     <label>Email Invocations</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
