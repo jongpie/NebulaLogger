@@ -498,8 +498,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private static Boolean isRuleCriteriaMet(LogEntry__c logEntry, LogEntryTagRule__mdt rule) {
         Boolean ruleCriteriaMet = false;
-        String logEntryFieldValue = String.valueOf(logEntry.get(rule.SObjectField__c));
         String ruleComparisonValue = rule.ComparisonValue__c;
+        String logEntryFieldValue = rule.SObjectField__c == null ||
+            logEntry.get(rule.SObjectField__c) == null
+            ? ''
+            : String.valueOf(logEntry.get(rule.SObjectField__c));
 
         switch on rule?.ComparisonType__c.toUpperCase() {
             when 'CONTAINS' {
