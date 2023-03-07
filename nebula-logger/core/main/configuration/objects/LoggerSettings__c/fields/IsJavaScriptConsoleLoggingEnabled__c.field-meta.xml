@@ -3,7 +3,7 @@
     <fullName>IsJavaScriptConsoleLoggingEnabled__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>CCPA;GDPR;PII</complianceGroup>
-    <defaultValue>false</defaultValue>
+    <defaultValue>true</defaultValue>
     <externalId>false</externalId>
     <inlineHelpText
     >When enabled, Logger will automatically call the browser&apos;s console.log() function when logging via lightning components. To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.</inlineHelpText>
