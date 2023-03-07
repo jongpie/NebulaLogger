@@ -37,7 +37,6 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedSettings.IsJavaScriptConsoleLoggingEnabled__c);
         System.Assert.areEqual(System.LoggingLevel.FINEST.name(), returnedSettings.LoggingLevel__c);
         System.Assert.isNull(returnedSettings.SetupOwnerId);
-
     }
 
     @IsTest

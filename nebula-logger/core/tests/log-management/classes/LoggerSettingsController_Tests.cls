@@ -210,7 +210,7 @@ private class LoggerSettingsController_Tests {
 
         LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
 
-        System.Assert.areEqual(expectedNewRecord, newRecord, 'Expected record: ' + JSON.serializePretty(expectedNewRecord) + ', actual record: ' + JSON.serializePretty(newRecord));
+        System.Assert.areEqual(expectedNewRecord, newRecord);
         System.Assert.isNull(newRecord.Id);
         System.Assert.isNull(newRecord.SetupOwnerId);
     }
