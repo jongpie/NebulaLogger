@@ -5,16 +5,10 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <formula>IF(
-        AND(
-            LimitsAsyncCallsMax__c != 0,
-            (LimitsAsyncCallsUsed__c / LimitsAsyncCallsMax__c * 100) &gt;= 90
-        ),
+        (LimitsAsyncCallsUsed__c / LimitsAsyncCallsMax__c * 100) &gt;= 90,
         &quot;⛔&quot;,
         IF(
-            OR(
-                LimitsAsyncCallsMax__c = 0,
-                (LimitsAsyncCallsUsed__c / LimitsAsyncCallsMax__c * 100) &lt; 90 &amp;&amp; (LimitsAsyncCallsUsed__c / LimitsAsyncCallsMax__c * 100) &gt;= 80
-            ),
+            (LimitsAsyncCallsUsed__c / LimitsAsyncCallsMax__c * 100) &lt; 90 &amp;&amp; (LimitsAsyncCallsUsed__c / LimitsAsyncCallsMax__c * 100) &gt;= 80,
             &quot;⚠️&quot;,
             &quot;✅&quot;
         )
@@ -22,7 +16,7 @@
     + &apos; &apos; + TEXT(ROUND(LimitsAsyncCallsUsed__c / LimitsAsyncCallsMax__c * 100, 2)) + &apos;% (&apos;
     + TEXT(LimitsAsyncCallsUsed__c) + &apos; / &apos; + TEXT(LimitsAsyncCallsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <inlineHelpText>✅when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>
+    <inlineHelpText>✅ when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>
     <label>Async Calls</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
