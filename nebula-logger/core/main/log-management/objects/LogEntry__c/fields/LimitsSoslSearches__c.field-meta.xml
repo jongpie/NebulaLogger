@@ -16,7 +16,8 @@
     + &apos; &apos; + TEXT(ROUND(LimitsSoslSearchesUsed__c / LimitsSoslSearchesMax__c * 100, 2)) + &apos;% (&apos;
     + TEXT(LimitsSoslSearchesUsed__c) + &apos; / &apos; + TEXT(LimitsSoslSearchesMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>SOSL Searches</label>x
+    <inlineHelpText>✅ when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>
+    <label>SOSL Searches</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
     <trackTrending>false</trackTrending>

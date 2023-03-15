@@ -40,6 +40,20 @@ List of records to save.
 
 Default constructor
 
+#### `createSettings()` → `LoggerSettings__c`
+
+Creates a new, unsaved `LoggerSettings__c` record
+
+##### Return
+
+**Type**
+
+LoggerSettings\_\_c
+
+**Description**
+
+A new `LoggerSettings__c` record, with all fields populated with default field values
+
 #### `debug(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`

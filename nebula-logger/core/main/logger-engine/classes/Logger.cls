@@ -10,12 +10,12 @@
  * @see LogMessage
  */
 @SuppressWarnings(
-    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.9.9';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.9.11';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -81,8 +81,8 @@ global with sharing class Logger {
     static {
         // 1 of 2 places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
-        System.debug(System.LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
-        System.debug(System.LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -258,6 +258,14 @@ global with sharing class Logger {
     }
 
     /**
+     * @description Creates a new, unsaved `LoggerSettings__c` record
+     * @return   A new `LoggerSettings__c` record, with all fields populated with default field values
+     */
+    public static LoggerSettings__c createSettings() {
+        return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+    }
+
+    /**
      * @description Returns the specified user's instance of `LoggerSettings__c`
      * @param loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
      * @return LoggerSettings__c - The specified user's instance of the custom settings
@@ -281,15 +289,7 @@ global with sharing class Logger {
             // Next, use the org defaults (if configured)
             loggingUserSettings = LoggerSettings__c.getOrgDefaults();
         } else {
-            loggingUserSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
-            if (
-                LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == true &&
-                LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == true
-            ) {
-                loggingUserSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-                loggingUserSettings.IsApexSystemDebugLoggingEnabled__c = true;
-                loggingUserSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
-            }
+            loggingUserSettings = createSettings();
         }
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
@@ -3048,7 +3048,7 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private final String baseURL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v53.0';
+        private final String baseURL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v56.0';
         private final String compositeEndpoint = '/composite/sobjects';
 
         @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')

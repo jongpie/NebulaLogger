@@ -201,8 +201,30 @@ private class LoggerSettingsController_Tests {
     }
 
     @IsTest
-    static void it_should_create_new_record() {
-        LoggerSettings__c expectedNewRecord = Logger.getUserSettings(new User());
+    static void it_should_create_new_record_when_organization_is_a_sandbox() {
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
+        System.Assert.isTrue(mockOrganization.IsSandbox);
+        LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
+        System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
+        LoggerSettings__c expectedNewRecord = Logger.createSettings();
+
+        LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
+
+        System.Assert.areEqual(expectedNewRecord, newRecord);
+        System.Assert.isNull(newRecord.Id);
+        System.Assert.isNull(newRecord.SetupOwnerId);
+    }
+
+    @IsTest
+    static void it_should_create_new_record_when_organization_is_not_a_sandbox() {
+        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
+        System.Assert.isFalse(mockOrganization.IsSandbox);
+        LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
+        System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
+        LoggerSettings__c expectedNewRecord = Logger.createSettings();
+        expectedNewRecord.IsApexSystemDebugLoggingEnabled__c = false;
+        expectedNewRecord.IsJavaScriptConsoleLoggingEnabled__c = false;
+        expectedNewRecord.LoggingLevel__c = System.LoggingLevel.INFO.name();
 
         LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
 

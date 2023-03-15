@@ -92,10 +92,7 @@ private class LogBatchPurger_Tests_Flow {
         System.Assert.areEqual(
             MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
             flowStartPlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),
-            'Flow should have returned the variable ' +
-            MOCK_FLOW_OUTPUT_VARIABLE_NAME +
-            ' with the value + ' +
-            MOCK_FLOW_OUTPUT_VARIABLE_VALUE
+            'Flow should have returned the variable ' + MOCK_FLOW_OUTPUT_VARIABLE_NAME + ' with the value + ' + MOCK_FLOW_OUTPUT_VARIABLE_VALUE
         );
     }
 
@@ -145,10 +142,7 @@ private class LogBatchPurger_Tests_Flow {
         System.Assert.areEqual(
             MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
             flowExecutePlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),
-            'Flow should have returned the variable ' +
-            MOCK_FLOW_OUTPUT_VARIABLE_NAME +
-            ' with the value + ' +
-            MOCK_FLOW_OUTPUT_VARIABLE_VALUE
+            'Flow should have returned the variable ' + MOCK_FLOW_OUTPUT_VARIABLE_NAME + ' with the value + ' + MOCK_FLOW_OUTPUT_VARIABLE_VALUE
         );
     }
 

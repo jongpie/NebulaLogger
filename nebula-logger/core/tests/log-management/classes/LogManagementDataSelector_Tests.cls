@@ -23,11 +23,7 @@ private class LogManagementDataSelector_Tests {
         Set<String> targetFieldNames = new Set<String>{ Schema.User.Id.getDescribe().getName(), Schema.User.Name.getDescribe().getName() };
         List<Id> targetIds = new List<Id>(new Map<Id, User>([SELECT Id FROM User LIMIT 3]).keySet());
         List<User> expectedResults = Database.query(
-            'SELECT ' +
-            String.join(new List<String>(targetFieldNames), ', ') +
-            ' FROM ' +
-            targetSObjectType +
-            ' WHERE Id IN :targetIds'
+            'SELECT ' + String.join(new List<String>(targetFieldNames), ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds'
         );
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getById(targetSObjectType, targetFieldNames, targetIds);

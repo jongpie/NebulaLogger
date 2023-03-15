@@ -85,9 +85,13 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static LoggerSettings__c createRecord() {
-        // By passing an empty User record, it ensures that the returned LoggerSettings__c record
-        // is not tied to a specific User or Profile (or Organization)
-        return Logger.getUserSettings(new User());
+        LoggerSettings__c defaultSettings = Logger.createSettings();
+        if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == false) {
+            defaultSettings.IsApexSystemDebugLoggingEnabled__c = false;
+            defaultSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
+            defaultSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
+        }
+        return defaultSettings;
     }
 
     /**

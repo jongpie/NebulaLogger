@@ -6,7 +6,7 @@
     ISBLANK(TransactionScenario__c),
     TransactionScenarioName__c,
     HYPERLINK(
-        '/' + TransactionScenario__c,
+        &apos;/&apos; + TransactionScenario__c,
         TransactionScenario__r.Name,
         &apos;_top&apos;
     )
@@ -14,6 +14,7 @@
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Transaction Scenario</label>
     <required>false</required>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>

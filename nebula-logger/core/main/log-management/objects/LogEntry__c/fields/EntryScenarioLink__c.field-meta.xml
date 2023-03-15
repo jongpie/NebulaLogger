@@ -6,7 +6,7 @@
     ISBLANK(EntryScenario__c),
     EntryScenarioName__c,
     HYPERLINK(
-        '/' + EntryScenario__c,
+        &apos;/&apos; + EntryScenario__c,
         EntryScenario__r.Name,
         &apos;_top&apos;
     )

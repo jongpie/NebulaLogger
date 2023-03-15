@@ -16,6 +16,7 @@
     + &apos; &apos; + TEXT(ROUND(LimitsQueueableJobsUsed__c / LimitsQueueableJobsMax__c * 100, 2)) + &apos;% (&apos;
     + TEXT(LimitsQueueableJobsUsed__c) + &apos; / &apos; + TEXT(LimitsQueueableJobsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>✅ when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>
     <label>Queueable Jobs</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

@@ -124,8 +124,8 @@ global with sharing class LogEntryEventBuilder {
             LimitsSoqlQueryLocatorRowsUsed__c = System.Limits.getQueryLocatorRows(),
             LimitsSoqlQueryRowsUsed__c = System.Limits.getQueryRows(),
             LimitsSoslSearchesUsed__c = System.Limits.getSoslQueries(),
-            LoggingLevel__c = entryLoggingLevel.NAME(),
-            LoggingLevelOrdinal__c = entryLoggingLevel.ORDINAL(),
+            LoggingLevel__c = entryLoggingLevel.name(),
+            LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
             OriginType__c = 'Apex',
             Timestamp__c = timestamp,
             TriggerIsExecuting__c = Trigger.isExecuting,
@@ -470,6 +470,40 @@ global with sharing class LogEntryEventBuilder {
 
         Schema.SObjectType sobjectType = records?.getSObjectType();
         String recordJson = getJson(records, userSettings.IsRecordFieldStrippingEnabled__c);
+        if (sobjectType == null) {
+            this.logEntryEvent.RecordJson__c = recordJson;
+            this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
+            this.logEntryEvent.RecordSObjectType__c = 'Unknown';
+        } else {
+            String cleanedRecordJson = applyDataMaskRules(recordJson);
+            Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
+            this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+            this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+            this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+            this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
+        }
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's record fields
+     * @param  recordIdToRecord The map of `SObject` records related to the entry. The JSON of the map is automatically added to the entry
+     * @return                  The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setRecord(Map<Id, SObject> recordIdToRecord) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        this.logEntryEvent.RecordCollectionSize__c = recordIdToRecord?.size();
+        this.logEntryEvent.RecordCollectionType__c = 'Map';
+
+        List<SObject> recordsList = recordIdToRecord?.values();
+        Schema.SObjectType sobjectType = recordIdToRecord?.size() > 0 ? recordsList.get(0)?.getSObjectType() : null;
+        String recordJson = getJson(recordIdToRecord, userSettings.IsRecordFieldStrippingEnabled__c);
         if (sobjectType == null) {
             this.logEntryEvent.RecordJson__c = recordJson;
             this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
@@ -877,6 +911,25 @@ global with sharing class LogEntryEventBuilder {
     private static String getJson(List<SObject> records, Boolean isRecordFieldStrippingEnabled) {
         records = isRecordFieldStrippingEnabled == false ? records : stripInaccessible(records);
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
+    }
+
+    private static String getJson(Map<Id, SObject> recordIdToRecord, Boolean isRecordFieldStrippingEnabled) {
+        if (recordIdToRecord == null) {
+            return null;
+        }
+
+        Map<Id, SObject> strippedRecordIdToRecord = new Map<Id, SObject>();
+        List<SObject> records = strippedRecordIdToRecord.values().deepClone();
+        records = isRecordFieldStrippingEnabled == false ? records : stripInaccessible(records);
+        // Record field-stripping isn't done by reference, so the map's values have to be reassigned
+        for (Id recordid : recordIdToRecord.keySet()) {
+            SObject record = recordIdToRecord.get(recordId);
+            if (recordId == null) {
+                recordId = '';
+            }
+            strippedRecordIdToRecord.put(recordId, record);
+        }
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecordIdToRecord));
     }
 
     private static String getOrganizationApiVersion() {

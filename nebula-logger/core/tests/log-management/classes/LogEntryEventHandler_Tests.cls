@@ -735,6 +735,45 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_gracefully_skip_tag_rule_when_field_is_null() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.Message__c = null;
+        logEntryEvent.Tags__c = null;
+        String configuredTagName = 'CMDT Tag';
+        LoggerTestConfigurator.setMock(
+            new LogEntryTagRule__mdt(
+                SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+                ComparisonType__c = 'CONTAINS',
+                ComparisonValue__c = 'some value',
+                Tags__c = configuredTagName
+            )
+        );
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        Log__c log = getLog();
+        System.Assert.areEqual(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        validateLogFields(logEntryEvent, log);
+        validateLogEntryFields(logEntryEvent, logEntry);
+        Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
+        System.Assert.areEqual(0, countOfTagsWithTagName);
+    }
+
+    @IsTest
     static void it_should_append_tags_for_contains_rule() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();

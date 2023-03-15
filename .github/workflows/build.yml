@@ -360,7 +360,8 @@ jobs:
               run: |
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action Bot"
-                  npm run sfdx:plugins:link:bummer
+                  # npm run sfdx:plugins:link:bummer
+                  echo y | npx sfdx plugins:install @jongpie/sfdx-bummer-plugin --force
                   npx sfdx bummer:package:aliases:sort
                   npx prettier --write ./sfdx-project.json
                   git add ./sfdx-project.json

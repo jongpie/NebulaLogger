@@ -26,34 +26,25 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_create_new_in_memory_settings_with_default_field_values() {
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+
+        LoggerSettings__c returnedSettings = Logger.createSettings();
+
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+        System.Assert.isTrue(returnedSettings.IsApexSystemDebugLoggingEnabled__c);
+        System.Assert.isTrue(returnedSettings.IsJavaScriptConsoleLoggingEnabled__c);
+        System.Assert.areEqual(System.LoggingLevel.FINEST.name(), returnedSettings.LoggingLevel__c);
+        System.Assert.isNull(returnedSettings.SetupOwnerId);
+    }
+
+    @IsTest
     static void it_should_use_in_memory_default_settings_when_not_configured() {
         LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-        if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == true) {
-            expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-            expectedSettings.IsApexSystemDebugLoggingEnabled__c = true;
-            expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
-        }
-        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
-
-        LoggerSettings__c returnedSettings = Logger.getUserSettings();
-
-        System.Assert.areEqual(expectedSettings, returnedSettings);
-        System.Assert.isNull(returnedSettings.Id);
-        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
-        System.Assert.areEqual(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
-    }
-
-    @IsTest
-    static void it_should_properly_set_default_field_values_for_settings_when_organization_is_a_sandbox() {
-        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
-        System.Assert.isTrue(mockOrganization.IsSandbox);
-        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
-        mockSelector.setCachedOrganization(mockOrganization);
-        LoggerEngineDataSelector.setMock(mockSelector);
-        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         expectedSettings.IsApexSystemDebugLoggingEnabled__c = true;
         expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
@@ -65,39 +56,12 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_properly_set_default_field_values_for_settings_when_organization_is_not_a_sandbox() {
-        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
-        System.Assert.isFalse(mockOrganization.IsSandbox);
-        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
-        mockSelector.setCachedOrganization(mockOrganization);
-        LoggerEngineDataSelector.setMock(mockSelector);
+    static void it_should_properly_set_default_field_values_for_settings() {
         LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-        expectedSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
-        expectedSettings.IsApexSystemDebugLoggingEnabled__c = false;
-        expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
         expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
-        System.Assert.areEqual(expectedSettings, returnedSettings);
-        System.Assert.isNull(returnedSettings.Id);
-        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
-        System.Assert.areEqual(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
-    }
-
-    @IsTest
-    static void it_should_properly_set_default_field_values_for_settings_when_querying_organization_synchronously_is_disabled() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
-        System.Assert.isFalse(LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
-        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-        expectedSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
-        expectedSettings.IsApexSystemDebugLoggingEnabled__c = false;
-        expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
-        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
-
-        LoggerSettings__c returnedSettings = Logger.getUserSettings();
-
-        System.Assert.areEqual(0, System.Limits.getQueries());
         System.Assert.areEqual(expectedSettings, returnedSettings);
         System.Assert.isNull(returnedSettings.Id);
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
@@ -162,126 +126,6 @@ private class Logger_Tests {
         System.Assert.areEqual(3, existingSettings.size(), 'LoggerSettings__c org defaults, profile settings, and user settings should have been saved');
         System.Assert.areEqual(expectedSettings, returnedSettings);
         System.Assert.areEqual(expectedSettings.Id, returnedSettings.Id);
-    }
-
-
-    @IsTest
-    static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_async_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(false)
-                )
-        );
-
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                    new Organization(),
-                    Schema.Organization.IsSandbox,
-                    true
-                );
-
-        System.Assert.isTrue(mockOrganization.IsSandbox);
-
-        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
-        mockSelector.setCachedOrganization(mockOrganization);
-        LoggerEngineDataSelector.setMock(mockSelector);
-
-        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-
-        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
-
-        System.Assert.areEqual(expectedSettings, returnedSettings);
-    }
-
-    @IsTest
-    static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_async_not_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(false)
-                )
-        );
-
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                        new Organization(),
-                        Schema.Organization.IsSandbox,
-                        false
-                );
-
-        System.Assert.isFalse(mockOrganization.IsSandbox);
-
-        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
-        mockSelector.setCachedOrganization(mockOrganization);
-        LoggerEngineDataSelector.setMock(mockSelector);
-
-        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-
-        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
-
-        System.Assert.areEqual(expectedSettings, returnedSettings);
-    }
-
-    @IsTest
-    static void it_should_return_new_settings_with_defaults_when_org_default_exists_and_user_id_is_null_and_sync_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(true)
-                )
-        );
-
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                        new Organization(),
-                        Schema.Organization.IsSandbox,
-                        true
-                );
-
-        System.Assert.isTrue(mockOrganization.IsSandbox);
-
-        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
-        mockSelector.setCachedOrganization(mockOrganization);
-        LoggerEngineDataSelector.setMock(mockSelector);
-
-        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-        expectedSettings.IsApexSystemDebugLoggingEnabled__c = true;
-        expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
-
-        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
-
-        System.Assert.areEqual(expectedSettings, returnedSettings);
-    }
-
-    @IsTest
-    static void it_should_return_new_settings_when_org_default_exists_and_user_id_is_null_and_sync_not_in_a_sandbox() {
-        LoggerParameter.setMock(
-                new LoggerParameter__mdt(
-                        DeveloperName = 'QueryOrganizationDataSynchronously',
-                        Value__c = String.valueOf(true)
-                )
-        );
-
-        Organization mockOrganization =
-                (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
-                        new Organization(),
-                        Schema.Organization.IsSandbox,
-                        false
-                );
-
-        System.Assert.isFalse(mockOrganization.IsSandbox);
-
-        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
-        mockSelector.setCachedOrganization(mockOrganization);
-        LoggerEngineDataSelector.setMock(mockSelector);
-
-        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-
-        LoggerSettings__c returnedSettings = Logger.getUserSettings(new User());
-
-        System.Assert.areEqual(expectedSettings, returnedSettings);
     }
 
     @IsTest
@@ -7188,18 +7032,6 @@ private class Logger_Tests {
     public class MockClassWithLogging {
         public LogEntryEventBuilder logSomething() {
             return Logger.info('Hello, world');
-        }
-    }
-
-    private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
-        private Organization cachedOrganization;
-
-        public override Organization getCachedOrganization() {
-            return this.cachedOrganization;
-        }
-
-        public void setCachedOrganization(Schema.Organization organization) {
-            this.cachedOrganization = organization;
         }
     }
 

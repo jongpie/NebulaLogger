@@ -524,7 +524,7 @@ private class LoggerParameter_Tests {
             System.Assert.areEqual(
                 true,
                 matchingParameter.DeveloperName == firstMatchingMockParameter.DeveloperName ||
-                matchingParameter.DeveloperName == secondMatchingMockParameter.DeveloperName,
+                    matchingParameter.DeveloperName == secondMatchingMockParameter.DeveloperName,
                 'Returned parameter should be one of the two matching mock parameters'
             );
         }
