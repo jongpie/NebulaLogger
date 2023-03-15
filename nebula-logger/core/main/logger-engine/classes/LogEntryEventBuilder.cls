@@ -64,16 +64,6 @@ global with sharing class LogEntryEventBuilder {
         set;
     }
 
-    private static final String ORGANIZATION_API_VERSION {
-        get {
-            if (ORGANIZATION_API_VERSION == null) {
-                ORGANIZATION_API_VERSION = getOrganizationApiVersion();
-            }
-            return ORGANIZATION_API_VERSION;
-        }
-        set;
-    }
-
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION {
         get {
             if (SOBJECT_SUFFIX_TO_CLASSIFICATION == null) {
@@ -763,7 +753,6 @@ global with sharing class LogEntryEventBuilder {
 
     private static LogEntryEvent__e getLogEntryEventTemplate() {
         LogEntryEvent__e templateLogEntryEvent = new LogEntryEvent__e(
-            ApiVersion__c = ORGANIZATION_API_VERSION,
             LimitsAggregateQueriesMax__c = System.Limits.getLimitAggregateQueries(),
             LimitsAsyncCallsMax__c = System.Limits.getLimitAsyncCalls(),
             LimitsCalloutsMax__c = System.Limits.getLimitCallouts(),
@@ -779,8 +768,7 @@ global with sharing class LogEntryEventBuilder {
             LimitsSoqlQueriesMax__c = System.Limits.getLimitQueries(),
             LimitsSoqlQueryLocatorRowsMax__c = System.Limits.getLimitQueryLocatorRows(),
             LimitsSoqlQueryRowsMax__c = System.Limits.getLimitQueryRows(),
-            LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries(),
-            OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm()
+            LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries()
         );
 
         return templateLogEntryEvent;
@@ -930,16 +918,6 @@ global with sharing class LogEntryEventBuilder {
             strippedRecordIdToRecord.put(recordId, record);
         }
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecordIdToRecord));
-    }
-
-    private static String getOrganizationApiVersion() {
-        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
-        // Serializing any SObject w/ an ID will include the API version
-        // So, use System.UserInfo.getUserId() to create the current user's record without querying
-        // Then parse the JSON to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static String getOrganizationEnvironmentType(LoggerSettings__c userSettings) {

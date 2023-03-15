@@ -19,6 +19,7 @@ global with sharing class Logger {
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
+    private static final String ORGANIZATION_DOMAIN_URL = System.URL.getOrgDomainUrl()?.toExternalForm();
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
@@ -34,6 +35,16 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static String transactionScenario;
     private static LoggerSettings__c userSettings;
+
+    private static final String ORGANIZATION_API_VERSION {
+        get {
+            if (ORGANIZATION_API_VERSION == null) {
+                ORGANIZATION_API_VERSION = getOrganizationApiVersion();
+            }
+            return ORGANIZATION_API_VERSION;
+        }
+        set;
+    }
 
     private static final Quiddity TRANSACTION_QUIDDITY {
         get {
@@ -81,8 +92,8 @@ global with sharing class Logger {
     static {
         // 1 of 2 places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
-        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
-        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
+        System.debug(System.LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
+        System.debug(System.LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -244,6 +255,14 @@ global with sharing class Logger {
     }
 
     /**
+     * @description Creates a new, unsaved `LoggerSettings__c` record
+     * @return   A new `LoggerSettings__c` record, with all fields populated with default field values
+     */
+    public static LoggerSettings__c createSettings() {
+        return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+    }
+
+    /**
      * @description Returns the current user's instance of `LoggerSettings__c`
      * @return LoggerSettings__c - The current user's instance of the custom settings
      */
@@ -255,14 +274,6 @@ global with sharing class Logger {
             userSettings = getUserSettings(currentUser);
         }
         return userSettings;
-    }
-
-    /**
-     * @description Creates a new, unsaved `LoggerSettings__c` record
-     * @return   A new `LoggerSettings__c` record, with all fields populated with default field values
-     */
-    public static LoggerSettings__c createSettings() {
-        return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
     }
 
     /**
@@ -2934,8 +2945,10 @@ global with sharing class Logger {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
         if (logEntryEventBuilder.shouldSave() == true) {
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+            logEntryEvent.ApiVersion__c = ORGANIZATION_API_VERSION;
             logEntryEvent.EntryScenario__c = currentEntryScenario;
             logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
             logEntryEvent.RequestId__c = REQUEST_ID;
             logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
             logEntryEvent.TransactionEntryNumber__c = currentTransactionEntryNumber++;
@@ -2950,6 +2963,16 @@ global with sharing class Logger {
 
     private static Set<String> initializeIgnoredApexClasses() {
         return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName(), LogMessage.class.getName() };
+    }
+
+    private static String getOrganizationApiVersion() {
+        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+        // Serializing any SObject w/ an ID will include the API version
+        // So, use System.UserInfo.getUserId() to create the current user's record without querying
+        // Then parse the JSON to get the API version
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
+        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static Quiddity getTransactionQuiddity() {
@@ -3048,7 +3071,7 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private final String baseURL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v56.0';
+        private final String baseURL = ORGANIZATION_DOMAIN_URL + '/services/data/' + ORGANIZATION_API_VERSION;
         private final String compositeEndpoint = '/composite/sobjects';
 
         @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
