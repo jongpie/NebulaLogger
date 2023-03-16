@@ -141,7 +141,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_uuid_transaction_id() {
-        Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
+        Pattern pattern = System.Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
 
         String transactionId = Logger.getTransactionId();
 
@@ -152,31 +152,21 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_set_logger_version_number() {
+    static void it_should_set_transaction_details() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
 
             System.Assert.isNotNull(builder.getLogEntryEvent().LoggerVersionNumber__c);
             System.Assert.areEqual(Logger.CURRENT_VERSION_NUMBER, builder.getLogEntryEvent().LoggerVersionNumber__c);
-        }
-    }
-
-    @IsTest
-    static void it_should_set_transaction_entry_number() {
-        for (Integer i = 0; i < 5; i++) {
-            LogEntryEventBuilder builder = Logger.info('my log entry');
-
+            System.Assert.areEqual(Logger.getScenario(), builder.getLogEntryEvent().EntryScenario__c);
+            System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
+            System.Assert.areEqual(Logger.getParentLogTransactionId(), builder.getLogEntryEvent().ParentLogTransactionId__c);
+            System.Assert.areEqual(System.Request.getCurrent().getRequestId(), builder.getLogEntryEvent().RequestId__c);
             System.Assert.areEqual(i + 1, builder.getLogEntryEvent().TransactionEntryNumber__c);
-        }
-    }
-
-    @IsTest
-    static void it_should_set_request_id() {
-        String expectedRequestId = System.Request.getCurrent().getRequestId();
-        for (Integer i = 0; i < 5; i++) {
-            LogEntryEventBuilder builder = Logger.info('my log entry');
-
-            System.Assert.areEqual(expectedRequestId, builder.getLogEntryEvent().RequestId__c);
+            System.Assert.areEqual(Logger.getTransactionId(), builder.getLogEntryEvent().TransactionId__c);
+            System.Assert.areEqual(Logger.getScenario(), builder.getLogEntryEvent().TransactionScenario__c);
+            System.Assert.areEqual(Logger.getUserSettings().LoggingLevel__c, builder.getLogEntryEvent().UserLoggingLevel__c);
+            System.Assert.areEqual(Logger.getUserLoggingLevel().ordinal(), builder.getLogEntryEvent().UserLoggingLevelOrdinal__c);
         }
     }
 

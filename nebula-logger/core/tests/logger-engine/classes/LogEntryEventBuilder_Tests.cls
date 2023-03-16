@@ -1300,8 +1300,6 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
 
         // Verify organization fields
-        System.Assert.areEqual(Url.getOrgDomainUrl().toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
-        // TODO switch to using mock instances of Organization & re-enable these asserts
         System.Assert.areEqual(organizationEnvironmentType, builder.getLogEntryEvent().OrganizationEnvironmentType__c);
         System.Assert.areEqual(organization.Id, builder.getLogEntryEvent().OrganizationId__c);
         System.Assert.areEqual(organization.InstanceName, builder.getLogEntryEvent().OrganizationInstanceName__c);
