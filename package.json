@@ -77,9 +77,9 @@
         "source:push": "sfdx force:source:push --forceoverwrite",
         "source:push:test": "npm run source:push && npm run test:apex",
         "test": "npm run test:lwc && npm run test:apex",
-        "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --code-coverage --detailedcoverage --outputdir ./test-coverage/apex",
-        "test:apex:nocoverage": "sfdx force:apex:test:run --testlevel RunLocalTests --wait 30 --resultformat human --outputdir ./test-coverage/apex",
-        "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerCore,LoggerExtraTests --wait 30 --resultformat human --code-coverage --detailedcoverage --outputdir ./tests/apex",
+        "test:apex": "npm run test:apex:nocoverage -- --code-coverage --detailed-coverage",
+        "test:apex:nocoverage": "npx sfdx apex test run --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
+        "test:apex:suites": "npx sfdx apex test run --suitenames LoggerCore,LoggerExtraTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage --skipApiVersionCheck --verbose",
         "test:lwc:nocoverage": "sfdx-lwc-jest --skipApiVersionCheck --verbose",
         "test:nocoverage": "npm run test:lwc && npm run test:apex"

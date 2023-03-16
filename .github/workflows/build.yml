@@ -242,7 +242,7 @@ jobs:
               run: npm run test:apex:nocoverage
 
             - name: 'Run Apex Tests Synchronously'
-              run: npm run test:apex -- --synchronous
+              run: npm run test:apex:nocoverage -- --synchronous
 
             - name: 'Delete unsupported code coverage files'
               run: rm ./test-coverage/apex/test-result-707*-codecoverage.json
