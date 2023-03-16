@@ -66,7 +66,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -150,7 +150,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -211,7 +211,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -242,10 +242,7 @@ jobs:
               run: npm run test:apex:nocoverage
 
             - name: 'Run Apex Tests Synchronously'
-              run: npm run test:apex:nocoverage -- --synchronous
-
-            - name: 'Delete unsupported code coverage files'
-              run: rm ./test-coverage/apex/test-result-707*-codecoverage.json
+              run: npm run test:apex -- --synchronous
 
             - name: 'Upload Apex test code coverage to Codecov.io'
               uses: codecov/codecov-action@v3
@@ -287,7 +284,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -327,7 +324,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -395,7 +392,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}

@@ -130,6 +130,6 @@
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
         "pwsh": "^0.3.0",
-        "sfdx-cli": "^7.188.1"
+        "sfdx-cli": "^7.191.1"
     }
 }

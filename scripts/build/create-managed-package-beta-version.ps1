@@ -5,7 +5,7 @@
 $sfdxProjectJsonPath = "./sfdx-project.json"
 
 Write-Output "Copying metadata in ./nebula-logger/core/ to ./nebula-logger/managed-package/"
-cp -R ./nebula-logger/core/ ./nebula-logger/managed-package/
+cp --recursive --force ./nebula-logger/core/ ./nebula-logger/managed-package/
 
 # Create a new version of the managed package
 Write-Output "Creating new package version for the managed package"
