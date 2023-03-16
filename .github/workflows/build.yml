@@ -158,7 +158,7 @@ jobs:
                   DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Base Scratch Org'
-              run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/base-scratch-def.json --wait 20 --setdefaultusername --json
+              run: npx sfdx force:org:create --nonamespace --durationdays 1 --definitionfile ./config/scratch-orgs/base-scratch-def.json --wait 20 --setdefaultusername --json
 
             - name: 'Deploy Source to Scratch Org'
               run: npx sfdx force:source:deploy --sourcepath ./nebula-logger/
@@ -219,7 +219,7 @@ jobs:
                   DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Experience Cloud Scratch Org'
-              run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --setdefaultusername --json
+              run: npx sfdx force:org:create --nonamespace --durationdays 1 --definitionfile ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --setdefaultusername --json
 
             - name: 'Deploy Test Experience Site Metadata'
               run: npm run experience:deploy
