@@ -242,7 +242,7 @@ jobs:
               run: npm run test:apex:nocoverage
 
             - name: 'Run Apex Tests Synchronously'
-              run: npm run test:apex -- --synchronous
+              run: npm run test:apex:nocoverage -- --synchronous
 
             - name: 'Upload Apex test code coverage to Codecov.io'
               uses: codecov/codecov-action@v3
