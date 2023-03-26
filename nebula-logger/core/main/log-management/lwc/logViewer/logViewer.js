@@ -5,7 +5,6 @@
 
 import { LightningElement, api, wire } from 'lwc';
 import getLog from '@salesforce/apex/LogViewerController.getLog';
-import LOG_ENTRY_OBJECT from '@salesforce/schema/LogEntry__c';
 import LOG_ENTRY_EPOCH_TIMESTAMP_FIELD from '@salesforce/schema/LogEntry__c.EpochTimestamp__c';
 import LOG_ENTRY_LOGGING_LEVEL_FIELD from '@salesforce/schema/LogEntry__c.LoggingLevel__c';
 import LOG_ENTRY_MESSAGE_FIELD from '@salesforce/schema/LogEntry__c.Message__c';

@@ -37,6 +37,7 @@ public with sharing class LogViewerController {
         return (List<LogEntry__c>) securityDecision.getRecords();
     }
 
+    @SuppressWarnings('PMD.ApexDoc')
     public class LogDTO {
         @AuraEnabled
         public Log__c log;
