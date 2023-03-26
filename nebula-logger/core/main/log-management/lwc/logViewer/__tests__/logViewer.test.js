@@ -33,7 +33,7 @@ describe('Logger JSON Viewer lwc tests', () => {
         document.body.appendChild(logViewerElement);
         getLog.emit({ ...MOCK_GET_LOG });
 
-        expect(logViewerElement.title).toEqual(MOCK_GET_LOG.Name);
+        expect(logViewerElement.title).toEqual(MOCK_GET_LOG.log.Name);
     });
 
     it('defaults to brand button variant', async () => {
@@ -44,7 +44,7 @@ describe('Logger JSON Viewer lwc tests', () => {
 
         const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
 
-        expect(logViewer.title).toEqual(MOCK_GET_LOG.Name);
+        expect(logViewer.title).toEqual(MOCK_GET_LOG.log.Name);
         expect(inputButton.variant).toEqual('brand');
     });
 
@@ -63,7 +63,9 @@ describe('Logger JSON Viewer lwc tests', () => {
         tab.dispatchEvent(new CustomEvent('active'));
         await Promise.resolve('resolves dispatchEvent() for tab');
         const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('pre').textContent);
-        expect(clipboardContent).toEqual(MOCK_GET_LOG);
+        const reconstructedLog = { ...MOCK_GET_LOG.log };
+        reconstructedLog.logEntries = [...MOCK_GET_LOG.logEntries];
+        expect(clipboardContent).toEqual(reconstructedLog);
         expect(document.execCommand).toHaveBeenCalledWith('copy');
     });
 
@@ -82,7 +84,7 @@ describe('Logger JSON Viewer lwc tests', () => {
         tab.dispatchEvent(new CustomEvent('active'));
         await Promise.resolve('resolves dispatchEvent() for tab');
         let expectedContentLines = [];
-        MOCK_GET_LOG.LogEntries__r.forEach(logEntry => {
+        MOCK_GET_LOG.logEntries.forEach(logEntry => {
             const columns = [];
             columns.push('[' + new Date(logEntry.EpochTimestamp__c).toISOString() + ' - ' + logEntry.LoggingLevel__c + ']');
             columns.push('[Message]\n' + logEntry.Message__c);

@@ -219,7 +219,7 @@ The singleton instance of `LogManagementDataSelector`
 
 #### `getLogById(Id logId)` → `Log__c`
 
-Returns a `Log__c` record and its related `LogEntry__c` records, using the relationship `LogEntries__r`
+Returns a `Log__c` record
 
 ##### Parameters
 
@@ -236,6 +236,26 @@ Log\_\_c
 **Description**
 
 The matching `Log__c` record
+
+#### `getLogEntriesByLogId(Id logId)` → `List<LogEntry__c>`
+
+Returns a `List&lt;LogEntry__c&gt;` records for the specified `Log__c` ID
+
+##### Parameters
+
+| Param   | Description                                                           |
+| ------- | --------------------------------------------------------------------- |
+| `logId` | The `ID` of the `Log__c` record of the `LogEntry__c` records to query |
+
+##### Return
+
+**Type**
+
+List&lt;LogEntry\_\_c&gt;
+
+**Description**
+
+The matching `List&lt;LogEntry__c&gt;` records
 
 #### `getLoggerScenariosById(List<Id> logScenarioIds)` → `List<LoggerScenario__c>`
 

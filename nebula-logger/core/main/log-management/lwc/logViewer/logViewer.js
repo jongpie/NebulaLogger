@@ -32,7 +32,9 @@ export default class LogViewer extends LightningElement {
     @wire(getLog, { logId: '$recordId' })
     wiredGetLog(result) {
         if (result.data) {
-            this.log = result.data;
+            const reconstructedLog = JSON.parse(JSON.stringify(result.data.log));
+            reconstructedLog.logEntries = JSON.parse(JSON.stringify(result.data.logEntries));
+            this.log = reconstructedLog;
             this._loadLogFileContent();
             this._loadLogJSONContent();
             this.isLoaded = true;
@@ -113,15 +115,7 @@ export default class LogViewer extends LightningElement {
         const lineDelimiter = '\n\n' + '-'.repeat(36) + '\n\n';
         const logFileLines = [];
 
-        // There's probably a better way to do this long-term, but this handles determining if Logger is running with a namespace
-        // This can be determined by splitting the LogEntry__c object's name into an array, splitting on '__' since SF does not let
-        // admins/devs include '__' in an object name - the platform automatically includes it:
-        //   - One occurrence of '__' when there is no namespace: LogEntry__c (splits into an array with 2 items)
-        //   - Two occurrences of '__' when there is namespace: Nebula__LogEntry__c (splits into an array with 3 items)
-        const sobjectNamePieces = LOG_ENTRY_OBJECT.objectApiName.split('__');
-        const namespacePrefix = sobjectNamePieces.length === 3 ? sobjectNamePieces[0] + '__' : '';
-        const logEntriesRelationshipName = namespacePrefix + 'LogEntries__r';
-        this.log[logEntriesRelationshipName].forEach(logEntry => {
+        this.log.logEntries.forEach(logEntry => {
             const columns = [];
             columns.push(
                 '[' +

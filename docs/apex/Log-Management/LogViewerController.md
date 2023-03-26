@@ -10,7 +10,7 @@ Controller class for the LWC `logViewer`, used to provided different views on a 
 
 ### Methods
 
-#### `getLog(Id logId)` → `Log__c`
+#### `getLog(Id logId)` → `LogDTO`
 
 Returns a Log\_\_c record from the database, using either the Salesforce ID or transaction ID
 
@@ -24,10 +24,24 @@ Returns a Log\_\_c record from the database, using either the Salesforce ID or t
 
 **Type**
 
-Log\_\_c
+LogDTO
 
 **Description**
 
 The matching record, with all fields that the current user can access
+
+---
+
+### Inner Classes
+
+#### LogViewerController.LogDTO class
+
+---
+
+##### Properties
+
+###### `log` → `Log__c`
+
+###### `logEntries` → `List<LogEntry__c>`
 
 ---

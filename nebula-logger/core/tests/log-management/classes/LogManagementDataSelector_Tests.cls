@@ -164,11 +164,39 @@ private class LogManagementDataSelector_Tests {
     static void it_returns_log_for_specified_log_id() {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        insert log;
+        Log__c anotherLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert new List<Log__c>{ log, anotherLog };
 
         Log__c returnedLog = LogManagementDataSelector.getInstance().getLogById(log.Id);
 
         System.Assert.areEqual(log.Id, returnedLog.Id);
+    }
+
+    @IsTest
+    static void it_returns_log_entries_for_specified_log_id() {
+        LoggerSObjectHandler.shouldExecute(false);
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        Log__c anotherLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert new List<Log__c>{ log, anotherLog };
+        List<LogEntry__c> expectedLogEntries = new List<LogEntry__c>();
+        List<LogEntry__c> unrelatedlogEntries = new List<LogEntry__c>();
+        for (Integer i = 0; i < 5; i++) {
+            expectedLogEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'some message, number ' + i));
+            unrelatedlogEntries.add(new LogEntry__c(Log__c = anotherLog.Id, Message__c = 'some message, number ' + i));
+        }
+        List<LogEntry__c> allTestLogEntries = new List<LogEntry__c>();
+        allTestLogEntries.addAll(expectedLogEntries);
+        allTestLogEntries.addAll(unrelatedlogEntries);
+        insert allTestLogEntries;
+
+        List<LogEntry__c> returnedLogEnties = LogManagementDataSelector.getInstance().getLogEntriesByLogId(log.Id);
+
+        System.Assert.areEqual(expectedLogEntries.size(), returnedLogEnties.size());
+        Set<Id> logEntryIds = new Map<Id, LogEntry__c>(expectedLogEntries).keySet();
+        for (LogEntry__c logEntry : returnedLogEnties) {
+            System.Assert.isTrue(logEntryIds.contains(logEntry.Id));
+            System.Assert.areEqual(log.Id, logEntry.Log__c);
+        }
     }
 
     @IsTest

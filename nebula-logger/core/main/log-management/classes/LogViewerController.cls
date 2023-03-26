@@ -14,11 +14,33 @@ public with sharing class LogViewerController {
      * @return       The matching record, with all fields that the current user can access
      */
     @AuraEnabled(cacheable=true)
-    public static Log__c getLog(Id logId) {
+    public static LogDTO getLog(Id logId) {
+        LogDTO logDto = new LogDTO();
+        logDto.log = queryLog(logId);
+        logDto.logEntries = queryLogEntries(logId);
+        return logDto;
+    }
+
+    private static Log__c queryLog(Id logId) {
         System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(
             System.AccessType.READABLE,
             new List<Log__c>{ LogManagementDataSelector.getInstance().getLogById(logId) }
         );
         return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
+    }
+
+    private static List<LogEntry__c> queryLogEntries(Id logId) {
+        System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(
+            System.AccessType.READABLE,
+            LogManagementDataSelector.getInstance().getLogEntriesByLogId(logId)
+        );
+        return (List<LogEntry__c>) securityDecision.getRecords();
+    }
+
+    public class LogDTO {
+        @AuraEnabled
+        public Log__c log;
+        @AuraEnabled
+        public List<LogEntry__c> logEntries;
     }
 }

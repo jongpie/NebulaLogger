@@ -178,24 +178,39 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `Log__c` record and its related `LogEntry__c` records, using the relationship `LogEntries__r`
+     * @description Returns a `Log__c` record
      * @param  logId The `ID` of the `Log__c` record to query
      * @return       The matching `Log__c` record
      */
     public virtual Log__c getLogById(Id logId) {
+        String queryTemplate = 'SELECT {0} FROM {1} WHERE Id = :logId';
+
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
-        List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+        List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), Schema.Log__c.SObjectType.getDescribe().getName() };
 
-        List<String> textReplacements = new List<String>{
-            String.join(logFieldNames, ','),
-            String.join(logEntryFieldNames, ','),
-            Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName(),
-            Schema.Log__c.SObjectType.getDescribe().getName()
-        };
-        String query = String.format('SELECT {0}, (SELECT {1} FROM LogEntries__r ORDER BY {2}) FROM {3} WHERE Id = :logId', textReplacements);
-
+        String query = String.format(queryTemplate, textReplacements);
         return (Log__c) Database.query(String.escapeSingleQuotes(query));
+    }
+
+    /**
+     * @description Returns a `List<LogEntry__c>` records for the specified `Log__c` ID
+     * @param  logId The `ID` of the `Log__c` record of the `LogEntry__c` records to query
+     * @return       The matching `List<LogEntry__c>` records
+     */
+    public virtual List<LogEntry__c> getLogEntriesByLogId(Id logId) {
+        String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} = :logId ORDER BY {3}';
+
+        List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+        List<String> textReplacements = new List<String>{
+            String.join(logEntryFieldNames, ', '),
+            Schema.LogEntry__c.SObjectType.getDescribe().getName(),
+            Schema.LogEntry__c.Log__c.getDescribe().getName(),
+            Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName()
+        };
+
+        String query = String.format(queryTemplate, textReplacements);
+        return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
