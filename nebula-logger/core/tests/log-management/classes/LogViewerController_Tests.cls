@@ -27,6 +27,9 @@ private class LogViewerController_Tests {
 
         System.Assert.areEqual(log.Id, returnedLogDto.log.Id);
         System.Assert.areEqual(logEntryIdToLogEntry.size(), returnedLogDto.logEntries.size());
+        String className = LogViewerController_Tests.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') + '__' : '';
+        System.Assert.areEqual(namespacePrefix + 'LogEntries__r', returnedLogDto.logEntriesRelationshipName);
         for (LogEntry__c logEntry : returnedLogDto.logEntries) {
             System.Assert.isTrue(logEntryIdToLogEntry.containsKey(logEntry.Id));
             System.Assert.areEqual(log.Id, logEntry.Log__c);

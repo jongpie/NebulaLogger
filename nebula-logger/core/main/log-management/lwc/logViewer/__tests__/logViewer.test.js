@@ -64,7 +64,7 @@ describe('Logger JSON Viewer lwc tests', () => {
         await Promise.resolve('resolves dispatchEvent() for tab');
         const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('pre').textContent);
         const reconstructedLog = { ...MOCK_GET_LOG.log };
-        reconstructedLog.logEntries = [...MOCK_GET_LOG.logEntries];
+        reconstructedLog[MOCK_GET_LOG.logEntriesRelationshipName] = [...MOCK_GET_LOG.logEntries];
         expect(clipboardContent).toEqual(reconstructedLog);
         expect(document.execCommand).toHaveBeenCalledWith('copy');
     });

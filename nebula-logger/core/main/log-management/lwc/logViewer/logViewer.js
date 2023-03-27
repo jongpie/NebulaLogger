@@ -21,6 +21,7 @@ export default class LogViewer extends LightningElement {
     recordId;
 
     isLoaded = false;
+    logEntriesRelationshipName = '';
     log = {};
     currentMode = {};
     dataCopied = false;
@@ -32,7 +33,8 @@ export default class LogViewer extends LightningElement {
     wiredGetLog(result) {
         if (result.data) {
             const reconstructedLog = JSON.parse(JSON.stringify(result.data.log));
-            reconstructedLog.logEntries = JSON.parse(JSON.stringify(result.data.logEntries));
+            this.logEntriesRelationshipName = result.data.logEntriesRelationshipName;
+            reconstructedLog[this.logEntriesRelationshipName] = JSON.parse(JSON.stringify(result.data.logEntries));
             this.log = reconstructedLog;
             this._loadLogFileContent();
             this._loadLogJSONContent();
@@ -114,7 +116,7 @@ export default class LogViewer extends LightningElement {
         const lineDelimiter = '\n\n' + '-'.repeat(36) + '\n\n';
         const logFileLines = [];
 
-        this.log.logEntries.forEach(logEntry => {
+        this.log[this.logEntriesRelationshipName].forEach(logEntry => {
             const columns = [];
             columns.push(
                 '[' +

@@ -18,6 +18,7 @@ public with sharing class LogViewerController {
         LogDTO logDto = new LogDTO();
         logDto.log = queryLog(logId);
         logDto.logEntries = queryLogEntries(logId);
+        logDto.logEntriesRelationshipName = getNamespacePrefix() + 'LogEntries__r';
         return logDto;
     }
 
@@ -37,11 +38,20 @@ public with sharing class LogViewerController {
         return (List<LogEntry__c>) securityDecision.getRecords();
     }
 
+    private static String getNamespacePrefix() {
+        String className = LoggerSObjectMetadata.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') + '__' : '';
+
+        return namespacePrefix;
+    }
+
     @SuppressWarnings('PMD.ApexDoc')
     public class LogDTO {
         @AuraEnabled
         public Log__c log;
         @AuraEnabled
         public List<LogEntry__c> logEntries;
+        @AuraEnabled
+        public String logEntriesRelationshipName;
     }
 }
