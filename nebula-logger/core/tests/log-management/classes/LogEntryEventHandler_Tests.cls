@@ -441,7 +441,12 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
+        String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
+        User automatedProcessUser = [
+            SELECT Id, TimeZoneSidKey
+            FROM User
+            WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+        ];
         User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = false;
@@ -463,7 +468,12 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
+        String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
+        User automatedProcessUser = [
+            SELECT Id, TimeZoneSidKey
+            FROM User
+            WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+        ];
         User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = true;

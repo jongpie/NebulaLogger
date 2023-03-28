@@ -727,7 +727,12 @@ private class Logger_Tests {
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
         // TODO Move this test to LogEntryEventBuilder_Tests
-        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
+        String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
+        User automatedProcessUser = [
+            SELECT Id, TimeZoneSidKey
+            FROM User
+            WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+        ];
         User currentUser = new User(Id = System.UserInfo.getUserId());
         // Make sure that the test user has a different time zone from the automated process user
         if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
