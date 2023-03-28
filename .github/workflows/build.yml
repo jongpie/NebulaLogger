@@ -5,6 +5,7 @@ on:
     push:
         branches:
             - main
+            - feature/logger-home-page
             - 'devops/**'
         paths-ignore:
             - 'content/**'
