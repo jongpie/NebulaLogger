@@ -6,5 +6,5 @@
         <sharedTo>AllInternalUsers</sharedTo>
         <sharedToType>Organization</sharedToType>
     </folderShares>
-    <name>Log Reports</name>
+    <name>Logger Reports</name>
 </ReportFolder>
