@@ -42,6 +42,37 @@ public class LoggerMockDataCreator {
     }
 
     /**
+     * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.LeadConvertResult`
+     */
+    public static Database.LeadConvertResult createDatabaseConvertResult(Boolean isSuccess) {
+        return createDatabaseConvertResult(isSuccess, createId(Schema.Lead.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.LeadConvertResult`
+     */
+    public static Database.LeadConvertResult createDatabaseConvertResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.LeadConvertResult) JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
+        } else {
+            return (Database.LeadConvertResult) JSON.deserialize(
+                '{"success":false, "leadid": "' +
+                recordId +
+                '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
+                Database.LeadConvertResult.class
+            );
+        }
+    }
+
+    /**
      * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
@@ -64,7 +95,9 @@ public class LoggerMockDataCreator {
             return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
         } else {
             return (Database.DeleteResult) JSON.deserialize(
-                '{"success":false, "id": "' + recordId + '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
+                '{"success":false, "id": "' +
+                recordId +
+                '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
                 Database.DeleteResult.class
             );
         }
@@ -180,14 +213,20 @@ public class LoggerMockDataCreator {
     public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
         if (isSuccess == true) {
             return (Database.UpsertResult) JSON.deserialize(
-                '{"success": ' + isSuccess + ', "created": ' + isCreated + ', "id": "' + recordId + '"}',
+                '{"success": ' +
+                isSuccess +
+                ', "created": ' +
+                isCreated +
+                ', "id": "' +
+                recordId +
+                '"}',
                 Database.UpsertResult.class
             );
         } else {
             return (Database.UpsertResult) JSON.deserialize(
                 '{"success":false, "created":' +
-                    isCreated +
-                    ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                isCreated +
+                ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
                 Database.UpsertResult.class
             );
         }
