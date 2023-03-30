@@ -95,9 +95,7 @@ public class LoggerMockDataCreator {
             return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
         } else {
             return (Database.DeleteResult) JSON.deserialize(
-                '{"success":false, "id": "' +
-                recordId +
-                '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
+                '{"success":false, "id": "' + recordId + '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
                 Database.DeleteResult.class
             );
         }
@@ -213,20 +211,14 @@ public class LoggerMockDataCreator {
     public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
         if (isSuccess == true) {
             return (Database.UpsertResult) JSON.deserialize(
-                '{"success": ' +
-                isSuccess +
-                ', "created": ' +
-                isCreated +
-                ', "id": "' +
-                recordId +
-                '"}',
+                '{"success": ' + isSuccess + ', "created": ' + isCreated + ', "id": "' + recordId + '"}',
                 Database.UpsertResult.class
             );
         } else {
             return (Database.UpsertResult) JSON.deserialize(
                 '{"success":false, "created":' +
-                isCreated +
-                ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                    isCreated +
+                    ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
                 Database.UpsertResult.class
             );
         }
