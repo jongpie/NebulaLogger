@@ -935,9 +935,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
-     * @param  message      The string to use to set the entry's message field
-     * @param  deleteResult The instance of `Database.LeadConvertResult` to log
-     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message           The string to use to set the entry's message field
+     * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+     * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Database.LeadConvertResult leadConvertResult) {
         return warn().setDatabaseResult(leadConvertResult).setMessage(message);
@@ -1582,7 +1582,6 @@ global with sharing class Logger {
     global static LogEntryEventBuilder debug(String message, Database.LeadConvertResult leadConvertResult) {
         return debug().setDatabaseResult(leadConvertResult).setMessage(message);
     }
-
 
     /**
      * @description Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
@@ -2622,10 +2621,10 @@ global with sharing class Logger {
 
     /**
      * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
-     * @param  loggingLevel  The logging level to use for the log entry
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
-     * @param  deleteResults The instance of `List<Database.LeadConvertResult>` to log
-     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     * @param  loggingLevel       The logging level to use for the log entry
+     * @param  logMessage         The instance of `LogMessage` to use to set the entry's message field
+     * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+     * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(
         System.LoggingLevel loggingLevel,
