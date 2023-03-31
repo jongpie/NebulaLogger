@@ -44,4 +44,6 @@ The matching record, with all fields that the current user can access
 
 ###### `logEntries` → `List<LogEntry__c>`
 
+###### `logEntriesRelationshipName` → `String`
+
 ---

@@ -105,6 +105,46 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `setDatabaseResult(Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param               | Description                                         |
+| ------------------- | --------------------------------------------------- |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param                | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| `leadConvertResults` | The list of `Database.LeadConvertResult`s to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `setDatabaseResult(Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s database operation result fields

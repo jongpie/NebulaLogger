@@ -90,6 +90,47 @@ SObjectTestDataBuilder
 
 A new instance of `SObjectTestDataBuilder` for the specified `SObject`
 
+#### `createDatabaseConvertResult(Boolean isSuccess)` → `Database.LeadConvertResult`
+
+Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
+
+##### Parameters
+
+| Param       | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+
+##### Return
+
+**Type**
+
+Database.LeadConvertResult
+
+**Description**
+
+The mock instance of `Database.LeadConvertResult`
+
+#### `createDatabaseConvertResult(Boolean isSuccess, Id recordId)` → `Database.LeadConvertResult`
+
+Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
+
+##### Parameters
+
+| Param       | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| `recordId`  | The record ID to use within the mock result                     |
+
+##### Return
+
+**Type**
+
+Database.LeadConvertResult
+
+**Description**
+
+The mock instance of `Database.LeadConvertResult`
+
 #### `createDatabaseDeleteResult(Boolean isSuccess)` → `Database.DeleteResult`
 
 Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.

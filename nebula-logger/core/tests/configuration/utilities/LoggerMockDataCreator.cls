@@ -65,8 +65,8 @@ public class LoggerMockDataCreator {
         } else {
             return (Database.LeadConvertResult) JSON.deserialize(
                 '{"success":false, "leadid": "' +
-                recordId +
-                '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
+                    recordId +
+                    '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
                 Database.LeadConvertResult.class
             );
         }
