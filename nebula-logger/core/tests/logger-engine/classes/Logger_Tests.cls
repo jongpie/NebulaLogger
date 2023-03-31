@@ -1277,7 +1277,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult convertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult convertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -1301,7 +1301,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult convertResult = LoggerMockDataCreator.createDatabaseConvertResult(false);
+        Database.LeadConvertResult convertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false);
 
         System.Test.startTest();
 
@@ -1841,7 +1841,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -1865,7 +1865,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(false);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false);
 
         System.Test.startTest();
 
@@ -2404,7 +2404,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -2428,7 +2428,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(false);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false);
 
         System.Test.startTest();
 
@@ -2872,7 +2872,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -2896,7 +2896,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(false);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false);
 
         System.Test.startTest();
 
@@ -3340,7 +3340,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -3671,7 +3671,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -4002,7 +4002,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -4333,7 +4333,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -4664,7 +4664,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -4995,7 +4995,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -5326,7 +5326,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -5657,7 +5657,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -5988,7 +5988,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -6319,7 +6319,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
 
         System.Test.startTest();
 
@@ -6649,8 +6649,8 @@ private class Logger_Tests {
         System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
-        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseConvertResult(true, recordId);
-        Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseConvertResult(false, recordId);
+        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+        Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId);
         List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, unsuccessfulResult };
         System.Assert.areEqual(2, leadConvertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6667,8 +6667,8 @@ private class Logger_Tests {
         System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
-        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseConvertResult(true, recordId);
-        Database.LeadConvertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseConvertResult(true, recordId);
+        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+        Database.LeadConvertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
         List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, anotherSuccessfulResult };
         System.Assert.areEqual(2, leadConvertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6685,8 +6685,8 @@ private class Logger_Tests {
         System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
-        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseConvertResult(true, recordId);
-        Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseConvertResult(false, recordId);
+        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+        Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId);
         List<Database.LeadConvertResult> convertResults = new List<Database.LeadConvertResult>{ successfulResult, unsuccessfulResult };
         System.Assert.areEqual(2, convertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6706,8 +6706,8 @@ private class Logger_Tests {
         System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
-        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseConvertResult(true, recordId);
-        Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseConvertResult(false, recordId);
+        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+        Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId);
         List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, unsuccessfulResult };
         System.Assert.areEqual(2, leadConvertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6724,8 +6724,8 @@ private class Logger_Tests {
         System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
-        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseConvertResult(true, recordId);
-        Database.LeadConvertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseConvertResult(true, recordId);
+        Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+        Database.LeadConvertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
         List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, anotherSuccessfulResult };
         System.Assert.areEqual(2, leadConvertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());

@@ -468,7 +468,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_database_result_fields_for_leadConvertResult() {
-        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseConvertResult(true);
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
         System.Assert.isNotNull(leadConvertResult);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
@@ -570,7 +570,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_database_result_fields_for_list_of_leadConvertResult() {
         List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>();
         for (Integer i = 0; i < 5; i++) {
-            leadConvertResults.add(LoggerMockDataCreator.createDatabaseConvertResult(false));
+            leadConvertResults.add(LoggerMockDataCreator.createDatabaseLeadConvertResult(false));
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());

@@ -21,6 +21,7 @@
     <rule ref="category/apex/errorprone.xml">
     </rule>
     <rule ref="category/apex/performance.xml">
+        <exclude name="EagerlyLoadedDescribeSObjectResult" />
     </rule>
     <rule ref="category/apex/security.xml">
     </rule>

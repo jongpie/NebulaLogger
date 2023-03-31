@@ -48,8 +48,8 @@ public class LoggerMockDataCreator {
      * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
      * @return   The mock instance of `Database.LeadConvertResult`
      */
-    public static Database.LeadConvertResult createDatabaseConvertResult(Boolean isSuccess) {
-        return createDatabaseConvertResult(isSuccess, createId(Schema.Lead.SObjectType));
+    public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess) {
+        return createDatabaseLeadConvertResult(isSuccess, createId(Schema.Lead.SObjectType));
     }
 
     /**
@@ -59,7 +59,7 @@ public class LoggerMockDataCreator {
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.LeadConvertResult`
      */
-    public static Database.LeadConvertResult createDatabaseConvertResult(Boolean isSuccess, Id recordId) {
+    public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId) {
         if (isSuccess == true) {
             return (Database.LeadConvertResult) JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
         } else {

@@ -90,7 +90,7 @@ SObjectTestDataBuilder
 
 A new instance of `SObjectTestDataBuilder` for the specified `SObject`
 
-#### `createDatabaseConvertResult(Boolean isSuccess)` → `Database.LeadConvertResult`
+#### `createDatabaseLeadConvertResult(Boolean isSuccess)` → `Database.LeadConvertResult`
 
 Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
 
@@ -110,7 +110,7 @@ Database.LeadConvertResult
 
 The mock instance of `Database.LeadConvertResult`
 
-#### `createDatabaseConvertResult(Boolean isSuccess, Id recordId)` → `Database.LeadConvertResult`
+#### `createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId)` → `Database.LeadConvertResult`
 
 Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
 
