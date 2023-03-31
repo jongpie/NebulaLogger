@@ -184,6 +184,43 @@ global with sharing class LogEntryEventBuilder {
 
     // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
     // but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(Database.LeadConvertResult leadConvertResult) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+        this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(leadConvertResult));
+        this.logEntryEvent.DatabaseResultType__c = Database.LeadConvertResult.class.getName();
+
+        return this.setRecordId(leadConvertResult?.getLeadId());
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  leadConvertResults The list of `Database.LeadConvertResult`s to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionSize__c = leadConvertResults.size();
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(leadConvertResults));
+        this.logEntryEvent.DatabaseResultType__c = Database.LeadConvertResult.class.getName();
+
+        return this;
+    }
+
     /**
      * @description Sets the log entry event's database operation result fields
      * @param  deleteResult The instance of `Database.DeleteResult` to log

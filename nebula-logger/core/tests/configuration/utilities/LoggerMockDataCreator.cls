@@ -42,6 +42,37 @@ public class LoggerMockDataCreator {
     }
 
     /**
+     * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.LeadConvertResult`
+     */
+    public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess) {
+        return createDatabaseLeadConvertResult(isSuccess, createId(Schema.Lead.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.LeadConvertResult`
+     */
+    public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.LeadConvertResult) JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
+        } else {
+            return (Database.LeadConvertResult) JSON.deserialize(
+                '{"success":false, "leadid": "' +
+                    recordId +
+                    '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
+                Database.LeadConvertResult.class
+            );
+        }
+    }
+
+    /**
      * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.

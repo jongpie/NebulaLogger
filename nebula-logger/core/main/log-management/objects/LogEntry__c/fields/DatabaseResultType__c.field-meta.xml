@@ -19,6 +19,11 @@
                 <label>Database.DeleteResult</label>
             </value>
             <value>
+                <fullName>Database.LeadConvertResult</fullName>
+                <default>false</default>
+                <label>Database.LeadConvertResult</label>
+            </value>
+            <value>
                 <fullName>Database.MergeResult</fullName>
                 <default>false</default>
                 <label>Database.MergeResult</label>

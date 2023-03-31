@@ -28,6 +28,10 @@ String containing the release version.
 
 ### Methods
 
+#### `StatusApiCalloutQueueable(List<Log__c> logsToUpdate)` → `public`
+
+#### `execute(System.QueueableContext qc)` → `void`
+
 #### `getSObjectType()` → `Schema.SObjectType`
 
 Returns SObject Type that the handler is responsible for processing
