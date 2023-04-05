@@ -1,7 +1,7 @@
 {
     "namespace": "Nebula",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "56.0",
+    "sourceApiVersion": "57.0",
     "packageDirectories": [
         {
             "package": "Nebula Logger - Managed Package",
@@ -12,7 +12,7 @@
             "ancestorVersion": "HIGHEST",
             "versionNumber": "4.10.0.NEXT",
             "versionName": "Spring '23 Release",
-            "versionDescription": "View the v4.9.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/9?closed=1",
+            "versionDescription": "View the v4.10.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/10?closed=1",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
@@ -26,6 +26,7 @@
         "Nebula Logger - Managed Package@4.6.0-tagging-system-overhaul": "04t5Y0000015keOQAQ",
         "Nebula Logger - Managed Package@4.7.0-spring-22-release": "04t5Y0000015lXNQAY",
         "Nebula Logger - Managed Package@4.8.0-summer-22-release": "04t5Y0000015lsgQAA",
-        "Nebula Logger - Managed Package@4.9.0-winter-23-release": "04t5Y0000023R28QAE"
+        "Nebula Logger - Managed Package@4.9.0-winter-23-release": "04t5Y0000023R28QAE",
+        "Nebula Logger - Managed Package@4.10.0-spring-23-release": "04t5Y0000015nWeQAI"
     }
 }

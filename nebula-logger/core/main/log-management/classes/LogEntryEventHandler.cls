@@ -20,7 +20,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
-    private static List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES {
+    private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES {
         get {
             if (TAG_ASSIGNMENT_RULES == null) {
                 TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
@@ -208,16 +208,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         // TODO this probably should be moved to LogHandler instead of here
         String apexClassName = LogEntryEventHandler.class.getName();
-        // I really dislike hardcoding this method name, but haven't found a better approach yet
-        // FIXME by possibly converting the future method to a private queueable class (which would be better than future method anyway)
-        String apexMethodName = 'setStatusApiDetails';
         List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
         if (
             LoggerParameter.CALL_STATUS_API == true &&
             recentLogWithApiReleaseDetails == null &&
-            LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses) == 0
+            LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, null, jobStatuses) == 0
         ) {
-            setStatusApiDetails();
+            System.enqueueJob(new StatusApiCalloutQueueable(TRANSACTION_ID_TO_LOG.values()));
         }
     }
 
@@ -660,42 +657,49 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
-    @future(callout=true)
-    private static void setStatusApiDetails() {
-        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
+    @SuppressWarnings('PMD.ApexDoc')
+    private without sharing class StatusApiCalloutQueueable implements Database.AllowsCallouts, System.Queueable {
+        private Set<Id> logIds;
 
-        System.HttpRequest request = new System.HttpRequest();
-        request.setEndpoint(statusApiEndpoint);
-        request.setMethod('GET');
-
-        System.HttpResponse response = new System.Http().send(request);
-        if (response.getStatusCode() >= 400) {
-            String errorMessage =
-                'Callout failed for ' +
-                statusApiEndpoint +
-                '\nReceived request status code ' +
-                response.getStatusCode() +
-                ', status message: ' +
-                response.getStatus();
-            throw new System.CalloutException(errorMessage);
+        public StatusApiCalloutQueueable(List<Log__c> logsToUpdate) {
+            this.logIds = new Map<Id, Log__c>(logsToUpdate).keySet();
         }
 
-        StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        List<Log__c> logsToUpdate = new List<Log__c>();
-        for (Log__c log : [
-            SELECT Id
-            FROM Log__c
-            WHERE CreatedDate = TODAY AND ApiReleaseNumber__c = NULL
-            ORDER BY CreatedDate
-            LIMIT :System.Limits.getLimitDmlRows()
-        ]) {
-            log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
-            log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
+        public void execute(System.QueueableContext qc) {
+            Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+            String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
-            logsToUpdate.add(log);
+            System.HttpRequest request = new System.HttpRequest();
+            request.setEndpoint(statusApiEndpoint);
+            request.setMethod('GET');
+
+            System.HttpResponse response = new System.Http().send(request);
+            if (response.getStatusCode() >= 400) {
+                String errorMessage =
+                    'Callout failed for ' +
+                    statusApiEndpoint +
+                    '\nReceived request status code ' +
+                    response.getStatusCode() +
+                    ', status message: ' +
+                    response.getStatus();
+                throw new System.CalloutException(errorMessage);
+            }
+
+            StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
+            List<Log__c> logsToUpdate = new List<Log__c>();
+            for (Log__c log : [
+                SELECT Id
+                FROM Log__c
+                WHERE Id IN :this.logIds AND ApiReleaseNumber__c = NULL
+                LIMIT :System.Limits.getLimitDmlRows()
+            ]) {
+                log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
+                log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
+
+                logsToUpdate.add(log);
+            }
+            LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
         }
-        LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
     }
 
     // Private class for handling the response from api.status.salesforce.com

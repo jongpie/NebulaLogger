@@ -54,6 +54,27 @@ LoggerSettings\_\_c
 
 A new `LoggerSettings__c` record, with all fields populated with default field values
 
+#### `debug(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param               | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| `logMessage`        | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log                       |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `debug(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
@@ -336,6 +357,27 @@ Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
 | Param        | Description                                                               |
 | ------------ | ------------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param               | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `message`           | The string to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log     |
 
 ##### Return
 
@@ -649,6 +691,27 @@ End the specified scenario, if it&apos;s the currently active scenario, and roll
 | Param      | Description                     |
 | ---------- | ------------------------------- |
 | `scenario` | The name of the scenario to end |
+
+#### `error(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param               | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| `logMessage`        | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log                       |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `error(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
@@ -1019,6 +1082,27 @@ Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
 | Param        | Description                                                               |
 | ------------ | ------------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param               | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `message`           | The string to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log     |
 
 ##### Return
 
@@ -1410,15 +1494,26 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `execute(System.QueueableContext queueableContext)` → `void`
+#### `fine(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Asynchronoulsy publishes the list of `LogEntryEvent__e` records
+Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
 
 ##### Parameters
 
-| Param              | Description                                                |
-| ------------------ | ---------------------------------------------------------- |
-| `queueableContext` | The context of the current queue, provided by the platform |
+| Param               | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| `logMessage`        | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log                       |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `fine(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
@@ -1702,6 +1797,27 @@ Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
 | Param        | Description                                                               |
 | ------------ | ------------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param               | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `message`           | The string to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log     |
 
 ##### Return
 
@@ -2006,6 +2122,27 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `finer(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param               | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| `logMessage`        | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log                       |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `finer(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
@@ -2288,6 +2425,27 @@ Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
 | Param        | Description                                                               |
 | ------------ | ------------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param               | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `message`           | The string to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log     |
 
 ##### Return
 
@@ -2592,6 +2750,27 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `finest(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param               | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| `logMessage`        | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log                       |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `finest(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
@@ -2874,6 +3053,27 @@ Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
 | Param        | Description                                                               |
 | ------------ | ------------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param               | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `message`           | The string to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log     |
 
 ##### Return
 
@@ -3386,6 +3586,27 @@ Adds the specified Apex type to the list of ignored origin locations for the cur
 | ---------- | ------------------------------------ |
 | `apexType` | The Apex type of the class to ignore |
 
+#### `info(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param               | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| `logMessage`        | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log                       |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `info(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
@@ -3668,6 +3889,27 @@ Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
 | Param        | Description                                                               |
 | ------------ | ------------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param               | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `message`           | The string to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log     |
 
 ##### Return
 
@@ -3972,16 +4214,6 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `insertRecords(List<SObject> records)` → `void`
-
-Inserts records via the REST api.
-
-##### Parameters
-
-| Param     | Description          |
-| --------- | -------------------- |
-| `records` | The records to save. |
-
 #### `isDebugEnabled()` → `Boolean`
 
 Indicates if logging level &apos;DEBUG&apos; is enabled for the current user, based on the custom setting LoggerSettings\_\_c
@@ -4127,6 +4359,50 @@ Boolean
 **Description**
 
 Boolean
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;LeadConvertResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param                | Description                                                               |
+| -------------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`       | The logging level to use for the log entry                                |
+| `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResults` | The instance of `List&lt;Database.LeadConvertResult&gt;` to log           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;LeadConvertResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param                | Description                                                     |
+| -------------------- | --------------------------------------------------------------- |
+| `loggingLevel`       | The logging level to use for the log entry                      |
+| `message`            | The string to use to set the entry&apos;s message field         |
+| `leadConvertResults` | The instance of `List&lt;Database.LeadConvertResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
@@ -4516,6 +4792,27 @@ Sets the current scenario, which can be used to identify modules or groupings of
 
 Pauses saving for the current transaction. Any calls to saveLog() are ignored until saving is resumed.
 
+#### `warn(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param               | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| `logMessage`        | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log                       |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `warn(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
@@ -4885,6 +5182,27 @@ Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
 | Param        | Description                                                               |
 | ------------ | ------------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param               | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| `message`           | The string to use to set the entry&apos;s message field |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log     |
 
 ##### Return
 
@@ -5283,5 +5601,29 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 #### Logger.QueueableSaver class
 
 Inner class for publishing log entries via the Queueable interface.
+
+---
+
+##### Methods
+
+###### `execute(System.QueueableContext queueableContext)` → `void`
+
+Asynchronoulsy publishes the list of `LogEntryEvent__e` records
+
+####### Parameters
+
+| Param              | Description                                                |
+| ------------------ | ---------------------------------------------------------- |
+| `queueableContext` | The context of the current queue, provided by the platform |
+
+###### `insertRecords(List<SObject> records)` → `void`
+
+Inserts records via the REST api.
+
+####### Parameters
+
+| Param     | Description          |
+| --------- | -------------------- |
+| `records` | The records to save. |
 
 ---

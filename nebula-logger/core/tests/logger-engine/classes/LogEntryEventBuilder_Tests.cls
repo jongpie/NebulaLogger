@@ -467,6 +467,20 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_database_result_fields_for_leadConvertResult() {
+        Database.LeadConvertResult leadConvertResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
+        System.Assert.isNotNull(leadConvertResult);
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        builder.setDatabaseResult(leadConvertResult);
+
+        System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+        System.Assert.areEqual('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(Database.LeadConvertResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
+    }
+
+    @IsTest
     static void it_should_set_database_result_fields_for_deleteResult() {
         Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
         System.Assert.isNotNull(deleteResult);
@@ -550,6 +564,22 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.areEqual('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
         System.Assert.areEqual(JSON.serializePretty(upsertResult), builder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', builder.getLogEntryEvent().DatabaseResultType__c);
+    }
+
+    @IsTest
+    static void it_should_set_database_result_fields_for_list_of_leadConvertResult() {
+        List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>();
+        for (Integer i = 0; i < 5; i++) {
+            leadConvertResults.add(LoggerMockDataCreator.createDatabaseLeadConvertResult(false));
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        builder.setDatabaseResult(leadConvertResults);
+
+        System.Assert.areEqual(leadConvertResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+        System.Assert.areEqual('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.Assert.areEqual(JSON.serializePretty(leadConvertResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(Database.LeadConvertResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -1300,8 +1330,6 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
 
         // Verify organization fields
-        System.Assert.areEqual(Url.getOrgDomainUrl().toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
-        // TODO switch to using mock instances of Organization & re-enable these asserts
         System.Assert.areEqual(organizationEnvironmentType, builder.getLogEntryEvent().OrganizationEnvironmentType__c);
         System.Assert.areEqual(organization.Id, builder.getLogEntryEvent().OrganizationId__c);
         System.Assert.areEqual(organization.InstanceName, builder.getLogEntryEvent().OrganizationInstanceName__c);

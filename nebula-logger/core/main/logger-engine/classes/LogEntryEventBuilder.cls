@@ -64,16 +64,6 @@ global with sharing class LogEntryEventBuilder {
         set;
     }
 
-    private static final String ORGANIZATION_API_VERSION {
-        get {
-            if (ORGANIZATION_API_VERSION == null) {
-                ORGANIZATION_API_VERSION = getOrganizationApiVersion();
-            }
-            return ORGANIZATION_API_VERSION;
-        }
-        set;
-    }
-
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION {
         get {
             if (SOBJECT_SUFFIX_TO_CLASSIFICATION == null) {
@@ -194,6 +184,43 @@ global with sharing class LogEntryEventBuilder {
 
     // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
     // but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(Database.LeadConvertResult leadConvertResult) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+        this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(leadConvertResult));
+        this.logEntryEvent.DatabaseResultType__c = Database.LeadConvertResult.class.getName();
+
+        return this.setRecordId(leadConvertResult?.getLeadId());
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  leadConvertResults The list of `Database.LeadConvertResult`s to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionSize__c = leadConvertResults.size();
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(leadConvertResults));
+        this.logEntryEvent.DatabaseResultType__c = Database.LeadConvertResult.class.getName();
+
+        return this;
+    }
+
     /**
      * @description Sets the log entry event's database operation result fields
      * @param  deleteResult The instance of `Database.DeleteResult` to log
@@ -763,7 +790,6 @@ global with sharing class LogEntryEventBuilder {
 
     private static LogEntryEvent__e getLogEntryEventTemplate() {
         LogEntryEvent__e templateLogEntryEvent = new LogEntryEvent__e(
-            ApiVersion__c = ORGANIZATION_API_VERSION,
             LimitsAggregateQueriesMax__c = System.Limits.getLimitAggregateQueries(),
             LimitsAsyncCallsMax__c = System.Limits.getLimitAsyncCalls(),
             LimitsCalloutsMax__c = System.Limits.getLimitCallouts(),
@@ -779,8 +805,7 @@ global with sharing class LogEntryEventBuilder {
             LimitsSoqlQueriesMax__c = System.Limits.getLimitQueries(),
             LimitsSoqlQueryLocatorRowsMax__c = System.Limits.getLimitQueryLocatorRows(),
             LimitsSoqlQueryRowsMax__c = System.Limits.getLimitQueryRows(),
-            LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries(),
-            OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm()
+            LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries()
         );
 
         return templateLogEntryEvent;
@@ -930,16 +955,6 @@ global with sharing class LogEntryEventBuilder {
             strippedRecordIdToRecord.put(recordId, record);
         }
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecordIdToRecord));
-    }
-
-    private static String getOrganizationApiVersion() {
-        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
-        // Serializing any SObject w/ an ID will include the API version
-        // So, use System.UserInfo.getUserId() to create the current user's record without querying
-        // Then parse the JSON to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static String getOrganizationEnvironmentType(LoggerSettings__c userSettings) {

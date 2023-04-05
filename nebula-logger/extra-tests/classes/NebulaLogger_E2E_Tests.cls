@@ -103,7 +103,7 @@ private class NebulaLogger_E2E_Tests {
 
         // Since this save method relies on a standard API endpoint to create the data, there won't be any records in Log__c or LogEntry__c
         // So instead, the callout is tested
-        String expectedEndpoint = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v56.0/composite/sobjects';
+        String expectedEndpoint = System.URL.getSalesforceBaseUrl().toExternalForm() + '/services/data/' + getOrganizationApiVersion() + '/composite/sobjects';
         System.Assert.areEqual(expectedEndpoint, mockCallout.request.getEndpoint());
         Map<String, Object> untypedRequestBody = (Map<String, Object>) JSON.deserializeUntyped(mockCallout.request.getBody());
         Boolean requestAllOrNone = (Boolean) untypedRequestBody.get('allOrNone');
@@ -145,6 +145,16 @@ private class NebulaLogger_E2E_Tests {
             }
         }
         return matchingLogEntry;
+    }
+
+    private static String getOrganizationApiVersion() {
+        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+        // Serializing any SObject w/ an ID will include the API version
+        // So, use System.UserInfo.getUserId() to create the current user's record without querying
+        // Then parse the JSON to get the API version
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
+        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static SObject setReadOnlyField(SObject record, Map<Schema.SObjectField, Object> changesToFields) {

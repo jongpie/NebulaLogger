@@ -4,8 +4,13 @@
  **********************************************************************************************-->
 
 <template>
-    <template if:true={isLoaded}>
-        <lightning-quick-action-panel header={title}>
+    <lightning-quick-action-panel header={title}>
+        <template if:false={isLoaded}>
+            <div class="slds-is-relative" style="min-height: 12em">
+                <lightning-spinner variant="brand"></lightning-spinner>
+            </div>
+        </template>
+        <template if:true={isLoaded}>
             <lightning-tabset>
                 <lightning-tab data-id="json-content" label="Record JSON" value="json" onactive={handleTabActivated}>
                     <div class="content">
@@ -31,6 +36,6 @@
                     variant={variant}
                 ></lightning-button-stateful>
             </div>
-        </lightning-quick-action-panel>
-    </template>
+        </template>
+    </lightning-quick-action-panel>
 </template>
