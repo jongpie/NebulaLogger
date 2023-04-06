@@ -7,30 +7,23 @@
 const PAGE_LAYOUT_CONFIG = {
     sections: [
         {
-            key: 'developerSettings',
-            label: 'Developer Settings',
+            key: 'loggerEngineSettings',
+            label: 'Logger Engine Settings',
             showInReadOnlyMode: true,
             showInEditMode: true,
             columns: [
                 {
-                    fieldApiNames: ['IsSavingEnabled__c', 'DefaultSaveMethod__c', 'DefaultPlatformEventStorageLocation__c'],
+                    fieldApiNames: ['IsSavingEnabled__c', 'DefaultSaveMethod__c', 'DefaultScenario__c'],
                     size: 6
                 },
                 {
-                    fieldApiNames: ['IsApexSystemDebugLoggingEnabled__c', 'IsJavaScriptConsoleLoggingEnabled__c'],
-                    size: 6
-                }
-            ]
-        },
-        {
-            key: 'securitySettings',
-            label: 'Security Settings',
-            showInReadOnlyMode: true,
-            showInEditMode: true,
-            columns: [
-                { fieldApiNames: ['IsDataMaskingEnabled__c'], size: 6 },
-                {
-                    fieldApiNames: ['IsRecordFieldStrippingEnabled__c', 'IsAnonymousModeEnabled__c'],
+                    fieldApiNames: [
+                        'IsApexSystemDebugLoggingEnabled__c',
+                        'IsJavaScriptConsoleLoggingEnabled__c',
+                        'IsDataMaskingEnabled__c',
+                        'IsRecordFieldStrippingEnabled__c',
+                        'IsAnonymousModeEnabled__c'
+                    ],
                     size: 6
                 }
             ]
@@ -41,8 +34,16 @@ const PAGE_LAYOUT_CONFIG = {
             showInReadOnlyMode: true,
             showInEditMode: true,
             columns: [
-                { fieldApiNames: ['DefaultNumberOfDaysToRetainLogs__c', 'DefaultLogPurgeAction__c'], size: 6 },
-                { fieldApiNames: ['DefaultScenario__c', 'DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
+                {
+                    fieldApiNames: [
+                        'DefaultPlatformEventStorageLoggingLevel__c',
+                        'DefaultPlatformEventStorageLocation__c',
+                        'DefaultNumberOfDaysToRetainLogs__c',
+                        'DefaultLogPurgeAction__c'
+                    ],
+                    size: 6
+                },
+                { fieldApiNames: ['DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
             ]
         }
     ]
@@ -58,11 +59,12 @@ const LoggerSettingsPageLayout = class {
     _parsePicklistOptions(apexPicklistOptions) {
         // TODO - long term, this feels like the wrong place for this mapping to live, but it'll live here for now
         const picklistOptions = {
-            LoggingLevel__c: apexPicklistOptions.loggingLevelOptions,
             DefaultLogPurgeAction__c: apexPicklistOptions.purgeActionOptions,
+            DefaultLogShareAccessLevel__c: apexPicklistOptions.shareAccessLevelOptions,
             DefaultPlatformEventStorageLocation__c: apexPicklistOptions.platformEventStorageLocationOptions,
+            DefaultPlatformEventStorageLoggingLevel__c: apexPicklistOptions.loggingLevelOptions,
             DefaultSaveMethod__c: apexPicklistOptions.saveMethodOptions,
-            DefaultLogShareAccessLevel__c: apexPicklistOptions.shareAccessLevelOptions
+            LoggingLevel__c: apexPicklistOptions.loggingLevelOptions
         };
 
         return picklistOptions;

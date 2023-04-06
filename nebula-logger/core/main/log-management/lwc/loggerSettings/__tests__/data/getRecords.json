@@ -3,12 +3,20 @@
         "setupOwnerType": "Organization",
         "setupOwnerName": "Nebula Logger - Enterprise Scratch Org",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WHwzAAG" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WHwzAAG"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T22:43:03.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 7,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WHwzAAG",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -21,17 +29,26 @@
             "LoggingLevel__c": "INFO",
             "SetupOwnerId": "00D1g000000HgecEAC",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/Organization/00D1g000000HgecEAC" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/Organization/00D1g000000HgecEAC"
+                },
                 "Id": "00D1g000000HgecEAC",
                 "Name": "Nebula Logger - Enterprise Scratch Org",
                 "Type": "00D"
@@ -44,12 +61,20 @@
         "setupOwnerType": "Profile",
         "setupOwnerName": "Chatter External User",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMiAAO" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMiAAO"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T05:22:06.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 14,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WFMiAAO",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -62,17 +87,26 @@
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "00e1g000000ySdaAAE",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/Profile/00e1g000000ySdaAAE" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/Profile/00e1g000000ySdaAAE"
+                },
                 "Id": "00e1g000000ySdaAAE",
                 "Name": "Chatter External User",
                 "Type": "00e"
@@ -85,12 +119,20 @@
         "setupOwnerType": "Profile",
         "setupOwnerName": "Marketing User",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WHvQAAW" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WHvQAAW"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T22:36:28.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Edit",
             "DefaultNumberOfDaysToRetainLogs__c": 14,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WHvQAAW",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -103,17 +145,26 @@
             "LoggingLevel__c": "INFO",
             "SetupOwnerId": "00e1g000000ySdXAAU",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/Profile/00e1g000000ySdXAAU" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/Profile/00e1g000000ySdXAAU"
+                },
                 "Id": "00e1g000000ySdXAAU",
                 "Name": "PT5",
                 "Type": "00e"
@@ -126,12 +177,20 @@
         "setupOwnerType": "User",
         "setupOwnerName": "autoproc@00d1g000000hgeceac",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMOAA4" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMOAA4"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T04:35:57.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 3,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WFMOAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -144,17 +203,26 @@
             "LoggingLevel__c": "FINER",
             "SetupOwnerId": "0051g000007o2bTAAQ",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bTAAQ" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bTAAQ"
+                },
                 "Id": "0051g000007o2bTAAQ",
                 "Name": "Automated Process",
                 "Type": "User"
@@ -167,12 +235,20 @@
         "setupOwnerType": "User",
         "setupOwnerName": "chatty.00d1g000000hgeceac.k8erysdmkzvk@chatter.salesforce.com",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMYAA4" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMYAA4"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T04:59:57.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 14,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WFMYAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -185,17 +261,26 @@
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007o2baAAA",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/User/0051g000007o2baAAA" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2baAAA"
+                },
                 "Id": "0051g000007o2baAAA",
                 "Name": "Chatter Expert",
                 "Type": "User"
@@ -208,12 +293,20 @@
         "setupOwnerType": "User",
         "setupOwnerName": "cloud@00d1g000000hgeceac",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WHvVAAW" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WHvVAAW"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T22:36:40.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 14,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WHvVAAW",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -226,17 +319,26 @@
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007o2bcAAA",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bcAAA" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bcAAA"
+                },
                 "Id": "0051g000007o2bcAAA",
                 "Name": "Platform Integration User",
                 "Type": "User"
@@ -249,12 +351,20 @@
         "setupOwnerType": "User",
         "setupOwnerName": "info.inxqxf68zham.cwsbglbbzwsm.41f5kger8jlv.pseades3axc0@example.com",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFORAA4" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFORAA4"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T06:16:01.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 14,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WFORAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -267,17 +377,26 @@
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007o2bZAAQ",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bZAAQ" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bZAAQ"
+                },
                 "Id": "0051g000007o2bZAAQ",
                 "Name": "Jon Amos",
                 "Type": "User"
@@ -290,12 +409,20 @@
         "setupOwnerType": "User",
         "setupOwnerName": "qwerty@sandbox-sdfsdfsdfsdfsdfd.cs96.force.com",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMJAA4" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMJAA4"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T03:05:46.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 14,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WFMJAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -308,17 +435,26 @@
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007oJ8cAAE",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/User/0051g000007oJ8cAAE" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007oJ8cAAE"
+                },
                 "Id": "0051g000007oJ8cAAE",
                 "Name": "qwerty Site Guest User",
                 "Type": "User"
@@ -331,12 +467,20 @@
         "setupOwnerType": "User",
         "setupOwnerName": "test-7eyk6wptspcc@example.com",
         "record": {
-            "attributes": { "type": "LoggerSettings__c", "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMnAAO" },
+            "attributes": {
+                "type": "LoggerSettings__c",
+                "url": "/services/data/v53.0/sobjects/LoggerSettings__c/a031g000003WFMnAAO"
+            },
             "CreatedById": "0051g000007o2bNAAQ",
             "CreatedDate": "2021-11-30T05:22:31.000+0000",
+            "DefaultLogOwner__c": null,
+            "DefaultLogPurgeAction__c": "Delete",
             "DefaultLogShareAccessLevel__c": "Read",
             "DefaultNumberOfDaysToRetainLogs__c": 14,
+            "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+            "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
+            "DefaultScenario__c": null,
             "Id": "a031g000003WFMnAAO",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -349,17 +493,26 @@
             "LoggingLevel__c": "WARN",
             "SetupOwnerId": "0051g000007o2bNAAQ",
             "CreatedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "LastModifiedBy": {
-                "attributes": { "type": "User", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "User",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Username": "test-7eyk6wptspcc@example.com"
             },
             "SetupOwner": {
-                "attributes": { "type": "Name", "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ" },
+                "attributes": {
+                    "type": "Name",
+                    "url": "/services/data/v53.0/sobjects/User/0051g000007o2bNAAQ"
+                },
                 "Id": "0051g000007o2bNAAQ",
                 "Name": "User User",
                 "Type": "User"
