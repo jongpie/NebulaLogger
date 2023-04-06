@@ -21,9 +21,18 @@ private class LogViewerController_Tests {
     @IsTest
     static void it_should_return_log_when_id_provided() {
         Log__c log = [SELECT Id, TransactionId__c FROM Log__c];
+        Map<Id, LogEntry__c> logEntryIdToLogEntry = new Map<Id, LogEntry__c>([SELECT Id FROM LogEntry__c]);
 
-        Log__c returnedLog = LogViewerController.getLog(log.Id);
+        LogViewerController.LogDTO returnedLogDto = LogViewerController.getLog(log.Id);
 
-        System.assertEquals(log.Id, returnedLog.Id);
+        System.Assert.areEqual(log.Id, returnedLogDto.log.Id);
+        System.Assert.areEqual(logEntryIdToLogEntry.size(), returnedLogDto.logEntries.size());
+        String className = LogViewerController_Tests.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') + '__' : '';
+        System.Assert.areEqual(namespacePrefix + 'LogEntries__r', returnedLogDto.logEntriesRelationshipName);
+        for (LogEntry__c logEntry : returnedLogDto.logEntries) {
+            System.Assert.isTrue(logEntryIdToLogEntry.containsKey(logEntry.Id));
+            System.Assert.areEqual(log.Id, logEntry.Log__c);
+        }
     }
 }

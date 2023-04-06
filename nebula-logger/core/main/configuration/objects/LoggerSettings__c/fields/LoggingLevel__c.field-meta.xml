@@ -3,7 +3,7 @@
     <fullName>LoggingLevel__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>CCPA;GDPR;PII</complianceGroup>
-    <defaultValue>&apos;DEBUG&apos;</defaultValue>
+    <defaultValue>&apos;FINEST&apos;</defaultValue>
     <externalId>false</externalId>
     <label>Logging Level</label>
     <length>255</length>

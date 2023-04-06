@@ -13,7 +13,7 @@ private class LogFinalizer_Tests {
         System.Test.stopTest();
         System.Test.getEventBus().deliver();
 
-        System.assertEquals(0, [SELECT COUNT() FROM Log__c], 'Should not log if no errors');
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c], 'Should not log if no errors');
     }
 
     @IsTest
@@ -22,18 +22,18 @@ private class LogFinalizer_Tests {
             System.Test.startTest();
             System.enqueueJob(new ExampleFailedQueueable());
             System.Test.stopTest();
-        } catch (Exception ex) {
-            System.assertEquals(EXPECTED_ERROR_MESSAGE, ex.getMessage());
+        } catch (System.Exception ex) {
+            System.Assert.areEqual(EXPECTED_ERROR_MESSAGE, ex.getMessage());
         }
         System.Test.getEventBus().deliver();
 
         List<LogEntry__c> logEntries = [SELECT Message__c, ExceptionMessage__c FROM LogEntry__c];
-        System.assertEquals(2, logEntries.size(), 'Should log for errors');
+        System.Assert.areEqual(2, logEntries.size(), 'Should log for errors');
         LogEntry__c firstEntry = logEntries.get(0);
-        System.assertEquals('There was an error during this queueable job', firstEntry.Message__c);
+        System.Assert.areEqual('There was an error during this queueable job', firstEntry.Message__c);
         LogEntry__c secondEntry = logEntries.get(1);
-        System.assertEquals('Error details', secondEntry.Message__c);
-        System.assertEquals(EXPECTED_ERROR_MESSAGE, secondEntry.ExceptionMessage__c);
+        System.Assert.areEqual('Error details', secondEntry.Message__c);
+        System.Assert.areEqual(EXPECTED_ERROR_MESSAGE, secondEntry.ExceptionMessage__c);
     }
 
     private virtual class ExampleQueueable implements System.Queueable {
@@ -49,7 +49,7 @@ private class LogFinalizer_Tests {
 
     private virtual class ExampleFailedQueueable extends ExampleQueueable {
         protected override void innerExecute() {
-            throw new IllegalArgumentException(EXPECTED_ERROR_MESSAGE);
+            throw new System.IllegalArgumentException(EXPECTED_ERROR_MESSAGE);
         }
     }
 }

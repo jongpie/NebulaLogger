@@ -29,7 +29,7 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled(cacheable=true)
     public static Boolean canUserModifyLoggerSettings() {
         return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() == true ||
-            FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
+            System.FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
     }
 
     /**
@@ -85,7 +85,13 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static LoggerSettings__c createRecord() {
-        return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+        LoggerSettings__c defaultSettings = Logger.createSettings();
+        if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == false) {
+            defaultSettings.IsApexSystemDebugLoggingEnabled__c = false;
+            defaultSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
+            defaultSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
+        }
+        return defaultSettings;
     }
 
     /**
@@ -98,7 +104,7 @@ public without sharing class LoggerSettingsController {
             if (canUserModifyLoggerSettings() == true) {
                 LoggerDataStore.getDatabase().upsertRecord(settingsRecord, Schema.LoggerSettings__c.Id);
             }
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
@@ -113,7 +119,7 @@ public without sharing class LoggerSettingsController {
             if (canUserModifyLoggerSettings() == true) {
                 LoggerDataStore.getDatabase().deleteRecord(settingsRecord);
             }
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
@@ -162,27 +168,27 @@ public without sharing class LoggerSettingsController {
                     }
                 }
                 when else {
-                    throw new IllegalArgumentException('Invalid SetupOwnerType: ' + setupOwnerType);
+                    throw new System.IllegalArgumentException('Invalid SetupOwnerType: ' + setupOwnerType);
                 }
             }
             return searchResults;
-        } catch (Exception ex) {
+        } catch (System.Exception ex) {
             throw createAuraHandledException(ex);
         }
     }
 
-    private static AuraHandledException createAuraHandledException(Exception ex) {
-        AuraHandledException auraHandledException = new AuraHandledException(ex.getMessage());
+    private static System.AuraHandledException createAuraHandledException(System.Exception ex) {
+        System.AuraHandledException auraHandledException = new System.AuraHandledException(ex.getMessage());
         auraHandledException.setMessage(ex.getMessage());
         return auraHandledException;
     }
 
     private static List<PicklistOption> getLoggingLevelOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
-        for (Integer i = LoggingLevel.values().size() - 1; i > 0; i--) {
-            LoggingLevel currentLoggingLevel = LoggingLevel.values().get(i);
+        for (Integer i = System.LoggingLevel.values().size() - 1; i > 0; i--) {
+            System.LoggingLevel currentLoggingLevel = System.LoggingLevel.values().get(i);
 
-            if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
+            if (currentLoggingLevel == System.LoggingLevel.NONE || currentLoggingLevel == System.LoggingLevel.INTERNAL) {
                 continue;
             }
 

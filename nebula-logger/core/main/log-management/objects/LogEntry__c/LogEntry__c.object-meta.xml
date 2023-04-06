@@ -149,6 +149,8 @@
     <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>LogEntryCompactLayout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description
+    >Used by Nebula Logger to represent a single log message within a transaction - log entries can be generated via Apex, Flow, Process Builder, Lighting Web Components, and Aura Components.</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>true</enableFeeds>
@@ -169,10 +171,10 @@
     <searchLayouts>
         <excludedStandardButtons>New</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
-        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Import</excludedStandardButtons>
         <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LoggingLevelWithImage__c</lookupDialogsAdditionalFields>
@@ -181,6 +183,13 @@
         <lookupPhoneDialogsAdditionalFields>Timestamp__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LoggingLevelWithImage__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Message__c</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>LoggedByUsernameLink__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Timestamp__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Log__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LoggingLevelWithImage__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Message__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OriginType__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OriginLocation__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>

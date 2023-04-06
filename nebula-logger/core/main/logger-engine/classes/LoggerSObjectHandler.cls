@@ -60,7 +60,7 @@ public without sharing abstract class LoggerSObjectHandler {
     public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType, LoggerSObjectHandler defaultImplementation) {
         String handlerApexClassName = getHandlerConfiguration(sobjectType)?.SObjectHandlerApexClass__c;
         // TODO need to handle namespace prefix for Apex classes
-        return handlerApexClassName == null ? defaultImplementation : (LoggerSObjectHandler) Type.forName(handlerApexClassName)?.newInstance();
+        return handlerApexClassName == null ? defaultImplementation : (LoggerSObjectHandler) System.Type.forName(handlerApexClassName)?.newInstance();
     }
 
     /**
@@ -184,17 +184,11 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
-        try {
-            LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
-            apexPlugin?.execute(configuration, this.input);
+        LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
+        apexPlugin?.execute(configuration, this.input);
 
-            if (System.Test.isRunningTest() == true && apexPlugin != null) {
-                this.executedApexPlugins.add(apexPlugin);
-            }
-        } catch (TypeException ex) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                Logger.warn('Unknown Apex class ' + configuration.SObjectHandlerApexClass__c + ', skipping plugin execution', configuration, ex);
-            }
+        if (System.Test.isRunningTest() == true && apexPlugin != null) {
+            this.executedApexPlugins.add(apexPlugin);
         }
     }
 
@@ -268,7 +262,7 @@ public without sharing abstract class LoggerSObjectHandler {
             handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectTypeOverride__c;
         }
 
-        return ((SObject) Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
+        return ((SObject) System.Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
     }
 
     @TestVisible

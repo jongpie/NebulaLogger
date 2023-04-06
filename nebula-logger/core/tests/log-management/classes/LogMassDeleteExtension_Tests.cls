@@ -20,6 +20,32 @@ private class LogMassDeleteExtension_Tests {
     }
 
     @IsTest
+    static void it_should_add_error_to_page_when_user_does_not_have_delete_access() {
+        List<Log__c> logs = [SELECT Id, Name FROM Log__c];
+        List<Log__c> logsToDelete = new List<Log__c>();
+        List<Log__c> logsToKeep = new List<Log__c>();
+        Integer numberToKeep = 3;
+        for (Integer i = 0; i < logs.size(); i++) {
+            if (i < numberToKeep) {
+                logsToDelete.add(logs.get(i));
+            } else {
+                logsToKeep.add(logs.get(i));
+            }
+        }
+        ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
+        controller.setSelected(logsToDelete);
+        PageReference pageReference = Page.LogMassDelete;
+        System.Test.setCurrentPage(pageReference);
+        LogMassDeleteExtension.userHasLogDeleteAccess = false;
+
+        new LogMassDeleteExtension(controller);
+
+        System.Assert.isTrue(ApexPages.hasMessages(ApexPages.SEVERITY.ERROR));
+        System.Assert.isNotNull(LogMassDeleteExtension.DELETE_ACCESS_ERROR);
+        System.Assert.areEqual(LogMassDeleteExtension.DELETE_ACCESS_ERROR, ApexPages.getMessages().get(0).getSummary());
+    }
+
+    @IsTest
     static void it_should_return_deletable_logs() {
         List<Log__c> logs = [SELECT Id, Name FROM Log__c];
         List<String> logIds = new List<String>();
@@ -30,7 +56,7 @@ private class LogMassDeleteExtension_Tests {
         for (UserRecordAccess recordAccess : [
             SELECT RecordId
             FROM UserRecordAccess
-            WHERE UserId = :UserInfo.getUserId() AND RecordId IN :logIds AND HasDeleteAccess = TRUE
+            WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :logIds AND HasDeleteAccess = TRUE
         ]) {
             expectedDeletableLogs.add(new Log__c(Id = recordAccess.RecordId));
         }
@@ -42,7 +68,7 @@ private class LogMassDeleteExtension_Tests {
         LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
         List<Log__c> returnedDeletableLogs = extension.getDeletableLogs();
 
-        System.assertEquals(expectedDeletableLogs.size(), returnedDeletableLogs.size());
+        System.Assert.areEqual(expectedDeletableLogs.size(), returnedDeletableLogs.size());
     }
 
     @IsTest
@@ -68,11 +94,11 @@ private class LogMassDeleteExtension_Tests {
 
         logsToDelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToDelete ALL ROWS];
         for (Log__c log : logsToDelete) {
-            System.assertEquals(true, log.IsDeleted, log);
+            System.Assert.isTrue(log.IsDeleted, JSON.serializePretty(log));
         }
         logsToKeep = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToKeep ALL ROWS];
         for (Log__c log : logsToKeep) {
-            System.assertEquals(false, log.IsDeleted, log);
+            System.Assert.isFalse(log.IsDeleted, JSON.serializePretty(log));
         }
     }
 }

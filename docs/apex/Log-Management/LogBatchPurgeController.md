@@ -10,7 +10,7 @@ Controller class for lwc `logBatchPurge`, used to provide metrics of `Log__c`, `
 
 ### Methods
 
-#### `canUserRunLogBatchPurger()` → `boolean`
+#### `canUserRunLogBatchPurger()` → `Boolean`
 
 Returns true if the current user has delete permission on the Log\_\_c object or
 
@@ -18,7 +18,7 @@ Returns true if the current user has delete permission on the Log\_\_c object or
 
 **Type**
 
-boolean
+Boolean
 
 **Description**
 

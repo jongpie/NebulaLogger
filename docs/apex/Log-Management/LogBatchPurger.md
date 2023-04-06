@@ -52,6 +52,20 @@ Required by the Database.Batchable interface. This method runs after all batch j
 | ------------------ | ------------------------------- |
 | `batchableContext` | - The context of the batch jobs |
 
+#### `getDefaultBatchSize()` → `Integer`
+
+Returns the default batch size used when running `LogBatchPurger`
+
+##### Return
+
+**Type**
+
+Integer
+
+**Description**
+
+The default `Integer` value of `2000`
+
 #### `setChainedBatchSize(Integer chainedBatchSize)` → `LogBatchPurger`
 
 The `LogBatchPurger` job is designed to run several instances - typically, it runs on `LogEntryTag__c`, then `LogEntry__c`, and finally `Log__c`. This method provides a way to control the batch size used for the chained instances of `LogBachPurger`

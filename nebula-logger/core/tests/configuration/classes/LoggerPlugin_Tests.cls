@@ -56,11 +56,11 @@ private class LoggerPlugin_Tests {
             Schema.LoggerPlugin__mdt.SObjectHandlerExecutionOrder__c
         );
 
-        System.assertEquals(expectedSortedPluginConfigurations.size(), returnedPluginConfigurations.size());
+        System.Assert.areEqual(expectedSortedPluginConfigurations.size(), returnedPluginConfigurations.size());
         for (Integer i = 0; i < returnedPluginConfigurations.size(); i++) {
             LoggerPlugin__mdt expectedSortedPluginConfiguration = expectedSortedPluginConfigurations.get(i);
             LoggerPlugin__mdt returnedPluginConfiguration = returnedPluginConfigurations.get(i);
-            System.assertEquals(expectedSortedPluginConfiguration, returnedPluginConfiguration, 'Records at index ' + i + ' don\'t match');
+            System.Assert.areEqual(expectedSortedPluginConfiguration, returnedPluginConfiguration, 'Records at index ' + i + ' don\'t match');
         }
     }
 
@@ -68,30 +68,44 @@ private class LoggerPlugin_Tests {
     static void it_should_return_batchable_apex_plugin_instance_for_valid_class() {
         LoggerPlugin.Batchable batchableApexPlugin = LoggerPlugin.newBatchableInstance(ExampleBatchPurgerPlugin.class.getName());
 
-        System.assertNotEquals(null, batchableApexPlugin, ExampleBatchPurgerPlugin.class.getName());
-        System.assertEquals(true, batchableApexPlugin instanceof ExampleBatchPurgerPlugin);
+        System.Assert.isNotNull(batchableApexPlugin, ExampleBatchPurgerPlugin.class.getName());
+        System.Assert.isInstanceOfType(batchableApexPlugin, ExampleBatchPurgerPlugin.class);
     }
 
     @IsTest
-    static void it_should_return_null_batchable_apex_plugin_instance_for_invalid_class() {
+    static void it_should_return_null_batchable_apex_plugin_instance_for_class_that_does_not_implement_batchable_plugin_interface() {
+        LoggerPlugin.Batchable batchableApexPlugin = LoggerPlugin.newBatchableInstance(NotABatchablePlugin.class.getName());
+
+        System.Assert.isNull(batchableApexPlugin);
+    }
+
+    @IsTest
+    static void it_should_return_null_batchable_apex_plugin_instance_for_nonexistent_class() {
         LoggerPlugin.Batchable batchableApexPlugin = LoggerPlugin.newBatchableInstance('Some fake class, this definitely doesn\'t exist');
 
-        System.assertEquals(null, batchableApexPlugin);
+        System.Assert.isNull(batchableApexPlugin);
     }
 
     @IsTest
     static void it_should_return_triggerable_apex_plugin_instance_for_valid_class() {
         LoggerPlugin.Triggerable triggerableApexPlugin = LoggerPlugin.newTriggerableInstance(ExampleTriggerablePlugin.class.getName());
 
-        System.assertNotEquals(null, triggerableApexPlugin, ExampleTriggerablePlugin.class.getName());
-        System.assertEquals(true, triggerableApexPlugin instanceof ExampleTriggerablePlugin);
+        System.Assert.isNotNull(triggerableApexPlugin, ExampleTriggerablePlugin.class.getName());
+        System.Assert.isInstanceOfType(triggerableApexPlugin, ExampleTriggerablePlugin.class);
     }
 
     @IsTest
-    static void it_should_return_null_triggerable_apex_plugin_instance_for_invalid_class() {
+    static void it_should_return_null_triggerable_apex_plugin_instance_for_class_that_does_not_implement_triggerable_plugin_interface() {
+        LoggerPlugin.Triggerable triggerableApexPlugin = LoggerPlugin.newTriggerableInstance(NotATriggerablePlugin.class.getName());
+
+        System.Assert.isNull(triggerableApexPlugin);
+    }
+
+    @IsTest
+    static void it_should_return_null_triggerable_apex_plugin_instance_for_nonexistent_class() {
         LoggerPlugin.Triggerable triggerableApexPlugin = LoggerPlugin.newTriggerableInstance('Some fake class, this definitely doesn\'t exist');
 
-        System.assertEquals(null, triggerableApexPlugin);
+        System.Assert.isNull(triggerableApexPlugin);
     }
 
     private static LoggerPlugin__mdt createMockPluginConfiguration(String developerName) {
@@ -118,6 +132,18 @@ private class LoggerPlugin_Tests {
                     }
                 }
             }
+        }
+    }
+
+    public class NotABatchablePlugin {
+        public NotABatchablePlugin() {
+            System.Assert.isNotInstanceOfType(this, LoggerPlugin.Batchable.class);
+        }
+    }
+
+    public class NotATriggerablePlugin {
+        public NotATriggerablePlugin() {
+            System.Assert.isNotInstanceOfType(this, LoggerPlugin.Triggerable.class);
         }
     }
 }

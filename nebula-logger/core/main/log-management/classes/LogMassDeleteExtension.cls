@@ -8,6 +8,12 @@
  * @description Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
  */
 public with sharing class LogMassDeleteExtension {
+    @TestVisible
+    private static final String DELETE_ACCESS_ERROR = 'You do not have access to delete logs records';
+
+    @TestVisible
+    private static Boolean userHasLogDeleteAccess = Schema.Log__c.SObjectType.getDescribe().isDeletable();
+
     private ApexPages.StandardSetController controller;
 
     /**
@@ -15,9 +21,8 @@ public with sharing class LogMassDeleteExtension {
      * @param  controller The standard set controller (passed in automatically via VF page)
      */
     public LogMassDeleteExtension(ApexPages.StandardSetController controller) {
-        if (Schema.Log__c.SObjectType.getDescribe().isDeletable() == false) {
-            String deleteAccessError = 'You do not have access to delete logs records';
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, deleteAccessError));
+        if (userHasLogDeleteAccess == false) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, DELETE_ACCESS_ERROR));
         }
 
         this.controller = controller;

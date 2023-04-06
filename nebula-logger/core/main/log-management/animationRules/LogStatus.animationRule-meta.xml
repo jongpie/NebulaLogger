@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<AnimationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <animationFrequency>always</animationFrequency>
+    <developerName>LogStatus</developerName>
+    <isActive>true</isActive>
+    <masterLabel>Log Status</masterLabel>
+    <recordTypeContext>Master</recordTypeContext>
+    <recordTypeName>__MASTER__</recordTypeName>
+    <sobjectType>Log__c</sobjectType>
+    <targetField>Status__c</targetField>
+    <targetFieldChangeToValues>Done,Ignored</targetFieldChangeToValues>
+</AnimationRule>

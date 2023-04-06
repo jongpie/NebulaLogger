@@ -8,10 +8,14 @@
  * @description Selector class used for all queries that are specific to the logger engine layer
  */
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
-public without sharing class LoggerEngineDataSelector {
-    private static final LoggerEngineDataSelector INSTANCE = new LoggerEngineDataSelector();
+public without sharing virtual class LoggerEngineDataSelector {
+    @TestVisible
+    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('NetworkMember') != null;
+
+    private static LoggerEngineDataSelector instance = new LoggerEngineDataSelector();
 
     @SuppressWarnings('PMD.EmptyStatementBlock')
+    @TestVisible
     private LoggerEngineDataSelector() {
     }
 
@@ -20,22 +24,23 @@ public without sharing class LoggerEngineDataSelector {
      * @return   The singleton instance of `LoggerEngineDataSelector`
      */
     public static LoggerEngineDataSelector getInstance() {
-        return INSTANCE;
+        return instance;
     }
 
     /**
-     * @description Returns a cached copy of `AuthSession` for the current user's current session,
+     * @description Returns a `Map<Id, AuthSession>` for the specified user IDs & their matching active sessions,
      *              or `null` if there is not a current session
-     * @return   The cached `AuthSession` record
+     * @param  userIds userIds description
+     * @return The instance of `Map<Id, AuthSession>` containing any matching `AuthSession` records
      */
-    public AuthSession getCachedAuthSession() {
-        Id userId = UserInfo.getUserId();
-        String cacheKeyName = 'AuthSession' + userId;
-        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
-            return (AuthSession) LoggerCache.getTransactionCache().get(cacheKeyName);
+    public virtual Map<Id, LoggerSObjectProxy.AuthSession> getAuthSessionProxies(List<Id> userIds) {
+        Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = new Map<Id, LoggerSObjectProxy.AuthSession>();
+
+        if (LoggerParameter.QUERY_AUTH_SESSION_DATA == false) {
+            return userIdToAuthSessionProxy;
         }
 
-        List<AuthSession> sessions = [
+        for (AuthSession authSession : [
             SELECT
                 Id,
                 LoginType,
@@ -43,17 +48,39 @@ public without sharing class LoggerEngineDataSelector {
                 LoginHistory.Application,
                 LoginHistory.Browser,
                 LoginHistory.Platform,
+                LoginHistory.UserId,
                 LogoutUrl,
                 SessionSecurityLevel,
                 SessionType,
-                SourceIp
+                SourceIp,
+                UsersId
             FROM AuthSession
-            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL // TODO this won't work in an async context (when running as Automated Process)
-        ];
+            WHERE UsersId IN :userIds AND IsCurrent = TRUE AND ParentId = NULL
+        ]) {
+            LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSession);
+            userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);
+        }
+        return userIdToAuthSessionProxy;
+    }
 
-        AuthSession session = sessions.isEmpty() ? null : sessions.get(0);
-        LoggerCache.getTransactionCache().put(cacheKeyName, session);
-        return session;
+    /**
+     * @description Returns a cached copy of `AuthSession` for the current user's current session,
+     *              or `null` if there is not a current session
+     * @return   The cached `AuthSession` record
+     */
+    public virtual LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
+        Id userId = System.UserInfo.getUserId();
+        String cacheKey = 'AuthSession' + userId;
+        if (LoggerCache.getSessionCache().contains(cacheKey) == true) {
+            return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
+        }
+
+        LoggerSObjectProxy.AuthSession authSession;
+        if (LoggerParameter.QUERY_AUTH_SESSION_DATA == true) {
+            authSession = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
+            LoggerCache.getSessionCache().put(cacheKey, authSession);
+        }
+        return authSession;
     }
 
     /**
@@ -61,10 +88,10 @@ public without sharing class LoggerEngineDataSelector {
      *              including the field `SObjectType__r.QualifiedApiName` that cannot be accessed via `LoggerSObjectHandler__mdt.getAll()`
      * @return   The cached `List<LoggerSObjectHandler__mdt>` records
      */
-    public List<LoggerSObjectHandler__mdt> getCachedLoggerSObjectHandlers() {
-        String cacheKeyName = 'EnabledLoggerSObjectHandlers';
-        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
-            return (List<LoggerSObjectHandler__mdt>) LoggerCache.getTransactionCache().get(cacheKeyName);
+    public virtual List<LoggerSObjectHandler__mdt> getCachedLoggerSObjectHandlers() {
+        String cacheKey = 'EnabledLoggerSObjectHandlers';
+        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+            return (List<LoggerSObjectHandler__mdt>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
         List<LoggerSObjectHandler__mdt> enabledSObjectHandlers = [
@@ -72,46 +99,49 @@ public without sharing class LoggerEngineDataSelector {
             FROM LoggerSObjectHandler__mdt
             WHERE IsEnabled__c = TRUE
         ];
-        LoggerCache.getTransactionCache().put(cacheKeyName, enabledSObjectHandlers);
+        LoggerCache.getOrganizationCache().put(cacheKey, enabledSObjectHandlers);
         return enabledSObjectHandlers;
     }
 
     /**
      * @description Returns a cached copy of the current user's `Network` site, or `null` if the current user is not associated
      *              with a `Network` site
-     * @return   The cached `Network` record
+     * @param  networkId The record ID of the `Network` to query
+     * @return           The cached `Network` record
      */
-    public SObject getCachedNetwork() {
-        Id networkId = System.Network.getNetworkId();
-        if (networkId == null || Type.forName('System.Network') == null) {
+    public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
+        if (networkId == null || IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return null;
         }
 
-        String cacheKeyName = 'Network' + networkId;
-        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
-            return (SObject) LoggerCache.getTransactionCache().get(cacheKeyName);
+        String cacheKey = 'Network' + networkId;
+        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+            return (LoggerSObjectProxy.Network) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        // Networks (aka experience sites aka community sites aka portal sites ò_ô)
-        // may not be enabled in the org (no Network object), so run everything dynamically
-        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
-        SObject networkSite = Database.query(String.escapeSingleQuotes(query));
-        LoggerCache.getTransactionCache().put(cacheKeyName, networkSite);
-        return networkSite;
+        LoggerSObjectProxy.Network networkProxy;
+        if (LoggerParameter.QUERY_NETWORK_DATA == true) {
+            networkProxy = getNetworkProxies(new List<Id>{ networkId }).get(networkId);
+            LoggerCache.getOrganizationCache().put(cacheKey, networkProxy);
+        }
+        return networkProxy;
     }
 
     /**
      * @description Returns a cached copy of the `Organization` record in the org, including some fields that cannot be accessed via `UserInfo`
      * @return   The cached `Organization` record
      */
-    public Organization getCachedOrganization() {
-        String cacheKeyName = 'Organization';
-        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
-            return (Organization) LoggerCache.getTransactionCache().get(cacheKeyName);
+    public virtual Organization getCachedOrganization() {
+        String cacheKey = 'Organization';
+        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+            return (Organization) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        Organization organization = [SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
-        LoggerCache.getTransactionCache().put(cacheKeyName, organization);
+        Organization organization;
+        if (LoggerParameter.QUERY_ORGANIZATION_DATA == true) {
+            organization = [SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+            LoggerCache.getOrganizationCache().put(cacheKey, organization);
+        }
         return organization;
     }
 
@@ -120,21 +150,24 @@ public without sharing class LoggerEngineDataSelector {
      *              including the field `SObjectField__r.QualifiedApiName` that cannot be accessed via `LogEntryTagRule__mdt.getAll()`
      * @return   The cached `List<LogEntryTagRule__mdt>` records
      */
-    public List<LogEntryTagRule__mdt> getCachedTagAssignmentRules() {
-        String cacheKeyName = 'TagAssignmentRules';
-        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
-            return (List<LogEntryTagRule__mdt>) LoggerCache.getTransactionCache().get(cacheKeyName);
+    public virtual List<LogEntryTagRule__mdt> getCachedTagAssignmentRules() {
+        String cacheKey = 'TagAssignmentRules';
+        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+            return (List<LogEntryTagRule__mdt>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
         List<LogEntryTagRule__mdt> tagAssignmentRules = new List<LogEntryTagRule__mdt>();
         if (LogEntryTagRule__mdt.getAll().isEmpty() == false || System.Test.isRunningTest() == true) {
-            tagAssignmentRules = [
+            for (LogEntryTagRule__mdt rule : [
                 SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
                 FROM LogEntryTagRule__mdt
                 WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
-            ];
+            ]) {
+                rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
+                tagAssignmentRules.add(rule);
+            }
         }
-        LoggerCache.getTransactionCache().put(cacheKeyName, tagAssignmentRules);
+        LoggerCache.getOrganizationCache().put(cacheKey, tagAssignmentRules);
         return tagAssignmentRules;
     }
 
@@ -142,20 +175,65 @@ public without sharing class LoggerEngineDataSelector {
      * @description Returns a cached copy of the current user, including some profile fields that cannot be accessed via `UserInfo`
      * @return   The cached `User` record for the current user
      */
-    public User getCachedUser() {
-        Id userId = UserInfo.getUserId();
-
-        String cacheKeyName = 'User' + userId;
-        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
-            return (User) LoggerCache.getTransactionCache().get(cacheKeyName);
+    public virtual User getCachedUser() {
+        Id userId = System.UserInfo.getUserId();
+        String cacheKey = 'User' + userId;
+        if (LoggerCache.getSessionCache().contains(cacheKey) == true) {
+            return (User) LoggerCache.getSessionCache().get(cacheKey);
         }
 
-        User user = [
-            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
-            FROM User
-            WHERE Id = :userId
-        ];
-        LoggerCache.getTransactionCache().put(cacheKeyName, user);
+        User user;
+        if (LoggerParameter.QUERY_USER_DATA == true) {
+            user = getUsers(new List<Id>{ userId }).get(userId);
+            LoggerCache.getSessionCache().put(cacheKey, user);
+        }
         return user;
+    }
+
+    /**
+     * @description Returns a list of matching `Network` records based on the provided list of network IDs
+     * @param  networkIds The list of `Network` IDs to query
+     * @return            The instance of `Map<Id, SObject>` containing any matching `Network` records
+     */
+    public Map<Id, LoggerSObjectProxy.Network> getNetworkProxies(List<Id> networkIds) {
+        // TODO add caching in a future release
+        if (LoggerParameter.QUERY_NETWORK_DATA == false) {
+            return null;
+        }
+
+        // Networks (aka experience sites aka community sites aka portal sites ò_ô)
+        // may not be enabled in the org (no Network object), so run everything dynamically
+        // return new Map<Id, SObject>(Database.query(String.escapeSingleQuotes(query)));
+        Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
+        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
+        for (SObject networkRecord : Database.query(String.escapeSingleQuotes(query))) {
+            LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(networkRecord);
+            networkIdToNetworkProxy.put(networkProxy.Id, networkProxy);
+        }
+        return networkIdToNetworkProxy;
+    }
+
+    /**
+     * @description Returns a list of matching `User` records based on the provided list of user IDs
+     * @param  userIds The list of `User` IDs to query
+     * @return         The instance of `Map<Id, User>` containing any matching `User` records
+     */
+    public Map<Id, User> getUsers(List<Id> userIds) {
+        if (LoggerParameter.QUERY_USER_DATA == false) {
+            return new Map<Id, User>();
+        }
+
+        return new Map<Id, User>(
+            [
+                SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+                FROM User
+                WHERE Id IN :userIds
+            ]
+        );
+    }
+
+    @TestVisible
+    private static void setMock(LoggerEngineDataSelector mockSelectorInstance) {
+        instance = mockSelectorInstance;
     }
 }

@@ -81,7 +81,7 @@ public inherited sharing class FlowLogger {
         public DateTime timestamp;
 
         // Private member variables
-        private LoggingLevel entryLoggingLevel;
+        private System.LoggingLevel entryLoggingLevel;
         private LogEntryEventBuilder logEntryEventBuilder;
         private LogEntryEvent__e logEntryEvent;
 
@@ -97,9 +97,9 @@ public inherited sharing class FlowLogger {
             // Set the logging level if it's blank
             if (String.isBlank(this.loggingLevelName)) {
                 if (String.isNotBlank(this.faultMessage)) {
-                    this.loggingLevelName = LoggingLevel.ERROR.name();
+                    this.loggingLevelName = System.LoggingLevel.ERROR.name();
                 } else {
-                    this.loggingLevelName = LoggingLevel.DEBUG.name();
+                    this.loggingLevelName = System.LoggingLevel.DEBUG.name();
                 }
             }
 

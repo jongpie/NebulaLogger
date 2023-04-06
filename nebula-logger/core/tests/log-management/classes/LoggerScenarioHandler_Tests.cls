@@ -8,7 +8,7 @@
 private class LoggerScenarioHandler_Tests {
     @IsTest
     static void it_should_return_the_loggerScenario_sobjectType() {
-        System.assertEquals(Schema.LoggerScenario__c.SObjectType, new LoggerScenarioHandler().getSObjectType());
+        System.Assert.areEqual(Schema.LoggerScenario__c.SObjectType, new LoggerScenarioHandler().getSObjectType());
     }
 
     @IsTest
@@ -21,7 +21,7 @@ private class LoggerScenarioHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(loggerScenario);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerScenario__c.SObjectType).size(),
             'Handler class should not have executed'
@@ -38,7 +38,7 @@ private class LoggerScenarioHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(loggerScenario);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerScenario__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
@@ -55,23 +55,23 @@ private class LoggerScenarioHandler_Tests {
         LoggerScenario__c duplicateScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(new LoggerScenario__c(Name = loggerScenario.Name))
             .populateRequiredFields()
             .getRecord();
-        Exception thrownException;
+        System.Exception thrownException;
 
         try {
             insert duplicateScenario;
-            System.assert(false, 'Exception expected on previous line');
-        } catch (Exception ex) {
+            System.Assert.fail('System.Exception expected on previous line');
+        } catch (System.Exception ex) {
             thrownException = ex;
         }
 
-        System.assertEquals(
+        System.Assert.areEqual(
             3,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerScenario__c.SObjectType).size(),
             'Handler class should have executed three times - once for BEFORE_INSERT and once for AFTER_INSERT for the first record,' +
             ' and once for BEFORE_INSERT on the errored duplicate'
         );
-        System.assertNotEquals(null, thrownException, 'An exception should have been thrown');
+        System.Assert.isNotNull(thrownException, 'An exception should have been thrown');
         String expectedDuplicateError = 'DUPLICATE_VALUE';
-        System.assert(thrownException.getMessage().contains(expectedDuplicateError), thrownException.getMessage());
+        System.Assert.isTrue(thrownException.getMessage().contains(expectedDuplicateError), thrownException.getMessage());
     }
 }

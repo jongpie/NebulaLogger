@@ -4,29 +4,19 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <formula>IMAGE(
-        CASE(
-            IF(
-                (LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100) &gt;= 90,
-                &quot;red&quot;,
-                IF(
-                (LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100) &lt; 90 &amp;&amp; (LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100) &gt;= 80,
-                &quot;yellow&quot;,
-                &quot;green&quot;
-                )
-            ),
-            &quot;green&quot;, &quot;/img/samples/flag_green.gif&quot;,
-            &quot;yellow&quot;, &quot;/img/samples/flag_yellow.gif&quot;,
-            &quot;red&quot;, &quot;/img/samples/flag_red.gif&quot;,
-            &quot;/s.gif&quot;
-        ),
-        &apos;&apos;, 16, 16
+    <formula>IF(
+        (LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100) &gt;= 90,
+        &quot;⛔&quot;,
+        IF(
+            (LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100) &lt; 90 &amp;&amp; (LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100) &gt;= 80,
+            &quot;⚠️&quot;,
+            &quot;✅&quot;
+        )
     )
-
-    + &apos; &apos; +
-
-    TEXT(LimitsAggregateQueriesUsed__c ) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c ) + &apos; (&apos; + TEXT(ROUND(LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + IF(LimitsAggregateQueriesMax__c = 0, '100', TEXT(ROUND(LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100, 2))) + &apos;% (&apos;
+    + TEXT(LimitsAggregateQueriesUsed__c) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>✅ when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>
     <label>Aggregate Queries</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

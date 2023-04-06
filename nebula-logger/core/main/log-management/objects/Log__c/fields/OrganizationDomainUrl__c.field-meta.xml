@@ -3,9 +3,9 @@
     <fullName>OrganizationDomainUrl__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <description>The value returned from Url..getOrgDomainUrl()</description>
+    <description>The value returned from System.URL.getOrgDomainUrl()</description>
     <externalId>false</externalId>
-    <inlineHelpText>The value returned from Url..getOrgDomainUrl()</inlineHelpText>
+    <inlineHelpText>The value returned from System.URL.getOrgDomainUrl()</inlineHelpText>
     <label>Organization Domain URL</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

@@ -90,6 +90,47 @@ SObjectTestDataBuilder
 
 A new instance of `SObjectTestDataBuilder` for the specified `SObject`
 
+#### `createDatabaseLeadConvertResult(Boolean isSuccess)` → `Database.LeadConvertResult`
+
+Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
+
+##### Parameters
+
+| Param       | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+
+##### Return
+
+**Type**
+
+Database.LeadConvertResult
+
+**Description**
+
+The mock instance of `Database.LeadConvertResult`
+
+#### `createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId)` → `Database.LeadConvertResult`
+
+Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
+
+##### Parameters
+
+| Param       | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| `recordId`  | The record ID to use within the mock result                     |
+
+##### Return
+
+**Type**
+
+Database.LeadConvertResult
+
+**Description**
+
+The mock instance of `Database.LeadConvertResult`
+
 #### `createDatabaseDeleteResult(Boolean isSuccess)` → `Database.DeleteResult`
 
 Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
@@ -299,7 +340,7 @@ The mock instance of `Database.UpsertResult`
 
 #### `createHttpCallout()` → `MockHttpCallout`
 
-Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`. This can be used when testing batch jobs.
+Generates an instance of the class `MockHttpCallout` that implements the interface `System.HttpCalloutMock`. This can be used when testing batch jobs.
 
 ##### Return
 
@@ -311,7 +352,7 @@ MockHttpCallout
 
 The instance of `MockHttpCallout`
 
-#### `createHttpRequest()` → `HttpRequest`
+#### `createHttpRequest()` → `System.HttpRequest`
 
 Generates an instance of `HttpRequest`. This can be used when testing logging capabilities for instances of `HttpRequest`.
 
@@ -319,13 +360,13 @@ Generates an instance of `HttpRequest`. This can be used when testing logging ca
 
 **Type**
 
-HttpRequest
+System.HttpRequest
 
 **Description**
 
 The instance of `HttpRequest`
 
-#### `createHttpResponse()` → `HttpResponse`
+#### `createHttpResponse()` → `System.HttpResponse`
 
 Generates an instance of `HttpResponse`. This can be used when testing logging capabilities for instances of `HttpResponse`.
 
@@ -333,7 +374,7 @@ Generates an instance of `HttpResponse`. This can be used when testing logging c
 
 **Type**
 
-HttpResponse
+System.HttpResponse
 
 **Description**
 
@@ -392,20 +433,6 @@ User
 **Description**
 
 The generated `User` record - it is not automatically inserted into the database.
-
-#### `getNetwork()` → `SObject`
-
-Returns the current user&apos;s `Network` (Experience Cloud site)
-
-##### Return
-
-**Type**
-
-SObject
-
-**Description**
-
-The matching `Network` record
 
 #### `getOrganization()` → `Organization`
 
@@ -569,9 +596,9 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Properties
 
-###### `request` → `HttpRequest`
+###### `request` → `System.HttpRequest`
 
-###### `response` → `HttpResponse`
+###### `response` → `System.HttpResponse`
 
 ###### `responseBody` → `String`
 
@@ -581,7 +608,7 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Methods
 
-###### `respond(HttpRequest request)` → `HttpResponse`
+###### `respond(System.HttpRequest request)` → `System.HttpResponse`
 
 ###### `setResponseBody(String responseBody)` → `MockHttpCallout`
 

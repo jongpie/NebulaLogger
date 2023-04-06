@@ -5,17 +5,21 @@
 
 The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.8.3
+## Unlocked Package - v4.10.0
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lw9QAA)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lw9QAA)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015nWjQAI)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015nWjQAI)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-## Managed Package - v4.8.0
+`sfdx package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015nWjQAI`
 
-[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015lsgQAA)
-[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015lsgQAA)
-[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/8?closed=1)
+## Managed Package - v4.10.0
+
+[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015nWeQAI)
+[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015nWeQAI)
+[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/10?closed=1)
+
+`sfdx package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015nWeQAI`
 
 ---
 
@@ -93,7 +97,7 @@ Nebula Logger is available as both an unlocked package and a managed package. Th
 
 ## Getting Started
 
-After deploying Nebula Logger to your org, there are a few additional configuration changes needed...
+After installing Nebula Logger in your org, there are a few additional configuration changes needed...
 
 -   Assign permission set(s) to users
     -   `LoggerLogCreator` provides the minimum access needed for users to generate logs via Apex, Lightning Components, Flow or Process Builder

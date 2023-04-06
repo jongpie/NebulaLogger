@@ -7,21 +7,21 @@
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
     private static User getUserRecord() {
-        return new User(Id = UserInfo.getUserId(), Username = UserInfo.getUserName());
+        return new User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     }
 
     @IsTest
     static void it_should_throw_exception_when_mock_record_developer_name_is_null() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = null);
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
 
         try {
             LoggerParameter.setMock(mockParameter);
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
-        System.assertNotEquals(null, thrownIllegalArgumentException);
+        System.Assert.isNotNull(thrownIllegalArgumentException);
     }
 
     @IsTest
@@ -31,30 +31,201 @@ private class LoggerParameter_Tests {
 
         String returnedValue = LoggerParameter.getString(mockParameter.DeveloperName, null);
 
-        System.assertNotEquals(null, returnedValue);
-        System.assertEquals(mockParameter.Value__c, returnedValue);
+        System.Assert.isNotNull(returnedValue);
+        System.Assert.areEqual(mockParameter.Value__c, returnedValue);
     }
 
     @IsTest
     static void it_should_return_constant_value_for_call_status_api() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
     static void it_should_return_constant_value_for_enable_system_messages() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_enable_tagging() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_normalize_scenario_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_SCENARIO_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_normalize_tag_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_TAG_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_platform_cache_partition_name() {
+        String mockValue = 'SomeValue';
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'PlatformCachePartitionName', Value__c = mockValue);
+        LoggerParameter.setMock(mockParameter);
+
+        String returnedValue = LoggerParameter.PLATFORM_CACHE_PARTITION_NAME;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_apex_class_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryAuthSessionDataSynchronously',
+            Value__c = JSON.serialize(mockValue)
+        );
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_flow_definition_view_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_organization_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_organization_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryOrganizationDataSynchronously',
+            Value__c = JSON.serialize(mockValue)
+        );
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_related_record_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
+
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -65,7 +236,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -77,29 +248,29 @@ private class LoggerParameter_Tests {
 
         String returnedValue = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT;
 
-        System.assertEquals(configuredValue, returnedValue);
+        System.Assert.areEqual(configuredValue, returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_tagging_is_enabled() {
+    static void it_should_return_constant_value_for_use_platform_cache() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
-        Boolean returnedValue = LoggerParameter.TAGGING_IS_ENABLED;
+        Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_tag_using_topics() {
+    static void it_should_return_constant_value_for_use_topics_for_tags() {
         Boolean mockValue = true;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
-        Boolean returnedValue = LoggerParameter.TAG_USING_TOPICS;
+        Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
 
-        System.assertEquals(mockValue, returnedValue);
+        System.Assert.areEqual(mockValue, returnedValue);
     }
 
     @IsTest
@@ -110,7 +281,7 @@ private class LoggerParameter_Tests {
 
         Boolean returnedValue = LoggerParameter.getBoolean(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -121,7 +292,7 @@ private class LoggerParameter_Tests {
 
         List<Boolean> returnedValue = LoggerParameter.getBooleanList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -133,9 +304,9 @@ private class LoggerParameter_Tests {
 
         List<Boolean> returnedValue = LoggerParameter.getBooleanList(mockParameter.DeveloperName, defaultParameterValue);
 
-        System.assertEquals(null, parameterValue);
-        System.assertNotEquals(parameterValue, returnedValue, 'Returned value should not match configured null parameter value');
-        System.assertEquals(defaultParameterValue, returnedValue, 'Returned value does not match expected default parameter value');
+        System.Assert.isNull(parameterValue);
+        System.Assert.areNotEqual(parameterValue, returnedValue, 'Returned value should not match configured null parameter value');
+        System.Assert.areEqual(defaultParameterValue, returnedValue, 'Returned value does not match expected default parameter value');
     }
 
     @IsTest
@@ -146,7 +317,7 @@ private class LoggerParameter_Tests {
 
         Date returnedValue = LoggerParameter.getDate(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -157,7 +328,7 @@ private class LoggerParameter_Tests {
 
         List<Date> returnedValue = LoggerParameter.getDateList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -168,7 +339,7 @@ private class LoggerParameter_Tests {
 
         Datetime returnedValue = LoggerParameter.getDatetime(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -179,7 +350,7 @@ private class LoggerParameter_Tests {
 
         List<Datetime> returnedValue = LoggerParameter.getDatetimeList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -190,7 +361,7 @@ private class LoggerParameter_Tests {
 
         Decimal returnedValue = LoggerParameter.getDecimal(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -201,7 +372,7 @@ private class LoggerParameter_Tests {
 
         List<Decimal> returnedValue = LoggerParameter.getDecimalList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -212,7 +383,7 @@ private class LoggerParameter_Tests {
 
         Double returnedValue = LoggerParameter.getDouble(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -223,29 +394,29 @@ private class LoggerParameter_Tests {
 
         List<Double> returnedValue = LoggerParameter.getDoubleList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
     static void it_should_return_id_parameter() {
-        Id parameterValue = UserInfo.getUserId();
+        Id parameterValue = System.UserInfo.getUserId();
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyId', Value__c = JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Id returnedValue = LoggerParameter.getId(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
     static void it_should_return_id_list_parameter() {
-        List<Id> parameterValue = new List<Id>{ UserInfo.getUserId() };
+        List<Id> parameterValue = new List<Id>{ System.UserInfo.getUserId() };
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyIdList', Value__c = JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Id> returnedValue = LoggerParameter.getIdList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -256,7 +427,7 @@ private class LoggerParameter_Tests {
 
         Integer returnedValue = LoggerParameter.getInteger(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -267,7 +438,7 @@ private class LoggerParameter_Tests {
 
         List<Integer> returnedValue = LoggerParameter.getIntegerList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -278,7 +449,7 @@ private class LoggerParameter_Tests {
 
         Long returnedValue = LoggerParameter.getLong(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -289,7 +460,7 @@ private class LoggerParameter_Tests {
 
         List<Long> returnedValue = LoggerParameter.getLongList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -300,7 +471,7 @@ private class LoggerParameter_Tests {
 
         SObject returnedValue = LoggerParameter.getSObject(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -311,7 +482,7 @@ private class LoggerParameter_Tests {
 
         List<SObject> returnedValue = LoggerParameter.getSObjectList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -322,7 +493,7 @@ private class LoggerParameter_Tests {
 
         String returnedValue = LoggerParameter.getString(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -333,7 +504,7 @@ private class LoggerParameter_Tests {
 
         List<String> returnedValue = LoggerParameter.getStringList(mockParameter.DeveloperName, null);
 
-        System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+        System.Assert.areEqual(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
     @IsTest
@@ -348,12 +519,12 @@ private class LoggerParameter_Tests {
 
         List<LoggerParameter__mdt> matchingParameters = LoggerParameter.matchOnPrefix(developerNamePrefix);
 
-        System.assertEquals(2, matchingParameters.size());
+        System.Assert.areEqual(2, matchingParameters.size());
         for (LoggerParameter__mdt matchingParameter : matchingParameters) {
-            System.assertEquals(
+            System.Assert.areEqual(
                 true,
                 matchingParameter.DeveloperName == firstMatchingMockParameter.DeveloperName ||
-                matchingParameter.DeveloperName == secondMatchingMockParameter.DeveloperName,
+                    matchingParameter.DeveloperName == secondMatchingMockParameter.DeveloperName,
                 'Returned parameter should be one of the two matching mock parameters'
             );
         }

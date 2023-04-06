@@ -114,6 +114,22 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.RequestId__c</fieldItem>
+                <identifier>RecordRequestId_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RequestId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.StartTime__c</fieldItem>
                 <identifier>RecordStartTime__cField</identifier>
             </fieldInstance>
@@ -246,8 +262,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.TransactionScenario__c</fieldItem>
-                <identifier>RecordTransactionScenario__cField</identifier>
+                <fieldItem>Record.TransactionScenarioLink__c</fieldItem>
+                <identifier>RecordTransactionScenarioLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -370,6 +386,22 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoggedByUsernameLink__c</fieldItem>
                 <identifier>RecordLoggedByUsernameLink__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ImpersonatedByUsernameLink__c</fieldItem>
+                <identifier>RecordImpersonatedByUsernameLink_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ImpersonatedByUsernameLink__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

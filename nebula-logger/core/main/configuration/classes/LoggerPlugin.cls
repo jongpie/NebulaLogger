@@ -67,7 +67,12 @@ public without sharing class LoggerPlugin {
      *                             or null if an instance could not be created based on the provided configuration
      */
     public static Batchable newBatchableInstance(String apexClassTypeName) {
-        return (Batchable) Type.forName(apexClassTypeName)?.newInstance();
+        Object pluginInstance = newPluginInstance(apexClassTypeName);
+        Boolean isValidInstance = pluginInstance instanceof Batchable;
+        if (isValidInstance == false) {
+            pluginInstance = null;
+        }
+        return (Batchable) pluginInstance;
     }
 
     /**
@@ -77,7 +82,16 @@ public without sharing class LoggerPlugin {
      *                             or null if an instance could not be created based on the provided configuration
      */
     public static Triggerable newTriggerableInstance(String apexClassTypeName) {
-        return (Triggerable) Type.forName(apexClassTypeName)?.newInstance();
+        Object pluginInstance = newPluginInstance(apexClassTypeName);
+        Boolean isValidInstance = pluginInstance instanceof Triggerable;
+        if (isValidInstance == false) {
+            pluginInstance = null;
+        }
+        return (Triggerable) pluginInstance;
+    }
+
+    private static Object newPluginInstance(String apexClassTypeName) {
+        return System.Type.forName(apexClassTypeName)?.newInstance();
     }
 
     private static Map<String, LoggerPlugin__mdt> loadRecords() {
@@ -91,7 +105,7 @@ public without sharing class LoggerPlugin {
     @TestVisible
     private static void setMock(LoggerPlugin__mdt pluginConfiguration) {
         if (String.isBlank(pluginConfiguration.DeveloperName) == true) {
-            throw new IllegalArgumentException('DeveloperName is required on mock LoggerPlugin__mdt: \n' + JSON.serializePretty(pluginConfiguration));
+            throw new System.IllegalArgumentException('DeveloperName is required on mock LoggerPlugin__mdt: \n' + JSON.serializePretty(pluginConfiguration));
         }
         if (pluginConfiguration.IsEnabled__c == true) {
             DEVELOPER_NAME_TO_RECORD.put(pluginConfiguration.DeveloperName, pluginConfiguration);

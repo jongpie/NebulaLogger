@@ -29,6 +29,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.logs = (List<Log__c>) triggerNew;
         this.loggerScenariosById = queryLoggerScenarios(this.logs);
 
+        this.setHasCommentsField();
         this.setClosedStatusFields();
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
         this.setOwnerId();
@@ -41,6 +42,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.logs = (List<Log__c>) triggerNewMap.values();
         this.oldLogsById = (Map<Id, Log__c>) triggerOldMap;
 
+        this.setHasCommentsField();
         this.setClosedStatusFields();
         // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
         this.setPriority();
@@ -50,6 +52,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.logs = (List<Log__c>) triggerNewMap.values();
 
         this.shareLogsWithLoggingUsers();
+    }
+
+    private void setHasCommentsField() {
+        for (Log__c log : this.logs) {
+            log.HasComments__c = String.isNotBlank(log.Comments__c);
+        }
     }
 
     private void setClosedStatusFields() {
@@ -67,7 +75,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
                 log.ClosedBy__c = null;
                 log.ClosedDate__c = null;
             } else {
-                log.ClosedBy__c = log.ClosedBy__c == null ? UserInfo.getUserId() : log.ClosedBy__c;
+                log.ClosedBy__c = log.ClosedBy__c == null ? System.UserInfo.getUserId() : log.ClosedBy__c;
                 log.ClosedDate__c = log.ClosedDate__c == null ? System.now() : log.ClosedDate__c;
             }
         }

@@ -23,13 +23,13 @@ global with sharing class ExampleInboundEmailHandler implements Messaging.Inboun
         try {
             String nullString = null;
             nullString.length();
-        } catch (Exception apexException) {
+        } catch (System.Exception apexException) {
             Logger.error(logEntryMessage, apexException);
         } finally {
             result.success = true;
-            Logger.debug('Logger buffer size before save: ' + Logger.getBufferSize());
+            Logger.info('Logger buffer size before save: ' + Logger.getBufferSize());
             Logger.saveLog();
-            Logger.debug('Logger buffer size after save: ' + Logger.getBufferSize());
+            Logger.info('Logger buffer size after save: ' + Logger.getBufferSize());
         }
 
         return result;

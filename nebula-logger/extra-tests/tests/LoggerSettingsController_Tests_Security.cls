@@ -3,12 +3,6 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-/**
- * @group Extra Tests
- * @description Additional integration tests for testing security checks in `LoggerSettingsController`.
- *              If an org installs Nebula Logger for all users, these tests will start failing since it relies on an existing Profile
- *              ...from within the normal tests, and each org might have additional required fields, VR, etc on the std objects
- */
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LoggerSettingsController_Tests_Security {
@@ -30,8 +24,11 @@ private class LoggerSettingsController_Tests_Security {
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
 
         System.runAs(standardUser) {
-            System.assertEquals(true, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME), permissionSetAssignment);
-            System.assertEquals(true, LoggerSettingsController.canUserModifyLoggerSettings());
+            System.Assert.isTrue(
+                System.FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME),
+                JSON.serializePretty(permissionSetAssignment)
+            );
+            System.Assert.isTrue(LoggerSettingsController.canUserModifyLoggerSettings());
         }
     }
 
@@ -42,8 +39,8 @@ private class LoggerSettingsController_Tests_Security {
         LoggerTestConfigurator.assignAdminPermissionSet(standardUser.Id);
 
         System.runAs(standardUser) {
-            System.assertEquals(true, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
-            System.assertEquals(true, LoggerSettingsController.canUserModifyLoggerSettings());
+            System.Assert.isTrue(System.FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
+            System.Assert.isTrue(LoggerSettingsController.canUserModifyLoggerSettings());
         }
     }
 
@@ -54,8 +51,8 @@ private class LoggerSettingsController_Tests_Security {
         LoggerTestConfigurator.assignLogViewerPermissionSet(standardUser.Id);
 
         System.runAs(standardUser) {
-            System.assertEquals(false, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
-            System.assertEquals(false, LoggerSettingsController.canUserModifyLoggerSettings());
+            System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
+            System.Assert.isFalse(LoggerSettingsController.canUserModifyLoggerSettings());
         }
     }
 
@@ -66,8 +63,8 @@ private class LoggerSettingsController_Tests_Security {
         LoggerTestConfigurator.assignEndUserPermissionSet(standardUser.Id);
 
         System.runAs(standardUser) {
-            System.assertEquals(false, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
-            System.assertEquals(false, LoggerSettingsController.canUserModifyLoggerSettings());
+            System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
+            System.Assert.isFalse(LoggerSettingsController.canUserModifyLoggerSettings());
         }
     }
 
@@ -78,8 +75,8 @@ private class LoggerSettingsController_Tests_Security {
         LoggerTestConfigurator.assignLogCreatorPermissionSet(standardUser.Id);
 
         System.runAs(standardUser) {
-            System.assertEquals(false, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
-            System.assertEquals(false, LoggerSettingsController.canUserModifyLoggerSettings());
+            System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
+            System.Assert.isFalse(LoggerSettingsController.canUserModifyLoggerSettings());
         }
     }
 
@@ -87,7 +84,7 @@ private class LoggerSettingsController_Tests_Security {
     static void it_should_not_permit_user_to_modify_logger_settings_when_custom_permission_is_not_assigned() {
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
-            System.assertEquals(false, LoggerSettingsController.canUserModifyLoggerSettings());
+            System.Assert.isFalse(LoggerSettingsController.canUserModifyLoggerSettings());
         }
     }
 }

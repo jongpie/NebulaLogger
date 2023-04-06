@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Enable Stack Trace Parsing</label>
+    <protected>false</protected>
+    <values>
+        <field>Description__c</field>
+        <value
+            xsi:type="xsd:string"
+        >When set to &apos;true&apos; (default), the Apex or JavaScript stack trace will be parsed on each log entry &amp; used to set the fields LogEntryEvent__e.OriginLocation__c, LogEntry__c.OriginLocation__c &amp; LogEntry__c.StackTrace__c will be saved in your org.
+
+When set to &apos;false&apos;, stack traces will not be parsed - this can conserve CPU usage, at the expense of losing some data about log entries.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">true</value>
+    </values>
+</CustomMetadata>

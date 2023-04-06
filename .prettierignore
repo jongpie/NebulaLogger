@@ -8,7 +8,6 @@
 .sf/
 .sfdx/
 .vscode/
-scripts/
 test-coverage/
 
 # NPM

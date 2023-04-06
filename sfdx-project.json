@@ -1,7 +1,8 @@
 {
+    "name": "Nebula Logger",
     "namespace": "",
+    "sourceApiVersion": "57.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "55.0",
     "plugins": {
         "sfdx-plugin-prettier": {
             "enabled": true
@@ -12,15 +13,18 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.8.3.NEXT",
-            "versionName": "Improved LogEntry__c Formula Fields for Limits",
-            "versionDescription": "Updated formula fields on LogEntry__c for limits to include the percentage of each limit used & to include a flag indicator (>= 90% displays a red flag, < 90 && >= 80: displays a yellow flag, otherwise a green flag is displayed)",
+            "versionNumber": "4.10.0.NEXT",
+            "versionName": "Spring '23 Release",
+            "versionDescription": "Upgraded all metadata to API v57.0 (Spring '23 release)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
-            "default": true
+            "unpackagedMetadata": {
+                "path": "./nebula-logger/extra-tests"
+            },
+            "default": false
         },
         {
             "default": false,
-            "package": "Nebula Logger - Plugin - Async Failure Additions",
+            "package": "Nebula Logger - Core Plugin - Async Failure Additions",
             "path": "./nebula-logger/plugins/async-failure-additions/plugin",
             "dependencies": [
                 {
@@ -32,7 +36,7 @@
             "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)"
         },
         {
-            "package": "Nebula Logger - Plugin - Big Object Archiving",
+            "package": "Nebula Logger - Core Plugin - Big Object Archiving",
             "path": "./nebula-logger/plugins/big-object-archiving/plugin",
             "dependencies": [
                 {
@@ -45,7 +49,7 @@
             "default": false
         },
         {
-            "package": "Nebula Logger - Plugin - Log Retention Rules",
+            "package": "Nebula Logger - Core Plugin - Log Retention Rules",
             "path": "./nebula-logger/plugins/log-retention-rules/plugin",
             "dependencies": [
                 {
@@ -58,7 +62,7 @@
             "default": false
         },
         {
-            "package": "Nebula Logger - Plugin - Logger Admin Dashboard",
+            "package": "Nebula Logger - Core Plugin - Logger Admin Dashboard",
             "path": "./nebula-logger/plugins/logger-admin-dashboard/plugin",
             "dependencies": [
                 {
@@ -71,16 +75,16 @@
             "default": false
         },
         {
-            "package": "Nebula Logger - Plugin - Slack",
+            "package": "Nebula Logger - Core Plugin - Slack",
             "path": "./nebula-logger/plugins/slack/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
                 }
             ],
-            "versionName": "Improved formatting for stack traces",
-            "versionNumber": "1.5.0.NEXT",
-            "versionDescription": "Cleaned up formatting of stack trace fields to handle line breaks",
+            "versionName": "Customizable Notification Fields",
+            "versionNumber": "1.5.2.NEXT",
+            "versionDescription": "Added support for customizing which Log__c fields are included in Slack notifications with a new field set, Log__c.SlackNotificationFields, and a new LoggerParameter__mdt record, LoggerParameter.SlackLogNotificationFields",
             "default": false
         },
         {
@@ -90,6 +94,10 @@
         {
             "path": "./nebula-logger/recipes",
             "default": false
+        },
+        {
+            "path": "./nebula-logger/unsorted",
+            "default": true
         }
     ],
     "packageAliases": {
@@ -133,20 +141,35 @@
         "Nebula Logger - Core@4.8.1-new-logger-scenario-custom-object": "04t5Y0000015luIQAQ",
         "Nebula Logger - Core@4.8.2-more-controls-for-scenario-based-logging": "04t5Y0000015lvuQAA",
         "Nebula Logger - Core@4.8.3-improved-logentry__c-formula-fields-for-limits": "04t5Y0000015lw9QAA",
-        "Nebula Logger - Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
-        "Nebula Logger - Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
-        "Nebula Logger - Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
-        "Nebula Logger - Plugin - Big Object Archiving": "0Ho5Y000000blMSSAY",
-        "Nebula Logger - Plugin - Big Object Archiving@0.9.0": "04t5Y0000015lgLQAQ",
-        "Nebula Logger - Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
-        "Nebula Logger - Plugin - Log Retention Rules@0.9.0": "04t5Y0000015lgGQAQ",
-        "Nebula Logger - Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",
-        "Nebula Logger - Plugin - Logger Admin Dashboard@0.9.0": "04t5Y0000015l3yQAA",
-        "Nebula Logger - Plugin - Slack": "0Ho5Y000000blMDSAY",
-        "Nebula Logger - Plugin - Slack@0.9.0-beta-release": "04t5e00000061lHAAQ",
-        "Nebula Logger - Plugin - Slack@0.9.1-beta-release-round-2": "04t5e00000065xiAAA",
-        "Nebula Logger - Plugin - Slack@0.9.2-beta-release-round-3": "04t5Y0000015l2WQAQ",
-        "Nebula Logger - Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
-        "Nebula Logger - Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ"
+        "Nebula Logger - Core@4.8.4-optimized-synchronous-context": "04t5Y0000023R02QAE",
+        "Nebula Logger - Core@4.9.0-logbatchpurger-batch-size-increased": "04t5Y0000023R2DQAU",
+        "Nebula Logger - Core@4.9.1-track-impersonating-user": "04t5Y0000023R79QAE",
+        "Nebula Logger - Core@4.9.2-enhancements-for-log-entry-event-stream-lwc": "04t5Y0000023R7iQAE",
+        "Nebula Logger - Core@4.9.3-new-indicator-icons": "04t5Y0000023R7sQAE",
+        "Nebula Logger - Core@4.9.4-new-indicator-icons": "04t5Y0000023R8WQAU",
+        "Nebula Logger - Core@4.9.5-configurable-platform-cache-partition-name": "04t5Y0000023R9KQAU",
+        "Nebula Logger - Core@4.9.6-environment-aware-default-field-values-for-logger-settings": "04t5Y0000023R9eQAE",
+        "Nebula Logger - Core@4.9.7-new-log-field-hascomments": "04t5Y0000023R9yQAE",
+        "Nebula Logger - Core@4.9.8-test-coverage-improvements": "04t5Y0000023RBBQA2",
+        "Nebula Logger - Core@4.9.9-scenario-and-tag-storage-configurations": "04t5Y0000023RBpQAM",
+        "Nebula Logger - Core@4.9.10-added-search-result-fields-for-all-custom-objects": "04t5Y0000015mv8QAA",
+        "Nebula Logger - Core@4.10.0-spring-'23-release": "04t5Y0000015nWjQAI",
+        "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
+        "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
+        "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
+        "Nebula Logger - Core Plugin - Async Failure Additions@1.0.2": "04t5Y0000023QttQAE",
+        "Nebula Logger - Core Plugin - Big Object Archiving": "0Ho5Y000000blMSSAY",
+        "Nebula Logger - Core Plugin - Big Object Archiving@0.9.0": "04t5Y0000015lgLQAQ",
+        "Nebula Logger - Core Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
+        "Nebula Logger - Core Plugin - Log Retention Rules@0.9.0": "04t5Y0000015lgGQAQ",
+        "Nebula Logger - Core Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",
+        "Nebula Logger - Core Plugin - Logger Admin Dashboard@0.9.0": "04t5Y0000015l3yQAA",
+        "Nebula Logger - Core Plugin - Slack": "0Ho5Y000000blMDSAY",
+        "Nebula Logger - Core Plugin - Slack@0.9.0-beta-release": "04t5e00000061lHAAQ",
+        "Nebula Logger - Core Plugin - Slack@0.9.1-beta-release-round-2": "04t5e00000065xiAAA",
+        "Nebula Logger - Core Plugin - Slack@0.9.2-beta-release-round-3": "04t5Y0000015l2WQAQ",
+        "Nebula Logger - Core Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
+        "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
+        "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
     }
 }

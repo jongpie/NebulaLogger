@@ -42,6 +42,37 @@ public class LoggerMockDataCreator {
     }
 
     /**
+     * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.LeadConvertResult`
+     */
+    public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess) {
+        return createDatabaseLeadConvertResult(isSuccess, createId(Schema.Lead.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.LeadConvertResult`
+     */
+    public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.LeadConvertResult) JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
+        } else {
+            return (Database.LeadConvertResult) JSON.deserialize(
+                '{"success":false, "leadid": "' +
+                    recordId +
+                    '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
+                Database.LeadConvertResult.class
+            );
+        }
+    }
+
+    /**
      * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
@@ -64,9 +95,7 @@ public class LoggerMockDataCreator {
             return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
         } else {
             return (Database.DeleteResult) JSON.deserialize(
-                '{"success":false, "id": "' +
-                recordId +
-                '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
+                '{"success":false, "id": "' + recordId + '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
                 Database.DeleteResult.class
             );
         }
@@ -182,27 +211,21 @@ public class LoggerMockDataCreator {
     public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
         if (isSuccess == true) {
             return (Database.UpsertResult) JSON.deserialize(
-                '{"success": ' +
-                isSuccess +
-                ', "created": ' +
-                isCreated +
-                ', "id": "' +
-                recordId +
-                '"}',
+                '{"success": ' + isSuccess + ', "created": ' + isCreated + ', "id": "' + recordId + '"}',
                 Database.UpsertResult.class
             );
         } else {
             return (Database.UpsertResult) JSON.deserialize(
                 '{"success":false, "created":' +
-                isCreated +
-                ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                    isCreated +
+                    ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
                 Database.UpsertResult.class
             );
         }
     }
 
     /**
-     * @description Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`.
+     * @description Generates an instance of the class `MockHttpCallout` that implements the interface `System.HttpCalloutMock`.
      *              This can be used when testing batch jobs.
      * @return      The instance of `MockHttpCallout`
      */
@@ -214,8 +237,8 @@ public class LoggerMockDataCreator {
      * @description Generates an instance of `HttpRequest`. This can be used when testing logging capabilities for instances of `HttpRequest`.
      * @return      The instance of `HttpRequest`
      */
-    public static HttpRequest createHttpRequest() {
-        HttpRequest request = new HttpRequest();
+    public static System.HttpRequest createHttpRequest() {
+        System.HttpRequest request = new System.HttpRequest();
         request.setBody('Hello, world!');
         request.setCompressed(true);
         request.setEndpoint('https://fake.salesforce.com');
@@ -227,8 +250,8 @@ public class LoggerMockDataCreator {
      * @description Generates an instance of `HttpResponse`. This can be used when testing logging capabilities for instances of `HttpResponse`.
      * @return      The instance of `HttpResponse`
      */
-    public static HttpResponse createHttpResponse() {
-        HttpResponse response = new HttpResponse();
+    public static System.HttpResponse createHttpResponse() {
+        System.HttpResponse response = new System.HttpResponse();
         response.setBody('Hello, world!');
         response.setHeader('someKey', 'some string value');
         response.setHeader('anotherKey', 'an amazing example value, wow');
@@ -281,7 +304,7 @@ public class LoggerMockDataCreator {
      * @return   The generated `User` record - it is not automatically inserted into the database.
      */
     public static User createUser() {
-        return createUser(UserInfo.getProfileId());
+        return createUser(System.UserInfo.getProfileId());
     }
 
     /**
@@ -334,24 +357,11 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Returns the current user's `Network` (Experience Cloud site)
-     * @return   The matching `Network` record
-     */
-    public static SObject getNetwork() {
-        if (Network.getNetworkId() == null || Type.forName('Network') == null) {
-            return null;
-        }
-
-        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
-        return Database.query(String.escapeSingleQuotes(query));
-    }
-
-    /**
      * @description Returns the current user
      * @return   The matching `User` record
      */
     public static User getUser() {
-        return getUser(UserInfo.getUserId());
+        return getUser(System.UserInfo.getUserId());
     }
 
     /**
@@ -378,7 +388,7 @@ public class LoggerMockDataCreator {
         insert queue;
 
         // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
-        System.runAs(new User(Id = UserInfo.getUserId())) {
+        System.runAs(new User(Id = System.UserInfo.getUserId())) {
             QueueSObject queueSObject = new QueueSObject(QueueId = queue.Id, SObjectType = sobjectType.getDescribe().getName());
             insert queueSObject;
         }
@@ -443,9 +453,9 @@ public class LoggerMockDataCreator {
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-    public class MockHttpCallout implements HttpCalloutMock {
-        public HttpRequest request { get; private set; }
-        public HttpResponse response { get; private set; }
+    public class MockHttpCallout implements System.HttpCalloutMock {
+        public System.HttpRequest request { get; private set; }
+        public System.HttpResponse response { get; private set; }
         public String responseBody { get; private set; }
         public Integer statusCode { get; private set; }
 
@@ -462,10 +472,10 @@ public class LoggerMockDataCreator {
             return this;
         }
 
-        public HttpResponse respond(HttpRequest request) {
+        public System.HttpResponse respond(System.HttpRequest request) {
             this.request = request;
 
-            this.response = new HttpResponse();
+            this.response = new System.HttpResponse();
             if (String.isNotBlank(this.responseBody) == true) {
                 response.setBody(this.responseBody);
             }

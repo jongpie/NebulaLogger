@@ -95,7 +95,6 @@
         <fields>OWNER.ALIAS</fields>
         <fields>Priority__c</fields>
         <fields>Status__c</fields>
-        <fields>TransactionId__c</fields>
         <fields>TotalLogEntries__c</fields>
         <fields>TotalERRORLogEntries__c</fields>
         <fields>TotalWARNLogEntries__c</fields>
@@ -107,11 +106,11 @@
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>LoggedByUsernameLink__c</fields>
+        <fields>Origin__c</fields>
+        <fields>Message__c</fields>
         <fields>LoggingLevelWithImage__c</fields>
         <fields>Log__c</fields>
-        <fields>LogTransactionId__c</fields>
-        <fields>OriginType__c</fields>
-        <fields>OriginLocation__c</fields>
+        <fields>RecordLink__c</fields>
         <fields>Timestamp__c</fields>
         <relatedList>LogEntry__c.EntryScenario__c</relatedList>
         <sortField>Timestamp__c</sortField>

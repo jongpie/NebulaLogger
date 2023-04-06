@@ -45,11 +45,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -66,7 +66,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -78,12 +78,12 @@ jobs:
               run: npm run package:version:number:verify
 
             - name: 'Verify LWC with ESLint'
-              run: npm run lint:verify:lwc
+              run: npm run scan:lwc
 
             - name: 'Verify Apex with SFDX Scanner'
               run: |
                   npm run sfdx:plugins:link:scanner
-                  npm run lint:verify:apex
+                  npm run scan:apex
 
             # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
             # - name: 'Verify docs are updated'
@@ -98,11 +98,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -118,7 +118,7 @@ jobs:
               run: npm run test:lwc
 
             - name: 'Upload LWC code coverage to Codecov.io'
-              uses: codecov/codecov-action@v2.0.2
+              uses: codecov/codecov-action@v3
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   flags: LWC
@@ -130,11 +130,11 @@ jobs:
         environment: 'Base Scratch Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -150,7 +150,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -158,16 +158,27 @@ jobs:
                   DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Base Scratch Org'
-              run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/base-scratch-def.json --wait 20 --setdefaultusername --json
+              run: npx sfdx force:org:create --nonamespace --durationdays 1 --definitionfile ./config/scratch-orgs/base-scratch-def.json --wait 20 --setdefaultusername --json
 
             - name: 'Deploy Source to Scratch Org'
-              run: npm run source:deploy
+              run: npx sfdx force:source:deploy --sourcepath ./nebula-logger/
 
             - name: 'Assign Logger Admin Permission Set'
               run: npm run permset:assign:admin
 
-            - name: 'Run Apex Tests'
-              run: npm run test:apex
+            - name: 'Validate Custom Metadata Records'
+              run: npx sfdx force:apex:execute --apexcodefile ./scripts/build/validate-custom-metadata-records.apex
+
+            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+            # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+            - name: 'Run Apex Tests Asynchronously'
+              run: npm run test:apex:nocoverage
+
+            - name: 'Run Apex Tests Synchronously'
+              run: npm run test:apex:nocoverage -- --synchronous
 
             - name: 'Delete Base Scratch Org'
               run: npm run org:delete:noprompt
@@ -180,11 +191,11 @@ jobs:
         environment: 'Experience Cloud Scratch Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -200,7 +211,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -208,25 +219,33 @@ jobs:
                   DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Experience Cloud Scratch Org'
-              run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --setdefaultusername --json
+              run: npx sfdx force:org:create --nonamespace --durationdays 1 --definitionfile ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --setdefaultusername --json
 
             - name: 'Deploy Test Experience Site Metadata'
               run: npm run experience:deploy
 
             - name: 'Deploy Source to Scratch Org'
-              run: npm run source:deploy
+              run: npx sfdx force:source:deploy --sourcepath ./nebula-logger/
 
             - name: 'Assign Logger Admin Permission Set'
               run: npm run permset:assign:admin
 
-            - name: 'Run Apex Tests'
-              run: npm run test:apex
+            - name: 'Validate Custom Metadata Records'
+              run: npx sfdx force:apex:execute --apexcodefile ./scripts/build/validate-custom-metadata-records.apex
 
-            - name: 'Delete unsupported code coverage files'
-              run: rm ./test-coverage/apex/test-result-707*-codecoverage.json
+            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+            # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+            - name: 'Run Apex Tests Asynchronously'
+              run: npm run test:apex:nocoverage
+
+            - name: 'Run Apex Tests Synchronously'
+              run: npm run test:apex -- --synchronous
 
             - name: 'Upload Apex test code coverage to Codecov.io'
-              uses: codecov/codecov-action@v2.0.2
+              uses: codecov/codecov-action@v3
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   flags: Apex
@@ -243,13 +262,13 @@ jobs:
         environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -265,7 +284,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -283,13 +302,13 @@ jobs:
         environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -305,7 +324,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
@@ -316,21 +335,30 @@ jobs:
               shell: bash
               run: |
                   echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./PKG_DEMO_ORG_SFDX_URL.txt --setalias nebula-logger-package-demo
+                  npx sfdx auth sfdxurl store --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias temp-nebula-logger-package-demo
               env:
                   PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
             - name: 'Create & Install Package Version'
               run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
 
-            - name: 'Run Apex Tests'
+            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+            # Running the Apex tests sync & async serves as an extra level of integration testing in the meantime to ensure that everything works with or without an active session.
+            - name: 'Run Apex Tests Asynchronously'
               run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo
+
+            - name: 'Run Apex Tests Synchronously'
+              run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo --synchronous
 
             - name: 'Commit New Package Version'
               run: |
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action Bot"
-                  npm run sfdx:plugins:link:bummer
+                  # npm run sfdx:plugins:link:bummer
+                  echo y | npx sfdx plugins:install @jongpie/sfdx-bummer-plugin --force
                   npx sfdx bummer:package:aliases:sort
                   npx prettier --write ./sfdx-project.json
                   git add ./sfdx-project.json
@@ -344,11 +372,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -364,7 +392,7 @@ jobs:
               shell: bash
               run: |
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+                  npx sfdx auth jwt grant --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
                   DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}

@@ -26,9 +26,9 @@ private class LoggerSObjectHandler_Tests {
 
         LoggerSObjectHandler configuredInstance = LoggerSObjectHandler.getHandler(sobjectType);
 
-        System.assertEquals(
-            true,
-            configuredInstance instanceof MockSObjectHandler,
+        System.Assert.isInstanceOfType(
+            configuredInstance,
+            MockSObjectHandler.class,
             'The returned handler should be an instance of the configured class, MockSObjectHandler'
         );
     }
@@ -46,9 +46,9 @@ private class LoggerSObjectHandler_Tests {
 
         LoggerSObjectHandler configuredInstance = LoggerSObjectHandler.getHandler(sobjectType);
 
-        System.assertEquals(
-            true,
-            configuredInstance instanceof MockSObjectHandler,
+        System.Assert.isInstanceOfType(
+            configuredInstance,
+            MockSObjectHandler.class,
             'The handler returned via override should be an instance of the configured class, MockSObjectHandler'
         );
     }
@@ -60,9 +60,9 @@ private class LoggerSObjectHandler_Tests {
 
         LoggerSObjectHandler configuredInstance = LoggerSObjectHandler.getHandler(sobjectType, defaultImplementation);
 
-        System.assertEquals(
-            true,
-            configuredInstance instanceof MockDefaultImplementationSObjectHandler,
+        System.Assert.isInstanceOfType(
+            configuredInstance,
+            MockDefaultImplementationSObjectHandler.class,
             'The returned handler should be an instance of the default implementation class, MockDefaultImplementationSObjectHandler'
         );
     }
@@ -74,14 +74,14 @@ private class LoggerSObjectHandler_Tests {
         LoggerTriggerableContext customContext = new LoggerTriggerableContext(
             Schema.User.SObjectType,
             TriggerOperation.BEFORE_INSERT,
-            new List<User>{ new User(Id = UserInfo.getUserId(), Email = UserInfo.getUserEmail()) }
+            new List<User>{ new User(Id = System.UserInfo.getUserId(), Email = System.UserInfo.getUserEmail()) }
         );
-        System.assertNotEquals(originalContext, customContext);
+        System.Assert.areNotEqual(originalContext, customContext);
 
         mockHandler.overrideTriggerableContext(customContext);
 
-        System.assertNotEquals(originalContext, mockHandler.input);
-        System.assertEquals(customContext, mockHandler.input);
+        System.Assert.areNotEqual(originalContext, mockHandler.input);
+        System.Assert.areEqual(customContext, mockHandler.input);
     }
 
     @IsTest
@@ -98,7 +98,7 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(0, mockHandler.executionCount, mockHandler);
+        System.Assert.areEqual(0, mockHandler.executionCount, mockHandler.toString());
     }
 
     @IsTest
@@ -116,7 +116,7 @@ private class LoggerSObjectHandler_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         mockHandler.execute();
 
-        System.assertEquals(0, mockHandler.executionCount, mockHandler);
+        System.Assert.areEqual(0, mockHandler.executionCount, mockHandler.toString());
     }
 
     @IsTest
@@ -132,11 +132,11 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(TriggerOperation.BEFORE_INSERT, mockHandler.executedTriggerOperationType);
-        System.assertEquals(mockHandler.triggerNew, mockHandler.executedTriggerNew);
-        System.assertEquals(null, mockHandler.executedTriggerNewMap);
-        System.assertEquals(null, mockHandler.executedTriggerOldMap);
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(TriggerOperation.BEFORE_INSERT, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(mockHandler.triggerNew, mockHandler.executedTriggerNew);
+        System.Assert.isNull(mockHandler.executedTriggerNewMap);
+        System.Assert.isNull(mockHandler.executedTriggerOldMap);
     }
 
     @IsTest
@@ -152,11 +152,11 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(TriggerOperation.BEFORE_UPDATE, mockHandler.executedTriggerOperationType);
-        System.assertEquals(null, mockHandler.executedTriggerNew);
-        System.assertEquals(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
-        System.assertEquals(mockHandler.triggerOldMap, mockHandler.executedTriggerOldMap);
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(TriggerOperation.BEFORE_UPDATE, mockHandler.executedTriggerOperationType);
+        System.Assert.isNull(mockHandler.executedTriggerNew);
+        System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
+        System.Assert.areEqual(mockHandler.triggerOldMap, mockHandler.executedTriggerOldMap);
     }
 
     @IsTest
@@ -172,11 +172,11 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(TriggerOperation.BEFORE_DELETE, mockHandler.executedTriggerOperationType);
-        System.assertEquals(null, mockHandler.executedTriggerNew);
-        System.assertEquals(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
-        System.assertEquals(null, mockHandler.executedTriggerOldMap);
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(TriggerOperation.BEFORE_DELETE, mockHandler.executedTriggerOperationType);
+        System.Assert.isNull(mockHandler.executedTriggerNew);
+        System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
+        System.Assert.isNull(mockHandler.executedTriggerOldMap);
     }
 
     @IsTest
@@ -194,11 +194,11 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(2, mockHandler.executionCount);
-        System.assertEquals(TriggerOperation.AFTER_INSERT, mockHandler.executedTriggerOperationType);
-        System.assertEquals(mockHandler.triggerNew, mockHandler.executedTriggerNew);
-        System.assertEquals(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
-        System.assertEquals(null, mockHandler.executedTriggerOldMap);
+        System.Assert.areEqual(2, mockHandler.executionCount);
+        System.Assert.areEqual(TriggerOperation.AFTER_INSERT, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(mockHandler.triggerNew, mockHandler.executedTriggerNew);
+        System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
+        System.Assert.isNull(mockHandler.executedTriggerOldMap);
     }
 
     @IsTest
@@ -214,11 +214,11 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(TriggerOperation.AFTER_UPDATE, mockHandler.executedTriggerOperationType);
-        System.assertEquals(null, mockHandler.executedTriggerNew);
-        System.assertEquals(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
-        System.assertEquals(mockHandler.triggerOldMap, mockHandler.executedTriggerOldMap);
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(TriggerOperation.AFTER_UPDATE, mockHandler.executedTriggerOperationType);
+        System.Assert.isNull(mockHandler.executedTriggerNew);
+        System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
+        System.Assert.areEqual(mockHandler.triggerOldMap, mockHandler.executedTriggerOldMap);
     }
 
     @IsTest
@@ -234,11 +234,11 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(TriggerOperation.AFTER_DELETE, mockHandler.executedTriggerOperationType);
-        System.assertEquals(null, mockHandler.executedTriggerNew);
-        System.assertEquals(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
-        System.assertEquals(null, mockHandler.executedTriggerOldMap);
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(TriggerOperation.AFTER_DELETE, mockHandler.executedTriggerOperationType);
+        System.Assert.isNull(mockHandler.executedTriggerNew);
+        System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
+        System.Assert.isNull(mockHandler.executedTriggerOldMap);
     }
 
     @IsTest
@@ -254,11 +254,11 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(TriggerOperation.AFTER_UNDELETE, mockHandler.executedTriggerOperationType);
-        System.assertEquals(null, mockHandler.executedTriggerNew);
-        System.assertEquals(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
-        System.assertEquals(null, mockHandler.executedTriggerOldMap);
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(TriggerOperation.AFTER_UNDELETE, mockHandler.executedTriggerOperationType);
+        System.Assert.isNull(mockHandler.executedTriggerNew);
+        System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
+        System.Assert.isNull(mockHandler.executedTriggerOldMap);
     }
 
     @IsTest
@@ -280,9 +280,9 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations());
-        System.assertEquals(0, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins());
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations().toString());
+        System.Assert.areEqual(0, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins().toString());
     }
 
     @IsTest
@@ -304,12 +304,12 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations());
-        System.assertEquals(1, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins());
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations().toString());
+        System.Assert.areEqual(1, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins().toString());
         MockTriggerablePlugin executedApexPlugin = (MockTriggerablePlugin) mockHandler.getExecutedApexPlugins().get(0);
-        System.assertEquals(mockPluginConfiguration, executedApexPlugin.configuration);
-        System.assertEquals(mockHandler.input, executedApexPlugin.input);
+        System.Assert.areEqual(mockPluginConfiguration, executedApexPlugin.configuration);
+        System.Assert.areEqual(mockHandler.input, executedApexPlugin.input);
     }
 
     @IsTest
@@ -331,9 +331,9 @@ private class LoggerSObjectHandler_Tests {
 
         mockHandler.execute();
 
-        System.assertEquals(1, mockHandler.executionCount);
-        System.assertEquals(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations());
-        System.assertEquals(0, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins());
+        System.Assert.areEqual(1, mockHandler.executionCount);
+        System.Assert.areEqual(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations().toString());
+        System.Assert.areEqual(0, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins().toString());
     }
 
     public class MockDefaultImplementationSObjectHandler extends LoggerSObjectHandler {

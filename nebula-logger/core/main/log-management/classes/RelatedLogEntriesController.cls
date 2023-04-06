@@ -50,7 +50,7 @@ public with sharing class RelatedLogEntriesController {
         }
 
         // Somewhat redundant security check for FLS (but extra security > less security)
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
+        System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(System.AccessType.READABLE, records);
         records = securityDecision.getRecords();
 
         Integer totalLogEntriesCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(recordId);

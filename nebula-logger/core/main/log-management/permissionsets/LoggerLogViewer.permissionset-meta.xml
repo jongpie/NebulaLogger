@@ -9,6 +9,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LogEntryEventStreamController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LogMassDeleteExtension</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -126,6 +130,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.EntryScenarioLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.EntryScenarioName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.EntryScenario__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -222,6 +236,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HasException__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasInlineTags__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -641,6 +660,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.Tags__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.Timestamp__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -702,6 +726,21 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.EndTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.HasComments__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ImpersonatedByUsernameLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ImpersonatedBy__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -906,6 +945,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.RequestId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.Scenario__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1012,6 +1056,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TransactionId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TransactionScenarioLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TransactionScenarioName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

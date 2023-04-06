@@ -9,6 +9,7 @@
  * @see LogEntryArchivePlugin
  * @see LogEntryArchiveBuilder
  */
+@SuppressWarnings('PMD.ApexCRUDViolation')
 public with sharing class LogEntryArchiveController {
     @TestVisible
     private static final List<LogEntryArchive__b> MOCK_RECORDS = new List<LogEntryArchive__b>();
@@ -36,7 +37,7 @@ public with sharing class LogEntryArchiveController {
         // Big Objects have very, very limited support for SOQL filtering, so additional filtering is applied after querying
         // Since additional filtering is applied below (outside of the query), so this query gets as many rows
         // as possible to maximize the possible matches from post-query filtering
-        Integer queryLimit = System.Test.isRunningTest() == true ? 1 : Limits.getLimitQueryRows();
+        Integer queryLimit = System.Test.isRunningTest() == true ? 1 : System.Limits.getLimitQueryRows();
         for (LogEntryArchive__b logEntryArchive : [
             SELECT
                 LoggedByUsername__c,
@@ -51,7 +52,6 @@ public with sharing class LogEntryArchiveController {
                 TransactionId__c
             FROM LogEntryArchive__b
             WHERE Timestamp__c >= :startDate AND Timestamp__c <= :endDate.addDays(1)
-            WITH SECURITY_ENFORCED
             ORDER BY Timestamp__c DESC, TransactionId__c ASC, TransactionEntryNumber__c DESC
             LIMIT :queryLimit
         ]) {

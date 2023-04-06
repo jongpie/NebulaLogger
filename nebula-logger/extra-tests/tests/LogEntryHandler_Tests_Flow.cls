@@ -9,7 +9,7 @@ private class LogEntryHandler_Tests_Flow {
     private static final String EXAMPLE_FLOW_API_NAME = 'LogEntryHandler_Tests_Flow';
 
     @IsTest
-    static void setSkipSettingFlowDetailsWhenOriginLocationIsNull() {
+    static void it_should_set_skip_setting_flow_details_when_origin_location_is_null() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -18,51 +18,50 @@ private class LogEntryHandler_Tests_Flow {
         insert logEntry;
 
         logEntry = getLogEntry();
-        System.assertEquals(null, logEntry.OriginLocation__c, 'Origin Location was not null.');
-        System.assertEquals('Flow', logEntry.OriginType__c, 'Origin Type was not equal to Flow.');
-        System.assertEquals(null, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was not null.');
-        System.assertEquals(null, logEntry.FlowDescription__c, 'Flow Description was not null.');
-        System.assertEquals(null, logEntry.FlowDurableId__c, 'FlowDurableId was not null.');
-        System.assertEquals(null, logEntry.FlowLabel__c, 'Flow Label was not null.');
-        System.assertEquals(null, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was not null.');
-        System.assertEquals(null, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was not null.');
-        System.assertEquals(null, logEntry.FlowProcessType__c, 'FlowProcessType was not null.');
-        System.assertEquals(null, logEntry.FlowTriggerType__c, 'FlowTriggerType was not null.');
-        System.assertEquals(null, logEntry.FlowVersionApiVersionRuntime__c, 'FlowVersionApiVersionRuntime was not null.');
-        System.assertEquals(null, logEntry.FlowVersionNumber__c, 'FlowVersionNumber was not null.');
-        System.assertEquals(null, logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was not null.');
+        System.Assert.isNull(logEntry.OriginLocation__c, 'Origin Location was not null.');
+        System.Assert.areEqual('Flow', logEntry.OriginType__c, 'Origin Type was not equal to Flow.');
+        System.Assert.isNull(logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was not null.');
+        System.Assert.isNull(logEntry.FlowDescription__c, 'Flow Description was not null.');
+        System.Assert.isNull(logEntry.FlowDurableId__c, 'FlowDurableId was not null.');
+        System.Assert.isNull(logEntry.FlowLabel__c, 'Flow Label was not null.');
+        System.Assert.isNull(logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was not null.');
+        System.Assert.isNull(logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was not null.');
+        System.Assert.isNull(logEntry.FlowProcessType__c, 'FlowProcessType was not null.');
+        System.Assert.isNull(logEntry.FlowTriggerType__c, 'FlowTriggerType was not null.');
+        System.Assert.isNull(logEntry.FlowVersionApiVersionRuntime__c, 'FlowVersionApiVersionRuntime was not null.');
+        System.Assert.isNull(logEntry.FlowVersionNumber__c, 'FlowVersionNumber was not null.');
+        System.Assert.isNull(logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was not null.');
     }
 
     @IsTest
-    static void setFlowDetails() {
-        FlowDefinitionView flowDefinition = getFlowDefinition();
-        FlowVersionView flowVersion = getFlowVersion(flowDefinition.ActiveVersionId);
+    static void it_should_set_flow_details_when_origin_location_is_a_flow() {
+        FlowDefinitionView flowDefinitionView = getFlowDefinitionView();
+        FlowVersionView flowVersion = getFlowVersion(flowDefinitionView.ActiveVersionId);
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = flowDefinition.ApiName, OriginType__c = 'Flow');
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = flowDefinitionView.ApiName, OriginType__c = 'Flow');
 
         insert logEntry;
 
         logEntry = getLogEntry();
-        System.assertEquals('Flow', logEntry.OriginType__c, 'OriginType was not flow.');
-        System.assertEquals(flowDefinition.ActiveVersionId, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was incorrect.');
-        System.assertEquals(flowDefinition.Description, logEntry.FlowDescription__c, 'FlowDescription was incorrect.');
-        System.assertEquals(flowDefinition.DurableId, logEntry.FlowDurableId__c, 'FlowDurableId was incorrect.');
-        System.assertEquals(flowDefinition.Label, logEntry.FlowLabel__c, 'FlowLabel was incorrect');
-        System.assertEquals(flowDefinition.LastModifiedBy, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was incorrect.');
-        System.assertEquals(flowDefinition.LastModifiedDate, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was incorrect.');
-        System.assertEquals(flowDefinition.ProcessType, logEntry.FlowProcessType__c, 'FlowProcessType was incorrect.');
-        System.assertEquals(flowDefinition.TriggerType, logEntry.FlowTriggerType__c, 'FlowTriggerType was incorrect.');
-        System.assertEquals(
-            'v' +
-            flowVersion.ApiVersionRuntime +
-            '.0',
+        System.Assert.areEqual(EXAMPLE_FLOW_API_NAME, logEntry.OriginLocation__c, 'Origin Location was not null.');
+        System.Assert.areEqual('Flow', logEntry.OriginType__c, 'OriginType was not flow.');
+        System.Assert.areEqual(flowDefinitionView.ActiveVersionId, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.Description, logEntry.FlowDescription__c, 'FlowDescription was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.DurableId, logEntry.FlowDurableId__c, 'FlowDurableId was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.Label, logEntry.FlowLabel__c, 'FlowLabel was incorrect');
+        System.Assert.areEqual(flowDefinitionView.LastModifiedBy, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.LastModifiedDate, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.ProcessType, logEntry.FlowProcessType__c, 'FlowProcessType was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.TriggerType, logEntry.FlowTriggerType__c, 'FlowTriggerType was incorrect.');
+        System.Assert.areEqual(
+            'v' + flowVersion.ApiVersionRuntime + '.0',
             logEntry.FlowVersionApiVersionRuntime__c,
             'FlowVersionApiVersionRuntime was incorrect.'
         );
-        System.assertEquals(flowVersion.RunInMode, logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was incorrect.');
-        System.assertEquals(flowVersion.VersionNumber, logEntry.FlowVersionNumber__c, 'FlowVersionNumber was incorrect.');
+        System.Assert.areEqual(flowVersion.RunInMode, logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was incorrect.');
+        System.Assert.areEqual(flowVersion.VersionNumber, logEntry.FlowVersionNumber__c, 'FlowVersionNumber was incorrect.');
     }
 
     private static LogEntry__c getLogEntry() {
@@ -88,7 +87,7 @@ private class LogEntryHandler_Tests_Flow {
         ];
     }
 
-    private static FlowDefinitionView getFlowDefinition() {
+    private static FlowDefinitionView getFlowDefinitionView() {
         return [
             SELECT ActiveVersionId, ApiName, Description, DurableId, Label, LastModifiedBy, LastModifiedDate, ManageableState, ProcessType, TriggerType
             FROM FlowDefinitionView

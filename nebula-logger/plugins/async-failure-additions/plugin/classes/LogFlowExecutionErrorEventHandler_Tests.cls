@@ -9,11 +9,11 @@ private class LogFlowExecutionErrorEventHandler_Tests {
     static void it_does_not_log_when_plugin_parameter_disabled() {
         setLoggerParamEnabled(false);
 
-        Test.startTest();
+        System.Test.startTest();
         LogFlowExecutionErrorEventHandler.logErrors(new List<FlowExecutionErrorEvent>{ new FlowExecutionErrorEvent() });
-        Test.stopTest();
+        System.Test.stopTest();
 
-        System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
     }
 
     @IsTest
@@ -24,12 +24,12 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         flowExecutionErrorEvent.ElementApiName = 'test_exception_element';
         flowExecutionErrorEvent.FlowApiName = 'Testing_FlowExecutionErrorEvent';
         flowExecutionErrorEvent.FlowVersionNumber = 1;
-        flowExecutionErrorEvent.Username = UserInfo.getUserName();
+        flowExecutionErrorEvent.Username = System.UserInfo.getUserName();
 
         System.runAs(new User(Id = [SELECT Id FROM User WHERE Alias = 'autoproc'].Id)) {
-            Test.startTest();
+            System.Test.startTest();
             LogFlowExecutionErrorEventHandler.logErrors(new List<FlowExecutionErrorEvent>{ flowExecutionErrorEvent });
-            Test.stopTest();
+            System.Test.stopTest();
         }
 
         LogEntry__c entry = [
@@ -61,8 +61,8 @@ private class LogFlowExecutionErrorEventHandler_Tests {
             FROM LogEntry__c
         ];
         // LogEntry__c related asserts
-        System.assertEquals(System.LoggingLevel.ERROR.name(), entry.LoggingLevel__c, 'Logging level should be set correctly');
-        System.assertEquals(
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), entry.LoggingLevel__c, 'Logging level should be set correctly');
+        System.Assert.areEqual(
             String.format(
                 LogFlowExecutionErrorEventHandler.LOG_STRING,
                 new List<String>{ flowExecutionErrorEvent.ElementApiName, flowExecutionErrorEvent.FlowVersionNumber.format() }
@@ -70,10 +70,10 @@ private class LogFlowExecutionErrorEventHandler_Tests {
             entry.Message__c,
             'Log message should be formatted correctly'
         );
-        System.assertEquals('Flow.' + flowExecutionErrorEvent.FlowApiName, entry.Origin__c, 'Origin__c should be set correctly');
-        System.assertEquals(flowExecutionErrorEvent.FlowApiName, entry.OriginLocation__c, 'OriginLocation__c should be set correctly');
-        System.assertEquals('Flow', entry.OriginType__c, 'OriginType__c should be set to Flow');
-        System.assertEquals(flowExecutionErrorEvent.EventDate, entry.Timestamp__c, 'Should take timestamp from flow error event');
+        System.Assert.areEqual('Flow.' + flowExecutionErrorEvent.FlowApiName, entry.Origin__c, 'Origin__c should be set correctly');
+        System.Assert.areEqual(flowExecutionErrorEvent.FlowApiName, entry.OriginLocation__c, 'OriginLocation__c should be set correctly');
+        System.Assert.areEqual('Flow', entry.OriginType__c, 'OriginType__c should be set to Flow');
+        System.Assert.areEqual(flowExecutionErrorEvent.EventDate, entry.Timestamp__c, 'Should take timestamp from flow error event');
 
         // Log__c related asserts
         User currentUser = [
@@ -89,26 +89,26 @@ private class LogFlowExecutionErrorEventHandler_Tests {
                 UserRole.Name,
                 UserType
             FROM User
-            WHERE Id = :UserInfo.getUserId()
+            WHERE Id = :System.UserInfo.getUserId()
         ];
         Log__c log = entry.Log__r;
-        System.assertEquals(currentUser.Id, log.LoggedBy__c, 'Should not use autoproc user Id');
-        System.assertEquals(currentUser.Username, log.LoggedByUsername__c, 'Username should match');
-        System.assertEquals(currentUser.ProfileId, log.ProfileId__c, 'Should not use autoproc user ProfileId');
-        System.assertEquals(currentUser.Profile.Name, log.ProfileName__c, 'Should not use autoproc user Profile name');
-        System.assertEquals(null, log.LoginApplication__c, 'LoginApplication__c should have been cleared');
-        System.assertEquals(null, log.LoginBrowser__c, 'LoginBrowser__c should have been cleared');
-        System.assertEquals(null, log.LoginHistoryId__c, 'LoginHistoryId__c should have been cleared');
-        System.assertEquals(null, log.LoginPlatform__c, 'LoginPlatform__c should have been cleared');
-        System.assertEquals(null, log.LoginType__c, 'LoginType__c should have been cleared');
-        System.assertEquals(null, log.LogoutUrl__c, 'LogoutUrl__c should have been cleared');
-        System.assertEquals(null, log.NetworkId__c, 'NetworkId__c should have been cleared');
-        System.assertEquals(null, log.SessionId__c, 'SessionId__c Should have been cleared');
-        System.assertEquals(null, log.SessionSecurityLevel__c, 'SessionSecurityLevel__c should have been cleared');
-        System.assertEquals(null, log.SessionType__c, 'SessionType__c should have been cleared');
-        System.assertEquals(null, log.SourceIp__c, 'SourceIp__c should have been cleared');
-        System.assertEquals(UserInfo.getTimeZone().getId(), log.TimeZoneId__c, 'Timezone Id should be set correctly');
-        System.assertEquals(UserInfo.getTimeZone().getDisplayName(), log.TimeZoneName__c, 'Timezone name should be set correctly');
+        System.Assert.areEqual(currentUser.Id, log.LoggedBy__c, 'Should not use autoproc user Id');
+        System.Assert.areEqual(currentUser.Username, log.LoggedByUsername__c, 'Username should match');
+        System.Assert.areEqual(currentUser.ProfileId, log.ProfileId__c, 'Should not use autoproc user ProfileId');
+        System.Assert.areEqual(currentUser.Profile.Name, log.ProfileName__c, 'Should not use autoproc user Profile name');
+        System.Assert.isNull(log.LoginApplication__c, 'LoginApplication__c should have been cleared');
+        System.Assert.isNull(log.LoginBrowser__c, 'LoginBrowser__c should have been cleared');
+        System.Assert.isNull(log.LoginHistoryId__c, 'LoginHistoryId__c should have been cleared');
+        System.Assert.isNull(log.LoginPlatform__c, 'LoginPlatform__c should have been cleared');
+        System.Assert.isNull(log.LoginType__c, 'LoginType__c should have been cleared');
+        System.Assert.isNull(log.LogoutUrl__c, 'LogoutUrl__c should have been cleared');
+        System.Assert.isNull(log.NetworkId__c, 'NetworkId__c should have been cleared');
+        System.Assert.isNull(log.SessionId__c, 'SessionId__c Should have been cleared');
+        System.Assert.isNull(log.SessionSecurityLevel__c, 'SessionSecurityLevel__c should have been cleared');
+        System.Assert.isNull(log.SessionType__c, 'SessionType__c should have been cleared');
+        System.Assert.isNull(log.SourceIp__c, 'SourceIp__c should have been cleared');
+        System.Assert.areEqual(System.UserInfo.getTimeZone().getId(), log.TimeZoneId__c, 'Timezone Id should be set correctly');
+        System.Assert.areEqual(System.UserInfo.getTimeZone().getDisplayName(), log.TimeZoneName__c, 'Timezone name should be set correctly');
     }
 
     static void setLoggerParamEnabled(Boolean value) {

@@ -27,8 +27,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -52,8 +52,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -77,8 +77,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -100,8 +100,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -123,8 +123,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -146,8 +146,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -161,20 +161,20 @@ private class LogRetentionFilter_Tests {
         LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
         mockLogEntry.Timestamp__c = mockTimestamp;
 
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
         try {
             new LogRetentionFilter(mockLogEntry, rule, conditions).getFilterResult();
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
-        System.assertNotEquals(null, thrownIllegalArgumentException);
-        System.assertEquals('Unsupported operator for Datetime: ' + invalidOperator, thrownIllegalArgumentException.getMessage());
+        System.Assert.isNotNull(thrownIllegalArgumentException);
+        System.Assert.areEqual('Unsupported operator for Datetime: ' + invalidOperator, thrownIllegalArgumentException.getMessage());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -191,13 +191,13 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_not_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_not_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'NOT_EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -214,13 +214,13 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_less_than() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_less_than');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'LESS_THAN', 'Value', exampleLoggingLevelOrdinal)
@@ -237,13 +237,13 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_less_than_or_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_less_than_or_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'LESS_THAN_OR_EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -260,13 +260,13 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_greater_than() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_greater_than');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'GREATER_THAN', 'Value', exampleLoggingLevelOrdinal)
@@ -283,13 +283,13 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_greater_than_or_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_greater_than_or_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'GREATER_THAN_OR_EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -300,29 +300,29 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_throw_illegal_argument_exception_on_decimal_when_invalid_operator() {
         String invalidOperator = 'THIS_IS_AN_INVALID_OPERATOR';
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_with_invalid_operator');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', invalidOperator, 'Value', exampleLoggingLevelOrdinal)
         };
         LogEntry__c mockLogEntry = new LogEntry__c(LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal);
 
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
         try {
             new LogRetentionFilter(mockLogEntry, rule, conditions).getFilterResult();
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
-        System.assertNotEquals(null, thrownIllegalArgumentException);
-        System.assertEquals('Unsupported operator for Decimal: ' + invalidOperator, thrownIllegalArgumentException.getMessage());
+        System.Assert.isNotNull(thrownIllegalArgumentException);
+        System.Assert.areEqual('Unsupported operator for Decimal: ' + invalidOperator, thrownIllegalArgumentException.getMessage());
     }
 
     @IsTest
@@ -338,8 +338,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -355,8 +355,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -372,8 +372,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -391,8 +391,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -408,8 +408,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
@@ -422,15 +422,15 @@ private class LogRetentionFilter_Tests {
         };
         LogEntry__c mockLogEntry = new LogEntry__c(Message__c = mockStringValue);
 
-        Exception thrownIllegalArgumentException;
+        System.Exception thrownIllegalArgumentException;
         try {
             new LogRetentionFilter(mockLogEntry, rule, conditions).getFilterResult();
-        } catch (IllegalArgumentException ex) {
+        } catch (System.IllegalArgumentException ex) {
             thrownIllegalArgumentException = ex;
         }
 
-        System.assertNotEquals(null, thrownIllegalArgumentException);
-        System.assertEquals('Unsupported operator for String: ' + invalidOperator, thrownIllegalArgumentException.getMessage());
+        System.Assert.isNotNull(thrownIllegalArgumentException);
+        System.Assert.areEqual('Unsupported operator for String: ' + invalidOperator, thrownIllegalArgumentException.getMessage());
     }
 
     @IsTest
@@ -446,8 +446,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter());
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
+        System.Assert.isTrue(expectedMatchResult.matchesFilter());
+        System.Assert.isFalse(expectedNonMatchResult.matchesFilter());
     }
 
     static LogRetentionRule__mdt createMockRule(String developerName) {

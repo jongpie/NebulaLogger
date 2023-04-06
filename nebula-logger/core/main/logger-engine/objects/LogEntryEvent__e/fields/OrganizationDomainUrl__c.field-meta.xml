@@ -3,7 +3,7 @@
     <fullName>OrganizationDomainUrl__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <description>The value returned from Url..getOrgDomainUrl()</description>
+    <description>The value returned from System.URL.getOrgDomainUrl()</description>
     <externalId>false</externalId>
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>

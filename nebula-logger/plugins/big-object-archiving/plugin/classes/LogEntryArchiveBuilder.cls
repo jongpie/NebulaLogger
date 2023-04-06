@@ -49,9 +49,9 @@ public without sharing class LogEntryArchiveBuilder {
     private void convertLogEntryEventToLogEntryArchive() {
         this.logEntryArchive = new LogEntryArchive__b(
             ApiVersion__c = this.logEntryEvent.ApiVersion__c,
-            ArchivedById__c = UserInfo.getUserId(),
+            ArchivedById__c = System.UserInfo.getUserId(),
             ArchivedDate__c = System.now(),
-            ArchivedByUsername__c = UserInfo.getUsername(),
+            ArchivedByUsername__c = System.UserInfo.getUsername(),
             ComponentType__c = this.logEntryEvent.ComponentType__c,
             DatabaseResultCollectionSize__c = this.logEntryEvent.DatabaseResultCollectionSize__c,
             DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionType__c,
@@ -178,9 +178,9 @@ public without sharing class LogEntryArchiveBuilder {
             ApiReleaseNumber__c = this.logEntry.Log__r.ApiReleaseNumber__c,
             ApiReleaseVersion__c = this.logEntry.Log__r.ApiReleaseVersion__c,
             ApiVersion__c = this.logEntry.Log__r.ApiVersion__c,
-            ArchivedById__c = UserInfo.getUserId(),
+            ArchivedById__c = System.UserInfo.getUserId(),
             ArchivedDate__c = System.now(),
-            ArchivedByUsername__c = UserInfo.getUsername(),
+            ArchivedByUsername__c = System.UserInfo.getUsername(),
             ClosedById__c = this.logEntry.Log__r.ClosedBy__c,
             ClosedByUsername__c = this.logEntry.Log__r.ClosedBy__r.Username,
             ClosedDate__c = this.logEntry.Log__r.ClosedDate__c,

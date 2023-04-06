@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Log Entry Event Stream Display Fields</label>
+    <protected>false</protected>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Contains the fields to be displayed in the Tabular view of the Log Entry Event Stream Tab under the Logger Console.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value
+            xsi:type="xsd:string"
+        >[&quot;Timestamp__c&quot;, &quot;LoggedByUsername__c&quot;, &quot;OriginLocation__c&quot;, &quot;LoggingLevel__c&quot;, &quot;Message__c&quot;]</value>
+    </values>
+</CustomMetadata>

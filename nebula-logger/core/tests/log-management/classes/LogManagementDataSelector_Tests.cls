@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogManagementDataSelector_Tests {
     @IsTest
@@ -14,7 +14,7 @@ private class LogManagementDataSelector_Tests {
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getAll(targetSObjectType, targetFieldNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -23,16 +23,12 @@ private class LogManagementDataSelector_Tests {
         Set<String> targetFieldNames = new Set<String>{ Schema.User.Id.getDescribe().getName(), Schema.User.Name.getDescribe().getName() };
         List<Id> targetIds = new List<Id>(new Map<Id, User>([SELECT Id FROM User LIMIT 3]).keySet());
         List<User> expectedResults = Database.query(
-            'SELECT ' +
-            String.join(new List<String>(targetFieldNames), ', ') +
-            ' FROM ' +
-            targetSObjectType +
-            ' WHERE Id IN :targetIds'
+            'SELECT ' + String.join(new List<String>(targetFieldNames), ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds'
         );
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getById(targetSObjectType, targetFieldNames, targetIds);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -47,20 +43,33 @@ private class LogManagementDataSelector_Tests {
 
         List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
+    }
+
+    @IsTest
+    static void it_does_not_query_apex_classes_when_disabled_via_logger_parameter() {
+        // The class names used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
+        List<String> targetApexClassNames = new List<String>{ 'SomeClass', 'AnotherClass' };
+        Integer originalQueryCount = System.Limits.getQueries();
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
+
+        List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
+
+        System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
+        System.Assert.areEqual(0, returnedResults.size());
     }
 
     @IsTest
     static void it_returns_cached_apex_email_notifications() {
         List<ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
-        System.assertEquals(1, Limits.getQueries());
+        System.Assert.areEqual(1, System.Limits.getQueries());
 
         List<ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.Assert.areEqual(2, System.Limits.getQueries());
         LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
-        System.assertEquals(2, Limits.getQueries());
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(2, System.Limits.getQueries());
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     // FIXME Querying AsyncApexJob in a test context doesn't seem to return results for @future methods,
@@ -71,21 +80,54 @@ private class LogManagementDataSelector_Tests {
     //     String apexClassName = LogManagementDataSelector_Tests.class.getName();
     //     String apexMethodName = 'executeSomeFutureMethod';
     //     List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
-    //     System.assertEquals(0, LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses));
+    //     System.Assert.areEqual(0, LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses));
 
     //     System.Test.startTest();
     //     executeSomeFutureMethod();
     //     System.Test.stopTest();
 
-    //     System.assert(false, [SELECT status FROM asyncapexjob]);
+    //     System.Assert.fail([SELECT status FROM asyncapexjob]);
     //     Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
 
-    //     System.assertEquals(1, returnedCount);
+    //     System.Assert.areEqual(1, returnedCount);
     // }
 
     @IsTest
+    static void it_returns_cached_recent_log_with_api_release_details() {
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        Log__c olderLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'ABC');
+        Log__c expectedLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'XYZ');
+        insert new List<Log__c>{ olderLog, expectedLog };
+        System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
+        System.Assert.areEqual(1, System.Limits.getQueries());
+
+        for (Integer i = 0; i < 5; i++) {
+            Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
+
+            System.Assert.areEqual(expectedLog.Id, returnedLog.Id);
+        }
+
+        System.Assert.areEqual(2, System.Limits.getQueries());
+    }
+
+    @IsTest
+    static void it_returns_null_when_no_recent_log_with_api_release_details_is_found() {
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
+        System.Assert.areEqual(1, System.Limits.getQueries());
+
+        for (Integer i = 0; i < 5; i++) {
+            Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
+
+            System.Assert.isNull(returnedLog);
+        }
+
+        System.Assert.areEqual(2, System.Limits.getQueries());
+    }
+
+    @IsTest
     static void it_returns_count_of_related_record_log_entries() {
-        Id targetRecordId = UserInfo.getUserId();
+        Id targetRecordId = System.UserInfo.getUserId();
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
@@ -101,21 +143,60 @@ private class LogManagementDataSelector_Tests {
 
         Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(targetRecordId);
 
-        System.assertEquals(1, returnedCount);
+        System.Assert.areEqual(1, returnedCount);
     }
 
-    // TODO add integration test for LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(List<Id> recordIds);
-    // TODO add integration test for LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(List<String> durableIds);
+    @IsTest
+    static void it_returns_deleteable_user_record_access() {
+        LoggerSObjectHandler.shouldExecute(false);
+        Log__c deleteableRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert deleteableRecord;
+        User undeleteableRecord = new User(Id = System.UserInfo.getUserId());
+        List<Id> recordIds = new List<Id>{ deleteableRecord.Id, undeleteableRecord.Id };
+
+        List<UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
+
+        System.Assert.areEqual(1, returnedResults.size());
+        System.Assert.areEqual(deleteableRecord.Id, returnedResults.get(0).RecordId);
+    }
 
     @IsTest
     static void it_returns_log_for_specified_log_id() {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        insert log;
+        Log__c anotherLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert new List<Log__c>{ log, anotherLog };
 
         Log__c returnedLog = LogManagementDataSelector.getInstance().getLogById(log.Id);
 
-        System.assertEquals(log.Id, returnedLog.Id);
+        System.Assert.areEqual(log.Id, returnedLog.Id);
+    }
+
+    @IsTest
+    static void it_returns_log_entries_for_specified_log_id() {
+        LoggerSObjectHandler.shouldExecute(false);
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        Log__c anotherLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert new List<Log__c>{ log, anotherLog };
+        List<LogEntry__c> expectedLogEntries = new List<LogEntry__c>();
+        List<LogEntry__c> unrelatedlogEntries = new List<LogEntry__c>();
+        for (Integer i = 0; i < 5; i++) {
+            expectedLogEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'some message, number ' + i));
+            unrelatedlogEntries.add(new LogEntry__c(Log__c = anotherLog.Id, Message__c = 'some message, number ' + i));
+        }
+        List<LogEntry__c> allTestLogEntries = new List<LogEntry__c>();
+        allTestLogEntries.addAll(expectedLogEntries);
+        allTestLogEntries.addAll(unrelatedlogEntries);
+        insert allTestLogEntries;
+
+        List<LogEntry__c> returnedLogEnties = LogManagementDataSelector.getInstance().getLogEntriesByLogId(log.Id);
+
+        System.Assert.areEqual(expectedLogEntries.size(), returnedLogEnties.size());
+        Set<Id> logEntryIds = new Map<Id, LogEntry__c>(expectedLogEntries).keySet();
+        for (LogEntry__c logEntry : returnedLogEnties) {
+            System.Assert.isTrue(logEntryIds.contains(logEntry.Id));
+            System.Assert.areEqual(log.Id, logEntry.Log__c);
+        }
     }
 
     @IsTest
@@ -132,7 +213,7 @@ private class LogManagementDataSelector_Tests {
 
         List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsById(logIds);
 
-        System.assertEquals(logs.size(), returnedResults.size());
+        System.Assert.areEqual(logs.size(), returnedResults.size());
     }
 
     @IsTest
@@ -150,28 +231,31 @@ private class LogManagementDataSelector_Tests {
 
         List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsByTransactionId(logTransactionIds);
 
-        System.assertEquals(logs.size(), returnedResults.size());
+        System.Assert.areEqual(logs.size(), returnedResults.size());
     }
 
     @IsTest
     static void it_returns_profiles_for_specified_profile_ids() {
-        List<Profile> expectedResults = [SELECT Id, Name FROM Profile ORDER BY Name LIMIT 3];
-        expectedResults.sort();
+        List<Profile> expectedResults = [SELECT Id, Name FROM Profile LIMIT 10];
         List<Id> targetProfileIds = new List<Id>(new Map<Id, Profile>(expectedResults).keySet());
 
         List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesById(targetProfileIds);
 
-        System.assertEquals(expectedResults, returnedResults);
+        expectedResults.sort();
+        returnedResults.sort();
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_profiles_for_specified_search_term() {
         String searchTerm = 'Admin';
-        List<Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name];
+        List<Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
 
         List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm);
 
-        System.assertEquals(expectedResults, returnedResults);
+        expectedResults.sort();
+        returnedResults.sort();
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -190,12 +274,12 @@ private class LogManagementDataSelector_Tests {
 
         List<Group> returnedResults = LogManagementDataSelector.getInstance().getQueuesByDeveloperName(targetQueueNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_related_log_entries_for_specified_record_id() {
-        Id targetRecordId = UserInfo.getUserId();
+        Id targetRecordId = System.UserInfo.getUserId();
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
@@ -217,8 +301,8 @@ private class LogManagementDataSelector_Tests {
 
         List<LogEntry__c> returnedResults = LogManagementDataSelector.getInstance().getRecordLogEntries(targetRecordId, fieldsClause, orderByClause, rowLimit);
 
-        System.assertEquals(1, returnedResults.size());
-        System.assertEquals(matchingLogEntry.Id, returnedResults.get(0).Id);
+        System.Assert.areEqual(1, returnedResults.size());
+        System.Assert.areEqual(matchingLogEntry.Id, returnedResults.get(0).Id);
     }
 
     @IsTest
@@ -231,11 +315,11 @@ private class LogManagementDataSelector_Tests {
         insert tags;
         Set<String> targetTagNames = new Set<String>{ matchingTag.Name };
         List<LoggerTag__c> expectedResults = [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :targetTagNames];
-        System.assertEquals(1, expectedResults.size());
+        System.Assert.areEqual(1, expectedResults.size());
 
         List<LoggerTag__c> returnedResults = LogManagementDataSelector.getInstance().getTagsByName(targetTagNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -248,41 +332,40 @@ private class LogManagementDataSelector_Tests {
         insert topics;
         Set<String> targetTopicNames = new Set<String>{ matchingTopic.Name };
         List<Topic> expectedResults = [SELECT Id, Name FROM Topic WHERE Name IN :targetTopicNames];
-        System.assertEquals(1, expectedResults.size());
+        System.Assert.areEqual(1, expectedResults.size());
 
         List<Topic> returnedResults = LogManagementDataSelector.getInstance().getTopicsByName(targetTopicNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_users_for_user_ids() {
-        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Username LIMIT 3];
+        List<User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
         List<Id> targetUserIds = new List<Id>(new Map<Id, User>(expectedResults).keySet());
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersById(targetUserIds);
 
-        System.assertEquals(expectedResults, returnedResults);
+        expectedResults.sort();
+        returnedResults.sort();
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_user_for_specified_search_term() {
-        String searchTerm = UserInfo.getLastName();
-        List<User> expectedResults = [
-            SELECT Id, Name, Username, SmallPhotoUrl
-            FROM User
-            WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
-            ORDER BY Username
-        ];
+        String searchTerm = System.UserInfo.getLastName();
+        List<User> expectedResults = [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm];
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm);
 
-        System.assertEquals(expectedResults, returnedResults);
+        expectedResults.sort();
+        returnedResults.sort();
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_users_for_user_usernames() {
-        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Username LIMIT 3];
+        List<User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
         List<String> targetUserUsernames = new List<String>();
         for (User user : expectedResults) {
             targetUserUsernames.add(user.Username);
@@ -290,12 +373,27 @@ private class LogManagementDataSelector_Tests {
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByUsername(targetUserUsernames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        expectedResults.sort();
+        returnedResults.sort();
+        System.Assert.areEqual(expectedResults, returnedResults);
+    }
+
+    @IsTest
+    static void it_loads_mock_instance() {
+        MockLogManagementDataSelector mockSelector = new MockLogManagementDataSelector();
+        System.Assert.areNotEqual(mockSelector, LogManagementDataSelector.getInstance());
+
+        LogManagementDataSelector.setMock(mockSelector);
+
+        System.Assert.areEqual(mockSelector, LogManagementDataSelector.getInstance());
     }
 
     @SuppressWarnings('PMD.EmptyStatementBlock')
     @future
     private static void executeSomeFutureMethod() {
         // This method intentionally does nothing - it\'s only used to help test queries on AsynxApexJob
+    }
+
+    private class MockLogManagementDataSelector extends LogManagementDataSelector {
     }
 }
