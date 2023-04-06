@@ -62,19 +62,6 @@
             "default": false
         },
         {
-            "package": "Nebula Logger - Core Plugin - Logger Admin Dashboard",
-            "path": "./nebula-logger/plugins/logger-admin-dashboard/plugin",
-            "dependencies": [
-                {
-                    "package": "Nebula Logger - Core@4.6.12-log-scenario-rules"
-                }
-            ],
-            "versionName": "Beta Release",
-            "versionNumber": "0.9.0.NEXT",
-            "versionDescription": "Initial beta version of new dashboard plugin",
-            "default": false
-        },
-        {
             "package": "Nebula Logger - Core Plugin - Slack",
             "path": "./nebula-logger/plugins/slack/plugin",
             "dependencies": [
