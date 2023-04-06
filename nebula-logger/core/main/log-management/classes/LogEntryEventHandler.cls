@@ -68,7 +68,21 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
-            String platformEventStorageLocation = Logger.getUserSettings(loggingUser).DefaultPlatformEventStorageLocation__c;
+            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            
+            // Filter based on storage logging level
+            String userStorageLoggingLevelName = loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c;
+            if (String.isBlank(userStorageLoggingLevelName) == true) {
+                userStorageLoggingLevelName = loggingUserSettings.LoggingLevel__c;
+            }
+            System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(userStorageLoggingLevelName);
+            System.LoggingLevel entryLoggingLevel = System.LoggingLevel.valueOf(logEntryEvent.LoggingLevel__c);
+            if (entryLoggingLevel.ordinal() < userStorageLoggingLevel.ordinal()) {
+                continue;
+            }
+
+            // Filter based on storage logging location
+            String platformEventStorageLocation = loggingUserSettings.DefaultPlatformEventStorageLocation__c;
             if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
                 LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
                 if (scenarioRule.IsPlatformEventStorageLocationEnabled__c == trueString) {
