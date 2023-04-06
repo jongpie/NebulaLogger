@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.0.NEXT",
-            "versionName": "Spring '23 Release",
-            "versionDescription": "Upgraded all metadata to API v57.0 (Spring '23 release)",
+            "versionNumber": "4.10.1.NEXT",
+            "versionName": "New Settings Field DefaultPlatformEventStorageLoggingLevel__c",
+            "versionDescription": "Added new settings field that provides a way to only store a subset of LogEntryEvent__e records in custom objects, based on the entry's logging level",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
