@@ -69,7 +69,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            
+
             // Filter based on storage logging level
             String userStorageLoggingLevelName = loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c;
             if (String.isBlank(userStorageLoggingLevelName) == true) {
