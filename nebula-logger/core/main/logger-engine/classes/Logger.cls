@@ -92,8 +92,8 @@ global with sharing class Logger {
     static {
         // 1 of 2 places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
-        System.debug(System.LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
-        System.debug(System.LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
