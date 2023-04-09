@@ -1,15 +1,18 @@
 import { createElement } from 'lwc';
-import Logger from 'c/logger';
+import { createLogger } from 'c/logger';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 
 const MOCK_GET_SETTINGS = require('./data/getLoggerSettings.json');
 
+const flushPromises = async () => {
+    await new Promise(process.nextTick);
+};
+
 jest.mock(
     '@salesforce/apex/ComponentLogger.getSettings',
     () => {
-        const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
         return {
-            default: createApexTestWireAdapter(jest.fn())
+            default: jest.fn()
         };
     },
     { virtual: true }
@@ -24,11 +27,10 @@ describe('Logger lwc tests', () => {
     });
 
     it('returns user settings', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
-        const userSettings = logger.getUserSettings();
+        const userSettings = await logger.getUserSettings();
 
         expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
         expect(userSettings.isEnabled).toEqual(true);
@@ -36,32 +38,35 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets a log scenario on all entries', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = true;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await logger.loadSettingsFromServer();
+
         const scenario = 'some scenario';
         const message = 'some message';
         const firstLogEntry = logger.finest(message);
+        await flushPromises();
         expect(firstLogEntry.scenario).toBeUndefined();
         expect(logger.getBufferSize()).toEqual(1);
+
         const secondLogEntry = logger.info(message);
+        await flushPromises();
         expect(secondLogEntry.scenario).toBeUndefined();
         expect(logger.getBufferSize()).toEqual(2);
 
-        logger.setScenario(scenario);
+        await logger.setScenario(scenario);
 
         expect(firstLogEntry.scenario).toEqual(scenario);
         expect(secondLogEntry.scenario).toEqual(scenario);
     });
 
     it('logs an ERROR entry', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel ERROR';
         const logEntry = logger.error(message);
+        await flushPromises();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('ERROR');
@@ -69,11 +74,12 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a WARN entry', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel WARN';
         const logEntry = logger.warn(message);
+        await flushPromises();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('WARN');
@@ -81,12 +87,12 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs an INFO entry', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel INFO';
         const logEntry = logger.info(message);
+        await flushPromises();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('INFO');
@@ -94,12 +100,12 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a DEBUG entry', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel DEBUG';
         const logEntry = logger.debug(message);
+        await flushPromises();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('DEBUG');
@@ -107,12 +113,12 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a FINE entry', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINE';
         const logEntry = logger.fine(message);
+        await flushPromises();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('FINE');
@@ -120,12 +126,12 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a FINER entry', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINER';
         const logEntry = logger.finer(message);
+        await flushPromises();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('FINER');
@@ -133,12 +139,12 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a FINEST entry', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINEST';
         const logEntry = logger.finest(message);
+        await flushPromises();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('FINEST');
@@ -146,9 +152,10 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets recordId', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await logger.loadSettingsFromServer();
+
         const logEntry = logger.info('example log entry');
         expect(logEntry.recordId).toBeFalsy();
 
@@ -159,9 +166,10 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets record', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await logger.loadSettingsFromServer();
+
         const logEntry = logger.info('example log entry');
         expect(logEntry.record).toBeFalsy();
         const mockUserRecord = { Id: '0052F000008yLcEQAU', FirstName: 'Jonathan', LastName: 'Gillespie' };
@@ -172,9 +180,10 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets JavaScript error details', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await logger.loadSettingsFromServer();
+
         const logEntry = logger.info('example log entry');
         expect(logEntry.error).toBeFalsy();
         const error = new TypeError('oops');
@@ -190,9 +199,9 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets Apex error details', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+
         const logEntry = logger.info('example log entry');
         expect(logEntry.error).toBeFalsy();
         const error = {
@@ -215,9 +224,9 @@ describe('Logger lwc tests', () => {
     });
 
     it('adds tags', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+
         const logEntry = logger.info('example log entry');
         expect(logEntry.recordId).toBeFalsy();
         const mockTags = ['first tag', 'second tag', 'third tag'];
@@ -228,9 +237,9 @@ describe('Logger lwc tests', () => {
     });
 
     it('deduplicates tags', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+
         const logEntry = logger.info('example log entry');
         expect(logEntry.recordId).toBeFalsy();
         const mockTags = ['duplicate tag', 'duplicate tag'];
@@ -245,219 +254,254 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for ERROR logging level when disabled', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = false;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
+        const error = new TypeError('oops');
 
         const logEntry = logger
             .error('example ERROR log entry')
             .setMessage('some message')
             .setRecordId('some_record_Id')
             .setRecord({ Id: 'some_record_Id' })
-            .setError(new TypeError('oops'))
+            .setError(error)
             .addTag('a tag')
             .addTags(['a second tag', 'a third tag']);
 
+        await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
-        expect(logEntry.loggingLevel).toEqual(undefined);
-        expect(logEntry.shouldSave).toEqual(false);
-        expect(logEntry.recordId).toEqual(undefined);
-        expect(logEntry.record).toEqual(undefined);
-        expect(logEntry.error).toEqual(undefined);
-        expect(logEntry.stack).toEqual(undefined);
-        expect(logEntry.timestamp).toEqual(undefined);
-        expect(logEntry.tags).toEqual(undefined);
+        expect(logEntry.loggingLevel).toEqual('ERROR');
+        expect(logEntry.recordId).toEqual('some_record_Id');
+        expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+        expect(logEntry.error).toBeTruthy();
+        expect(logEntry.stack).toBeTruthy();
+        expect(logEntry.error.message).toEqual(error.message);
+        expect(logEntry.error.stack).toEqual(error.stack);
+        expect(logEntry.timestamp).toBeTruthy();
+        expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
     });
 
     it('still works for WARN logging level when disabled', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = false;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
+        const error = new TypeError('oops');
 
         const logEntry = logger
             .warn('example WARN log entry')
             .setMessage('some message')
             .setRecordId('some_record_Id')
             .setRecord({ Id: 'some_record_Id' })
-            .setError(new TypeError('oops'))
+            .setError(error)
             .addTag('a tag')
             .addTags(['a second tag', 'a third tag']);
 
+        await flushPromises();
+
         expect(logger.getBufferSize()).toEqual(0);
-        expect(logger.getBufferSize()).toEqual(0);
-        expect(logEntry.loggingLevel).toEqual(undefined);
-        expect(logEntry.shouldSave).toEqual(false);
-        expect(logEntry.recordId).toEqual(undefined);
-        expect(logEntry.record).toEqual(undefined);
-        expect(logEntry.error).toEqual(undefined);
-        expect(logEntry.stack).toEqual(undefined);
-        expect(logEntry.timestamp).toEqual(undefined);
-        expect(logEntry.tags).toEqual(undefined);
+        expect(logEntry.loggingLevel).toEqual('WARN');
+        expect(logEntry.recordId).toEqual('some_record_Id');
+        expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+        expect(logEntry.error).toBeTruthy();
+        expect(logEntry.stack).toBeTruthy();
+        expect(logEntry.error.message).toEqual(error.message);
+        expect(logEntry.error.stack).toEqual(error.stack);
+        expect(logEntry.timestamp).toBeTruthy();
+        expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
     });
 
     it('still works for INFO logging level when disabled', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = false;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
+        const error = new TypeError('oops');
 
         const logEntry = logger
             .info('example INFO log entry')
             .setMessage('some message')
             .setRecordId('some_record_Id')
             .setRecord({ Id: 'some_record_Id' })
-            .setError(new TypeError('oops'))
+            .setError(error)
             .addTag('a tag')
             .addTags(['a second tag', 'a third tag']);
 
+        await flushPromises();
+
         expect(logger.getBufferSize()).toEqual(0);
-        expect(logger.getBufferSize()).toEqual(0);
-        expect(logEntry.loggingLevel).toEqual(undefined);
-        expect(logEntry.shouldSave).toEqual(false);
-        expect(logEntry.recordId).toEqual(undefined);
-        expect(logEntry.record).toEqual(undefined);
-        expect(logEntry.error).toEqual(undefined);
-        expect(logEntry.stack).toEqual(undefined);
-        expect(logEntry.timestamp).toEqual(undefined);
-        expect(logEntry.tags).toEqual(undefined);
+        expect(logEntry.loggingLevel).toEqual('INFO');
+        expect(logEntry.recordId).toEqual('some_record_Id');
+        expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+        expect(logEntry.error).toBeTruthy();
+        expect(logEntry.stack).toBeTruthy();
+        expect(logEntry.error.message).toEqual(error.message);
+        expect(logEntry.error.stack).toEqual(error.stack);
+        expect(logEntry.timestamp).toBeTruthy();
+        expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
     });
 
     it('still works for DEBUG logging level when disabled', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = false;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
+        const error = new TypeError('oops');
 
         const logEntry = logger
             .debug('example DEBUG log entry')
             .setMessage('some message')
             .setRecordId('some_record_Id')
             .setRecord({ Id: 'some_record_Id' })
-            .setError(new TypeError('oops'))
+            .setError(error)
             .addTag('a tag')
             .addTags(['a second tag', 'a third tag']);
 
+        await flushPromises();
+
         expect(logger.getBufferSize()).toEqual(0);
-        expect(logger.getBufferSize()).toEqual(0);
-        expect(logEntry.loggingLevel).toEqual(undefined);
-        expect(logEntry.shouldSave).toEqual(false);
-        expect(logEntry.recordId).toEqual(undefined);
-        expect(logEntry.record).toEqual(undefined);
-        expect(logEntry.error).toEqual(undefined);
-        expect(logEntry.stack).toEqual(undefined);
-        expect(logEntry.timestamp).toEqual(undefined);
-        expect(logEntry.tags).toEqual(undefined);
+        expect(logEntry.loggingLevel).toEqual('DEBUG');
+        expect(logEntry.recordId).toEqual('some_record_Id');
+        expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+        expect(logEntry.error).toBeTruthy();
+        expect(logEntry.stack).toBeTruthy();
+        expect(logEntry.error.message).toEqual(error.message);
+        expect(logEntry.error.stack).toEqual(error.stack);
+        expect(logEntry.timestamp).toBeTruthy();
+        expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
     });
 
     it('still works for FINE logging level when disabled', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = false;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
+        const error = new TypeError('oops');
 
         const logEntry = logger
             .fine('example FINE log entry')
             .setMessage('some message')
             .setRecordId('some_record_Id')
             .setRecord({ Id: 'some_record_Id' })
-            .setError(new TypeError('oops'))
+            .setError(error)
             .addTag('a tag')
             .addTags(['a second tag', 'a third tag']);
 
+        await flushPromises();
+
         expect(logger.getBufferSize()).toEqual(0);
-        expect(logger.getBufferSize()).toEqual(0);
-        expect(logEntry.loggingLevel).toEqual(undefined);
-        expect(logEntry.shouldSave).toEqual(false);
-        expect(logEntry.recordId).toEqual(undefined);
-        expect(logEntry.record).toEqual(undefined);
-        expect(logEntry.error).toEqual(undefined);
-        expect(logEntry.stack).toEqual(undefined);
-        expect(logEntry.timestamp).toEqual(undefined);
-        expect(logEntry.tags).toEqual(undefined);
+        expect(logEntry.loggingLevel).toEqual('FINE');
+        expect(logEntry.recordId).toEqual('some_record_Id');
+        expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+        expect(logEntry.error).toBeTruthy();
+        expect(logEntry.stack).toBeTruthy();
+        expect(logEntry.error.message).toEqual(error.message);
+        expect(logEntry.error.stack).toEqual(error.stack);
+        expect(logEntry.timestamp).toBeTruthy();
+        expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
     });
 
     it('still works for FINER logging level when disabled', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = false;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
+        const error = new TypeError('oops');
 
         const logEntry = logger
             .finer('example FINER log entry')
             .setMessage('some message')
             .setRecordId('some_record_Id')
             .setRecord({ Id: 'some_record_Id' })
-            .setError(new TypeError('oops'))
+            .setError(error)
             .addTag('a tag')
             .addTags(['a second tag', 'a third tag']);
 
+        await flushPromises();
+
         expect(logger.getBufferSize()).toEqual(0);
-        expect(logger.getBufferSize()).toEqual(0);
-        expect(logEntry.loggingLevel).toEqual(undefined);
-        expect(logEntry.shouldSave).toEqual(false);
-        expect(logEntry.recordId).toEqual(undefined);
-        expect(logEntry.record).toEqual(undefined);
-        expect(logEntry.error).toEqual(undefined);
-        expect(logEntry.stack).toEqual(undefined);
-        expect(logEntry.timestamp).toEqual(undefined);
-        expect(logEntry.tags).toEqual(undefined);
+        expect(logEntry.loggingLevel).toEqual('FINER');
+        expect(logEntry.recordId).toEqual('some_record_Id');
+        expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+        expect(logEntry.error).toBeTruthy();
+        expect(logEntry.stack).toBeTruthy();
+        expect(logEntry.error.message).toEqual(error.message);
+        expect(logEntry.error.stack).toEqual(error.stack);
+        expect(logEntry.timestamp).toBeTruthy();
+        expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
     });
 
     it('still works for FINEST logging level when disabled', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
-        logger.getUserSettings().isEnabled = false;
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
+        const error = new TypeError('oops');
 
         const logEntry = logger
             .finest('example FINEST log entry')
             .setMessage('some message')
             .setRecordId('some_record_Id')
             .setRecord({ Id: 'some_record_Id' })
-            .setError(new TypeError('oops'))
+            .setError(error)
             .addTag('a tag')
             .addTags(['a second tag', 'a third tag']);
 
+        await flushPromises();
+
         expect(logger.getBufferSize()).toEqual(0);
-        expect(logger.getBufferSize()).toEqual(0);
-        expect(logEntry.loggingLevel).toEqual(undefined);
-        expect(logEntry.shouldSave).toEqual(false);
-        expect(logEntry.recordId).toEqual(undefined);
-        expect(logEntry.record).toEqual(undefined);
-        expect(logEntry.error).toEqual(undefined);
-        expect(logEntry.stack).toEqual(undefined);
-        expect(logEntry.timestamp).toEqual(undefined);
-        expect(logEntry.tags).toEqual(undefined);
+        expect(logEntry.loggingLevel).toEqual('FINEST');
+        expect(logEntry.recordId).toEqual('some_record_Id');
+        expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+        expect(logEntry.error).toBeTruthy();
+        expect(logEntry.stack).toBeTruthy();
+        expect(logEntry.error.message).toEqual(error.message);
+        expect(logEntry.error.stack).toEqual(error.stack);
+        expect(logEntry.timestamp).toBeTruthy();
+        expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
     });
 
     it('flushes buffer', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
         const numberOfLogEntries = 3;
         for (let i = 0; i < numberOfLogEntries; i++) {
             logger.info('entry number: ' + i);
         }
+        await flushPromises();
         expect(logger.getBufferSize()).toEqual(numberOfLogEntries);
 
-        logger.flushBuffer();
+        await logger.flushBuffer();
 
         expect(logger.getBufferSize()).toEqual(0);
     });
 
     it('saves log entries and flushes buffer', async () => {
-        const logger = createElement('c-logger', { is: Logger });
-        document.body.appendChild(logger);
-        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logger = createLogger();
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const forceReload = true;
+        await logger.loadSettingsFromServer(forceReload);
+
         logger.info('example INFO log entry');
         logger.debug('example DEBUG log entry');
+        await flushPromises();
+
         expect(logger.getBufferSize()).toBe(2);
 
         logger.saveLog();
 
-        await Promise.resolve();
+        await flushPromises();
         expect(logger.getBufferSize()).toBe(0);
     });
 });

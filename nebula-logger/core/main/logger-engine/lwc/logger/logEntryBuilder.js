@@ -4,22 +4,20 @@
 //------------------------------------------------------------------------------------------------//
 
 const LogEntryBuilder = class {
+    #settingsPromise;
+
     /**
      * @description Constructor used to generate each JavaScript-based log entry event
      *              This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
      * @param  {String} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
-     * @param  {Boolean} shouldSave Determines if the builder's instance of `LogEntryEvent__e` should be saved
      * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
      */
-    constructor(loggingLevel, shouldSave, isConsoleLoggingEnabled) {
-        this.shouldSave = shouldSave;
-        this.isConsoleLoggingEnabled = isConsoleLoggingEnabled;
-        if (this.shouldSave === true) {
-            this.loggingLevel = loggingLevel;
-            this.stack = new Error().stack;
-            this.timestamp = new Date().toISOString();
-            this.tags = [];
-        }
+    constructor(loggingLevel, settingsPromise) {
+        this.#settingsPromise = settingsPromise;
+        this.loggingLevel = loggingLevel;
+        this.stack = new Error().stack;
+        this.timestamp = new Date().toISOString();
+        this.tags = [];
     }
 
     /**
@@ -28,10 +26,8 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setMessage(message) {
-        if (this.shouldSave === true) {
-            this.message = message;
-            this._logToConsole();
-        }
+        this.message = message;
+        this._logToConsole();
         return this;
     }
 
@@ -41,9 +37,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecordId(recordId) {
-        if (this.shouldSave === true) {
-            this.recordId = recordId;
-        }
+        this.recordId = recordId;
         return this;
     }
 
@@ -53,9 +47,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecord(record) {
-        if (this.shouldSave === true) {
-            this.record = record;
-        }
+        this.record = record;
         return this;
     }
 
@@ -65,17 +57,15 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setError(error) {
-        if (this.shouldSave === true) {
-            this.error = {};
-            if (error.body) {
-                this.error.message = error.body.message;
-                this.error.stack = error.body.stackTrace;
-                this.error.type = error.body.exceptionType;
-            } else {
-                this.error.message = error.message;
-                this.error.stack = error.stack;
-                this.error.type = 'JavaScript.' + error.name;
-            }
+        this.error = {};
+        if (error.body) {
+            this.error.message = error.body.message;
+            this.error.stack = error.body.stackTrace;
+            this.error.type = error.body.exceptionType;
+        } else {
+            this.error.message = error.message;
+            this.error.stack = error.stack;
+            this.error.type = 'JavaScript.' + error.name;
         }
         return this;
     }
@@ -86,11 +76,9 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     addTag(tag) {
-        if (this.shouldSave === true) {
-            this.tags.push(tag);
-            // Deduplicate the list of tags
-            this.tags = Array.from(new Set(this.tags));
-        }
+        this.tags.push(tag);
+        // Deduplicate the list of tags
+        this.tags = Array.from(new Set(this.tags));
         return this;
     }
 
@@ -107,28 +95,32 @@ const LogEntryBuilder = class {
     }
 
     _logToConsole() {
-        if (!this.isConsoleLoggingEnabled) {
-            return;
-        }
+        this.#settingsPromise().then(setting => {
+            this.isConsoleLoggingEnabled = setting.isConsoleLoggingEnabled;
 
-        /* eslint-disable no-console */
-        switch (this.loggingLevel) {
-            case 'ERROR':
-                console.error(this.message, this);
-                break;
-            case 'WARN':
-                console.warn(this.message, this);
-                break;
-            case 'INFO':
-                console.info(this.message, this);
-                break;
-            default:
-                console.debug(this.message, this);
-                break;
-        }
+            if (!this.isConsoleLoggingEnabled) {
+                return;
+            }
+
+            /* eslint-disable no-console */
+            switch (this.loggingLevel) {
+                case 'ERROR':
+                    console.error(this.message, this);
+                    break;
+                case 'WARN':
+                    console.warn(this.message, this);
+                    break;
+                case 'INFO':
+                    console.info(this.message, this);
+                    break;
+                default:
+                    console.debug(this.message, this);
+                    break;
+            }
+        });
     }
 };
 
-export function newLogEntry(loggingLevel, shouldSave, isConsoleLoggingEnabled) {
-    return new LogEntryBuilder(loggingLevel, shouldSave, isConsoleLoggingEnabled);
+export function newLogEntry(loggingLevel, settingPromise) {
+    return new LogEntryBuilder(loggingLevel, settingPromise);
 }

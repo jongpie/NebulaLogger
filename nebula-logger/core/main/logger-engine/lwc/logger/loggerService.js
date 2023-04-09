@@ -7,12 +7,13 @@ import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
-const LwcLogger = class {
+const LoggerService = class {
     componentLogEntries = [];
 
     static settings = undefined;
 
     _scenario;
+
     /**
      * @description Queue of promises to be logged.
      */
@@ -22,6 +23,7 @@ const LwcLogger = class {
      * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
      * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
+    // @api
     getUserSettings() {
         return this.loadSettingsFromServer().then(existingSettings => {
             return Object.freeze({
@@ -38,6 +40,7 @@ const LwcLogger = class {
      * @param  {String} scenario The name to use for the current transaction's scenario
      * @return {Promise[]} A list of promises that be resolved before all scenarios are set
      */
+    // @api
     setScenario(scenario) {
         this._scenario = scenario;
         return Promise.all(this.#loggingPromises).then(
@@ -52,6 +55,7 @@ const LwcLogger = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    // @api
     error(message) {
         return this._newEntry('ERROR', message);
     }
@@ -61,6 +65,7 @@ const LwcLogger = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    // @api
     warn(message) {
         return this._newEntry('WARN', message);
     }
@@ -70,6 +75,7 @@ const LwcLogger = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    // @api
     info(message) {
         return this._newEntry('INFO', message);
     }
@@ -79,6 +85,7 @@ const LwcLogger = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    // @api
     debug(message) {
         return this._newEntry('DEBUG', message);
     }
@@ -88,6 +95,7 @@ const LwcLogger = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    // @api
     fine(message) {
         return this._newEntry('FINE', message);
     }
@@ -97,6 +105,7 @@ const LwcLogger = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    // @api
     finer(message) {
         return this._newEntry('FINER', message);
     }
@@ -106,6 +115,7 @@ const LwcLogger = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    // @api
     finest(message) {
         return this._newEntry('FINEST', message);
     }
@@ -114,6 +124,7 @@ const LwcLogger = class {
      * @description Returns the number of entries that have been generated but not yet saved
      * @return {Integer} The buffer's current size
      */
+    // @api
     getBufferSize() {
         return this.componentLogEntries.length;
     }
@@ -122,6 +133,7 @@ const LwcLogger = class {
      * @description Discards any entries that have been generated but not yet saved
      * @return {Promise<void>} A promise to clear the entries
      */
+    // @api
     flushBuffer() {
         return Promise.all(this.#loggingPromises).then(() => {
             this.componentLogEntries = [];
@@ -132,13 +144,14 @@ const LwcLogger = class {
     /**
      * @description Saves any entries in Logger's buffer, using the specified save method for only this call
      *              All subsequent calls to saveLog() will use the transaction save method
-     * @param  {String} saveMethod The enum value of Logger.SaveMethod to use for this specific save action
+     * @param  {String} saveMethod The enum value of LoggerService.SaveMethod to use for this specific save action
      */
+    // @api
     saveLog(saveMethodName) {
         if (this.getBufferSize() > 0) {
             let resolvedSaveMethodName;
-            if (!saveMethodName && LwcLogger.settings && LwcLogger.settings.defaultSaveMethodName) {
-                resolvedSaveMethodName = LwcLogger.settings.defaultSaveMethodName;
+            if (!saveMethodName && LoggerService.settings && LoggerService.settings.defaultSaveMethodName) {
+                resolvedSaveMethodName = LoggerService.settings.defaultSaveMethodName;
             } else {
                 resolvedSaveMethodName = saveMethodName;
             }
@@ -147,7 +160,7 @@ const LwcLogger = class {
                 .then(saveComponentLogEntries({ componentLogEntries: this.componentLogEntries, saveMethodName: resolvedSaveMethodName }))
                 .then(this.flushBuffer())
                 .catch(error => {
-                    if (LwcLogger.settings.isConsoleLoggingEnabled === true) {
+                    if (LoggerService.settings.isConsoleLoggingEnabled === true) {
                         /* eslint-disable-next-line no-console */
                         console.error(error);
                         /* eslint-disable-next-line no-console */
@@ -164,10 +177,10 @@ const LwcLogger = class {
      */
     loadSettingsFromServer(forceReload) {
         // Loading only once
-        return LwcLogger.settings === undefined || forceReload === true
+        return LoggerService.settings === undefined || forceReload === true
             ? getSettings()
                   .then(settings => {
-                      LwcLogger.settings = settings;
+                      LoggerService.settings = settings;
                       return settings;
                   })
                   .catch(error => {
@@ -175,14 +188,18 @@ const LwcLogger = class {
                       console.error(error);
                   })
             : new Promise(resolve => {
-                  resolve(LwcLogger.settings);
+                  resolve(LoggerService.settings);
               });
     }
 
     // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
-        let logEntryLoggingLevelOrdinal = LwcLogger.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        return LwcLogger.settings && LwcLogger.settings.isEnabled === true && LwcLogger.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
+        let logEntryLoggingLevelOrdinal = LoggerService.settings.supportedLoggingLevels[logEntryLoggingLevel];
+        return (
+            LoggerService.settings &&
+            LoggerService.settings.isEnabled === true &&
+            LoggerService.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal
+        );
     }
 
     _newEntry(loggingLevel, message) {
@@ -203,10 +220,10 @@ const LwcLogger = class {
 };
 
 /**
- * @return {LwcLogger} a Logger instance
+ * @return {LoggerService} a LoggerService instance
  */
-const createLogger = function () {
-    return new LwcLogger();
+const createLoggerService = function () {
+    return new LoggerService();
 };
 
-export { createLogger };
+export { createLoggerService };

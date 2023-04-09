@@ -6,13 +6,13 @@
 /* eslint-disable no-console */
 import { LightningElement } from 'lwc';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
-import { createLogger } from 'c/lwcLogger';
+import { getLogger } from 'c/logger';
 
 export default class LoggerLWCDemo extends LightningElement {
     message = 'Hello, world!';
     scenario = 'Some demo scenario';
     tagsString = 'Tag-one, Another tag here';
-    logger = createLogger();
+    logger = getLogger();
 
     messageChange(event) {
         this.message = event.target.value;
