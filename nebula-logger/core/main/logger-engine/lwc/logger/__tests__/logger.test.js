@@ -1,5 +1,5 @@
 import { createElement } from 'lwc';
-import { createLogger } from 'c/logger';
+import { getLogger } from 'c/logger';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 
 const MOCK_GET_SETTINGS = require('./data/getLoggerSettings.json');
@@ -27,7 +27,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('returns user settings', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const userSettings = await logger.getUserSettings();
@@ -38,7 +38,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets a log scenario on all entries', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         await logger.loadSettingsFromServer();
 
@@ -61,7 +61,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs an ERROR entry', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel ERROR';
@@ -74,7 +74,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a WARN entry', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel WARN';
@@ -87,7 +87,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs an INFO entry', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel INFO';
@@ -100,7 +100,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a DEBUG entry', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel DEBUG';
@@ -113,7 +113,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a FINE entry', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINE';
@@ -126,7 +126,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a FINER entry', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINER';
@@ -139,7 +139,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('logs a FINEST entry', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINEST';
@@ -152,7 +152,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets recordId', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         await logger.loadSettingsFromServer();
 
@@ -166,7 +166,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets record', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         await logger.loadSettingsFromServer();
 
@@ -180,7 +180,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets JavaScript error details', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         await logger.loadSettingsFromServer();
 
@@ -199,7 +199,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('sets Apex error details', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const logEntry = logger.info('example log entry');
@@ -224,7 +224,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('adds tags', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const logEntry = logger.info('example log entry');
@@ -237,7 +237,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('deduplicates tags', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const logEntry = logger.info('example log entry');
@@ -254,7 +254,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for ERROR logging level when disabled', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -284,7 +284,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for WARN logging level when disabled', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -315,7 +315,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for INFO logging level when disabled', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -346,7 +346,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for DEBUG logging level when disabled', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -377,7 +377,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for FINE logging level when disabled', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -408,7 +408,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for FINER logging level when disabled', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -439,7 +439,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('still works for FINEST logging level when disabled', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -470,7 +470,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('flushes buffer', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
@@ -488,7 +488,7 @@ describe('Logger lwc tests', () => {
     });
 
     it('saves log entries and flushes buffer', async () => {
-        const logger = createLogger();
+        const logger = getLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const forceReload = true;
         await logger.loadSettingsFromServer(forceReload);
