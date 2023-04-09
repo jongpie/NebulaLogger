@@ -6,6 +6,8 @@
 import { LightningElement, api } from 'lwc';
 import { createLoggerService } from './loggerService';
 
+const CURRENT_VERSION_NUMBER = 'v4.10.0';
+
 export default class Logger extends LightningElement {
     #loggerService = createLoggerService();
 
@@ -132,6 +134,9 @@ export default class Logger extends LightningElement {
  * @return {LoggerService} a LoggerService instance
  */
 const getLogger = function () {
+    const consoleMessagePrefix = '%c Nebula Logger ';
+    const consoleFormatting = 'background: #0c598d; color: #fff;';
+    console.info(consoleMessagePrefix, consoleFormatting, 'Nebula Logger Version Number: ' + CURRENT_VERSION_NUMBER);
     return createLoggerService();
 };
 
