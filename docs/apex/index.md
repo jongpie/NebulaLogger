@@ -108,10 +108,6 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 Controller class for the LWC `logViewer`, used to provided different views on a `Log__c` record
 
-### [LoggerBatchableContext](Log-Management/LoggerBatchableContext)
-
-Class used by the logging system for batch contextual details
-
 ### [LoggerEmailSender](Log-Management/LoggerEmailSender)
 
 Builds and sends email notifications when internal exceptions occur within the logging system
@@ -138,6 +134,10 @@ Controller class for the lightning web component `related-log-entries`
 
 ## Configuration
 
+### [LoggerBatchableContext](Configuration/LoggerBatchableContext)
+
+Class used by the logging system for batch contextual details
+
 ### [LoggerCache](Configuration/LoggerCache)
 
 Class used to cache query results returned by the selector classes
@@ -153,6 +153,10 @@ The core of the plugin framework, used to create custom Apex &amp; Flow plugins 
 ### [LoggerScenarioRule](Configuration/LoggerScenarioRule)
 
 Provides a centralized way to load scenario rules that override behavior within Nebula Logger
+
+### [LoggerTriggerableContext](Configuration/LoggerTriggerableContext)
+
+Class used by the logging system for trigger contextual details
 
 ## Test Utilities
 
