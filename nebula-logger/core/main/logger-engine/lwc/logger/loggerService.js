@@ -8,11 +8,10 @@ import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
 const LoggerService = class {
-    componentLogEntries = [];
-
     static settings = undefined;
 
-    _scenario;
+    #componentLogEntries = [];
+    #scenario;
 
     /**
      * @description Queue of promises to be logged.
@@ -23,9 +22,8 @@ const LoggerService = class {
      * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
      * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
-    // @api
     getUserSettings() {
-        return this.loadSettingsFromServer().then(existingSettings => {
+        return this._loadSettingsFromServer().then(existingSettings => {
             return Object.freeze({
                 ...existingSettings,
                 supportedLoggingLevels: Object.freeze(existingSettings.supportedLoggingLevels),
@@ -40,12 +38,11 @@ const LoggerService = class {
      * @param  {String} scenario The name to use for the current transaction's scenario
      * @return {Promise[]} A list of promises that be resolved before all scenarios are set
      */
-    // @api
     setScenario(scenario) {
-        this._scenario = scenario;
+        this.#scenario = scenario;
         return Promise.all(this.#loggingPromises).then(
-            this.componentLogEntries.forEach(logEntry => {
-                logEntry.scenario = this._scenario;
+            this.#componentLogEntries.forEach(logEntry => {
+                logEntry.scenario = this.#scenario;
             })
         );
     }
@@ -55,7 +52,6 @@ const LoggerService = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    // @api
     error(message) {
         return this._newEntry('ERROR', message);
     }
@@ -65,7 +61,6 @@ const LoggerService = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    // @api
     warn(message) {
         return this._newEntry('WARN', message);
     }
@@ -75,7 +70,6 @@ const LoggerService = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    // @api
     info(message) {
         return this._newEntry('INFO', message);
     }
@@ -85,7 +79,6 @@ const LoggerService = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    // @api
     debug(message) {
         return this._newEntry('DEBUG', message);
     }
@@ -95,7 +88,6 @@ const LoggerService = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    // @api
     fine(message) {
         return this._newEntry('FINE', message);
     }
@@ -105,7 +97,6 @@ const LoggerService = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    // @api
     finer(message) {
         return this._newEntry('FINER', message);
     }
@@ -115,7 +106,6 @@ const LoggerService = class {
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    // @api
     finest(message) {
         return this._newEntry('FINEST', message);
     }
@@ -124,19 +114,17 @@ const LoggerService = class {
      * @description Returns the number of entries that have been generated but not yet saved
      * @return {Integer} The buffer's current size
      */
-    // @api
     getBufferSize() {
-        return this.componentLogEntries.length;
+        return this.#componentLogEntries.length;
     }
 
     /**
      * @description Discards any entries that have been generated but not yet saved
      * @return {Promise<void>} A promise to clear the entries
      */
-    // @api
     flushBuffer() {
         return Promise.all(this.#loggingPromises).then(() => {
-            this.componentLogEntries = [];
+            this.#componentLogEntries = [];
             this.#loggingPromises = [];
         });
     }
@@ -146,7 +134,6 @@ const LoggerService = class {
      *              All subsequent calls to saveLog() will use the transaction save method
      * @param  {String} saveMethod The enum value of LoggerService.SaveMethod to use for this specific save action
      */
-    // @api
     saveLog(saveMethodName) {
         if (this.getBufferSize() > 0) {
             let resolvedSaveMethodName;
@@ -157,14 +144,14 @@ const LoggerService = class {
             }
 
             Promise.all(this.#loggingPromises)
-                .then(saveComponentLogEntries({ componentLogEntries: this.componentLogEntries, saveMethodName: resolvedSaveMethodName }))
+                .then(saveComponentLogEntries({ componentLogEntries: this.#componentLogEntries, saveMethodName: resolvedSaveMethodName }))
                 .then(this.flushBuffer())
                 .catch(error => {
                     if (LoggerService.settings.isConsoleLoggingEnabled === true) {
                         /* eslint-disable-next-line no-console */
                         console.error(error);
                         /* eslint-disable-next-line no-console */
-                        console.error(this.componentLogEntries);
+                        console.error(this.#componentLogEntries);
                     }
                 });
         }
@@ -175,7 +162,7 @@ const LoggerService = class {
      * @param {Boolean} forceReload Force the configuration to be reloaded even if it was previously loaded
      * @returns {Promise<Any>} A promise with the latest current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
-    loadSettingsFromServer(forceReload) {
+    _loadSettingsFromServer(forceReload) {
         // Loading only once
         return LoggerService.settings === undefined || forceReload === true
             ? getSettings()
@@ -192,7 +179,6 @@ const LoggerService = class {
               });
     }
 
-    // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
         let logEntryLoggingLevelOrdinal = LoggerService.settings.supportedLoggingLevels[logEntryLoggingLevel];
         return (
@@ -204,14 +190,14 @@ const LoggerService = class {
 
     _newEntry(loggingLevel, message) {
         // Builder is returned immediately but console log will be determined after loadding settings from server
-        const logEntryBuilder = newLogEntry(loggingLevel, this.loadSettingsFromServer);
+        const logEntryBuilder = newLogEntry(loggingLevel, this._loadSettingsFromServer);
         logEntryBuilder.setMessage(message);
-        if (this._scenario) {
-            logEntryBuilder.scenario = this._scenario;
+        if (this.#scenario) {
+            logEntryBuilder.scenario = this.#scenario;
         }
-        const loggingPromise = this.loadSettingsFromServer().then(() => {
+        const loggingPromise = this._loadSettingsFromServer().then(() => {
             if (this._meetsUserLoggingLevel(loggingLevel) === true) {
-                this.componentLogEntries.push(logEntryBuilder);
+                this.#componentLogEntries.push(logEntryBuilder);
             }
         });
         this.#loggingPromises.push(loggingPromise);
