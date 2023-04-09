@@ -23,7 +23,7 @@ const LoggerService = class {
      * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
     getUserSettings() {
-        return this._loadSettingsFromServer().then(existingSettings => {
+        return this.loadSettingsFromServer().then(existingSettings => {
             return Object.freeze({
                 ...existingSettings,
                 supportedLoggingLevels: Object.freeze(existingSettings.supportedLoggingLevels),
@@ -162,7 +162,7 @@ const LoggerService = class {
      * @param {Boolean} forceReload Force the configuration to be reloaded even if it was previously loaded
      * @returns {Promise<Any>} A promise with the latest current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
-    _loadSettingsFromServer(forceReload) {
+    loadSettingsFromServer(forceReload) {
         // Loading only once
         return LoggerService.settings === undefined || forceReload === true
             ? getSettings()
@@ -190,12 +190,12 @@ const LoggerService = class {
 
     _newEntry(loggingLevel, message) {
         // Builder is returned immediately but console log will be determined after loadding settings from server
-        const logEntryBuilder = newLogEntry(loggingLevel, this._loadSettingsFromServer);
+        const logEntryBuilder = newLogEntry(loggingLevel, this.loadSettingsFromServer);
         logEntryBuilder.setMessage(message);
         if (this.#scenario) {
             logEntryBuilder.scenario = this.#scenario;
         }
-        const loggingPromise = this._loadSettingsFromServer().then(() => {
+        const loggingPromise = this.loadSettingsFromServer().then(() => {
             if (this._meetsUserLoggingLevel(loggingLevel) === true) {
                 this.#componentLogEntries.push(logEntryBuilder);
             }
