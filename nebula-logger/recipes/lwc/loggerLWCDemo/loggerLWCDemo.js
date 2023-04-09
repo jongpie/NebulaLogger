@@ -14,6 +14,39 @@ export default class LoggerLWCDemo extends LightningElement {
     tagsString = 'Tag-one, Another tag here';
     logger = getLogger();
 
+    constructor() {
+        super();
+        console.log('>>> start of constructor()');
+        this.logger.info('>>> running constructor(), using getLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with constructor()');
+    }
+
+    connectedCallback() {
+        console.log('>>> start of connectedCallback()');
+        this.logger.info('>>> running connectedCallback(), using getLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with connectedCallback()');
+    }
+
+    disconnectedCallback() {
+        console.log('>>> start of disconnectedCallback()');
+        this.logger.info('>>> running disconnectedCallback(), using getLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with disconnectedCallback()');
+    }
+
+    renderedCallback() {
+        console.log('>>> start of renderedCallback()');
+        this.logger.info('>>> running renderedCallback(), using getLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with renderedCallback()');
+    }
+
     messageChange(event) {
         this.message = event.target.value;
     }
@@ -90,9 +123,5 @@ export default class LoggerLWCDemo extends LightningElement {
         this.logger.setScenario(this.scenario);
         console.log(this.logger);
         this.logger.saveLog('QUEUEABLE');
-    }
-
-    connectedCallback() {
-        this.logger.info('running connected callback');
     }
 }
