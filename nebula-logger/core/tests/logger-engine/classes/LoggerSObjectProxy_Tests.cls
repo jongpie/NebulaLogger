@@ -78,13 +78,18 @@ private class LoggerSObjectProxy_Tests {
         if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return;
         }
+        String idFieldName = 'Id';
+        String nameFieldName = 'Name';
+        String urlPathPrefixFieldName = 'UrlPathPrefix';
+        SObject mockNetworkRecord = (SObject) (System.Type.forName('Schema.Network').newInstance());
+        mockNetworkRecord.put(idFieldName, LoggerMockDataCreator.createId(mockNetworkRecord.getSObjectType()));
+        mockNetworkRecord.put(nameFieldName, 'Mock Network Record');
+        mockNetworkRecord.put(urlPathPrefixFieldName, 'this-is-called-a-prefix-even-though-it-comes-at-the-end-of-the-base-url');
 
-        SObject networkRecord = Database.query('SELECT Id, Name, UrlPathPrefix FROM Network LIMIT 1');
+        LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(mockNetworkRecord);
 
-        LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(networkRecord);
-
-        System.Assert.areEqual((Id) networkRecord.get('Id'), networkProxy.Id);
-        System.Assert.areEqual((String) networkRecord.get('Name'), networkProxy.Name);
-        System.Assert.areEqual((String) networkRecord.get('UrlPathPrefix'), networkProxy.UrlPathPrefix);
+        System.Assert.areEqual((Id) mockNetworkRecord.get(idFieldName), networkProxy.Id);
+        System.Assert.areEqual((String) mockNetworkRecord.get(nameFieldName), networkProxy.Name);
+        System.Assert.areEqual((String) mockNetworkRecord.get(urlPathPrefixFieldName), networkProxy.UrlPathPrefix);
     }
 }
