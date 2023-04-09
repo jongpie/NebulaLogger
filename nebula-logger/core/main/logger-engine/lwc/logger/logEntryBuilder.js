@@ -102,21 +102,29 @@ const LogEntryBuilder = class {
                 return;
             }
 
-            /* eslint-disable no-console */
+            const consoleMessagePrefix = '%c Nebula Logger ';
+            const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
+            let consoleLoggingFunction;
             switch (this.loggingLevel) {
                 case 'ERROR':
-                    console.error(this.message, this);
+                    consoleLoggingFunction = console.error;
                     break;
                 case 'WARN':
-                    console.warn(this.message, this);
+                    consoleLoggingFunction = console.warn;
                     break;
                 case 'INFO':
-                    console.info(this.message, this);
+                    consoleLoggingFunction = console.info;
                     break;
                 default:
-                    console.debug(this.message, this);
+                    consoleLoggingFunction = console.debug;
                     break;
             }
+
+            consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, this.message);
+            console.groupCollapsed(consoleMessagePrefix, consoleFormatting, 'Details for: ' + this.message);
+            consoleLoggingFunction(JSON.parse(JSON.stringify(this)));
+            console.trace();
+            console.groupEnd();
         });
     }
 };
