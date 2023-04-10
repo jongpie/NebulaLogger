@@ -54,10 +54,6 @@ Abstract class used by trigger handlers for shared logic
 
 Proxy class used as a middle layer between some problematic SObject Types and the rest of Nebula Logger&apos;s codebase. Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another, such as not being mockable or creatable, or not existing in all orgs.
 
-### [LoggerTriggerableContext](Logger-Engine/LoggerTriggerableContext)
-
-Class used by the logging system for trigger contextual details
-
 ## Log Management
 
 ### [LogBatchPurgeController](Log-Management/LogBatchPurgeController)
