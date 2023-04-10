@@ -335,7 +335,7 @@ jobs:
               shell: bash
               run: |
                   echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-                  npx sfdx auth sfdxurl store --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias temp-nebula-logger-package-demo
+                  npx sfdx auth sfdxurl store --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo
               env:
                   PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
