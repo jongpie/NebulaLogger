@@ -70,18 +70,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
 
-            // Filter based on storage logging level
-            String userStorageLoggingLevelName = loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c;
-            if (String.isBlank(userStorageLoggingLevelName) == true) {
-                userStorageLoggingLevelName = loggingUserSettings.LoggingLevel__c;
-            }
-            System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(userStorageLoggingLevelName);
-            System.LoggingLevel entryLoggingLevel = System.LoggingLevel.valueOf(logEntryEvent.LoggingLevel__c);
-            if (entryLoggingLevel.ordinal() < userStorageLoggingLevel.ordinal()) {
-                continue;
-            }
-
-            // Filter based on storage logging location
+            // Apply logger scenario rules
             String platformEventStorageLocation = loggingUserSettings.DefaultPlatformEventStorageLocation__c;
             if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
                 LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
@@ -89,8 +78,18 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                     platformEventStorageLocation = scenarioRule.PlatformEventStorageLocation__c;
                 }
             }
+            // Filter first based on storage logging location
             if (platformEventStorageLocation == DEFAULT_STORAGE_LOCATION_NAME) {
-                logEntryEventsToSave.add(logEntryEvent);
+                // Then filter further based on storage logging level
+                String userStorageLoggingLevelName = loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c;
+                if (String.isBlank(userStorageLoggingLevelName) == true) {
+                    userStorageLoggingLevelName = loggingUserSettings.LoggingLevel__c;
+                }
+                System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(userStorageLoggingLevelName);
+                System.LoggingLevel entryLoggingLevel = System.LoggingLevel.valueOf(logEntryEvent.LoggingLevel__c);
+                if (userStorageLoggingLevel.ordinal() <= entryLoggingLevel.ordinal()) {
+                    logEntryEventsToSave.add(logEntryEvent);
+                }
             }
         }
         return logEntryEventsToSave;

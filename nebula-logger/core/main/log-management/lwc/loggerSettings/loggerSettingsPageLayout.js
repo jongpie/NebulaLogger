@@ -36,8 +36,8 @@ const PAGE_LAYOUT_CONFIG = {
             columns: [
                 {
                     fieldApiNames: [
-                        'DefaultPlatformEventStorageLoggingLevel__c',
                         'DefaultPlatformEventStorageLocation__c',
+                        'DefaultPlatformEventStorageLoggingLevel__c',
                         'DefaultNumberOfDaysToRetainLogs__c',
                         'DefaultLogPurgeAction__c'
                     ],
