@@ -11,7 +11,7 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015nYQQAY)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sfdx package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015nWjQAI`
+`sfdx package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015nYQQAY`
 
 ## Managed Package - v4.10.0
 
