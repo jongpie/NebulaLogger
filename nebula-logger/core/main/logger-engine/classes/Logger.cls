@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.10.3';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.10.4';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -39,7 +39,13 @@ global with sharing class Logger {
     private static final String ORGANIZATION_API_VERSION {
         get {
             if (ORGANIZATION_API_VERSION == null) {
-                ORGANIZATION_API_VERSION = getOrganizationApiVersion();
+                // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+                // Serializing any SObject w/ an ID will include the API version
+                // So, use System.UserInfo.getUserId() to create the current user's record without querying
+                // Then parse the JSON to get the API version
+                // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
+                String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
+                ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
             }
             return ORGANIZATION_API_VERSION;
         }
@@ -125,6 +131,20 @@ global with sharing class Logger {
     public static String getNamespacePrefix() {
         String className = Logger.class.getName();
         return className.contains('.') ? className.substringBefore('.') : '';
+    }
+
+    /**
+     * @description Returns the current Salesforce API version number of the org
+     * @return The current API version, in the format `v00.0`
+     */
+    public static String getOrganizationApiVersion() {
+        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+        // Serializing any SObject w/ an ID will include the API version
+        // So, use System.UserInfo.getUserId() to create the current user's record without querying
+        // Then parse the JSON to get the API version
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
+        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     // Settings management methods
@@ -3139,7 +3159,7 @@ global with sharing class Logger {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
         if (logEntryEventBuilder.shouldSave() == true) {
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-            logEntryEvent.ApiVersion__c = ORGANIZATION_API_VERSION;
+            logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.EntryScenario__c = currentEntryScenario;
             logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
             logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
@@ -3164,16 +3184,6 @@ global with sharing class Logger {
         Boolean isStartTimeValid = settings.StartTime__c == null || settings.StartTime__c <= nowish;
         Boolean isEndTimeValid = settings.EndTime__c == null || settings.EndTime__c >= nowish;
         return isStartTimeValid && isEndTimeValid;
-    }
-
-    private static String getOrganizationApiVersion() {
-        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
-        // Serializing any SObject w/ an ID will include the API version
-        // So, use System.UserInfo.getUserId() to create the current user's record without querying
-        // Then parse the JSON to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static Quiddity getTransactionQuiddity() {

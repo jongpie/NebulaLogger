@@ -1,0 +1,35 @@
+<template>
+    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="standard:home" size="large"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <div data-id="organization-api-version">Organization API {organizationApiVersion}
+                                    </div>
+                                    <span class="slds-page-header__title slds-truncate" title={title}>{title}</span>
+                                    <div data-id="logger-version-number">{loggerVersionNumber}</div>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <div class="slds-page-header__control">
+                        <lightning-button-group>
+                            <lightning-button icon-name="utility:announcement" label={releaseNotesButtonLabel}
+                                onclick={handleViewReleaseNotes}></lightning-button>
+                        </lightning-button-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

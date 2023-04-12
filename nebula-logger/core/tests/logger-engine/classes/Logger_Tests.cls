@@ -26,6 +26,16 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_return_organization_api_version() {
+        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
+        String expectedApiVersion = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
+
+        String returnedApiVersion = Logger.getOrganizationApiVersion();
+
+        System.Assert.areEqual(expectedApiVersion, returnedApiVersion);
+    }
+
+    @IsTest
     static void it_should_create_new_in_memory_settings_with_default_field_values() {
         LoggerSettings__c expectedSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
 

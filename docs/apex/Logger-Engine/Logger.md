@@ -3444,6 +3444,20 @@ String
 
 The current namespace prefix, or an empty string when no namespace is being used
 
+#### `getOrganizationApiVersion()` → `String`
+
+Returns the current Salesforce API version number of the org
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+The current API version, in the format `v00.0`
+
 #### `getParentLogTransactionId()` → `String`
 
 Returns the transaction ID value that will be used to relate the current transaction&apos;s log to a parent log

@@ -115,6 +115,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>loggerHomeHeader</componentName>
+                <identifier>c_loggerHomeHeader</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-d9ee7df8-453b-41c9-9c89-5c00f2d33ab4</value>
