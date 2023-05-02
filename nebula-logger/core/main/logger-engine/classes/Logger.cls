@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.10.0';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.10.1';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -92,8 +92,8 @@ global with sharing class Logger {
     static {
         // 1 of 2 places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
-        System.debug(System.LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
-        System.debug(System.LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 

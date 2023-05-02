@@ -1,14 +1,21 @@
 {
-    "attributes": { "type": "LoggerSettings__c" },
+    "attributes": {
+        "type": "LoggerSettings__c"
+    },
+    "DefaultLogOwner__c": null,
+    "DefaultLogPurgeAction__c": "Delete",
+    "DefaultPlatformEventStorageLocation__c": "CUSTOM_OBJECTS",
+    "DefaultPlatformEventStorageLoggingLevel__c": null,
+    "DefaultScenario__c": null,
     "DefaultLogShareAccessLevel__c": "Read",
     "DefaultNumberOfDaysToRetainLogs__c": 14,
     "DefaultSaveMethod__c": "EVENT_BUS",
     "IsAnonymousModeEnabled__c": false,
     "IsApexSystemDebugLoggingEnabled__c": true,
-    "IsJavaScriptConsoleLoggingEnabled__c": true,
     "IsDataMaskingEnabled__c": true,
-    "IsDeleted": false,
     "IsEnabled__c": true,
+    "IsJavaScriptConsoleLoggingEnabled__c": true,
     "IsRecordFieldStrippingEnabled__c": false,
+    "IsSavingEnabled__c": true,
     "LoggingLevel__c": "DEBUG"
 }

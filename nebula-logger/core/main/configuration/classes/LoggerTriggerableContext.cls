@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Logger Engine
+ * @group Configuration
  * @description Class used by the logging system for trigger contextual details
  * @see LoggerSObjectHandler
  * @see LoggerPlugin

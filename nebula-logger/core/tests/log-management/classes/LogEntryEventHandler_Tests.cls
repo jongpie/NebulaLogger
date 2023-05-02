@@ -58,6 +58,51 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_create_log_entry_data_when_platform_event_storage_logging_level_is_not_met() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c]);
+        System.LoggingLevel targetEventLoggingLevel = System.LoggingLevel.DEBUG;
+        System.LoggingLevel targetStorageLoggingLevel = System.LoggingLevel.INFO;
+        System.Assert.isTrue(
+            targetEventLoggingLevel.ordinal() < targetStorageLoggingLevel.ordinal(),
+            'Test started under the wrong conditions, targetEventLoggingLevel ordinal should be less than the targetStorageLoggingLevel ordinal'
+        );
+        LoggerSettings__c settings = Logger.getUserSettings();
+        settings.LoggingLevel__c = targetEventLoggingLevel.name();
+        settings.DefaultPlatformEventStorageLoggingLevel__c = System.LoggingLevel.INFO.name();
+        upsert settings;
+        LogEntryEvent__e matchingLogEntryEvent = createLogEntryEvent();
+        matchingLogEntryEvent.LoggingLevel__c = settings.DefaultPlatformEventStorageLoggingLevel__c;
+        matchingLogEntryEvent.Message__c = 'This event should be saved in LogEntry__c';
+        LogEntryEvent__e nonMatchingLogEntryEvent = createLogEntryEvent();
+        nonMatchingLogEntryEvent.LoggingLevel__c = System.LoggingLevel.DEBUG.name();
+        nonMatchingLogEntryEvent.Message__c = 'This event should NOT be saved in LogEntry__c';
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingLogEntryEvent, nonMatchingLogEntryEvent };
+
+        List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.Assert.areEqual(logEntryEvents.size(), saveResults.size());
+        for (Database.SaveResult saveResult : saveResults) {
+            System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        }
+        System.Assert.areEqual(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
+        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c FROM LogEntry__c];
+        System.Assert.areEqual(1, logEntries.size(), JSON.serializePretty(logEntries));
+        System.Assert.areEqual(matchingLogEntryEvent.LoggingLevel__c, logEntries.get(0).LoggingLevel__c);
+        System.Assert.areEqual(matchingLogEntryEvent.Message__c, logEntries.get(0).Message__c);
+    }
+
+    @IsTest
     static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_location_is_null_in_logger_settings() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();

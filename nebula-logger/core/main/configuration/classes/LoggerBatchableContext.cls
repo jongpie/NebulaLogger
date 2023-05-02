@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Log Management
+ * @group Configuration
  * @description Class used by the logging system for batch contextual details
  * @see LogBatchPurger
  * @see LoggerPlugin
