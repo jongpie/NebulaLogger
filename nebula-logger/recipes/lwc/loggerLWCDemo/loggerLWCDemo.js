@@ -4,7 +4,8 @@
 //------------------------------------------------------------------------------------------------//
 
 /* eslint-disable no-console */
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import returnSomeString from '@salesforce/apex/LoggerLWCDemoController.returnSomeString';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
 import { getLogger } from 'c/logger';
 
@@ -45,6 +46,17 @@ export default class LoggerLWCDemo extends LightningElement {
         this.logger.info('>>> adding an extra log entry');
         this.logger.saveLog();
         console.log('>>> done with renderedCallback()');
+    }
+
+    @wire(returnSomeString)
+    wiredReturnSomeString({ error, data }) {
+        this.logger.info('>>> logging inside a wire function');
+        if (data) {
+            this.logger.info('>>> wire function return value: ' + data);
+        }
+        if (error) {
+            this.logger.error('>>> wire function error: ' + JSON.stringify(error));
+        }
     }
 
     messageChange(event) {
