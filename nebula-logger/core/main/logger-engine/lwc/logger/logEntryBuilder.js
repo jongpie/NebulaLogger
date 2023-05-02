@@ -122,6 +122,8 @@ const LogEntryBuilder = class {
 
             consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, this.message);
             console.groupCollapsed(consoleMessagePrefix, consoleFormatting, 'Details for: ' + this.message);
+            // The use of JSON.parse(JSON.stringify()) is intended to help ensure that the output is readable,
+            // including handling proxy objects. If any cyclic objects are used, this approach could fail
             consoleLoggingFunction(JSON.parse(JSON.stringify(this)));
             console.trace();
             console.groupEnd();
