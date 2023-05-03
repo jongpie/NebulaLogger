@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>StartTime__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Optional - when set, the LoggerSettings__c record is only used when StartTime__c &lt;= System.now()</inlineHelpText>
+    <label>Start Time</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

@@ -290,16 +290,32 @@ global with sharing class Logger {
         // TODO cache the generated instances of LoggerSettings__c in LoggerCache.getTransactionCache().put()
         // (key would be 'Settings' + user ID)
         LoggerSettings__c loggingUserSettings;
+        // First, check for User-level settings
         if (loggingUser.Id != null && LoggerSettings__c.getValues(loggingUser.Id) != null) {
-            // Check for User-level settings
-            loggingUserSettings = LoggerSettings__c.getValues(loggingUser.Id);
-        } else if (loggingUserSettings == null && loggingUser.ProfileId != null && LoggerSettings__c.getValues(loggingUser.ProfileId) != null) {
-            // Next, check for Profile-level settings
-            loggingUserSettings = LoggerSettings__c.getValues(loggingUser.ProfileId);
-        } else if (loggingUser.Id != null && LoggerSettings__c.getOrgDefaults().Id != null) {
-            // Next, use the org defaults (if configured)
-            loggingUserSettings = LoggerSettings__c.getOrgDefaults();
-        } else {
+            LoggerSettings__c userSettings = LoggerSettings__c.getValues(loggingUser.Id);
+            if (hasValidStartAndEndTimes(userSettings) == true) {
+                loggingUserSettings = userSettings;
+            }
+        }
+
+        // Next, check for Profile-level settings
+        if (loggingUserSettings == null && loggingUser.ProfileId != null && LoggerSettings__c.getValues(loggingUser.ProfileId) != null) {
+            LoggerSettings__c profileSettings = LoggerSettings__c.getValues(loggingUser.ProfileId);
+            if (hasValidStartAndEndTimes(profileSettings) == true) {
+                loggingUserSettings = profileSettings;
+            }
+        }
+
+        // Next, use the org defaults (if configured)
+        if (loggingUserSettings == null && loggingUser.Id != null && LoggerSettings__c.getOrgDefaults().Id != null) {
+            LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+            if (hasValidStartAndEndTimes(orgDefaults) == true) {
+                loggingUserSettings = orgDefaults;
+            }
+        }
+
+        // Finally, as a last resort, create an instance using default field values
+        if (loggingUserSettings == null) {
             loggingUserSettings = createSettings();
         }
 
@@ -3141,6 +3157,13 @@ global with sharing class Logger {
 
     private static Set<String> initializeIgnoredApexClasses() {
         return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName(), LogMessage.class.getName() };
+    }
+
+    private static Boolean hasValidStartAndEndTimes(LoggerSettings__c settings) {
+        Datetime nowish = System.now();
+        Boolean isStartTimeValid = settings.StartTime__c == null || settings.StartTime__c <= nowish;
+        Boolean isEndTimeValid = settings.EndTime__c == null || settings.EndTime__c >= nowish;
+        return isStartTimeValid && isEndTimeValid;
     }
 
     private static String getOrganizationApiVersion() {

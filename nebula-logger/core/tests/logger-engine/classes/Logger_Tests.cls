@@ -84,18 +84,101 @@ private class Logger_Tests {
         System.Assert.areEqual(expectedSettings, returnedSettings);
         System.Assert.isNull(returnedSettings.Id);
     }
+    
+    
+    @IsTest
+    static void it_should_not_use_org_default_settings_when_start_time_is_in_the_future() {
+        LoggerSettings__c expectedSettings = Logger.createSettings();
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        orgDefaults.Id = null;
+        orgDefaults.LoggingLevel__c = System.LoggingLevel.WARN.name();
+        orgDefaults.SetupOwnerId = System.UserInfo.getOrganizationId();
+        orgDefaults.StartTime__c = System.now().addDays(1);
+        insert orgDefaults;
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(1, existingSettings.size(), 'LoggerSettings__c org defaults settings should have been saved');
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+    }
+
+    @IsTest
+    static void it_should_not_use_org_default_settings_when_end_time_is_in_the_past() {
+        LoggerSettings__c expectedSettings = Logger.createSettings();
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        orgDefaults.Id = null;
+        orgDefaults.LoggingLevel__c = System.LoggingLevel.WARN.name();
+        orgDefaults.SetupOwnerId = System.UserInfo.getOrganizationId();
+        orgDefaults.EndTime__c = System.now().addDays(-1);
+        insert orgDefaults;
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(1, existingSettings.size(), 'LoggerSettings__c org defaults settings should have been saved');
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+    }
 
     @IsTest
     static void it_should_use_profile_settings_when_configured() {
         insert LoggerSettings__c.getOrgDefaults();
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
-        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
         expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
         insert expectedSettings;
         expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
         expectedSettings.Id = null;
         expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(2, existingSettings.size(), 'LoggerSettings__c org defaults and profile settings should have been saved');
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+    }
+
+    @IsTest
+    static void it_should_not_use_profile_settings_when_start_time_is_in_the_future() {
+        LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+        insert expectedSettings;
+        expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.Id = null;
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+        LoggerSettings__c profileSettings = expectedSettings.clone();
+        profileSettings.Id = null;
+        profileSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
+        profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
+        profileSettings.StartTime__c = System.now().addDays(1);
+        insert profileSettings;
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(2, existingSettings.size(), 'LoggerSettings__c org defaults and profile settings should have been saved');
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+    }
+
+    @IsTest
+    static void it_should_not_use_profile_settings_when_end_time_is_in_the_past() {
+        LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+        insert expectedSettings;
+        expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.Id = null;
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+        LoggerSettings__c profileSettings = expectedSettings.clone();
+        profileSettings.Id = null;
+        profileSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
+        profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
+        profileSettings.EndTime__c = System.now().addDays(-1);
+        insert profileSettings;
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -115,7 +198,7 @@ private class Logger_Tests {
         insert profileSettings;
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
-        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
         expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
         insert expectedSettings;
         expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getUserId());
@@ -126,6 +209,52 @@ private class Logger_Tests {
         System.Assert.areEqual(3, existingSettings.size(), 'LoggerSettings__c org defaults, profile settings, and user settings should have been saved');
         System.Assert.areEqual(expectedSettings, returnedSettings);
         System.Assert.areEqual(expectedSettings.Id, returnedSettings.Id);
+    }
+
+    @IsTest
+    static void it_should_not_use_user_settings_when_start_time_is_in_the_future() {
+        LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
+        insert expectedSettings;
+        expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
+        expectedSettings.Id = null;
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+        LoggerSettings__c userSettings = expectedSettings.clone();
+        userSettings.Id = null;
+        userSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
+        userSettings.SetupOwnerId = System.UserInfo.getUserId();
+        userSettings.StartTime__c = System.now().addDays(1);
+        insert userSettings;
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(2, existingSettings.size(), 'LoggerSettings__c org defaults and profile settings should have been saved');
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
+    }
+
+    @IsTest
+    static void it_should_not_use_user_settings_when_end_time_is_in_the_past() {
+        LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
+        insert expectedSettings;
+        expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
+        expectedSettings.Id = null;
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
+        LoggerSettings__c userSettings = expectedSettings.clone();
+        userSettings.Id = null;
+        userSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
+        userSettings.SetupOwnerId = System.UserInfo.getUserId();
+        userSettings.EndTime__c = System.now().addDays(-1);
+        insert userSettings;
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.Assert.areEqual(2, existingSettings.size(), 'LoggerSettings__c org defaults and profile settings should have been saved');
+        System.Assert.areEqual(expectedSettings, returnedSettings);
+        System.Assert.isNull(returnedSettings.Id);
     }
 
     @IsTest
