@@ -202,20 +202,12 @@ export default class LoggerSettings extends LightningElement {
         return this._loadField(this._loggerSettingsSchema.fields.CreatedDate.localApiName);
     }
 
-    get isEnabledField() {
-        return this._loadField(this._loggerSettingsSchema.fields.IsEnabled__c.localApiName);
-    }
-
     get lastModifiedByIdField() {
         return this._loadField(this._loggerSettingsSchema.fields.LastModifiedById.localApiName, 'lastModifiedByUsername');
     }
 
     get lastModifiedDateField() {
         return this._loadField(this._loggerSettingsSchema.fields.LastModifiedDate.localApiName);
-    }
-
-    get loggingLevelField() {
-        return this._loadField(this._loggerSettingsSchema.fields.LoggingLevel__c.localApiName);
     }
 
     get setupOwnerNameField() {
@@ -315,10 +307,11 @@ export default class LoggerSettings extends LightningElement {
         // For all other fields, use object API info to dynamically get field details
         // TODO - make this array configurable by storing in LoggerParameter__mdt
         const tableColumnNames = [
+            'StartTime__c',
+            'EndTime__c',
             'IsEnabled__c',
             'LoggingLevel__c',
             'IsSavingEnabled__c',
-            'DefaultSaveMethod__c',
             'DefaultScenario__c',
             'DefaultLogOwner__c',
             'DefaultNumberOfDaysToRetainLogs__c'
@@ -330,6 +323,17 @@ export default class LoggerSettings extends LightningElement {
                 label: field.label,
                 type: field.type.toLowerCase()
             };
+            if (column.type === 'datetime') {
+                column.type = 'date';
+                // FIXME and make dynamic based on user prefences for datetimes
+                column.typeAttributes = {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+            }
             if (column.type === 'string') {
                 column.type = 'text';
             }
@@ -388,7 +392,8 @@ export default class LoggerSettings extends LightningElement {
     }
 
     _setShowSetupOwnerLookup() {
-        this.showSetupOwnerLookup = this.isExistingRecord === false && this._currentRecord?.setupOwnerType !== 'Organization';
+        this.showSetupOwnerLookup =
+            this.isExistingRecord === false && this._currentRecord?.setupOwnerType && this._currentRecord?.setupOwnerType !== 'Organization';
     }
 
     _addFieldNamespace(record) {
