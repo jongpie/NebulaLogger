@@ -20,10 +20,11 @@ const LoggerService = class {
 
     /**
      * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
+     * @param {Object} parameters Object used to provide control over how user settings are retrieved. Currently, only the property `forceReload` is used.
      * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
-    getUserSettings() {
-        return this.loadSettingsFromServer().then(existingSettings => {
+    getUserSettings({ forceReload = false } = {}) {
+        return this._loadSettingsFromServer(forceReload).then(existingSettings => {
             return Object.freeze({
                 ...existingSettings,
                 supportedLoggingLevels: Object.freeze(existingSettings.supportedLoggingLevels),
@@ -157,12 +158,7 @@ const LoggerService = class {
         }
     }
 
-    /**
-     * @description Loads configurations for the user from the server
-     * @param {Boolean} forceReload Force the configuration to be reloaded even if it was previously loaded
-     * @returns {Promise<Any>} A promise with the latest current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
-     */
-    loadSettingsFromServer(forceReload) {
+    _loadSettingsFromServer(forceReload) {
         // Loading only once
         return LoggerService.settings === undefined || forceReload === true
             ? getSettings()
@@ -190,12 +186,12 @@ const LoggerService = class {
 
     _newEntry(loggingLevel, message) {
         // Builder is returned immediately but console log will be determined after loadding settings from server
-        const logEntryBuilder = newLogEntry(loggingLevel, this.loadSettingsFromServer);
+        const logEntryBuilder = newLogEntry(loggingLevel, this._loadSettingsFromServer);
         logEntryBuilder.setMessage(message);
         if (this.#scenario) {
             logEntryBuilder.scenario = this.#scenario;
         }
-        const loggingPromise = this.loadSettingsFromServer().then(() => {
+        const loggingPromise = this._loadSettingsFromServer().then(() => {
             if (this._meetsUserLoggingLevel(loggingLevel) === true) {
                 this.#componentLogEntries.push(logEntryBuilder);
             }

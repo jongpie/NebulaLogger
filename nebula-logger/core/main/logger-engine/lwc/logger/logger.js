@@ -13,11 +13,12 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
+     * @param {Object} parameters Object used to provide control over how user settings are retrieved. Currently, only the property `forceReload` is used.
      * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
     @api
-    getUserSettings() {
-        return this.#loggerService.getUserSettings();
+    getUserSettings(parameters = { forceReload: false }) {
+        return this.#loggerService.getUserSettings(parameters);
     }
 
     /**
