@@ -4,15 +4,60 @@
 //------------------------------------------------------------------------------------------------//
 
 /* eslint-disable no-console */
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import returnSomeString from '@salesforce/apex/LoggerLWCDemoController.returnSomeString';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
-
-const LOGGER_NAME = 'c-logger';
+import { createLogger } from 'c/logger';
 
 export default class LoggerLWCDemo extends LightningElement {
     message = 'Hello, world!';
     scenario = 'Some demo scenario';
     tagsString = 'Tag-one, Another tag here';
+    logger = createLogger();
+
+    constructor() {
+        super();
+        console.log('>>> start of constructor()');
+        this.logger.info('>>> running constructor(), using createLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with constructor()');
+    }
+
+    connectedCallback() {
+        console.log('>>> start of connectedCallback()');
+        this.logger.info('>>> running connectedCallback(), using createLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with connectedCallback()');
+    }
+
+    disconnectedCallback() {
+        console.log('>>> start of disconnectedCallback()');
+        this.logger.info('>>> running disconnectedCallback(), using createLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with disconnectedCallback()');
+    }
+
+    renderedCallback() {
+        console.log('>>> start of renderedCallback()');
+        this.logger.info('>>> running renderedCallback(), using createLogger()');
+        this.logger.info('>>> adding an extra log entry');
+        this.logger.saveLog();
+        console.log('>>> done with renderedCallback()');
+    }
+
+    @wire(returnSomeString)
+    wiredReturnSomeString({ error, data }) {
+        this.logger.info('>>> logging inside a wire function');
+        if (data) {
+            this.logger.info('>>> wire function return value: ' + data);
+        }
+        if (error) {
+            this.logger.error('>>> wire function error: ' + JSON.stringify(error));
+        }
+    }
 
     messageChange(event) {
         this.message = event.target.value;
@@ -28,8 +73,7 @@ export default class LoggerLWCDemo extends LightningElement {
 
     async logApexErrorExample() {
         console.log('running logApexError for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(JSON.parse(JSON.stringify(logger)));
+        console.log(JSON.parse(JSON.stringify(this.logger)));
         await throwSomeError()
             .then(result => {
                 console.log('the result', JSON.parse(JSON.stringify(result)));
@@ -37,67 +81,59 @@ export default class LoggerLWCDemo extends LightningElement {
             .catch(error => {
                 console.log('apex error', error);
                 console.log('and a stack trace', new Error().stack);
-                const entry = logger.error(this.message).setError(error).addTag('lwc logging demo');
+                const entry = this.logger.error(this.message).setError(error).addTag('lwc logging demo');
                 console.log('entry==', JSON.parse(JSON.stringify(entry)));
             });
     }
 
     logErrorExample() {
         console.log('running logError for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(logger);
+        console.log(this.logger);
         const someError = new TypeError('oops');
-        const entry = logger.error(this.message).setError(someError).addTag('lwc logging demo');
+        const entry = this.logger.error(this.message).setError(someError).addTag('lwc logging demo');
         console.log('stack==' + entry.stack);
     }
 
     logWarnExample() {
         console.log('running logWarn for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(logger);
-        logger.warn(this.message).addTags(this.tagsString.split(','));
+        console.log(this.logger);
+        this.logger.warn(this.message).addTags(this.tagsString.split(','));
     }
 
     logInfoExample() {
         console.log('running logInfo for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(logger);
-        logger.info(this.message).addTags(this.tagsString.split(','));
+        console.log(this.logger);
+        this.logger.info(this.message).addTags(this.tagsString.split(','));
     }
 
     logDebugExample() {
         console.log('running logDebug for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(logger);
-        logger.debug(this.message).addTags(this.tagsString.split(','));
+        console.log(this.logger);
+        this.logger.debug(this.message).addTags(this.tagsString.split(','));
     }
 
     logFineExample() {
         console.log('running logFine for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(logger);
-        logger.fine(this.message).addTags(this.tagsString.split(','));
+        console.log(this.logger);
+        this.logger.fine(this.message).addTags(this.tagsString.split(','));
     }
 
     logFinerExample() {
         console.log('running logFiner for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(logger);
-        logger.finer(this.message).addTags(this.tagsString.split(','));
+        console.log(this.logger);
+        this.logger.finer(this.message).addTags(this.tagsString.split(','));
     }
 
     logFinestExample() {
         console.log('running logFinest for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        console.log(logger);
-        logger.finest(this.message);
+        console.log(this.logger);
+        this.logger.finest(this.message);
     }
 
     saveLogExample() {
         console.log('running saveLog for btn');
-        const logger = this.template.querySelector(LOGGER_NAME);
-        logger.setScenario(this.scenario);
-        console.log(logger);
-        logger.saveLog('QUEUEABLE');
+        this.logger.setScenario(this.scenario);
+        console.log(this.logger);
+        this.logger.saveLog('QUEUEABLE');
     }
 }

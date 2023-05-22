@@ -3,47 +3,33 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-import { LightningElement, api, wire } from 'lwc';
-import { newLogEntry } from './logEntryBuilder';
-import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
-import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
+import { LightningElement, api } from 'lwc';
+import { createLoggerService } from './loggerService';
+
+const CURRENT_VERSION_NUMBER = 'v4.10.2';
 
 export default class Logger extends LightningElement {
-    componentLogEntries = [];
-    settings;
-
-    _scenario;
-
-    @wire(getSettings)
-    wiredSettings({ error, data }) {
-        if (data) {
-            this.settings = data;
-        } else if (error) {
-            /* eslint-disable-next-line no-console */
-            console.error(error);
-        }
-    }
+    #loggerService = createLoggerService();
 
     /**
-     * @description Returns information about the current user's settings, stored in `LoggerSettings__c`
-     * @return {ComponentLogger.ComponentLoggerSettings} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
+     * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
+     * @param {Object} parameters Object used to provide control over how user settings are retrieved. Currently, only the property `forceReload` is used.
+     * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
     @api
-    getUserSettings() {
-        return this.settings;
+    getUserSettings(parameters = { forceReload: false }) {
+        return this.#loggerService.getUserSettings(parameters);
     }
 
     /**
      * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  {String} scenario The name to use for the current transaction's scenario
+     * @return {Promise[]} A list of promises that be resolved before all scenarios are set
      */
     @api
     setScenario(scenario) {
-        this._scenario = scenario;
-        this.componentLogEntries.forEach(logEntry => {
-            logEntry.scenario = this._scenario;
-        });
+        return this.#loggerService.setScenario(scenario);
     }
 
     /**
@@ -53,7 +39,7 @@ export default class Logger extends LightningElement {
      */
     @api
     error(message) {
-        return this._newEntry('ERROR', message);
+        return this.#loggerService.error(message);
     }
 
     /**
@@ -63,7 +49,7 @@ export default class Logger extends LightningElement {
      */
     @api
     warn(message) {
-        return this._newEntry('WARN', message);
+        return this.#loggerService.warn(message);
     }
 
     /**
@@ -73,7 +59,7 @@ export default class Logger extends LightningElement {
      */
     @api
     info(message) {
-        return this._newEntry('INFO', message);
+        return this.#loggerService.info(message);
     }
 
     /**
@@ -83,7 +69,7 @@ export default class Logger extends LightningElement {
      */
     @api
     debug(message) {
-        return this._newEntry('DEBUG', message);
+        return this.#loggerService.debug(message);
     }
 
     /**
@@ -93,7 +79,7 @@ export default class Logger extends LightningElement {
      */
     @api
     fine(message) {
-        return this._newEntry('FINE', message);
+        return this.#loggerService.fine(message);
     }
 
     /**
@@ -103,7 +89,7 @@ export default class Logger extends LightningElement {
      */
     @api
     finer(message) {
-        return this._newEntry('FINER', message);
+        return this.#loggerService.finer(message);
     }
 
     /**
@@ -113,7 +99,7 @@ export default class Logger extends LightningElement {
      */
     @api
     finest(message) {
-        return this._newEntry('FINEST', message);
+        return this.#loggerService.finest(message);
     }
 
     /**
@@ -122,58 +108,37 @@ export default class Logger extends LightningElement {
      */
     @api
     getBufferSize() {
-        return this.componentLogEntries.length;
+        return this.#loggerService.getBufferSize();
     }
 
     /**
      * @description Discards any entries that have been generated but not yet saved
+     * @return {Promise<void>} A promise to clear the entries
      */
     @api
     flushBuffer() {
-        this.componentLogEntries = [];
+        return this.#loggerService.flushBuffer();
     }
 
     /**
-     * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
-     *              All subsequent calls to saveLog() will use the transaction save method.
-     * @param  {String} saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
+     * @description Saves any entries in Logger's buffer, using the specified save method for only this call
+     *              All subsequent calls to saveLog() will use the transaction save method
+     * @param  {String} saveMethod The enum value of Logger.SaveMethod to use for this specific save action
      */
     @api
     saveLog(saveMethodName) {
-        if (this.getBufferSize() > 0) {
-            if (!saveMethodName && this.settings && this.settings.defaultSaveMethodName) {
-                saveMethodName = this.settings.defaultSaveMethodName;
-            }
-
-            saveComponentLogEntries({ componentLogEntries: this.componentLogEntries, saveMethodName: saveMethodName })
-                .then(this.flushBuffer())
-                .catch(error => {
-                    if (this.settings.isConsoleLoggingEnabled === true) {
-                        /* eslint-disable-next-line no-console */
-                        console.error(error);
-                        /* eslint-disable-next-line no-console */
-                        console.error(this.componentLogEntries);
-                    }
-                });
-        }
-    }
-
-    // Private functions
-    _meetsUserLoggingLevel(logEntryLoggingLevel) {
-        let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        return this.settings && this.settings.isEnabled === true && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
-    }
-
-    _newEntry(loggingLevel, message) {
-        const shouldSave = this._meetsUserLoggingLevel(loggingLevel);
-        const logEntryBuilder = newLogEntry(loggingLevel, shouldSave, this.settings.isConsoleLoggingEnabled).setMessage(message);
-        if (this._scenario) {
-            logEntryBuilder.scenario = this._scenario;
-        }
-        if (this._meetsUserLoggingLevel(loggingLevel) === true) {
-            this.componentLogEntries.push(logEntryBuilder);
-        }
-
-        return logEntryBuilder;
+        this.#loggerService.saveLog(saveMethodName);
     }
 }
+
+/**
+ * @return {LoggerService} a LoggerService instance
+ */
+const createLogger = function () {
+    const consoleMessagePrefix = '%c Nebula Logger ';
+    const consoleFormatting = 'background: #0c598d; color: #fff;';
+    console.info(consoleMessagePrefix, consoleFormatting, 'Nebula Logger Version Number: ' + CURRENT_VERSION_NUMBER);
+    return createLoggerService();
+};
+
+export { createLogger };

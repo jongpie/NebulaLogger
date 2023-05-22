@@ -35,4 +35,8 @@
         <tab>Logger_lwc_demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
+    <tabSettings>
+        <tab>Logger_lwc_legacy_demo</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>

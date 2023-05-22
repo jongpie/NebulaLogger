@@ -13,6 +13,7 @@
     <label>Logger Recipes</label>
     <navType>Standard</navType>
     <tabs>Logger_lwc_demo</tabs>
+    <tabs>Logger_lwc_legacy_demo</tabs>
     <tabs>LoggerAuraDemo</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Logger_Recipes_UtilityBar</utilityBar>
