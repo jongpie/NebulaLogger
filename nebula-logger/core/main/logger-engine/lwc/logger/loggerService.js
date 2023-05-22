@@ -6,6 +6,7 @@
 import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
+
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LoggerService = class {
     static settings = undefined;

@@ -84,8 +84,7 @@ private class Logger_Tests {
         System.Assert.areEqual(expectedSettings, returnedSettings);
         System.Assert.isNull(returnedSettings.Id);
     }
-    
-    
+
     @IsTest
     static void it_should_not_use_org_default_settings_when_start_time_is_in_the_future() {
         LoggerSettings__c expectedSettings = Logger.createSettings();
