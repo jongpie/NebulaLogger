@@ -134,11 +134,11 @@ export default class Logger extends LightningElement {
 /**
  * @return {LoggerService} a LoggerService instance
  */
-const getLogger = function () {
+const createLogger = function () {
     const consoleMessagePrefix = '%c Nebula Logger ';
     const consoleFormatting = 'background: #0c598d; color: #fff;';
     console.info(consoleMessagePrefix, consoleFormatting, 'Nebula Logger Version Number: ' + CURRENT_VERSION_NUMBER);
     return createLoggerService();
 };
 
-export { getLogger };
+export { createLogger };

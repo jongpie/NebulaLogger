@@ -11,15 +11,14 @@
 
     <lightning-card title="Nebula Logger for Lightning Components - Legacy Approach" icon-name="custom:custom19">
         <div class="slds-var-m-around_medium">
-            ⚠ This component demonstrates how to use Nebula Logger by adding <code>&lt;c-logger&gt;</code> to your
-            component's markup. This approach is still supported, but is considered deprecate as of v4.10.2. The new
-            recommended approach is import the logger component in your component's JavaScript file.
+            ⚠ This component demonstrates how to use Nebula Logger by adding <code>&lt;c-logger&gt;</code> to your component's markup. This approach is still
+            supported, but is considered deprecate as of v4.10.2. The new recommended approach is import the logger component in your component's JavaScript
+            file.
         </div>
         <div class="slds-var-m-around_medium">
             <lightning-input label="Example Log Message" value={message} onchange={messageChange}></lightning-input>
             <lightning-input label="Scenario" value={scenario} onchange={scenarioChange}></lightning-input>
-            <lightning-input label="Comma-Separated Tags" value={tagsString}
-                onchange={tagsStringChange}></lightning-input>
+            <lightning-input label="Comma-Separated Tags" value={tagsString} onchange={tagsStringChange}></lightning-input>
             <div class="slds-button-group" role="group">
                 <lightning-button label="Log Apex ERROR" onclick={logApexErrorExample}></lightning-button>
                 <lightning-button label="Log ERROR" onclick={logErrorExample}></lightning-button>

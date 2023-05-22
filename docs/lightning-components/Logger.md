@@ -39,7 +39,7 @@
 <dd><p>Saves any entries in Logger&#39;s buffer, using the specified save method for only this call
              All subsequent calls to saveLog() will use the transaction save method</p>
 </dd>
-<dt><a href="#getLogger">getLogger()</a> <code>LoggerService</code></dt>
+<dt><a href="#createLogger">createLogger()</a> <code>LoggerService</code></dt>
 <dd></dd>
 </dl>
 
@@ -190,9 +190,9 @@ All subsequent calls to saveLog() will use the transaction save method
 | ---------- | ------------------- | ------------------------------------------------------------------------ |
 | saveMethod | <code>String</code> | The enum value of Logger.SaveMethod to use for this specific save action |
 
-<a name="getLogger"></a>
+<a name="createLogger"></a>
 
-## getLogger() <code>LoggerService</code>
+## createLogger() <code>LoggerService</code>
 
 **Kind**: global function  
 **Returns**: <code>LoggerService</code> - a LoggerService instance

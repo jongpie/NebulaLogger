@@ -7,18 +7,18 @@
 import { LightningElement, wire } from 'lwc';
 import returnSomeString from '@salesforce/apex/LoggerLWCDemoController.returnSomeString';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
-import { getLogger } from 'c/logger';
+import { createLogger } from 'c/logger';
 
 export default class LoggerLWCDemo extends LightningElement {
     message = 'Hello, world!';
     scenario = 'Some demo scenario';
     tagsString = 'Tag-one, Another tag here';
-    logger = getLogger();
+    logger = createLogger();
 
     constructor() {
         super();
         console.log('>>> start of constructor()');
-        this.logger.info('>>> running constructor(), using getLogger()');
+        this.logger.info('>>> running constructor(), using createLogger()');
         this.logger.info('>>> adding an extra log entry');
         this.logger.saveLog();
         console.log('>>> done with constructor()');
@@ -26,7 +26,7 @@ export default class LoggerLWCDemo extends LightningElement {
 
     connectedCallback() {
         console.log('>>> start of connectedCallback()');
-        this.logger.info('>>> running connectedCallback(), using getLogger()');
+        this.logger.info('>>> running connectedCallback(), using createLogger()');
         this.logger.info('>>> adding an extra log entry');
         this.logger.saveLog();
         console.log('>>> done with connectedCallback()');
@@ -34,7 +34,7 @@ export default class LoggerLWCDemo extends LightningElement {
 
     disconnectedCallback() {
         console.log('>>> start of disconnectedCallback()');
-        this.logger.info('>>> running disconnectedCallback(), using getLogger()');
+        this.logger.info('>>> running disconnectedCallback(), using createLogger()');
         this.logger.info('>>> adding an extra log entry');
         this.logger.saveLog();
         console.log('>>> done with disconnectedCallback()');
@@ -42,7 +42,7 @@ export default class LoggerLWCDemo extends LightningElement {
 
     renderedCallback() {
         console.log('>>> start of renderedCallback()');
-        this.logger.info('>>> running renderedCallback(), using getLogger()');
+        this.logger.info('>>> running renderedCallback(), using createLogger()');
         this.logger.info('>>> adding an extra log entry');
         this.logger.saveLog();
         console.log('>>> done with renderedCallback()');
