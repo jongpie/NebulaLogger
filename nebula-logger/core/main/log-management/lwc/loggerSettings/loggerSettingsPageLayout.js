@@ -120,7 +120,7 @@ const LoggerSettingsPageLayout = class {
         field.useSetupOwnerInput = false;
         field.useStandardInput = false;
 
-        if (field.localApiName == 'SetupOwnerId') {
+        if (field.localApiName === 'SetupOwnerId') {
             field.useSetupOwnerInput = true;
 
             return;
@@ -146,6 +146,8 @@ const LoggerSettingsPageLayout = class {
                 break;
             case 'string':
                 field.type = 'text';
+                break;
+            default:
                 break;
         }
     }

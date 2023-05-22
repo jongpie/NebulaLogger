@@ -137,6 +137,7 @@ export default class Logger extends LightningElement {
 const createLogger = function () {
     const consoleMessagePrefix = '%c Nebula Logger ';
     const consoleFormatting = 'background: #0c598d; color: #fff;';
+    /* eslint-disable no-console */
     console.info(consoleMessagePrefix, consoleFormatting, 'Nebula Logger Version Number: ' + CURRENT_VERSION_NUMBER);
     return createLoggerService();
 };
