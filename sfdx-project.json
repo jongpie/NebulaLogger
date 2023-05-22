@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.2.NEXT",
-            "versionName": "Logger LWC Enhancements",
-            "versionDescription": "Several enhancements to logger LWC, including the ability to import the component in JS (instead of embedding it in HTML)",
+            "versionNumber": "4.10.3.NEXT",
+            "versionName": "Logger Settings Start and End Times",
+            "versionDescription": "Provides the ability to schedule LoggerSettings__c records, using the new optional datetime fields StartTime__d and EndTime__c",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
