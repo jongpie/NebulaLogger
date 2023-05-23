@@ -90,6 +90,20 @@
             "localApiName": "DefaultSaveMethod__c",
             "type": "String"
         },
+        "DefaultScenario__c": {
+            "apiName": "DefaultScenario__c",
+            "inlineHelpText": "Sets a default scenario for the transaction",
+            "label": "Log Scenario",
+            "localApiName": "DefaultScenario__c",
+            "type": "String"
+        },
+        "EndTime__c": {
+            "apiName": "EndTime__c",
+            "inlineHelpText": "TODO",
+            "label": "End Time",
+            "localApiName": "EndTime__c",
+            "type": "Datetime"
+        },
         "IsAnonymousModeEnabled__c": {
             "apiName": "IsAnonymousModeEnabled__c",
             "inlineHelpText": "When enabled, any logs generated will not have any user-specific details set - any fields related to the User, Profile, etc. will be null. Note: this feature only works properly when using the save method EVENT_BUS.",
@@ -145,12 +159,12 @@
             "localApiName": "LoggingLevel__c",
             "type": "String"
         },
-        "DefaultScenario__c": {
-            "apiName": "DefaultScenario__c",
-            "inlineHelpText": "Sets a default scenario for the transaction",
-            "label": "Log Scenario",
-            "localApiName": "DefaultScenario__c",
-            "type": "String"
+        "StartTime__c": {
+            "apiName": "StartTime__c",
+            "inlineHelpText": "TODO",
+            "label": "Start Time",
+            "localApiName": "StartTime__c",
+            "type": "Datetime"
         }
     },
     "label": "Logger Settings",
