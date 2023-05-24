@@ -17,6 +17,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WHwzAAG",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -28,6 +29,7 @@
             "LastModifiedDate": "2021-12-02T05:35:37.000+0000",
             "LoggingLevel__c": "INFO",
             "SetupOwnerId": "00D1g000000HgecEAC",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -75,6 +77,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WFMiAAO",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -86,6 +89,7 @@
             "LastModifiedDate": "2021-12-02T05:00:18.000+0000",
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "00e1g000000ySdaAAE",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -133,6 +137,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WHvQAAW",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -144,6 +149,7 @@
             "LastModifiedDate": "2021-12-02T05:35:02.000+0000",
             "LoggingLevel__c": "INFO",
             "SetupOwnerId": "00e1g000000ySdXAAU",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -191,6 +197,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WFMOAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -202,6 +209,7 @@
             "LastModifiedDate": "2021-11-30T05:22:42.000+0000",
             "LoggingLevel__c": "FINER",
             "SetupOwnerId": "0051g000007o2bTAAQ",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -249,6 +257,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WFMYAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -260,6 +269,7 @@
             "LastModifiedDate": "2021-11-30T04:59:57.000+0000",
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007o2baAAA",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -307,6 +317,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WHvVAAW",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -318,6 +329,7 @@
             "LastModifiedDate": "2021-11-30T22:36:40.000+0000",
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007o2bcAAA",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -365,6 +377,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WFORAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -376,6 +389,7 @@
             "LastModifiedDate": "2021-11-30T06:16:01.000+0000",
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007o2bZAAQ",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -423,6 +437,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WFMJAA4",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -434,6 +449,7 @@
             "LastModifiedDate": "2021-12-02T05:09:48.000+0000",
             "LoggingLevel__c": "DEBUG",
             "SetupOwnerId": "0051g000007oJ8cAAE",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",
@@ -481,6 +497,7 @@
             "DefaultPlatformEventStorageLoggingLevel__c": null,
             "DefaultSaveMethod__c": "EVENT_BUS",
             "DefaultScenario__c": null,
+            "EndTime__c": null,
             "Id": "a031g000003WFMnAAO",
             "IsAnonymousModeEnabled__c": false,
             "IsApexSystemDebugLoggingEnabled__c": true,
@@ -492,6 +509,7 @@
             "LastModifiedDate": "2021-11-30T05:22:31.000+0000",
             "LoggingLevel__c": "WARN",
             "SetupOwnerId": "0051g000007o2bNAAQ",
+            "StartTime__c": null,
             "CreatedBy": {
                 "attributes": {
                     "type": "User",

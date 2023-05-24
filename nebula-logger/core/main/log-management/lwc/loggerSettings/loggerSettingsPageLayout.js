@@ -7,13 +7,29 @@
 const PAGE_LAYOUT_CONFIG = {
     sections: [
         {
+            key: 'generalSettings',
+            label: 'General Settings',
+            showInReadOnlyMode: true,
+            showInEditMode: true,
+            columns: [
+                {
+                    fieldApiNames: ['SetupOwnerId'],
+                    size: 6
+                },
+                {
+                    fieldApiNames: ['StartTime__c', 'EndTime__c'],
+                    size: 6
+                }
+            ]
+        },
+        {
             key: 'loggerEngineSettings',
             label: 'Logger Engine Settings',
             showInReadOnlyMode: true,
             showInEditMode: true,
             columns: [
                 {
-                    fieldApiNames: ['IsSavingEnabled__c', 'DefaultSaveMethod__c', 'DefaultScenario__c'],
+                    fieldApiNames: ['IsEnabled__c', 'LoggingLevel__c', 'IsSavingEnabled__c', 'DefaultSaveMethod__c', 'DefaultScenario__c'],
                     size: 6
                 },
                 {
@@ -100,17 +116,27 @@ const LoggerSettingsPageLayout = class {
     }
 
     _setFieldTypeDetails(field, picklistOptions) {
+        field.useComboboxInput = false;
+        field.useSetupOwnerInput = false;
+        field.useStandardInput = false;
+
+        if (field.localApiName === 'SetupOwnerId') {
+            field.useSetupOwnerInput = true;
+
+            return;
+        }
+
         // Picklists are handled differently, since these aren't actually picklist fields
         // (Custom settings objects don't have picklist fields - custom Apex is used for generating picklist options)
         if (picklistOptions[field.localApiName]) {
             field.picklistOptions = picklistOptions[field.localApiName];
             field.type = 'picklist';
-            field.useCombobox = true;
+            field.useComboboxInput = true;
 
             return;
         }
 
-        field.useCombobox = false;
+        field.useStandardInput = true;
         switch (field.type?.toLowerCase()) {
             case 'boolean':
                 field.type = 'checkbox';
@@ -118,8 +144,10 @@ const LoggerSettingsPageLayout = class {
             case 'double':
                 field.type = 'number';
                 break;
-            default:
+            case 'string':
                 field.type = 'text';
+                break;
+            default:
                 break;
         }
     }

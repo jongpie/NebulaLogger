@@ -115,11 +115,13 @@ function Update-README-Package-Version-Id {
     )
 
     $packageVersionId = "$packageVersionId".Trim()
-    # Since there are links for both the unlocked & managed packages, the unlocked package buttons are used to ensure the correct link is updated
+    # Since there are links for both the unlocked & managed packages, the unlocked package buttons & sfdx command are used to ensure the correct package version ID is updated
     $sandboxUnlockedPackageReplacement = "btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId"
     ((Get-Content -path $targetreadme -Raw) -replace "btn-install-unlocked-package-sandbox.png\)\]\(https:\/\/test.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $sandboxUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
     $productionUnlockedPackageReplacement = "btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId"
     ((Get-Content -path $targetreadme -Raw) -replace "btn-install-unlocked-package-production.png\)\]\(https:\/\/login.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $productionUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
+    $sfdxUnlockedPackageReplacement = "sfdx package install --wait 20 --security-type AdminsOnly --package $packageVersionId"
+    ((Get-Content -path $targetreadme -Raw) -replace "sfdx package install --wait 20 --security-type AdminsOnly --package .{0,18}", $sfdxUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
 }
 
 function Install-Package-Version {
@@ -149,7 +151,7 @@ Update-SFDX-Project-JSON-Package-Version-Id $packageVersionAlias $packageVersion
 npx prettier --write $sfdxProjectJsonPath
 git add $sfdxProjectJsonPath
 
-Write-Debug "Adding new package version to $targetreadme"
+Write-Debug "Adding new package version ID $packageVersionId to $targetreadme"
 Update-README-Package-Version-Id $packageVersionId
 npx prettier --write $targetreadme
 git add $targetreadme

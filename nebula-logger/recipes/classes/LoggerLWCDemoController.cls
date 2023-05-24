@@ -2,7 +2,6 @@
 public with sharing class LoggerLWCDemoController {
     @AuraEnabled(cacheable=true)
     public static String returnSomeString() {
-        System.debug('hello, world!');
         return 'SomeString';
     }
 
