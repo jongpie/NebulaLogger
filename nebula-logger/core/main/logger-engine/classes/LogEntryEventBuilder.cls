@@ -814,8 +814,8 @@ global with sharing class LogEntryEventBuilder {
     private static void setQueriedAuthSessionDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
         if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == false) {
             return;
-        }
-
+        }    
+            
         LoggerSObjectProxy.AuthSession cachedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
         if (cachedAuthSessionProxy == null) {
             return;
@@ -866,9 +866,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         logEntryEvent.OrganizationEnvironmentType__c = getOrganizationEnvironmentType(userSettings);
-        logEntryEvent.OrganizationId__c = cachedOrganization?.Id;
         logEntryEvent.OrganizationInstanceName__c = cachedOrganization?.InstanceName;
-        logEntryEvent.OrganizationName__c = cachedOrganization?.Name;
         logEntryEvent.OrganizationNamespacePrefix__c = cachedOrganization?.NamespacePrefix;
         logEntryEvent.OrganizationType__c = cachedOrganization?.OrganizationType;
     }
@@ -883,7 +881,6 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        logEntryEvent.LoggedByUsername__c = cachedUser.Username;
         logEntryEvent.ProfileName__c = cachedUser.Profile.Name;
         logEntryEvent.UserLicenseDefinitionKey__c = cachedUser.Profile.UserLicense.LicenseDefinitionKey;
         logEntryEvent.UserLicenseId__c = cachedUser.Profile.UserLicenseId;
@@ -891,15 +888,18 @@ global with sharing class LogEntryEventBuilder {
         logEntryEvent.UserRoleName__c = cachedUser.UserRole?.Name;
     }
 
-    private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
-        templateLogEntryEvent.Locale__c = System.UserInfo.getLocale();
-        templateLogEntryEvent.LoggedById__c = System.UserInfo.getUserId();
-        templateLogEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
-        templateLogEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
-        templateLogEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();
-        templateLogEntryEvent.TimeZoneName__c = System.UserInfo.getTimeZone().getDisplayName();
-        templateLogEntryEvent.UserRoleId__c = System.UserInfo.getUserRoleId();
-        templateLogEntryEvent.UserType__c = System.UserInfo.getUserType();
+    private static void setUserInfoDetails(LogEntryEvent__e logEntryEvent) {
+        logEntryEvent.Locale__c = System.UserInfo.getLocale();
+        logEntryEvent.LoggedById__c = System.UserInfo.getUserId();
+        logEntryEvent.LoggedByUsername__c = System.UserInfo.getUsername();
+        logEntryEvent.OrganizationId__c = System.UserInfo.getOrganizationId();
+        logEntryEvent.OrganizationName__c = System.UserInfo.getOrganizationName();
+        logEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
+        logEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
+        logEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();
+        logEntryEvent.TimeZoneName__c = System.UserInfo.getTimeZone().getDisplayName();
+        logEntryEvent.UserRoleId__c = System.UserInfo.getUserRoleId();
+        logEntryEvent.UserType__c = System.UserInfo.getUserType();
     }
 
     // Private static helper methods

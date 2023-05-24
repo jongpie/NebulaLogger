@@ -3123,9 +3123,12 @@ global with sharing class Logger {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
         if (logEntryEventBuilder.shouldSave() == true) {
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+            // TODO ApiVersion__c is deprecated - remove this reference in a future release
             logEntryEvent.ApiVersion__c = ORGANIZATION_API_VERSION;
+
             logEntryEvent.EntryScenario__c = currentEntryScenario;
             logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEvent.OrganizationApiVersion__c = ORGANIZATION_API_VERSION;
             logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
             logEntryEvent.RequestId__c = REQUEST_ID;
             logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();

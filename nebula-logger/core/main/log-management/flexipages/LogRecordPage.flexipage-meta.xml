@@ -796,16 +796,6 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationType__c</fieldItem>
-                <identifier>RecordOrganizationType__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationNamespacePrefix__c</fieldItem>
                 <identifier>RecordOrganizationNamespacePrefix__cField</identifier>
                 <visibilityRule>
@@ -814,6 +804,16 @@
                         <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationInstanceName__c</fieldItem>
+                <identifier>RecordOrganizationInstanceName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -834,6 +834,26 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationInstanceLocation__c</fieldItem>
+                <identifier>RecordOrganizationInstanceLocation_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationType__c</fieldItem>
+                <identifier>RecordOrganizationType__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationEnvironmentType__c</fieldItem>
@@ -844,40 +864,40 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationInstanceName__c</fieldItem>
-                <identifier>RecordOrganizationInstanceName__cField</identifier>
+                <fieldItem>Record.OrganizationApiVersion__c</fieldItem>
+                <identifier>RecordOrganizationApiVersion_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApiVersion__c</fieldItem>
-                <identifier>RecordApiVersion__cField</identifier>
+                <fieldItem>Record.OrganizationApiReleaseVersion__c</fieldItem>
+                <identifier>RecordOrganizationApiReleaseVersion_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApiReleaseVersion__c</fieldItem>
-                <identifier>RecordApiReleaseVersion__cField</identifier>
+                <fieldItem>Record.OrganizationApiReleaseNumber__c</fieldItem>
+                <identifier>RecordOrganizationApiReleaseNumber_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApiReleaseNumber__c</fieldItem>
-                <identifier>RecordApiReleaseNumber__cField</identifier>
+                <fieldItem>Record.OrganizationInstanceMaintenanceWindow__c</fieldItem>
+                <identifier>RecordOrganizationInstanceMaintenanceWindow_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-7a49dd50-62e1-43c4-a95b-81a04f2e4a8e</name>
@@ -905,6 +925,44 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-d7efb447-a626-4612-8219-5b554c751159</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationProducts__c</fieldItem>
+                <identifier>RecordOrganizationProducts_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationServices__c</fieldItem>
+                <identifier>RecordOrganizationServices_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-f3682bce-56d9-407b-8068-2a8d5f37b13c</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-f3682bce-56d9-407b-8068-2a8d5f37b13c</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column13</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-893ec168-61e9-4bc4-9371-f686835befc5</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -1002,6 +1060,20 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection6</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-893ec168-61e9-4bc4-9371-f686835befc5</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Organization Products &amp; Services</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection7</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>

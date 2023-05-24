@@ -661,7 +661,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             User matchingUser = userIdToUser.get(log.LoggedBy__c);
-            log.LoggedByUsername__c = matchingUser.Username;
             log.ProfileName__c = matchingUser.Profile.Name;
             log.UserLicenseDefinitionKey__c = matchingUser.Profile.UserLicense.LicenseDefinitionKey;
             log.UserLicenseId__c = matchingUser.Profile.UserLicenseId;
@@ -706,8 +705,16 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 WHERE Id IN :this.logIds AND ApiReleaseNumber__c = NULL
                 LIMIT :System.Limits.getLimitDmlRows()
             ]) {
+                // TODO 2 legacy fields - remove these references in a future release
                 log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
                 log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
+
+                log.OrganizationApiReleaseNumber__c = statusApiResponse.releaseNumber;
+                log.OrganizationApiReleaseVersion__c = statusApiResponse.releaseVersion;
+                // log.OrganizationInstanceLocation__c = statusApiResponse.location;
+                log.OrganizationInstanceMaintenanceWindow__c = statusApiResponse.maintenanceWindow;
+                log.OrganizationProducts__c = JSON.serializePretty(statusApiResponse.Products);
+                log.OrganizationServices__c = JSON.serializePretty(statusApiResponse.Services);
 
                 logsToUpdate.add(log);
             }
@@ -716,16 +723,28 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     // Private class for handling the response from api.status.salesforce.com
+    @SuppressWarnings('PMD.VariableNamingConventions')
     @TestVisible
     private class StatusApiResponse {
-        /**
-         * @description String containing the release number.
-         */
+        public String location { get; set; }
+        public String maintenanceWindow { get; set; }
         public String releaseNumber { get; set; }
-
-        /**
-         * @description String containing the release version.
-         */
         public String releaseVersion { get; set; }
+        public List<StatusApiOrgProduct> Products { get; set; }
+        public List<StatusApiOrgService> Services { get; set; }
+    }
+
+    private class StatusApiOrgProduct {
+        public Boolean isActive { get; set; }
+        public String key { get; set; }
+        public String name { get; set; }
+        public Integer order { get; set; }
+        public String url { get; set; }
+    }
+
+    private class StatusApiOrgService {
+        public Boolean isCore { get; set; }
+        public String key { get; set; }
+        public Integer order { get; set; }
     }
 }
