@@ -8,10 +8,6 @@ export default class LoggerHomeHeader extends NavigationMixin(LightningElement) 
     organizationApiVersion = '?';
     title = 'Nebula Logger';
 
-    renderedCallback() {
-        document.title = this.title;
-    }
-
     @wire(getLoggerVersionNumber)
     wiredLoggerVersionNumber({ error, data }) {
         if (data) {

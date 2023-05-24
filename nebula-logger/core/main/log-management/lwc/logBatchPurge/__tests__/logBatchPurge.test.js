@@ -1,5 +1,6 @@
 // UI
 import { createElement } from 'lwc';
+import LightningConfirm from 'lightning/confirm';
 import logBatchPurge from 'c/logBatchPurge';
 import { when } from 'jest-when';
 
@@ -30,6 +31,8 @@ const mockRunPurgeBatch = require('./data/runPurgeBatch.json');
 
 const SHOW_TOAST_EVENT_NAME = 'lightning__showtoast';
 const SHOW_TOAST_EVENT_HANDLER = jest.fn();
+
+jest.mock('lightning/confirm');
 
 jest.mock(
     '@salesforce/apex/LogBatchPurgeController.getMetrics',
@@ -143,7 +146,6 @@ describe('logBatchPurge lwc tests', () => {
         expect(getMetrics).toHaveBeenCalledTimes(1);
         expect(getPurgeBatchJobRecords).toHaveBeenCalledTimes(1);
         // Check the component
-        expect(document.title).toEqual('Purge Batch');
         const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
         expect(metricsTable).toBeTruthy();
         const dateFilterRadioGroup = logBatchPurgeElement.shadowRoot.querySelector('lightning-radio-group[data-id="date-filter"]');
@@ -321,14 +323,13 @@ describe('logBatchPurge lwc tests', () => {
 
     it('enable the run purge button when user has delete permission on log object ', async () => {
         const logBatchPurgeElement = await initializeElement(true);
-        const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
 
-        const runPurgeBatch = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
-        expect(runPurgeBatch).toBeTruthy();
-        expect(runPurgeBatch.disabled).toEqual(false);
+        const runPurgeBatchBtn = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
+        expect(runPurgeBatchBtn).toBeTruthy();
+        expect(runPurgeBatchBtn.disabled).toEqual(false);
     });
 
-    it('displays the purge job records in datatable.', async () => {
+    it('displays the purge job records in datatable', async () => {
         const logBatchPurgeElement = await initializeElement(true);
 
         const purgeBatchJobsDatatable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
@@ -336,14 +337,16 @@ describe('logBatchPurge lwc tests', () => {
         expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
     });
 
-    it('it show success toast when user click on run batch button.', async () => {
+    it('it show success toast when user confirms running the batch job', async () => {
+        LightningConfirm.open = jest.fn().mockResolvedValue(true);
         const logBatchPurgeElement = await initializeElement(true);
-        const runPurgeBatch = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
-
         logBatchPurgeElement.addEventListener(SHOW_TOAST_EVENT_NAME, SHOW_TOAST_EVENT_HANDLER);
-        runPurgeBatch.click();
 
-        await Promise.resolve();
+        const runPurgeBatchBtn = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
+        runPurgeBatchBtn.click();
+
+        await Promise.resolve('Show LightningConfirm modal');
+        await Promise.resolve('Call Apex controller method');
         expect(SHOW_TOAST_EVENT_HANDLER).toBeCalledTimes(1);
     });
 

@@ -10,8 +10,7 @@
                         <div class="slds-page-header__name">
                             <div class="slds-page-header__name-title">
                                 <h1>
-                                    <div data-id="organization-api-version">Organization API {organizationApiVersion}
-                                    </div>
+                                    <div data-id="organization-api-version">Organization API {organizationApiVersion}</div>
                                     <span class="slds-page-header__title slds-truncate" title={title}>{title}</span>
                                     <div data-id="logger-version-number">{loggerVersionNumber}</div>
                                 </h1>
@@ -24,8 +23,11 @@
                 <div class="slds-page-header__controls">
                     <div class="slds-page-header__control">
                         <lightning-button-group>
-                            <lightning-button icon-name="utility:announcement" label={releaseNotesButtonLabel}
-                                onclick={handleViewReleaseNotes}></lightning-button>
+                            <lightning-button
+                                icon-name="utility:announcement"
+                                label={releaseNotesButtonLabel}
+                                onclick={handleViewReleaseNotes}
+                            ></lightning-button>
                         </lightning-button-group>
                     </div>
                 </div>

@@ -3,7 +3,7 @@ import LoggerHomeHeader from 'c/loggerHomeHeader';
 import getLoggerVersionNumber from '@salesforce/apex/LoggerHomeHeaderController.getLoggerVersionNumber';
 import getOrganizationApiVersion from '@salesforce/apex/LoggerHomeHeaderController.getOrganizationApiVersion';
 
-const mockLoggerVersionNumber = 'v4.10.2';
+const mockLoggerVersionNumber = 'v4.10.4';
 const mockOrganizationApiVersion = 'v57.0';
 
 jest.mock(

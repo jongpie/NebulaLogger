@@ -4,6 +4,7 @@
  ************************************************************************************************/
 
 import { LightningElement } from 'lwc';
+import LightningConfirm from 'lightning/confirm';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
@@ -14,13 +15,11 @@ import runPurgeBatch from '@salesforce/apex/LogBatchPurgeController.runPurgeBatc
 import getPurgeBatchJobRecords from '@salesforce/apex/LogBatchPurgeController.getPurgeBatchJobRecords';
 
 export default class LogBatchPurge extends LightningElement {
-    //UI
-    title = 'Purge Batch';
+    // UI
     showLoadingSpinner = false;
+    title = 'Log Batch Purge';
 
-    POLLING_FREQUENCY = 10000; // milliseconds
-
-    //log  metrics.
+    // log  metrics
     logObjectSchema;
     logEntryObjectSchema;
     logEntryTagObjectSchema;
@@ -30,29 +29,29 @@ export default class LogBatchPurge extends LightningElement {
     metricsRecords = [];
     purgeActionOptions;
 
-    //Date filter options
-    selectedDateFilterOption = 'TODAY'; //default
-
+    // Date filter options
+    selectedDateFilterOption = 'TODAY';
     dateFilterOptions = [
         { label: 'Today', value: 'TODAY' },
         { label: 'This Week', value: 'THIS_WEEK' },
         { label: 'This Month', value: 'THIS_MONTH' }
     ];
 
-    //Purge Batch
+    // Purge Batch
     purgeBatchColumns = [];
     purgeBatchJobRecords = [];
     disableRunPurgeButton;
 
+    #pollingFrequency = 10000; // milliseconds
+
     connectedCallback() {
-        document.title = this.title;
         this.selectedDateFilterOption = 'TODAY';
 
         this.loadMetricRecords();
         this.loadPurgeBatchColumns();
         this.loadpurgeBatchJobRecords();
 
-        this.pollpurgeBatchJobRecords();
+        this.pollPurgeBatchJobRecords();
     }
 
     loadMetricRecords() {
@@ -168,7 +167,17 @@ export default class LogBatchPurge extends LightningElement {
             .catch(this._handleError);
     }
 
-    runPurgeBatch() {
+    async runPurgeBatch() {
+        const confirmationResult = await LightningConfirm.open({
+            label: 'Confirm Job Execution',
+            message: 'Are you sure that you want to run LogBatchPurger? This will delete data!',
+            theme: 'warning'
+        });
+
+        if (!confirmationResult) {
+            return;
+        }
+
         runPurgeBatch()
             .then(result => {
                 this.dispatchEvent(
@@ -190,13 +199,13 @@ export default class LogBatchPurge extends LightningElement {
         this.loadMetricRecords();
     }
 
-    pollpurgeBatchJobRecords() {
+    pollPurgeBatchJobRecords() {
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         setTimeout(() => {
             this.loadpurgeBatchJobRecords();
             this.loadMetricRecords();
-            this.pollpurgeBatchJobRecords();
-        }, this.POLLING_FREQUENCY);
+            this.pollPurgeBatchJobRecords();
+        }, this.#pollingFrequency);
     }
 
     _handleError = error => {
