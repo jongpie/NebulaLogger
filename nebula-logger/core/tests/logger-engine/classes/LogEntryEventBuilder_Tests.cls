@@ -454,6 +454,19 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_skip_setting_exception_fields_when_exception_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().ExceptionMessage__c);
+        System.Assert.isNull(builder.getLogEntryEvent().ExceptionType__c);
+
+        System.Exception nullException;
+        builder.setExceptionDetails(nullException);
+
+        System.Assert.isNull(builder.getLogEntryEvent().ExceptionMessage__c);
+        System.Assert.isNull(builder.getLogEntryEvent().ExceptionType__c);
+    }
+
+    @IsTest
     static void it_should_set_exception_fields_for_dmlException() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().ExceptionMessage__c);

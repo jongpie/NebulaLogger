@@ -167,7 +167,7 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setExceptionDetails(System.Exception apexException) {
-        if (this.shouldSave() == false) {
+        if (this.shouldSave() == false || apexException == null) {
             return this;
         }
 
