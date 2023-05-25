@@ -9,7 +9,7 @@
         }
     },
     "ignorePatterns": ["**/*.html", "**/*.cmp", "**/*.cmp-meta.xml", "**/*.css", "**/*.test.js", "**/*js-meta.xml", "**/*.json"],
-    "plugins": ["@lwc/eslint-plugin-lwc", "@salesforce/eslint-plugin-aura"],
+    "plugins": ["@lwc/eslint-plugin-lwc"],
     "extends": ["@salesforce/eslint-config-lwc/recommended"],
     "rules": {
         "@lwc/lwc/consistent-component-name": "error",

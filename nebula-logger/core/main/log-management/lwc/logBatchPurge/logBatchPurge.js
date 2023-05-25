@@ -190,7 +190,7 @@ export default class LogBatchPurge extends LightningElement {
             })
             .catch(this._handleError);
     }
-    
+
     refreshPurgeBatchRecords() {
         this.loadPurgeBatchJobRecords();
     }

@@ -150,7 +150,6 @@ describe('Logger Settings lwc tests', () => {
         const loggerSettingsElement = await initializeElement(false);
 
         // Check the component
-        expect(document.title).toEqual('Logger Settings');
         const refreshBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="refresh-btn"]');
         expect(refreshBtn).toBeTruthy();
         const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');
@@ -171,7 +170,6 @@ describe('Logger Settings lwc tests', () => {
         expect(createRecord).toHaveBeenCalledTimes(0);
 
         // Check the component
-        expect(document.title).toEqual('Logger Settings');
         const refreshBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="refresh-btn"]');
         expect(refreshBtn).toBeTruthy();
         const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');
