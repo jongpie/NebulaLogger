@@ -138,13 +138,7 @@ global with sharing class Logger {
      * @return The current API version, in the format `v00.0`
      */
     public static String getOrganizationApiVersion() {
-        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
-        // Serializing any SObject w/ an ID will include the API version
-        // So, use System.UserInfo.getUserId() to create the current user's record without querying
-        // Then parse the JSON to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
+        return ORGANIZATION_API_VERSION;
     }
 
     // Settings management methods
@@ -3282,7 +3276,7 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private final String baseURL = ORGANIZATION_DOMAIN_URL + '/services/data/' + ORGANIZATION_API_VERSION;
+        private final String baseURL = ORGANIZATION_DOMAIN_URL + '/services/data/' + getOrganizationApiVersion();
         private final String compositeEndpoint = '/composite/sobjects';
 
         @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')

@@ -6,5 +6,5 @@
         <sharedTo>AllInternalUsers</sharedTo>
         <sharedToType>Organization</sharedToType>
     </folderShares>
-    <name>Logger Dashboards</name>
+    <name>Log Dashboards</name>
 </DashboardFolder>

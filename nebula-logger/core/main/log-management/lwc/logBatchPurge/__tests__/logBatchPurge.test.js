@@ -345,12 +345,14 @@ describe('logBatchPurge lwc tests', () => {
         const runPurgeBatchBtn = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
         runPurgeBatchBtn.click();
 
-        await Promise.resolve('Show LightningConfirm modal');
-        await Promise.resolve('Call Apex controller method');
+        await Promise.resolve('Show & confirm LightningConfirm modal');
+        await Promise.resolve('Call Apex controller method runPurgeBatch()');
+        await Promise.resolve('Dispatch Toast event');
+        await Promise.resolve('Call Apex controller method loadPurgeBatchJobRecords()');
         expect(SHOW_TOAST_EVENT_HANDLER).toBeCalledTimes(1);
     });
 
-    it('it refresh the purge batch records when user clicks on the refresh button.', async () => {
+    it('it refresh the purge batch records when user clicks on the refresh button', async () => {
         const logBatchPurgeElement = await initializeElement(true);
         const refreshButton = document.querySelector('c-log-batch-purge').shadowRoot.querySelector('lightning-button-icon');
         refreshButton.click();
@@ -366,7 +368,7 @@ describe('logBatchPurge lwc tests', () => {
         expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
     });
 
-    it('it refresh the purge batch records for every 10 sec.', async () => {
+    it('it refresh the purge batch records for every 10 sec', async () => {
         const logBatchPurgeElement = await initializeElement(true);
         const callBack = jest.fn();
         expect(setTimeout).toHaveBeenCalledTimes(1);

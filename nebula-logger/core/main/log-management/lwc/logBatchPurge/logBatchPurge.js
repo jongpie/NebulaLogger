@@ -49,7 +49,7 @@ export default class LogBatchPurge extends LightningElement {
 
         this.loadMetricRecords();
         this.loadPurgeBatchColumns();
-        this.loadpurgeBatchJobRecords();
+        this.loadPurgeBatchJobRecords();
 
         this.pollPurgeBatchJobRecords();
     }
@@ -152,7 +152,7 @@ export default class LogBatchPurge extends LightningElement {
         this.purgeBatchColumns = columns;
     }
 
-    loadpurgeBatchJobRecords() {
+    loadPurgeBatchJobRecords() {
         this.showLoadingSpinner = true;
         Promise.all([getPurgeBatchJobRecords(), canUserRunLogBatchPurger()])
             .then(([purgeBatchResult, canUserRunLogBatchPurgerAdHocResult]) => {
@@ -182,16 +182,17 @@ export default class LogBatchPurge extends LightningElement {
             .then(result => {
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: `Purge Job ${result} submitted.`,
+                        title: `Purge Job ${result} submitted`,
                         variant: 'success'
                     })
                 );
-                this.loadpurgeBatchJobRecords();
+                this.loadPurgeBatchJobRecords();
             })
             .catch(this._handleError);
     }
+    
     refreshPurgeBatchRecords() {
-        this.loadpurgeBatchJobRecords();
+        this.loadPurgeBatchJobRecords();
     }
 
     onChangeDateFilter(event) {
@@ -202,7 +203,7 @@ export default class LogBatchPurge extends LightningElement {
     pollPurgeBatchJobRecords() {
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         setTimeout(() => {
-            this.loadpurgeBatchJobRecords();
+            this.loadPurgeBatchJobRecords();
             this.loadMetricRecords();
             this.pollPurgeBatchJobRecords();
         }, this.#pollingFrequency);
