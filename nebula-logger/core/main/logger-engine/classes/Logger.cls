@@ -125,8 +125,9 @@ global with sharing class Logger {
 
     // TODO delete
     /**
-     * @description Returns the current namespace of Nebula Logger
-     * @return   The current namespace prefix, or an empty string when no namespace is being used
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     *              Returns the current namespace of Nebula Logger
+     * @return      The current namespace prefix, or an empty string when no namespace is being used
      */
     public static String getNamespacePrefix() {
         String className = Logger.class.getName();
@@ -134,8 +135,9 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Returns the current Salesforce API version number of the org
-     * @return The current API version, in the format `v00.0`
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     *              Returns the current Salesforce API version number of the org
+     * @return      The current API version, in the format `v00.0`
      */
     public static String getOrganizationApiVersion() {
         return ORGANIZATION_API_VERSION;
@@ -269,18 +271,19 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new, unsaved `LoggerSettings__c` record
-     * @return   A new `LoggerSettings__c` record, with all fields populated with default field values
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     *              Creates a new, unsaved `LoggerSettings__c` record
+     * @return      A new `LoggerSettings__c` record, with all fields populated with default field values
      */
     public static LoggerSettings__c createSettings() {
         return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
     }
 
     /**
-     * @description Returns the current user's instance of `LoggerSettings__c`
-     * @return LoggerSettings__c - The current user's instance of the custom settings
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     *              Returns the current user's instance of `LoggerSettings__c`
+     * @return      LoggerSettings__c - The current user's instance of the custom settings
      */
-    // TODO make this method `global` in a future release
     public static LoggerSettings__c getUserSettings() {
         // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
         if (userSettings == null) {
@@ -291,11 +294,11 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Returns the specified user's instance of `LoggerSettings__c`
-     * @param loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
-     * @return LoggerSettings__c - The specified user's instance of the custom settings
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     *              Returns the specified user's instance of `LoggerSettings__c`
+     * @param       loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
+     * @return      LoggerSettings__c - The specified user's instance of the custom settings
      */
-    // TODO make this method `global` in a future release
     public static LoggerSettings__c getUserSettings(User loggingUser) {
         // Typically, using LoggerSettings__c.getInstance() would be easier
         // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
@@ -3010,8 +3013,9 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
-     *   All subsequent calls to saveLog() will use the transaction save method.
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     *              Saves any entries in Logger's buffer, using the specified save method for only this call.
+     *              All subsequent calls to saveLog() will use the transaction save method.
      * @param  saveMethodName The String value of the save method to use for this specific save action.
      */
     @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount')
@@ -3114,6 +3118,41 @@ global with sharing class Logger {
             }
             return FALLBACK_LOGGING_LEVEL;
         }
+    }
+
+    /**
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     *              Calls Salesforce's API endpoint https://api.status.salesforce.com/v1/instances/
+     *              to get more details about the current org, including the org's release number and release version
+     * @return      Instance of `Logger.StatusApiResponse`, a data transfer object (DTO) that maps to the JSON returned
+     *              by the status API endpoint.
+     */
+    public static StatusApiResponse callStatusApi() {
+        if (LoggerParameter.CALL_STATUS_API == false) {
+            return null;
+        }
+
+        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
+
+        System.HttpRequest request = new System.HttpRequest();
+        request.setEndpoint(statusApiEndpoint);
+        request.setMethod('GET');
+
+        System.HttpResponse response = new System.Http().send(request);
+        if (response.getStatusCode() >= 400) {
+            String errorMessage =
+                'Callout failed for ' +
+                statusApiEndpoint +
+                '\nReceived request status code ' +
+                response.getStatusCode() +
+                ', status message: ' +
+                response.getStatus();
+            throw new System.CalloutException(errorMessage);
+        }
+
+        StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
+        return statusApiResponse;
     }
 
     // Private logging level methods to keep global methods simpler/cleaner
@@ -3272,6 +3311,17 @@ global with sharing class Logger {
         global void execute(System.QueueableContext queueableContext) {
             LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
         }
+    }
+
+    // Inner class used for deserializing data from the status API
+    @SuppressWarnings('PMD.ApexDoc')
+    public class StatusApiResponse {
+        public String environment { get; set; }
+        public String location { get; set; }
+        public String maintenanceWindow { get; set; }
+        public String releaseNumber { get; set; }
+        public String releaseVersion { get; set; }
+        public String status { get; set; }
     }
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)

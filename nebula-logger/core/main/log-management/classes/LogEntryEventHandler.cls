@@ -679,26 +679,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         public void execute(System.QueueableContext qc) {
-            Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-            String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
-
-            System.HttpRequest request = new System.HttpRequest();
-            request.setEndpoint(statusApiEndpoint);
-            request.setMethod('GET');
-
-            System.HttpResponse response = new System.Http().send(request);
-            if (response.getStatusCode() >= 400) {
-                String errorMessage =
-                    'Callout failed for ' +
-                    statusApiEndpoint +
-                    '\nReceived request status code ' +
-                    response.getStatusCode() +
-                    ', status message: ' +
-                    response.getStatus();
-                throw new System.CalloutException(errorMessage);
-            }
-
-            StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
+            Logger.StatusApiResponse statusApiResponse = Logger.callStatusApi();
             List<Log__c> logsToUpdate = new List<Log__c>();
             for (Log__c log : [
                 SELECT Id
@@ -706,6 +687,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 WHERE Id IN :this.logIds AND ApiReleaseNumber__c = NULL
                 LIMIT :System.Limits.getLimitDmlRows()
             ]) {
+                // TODO Logger.ApiResponse has new properties that aren't currently being captured here,
+                // so in a future release, add new custom fields to capture more (all?) properties
+                // - environment
+                // - location
+                // - maintenanceWindow
+                // ✔ releaseNumber
+                // ✔ releaseVersion
+                // - status
                 log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
                 log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
 
@@ -713,19 +702,5 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
             LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
         }
-    }
-
-    // Private class for handling the response from api.status.salesforce.com
-    @TestVisible
-    private class StatusApiResponse {
-        /**
-         * @description String containing the release number.
-         */
-        public String releaseNumber { get; set; }
-
-        /**
-         * @description String containing the release version.
-         */
-        public String releaseVersion { get; set; }
     }
 }

@@ -139,7 +139,21 @@ public without sharing virtual class LoggerEngineDataSelector {
 
         Organization organization;
         if (LoggerParameter.QUERY_ORGANIZATION_DATA == true) {
-            organization = [SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+            organization = [
+                SELECT
+                    Id,
+                    CreatedById,
+                    CreatedBy.Name,
+                    CreatedBy.Username,
+                    CreatedDate,
+                    InstanceName,
+                    IsSandbox,
+                    Name,
+                    NamespacePrefix,
+                    OrganizationType,
+                    TrialExpirationDate
+                FROM Organization
+            ];
             LoggerCache.getOrganizationCache().put(cacheKey, organization);
         }
         return organization;
