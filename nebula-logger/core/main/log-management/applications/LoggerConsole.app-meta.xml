@@ -12,13 +12,13 @@
         <headerColor>#1E1E1E</headerColor>
         <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
     </brand>
-    <description>View and manage log data</description>
+    <description>View and manage logging data</description>
     <formFactors>Small</formFactors>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
-    <label>Logger Console</label>
+    <label>Nebula Logger</label>
     <navType>Console</navType>
     <tabs>standard-home</tabs>
     <tabs>LoggerScenario__c</tabs>

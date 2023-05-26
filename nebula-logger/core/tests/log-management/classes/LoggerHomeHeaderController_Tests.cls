@@ -7,10 +7,116 @@
 @IsTest(IsParallel=true)
 private class LoggerHomeHeaderController_Tests {
     @IsTest
-    public static void it_returns_environment_details() {
-        LoggerHomeHeaderController.Environment environment = LoggerHomeHeaderController.getEnvironmentDetails();
+    public static void it_returns_environment_details_when_status_api_callout_is_enabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        Logger.StatusApiResponse mockApiResponse = createMockStatusApiResponse();
+        Logger.StatusApiResponseProduct mockProduct1 = new Logger.StatusApiResponseProduct();
+        mockProduct1.name = 'The first product listed';
+        Logger.StatusApiResponseProduct mockProduct2 = new Logger.StatusApiResponseProduct();
+        mockProduct2.name = 'The second product listed';
+        mockApiResponse.Products = new List<Logger.StatusApiResponseProduct>{ mockProduct1, mockProduct2 };
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))
+        );
 
-        System.Assert.areEqual(Logger.getVersionNumber(), environment.loggerVersionNumber);
-        System.Assert.areEqual(Logger.getOrganizationApiVersion(), environment.organizationApiVersion);
+        LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
+
+        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        System.Assert.areEqual(
+            String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
+            returnedEnvironment.loggerNamespacePrefix
+        );
+        System.Assert.areEqual(Logger.getVersionNumber(), returnedEnvironment.loggerVersionNumber);
+        System.Assert.areEqual(Logger.getOrganizationApiVersion(), returnedEnvironment.organizationApiVersion);
+        System.Assert.areEqual(organization.CreatedBy.Username, returnedEnvironment.organizationCreatedByUsername);
+        System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), returnedEnvironment.organizationDomainUrl);
+        System.Assert.areEqual(mockApiResponse.environment, returnedEnvironment.organizationEnvironment);
+        System.Assert.areEqual(organization.CreatedDate.format(), returnedEnvironment.organizationFormattedCreatedDate);
+        System.Assert.areEqual(System.UserInfo.getOrganizationId(), returnedEnvironment.organizationId);
+        System.Assert.areEqual(mockApiResponse.location, returnedEnvironment.organizationInstanceLocation);
+        System.Assert.areEqual(organization.InstanceName, returnedEnvironment.organizationInstanceName);
+        System.Assert.areEqual(mockProduct1.name + ', ' + mockProduct2.name, returnedEnvironment.organizationInstanceProducts);
+        System.Assert.areEqual(mockApiResponse.maintenanceWindow, returnedEnvironment.organizationMaintenanceWindow);
+        System.Assert.areEqual(System.UserInfo.getOrganizationName(), returnedEnvironment.organizationName);
+        System.Assert.areEqual(mockApiResponse.releaseNumber, returnedEnvironment.organizationReleaseNumber);
+        System.Assert.areEqual(mockApiResponse.releaseVersion, returnedEnvironment.organizationReleaseVersion);
+        System.Assert.areEqual(mockApiResponse.status, returnedEnvironment.organizationStatus);
+        System.Assert.areEqual(organization.OrganizationType, returnedEnvironment.organizationType);
+    }
+
+    @IsTest
+    public static void it_returns_environment_details_when_status_api_callout_does_not_provide_instance_products_list() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        Logger.StatusApiResponse mockApiResponse = createMockStatusApiResponse();
+        mockApiResponse.Products = null;
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))
+        );
+
+        LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
+
+        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        System.Assert.areEqual(
+            String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
+            returnedEnvironment.loggerNamespacePrefix
+        );
+        System.Assert.areEqual(Logger.getVersionNumber(), returnedEnvironment.loggerVersionNumber);
+        System.Assert.areEqual(Logger.getOrganizationApiVersion(), returnedEnvironment.organizationApiVersion);
+        System.Assert.areEqual(organization.CreatedBy.Username, returnedEnvironment.organizationCreatedByUsername);
+        System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), returnedEnvironment.organizationDomainUrl);
+        System.Assert.areEqual(mockApiResponse.environment, returnedEnvironment.organizationEnvironment);
+        System.Assert.areEqual(organization.CreatedDate.format(), returnedEnvironment.organizationFormattedCreatedDate);
+        System.Assert.areEqual(System.UserInfo.getOrganizationId(), returnedEnvironment.organizationId);
+        System.Assert.areEqual(mockApiResponse.location, returnedEnvironment.organizationInstanceLocation);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationInstanceProducts);
+        System.Assert.areEqual(organization.InstanceName, returnedEnvironment.organizationInstanceName);
+        System.Assert.areEqual(mockApiResponse.maintenanceWindow, returnedEnvironment.organizationMaintenanceWindow);
+        System.Assert.areEqual(System.UserInfo.getOrganizationName(), returnedEnvironment.organizationName);
+        System.Assert.areEqual(mockApiResponse.releaseNumber, returnedEnvironment.organizationReleaseNumber);
+        System.Assert.areEqual(mockApiResponse.releaseVersion, returnedEnvironment.organizationReleaseVersion);
+        System.Assert.areEqual(mockApiResponse.status, returnedEnvironment.organizationStatus);
+        System.Assert.areEqual(organization.OrganizationType, returnedEnvironment.organizationType);
+    }
+
+    @IsTest
+    public static void it_returns_environment_details_when_status_api_callout_is_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(false)));
+
+        LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
+
+        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        System.Assert.areEqual(
+            String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
+            returnedEnvironment.loggerNamespacePrefix
+        );
+        System.Assert.areEqual(Logger.getVersionNumber(), returnedEnvironment.loggerVersionNumber);
+        System.Assert.areEqual(Logger.getOrganizationApiVersion(), returnedEnvironment.organizationApiVersion);
+        System.Assert.areEqual(organization.CreatedBy.Username, returnedEnvironment.organizationCreatedByUsername);
+        System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), returnedEnvironment.organizationDomainUrl);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationEnvironment);
+        System.Assert.areEqual(organization.CreatedDate.format(), returnedEnvironment.organizationFormattedCreatedDate);
+        System.Assert.areEqual(System.UserInfo.getOrganizationId(), returnedEnvironment.organizationId);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationInstanceLocation);
+        System.Assert.areEqual(organization.InstanceName, returnedEnvironment.organizationInstanceName);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationInstanceProducts);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationMaintenanceWindow);
+        System.Assert.areEqual(System.UserInfo.getOrganizationName(), returnedEnvironment.organizationName);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationReleaseNumber);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationReleaseVersion);
+        System.Assert.areEqual('Unknown', returnedEnvironment.organizationStatus);
+        System.Assert.areEqual(organization.OrganizationType, returnedEnvironment.organizationType);
+    }
+
+    private static Logger.StatusApiResponse createMockStatusApiResponse() {
+        Logger.StatusApiResponse mockApiResponse = new Logger.StatusApiResponse();
+        mockApiResponse.environment = 'sandbox';
+        mockApiResponse.location = 'NA';
+        mockApiResponse.maintenanceWindow = 'Saturdays 07:00 PM - 11:00 PM PST';
+        mockApiResponse.releaseNumber = '242.19.17';
+        mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
+        mockApiResponse.status = 'OK';
+        return mockApiResponse;
     }
 }

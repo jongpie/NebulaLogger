@@ -10,7 +10,7 @@ Controller class for the LWC `loggerHomePageHeader`
 
 ### Methods
 
-#### `getLoggerVersionNumber()` → `Environment`
+#### `getEnvironmentDetails()` → `Environment`
 
 Returns the current version number of Nebula Logger
 
@@ -34,8 +34,36 @@ An instance of `LoggerHomeHeaderController.Environment`
 
 ##### Properties
 
+###### `loggerNamespacePrefix` → `String`
+
 ###### `loggerVersionNumber` → `String`
 
 ###### `organizationApiVersion` → `String`
+
+###### `organizationCreatedByUsername` → `String`
+
+###### `organizationDomainUrl` → `String`
+
+###### `organizationEnvironment` → `String`
+
+###### `organizationFormattedCreatedDate` → `String`
+
+###### `organizationId` → `String`
+
+###### `organizationInstanceLocation` → `String`
+
+###### `organizationInstanceName` → `String`
+
+###### `organizationMaintenanceWindow` → `String`
+
+###### `organizationName` → `String`
+
+###### `organizationReleaseNumber` → `String`
+
+###### `organizationReleaseVersion` → `String`
+
+###### `organizationStatus` → `String`
+
+###### `organizationType` → `String`
 
 ---

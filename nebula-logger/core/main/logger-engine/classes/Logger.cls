@@ -10,7 +10,7 @@
  * @see LogMessage
  */
 @SuppressWarnings(
-    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
@@ -3314,7 +3314,7 @@ global with sharing class Logger {
     }
 
     // Inner class used for deserializing data from the status API
-    @SuppressWarnings('PMD.ApexDoc')
+    @SuppressWarnings('PMD.ApexDoc, PMD.VariableNamingConventions')
     public class StatusApiResponse {
         public String environment { get; set; }
         public String location { get; set; }
@@ -3322,6 +3322,14 @@ global with sharing class Logger {
         public String releaseNumber { get; set; }
         public String releaseVersion { get; set; }
         public String status { get; set; }
+        public List<StatusApiResponseProduct> Products { get; set; }
+    }
+
+    // Inner class used for deserializing data from the status API
+    @SuppressWarnings('PMD.ApexDoc')
+    public class StatusApiResponseProduct {
+        public String key { get; set; }
+        public String name { get; set; }
     }
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)

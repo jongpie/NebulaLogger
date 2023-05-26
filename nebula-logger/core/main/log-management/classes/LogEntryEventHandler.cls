@@ -680,6 +680,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         public void execute(System.QueueableContext qc) {
             Logger.StatusApiResponse statusApiResponse = Logger.callStatusApi();
+
+            if (statusApiResponse == null) {
+                return;
+            }
+
             List<Log__c> logsToUpdate = new List<Log__c>();
             for (Log__c log : [
                 SELECT Id

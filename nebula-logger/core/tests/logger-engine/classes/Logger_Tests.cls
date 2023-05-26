@@ -7603,7 +7603,9 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_return_return_callout_response_from_status_api() {
+    static void it_should_return_callout_response_from_status_api() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
         Logger.StatusApiResponse mockApiResponse = new Logger.StatusApiResponse();
         mockApiResponse.environment = 'sandbox';
         mockApiResponse.location = 'NA';
@@ -7618,7 +7620,17 @@ private class Logger_Tests {
 
         Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
 
-        System.Assert.areEqual(mockApiResponse, returnedApiResponse);
+        System.Assert.areEqual(JSON.serialize(mockApiResponse), JSON.serialize(returnedApiResponse));
+    }
+
+    @IsTest
+    static void it_should_return_null_when_status_api_callout_is_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.CALL_STATUS_API);
+
+        Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
+
+        System.Assert.isNull(returnedApiResponse);
     }
     // End tests for utility methods
 

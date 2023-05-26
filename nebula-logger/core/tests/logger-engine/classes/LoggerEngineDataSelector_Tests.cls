@@ -91,7 +91,18 @@ private class LoggerEngineDataSelector_Tests {
     @IsTest
     static void it_returns_cached_organization() {
         Organization expectedOrganization = [
-            SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate
+            SELECT
+                Id,
+                CreatedById,
+                CreatedBy.Name,
+                CreatedBy.Username,
+                CreatedDate,
+                InstanceName,
+                IsSandbox,
+                Name,
+                NamespacePrefix,
+                OrganizationType,
+                TrialExpirationDate
             FROM Organization
         ];
         MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
