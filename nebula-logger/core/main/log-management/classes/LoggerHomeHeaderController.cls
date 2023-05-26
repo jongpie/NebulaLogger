@@ -10,19 +10,22 @@
 public without sharing class LoggerHomeHeaderController {
     /**
      * @description Returns the current version number of Nebula Logger
-     * @return   The String value of Logger.getVersionNumber()
+     * @return   An instance of `LoggerHomeHeaderController.Environment`
      */
     @AuraEnabled(cacheable=true)
-    public static String getLoggerVersionNumber() {
-        return Logger.getVersionNumber();
+    public static Environment getEnvironmentDetails() {
+        Environment environment = new Environment();
+        environment.loggerVersionNumber = Logger.getVersionNumber();
+        environment.organizationApiVersion = Logger.getOrganizationApiVersion();
+
+        return environment;
     }
 
-    /**
-     * @description Returns the current API version of the organization
-     * @return   The String value of Logger.getOrganizationApiVersion()
-     */
-    @AuraEnabled(cacheable=true)
-    public static String getOrganizationApiVersion() {
-        return Logger.getOrganizationApiVersion();
+    @SuppressWarnings('PMD.ApexDoc')
+    public class Environment {
+        @AuraEnabled
+        public String loggerVersionNumber;
+        @AuraEnabled
+        public String organizationApiVersion;
     }
 }

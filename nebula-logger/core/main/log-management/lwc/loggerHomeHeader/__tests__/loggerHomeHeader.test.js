@@ -1,24 +1,16 @@
 import { createElement } from 'lwc';
 import LoggerHomeHeader from 'c/loggerHomeHeader';
-import getLoggerVersionNumber from '@salesforce/apex/LoggerHomeHeaderController.getLoggerVersionNumber';
-import getOrganizationApiVersion from '@salesforce/apex/LoggerHomeHeaderController.getOrganizationApiVersion';
+import getEnvironmentDetails from '@salesforce/apex/LoggerHomeHeaderController.getEnvironmentDetails';
 
 const mockLoggerVersionNumber = 'v4.10.4';
 const mockOrganizationApiVersion = 'v57.0';
+const mockEnvironmentDetails = {
+    loggerVersionNumber: mockLoggerVersionNumber,
+    organizationApiVersion: mockOrganizationApiVersion
+};
 
 jest.mock(
-    '@salesforce/apex/LoggerHomeHeaderController.getLoggerVersionNumber',
-    () => {
-        const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
-        return {
-            default: createApexTestWireAdapter(jest.fn())
-        };
-    },
-    { virtual: true }
-);
-
-jest.mock(
-    '@salesforce/apex/LoggerHomeHeaderController.getOrganizationApiVersion',
+    '@salesforce/apex/LoggerHomeHeaderController.getEnvironmentDetails',
     () => {
         const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
         return {
@@ -37,22 +29,22 @@ describe('c-logger-home-header', () => {
         jest.clearAllMocks();
     });
 
-    it('displays logger version number and organization api number', async () => {
+    it('renders home header component', async () => {
         const element = createElement('c-logger-home-header', {
             is: LoggerHomeHeader
         });
 
         document.body.appendChild(element);
 
-        getLoggerVersionNumber.emit(mockLoggerVersionNumber);
-        getOrganizationApiVersion.emit(mockOrganizationApiVersion);
-        await Promise.resolve('Resolve getLoggerVersionNumber()');
-        await Promise.resolve('Resolve getOrganizationApiVersion()');
-        const loggerVersionNumberElement = element.shadowRoot.querySelector('[data-id="logger-version-number"]');
-        expect(loggerVersionNumberElement).toBeTruthy();
-        expect(loggerVersionNumberElement.innerHTML).toBe(`${mockLoggerVersionNumber}`);
+        getEnvironmentDetails.emit(mockEnvironmentDetails);
+        await Promise.resolve('Resolve getEnvironmentDetails()');
         const organizationApiVersionElement = element.shadowRoot.querySelector('[data-id="organization-api-version"]');
         expect(organizationApiVersionElement).toBeTruthy();
         expect(organizationApiVersionElement.innerHTML).toBe(`Organization API ${mockOrganizationApiVersion}`);
+        const loggerVersionNumberElement = element.shadowRoot.querySelector('[data-id="logger-version-number"]');
+        expect(loggerVersionNumberElement).toBeTruthy();
+        expect(loggerVersionNumberElement.innerHTML).toBe(`${mockLoggerVersionNumber}`);
+        const releaseNotesButton = element.shadowRoot.querySelector('[data-id="release-notes-button"]');
+        expect(releaseNotesButton.label).toBe(`View ${mockLoggerVersionNumber} Release Notes`);
     });
 });

@@ -7,12 +7,10 @@
 @IsTest(IsParallel=true)
 private class LoggerHomeHeaderController_Tests {
     @IsTest
-    public static void it_returns_logger_version_number() {
-        System.Assert.areEqual(Logger.getVersionNumber(), LoggerHomeHeaderController.getLoggerVersionNumber());
-    }
+    public static void it_returns_environment_details() {
+        LoggerHomeHeaderController.Environment environment = LoggerHomeHeaderController.getEnvironmentDetails();
 
-    @IsTest
-    public static void it_returns_organization_api_version() {
-        System.Assert.areEqual(Logger.getOrganizationApiVersion(), LoggerHomeHeaderController.getOrganizationApiVersion());
+        System.Assert.areEqual(Logger.getVersionNumber(), environment.loggerVersionNumber);
+        System.Assert.areEqual(Logger.getOrganizationApiVersion(), environment.organizationApiVersion);
     }
 }

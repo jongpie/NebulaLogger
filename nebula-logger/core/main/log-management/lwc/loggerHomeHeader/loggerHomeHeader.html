@@ -10,9 +10,9 @@
                         <div class="slds-page-header__name">
                             <div class="slds-page-header__name-title">
                                 <h1>
-                                    <div data-id="organization-api-version">Organization API {organizationApiVersion}</div>
+                                    <div data-id="organization-api-version">Organization API {environment.organizationApiVersion}</div>
                                     <span class="slds-page-header__title slds-truncate" title={title}>{title}</span>
-                                    <div data-id="logger-version-number">{loggerVersionNumber}</div>
+                                    <div data-id="logger-version-number">{environment.loggerVersionNumber}</div>
                                 </h1>
                             </div>
                         </div>
@@ -24,6 +24,7 @@
                     <div class="slds-page-header__control">
                         <lightning-button-group>
                             <lightning-button
+                                data-id="release-notes-button"
                                 icon-name="utility:announcement"
                                 label={releaseNotesButtonLabel}
                                 onclick={handleViewReleaseNotes}

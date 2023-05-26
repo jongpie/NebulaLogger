@@ -10,7 +10,7 @@ Controller class for the LWC `loggerHomePageHeader`
 
 ### Methods
 
-#### `getLoggerVersionNumber()` → `String`
+#### `getLoggerVersionNumber()` → `Environment`
 
 Returns the current version number of Nebula Logger
 
@@ -18,24 +18,24 @@ Returns the current version number of Nebula Logger
 
 **Type**
 
-String
+Environment
 
 **Description**
 
-The String value of Logger.getVersionNumber()
+An instance of `LoggerHomeHeaderController.Environment`
 
-#### `getOrganizationApiVersion()` → `String`
+---
 
-Returns the current API version of the organization
+### Inner Classes
 
-##### Return
+#### LoggerHomeHeaderController.Environment class
 
-**Type**
+---
 
-String
+##### Properties
 
-**Description**
+###### `loggerVersionNumber` → `String`
 
-The String value of Logger.getOrganizationApiVersion()
+###### `organizationApiVersion` → `String`
 
 ---

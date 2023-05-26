@@ -323,7 +323,11 @@ public without sharing virtual class LogManagementDataSelector {
      * @return            The list of matching `User` records
      */
     public virtual List<User> getUsersByNameSearch(String searchTerm) {
-        return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Name, Username LIMIT 50];
+        if (String.isBlank(searchTerm) == true) {
+            return new List<User>();
+        }
+
+        return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username LIMIT 20];
     }
 
     /**
