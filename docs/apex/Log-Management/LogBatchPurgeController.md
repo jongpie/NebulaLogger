@@ -58,7 +58,7 @@ List&lt;PicklistOption&gt;
 
 The instance of `List&lt;PicklistOption&gt;`, containing all picklist options for purge Action.
 
-#### `getPurgeBatchJobRecords()` → `List<AsyncApexJob>`
+#### `getBatchPurgeJobRecords()` → `List<AsyncApexJob>`
 
 Returns `List&lt;AsyncApexJob&gt;` to display logBatchPurger jobs details in a Datatable.
 
@@ -72,7 +72,7 @@ List&lt;AsyncApexJob&gt;
 
 The instance of `List&lt;AsyncApexJob&gt;`, containing list of logBatchPurge jobs.
 
-#### `runPurgeBatch()` → `String`
+#### `runBatchPurge()` → `String`
 
 execute the logBatchPurger batch with batch size 2000
 

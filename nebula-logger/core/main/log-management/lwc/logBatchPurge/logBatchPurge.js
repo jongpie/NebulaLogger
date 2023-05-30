@@ -11,8 +11,8 @@ import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaFo
 import getMetrics from '@salesforce/apex/LogBatchPurgeController.getMetrics';
 import canUserRunLogBatchPurger from '@salesforce/apex/LogBatchPurgeController.canUserRunLogBatchPurger';
 import getPurgeActionOptions from '@salesforce/apex/LogBatchPurgeController.getPurgeActionOptions';
-import runPurgeBatch from '@salesforce/apex/LogBatchPurgeController.runPurgeBatch';
-import getPurgeBatchJobRecords from '@salesforce/apex/LogBatchPurgeController.getPurgeBatchJobRecords';
+import runBatchPurge from '@salesforce/apex/LogBatchPurgeController.runBatchPurge';
+import getBatchPurgeJobRecords from '@salesforce/apex/LogBatchPurgeController.getBatchPurgeJobRecords';
 
 export default class LogBatchPurge extends LightningElement {
     // UI
@@ -154,7 +154,7 @@ export default class LogBatchPurge extends LightningElement {
 
     loadPurgeBatchJobRecords() {
         this.showLoadingSpinner = true;
-        Promise.all([getPurgeBatchJobRecords(), canUserRunLogBatchPurger()])
+        Promise.all([getBatchPurgeJobRecords(), canUserRunLogBatchPurger()])
             .then(([purgeBatchResult, canUserRunLogBatchPurgerAdHocResult]) => {
                 this.disableRunPurgeButton = !canUserRunLogBatchPurgerAdHocResult;
                 const formattedBatchJobRecords = purgeBatchResult.map(record => {
@@ -167,7 +167,7 @@ export default class LogBatchPurge extends LightningElement {
             .catch(this._handleError);
     }
 
-    async runPurgeBatch() {
+    async runBatchPurge() {
         const confirmationResult = await LightningConfirm.open({
             label: 'Confirm Job Execution',
             message: 'Are you sure that you want to run LogBatchPurger? This will delete data!',
@@ -178,7 +178,7 @@ export default class LogBatchPurge extends LightningElement {
             return;
         }
 
-        runPurgeBatch()
+        runBatchPurge()
             .then(result => {
                 this.dispatchEvent(
                     new ShowToastEvent({

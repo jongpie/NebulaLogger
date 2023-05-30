@@ -342,9 +342,9 @@ private class LogBatchPurgeController_Tests {
     @IsTest
     private static void it_should_return_purge_batch_job_records() {
         System.Test.startTest();
-        LogBatchPurgeController.runPurgeBatch();
+        LogBatchPurgeController.runBatchPurge();
         System.Test.stopTest();
-        List<AsyncApexJob> purgeJobs = LogBatchPurgeController.getPurgeBatchJobRecords();
+        List<AsyncApexJob> purgeJobs = LogBatchPurgeController.getBatchPurgeJobRecords();
         System.Assert.areEqual(1, purgeJobs.size(), 'should return purge batch job records');
         for (AsyncApexJob job : purgeJobs) {
             System.Assert.isNotNull(job.JobType, 'it should return job type');
@@ -381,7 +381,7 @@ private class LogBatchPurgeController_Tests {
     @IsTest
     private static void it_should_execute_the_purge_batch() {
         System.Test.startTest();
-        String jobId = LogBatchPurgeController.runPurgeBatch();
+        String jobId = LogBatchPurgeController.runBatchPurge();
         System.Test.stopTest();
 
         String apexClassNamespacePrefix = LogBatchPurger.class.getName().contains('.') ? LogBatchPurger.class.getName().substringBefore('.') : null;
