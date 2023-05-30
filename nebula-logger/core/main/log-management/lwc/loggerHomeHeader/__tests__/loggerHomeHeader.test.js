@@ -66,7 +66,6 @@ describe('c-logger-home-header', () => {
         await Promise.resolve('Resolve getEnvironmentDetails()');
 
         const viewEnvironmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
-        expect(viewEnvironmentDetailsButton).toBeTruthy();
         viewEnvironmentDetailsButton.click();
         await Promise.resolve('Render modal');
 
@@ -93,5 +92,49 @@ describe('c-logger-home-header', () => {
             const textElement = element.shadowRoot.querySelector(`[data-id="${dataId}"]`);
             expect(textElement.value).toBe(dataIdToEnvironmentProperty[dataId]);
         });
+    });
+    
+     it("closes environment details modal when 'Escape' key is pressed", async () => {
+        const element = createElement('c-logger-home-header', {
+            is: LoggerHomeHeader
+        });
+        document.body.appendChild(element);
+        getEnvironmentDetails.emit(MOCK_ENVIRONMENT_DETAILS);
+        await Promise.resolve('Resolve getEnvironmentDetails()');
+        const viewEnvironmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
+        expect(viewEnvironmentDetailsButton).toBeTruthy();
+        viewEnvironmentDetailsButton.click();
+        await Promise.resolve('Render modal');
+        let modalElement = element.shadowRoot.querySelector('.slds-modal');
+        modalElement.focus();
+
+        const escapeKeyboardShortcutEvent = new KeyboardEvent('keydown', { code: 'Escape' });
+        modalElement.dispatchEvent(escapeKeyboardShortcutEvent);
+        await Promise.resolve('Resolve keyboard event');
+        
+        modalElement = element.shadowRoot.querySelector('.slds-modal');
+        expect(modalElement).toBeFalsy();
+    });
+
+
+    it('displays github release notes url when "View Release Notes" button is clicked', async () => {
+        const element = createElement('c-logger-home-header', {
+            is: LoggerHomeHeader
+        });
+        document.body.appendChild(element);
+        getEnvironmentDetails.emit(MOCK_ENVIRONMENT_DETAILS);
+        await Promise.resolve('Resolve getEnvironmentDetails()');
+        const navigationHandler = jest.fn();
+        element.addEventListener('navigate', navigationHandler);
+
+        const button = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
+        const navigateEvt = new CustomEvent('click');
+        button.dispatchEvent(navigateEvt);
+
+        expect(navigationHandler).toHaveBeenCalledTimes(1);
+        const navigateArgument = navigationHandler.mock.calls[0][0].detail.pageReference;
+        expect(navigateArgument).toBeTruthy();
+        expect(navigateArgument.type).toBe('standard__webPage');
+        expect(navigateArgument.attributes.url).toBe(`https://github.com/jongpie/NebulaLogger/releases/tag/${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber}`);
     });
 });

@@ -51,13 +51,13 @@ export default class LoggerHomeHeader extends NavigationMixin(LightningElement) 
     }
 
     handleViewReleaseNotes() {
-        const config = {
+        const pageReference = {
             type: 'standard__webPage',
             attributes: {
                 url: `${GITHUB_REPO_URL}releases/tag/${this.environment.loggerVersionNumber}`
             }
         };
-        this[NavigationMixin.Navigate](config);
+        this[NavigationMixin.Navigate](pageReference);
     }
 
     handleKeyDown(event) {
