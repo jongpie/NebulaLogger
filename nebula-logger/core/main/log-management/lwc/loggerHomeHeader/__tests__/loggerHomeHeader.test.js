@@ -93,8 +93,8 @@ describe('c-logger-home-header', () => {
             expect(textElement.value).toBe(dataIdToEnvironmentProperty[dataId]);
         });
     });
-    
-     it("closes environment details modal when 'Escape' key is pressed", async () => {
+
+    it("closes environment details modal when 'Escape' key is pressed", async () => {
         const element = createElement('c-logger-home-header', {
             is: LoggerHomeHeader
         });
@@ -111,11 +111,10 @@ describe('c-logger-home-header', () => {
         const escapeKeyboardShortcutEvent = new KeyboardEvent('keydown', { code: 'Escape' });
         modalElement.dispatchEvent(escapeKeyboardShortcutEvent);
         await Promise.resolve('Resolve keyboard event');
-        
+
         modalElement = element.shadowRoot.querySelector('.slds-modal');
         expect(modalElement).toBeFalsy();
     });
-
 
     it('displays github release notes url when "View Release Notes" button is clicked', async () => {
         const element = createElement('c-logger-home-header', {

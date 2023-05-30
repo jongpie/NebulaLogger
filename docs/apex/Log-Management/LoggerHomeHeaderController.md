@@ -4,7 +4,7 @@ layout: default
 
 ## LoggerHomeHeaderController class
 
-Controller class for the LWC `loggerHomePageHeader`
+Controller class for the LWC `loggerHomeHeader`
 
 ---
 
@@ -53,6 +53,8 @@ An instance of `LoggerHomeHeaderController.Environment`
 ###### `organizationInstanceLocation` → `String`
 
 ###### `organizationInstanceName` → `String`
+
+###### `organizationInstanceProducts` → `String`
 
 ###### `organizationMaintenanceWindow` → `String`
 

@@ -110,7 +110,7 @@ Builds and sends email notifications when internal exceptions occur within the l
 
 ### [LoggerHomeHeaderController](Log-Management/LoggerHomeHeaderController)
 
-Controller class for the LWC `loggerHomePageHeader`
+Controller class for the LWC `loggerHomeHeader`
 
 ### [LoggerSObjectMetadata](Log-Management/LoggerSObjectMetadata)
 

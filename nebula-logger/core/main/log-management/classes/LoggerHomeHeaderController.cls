@@ -5,7 +5,7 @@
 
 /**
  * @group Log Management
- * @description Controller class for the LWC `loggerHomePageHeader`
+ * @description Controller class for the LWC `loggerHomeHeader`
  */
 public without sharing class LoggerHomeHeaderController {
     /**

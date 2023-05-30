@@ -5602,23 +5602,7 @@ Inner class for publishing log entries via the Queueable interface.
 
 ---
 
-##### Properties
-
-###### `allOrNone` → `Boolean`
-
-Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
-
-###### `records` → `List<SObject>`
-
-List of records to save.
-
----
-
 ##### Methods
-
-###### `Uuid()` → `public`
-
-Default constructor
 
 ###### `execute(System.QueueableContext queueableContext)` → `void`
 
@@ -5629,6 +5613,44 @@ Asynchronoulsy publishes the list of `LogEntryEvent__e` records
 | Param              | Description                                                |
 | ------------------ | ---------------------------------------------------------- |
 | `queueableContext` | The context of the current queue, provided by the platform |
+
+---
+
+#### Logger.StatusApiResponse class
+
+---
+
+##### Properties
+
+###### `Products` → `List<StatusApiResponseProduct>`
+
+###### `allOrNone` → `Boolean`
+
+Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
+
+###### `environment` → `String`
+
+###### `location` → `String`
+
+###### `maintenanceWindow` → `String`
+
+###### `records` → `List<SObject>`
+
+List of records to save.
+
+###### `releaseNumber` → `String`
+
+###### `releaseVersion` → `String`
+
+###### `status` → `String`
+
+---
+
+##### Methods
+
+###### `Uuid()` → `public`
+
+Default constructor
 
 ###### `getValue()` → `String`
 
@@ -5646,23 +5668,15 @@ A string containing the UUID value.
 
 ---
 
-#### Logger.StatusApiResponse class
+#### Logger.StatusApiResponseProduct class
 
 ---
 
 ##### Properties
 
-###### `environment` → `String`
+###### `key` → `String`
 
-###### `location` → `String`
-
-###### `maintenanceWindow` → `String`
-
-###### `releaseNumber` → `String`
-
-###### `releaseVersion` → `String`
-
-###### `status` → `String`
+###### `name` → `String`
 
 ---
 
