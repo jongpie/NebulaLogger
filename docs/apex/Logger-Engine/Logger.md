@@ -22,27 +22,25 @@ Enum used to control how LogEntryEvent\_\_e records are inserted
 
 ---
 
-### Properties
-
-#### `allOrNone` → `Boolean`
-
-Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
-
-#### `records` → `List<SObject>`
-
-List of records to save.
-
----
-
 ### Methods
 
-#### `Uuid()` → `public`
+#### `callStatusApi()` → `StatusApiResponse`
 
-Default constructor
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Calls Salesforce&apos;s API endpoint https://api.status.salesforce.com/v1/instances/ to get more details about the current org, including the org&apos;s release number and release version
+
+##### Return
+
+**Type**
+
+StatusApiResponse
+
+**Description**
+
+Instance of `Logger.StatusApiResponse`, a data transfer object (DTO) that maps to the JSON returned
 
 #### `createSettings()` → `LoggerSettings__c`
 
-Creates a new, unsaved `LoggerSettings__c` record
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Creates a new, unsaved `LoggerSettings__c` record
 
 ##### Return
 
@@ -3432,7 +3430,7 @@ The matching instance of System.LoggingLevel (or a default value if a match is n
 
 #### `getNamespacePrefix()` → `String`
 
-Returns the current namespace of Nebula Logger
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Returns the current namespace of Nebula Logger
 
 ##### Return
 
@@ -3443,6 +3441,20 @@ String
 **Description**
 
 The current namespace prefix, or an empty string when no namespace is being used
+
+#### `getOrganizationApiVersion()` → `String`
+
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Returns the current Salesforce API version number of the org
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+The current API version, in the format `v00.0`
 
 #### `getParentLogTransactionId()` → `String`
 
@@ -3516,7 +3528,7 @@ System.LoggingLevel - The matching instance of LoggingLevel
 
 #### `getUserSettings()` → `LoggerSettings__c`
 
-Returns the current user&apos;s instance of `LoggerSettings__c`
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Returns the current user&apos;s instance of `LoggerSettings__c`
 
 ##### Return
 
@@ -3530,7 +3542,7 @@ LoggerSettings\_\_c - The current user&apos;s instance of the custom settings
 
 #### `getUserSettings(User loggingUser)` → `LoggerSettings__c`
 
-Returns the specified user&apos;s instance of `LoggerSettings__c`
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Returns the specified user&apos;s instance of `LoggerSettings__c`
 
 ##### Parameters
 
@@ -3547,20 +3559,6 @@ LoggerSettings\_\_c
 **Description**
 
 LoggerSettings\_\_c - The specified user&apos;s instance of the custom settings
-
-#### `getValue()` → `String`
-
-Getter returning the uuid value
-
-##### Return
-
-**Type**
-
-String
-
-**Description**
-
-A string containing the UUID value.
 
 #### `getVersionNumber()` → `String`
 
@@ -4750,7 +4748,7 @@ Saves any entries in Logger&apos;s buffer, using the specified save method for o
 
 #### `saveLog(String saveMethodName)` → `void`
 
-Saves any entries in Logger&apos;s buffer, using the specified save method for only this call. All subsequent calls to saveLog() will use the transaction save method.
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Saves any entries in Logger&apos;s buffer, using the specified save method for only this call. All subsequent calls to saveLog() will use the transaction save method.
 
 ##### Parameters
 
@@ -5615,6 +5613,74 @@ Asynchronoulsy publishes the list of `LogEntryEvent__e` records
 | Param              | Description                                                |
 | ------------------ | ---------------------------------------------------------- |
 | `queueableContext` | The context of the current queue, provided by the platform |
+
+---
+
+#### Logger.StatusApiResponse class
+
+---
+
+##### Properties
+
+###### `Products` → `List<StatusApiResponseProduct>`
+
+###### `allOrNone` → `Boolean`
+
+Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
+
+###### `environment` → `String`
+
+###### `location` → `String`
+
+###### `maintenanceWindow` → `String`
+
+###### `records` → `List<SObject>`
+
+List of records to save.
+
+###### `releaseNumber` → `String`
+
+###### `releaseVersion` → `String`
+
+###### `status` → `String`
+
+---
+
+##### Methods
+
+###### `Uuid()` → `public`
+
+Default constructor
+
+###### `getValue()` → `String`
+
+Getter returning the uuid value
+
+####### Return
+
+**Type**
+
+String
+
+**Description**
+
+A string containing the UUID value.
+
+---
+
+#### Logger.StatusApiResponseProduct class
+
+---
+
+##### Properties
+
+###### `key` → `String`
+
+###### `name` → `String`
+
+---
+
+##### Methods
 
 ###### `insertRecords(List<SObject> records)` → `void`
 

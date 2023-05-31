@@ -5,12 +5,12 @@
             <div class="slds-p-left_small slds-p-right_small slds-p-bottom_small container">
                 <lightning-radio-group
                     data-id="date-filter"
-                    name="Date Filter"
                     label=""
-                    options={dateFilterOptions}
-                    value={selectedDateFilterOption}
+                    name="Date Filter"
                     onchange={onChangeDateFilter}
+                    options={dateFilterOptions}
                     type="button"
+                    value={selectedDateFilterOption}
                 ></lightning-radio-group>
             </div>
             <div class="slds-p-left_small slds-p-right_small">
@@ -56,43 +56,40 @@
         <div class="slds-p-around_small slds-is-relative">
             <div class="slds-p-left_small slds-p-right_small container">
                 <lightning-button-icon
+                    alternative-text="refresh"
                     data-id="refresh-button"
                     icon-name="utility:refresh"
                     onclick={refreshPurgeBatchRecords}
-                    alternative-text="refresh"
                     title="refresh"
                 >
                 </lightning-button-icon>
 
                 <lightning-button
-                    data-id="run-purge-button"
-                    variant=""
-                    label="Run Purge Batch"
-                    title="Run Purge Batch"
-                    onclick={runPurgeBatch}
                     class="slds-m-left_x-small"
+                    data-id="run-purge-button"
                     disabled={disableRunPurgeButton}
+                    label="Run Purge Batch"
+                    onclick={runBatchPurge}
+                    title="Run Purge Batch"
+                    variant="destructive"
                 >
                 </lightning-button>
             </div>
             <div class="slds-p-around_small">
                 <div class="slds-box slds-p-around_none slds-scrollable datatable-container">
                     <lightning-datatable
-                        data-id="purge-batch-jobs"
-                        show-row-number-column
-                        key-field="id"
-                        data={purgeBatchJobRecords}
                         columns={purgeBatchColumns}
-                        onrowaction={handleRowAction}
+                        data-id="purge-batch-jobs"
+                        data={purgeBatchJobRecords}
                         hide-checkbox-column="true"
+                        is-loading={showLoadingSpinner}
+                        key-field="id"
+                        onrowaction={handleRowAction}
+                        show-row-number-column
                     >
                     </lightning-datatable>
                 </div>
             </div>
-        </div>
-        <!-- Spinner -->
-        <div if:true={showLoadingSpinner}>
-            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
         </div>
     </lightning-card>
 </template>

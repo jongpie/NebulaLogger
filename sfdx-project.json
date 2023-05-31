@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.3.NEXT",
-            "versionName": "Logger Settings Start and End Times",
-            "versionDescription": "Provides the ability to schedule LoggerSettings__c records, using the new optional datetime fields StartTime__d and EndTime__c",
+            "versionNumber": "4.10.4.NEXT",
+            "versionName": "New Logger Home Page",
+            "versionDescription": "Added a new home page to the Logger Console app, deprecated some existing custom tabs",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -59,19 +59,6 @@
             "versionName": "Beta Release",
             "versionNumber": "0.9.0.NEXT",
             "versionDescription": "Initial beta version of new plugin",
-            "default": false
-        },
-        {
-            "package": "Nebula Logger - Core Plugin - Logger Admin Dashboard",
-            "path": "./nebula-logger/plugins/logger-admin-dashboard/plugin",
-            "dependencies": [
-                {
-                    "package": "Nebula Logger - Core@4.6.12-log-scenario-rules"
-                }
-            ],
-            "versionName": "Beta Release",
-            "versionNumber": "0.9.0.NEXT",
-            "versionDescription": "Initial beta version of new dashboard plugin",
             "default": false
         },
         {
@@ -157,6 +144,7 @@
         "Nebula Logger - Core@4.10.1-new-settings-field-defaultplatformeventstoragelogginglevel__c": "04t5Y0000015nYaQAI",
         "Nebula Logger - Core@4.10.2-logger-lwc-enhancements": "04t5Y0000023SAGQA2",
         "Nebula Logger - Core@4.10.3-logger-settings-start-and-end-times": "04t5Y0000023SAfQAM",
+        "Nebula Logger - Core@4.10.4-new-logger-home-page": "04t5Y0000023SC7QAM",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

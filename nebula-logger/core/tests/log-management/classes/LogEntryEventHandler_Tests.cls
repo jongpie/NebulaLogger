@@ -1177,7 +1177,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     private static String createStatusApiResponseJson() {
-        LogEntryEventHandler.StatusApiResponse apiResponse = new LogEntryEventHandler.StatusApiResponse();
+        Logger.StatusApiResponse apiResponse = new Logger.StatusApiResponse();
         apiResponse.releaseNumber = MOCK_RELEASE_NUMBER;
         apiResponse.releaseVersion = MOCK_RELEASE_VERSION;
         return JSON.serialize(apiResponse);

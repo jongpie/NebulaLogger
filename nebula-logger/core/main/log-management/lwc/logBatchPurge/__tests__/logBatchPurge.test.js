@@ -1,5 +1,6 @@
 // UI
 import { createElement } from 'lwc';
+import LightningConfirm from 'lightning/confirm';
 import logBatchPurge from 'c/logBatchPurge';
 import { when } from 'jest-when';
 
@@ -8,8 +9,8 @@ import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaFo
 import canUserRunLogBatchPurger from '@salesforce/apex/LogBatchPurgeController.canUserRunLogBatchPurger';
 import getPurgeActionOptions from '@salesforce/apex/LogBatchPurgeController.getPurgeActionOptions';
 
-import runPurgeBatch from '@salesforce/apex/LogBatchPurgeController.runPurgeBatch';
-import getPurgeBatchJobRecords from '@salesforce/apex/LogBatchPurgeController.getPurgeBatchJobRecords';
+import runBatchPurge from '@salesforce/apex/LogBatchPurgeController.runBatchPurge';
+import getBatchPurgeJobRecords from '@salesforce/apex/LogBatchPurgeController.getBatchPurgeJobRecords';
 import getMetrics from '@salesforce/apex/LogBatchPurgeController.getMetrics';
 
 jest.useFakeTimers();
@@ -24,12 +25,14 @@ const mockGetLogMetricsForThisWeek = require('./data/getLogMetrics.ThisWeek.json
 const mockGetLogMetricsForThisMonth = require('./data/getLogMetrics.ThisMonth.json');
 const mockGetLogMetricsWhenNoLogRecords = require('./data/getLogMetrics.noLogRecords.json');
 
-const mockGetPurgeBatchJobRecords = require('./data/getPurgeBatchJobRecords.json');
+const mockgetBatchPurgeJobRecords = require('./data/getBatchPurgeJobRecords.json');
 const mockGetPurgeActionOptions = require('./data/getPurgeActionOptions.json');
-const mockRunPurgeBatch = require('./data/runPurgeBatch.json');
+const mockrunBatchPurge = require('./data/runBatchPurge.json');
 
 const SHOW_TOAST_EVENT_NAME = 'lightning__showtoast';
 const SHOW_TOAST_EVENT_HANDLER = jest.fn();
+
+jest.mock('lightning/confirm');
 
 jest.mock(
     '@salesforce/apex/LogBatchPurgeController.getMetrics',
@@ -62,7 +65,7 @@ jest.mock(
 );
 
 jest.mock(
-    '@salesforce/apex/LogBatchPurgeController.getPurgeBatchJobRecords',
+    '@salesforce/apex/LogBatchPurgeController.getBatchPurgeJobRecords',
     () => {
         return {
             default: jest.fn()
@@ -82,7 +85,7 @@ jest.mock(
 );
 
 jest.mock(
-    '@salesforce/apex/LogBatchPurgeController.runPurgeBatch',
+    '@salesforce/apex/LogBatchPurgeController.runBatchPurge',
     () => {
         return {
             default: jest.fn()
@@ -91,7 +94,7 @@ jest.mock(
     { virtual: true }
 );
 
-async function initializeElement(enableRunPurgeBatchAccess) {
+async function initializeElement(enablerunBatchPurgeAccess) {
     // Assign mock values for resolved Apex promises
     // getSchemaForName
     //     .mockResolvedValue(mockLogEntryTagObjectSchema)
@@ -107,10 +110,10 @@ async function initializeElement(enableRunPurgeBatchAccess) {
     when(getMetrics).calledWith({ dateFilterOption: 'THIS_MONTH' }).mockResolvedValue(mockGetLogMetricsForThisMonth);
 
     getPurgeActionOptions.mockResolvedValue(mockGetPurgeActionOptions);
-    getPurgeBatchJobRecords.mockResolvedValue(mockGetPurgeBatchJobRecords);
+    getBatchPurgeJobRecords.mockResolvedValue(mockgetBatchPurgeJobRecords);
 
-    canUserRunLogBatchPurger.mockResolvedValue(enableRunPurgeBatchAccess);
-    runPurgeBatch.mockResolvedValue(mockRunPurgeBatch);
+    canUserRunLogBatchPurger.mockResolvedValue(enablerunBatchPurgeAccess);
+    runBatchPurge.mockResolvedValue(mockrunBatchPurge);
 
     // Create the component
     const logBatchPurgeElement = createElement('c-log-batch-purge', { is: logBatchPurge });
@@ -121,7 +124,7 @@ async function initializeElement(enableRunPurgeBatchAccess) {
     await Promise.resolve('resolves getSchemaForName()'); // for logEntryTag__c
     await Promise.resolve('resolves getPurgeActionOptions()');
     await Promise.resolve('resolves getMetrics()');
-    await Promise.resolve('resolves getPurgeBatchJobRecords()');
+    await Promise.resolve('resolves getBatchPurgeJobRecords()');
     await Promise.resolve('resolves canUserRunLogBatchPurger()');
     return logBatchPurgeElement;
 }
@@ -141,9 +144,8 @@ describe('logBatchPurge lwc tests', () => {
         expect(getSchemaForName).toHaveBeenCalledTimes(3);
         expect(canUserRunLogBatchPurger).toHaveBeenCalledTimes(1);
         expect(getMetrics).toHaveBeenCalledTimes(1);
-        expect(getPurgeBatchJobRecords).toHaveBeenCalledTimes(1);
+        expect(getBatchPurgeJobRecords).toHaveBeenCalledTimes(1);
         // Check the component
-        expect(document.title).toEqual('Purge Batch');
         const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
         expect(metricsTable).toBeTruthy();
         const dateFilterRadioGroup = logBatchPurgeElement.shadowRoot.querySelector('lightning-radio-group[data-id="date-filter"]');
@@ -153,12 +155,12 @@ describe('logBatchPurge lwc tests', () => {
         const refreshButton = logBatchPurgeElement.shadowRoot.querySelector('lightning-button-icon[data-id="refresh-button"]');
         expect(refreshButton).toBeTruthy();
 
-        const runPurgeBatch = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
-        expect(runPurgeBatch).toBeTruthy();
+        const runBatchPurge = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
+        expect(runBatchPurge).toBeTruthy();
 
         const purgeBatchJobsDatatable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
         expect(purgeBatchJobsDatatable).toBeTruthy();
-        expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
+        expect(purgeBatchJobsDatatable.data).toEqual(mockgetBatchPurgeJobRecords);
     });
 
     it('displays log metrics for today by default', async () => {
@@ -196,7 +198,7 @@ describe('logBatchPurge lwc tests', () => {
         await Promise.resolve('resolves getSchemaForName()'); // for logEntryTag__c
         await Promise.resolve('resolves getPurgeActionOptions()');
         await Promise.resolve('resolves getMetrics()');
-        await Promise.resolve('resolves getPurgeBatchJobRecords()');
+        await Promise.resolve('resolves getBatchPurgeJobRecords()');
         await Promise.resolve('resolves canUserRunLogBatchPurger()');
 
         expect(dateFilterRadioGroup.value).toEqual('THIS_WEEK');
@@ -235,7 +237,7 @@ describe('logBatchPurge lwc tests', () => {
         await Promise.resolve('resolves getSchemaForName()'); // for logEntryTag__c
         await Promise.resolve('resolves getPurgeActionOptions()');
         await Promise.resolve('resolves getMetrics()');
-        await Promise.resolve('resolves getPurgeBatchJobRecords()');
+        await Promise.resolve('resolves getBatchPurgeJobRecords()');
         await Promise.resolve('resolves canUserRunLogBatchPurger()');
 
         expect(dateFilterRadioGroup.value).toEqual('THIS_MONTH');
@@ -271,10 +273,10 @@ describe('logBatchPurge lwc tests', () => {
         getMetrics.mockResolvedValue(mockGetLogMetricsWhenNoLogRecords);
 
         getPurgeActionOptions.mockResolvedValue(mockGetPurgeActionOptions);
-        getPurgeBatchJobRecords.mockResolvedValue(mockGetPurgeBatchJobRecords);
+        getBatchPurgeJobRecords.mockResolvedValue(mockgetBatchPurgeJobRecords);
 
         canUserRunLogBatchPurger.mockResolvedValue(true);
-        runPurgeBatch.mockResolvedValue(mockRunPurgeBatch);
+        runBatchPurge.mockResolvedValue(mockrunBatchPurge);
 
         // Create the component
         const logBatchPurgeElement = createElement('c-log-batch-purge', { is: logBatchPurge });
@@ -285,7 +287,7 @@ describe('logBatchPurge lwc tests', () => {
         await Promise.resolve('resolves getSchemaForName()'); // for logEntryTag__c
         await Promise.resolve('resolves getPurgeActionOptions()');
         await Promise.resolve('resolves getMetrics()');
-        await Promise.resolve('resolves getPurgeBatchJobRecords()');
+        await Promise.resolve('resolves getBatchPurgeJobRecords()');
         await Promise.resolve('resolves canUserRunLogBatchPurger()');
 
         const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
@@ -314,40 +316,43 @@ describe('logBatchPurge lwc tests', () => {
         const logBatchPurgeElement = await initializeElement(false);
         const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
 
-        const runPurgeBatch = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
-        expect(runPurgeBatch).toBeTruthy();
-        expect(runPurgeBatch.disabled).toEqual(true);
+        const runBatchPurge = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
+        expect(runBatchPurge).toBeTruthy();
+        expect(runBatchPurge.disabled).toEqual(true);
     });
 
     it('enable the run purge button when user has delete permission on log object ', async () => {
         const logBatchPurgeElement = await initializeElement(true);
-        const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
 
-        const runPurgeBatch = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
-        expect(runPurgeBatch).toBeTruthy();
-        expect(runPurgeBatch.disabled).toEqual(false);
+        const runBatchPurgeBtn = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
+        expect(runBatchPurgeBtn).toBeTruthy();
+        expect(runBatchPurgeBtn.disabled).toEqual(false);
     });
 
-    it('displays the purge job records in datatable.', async () => {
+    it('displays the purge job records in datatable', async () => {
         const logBatchPurgeElement = await initializeElement(true);
 
         const purgeBatchJobsDatatable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
         expect(purgeBatchJobsDatatable).toBeTruthy();
-        expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
+        expect(purgeBatchJobsDatatable.data).toEqual(mockgetBatchPurgeJobRecords);
     });
 
-    it('it show success toast when user click on run batch button.', async () => {
+    it('it show success toast when user confirms running the batch job', async () => {
+        LightningConfirm.open = jest.fn().mockResolvedValue(true);
         const logBatchPurgeElement = await initializeElement(true);
-        const runPurgeBatch = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
-
         logBatchPurgeElement.addEventListener(SHOW_TOAST_EVENT_NAME, SHOW_TOAST_EVENT_HANDLER);
-        runPurgeBatch.click();
 
-        await Promise.resolve();
+        const runBatchPurgeBtn = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
+        runBatchPurgeBtn.click();
+
+        await Promise.resolve('Show & confirm LightningConfirm modal');
+        await Promise.resolve('Call Apex controller method runBatchPurge()');
+        await Promise.resolve('Dispatch Toast event');
+        await Promise.resolve('Call Apex controller method loadPurgeBatchJobRecords()');
         expect(SHOW_TOAST_EVENT_HANDLER).toBeCalledTimes(1);
     });
 
-    it('it refresh the purge batch records when user clicks on the refresh button.', async () => {
+    it('it refresh the purge batch records when user clicks on the refresh button', async () => {
         const logBatchPurgeElement = await initializeElement(true);
         const refreshButton = document.querySelector('c-log-batch-purge').shadowRoot.querySelector('lightning-button-icon');
         refreshButton.click();
@@ -360,10 +365,10 @@ describe('logBatchPurge lwc tests', () => {
         const purgeBatchJobsDatatable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
         expect(purgeBatchJobsDatatable).toBeTruthy();
 
-        expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
+        expect(purgeBatchJobsDatatable.data).toEqual(mockgetBatchPurgeJobRecords);
     });
 
-    it('it refresh the purge batch records for every 10 sec.', async () => {
+    it('it refresh the purge batch records for every 10 sec', async () => {
         const logBatchPurgeElement = await initializeElement(true);
         const callBack = jest.fn();
         expect(setTimeout).toHaveBeenCalledTimes(1);

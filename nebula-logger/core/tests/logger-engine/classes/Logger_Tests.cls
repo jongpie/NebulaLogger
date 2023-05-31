@@ -26,6 +26,16 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_return_organization_api_version() {
+        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
+        String expectedApiVersion = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
+
+        String returnedApiVersion = Logger.getOrganizationApiVersion();
+
+        System.Assert.areEqual(expectedApiVersion, returnedApiVersion);
+    }
+
+    @IsTest
     static void it_should_create_new_in_memory_settings_with_default_field_values() {
         LoggerSettings__c expectedSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
 
@@ -7590,6 +7600,37 @@ private class Logger_Tests {
         System.Assert.areEqual(System.LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
         System.Assert.areEqual(System.LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
         System.Assert.areEqual(System.LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
+    }
+
+    @IsTest
+    static void it_should_return_callout_response_from_status_api() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
+        Logger.StatusApiResponse mockApiResponse = new Logger.StatusApiResponse();
+        mockApiResponse.environment = 'sandbox';
+        mockApiResponse.location = 'NA';
+        mockApiResponse.maintenanceWindow = 'Saturdays 07:00 PM - 11:00 PM PST';
+        mockApiResponse.releaseNumber = '242.19.17';
+        mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
+        mockApiResponse.status = 'OK';
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))
+        );
+
+        Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
+
+        System.Assert.areEqual(JSON.serialize(mockApiResponse), JSON.serialize(returnedApiResponse));
+    }
+
+    @IsTest
+    static void it_should_return_null_when_status_api_callout_is_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.CALL_STATUS_API);
+
+        Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
+
+        System.Assert.isNull(returnedApiResponse);
     }
     // End tests for utility methods
 

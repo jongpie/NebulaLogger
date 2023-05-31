@@ -48,7 +48,6 @@ export default class LoggerSettings extends LightningElement {
     _currentRecord;
 
     connectedCallback() {
-        document.title = this.title;
         this.showLoadingSpinner = true;
         Promise.all([getOrganization(), getSchemaForName({ sobjectApiName: 'LoggerSettings__c' }), getPicklistOptions(), canUserModifyLoggerSettings()])
             .then(([organizationRecordResult, loggerSettingsSchemaResult, apexPicklistOptionsResult, canUserModifyLoggerSettingsResult]) => {

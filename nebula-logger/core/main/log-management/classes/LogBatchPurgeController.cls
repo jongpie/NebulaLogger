@@ -70,7 +70,7 @@ public with sharing class LogBatchPurgeController {
      * @return   The instance of `List<AsyncApexJob>`, containing list of logBatchPurge jobs.
      */
     @AuraEnabled
-    public static List<AsyncApexJob> getPurgeBatchJobRecords() {
+    public static List<AsyncApexJob> getBatchPurgeJobRecords() {
         List<String> qualifiedClassNamePieces = LogBatchPurger.class.getName().split('\\.');
         // If there are 2 pieces, then it
         String apexClassNamespacePrefix = qualifiedClassNamePieces.size() == 2 ? qualifiedClassNamePieces.get(0) : null;
@@ -93,7 +93,7 @@ public with sharing class LogBatchPurgeController {
      * @return Returns the ID of the AsyncApexJob object associated with the LogBatchPurger job as a string
      */
     @AuraEnabled
-    public static String runPurgeBatch() {
+    public static String runBatchPurge() {
         return Database.executeBatch(new LogBatchPurger(), LogBatchPurger.getDefaultBatchSize());
     }
 

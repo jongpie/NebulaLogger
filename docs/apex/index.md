@@ -108,6 +108,10 @@ Controller class for the LWC `logViewer`, used to provided different views on a 
 
 Builds and sends email notifications when internal exceptions occur within the logging system
 
+### [LoggerHomeHeaderController](Log-Management/LoggerHomeHeaderController)
+
+Controller class for the LWC `loggerHomeHeader`
+
 ### [LoggerSObjectMetadata](Log-Management/LoggerSObjectMetadata)
 
 Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties

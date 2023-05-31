@@ -14,18 +14,6 @@ Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__
 
 ## Default constructor, used by the trigger `LogEntryEvent.trigger`
 
-### Properties
-
-#### `releaseNumber` → `String`
-
-String containing the release number.
-
-#### `releaseVersion` → `String`
-
-String containing the release version.
-
----
-
 ### Methods
 
 #### `StatusApiCalloutQueueable(List<Log__c> logsToUpdate)` → `public`

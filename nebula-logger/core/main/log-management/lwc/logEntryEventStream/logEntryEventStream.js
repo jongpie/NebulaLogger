@@ -53,8 +53,6 @@ export default class LogEntryEventStream extends LightningElement {
     _subscription = {};
 
     async connectedCallback() {
-        document.title = 'Log Entry Event Stream';
-
         Promise.all([getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDatatableDisplayFields()])
             .then(([getSchemaForNameResult, getTableViewFieldsResult]) => {
                 this._logEntryEventSchema = getSchemaForNameResult;
