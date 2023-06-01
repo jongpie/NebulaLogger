@@ -3316,12 +3316,10 @@ global with sharing class Logger {
     // Inner class used for deserializing data from the status API
     @SuppressWarnings('PMD.ApexDoc, PMD.VariableNamingConventions')
     public class StatusApiResponse {
-        public String environment { get; set; }
         public String location { get; set; }
         public String maintenanceWindow { get; set; }
         public String releaseNumber { get; set; }
         public String releaseVersion { get; set; }
-        public String status { get; set; }
         public List<StatusApiResponseProduct> Products { get; set; }
     }
 

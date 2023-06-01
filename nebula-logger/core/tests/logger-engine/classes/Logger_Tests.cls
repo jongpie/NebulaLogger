@@ -7607,12 +7607,10 @@ private class Logger_Tests {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
         System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
         Logger.StatusApiResponse mockApiResponse = new Logger.StatusApiResponse();
-        mockApiResponse.environment = 'sandbox';
         mockApiResponse.location = 'NA';
         mockApiResponse.maintenanceWindow = 'Saturdays 07:00 PM - 11:00 PM PST';
         mockApiResponse.releaseNumber = '242.19.17';
         mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
-        mockApiResponse.status = 'OK';
         System.Test.setMock(
             System.HttpCalloutMock.class,
             LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))

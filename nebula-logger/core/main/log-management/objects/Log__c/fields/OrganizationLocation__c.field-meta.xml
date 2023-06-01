@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ApiVersion__c</fullName>
-    <businessStatus>DeprecateCandidate</businessStatus>
+    <fullName>OrganizationLocation__c</fullName>
+    <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <description>The Salesforce release (API version) of the environment</description>
     <externalId>false</externalId>
-    <inlineHelpText>The Salesforce release (API version) of the environment</inlineHelpText>
-    <label>DEPRECATED: API Version</label>
+    <label>Organization Location</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
+        <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>v58.0</fullName>
+                <fullName>APAC</fullName>
                 <default>false</default>
-                <label>v58.0 - Summer &apos;23 Release</label>
+                <label>APAC</label>
             </value>
             <value>
-                <fullName>v57.0</fullName>
+                <fullName>EMEA</fullName>
                 <default>false</default>
-                <label>v57.0 - Spring &apos;23 Release</label>
+                <label>EMEA</label>
+            </value>
+            <value>
+                <fullName>NA</fullName>
+                <default>false</default>
+                <label>NA</label>
             </value>
         </valueSetDefinition>
     </valueSet>

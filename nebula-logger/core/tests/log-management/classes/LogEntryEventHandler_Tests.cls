@@ -6,9 +6,6 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
 @IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests {
-    private static final String MOCK_RELEASE_NUMBER = '230.12.2';
-    private static final String MOCK_RELEASE_VERSION = 'Spring \'21 Patch 12.2';
-
     @IsTest
     static void it_should_return_the_logEntryEvent_sobjectType() {
         System.Assert.areEqual(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
@@ -998,9 +995,10 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Logger.StatusApiResponse mockApiResponse = createStatusApiResponse();
         System.Test.setMock(
             System.HttpCalloutMock.class,
-            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(createStatusApiResponseJson())
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(System.JSON.serialize(mockApiResponse))
         );
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
@@ -1023,8 +1021,12 @@ private class LogEntryEventHandler_Tests {
         Log__c log = getLog();
         System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.Assert.areEqual(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
-        System.Assert.areEqual(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
+        System.Assert.areEqual(mockApiResponse.location, log.OrganizationLocation__c);
+        System.Assert.areEqual(mockApiResponse.releaseNumber, log.OrganizationReleaseNumber__c);
+        System.Assert.areEqual(mockApiResponse.releaseVersion, log.OrganizationReleaseVersion__c);
+        // Legacy fields
+        System.Assert.areEqual(log.OrganizationReleaseNumber__c, log.ApiReleaseNumber__c);
+        System.Assert.areEqual(log.OrganizationReleaseVersion__c, log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -1072,9 +1074,10 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Logger.StatusApiResponse mockApiResponse = createStatusApiResponse();
         System.Test.setMock(
             System.HttpCalloutMock.class,
-            LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson())
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(System.JSON.serialize(mockApiResponse))
         );
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
@@ -1110,9 +1113,10 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Logger.StatusApiResponse mockApiResponse = createStatusApiResponse();
         System.Test.setMock(
             System.HttpCalloutMock.class,
-            LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson())
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(System.JSON.serialize(mockApiResponse))
         );
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
@@ -1176,11 +1180,12 @@ private class LogEntryEventHandler_Tests {
         return logEntryEvent;
     }
 
-    private static String createStatusApiResponseJson() {
-        Logger.StatusApiResponse apiResponse = new Logger.StatusApiResponse();
-        apiResponse.releaseNumber = MOCK_RELEASE_NUMBER;
-        apiResponse.releaseVersion = MOCK_RELEASE_VERSION;
-        return JSON.serialize(apiResponse);
+    private static Logger.StatusApiResponse createStatusApiResponse() {
+        Logger.StatusApiResponse mockApiResponse = new Logger.StatusApiResponse();
+        mockApiResponse.location = 'NA';
+        mockApiResponse.releaseNumber = '242.19.17';
+        mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
+        return mockApiResponse;
     }
 
     private static Log__c getLog() {
@@ -1202,12 +1207,16 @@ private class LogEntryEventHandler_Tests {
                 LoginType__c,
                 LogoutUrl__c,
                 NetworkId__c,
+                OrganizationApiVersion__c,
                 OrganizationDomainUrl__c,
                 OrganizationEnvironmentType__c,
                 OrganizationId__c,
                 OrganizationInstanceName__c,
+                OrganizationLocation__c,
                 OrganizationName__c,
                 OrganizationNamespacePrefix__c,
+                OrganizationReleaseNumber__c,
+                OrganizationReleaseVersion__c,
                 OrganizationType__c,
                 OwnerId,
                 ParentLogTransactionId__c,

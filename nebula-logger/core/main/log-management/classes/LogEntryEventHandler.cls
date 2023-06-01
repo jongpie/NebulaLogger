@@ -692,14 +692,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 WHERE Id IN :this.logIds AND ApiReleaseNumber__c = NULL
                 LIMIT :System.Limits.getLimitDmlRows()
             ]) {
-                // TODO Logger.ApiResponse has new properties that aren't currently being captured here,
-                // so in a future release, add new custom fields to capture more (all?) properties
-                // - environment
-                // - location
-                // - maintenanceWindow
-                // ✔ releaseNumber
-                // ✔ releaseVersion
-                // - status
+                log.OrganizationLocation__c = statusApiResponse.location;
+                log.OrganizationReleaseNumber__c = statusApiResponse.releaseNumber;
+                log.OrganizationReleaseVersion__c = statusApiResponse.releaseVersion;
+
+                // TODO ApiReleaseNumber__c and ApiReleaseVersion__c are deprecated as of v4.10.6
+                // For now, they're still set so orgs have time to migrate to the new fields, but in
+                // a future release, ApiReleaseNumber__c and ApiReleaseVersion__c should be completely
+                // remove from the codebase
                 log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
                 log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
 
