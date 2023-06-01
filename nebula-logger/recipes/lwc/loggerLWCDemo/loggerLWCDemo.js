@@ -134,6 +134,7 @@ export default class LoggerLWCDemo extends LightningElement {
         console.log('running saveLog for btn');
         this.logger.setScenario(this.scenario);
         console.log(this.logger);
-        this.logger.saveLog('QUEUEABLE');
+        // this.logger.saveLog('QUEUEABLE');
+        this.logger.saveLog();
     }
 }

@@ -1248,6 +1248,12 @@ private class LogEntryEventHandler_Tests {
                 UserType__c,
                 (
                     SELECT
+                        BrowserFormFactor__c,
+                        BrowserLanguage__c,
+                        BrowserScreenResolution__c,
+                        BrowserUrl__c,
+                        BrowserUserAgent__c,
+                        BrowserWindowResolution__c,
                         ComponentType__c,
                         DatabaseResultCollectionSize__c,
                         DatabaseResultCollectionType__c,
@@ -1420,6 +1426,20 @@ private class LogEntryEventHandler_Tests {
     }
 
     private static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
+        System.Assert.areEqual(logEntryEvent.BrowserFormFactor__c, logEntry.BrowserFormFactor__c, 'logEntry.BrowserFormFactor__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.BrowserLanguage__c, logEntry.BrowserLanguage__c, 'logEntry.BrowserLanguage__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.BrowserScreenResolution__c,
+            logEntry.BrowserScreenResolution__c,
+            'logEntry.BrowserScreenResolution__c was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.BrowserUrl__c, logEntry.BrowserUrl__c, 'logEntry.BrowserUrl__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.BrowserUserAgent__c, logEntry.BrowserUserAgent__c, 'logEntry.BrowserUserAgent__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.BrowserWindowResolution__c,
+            logEntry.BrowserWindowResolution__c,
+            'logEntry.BrowserWindowResolution__c was not properly set'
+        );
         System.Assert.areEqual(logEntryEvent.ComponentType__c, logEntry.ComponentType__c, 'logEntry.ComponentType__c was not properly set');
         System.Assert.areEqual(
             logEntryEvent.DatabaseResultCollectionSize__c,

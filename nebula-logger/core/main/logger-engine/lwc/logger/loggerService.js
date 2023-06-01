@@ -190,7 +190,7 @@ const LoggerService = class {
         }
         const loggingPromise = this._loadSettingsFromServer().then(() => {
             if (this._meetsUserLoggingLevel(loggingLevel) === true) {
-                this.#componentLogEntries.push(logEntryBuilder);
+                this.#componentLogEntries.push(logEntryBuilder.logEntry);
             }
         });
         this.#loggingPromises.push(loggingPromise);

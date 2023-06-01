@@ -85,6 +85,30 @@ A DTO object used to create log entries for lightning components
 
 ##### Properties
 
+###### `browserFormFactor` → `String`
+
+The form factor of the user&apos;s browser
+
+###### `browserLanguage` → `String`
+
+The language set in the user&apos;s browser
+
+###### `browserScreenResolution` → `String`
+
+The resolution of the user&apos;s device
+
+###### `browserUrl` → `String`
+
+The URL displayed in the user&apos;s browser
+
+###### `browserUserAgent` → `String`
+
+The user agent of the user&apos;s browser
+
+###### `browserWindowResolution` → `String`
+
+The resolution of the user&apos;s browser window
+
 ###### `error` → `ComponentError`
 
 (Optional) A JavaScript Error to log
