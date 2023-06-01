@@ -1037,7 +1037,13 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        Log__c recentLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'ABC-XYZ');
+        Log__c recentLog = new Log__c(
+            ApiReleaseNumber__c = 'QWERTY',
+            ApiReleaseVersion__c = 'ASDF',
+            OrganizationReleaseNumber__c = 'POIUY',
+            OrganizationReleaseVersion__c = 'LKJH',
+            TransactionId__c = 'ABC-XYZ'
+        );
         insert recentLog;
         insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
@@ -1064,6 +1070,8 @@ private class LogEntryEventHandler_Tests {
         LogEntry__c logEntry = log.LogEntries__r.get(0);
         System.Assert.areEqual(recentLog.ApiReleaseNumber__c, log.ApiReleaseNumber__c);
         System.Assert.areEqual(recentLog.ApiReleaseVersion__c, log.ApiReleaseVersion__c);
+        System.Assert.areEqual(recentLog.OrganizationReleaseNumber__c, log.OrganizationReleaseNumber__c);
+        System.Assert.areEqual(recentLog.OrganizationReleaseVersion__c, log.OrganizationReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -1103,6 +1111,8 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         System.Assert.isNull(log.ApiReleaseNumber__c);
         System.Assert.isNull(log.ApiReleaseVersion__c);
+        System.Assert.isNull(log.OrganizationReleaseNumber__c);
+        System.Assert.isNull(log.OrganizationReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -1364,6 +1374,7 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c, 'log.LogoutUrl__c was not properly set');
         System.Assert.areEqual(logEntryEvent.NetworkId__c, log.NetworkId__c, 'log.NetworkId__c was not properly set');
         System.Assert.areEqual(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
+        System.Assert.areEqual(logEntryEvent.OrganizationApiVersion__c, log.OrganizationApiVersion__c, 'log.OrganizationApiVersion__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');

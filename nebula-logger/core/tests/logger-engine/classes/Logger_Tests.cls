@@ -291,12 +291,13 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_set_transaction_details() {
-        for (Integer i = 0; i < 10; i++) {
-            LogEntryEventBuilder builder = Logger.info('my log entry');
+        for (Integer i = 0; i < 3; i++) {
+            LogEntryEventBuilder builder = Logger.info('my log entry for index ' + i);
 
             System.Assert.isNotNull(builder.getLogEntryEvent().LoggerVersionNumber__c);
-            System.Assert.areEqual(Logger.CURRENT_VERSION_NUMBER, builder.getLogEntryEvent().LoggerVersionNumber__c);
+            System.Assert.areEqual(Logger.getVersionNumber(), builder.getLogEntryEvent().LoggerVersionNumber__c);
             System.Assert.areEqual(Logger.getScenario(), builder.getLogEntryEvent().EntryScenario__c);
+            System.Assert.areEqual(Logger.getOrganizationApiVersion(), builder.getLogEntryEvent().OrganizationApiVersion__c);
             System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
             System.Assert.areEqual(Logger.getParentLogTransactionId(), builder.getLogEntryEvent().ParentLogTransactionId__c);
             System.Assert.areEqual(System.Request.getCurrent().getRequestId(), builder.getLogEntryEvent().RequestId__c);

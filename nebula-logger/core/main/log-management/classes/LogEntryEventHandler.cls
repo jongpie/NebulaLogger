@@ -141,8 +141,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             Log__c log = new Log__c(
+                // TODO Log__c.ApiReleaseNumber__c and Log__c.ApiReleaseVersion__c are both deprecated,
+                // in a future release, remove these reference (and delete the fields)
                 ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
                 ApiReleaseVersion__c = recentLogWithApiReleaseDetails?.ApiReleaseVersion__c,
+                // TODO Log__c.ApiVersion__c and LogEntryEvent__e.ApiVersion__c are both deprecated,
+                // in a future release, remove this reference (and delete the fields)
                 ApiVersion__c = logEntryEvent.ApiVersion__c,
                 ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
                 Locale__c = logEntryEvent.Locale__c,
@@ -162,12 +166,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 NetworkName__c = logEntryEvent.NetworkName__c,
                 NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c,
                 NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c,
+                OrganizationApiVersion__c = logEntryEvent.OrganizationApiVersion__c,
                 OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c,
                 OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c,
                 OrganizationId__c = logEntryEvent.OrganizationId__c,
                 OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c,
                 OrganizationName__c = logEntryEvent.OrganizationName__c,
                 OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c,
+                OrganizationReleaseNumber__c = recentLogWithApiReleaseDetails?.OrganizationReleaseNumber__c,
+                OrganizationReleaseVersion__c = recentLogWithApiReleaseDetails?.OrganizationReleaseVersion__c,
                 OrganizationType__c = logEntryEvent.OrganizationType__c,
                 OwnerId = this.determineLogOwnerId(logEntryEvent),
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,

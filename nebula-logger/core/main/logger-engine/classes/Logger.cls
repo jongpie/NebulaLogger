@@ -3195,6 +3195,7 @@ global with sharing class Logger {
             logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.EntryScenario__c = currentEntryScenario;
             logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEvent.OrganizationApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
             logEntryEvent.RequestId__c = REQUEST_ID;
             logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
