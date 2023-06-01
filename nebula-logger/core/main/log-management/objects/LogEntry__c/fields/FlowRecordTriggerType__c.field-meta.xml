@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FlowRecordTriggerType__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description
+    >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowdefinitionview.htm</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Specifies what causes the flow to run.</inlineHelpText>
+    <label>Flow Record Trigger Type</label>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Create</fullName>
+                <default>false</default>
+                <label>Create</label>
+            </value>
+            <value>
+                <fullName>CreateAndUpdate</fullName>
+                <default>false</default>
+                <label>CreateAndUpdate</label>
+            </value>
+            <value>
+                <fullName>Delete</fullName>
+                <default>false</default>
+                <label>Delete</label>
+            </value>
+            <value>
+                <fullName>None</fullName>
+                <default>false</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>Update</fullName>
+                <default>false</default>
+                <label>Update</label>
+            </value>
+            <value>
+                <fullName>PlatformEvent</fullName>
+                <default>false</default>
+                <label>PlatformEvent</label>
+            </value>
+            <value>
+                <fullName>RecordAfterSave</fullName>
+                <default>false</default>
+                <label>RecordAfterSave</label>
+            </value>
+            <value>
+                <fullName>RecordBeforeSave</fullName>
+                <default>false</default>
+                <label>RecordBeforeSave</label>
+            </value>
+            <value>
+                <fullName>Scheduled</fullName>
+                <default>false</default>
+                <label>Scheduled</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

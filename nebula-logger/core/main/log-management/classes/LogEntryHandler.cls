@@ -151,6 +151,9 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.FlowLastModifiedByName__c = flowDefinition.LastModifiedBy;
             logEntry.FlowLastModifiedDate__c = flowDefinition.LastModifiedDate;
             logEntry.FlowProcessType__c = flowDefinition.ProcessType;
+            logEntry.FlowRecordTriggerType__c = flowDefinition.RecordTriggerType;
+            logEntry.FlowTriggerOrder__c = flowDefinition.TriggerOrder;
+            logEntry.FlowTriggerSObjectType__c = flowDefinition.TriggerObjectOrEvent.QualifiedApiName;
             logEntry.FlowTriggerType__c = flowDefinition.TriggerType;
         }
     }

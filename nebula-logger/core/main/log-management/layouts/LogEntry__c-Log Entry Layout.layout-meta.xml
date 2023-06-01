@@ -165,6 +165,18 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>FlowTriggerSObjectType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>FlowTriggerOrder__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>FlowRecordTriggerType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>FlowVersionRunInMode__c</field>
             </layoutItems>
             <layoutItems>

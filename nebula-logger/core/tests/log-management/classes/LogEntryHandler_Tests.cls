@@ -576,6 +576,9 @@ private class LogEntryHandler_Tests {
                 FlowLastModifiedByName__c,
                 FlowLastModifiedDate__c,
                 FlowProcessType__c,
+                FlowRecordTriggerType__c,
+                FlowTriggerSObjectType__c,
+                FlowTriggerOrder__c,
                 FlowTriggerType__c,
                 FlowVersionApiVersionRuntime__c,
                 FlowVersionNumber__c,
@@ -595,6 +598,9 @@ private class LogEntryHandler_Tests {
         System.Assert.isNull(logEntry.FlowLastModifiedByName__c);
         System.Assert.isNull(logEntry.FlowLastModifiedDate__c);
         System.Assert.isNull(logEntry.FlowProcessType__c);
+        System.Assert.isNull(logEntry.FlowRecordTriggerType__c);
+        System.Assert.isNull(logEntry.FlowTriggerSObjectType__c);
+        System.Assert.isNull(logEntry.FlowTriggerOrder__c);
         System.Assert.isNull(logEntry.FlowTriggerType__c);
         System.Assert.isNull(logEntry.FlowVersionApiVersionRuntime__c);
         System.Assert.isNull(logEntry.FlowVersionNumber__c);

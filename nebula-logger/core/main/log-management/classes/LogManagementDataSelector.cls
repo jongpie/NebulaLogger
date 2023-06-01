@@ -162,7 +162,11 @@ public without sharing virtual class LogManagementDataSelector {
                 LastModifiedDate,
                 ManageableState,
                 ProcessType,
-                TriggerType
+                RecordTriggerType,
+                TriggerObjectOrEvent.QualifiedApiName,
+                TriggerOrder,
+                TriggerType,
+                VersionNumber
             FROM FlowDefinitionView
             WHERE ApiName IN :flowApiNames AND IsActive = TRUE
         ];
