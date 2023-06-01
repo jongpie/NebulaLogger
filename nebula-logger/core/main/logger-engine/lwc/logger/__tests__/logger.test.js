@@ -1,4 +1,5 @@
 import { createElement } from 'lwc';
+import FORM_FACTOR from '@salesforce/client/formFactor';
 // Recommended approach
 import { createLogger } from 'c/logger';
 // Legacy approach
@@ -44,13 +45,13 @@ describe('logger lwc import tests', () => {
         await logger.getUserSettings();
         const scenario = 'some scenario';
         const message = 'some message';
-        const firstLogEntry = await logger.finest(message);
+        const firstLogEntry = logger.finest(message).getComponentLogEntry();
         await flushPromises();
-        expect(firstLogEntry.scenario).toBeUndefined();
+        expect(firstLogEntry.scenario).toBeNull();
         expect(logger.getBufferSize()).toEqual(1);
-        const secondLogEntry = logger.info(message);
+        const secondLogEntry = logger.info(message).getComponentLogEntry();
         await flushPromises();
-        expect(secondLogEntry.scenario).toBeUndefined();
+        expect(secondLogEntry.scenario).toBeNull();
         expect(logger.getBufferSize()).toEqual(2);
 
         await logger.setScenario(scenario);
@@ -64,7 +65,7 @@ describe('logger lwc import tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'component log entry with loggingLevel ERROR';
 
-        const logEntry = logger.error(message);
+        const logEntry = logger.error(message).getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(1);
@@ -77,7 +78,7 @@ describe('logger lwc import tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'component log entry with loggingLevel WARN';
 
-        const logEntry = logger.warn(message);
+        const logEntry = logger.warn(message).getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(1);
@@ -90,7 +91,7 @@ describe('logger lwc import tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'component log entry with loggingLevel INFO';
 
-        const logEntry = logger.info(message);
+        const logEntry = logger.info(message).getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(1);
@@ -103,7 +104,7 @@ describe('logger lwc import tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'component log entry with loggingLevel DEBUG';
 
-        const logEntry = logger.debug(message);
+        const logEntry = logger.debug(message).getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(1);
@@ -116,7 +117,7 @@ describe('logger lwc import tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'component log entry with loggingLevel FINE';
 
-        const logEntry = logger.fine(message);
+        const logEntry = logger.fine(message).getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(1);
@@ -129,7 +130,7 @@ describe('logger lwc import tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'component log entry with loggingLevel FINER';
 
-        const logEntry = logger.finer(message);
+        const logEntry = logger.finer(message).getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(1);
@@ -142,7 +143,7 @@ describe('logger lwc import tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'component log entry with loggingLevel FINEST';
 
-        const logEntry = logger.finest(message);
+        const logEntry = logger.finest(message).getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(1);
@@ -154,11 +155,12 @@ describe('logger lwc import tests', () => {
         const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         await logger.getUserSettings();
-        const logEntry = logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
         const mockUserId = '0052F000008yLcEQAU';
 
-        logEntry.setRecordId(mockUserId);
+        logEntryBuilder.setRecordId(mockUserId);
 
         expect(logEntry.recordId).toEqual(mockUserId);
     });
@@ -167,11 +169,12 @@ describe('logger lwc import tests', () => {
         const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         await logger.getUserSettings();
-        const logEntry = logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.record).toBeFalsy();
         const mockUserRecord = { Id: '0052F000008yLcEQAU', FirstName: 'Jonathan', LastName: 'Gillespie' };
 
-        logEntry.setRecord(mockUserRecord);
+        logEntryBuilder.setRecord(mockUserRecord);
 
         expect(logEntry.record).toEqual(mockUserRecord);
     });
@@ -180,14 +183,15 @@ describe('logger lwc import tests', () => {
         const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         await logger.getUserSettings();
-        const logEntry = logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.error).toBeFalsy();
         const error = new TypeError('oops');
         expect(error).toBeTruthy();
         expect(error.message).toBeTruthy();
         expect(error.stack).toBeTruthy();
 
-        logEntry.setError(error);
+        logEntryBuilder.setError(error);
 
         expect(logEntry.error.message).toEqual(error.message);
         expect(logEntry.error.stack).toEqual(error.stack);
@@ -197,7 +201,8 @@ describe('logger lwc import tests', () => {
     it('sets Apex error details when using recommended import approach', async () => {
         const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.error).toBeFalsy();
         const error = {
             body: {
@@ -211,7 +216,7 @@ describe('logger lwc import tests', () => {
         expect(error.body.message).toBeTruthy();
         expect(error.body.stackTrace).toBeTruthy();
 
-        logEntry.setError(error);
+        logEntryBuilder.setError(error);
 
         expect(logEntry.error.message).toEqual(error.body.message);
         expect(logEntry.error.stack).toEqual(error.body.stackTrace);
@@ -221,11 +226,12 @@ describe('logger lwc import tests', () => {
     it('adds tags when using recommended import approach', async () => {
         const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
         const mockTags = ['first tag', 'second tag', 'third tag'];
 
-        logEntry.addTags(mockTags);
+        logEntryBuilder.addTags(mockTags);
 
         expect(logEntry.tags.length).toEqual(mockTags.length);
     });
@@ -233,14 +239,15 @@ describe('logger lwc import tests', () => {
     it('deduplicates tags when using recommended import approach', async () => {
         const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
         const mockTags = ['duplicate tag', 'duplicate tag'];
         expect(mockTags.length).toEqual(2);
         expect(new Set(mockTags).size).toEqual(1);
 
         for (let i = 0; i < mockTags.length; i++) {
-            logEntry.addTag(mockTags[i]);
+            logEntryBuilder.addTag(mockTags[i]);
         }
 
         expect(logEntry.tags.length).toEqual(1);
@@ -260,7 +267,8 @@ describe('logger lwc import tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
@@ -289,7 +297,8 @@ describe('logger lwc import tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
@@ -318,7 +327,8 @@ describe('logger lwc import tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
@@ -347,7 +357,8 @@ describe('logger lwc import tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
@@ -376,7 +387,8 @@ describe('logger lwc import tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
@@ -405,7 +417,8 @@ describe('logger lwc import tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
@@ -434,7 +447,8 @@ describe('logger lwc import tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);
@@ -507,11 +521,11 @@ describe('logger lwc legacy markup tests', () => {
         document.body.appendChild(logger);
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const message = 'some message';
-        const firstLogEntry = await logger.finest(message);
-        expect(firstLogEntry.scenario).toBeUndefined();
+        const firstLogEntry = await logger.finest(message).getComponentLogEntry();
+        expect(firstLogEntry.scenario).toBeNull();
         expect(logger.getBufferSize()).toEqual(1);
-        const secondLogEntry = await logger.info(message);
-        expect(secondLogEntry.scenario).toBeUndefined();
+        const secondLogEntry = await logger.info(message).getComponentLogEntry();
+        expect(secondLogEntry.scenario).toBeNull();
         expect(logger.getBufferSize()).toEqual(2);
 
         const scenario = 'some scenario';
@@ -527,7 +541,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel ERROR';
-        const logEntry = await logger.error(message);
+        const logEntry = await logger.error(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('ERROR');
@@ -539,7 +553,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel WARN';
-        const logEntry = await logger.warn(message);
+        const logEntry = await logger.warn(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('WARN');
@@ -552,7 +566,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel INFO';
-        const logEntry = await logger.info(message);
+        const logEntry = await logger.info(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('INFO');
@@ -565,7 +579,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel DEBUG';
-        const logEntry = await logger.debug(message);
+        const logEntry = await logger.debug(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('DEBUG');
@@ -578,7 +592,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINE';
-        const logEntry = await logger.fine(message);
+        const logEntry = await logger.fine(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('FINE');
@@ -591,7 +605,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINER';
-        const logEntry = await logger.finer(message);
+        const logEntry = await logger.finer(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('FINER');
@@ -604,7 +618,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
 
         const message = 'component log entry with loggingLevel FINEST';
-        const logEntry = await logger.finest(message);
+        const logEntry = await logger.finest(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('FINEST');
@@ -615,11 +629,12 @@ describe('logger lwc legacy markup tests', () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = await logger.info('example log entry');
+        const logEntryBuilder = await logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
 
         const mockUserId = '0052F000008yLcEQAU';
-        logEntry.setRecordId(mockUserId);
+        logEntryBuilder.setRecordId(mockUserId);
 
         expect(logEntry.recordId).toEqual(mockUserId);
     });
@@ -628,11 +643,12 @@ describe('logger lwc legacy markup tests', () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = await logger.info('example log entry');
+        const logEntryBuilder = await logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.record).toBeFalsy();
         const mockUserRecord = { Id: '0052F000008yLcEQAU', FirstName: 'Jonathan', LastName: 'Gillespie' };
 
-        logEntry.setRecord(mockUserRecord);
+        logEntryBuilder.setRecord(mockUserRecord);
 
         expect(logEntry.record).toEqual(mockUserRecord);
     });
@@ -641,14 +657,15 @@ describe('logger lwc legacy markup tests', () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = await logger.info('example log entry');
+        const logEntryBuilder = await logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.error).toBeFalsy();
         const error = new TypeError('oops');
         expect(error).toBeTruthy();
         expect(error.message).toBeTruthy();
         expect(error.stack).toBeTruthy();
 
-        logEntry.setError(error);
+        logEntryBuilder.setError(error);
 
         expect(logEntry.error.message).toEqual(error.message);
         expect(logEntry.error.stack).toEqual(error.stack);
@@ -659,7 +676,8 @@ describe('logger lwc legacy markup tests', () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = await logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.error).toBeFalsy();
         const error = {
             body: {
@@ -673,7 +691,7 @@ describe('logger lwc legacy markup tests', () => {
         expect(error.body.message).toBeTruthy();
         expect(error.body.stackTrace).toBeTruthy();
 
-        logEntry.setError(error);
+        logEntryBuilder.setError(error);
 
         expect(logEntry.error.message).toEqual(error.body.message);
         expect(logEntry.error.stack).toEqual(error.body.stackTrace);
@@ -684,11 +702,12 @@ describe('logger lwc legacy markup tests', () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = await logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
         const mockTags = ['first tag', 'second tag', 'third tag'];
 
-        logEntry.addTags(mockTags);
+        logEntryBuilder.addTags(mockTags);
 
         expect(logEntry.tags.length).toEqual(mockTags.length);
     });
@@ -697,14 +716,15 @@ describe('logger lwc legacy markup tests', () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        const logEntry = await logger.info('example log entry');
+        const logEntryBuilder = logger.info('example log entry');
+        const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
         const mockTags = ['duplicate tag', 'duplicate tag'];
         expect(mockTags.length).toEqual(2);
         expect(new Set(mockTags).size).toEqual(1);
 
         for (let i = 0; i < mockTags.length; i++) {
-            logEntry.addTag(mockTags[i]);
+            logEntryBuilder.addTag(mockTags[i]);
         }
 
         expect(logEntry.tags.length).toEqual(1);
@@ -725,7 +745,8 @@ describe('logger lwc legacy markup tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(0);
         expect(logEntry.loggingLevel).toEqual('ERROR');
@@ -754,7 +775,8 @@ describe('logger lwc legacy markup tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(0);
         expect(logEntry.loggingLevel).toEqual('WARN');
@@ -783,7 +805,8 @@ describe('logger lwc legacy markup tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(0);
         expect(logEntry.loggingLevel).toEqual('INFO');
@@ -812,7 +835,8 @@ describe('logger lwc legacy markup tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(0);
         expect(logEntry.loggingLevel).toEqual('DEBUG');
@@ -841,7 +865,8 @@ describe('logger lwc legacy markup tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(0);
         expect(logEntry.loggingLevel).toEqual('FINE');
@@ -870,9 +895,16 @@ describe('logger lwc legacy markup tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(0);
+        expect(logEntry.browserFormFactor).toEqual(FORM_FACTOR);
+        expect(logEntry.browserLanguage).toEqual(window.navigator.language);
+        expect(logEntry.browserScreenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);
+        expect(logEntry.browserUrl).toEqual(window.location.href);
+        expect(logEntry.browserUserAgent).toEqual(window.navigator.userAgent);
+        expect(logEntry.browserWindowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
         expect(logEntry.loggingLevel).toEqual('FINER');
         expect(logEntry.recordId).toEqual('some_record_Id');
         expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
@@ -899,7 +931,8 @@ describe('logger lwc legacy markup tests', () => {
             .setRecord({ Id: 'some_record_Id' })
             .setError(error)
             .addTag('a tag')
-            .addTags(['a second tag', 'a third tag']);
+            .addTags(['a second tag', 'a third tag'])
+            .getComponentLogEntry();
 
         await flushPromises();
         expect(logger.getBufferSize()).toEqual(0);

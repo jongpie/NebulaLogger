@@ -32,24 +32,6 @@ const LogEntryBuilder = class {
 
     #settingsPromise;
 
-    // browserFormFactor = null;
-    // browserLanguage = null;
-    // // browserScreen = null;
-    // browserScreenResolution = null;
-    // browserUrl = null;
-    // // browserUrlParameters = null;
-    // browserUserAgent = null;
-    // browserWindowResolution = null;
-    // error = null;
-    // loggingLevel = null;
-    // message = null;
-    // record = null;
-    // recordId = null;
-    // scenario = null;
-    // stack = new Error().stack;
-    // tags = [];
-    // timestamp = new Date().toISOString();
-
     /**
      * @description Constructor used to generate each JavaScript-based log entry event
      *              This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
@@ -135,6 +117,14 @@ const LogEntryBuilder = class {
             this.addTag(tags[i]);
         }
         return this;
+    }
+
+    /**
+     * @description Returns the object used to save log entry data
+     * @return {ComponentLogEntry} An instance of `ComponentLogEntry` that matches the Apex class `ComponentLogger.ComponentLogEntry`
+     */
+    getComponentLogEntry() {
+        return this.logEntry;
     }
 
     _setBrowserDetails() {

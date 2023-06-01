@@ -12,6 +12,7 @@
     -   [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.getComponentLogEntry()](#LogEntryBuilder+getComponentLogEntry) <code>ComponentLogEntry</code>
 
 <a name="new_LogEntryBuilder_new"></a>
 
@@ -102,3 +103,12 @@ Appends the tag to the existing list of tags
 | Param | Type                              | Description                                              |
 | ----- | --------------------------------- | -------------------------------------------------------- |
 | tags  | <code>Array.&lt;String&gt;</code> | The list of strings to add as tags for the current entry |
+
+<a name="LogEntryBuilder+getComponentLogEntry"></a>
+
+### logEntryBuilder.getComponentLogEntry() <code>ComponentLogEntry</code>
+
+Returns the object used to save log entry data
+
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Returns**: <code>ComponentLogEntry</code> - An instance of `ComponentLogEntry` that matches the Apex class `ComponentLogger.ComponentLogEntry`
