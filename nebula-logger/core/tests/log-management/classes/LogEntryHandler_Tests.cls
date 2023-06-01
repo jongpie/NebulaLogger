@@ -557,6 +557,50 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(methodName, logEntry.ApexMethodName__c);
     }
 
+    @IsTest
+    static void it_should_set_gracefully_skip_setting_flow_details_when_origin_location_is_not_valid_flow_api_name() {
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        String invalidOriginLocation = 'A_Very_Fake_Flow_API_Name';
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = invalidOriginLocation, OriginType__c = 'Flow');
+
+        insert logEntry;
+
+        logEntry = [
+            SELECT
+                FlowActiveVersionId__c,
+                FlowDescription__c,
+                FlowDurableId__c,
+                FlowLabel__c,
+                FlowLastModifiedByName__c,
+                FlowLastModifiedDate__c,
+                FlowProcessType__c,
+                FlowTriggerType__c,
+                FlowVersionApiVersionRuntime__c,
+                FlowVersionNumber__c,
+                FlowVersionRunInMode__c,
+                Id,
+                OriginLocation__c,
+                OriginType__c
+            FROM LogEntry__c
+            WHERE Id = :logEntry.Id
+        ];
+        System.Assert.areEqual(invalidOriginLocation, logEntry.OriginLocation__c);
+        System.Assert.areEqual('Flow', logEntry.OriginType__c);
+        System.Assert.isNull(logEntry.FlowActiveVersionId__c);
+        System.Assert.isNull(logEntry.FlowDescription__c);
+        System.Assert.isNull(logEntry.FlowDurableId__c);
+        System.Assert.isNull(logEntry.FlowLabel__c);
+        System.Assert.isNull(logEntry.FlowLastModifiedByName__c);
+        System.Assert.isNull(logEntry.FlowLastModifiedDate__c);
+        System.Assert.isNull(logEntry.FlowProcessType__c);
+        System.Assert.isNull(logEntry.FlowTriggerType__c);
+        System.Assert.isNull(logEntry.FlowVersionApiVersionRuntime__c);
+        System.Assert.isNull(logEntry.FlowVersionNumber__c);
+        System.Assert.isNull(logEntry.FlowVersionRunInMode__c);
+    }
+
     private static String getNamespacePrefix() {
         String className = LogEntryHandler_Tests.class.getName();
         String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';

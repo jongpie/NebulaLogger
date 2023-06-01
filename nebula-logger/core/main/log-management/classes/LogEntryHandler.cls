@@ -140,6 +140,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
         for (LogEntry__c logEntry : flowLogEntries) {
             FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginLocation__c);
+            if (flowDefinition == null) {
+                continue;
+            }
+
             logEntry.FlowActiveVersionId__c = flowDefinition.ActiveVersionId;
             logEntry.FlowDescription__c = flowDefinition.Description;
             logEntry.FlowDurableId__c = flowDefinition.DurableId;
