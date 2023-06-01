@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.5.NEXT",
-            "versionName": "New Custom Index for Origin Location Field",
-            "versionDescription": "Added a custom index on the field LogEntry__c.OriginLocation__c (using the new CustomIndex metadatatype) to improve queries & reports that filter on this field",
+            "versionNumber": "4.10.6.NEXT",
+            "versionName": "More Log__c and LogEntry__c fields",
+            "versionDescription": "Added more fields to capture additional Flow details, organization details, and browser details via logger LWC",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
