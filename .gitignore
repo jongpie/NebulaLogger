@@ -9,12 +9,6 @@
 test-coverage/
 temp/
 
-# Additional folders that are temporarily copied when creating a version of the managed package
-nebula-logger/managed-package/core/main/configuration/
-nebula-logger/managed-package/core/main/log-management/
-nebula-logger/managed-package/core/main/logger-engine/
-nebula-logger/managed-package/core/tests/
-
 # NPM
 node_modules/
 yarn.lock

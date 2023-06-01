@@ -528,7 +528,7 @@ describe('logger lwc legacy markup tests', () => {
         expect(secondLogEntry.scenario).toBeNull();
         expect(logger.getBufferSize()).toEqual(2);
 
-        const scenario = 'some scenario';
+        const scenario = 'another scenario';
         logger.setScenario(scenario);
 
         expect(firstLogEntry.scenario).toEqual(scenario);

@@ -97,18 +97,18 @@ private class LogManagementDataSelector_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         Log__c olderLog = new Log__c(
-            ApiReleaseNumber__c = 'QWERTY',
-            ApiReleaseVersion__c = 'ASDF',
-            OrganizationReleaseNumber__c = 'QWERTY',
-            OrganizationReleaseVersion__c = 'ASDF',
-            TransactionId__c = 'ABC'
+            ApiReleaseNumber__c = 'olderLog.ApiReleaseNumber__c',
+            ApiReleaseVersion__c = 'olderLog.ApiReleaseVersion__c',
+            OrganizationReleaseNumber__c = 'olderLog.OrganizationReleaseNumber__c',
+            OrganizationReleaseVersion__c = 'olderLog.OrganizationReleaseVersion__c',
+            TransactionId__c = 'olderLog.TransactionId__c'
         );
         Log__c expectedLog = new Log__c(
-            ApiReleaseNumber__c = 'QWERTY',
-            ApiReleaseVersion__c = 'ASDF',
-            OrganizationReleaseNumber__c = 'QWERTY',
-            OrganizationReleaseVersion__c = 'ASDF',
-            TransactionId__c = 'XYZ'
+            ApiReleaseNumber__c = 'expectedLog.ApiReleaseNumber__c',
+            ApiReleaseVersion__c = 'expectedLog.ApiReleaseVersion__c',
+            OrganizationReleaseNumber__c = 'expectedLog.OrganizationReleaseNumber__c',
+            OrganizationReleaseVersion__c = 'expectedLog.OrganizationReleaseVersion__c',
+            TransactionId__c = 'expectedLog.TransactionId__c'
         );
         insert new List<Log__c>{ olderLog, expectedLog };
         System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));

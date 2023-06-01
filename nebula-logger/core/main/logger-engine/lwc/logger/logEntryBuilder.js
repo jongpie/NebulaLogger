@@ -28,8 +28,7 @@ const ComponentLogEntry = class {
 };
 
 const LogEntryBuilder = class {
-    logEntry;
-
+    #componentLogEntry;
     #settingsPromise;
 
     /**
@@ -39,7 +38,7 @@ const LogEntryBuilder = class {
      * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
      */
     constructor(loggingLevel, settingsPromise) {
-        this.logEntry = new ComponentLogEntry(loggingLevel);
+        this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
         this.#settingsPromise = settingsPromise;
 
         this._setBrowserDetails();
@@ -51,7 +50,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setMessage(message) {
-        this.logEntry.message = message;
+        this.#componentLogEntry.message = message;
         this._logToConsole();
         return this;
     }
@@ -62,7 +61,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecordId(recordId) {
-        this.logEntry.recordId = recordId;
+        this.#componentLogEntry.recordId = recordId;
         return this;
     }
 
@@ -72,7 +71,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecord(record) {
-        this.logEntry.record = record;
+        this.#componentLogEntry.record = record;
         return this;
     }
 
@@ -82,15 +81,15 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setError(error) {
-        this.logEntry.error = {};
+        this.#componentLogEntry.error = {};
         if (error.body) {
-            this.logEntry.error.message = error.body.message;
-            this.logEntry.error.stack = error.body.stackTrace;
-            this.logEntry.error.type = error.body.exceptionType;
+            this.#componentLogEntry.error.message = error.body.message;
+            this.#componentLogEntry.error.stack = error.body.stackTrace;
+            this.#componentLogEntry.error.type = error.body.exceptionType;
         } else {
-            this.logEntry.error.message = error.message;
-            this.logEntry.error.stack = error.stack;
-            this.logEntry.error.type = 'JavaScript.' + error.name;
+            this.#componentLogEntry.error.message = error.message;
+            this.#componentLogEntry.error.stack = error.stack;
+            this.#componentLogEntry.error.type = 'JavaScript.' + error.name;
         }
         return this;
     }
@@ -101,9 +100,9 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     addTag(tag) {
-        this.logEntry.tags.push(tag);
+        this.#componentLogEntry.tags.push(tag);
         // Deduplicate the list of tags
-        this.logEntry.tags = Array.from(new Set(this.logEntry.tags));
+        this.#componentLogEntry.tags = Array.from(new Set(this.#componentLogEntry.tags));
         return this;
     }
 
@@ -124,16 +123,16 @@ const LogEntryBuilder = class {
      * @return {ComponentLogEntry} An instance of `ComponentLogEntry` that matches the Apex class `ComponentLogger.ComponentLogEntry`
      */
     getComponentLogEntry() {
-        return this.logEntry;
+        return this.#componentLogEntry;
     }
 
     _setBrowserDetails() {
-        this.logEntry.browserFormFactor = FORM_FACTOR;
-        this.logEntry.browserLanguage = window.navigator.language;
-        this.logEntry.browserScreenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
-        this.logEntry.browserUrl = window.location.href;
-        this.logEntry.browserUserAgent = window.navigator.userAgent;
-        this.logEntry.browserWindowResolution = window.innerWidth + ' x ' + window.innerHeight;
+        this.#componentLogEntry.browserFormFactor = FORM_FACTOR;
+        this.#componentLogEntry.browserLanguage = window.navigator.language;
+        this.#componentLogEntry.browserScreenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
+        this.#componentLogEntry.browserUrl = window.location.href;
+        this.#componentLogEntry.browserUserAgent = window.navigator.userAgent;
+        this.#componentLogEntry.browserWindowResolution = window.innerWidth + ' x ' + window.innerHeight;
     }
 
     /* eslint-disable no-console */
@@ -163,12 +162,12 @@ const LogEntryBuilder = class {
                     break;
             }
 
-            consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, this.logEntry.message);
-            console.groupCollapsed(consoleMessagePrefix, consoleFormatting, 'Details for: ' + this.logEntry.message);
+            consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, this.#componentLogEntry.message);
+            console.groupCollapsed(consoleMessagePrefix, consoleFormatting, 'Details for: ' + this.#componentLogEntry.message);
             // The use of JSON.parse(JSON.stringify()) is intended to help ensure that the output is readable,
             // including handling proxy objects. If any cyclic objects are used, this approach could fail
             consoleLoggingFunction(JSON.parse(JSON.stringify(this)));
-            console.trace();
+            // console.trace();
             console.groupEnd();
         });
     }
