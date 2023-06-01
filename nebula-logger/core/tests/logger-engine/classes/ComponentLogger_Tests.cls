@@ -115,7 +115,6 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry_with_javascript_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = 'some JavaScript error message';
         mockComponentError.stack = 'some \nstack \ntrace \nstring';
@@ -150,7 +149,6 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry_with_apex_controller_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Exception mockApexException = new System.DmlException(
             'It is with much sadness that I must inform you that this DML statement was most unsuccessful'
         );
