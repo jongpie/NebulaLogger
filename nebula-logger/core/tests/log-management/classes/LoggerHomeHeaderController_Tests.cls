@@ -31,7 +31,6 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(Logger.getOrganizationApiVersion(), returnedEnvironment.organizationApiVersion);
         System.Assert.areEqual(organization.CreatedBy.Username, returnedEnvironment.organizationCreatedByUsername);
         System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), returnedEnvironment.organizationDomainUrl);
-        System.Assert.areEqual(mockApiResponse.environment, returnedEnvironment.organizationEnvironment);
         System.Assert.areEqual(organization.CreatedDate.format(), returnedEnvironment.organizationFormattedCreatedDate);
         System.Assert.areEqual(System.UserInfo.getOrganizationId(), returnedEnvironment.organizationId);
         System.Assert.areEqual(mockApiResponse.location, returnedEnvironment.organizationInstanceLocation);
@@ -41,7 +40,6 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(System.UserInfo.getOrganizationName(), returnedEnvironment.organizationName);
         System.Assert.areEqual(mockApiResponse.releaseNumber, returnedEnvironment.organizationReleaseNumber);
         System.Assert.areEqual(mockApiResponse.releaseVersion, returnedEnvironment.organizationReleaseVersion);
-        System.Assert.areEqual(mockApiResponse.status, returnedEnvironment.organizationStatus);
         System.Assert.areEqual(organization.OrganizationType, returnedEnvironment.organizationType);
     }
 
@@ -66,7 +64,6 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(Logger.getOrganizationApiVersion(), returnedEnvironment.organizationApiVersion);
         System.Assert.areEqual(organization.CreatedBy.Username, returnedEnvironment.organizationCreatedByUsername);
         System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), returnedEnvironment.organizationDomainUrl);
-        System.Assert.areEqual(mockApiResponse.environment, returnedEnvironment.organizationEnvironment);
         System.Assert.areEqual(organization.CreatedDate.format(), returnedEnvironment.organizationFormattedCreatedDate);
         System.Assert.areEqual(System.UserInfo.getOrganizationId(), returnedEnvironment.organizationId);
         System.Assert.areEqual(mockApiResponse.location, returnedEnvironment.organizationInstanceLocation);
@@ -76,7 +73,6 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(System.UserInfo.getOrganizationName(), returnedEnvironment.organizationName);
         System.Assert.areEqual(mockApiResponse.releaseNumber, returnedEnvironment.organizationReleaseNumber);
         System.Assert.areEqual(mockApiResponse.releaseVersion, returnedEnvironment.organizationReleaseVersion);
-        System.Assert.areEqual(mockApiResponse.status, returnedEnvironment.organizationStatus);
         System.Assert.areEqual(organization.OrganizationType, returnedEnvironment.organizationType);
     }
 
@@ -95,7 +91,6 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(Logger.getOrganizationApiVersion(), returnedEnvironment.organizationApiVersion);
         System.Assert.areEqual(organization.CreatedBy.Username, returnedEnvironment.organizationCreatedByUsername);
         System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), returnedEnvironment.organizationDomainUrl);
-        System.Assert.areEqual('Unknown', returnedEnvironment.organizationEnvironment);
         System.Assert.areEqual(organization.CreatedDate.format(), returnedEnvironment.organizationFormattedCreatedDate);
         System.Assert.areEqual(System.UserInfo.getOrganizationId(), returnedEnvironment.organizationId);
         System.Assert.areEqual('Unknown', returnedEnvironment.organizationInstanceLocation);
@@ -105,18 +100,15 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(System.UserInfo.getOrganizationName(), returnedEnvironment.organizationName);
         System.Assert.areEqual('Unknown', returnedEnvironment.organizationReleaseNumber);
         System.Assert.areEqual('Unknown', returnedEnvironment.organizationReleaseVersion);
-        System.Assert.areEqual('Unknown', returnedEnvironment.organizationStatus);
         System.Assert.areEqual(organization.OrganizationType, returnedEnvironment.organizationType);
     }
 
     private static Logger.StatusApiResponse createMockStatusApiResponse() {
         Logger.StatusApiResponse mockApiResponse = new Logger.StatusApiResponse();
-        mockApiResponse.environment = 'sandbox';
         mockApiResponse.location = 'NA';
         mockApiResponse.maintenanceWindow = 'Saturdays 07:00 PM - 11:00 PM PST';
         mockApiResponse.releaseNumber = '242.19.17';
         mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
-        mockApiResponse.status = 'OK';
         return mockApiResponse;
     }
 }
