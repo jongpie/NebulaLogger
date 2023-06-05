@@ -291,12 +291,13 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_set_transaction_details() {
-        for (Integer i = 0; i < 10; i++) {
-            LogEntryEventBuilder builder = Logger.info('my log entry');
+        for (Integer i = 0; i < 3; i++) {
+            LogEntryEventBuilder builder = Logger.info('my log entry for index ' + i);
 
             System.Assert.isNotNull(builder.getLogEntryEvent().LoggerVersionNumber__c);
-            System.Assert.areEqual(Logger.CURRENT_VERSION_NUMBER, builder.getLogEntryEvent().LoggerVersionNumber__c);
+            System.Assert.areEqual(Logger.getVersionNumber(), builder.getLogEntryEvent().LoggerVersionNumber__c);
             System.Assert.areEqual(Logger.getScenario(), builder.getLogEntryEvent().EntryScenario__c);
+            System.Assert.areEqual(Logger.getOrganizationApiVersion(), builder.getLogEntryEvent().OrganizationApiVersion__c);
             System.Assert.areEqual(System.URL.getOrgDomainUrl()?.toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
             System.Assert.areEqual(Logger.getParentLogTransactionId(), builder.getLogEntryEvent().ParentLogTransactionId__c);
             System.Assert.areEqual(System.Request.getCurrent().getRequestId(), builder.getLogEntryEvent().RequestId__c);
@@ -7607,12 +7608,10 @@ private class Logger_Tests {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
         System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
         Logger.StatusApiResponse mockApiResponse = new Logger.StatusApiResponse();
-        mockApiResponse.environment = 'sandbox';
         mockApiResponse.location = 'NA';
         mockApiResponse.maintenanceWindow = 'Saturdays 07:00 PM - 11:00 PM PST';
         mockApiResponse.releaseNumber = '242.19.17';
         mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
-        mockApiResponse.status = 'OK';
         System.Test.setMock(
             System.HttpCalloutMock.class,
             LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))

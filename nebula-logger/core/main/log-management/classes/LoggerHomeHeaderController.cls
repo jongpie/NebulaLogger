@@ -30,12 +30,10 @@ public without sharing class LoggerHomeHeaderController {
 
         Logger.StatusApiResponse statusApiResponse = Logger.callStatusApi();
         if (statusApiResponse != null) {
-            environment.organizationEnvironment = statusApiResponse.environment;
             environment.organizationInstanceLocation = statusApiResponse.location;
             environment.organizationMaintenanceWindow = statusApiResponse.maintenanceWindow;
             environment.organizationReleaseNumber = statusApiResponse.releaseNumber;
             environment.organizationReleaseVersion = statusApiResponse.releaseVersion;
-            environment.organizationStatus = statusApiResponse.status;
 
             if (statusApiResponse.Products != null && statusApiResponse.Products.isEmpty() == false) {
                 environment.organizationInstanceProducts = getInstanceProductNames(statusApiResponse);
@@ -66,8 +64,6 @@ public without sharing class LoggerHomeHeaderController {
         @AuraEnabled
         public String organizationDomainUrl = 'Unknown';
         @AuraEnabled
-        public String organizationEnvironment = 'Unknown';
-        @AuraEnabled
         public String organizationFormattedCreatedDate = 'Unknown';
         @AuraEnabled
         public String organizationId = 'Unknown';
@@ -85,8 +81,6 @@ public without sharing class LoggerHomeHeaderController {
         public String organizationReleaseNumber = 'Unknown';
         @AuraEnabled
         public String organizationReleaseVersion = 'Unknown';
-        @AuraEnabled
-        public String organizationStatus = 'Unknown';
         @AuraEnabled
         public String organizationType = 'Unknown';
     }

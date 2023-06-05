@@ -141,8 +141,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             Log__c log = new Log__c(
+                // TODO Log__c.ApiReleaseNumber__c and Log__c.ApiReleaseVersion__c are both deprecated,
+                // in a future release, remove these reference (and delete the fields)
                 ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
                 ApiReleaseVersion__c = recentLogWithApiReleaseDetails?.ApiReleaseVersion__c,
+                // TODO Log__c.ApiVersion__c and LogEntryEvent__e.ApiVersion__c are both deprecated,
+                // in a future release, remove this reference (and delete the fields)
                 ApiVersion__c = logEntryEvent.ApiVersion__c,
                 ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
                 Locale__c = logEntryEvent.Locale__c,
@@ -162,12 +166,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 NetworkName__c = logEntryEvent.NetworkName__c,
                 NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c,
                 NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c,
+                OrganizationApiVersion__c = logEntryEvent.OrganizationApiVersion__c,
                 OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c,
                 OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c,
                 OrganizationId__c = logEntryEvent.OrganizationId__c,
                 OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c,
                 OrganizationName__c = logEntryEvent.OrganizationName__c,
                 OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c,
+                OrganizationReleaseNumber__c = recentLogWithApiReleaseDetails?.OrganizationReleaseNumber__c,
+                OrganizationReleaseVersion__c = recentLogWithApiReleaseDetails?.OrganizationReleaseVersion__c,
                 OrganizationType__c = logEntryEvent.OrganizationType__c,
                 OwnerId = this.determineLogOwnerId(logEntryEvent),
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
@@ -244,6 +251,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             LogEntry__c logEntry = new LogEntry__c(
+                BrowserFormFactor__c = logEntryEvent.BrowserFormFactor__c,
+                BrowserLanguage__c = logEntryEvent.BrowserLanguage__c,
+                BrowserScreenResolution__c = logEntryEvent.BrowserScreenResolution__c,
+                BrowserUrl__c = logEntryEvent.BrowserUrl__c,
+                BrowserUserAgent__c = logEntryEvent.BrowserUserAgent__c,
+                BrowserWindowResolution__c = logEntryEvent.BrowserWindowResolution__c,
                 ComponentType__c = logEntryEvent.ComponentType__c,
                 DatabaseResultCollectionSize__c = logEntryEvent.DatabaseResultCollectionSize__c,
                 DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
@@ -692,14 +705,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 WHERE Id IN :this.logIds AND ApiReleaseNumber__c = NULL
                 LIMIT :System.Limits.getLimitDmlRows()
             ]) {
-                // TODO Logger.ApiResponse has new properties that aren't currently being captured here,
-                // so in a future release, add new custom fields to capture more (all?) properties
-                // - environment
-                // - location
-                // - maintenanceWindow
-                // ✔ releaseNumber
-                // ✔ releaseVersion
-                // - status
+                log.OrganizationLocation__c = statusApiResponse.location;
+                log.OrganizationReleaseNumber__c = statusApiResponse.releaseNumber;
+                log.OrganizationReleaseVersion__c = statusApiResponse.releaseVersion;
+
+                // TODO ApiReleaseNumber__c and ApiReleaseVersion__c are deprecated as of v4.10.6
+                // For now, they're still set so orgs have time to migrate to the new fields, but in
+                // a future release, ApiReleaseNumber__c and ApiReleaseVersion__c should be completely
+                // remove from the codebase
                 log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
                 log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
 

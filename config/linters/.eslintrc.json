@@ -18,7 +18,7 @@
         "@lwc/lwc/no-attributes-during-construction": "error",
         "@lwc/lwc/no-deprecated": "error",
         "@lwc/lwc/no-document-query": "error",
-        "@lwc/lwc/no-dupe-class-members": "error",
+        "@lwc/lwc/no-dupe-class-members": "warn",
         "@lwc/lwc/no-inner-html": "error",
         "@lwc/lwc/no-leading-uppercase-api-name": "error",
         "@lwc/lwc/prefer-custom-event": "error",

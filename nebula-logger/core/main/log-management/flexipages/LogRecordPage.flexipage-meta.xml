@@ -854,30 +854,40 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApiVersion__c</fieldItem>
-                <identifier>RecordApiVersion__cField</identifier>
+                <fieldItem>Record.OrganizationLocation__c</fieldItem>
+                <identifier>RecordOrganizationLocation_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApiReleaseVersion__c</fieldItem>
-                <identifier>RecordApiReleaseVersion__cField</identifier>
+                <fieldItem>Record.OrganizationApiVersion__c</fieldItem>
+                <identifier>RecordOrganizationApiVersion_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApiReleaseNumber__c</fieldItem>
-                <identifier>RecordApiReleaseNumber__cField</identifier>
+                <fieldItem>Record.OrganizationReleaseNumber__c</fieldItem>
+                <identifier>RecordOrganizationReleaseNumber_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationReleaseVersion__c</fieldItem>
+                <identifier>RecordOrganizationReleaseVersion_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-7a49dd50-62e1-43c4-a95b-81a04f2e4a8e</name>

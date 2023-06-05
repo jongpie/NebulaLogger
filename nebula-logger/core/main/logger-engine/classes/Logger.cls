@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.10.5';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.10.6';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -3195,6 +3195,7 @@ global with sharing class Logger {
             logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.EntryScenario__c = currentEntryScenario;
             logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEvent.OrganizationApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
             logEntryEvent.RequestId__c = REQUEST_ID;
             logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
@@ -3316,12 +3317,10 @@ global with sharing class Logger {
     // Inner class used for deserializing data from the status API
     @SuppressWarnings('PMD.ApexDoc, PMD.VariableNamingConventions')
     public class StatusApiResponse {
-        public String environment { get; set; }
         public String location { get; set; }
         public String maintenanceWindow { get; set; }
         public String releaseNumber { get; set; }
         public String releaseVersion { get; set; }
-        public String status { get; set; }
         public List<StatusApiResponseProduct> Products { get; set; }
     }
 

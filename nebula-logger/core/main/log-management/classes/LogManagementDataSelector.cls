@@ -101,7 +101,7 @@ public without sharing virtual class LogManagementDataSelector {
         Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
 
         List<Log__c> logs = [
-            SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
+            SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c, OrganizationReleaseNumber__c, OrganizationReleaseVersion__c
             FROM Log__c
             WHERE CreatedDate >= :fourHoursAgo AND CreatedDate = TODAY AND ApiReleaseNumber__c != NULL
             ORDER BY CreatedDate DESC
@@ -162,7 +162,11 @@ public without sharing virtual class LogManagementDataSelector {
                 LastModifiedDate,
                 ManageableState,
                 ProcessType,
-                TriggerType
+                RecordTriggerType,
+                TriggerObjectOrEvent.QualifiedApiName,
+                TriggerOrder,
+                TriggerType,
+                VersionNumber
             FROM FlowDefinitionView
             WHERE ApiName IN :flowApiNames AND IsActive = TRUE
         ];

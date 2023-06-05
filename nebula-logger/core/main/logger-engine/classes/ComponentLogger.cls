@@ -48,6 +48,7 @@ public inherited sharing class ComponentLogger {
                 }
 
                 logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
+                setBrowserDetails(logEntryEventBuilder, componentLogEntry);
                 setComponentErrorDetails(logEntryEventBuilder, componentLogEntry.error);
                 setStackTraceDetails(logEntryEventBuilder, componentLogEntry.stack);
             }
@@ -62,6 +63,15 @@ public inherited sharing class ComponentLogger {
             auraException.setMessage(errorMessage);
             throw auraException;
         }
+    }
+
+    private static void setBrowserDetails(LogEntryEventBuilder logEntryEventBuilder, ComponentLogEntry componentLogEntry) {
+        logEntryEventBuilder.getLogEntryEvent().BrowserFormFactor__c = componentLogEntry.browserFormFactor;
+        logEntryEventBuilder.getLogEntryEvent().BrowserLanguage__c = componentLogEntry.browserLanguage;
+        logEntryEventBuilder.getLogEntryEvent().BrowserScreenResolution__c = componentLogEntry.browserScreenResolution;
+        logEntryEventBuilder.getLogEntryEvent().BrowserUrl__c = componentLogEntry.browserUrl;
+        logEntryEventBuilder.getLogEntryEvent().BrowserUserAgent__c = componentLogEntry.browserUserAgent;
+        logEntryEventBuilder.getLogEntryEvent().BrowserWindowResolution__c = componentLogEntry.browserWindowResolution;
     }
 
     private static void setComponentErrorDetails(LogEntryEventBuilder logEntryEventBuilder, ComponentError componentError) {
@@ -221,6 +231,42 @@ public inherited sharing class ComponentLogger {
      * @description A DTO object used to create log entries for lightning components
      */
     public class ComponentLogEntry {
+        /**
+         * @description The form factor of the user's browser
+         */
+        @AuraEnabled
+        public String browserFormFactor { get; set; }
+
+        /**
+         * @description The language set in the user's browser
+         */
+        @AuraEnabled
+        public String browserLanguage { get; set; }
+
+        /**
+         * @description The resolution of the user's device
+         */
+        @AuraEnabled
+        public String browserScreenResolution { get; set; }
+
+        /**
+         * @description The URL displayed in the user's browser
+         */
+        @AuraEnabled
+        public String browserUrl { get; set; }
+
+        /**
+         * @description The user agent of the user's browser
+         */
+        @AuraEnabled
+        public String browserUserAgent { get; set; }
+
+        /**
+         * @description The resolution of the user's browser window
+         */
+        @AuraEnabled
+        public String browserWindowResolution { get; set; }
+
         /**
          * @description The name of the `LoggingLevel` enum value
          */

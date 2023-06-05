@@ -140,6 +140,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
         for (LogEntry__c logEntry : flowLogEntries) {
             FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginLocation__c);
+            if (flowDefinition == null) {
+                continue;
+            }
+
             logEntry.FlowActiveVersionId__c = flowDefinition.ActiveVersionId;
             logEntry.FlowDescription__c = flowDefinition.Description;
             logEntry.FlowDurableId__c = flowDefinition.DurableId;
@@ -147,6 +151,9 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.FlowLastModifiedByName__c = flowDefinition.LastModifiedBy;
             logEntry.FlowLastModifiedDate__c = flowDefinition.LastModifiedDate;
             logEntry.FlowProcessType__c = flowDefinition.ProcessType;
+            logEntry.FlowRecordTriggerType__c = flowDefinition.RecordTriggerType;
+            logEntry.FlowTriggerOrder__c = flowDefinition.TriggerOrder;
+            logEntry.FlowTriggerSObjectType__c = flowDefinition.TriggerObjectOrEvent?.QualifiedApiName;
             logEntry.FlowTriggerType__c = flowDefinition.TriggerType;
         }
     }

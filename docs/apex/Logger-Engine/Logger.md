@@ -5628,8 +5628,6 @@ Asynchronoulsy publishes the list of `LogEntryEvent__e` records
 
 Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
 
-###### `environment` → `String`
-
 ###### `location` → `String`
 
 ###### `maintenanceWindow` → `String`
@@ -5641,8 +5639,6 @@ List of records to save.
 ###### `releaseNumber` → `String`
 
 ###### `releaseVersion` → `String`
-
-###### `status` → `String`
 
 ---
 

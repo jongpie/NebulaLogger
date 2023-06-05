@@ -24,6 +24,20 @@ Boolean
 
 true if the current user has delete permission on the Log\_\_c object.
 
+#### `getBatchPurgeJobRecords()` → `List<AsyncApexJob>`
+
+Returns `List&lt;AsyncApexJob&gt;` to display logBatchPurger jobs details in a Datatable.
+
+##### Return
+
+**Type**
+
+List&lt;AsyncApexJob&gt;
+
+**Description**
+
+The instance of `List&lt;AsyncApexJob&gt;`, containing list of logBatchPurge jobs.
+
 #### `getMetrics(String dateFilterOption)` → `Map<String, Object>`
 
 return a `Map&lt;String,Object&gt;` contains metrics for number of `Log__c`, `LogEntry__c`, `LogEntryTag__c` records to purge, for the given timeframe TODAY/ THIS_WEEK/ THIS_MONTH. The metrics is grouped by `Log__c.LogPurgeAction__c`.
@@ -57,20 +71,6 @@ List&lt;PicklistOption&gt;
 **Description**
 
 The instance of `List&lt;PicklistOption&gt;`, containing all picklist options for purge Action.
-
-#### `getBatchPurgeJobRecords()` → `List<AsyncApexJob>`
-
-Returns `List&lt;AsyncApexJob&gt;` to display logBatchPurger jobs details in a Datatable.
-
-##### Return
-
-**Type**
-
-List&lt;AsyncApexJob&gt;
-
-**Description**
-
-The instance of `List&lt;AsyncApexJob&gt;`, containing list of logBatchPurge jobs.
 
 #### `runBatchPurge()` → `String`
 

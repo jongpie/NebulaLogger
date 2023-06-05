@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.5.NEXT",
-            "versionName": "New Custom Index for Origin Location Field",
-            "versionDescription": "Added a custom index on the field LogEntry__c.OriginLocation__c (using the new CustomIndex metadatatype) to improve queries & reports that filter on this field",
+            "versionNumber": "4.10.6.NEXT",
+            "versionName": "More Log__c and LogEntry__c fields",
+            "versionDescription": "Added more fields to capture additional Flow details, organization details, and browser details via logger LWC",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -146,6 +146,7 @@
         "Nebula Logger - Core@4.10.3-logger-settings-start-and-end-times": "04t5Y0000023SAfQAM",
         "Nebula Logger - Core@4.10.4-new-logger-home-page": "04t5Y0000023SC7QAM",
         "Nebula Logger - Core@4.10.5-new-custom-index-for-origin-location-field": "04t5Y0000023SCHQA2",
+        "Nebula Logger - Core@4.10.6-more-log__c-and-logentry__c-fields": "04t5Y0000023SCqQAM",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

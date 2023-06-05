@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ApiVersion__c</fullName>
-    <businessStatus>DeprecateCandidate</businessStatus>
+    <fullName>BrowserFormFactor__c</fullName>
+    <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <description>The Salesforce release (API version) of the environment</description>
     <externalId>false</externalId>
-    <inlineHelpText>The Salesforce release (API version) of the environment</inlineHelpText>
-    <label>DEPRECATED: API Version</label>
+    <label>Browser Form Factor</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>v58.0</fullName>
+                <fullName>Large</fullName>
                 <default>false</default>
-                <label>v58.0 - Summer &apos;23 Release</label>
+                <label>Large</label>
             </value>
             <value>
-                <fullName>v57.0</fullName>
+                <fullName>Medium</fullName>
                 <default>false</default>
-                <label>v57.0 - Spring &apos;23 Release</label>
+                <label>Medium</label>
+            </value>
+            <value>
+                <fullName>Small</fullName>
+                <default>false</default>
+                <label>Small</label>
             </value>
         </valueSetDefinition>
     </valueSet>

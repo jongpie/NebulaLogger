@@ -49,14 +49,7 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
-        componentLogEntry.message = 'hello, world';
-        componentLogEntry.recordId = currentUser.Id;
-        componentLogEntry.record = currentUser;
-        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
-        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -68,10 +61,16 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(currentUser), publishedLogEntryEvent.RecordJson__c);
+        System.Assert.areEqual(JSON.serializePretty(componentLogEntry.record), publishedLogEntryEvent.RecordJson__c);
         System.Assert.areEqual(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -80,15 +79,8 @@ private class ComponentLogger_Tests {
     static void it_should_save_component_log_entry_with_queueable_job() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
-        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
-        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
-        componentLogEntry.message = 'hello, world';
-        componentLogEntry.recordId = currentUser.Id;
-        componentLogEntry.record = currentUser;
-        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
-        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         System.Test.startTest();
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
@@ -106,10 +98,16 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(currentUser), publishedLogEntryEvent.RecordJson__c);
+        System.Assert.areEqual(JSON.serializePretty(componentLogEntry.record), publishedLogEntryEvent.RecordJson__c);
         System.Assert.areEqual(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -117,19 +115,12 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry_with_javascript_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = 'some JavaScript error message';
         mockComponentError.stack = 'some \nstack \ntrace \nstring';
         mockComponentError.type = 'JavaScript.ReferenceError';
-        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         componentLogEntry.error = mockComponentError;
-        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
-        componentLogEntry.message = 'hello, world';
-        componentLogEntry.recordId = currentUser.Id;
-        componentLogEntry.record = currentUser;
-        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
-        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -141,6 +132,12 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
@@ -152,7 +149,6 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry_with_apex_controller_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Exception mockApexException = new System.DmlException(
             'It is with much sadness that I must inform you that this DML statement was most unsuccessful'
         );
@@ -160,14 +156,8 @@ private class ComponentLogger_Tests {
         mockComponentError.message = mockApexException.getMessage();
         mockComponentError.stack = mockApexException.getStackTraceString();
         mockComponentError.type = mockApexException.getTypeName();
-        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         componentLogEntry.error = mockComponentError;
-        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
-        componentLogEntry.message = 'hello, world';
-        componentLogEntry.recordId = currentUser.Id;
-        componentLogEntry.record = currentUser;
-        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
-        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -179,6 +169,12 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
@@ -191,11 +187,8 @@ private class ComponentLogger_Tests {
     static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
-        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
-        componentLogEntry.message = 'hello, world';
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         componentLogEntry.scenario = 'Some scenario';
-        componentLogEntry.timestamp = System.now();
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -217,11 +210,8 @@ private class ComponentLogger_Tests {
         String expectedComponentType = 'Aura';
         String expectedComponentApiName = 'c/loggerAuraDemo';
         String expectedComponentFunctionName = 'saveLogAuraExample';
-        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
-        componentLogEntry.message = 'hello, world';
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         componentLogEntry.stack = getMockAuraComponentStackTrace();
-        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -233,6 +223,12 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
@@ -250,11 +246,8 @@ private class ComponentLogger_Tests {
         String expectedComponentType = 'LWC';
         String expectedComponentApiName = 'c/loggerLWCDemo';
         String expectedComponentFunctionName = 'saveLogWebExample';
-        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
-        componentLogEntry.message = 'hello, world';
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         componentLogEntry.stack = getMockWebComponentStackTrace();
-        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -266,6 +259,12 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
@@ -275,6 +274,24 @@ private class ComponentLogger_Tests {
         // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
         System.Assert.areEqual(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+    }
+
+    private static ComponentLogger.ComponentLogEntry createMockComponentLogEntry() {
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        componentLogEntry.browserFormFactor = 'Large';
+        componentLogEntry.browserLanguage = 'en-US';
+        componentLogEntry.browserScreenResolution = '1536 x 824';
+        componentLogEntry.browserUrl = 'https://flow-ruby-5228.scratch.lightning.force.com/lightning/n/Logger_lwc_demo?c__asdfsdf=asdf';
+        componentLogEntry.browserUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0';
+        componentLogEntry.browserWindowResolution = '1536 x 474';
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
+        componentLogEntry.message = 'hello, world';
+        componentLogEntry.recordId = currentUser.Id;
+        componentLogEntry.record = currentUser;
+        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
+        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
+        return componentLogEntry;
     }
 
     private static String getMockAuraComponentStackTrace() {

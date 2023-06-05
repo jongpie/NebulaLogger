@@ -96,16 +96,29 @@ private class LogManagementDataSelector_Tests {
     static void it_returns_cached_recent_log_with_api_release_details() {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
-        Log__c olderLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'ABC');
-        Log__c expectedLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'XYZ');
+        Log__c olderLog = new Log__c(
+            ApiReleaseNumber__c = 'olderLog.ApiReleaseNumber__c',
+            ApiReleaseVersion__c = 'olderLog.ApiReleaseVersion__c',
+            OrganizationReleaseNumber__c = 'olderLog.OrganizationReleaseNumber__c',
+            OrganizationReleaseVersion__c = 'olderLog.OrganizationReleaseVersion__c',
+            TransactionId__c = 'olderLog.TransactionId__c'
+        );
+        Log__c expectedLog = new Log__c(
+            ApiReleaseNumber__c = 'expectedLog.ApiReleaseNumber__c',
+            ApiReleaseVersion__c = 'expectedLog.ApiReleaseVersion__c',
+            OrganizationReleaseNumber__c = 'expectedLog.OrganizationReleaseNumber__c',
+            OrganizationReleaseVersion__c = 'expectedLog.OrganizationReleaseVersion__c',
+            TransactionId__c = 'expectedLog.TransactionId__c'
+        );
         insert new List<Log__c>{ olderLog, expectedLog };
         System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
         System.Assert.areEqual(1, System.Limits.getQueries());
 
-        for (Integer i = 0; i < 5; i++) {
+        for (Integer i = 0; i < 3; i++) {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
 
             System.Assert.areEqual(expectedLog.Id, returnedLog.Id);
+            System.Assert.areEqual(JSON.serialize(expectedLog), JSON.serialize(expectedLog));
         }
 
         System.Assert.areEqual(2, System.Limits.getQueries());

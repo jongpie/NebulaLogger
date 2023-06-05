@@ -2,8 +2,33 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
+import FORM_FACTOR from '@salesforce/client/formFactor';
+
+// JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
+const ComponentLogEntry = class {
+    browserFormFactor = null;
+    browserLanguage = null;
+    browserScreenResolution = null;
+    browserUrl = null;
+    browserUserAgent = null;
+    browserWindowResolution = null;
+    error = null;
+    loggingLevel = null;
+    message = null;
+    record = null;
+    recordId = null;
+    scenario = null;
+    stack = new Error().stack;
+    tags = [];
+    timestamp = new Date().toISOString();
+
+    constructor(loggingLevel) {
+        this.loggingLevel = loggingLevel;
+    }
+};
 
 const LogEntryBuilder = class {
+    #componentLogEntry;
     #settingsPromise;
 
     /**
@@ -13,11 +38,10 @@ const LogEntryBuilder = class {
      * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
      */
     constructor(loggingLevel, settingsPromise) {
+        this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
         this.#settingsPromise = settingsPromise;
-        this.loggingLevel = loggingLevel;
-        this.stack = new Error().stack;
-        this.timestamp = new Date().toISOString();
-        this.tags = [];
+
+        this._setBrowserDetails();
     }
 
     /**
@@ -26,7 +50,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setMessage(message) {
-        this.message = message;
+        this.#componentLogEntry.message = message;
         this._logToConsole();
         return this;
     }
@@ -37,7 +61,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecordId(recordId) {
-        this.recordId = recordId;
+        this.#componentLogEntry.recordId = recordId;
         return this;
     }
 
@@ -47,7 +71,7 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecord(record) {
-        this.record = record;
+        this.#componentLogEntry.record = record;
         return this;
     }
 
@@ -57,15 +81,15 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setError(error) {
-        this.error = {};
+        this.#componentLogEntry.error = {};
         if (error.body) {
-            this.error.message = error.body.message;
-            this.error.stack = error.body.stackTrace;
-            this.error.type = error.body.exceptionType;
+            this.#componentLogEntry.error.message = error.body.message;
+            this.#componentLogEntry.error.stack = error.body.stackTrace;
+            this.#componentLogEntry.error.type = error.body.exceptionType;
         } else {
-            this.error.message = error.message;
-            this.error.stack = error.stack;
-            this.error.type = 'JavaScript.' + error.name;
+            this.#componentLogEntry.error.message = error.message;
+            this.#componentLogEntry.error.stack = error.stack;
+            this.#componentLogEntry.error.type = 'JavaScript.' + error.name;
         }
         return this;
     }
@@ -76,9 +100,9 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     addTag(tag) {
-        this.tags.push(tag);
+        this.#componentLogEntry.tags.push(tag);
         // Deduplicate the list of tags
-        this.tags = Array.from(new Set(this.tags));
+        this.#componentLogEntry.tags = Array.from(new Set(this.#componentLogEntry.tags));
         return this;
     }
 
@@ -92,6 +116,23 @@ const LogEntryBuilder = class {
             this.addTag(tags[i]);
         }
         return this;
+    }
+
+    /**
+     * @description Returns the object used to save log entry data
+     * @return {ComponentLogEntry} An instance of `ComponentLogEntry` that matches the Apex class `ComponentLogger.ComponentLogEntry`
+     */
+    getComponentLogEntry() {
+        return this.#componentLogEntry;
+    }
+
+    _setBrowserDetails() {
+        this.#componentLogEntry.browserFormFactor = FORM_FACTOR;
+        this.#componentLogEntry.browserLanguage = window.navigator.language;
+        this.#componentLogEntry.browserScreenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
+        this.#componentLogEntry.browserUrl = window.location.href;
+        this.#componentLogEntry.browserUserAgent = window.navigator.userAgent;
+        this.#componentLogEntry.browserWindowResolution = window.innerWidth + ' x ' + window.innerHeight;
     }
 
     /* eslint-disable no-console */
@@ -121,12 +162,12 @@ const LogEntryBuilder = class {
                     break;
             }
 
-            consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, this.message);
-            console.groupCollapsed(consoleMessagePrefix, consoleFormatting, 'Details for: ' + this.message);
+            consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, this.#componentLogEntry.message);
+            console.groupCollapsed(consoleMessagePrefix, consoleFormatting, 'Details for: ' + this.#componentLogEntry.message);
             // The use of JSON.parse(JSON.stringify()) is intended to help ensure that the output is readable,
             // including handling proxy objects. If any cyclic objects are used, this approach could fail
             consoleLoggingFunction(JSON.parse(JSON.stringify(this)));
-            console.trace();
+            // console.trace();
             console.groupEnd();
         });
     }

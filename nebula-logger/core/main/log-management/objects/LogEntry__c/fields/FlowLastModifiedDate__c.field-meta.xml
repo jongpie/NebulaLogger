@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>FlowLastModifiedDate__c</fullName>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>CCPA;GDPR;PII</complianceGroup>
+    <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <description
     >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowdefinitionview.htm</description>
     <externalId>false</externalId>
