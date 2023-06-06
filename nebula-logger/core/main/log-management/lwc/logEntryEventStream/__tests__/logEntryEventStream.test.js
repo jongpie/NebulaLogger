@@ -2,6 +2,7 @@ import { createElement } from 'lwc';
 import LogEntryEventStream from 'c/logEntryEventStream';
 import { jestMockPublish } from 'lightning/empApi';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
+import isEnabled from '@salesforce/apex/LogEntryEventStreamController.isEnabled';
 import getDatatableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDatatableDisplayFields';
 
 const loggingLevels = {
@@ -31,6 +32,15 @@ const mockTableViewDisplayFields = require('./data/getDatatableDisplayFields.jso
 
 jest.mock(
     '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName',
+    () => {
+        return {
+            default: jest.fn()
+        };
+    },
+    { virtual: true }
+);
+jest.mock(
+    '@salesforce/apex/LogEntryEventStreamController.isEnabled',
     () => {
         return {
             default: jest.fn()
@@ -126,6 +136,30 @@ describe('LogEntryEventStream tests', () => {
     });
 
     const namespaces = ['', 'SomeNamespace'];
+
+    it('shows warning when component is disabled', async () => {
+        isEnabled.mockResolvedValue(false);
+        getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await flushPromises();
+
+        const warningElement = element.shadowRoot.querySelector('.disabled-warning-message');
+        expect(warningElement).toBeTruthy();
+        expect(warningElement.querySelector('.slds-text-heading_medium').innerHTML).toEqual(
+            'The log entry event stream has been disabled by an admin, using the record LoggerParameter__mdt.EnableLogEntryEventStream.'
+        );
+        const buttonElements = element.shadowRoot.querySelectorAll('lightning-button, lightning-button-menu, lightning-button-stateful');
+        expect(buttonElements.length).toEqual(0);
+        const inputElements = element.shadowRoot.querySelectorAll('lightning-combobox, lightning-input, lightning-textarea');
+        inputElements.forEach(inputElement => {
+            expect(inputElement.disabled).toEqual(true);
+        });
+    });
 
     it('streams a single log entry event', async () => {
         await Promise.all(

@@ -7,11 +7,13 @@ import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
+import isEnabled from '@salesforce/apex/LogEntryEventStreamController.isEnabled';
 import getDatatableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDatatableDisplayFields';
 export default class LogEntryEventStream extends LightningElement {
     unfilteredEvents = [];
 
     logEntryEvents = [];
+    isEnabled = true;
     isExpanded = false;
     isStreamEnabled = true;
     isStreamSettingExpanded = true;
@@ -53,13 +55,17 @@ export default class LogEntryEventStream extends LightningElement {
     _subscription = {};
 
     async connectedCallback() {
-        Promise.all([getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDatatableDisplayFields()])
-            .then(([getSchemaForNameResult, getTableViewFieldsResult]) => {
+        Promise.all([isEnabled(), getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDatatableDisplayFields()])
+            .then(([isEnabledResult, getSchemaForNameResult, getTableViewFieldsResult]) => {
+                this.isEnabled = isEnabledResult;
                 this._logEntryEventSchema = getSchemaForNameResult;
                 this.tableViewDisplayFields = getTableViewFieldsResult;
-                this._channel = '/event/' + this._logEntryEventSchema.apiName;
-                this.createSubscription();
-                this.loadDatatableColumns();
+
+                if (this.isEnabled) {
+                    this._channel = '/event/' + this._logEntryEventSchema.apiName;
+                    this.createSubscription();
+                    this.loadDatatableColumns();
+                }
             })
             .catch(this._handleError);
     }
@@ -94,6 +100,14 @@ export default class LogEntryEventStream extends LightningElement {
         return startingTitle;
     }
 
+    get disabledWarningMessage() {
+        return 'The log entry event stream has been disabled by an admin, using the record LoggerParameter__mdt.EnableLogEntryEventStream.';
+    }
+
+    get isDisabled() {
+        return !this.isEnabled;
+    }
+
     get streamButtonVariant() {
         return this.isStreamEnabled ? 'success' : 'brand';
     }
@@ -125,7 +139,7 @@ export default class LogEntryEventStream extends LightningElement {
     }
 
     async createSubscription() {
-        this._subscription = await subscribe(this._channel, -2, event => {
+        this._subscription = await subscribe(this._channel, -1, event => {
             const logEntryEvent = JSON.parse(JSON.stringify(event.data.payload));
             let cleanedLogEntryEvent;
             if (!this._logEntryEventSchema.namespacePrefix) {

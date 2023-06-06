@@ -7,6 +7,17 @@
 @IsTest
 private class LogEntryEventStreamController_Tests {
     @IsTest
+    static void it_should_return_is_enabled_parameter() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LogEntryEventStreamController.isEnabled();
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_list_of_fields_configured_in_logger_parameters() {
         String fields = '["Timestamp__c", "LoggedByUsername__c", "OriginLocation__c"]';
         LoggerTestConfigurator.setMock(
