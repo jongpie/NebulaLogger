@@ -61,6 +61,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LoggerHomeHeaderController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LoggerParameter</apexClass>
         <enabled>true</enabled>
     </classAccesses>
