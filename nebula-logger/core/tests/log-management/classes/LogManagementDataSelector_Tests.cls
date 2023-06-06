@@ -10,7 +10,7 @@ private class LogManagementDataSelector_Tests {
     static void it_dynamically_queries_all_records_for_specified_sobject_type_and_fields() {
         Schema.SObjectType targetSObjectType = Schema.Organization.SObjectType;
         Set<String> targetFieldNames = new Set<String>{ Schema.Organization.Id.getDescribe().getName(), Schema.Organization.Name.getDescribe().getName() };
-        List<Organization> expectedResults = Database.query('SELECT ' + String.join(new List<String>(targetFieldNames), ', ') + ' FROM ' + targetSObjectType);
+        List<Organization> expectedResults = Database.query('SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType);
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getAll(targetSObjectType, targetFieldNames);
 
@@ -22,9 +22,7 @@ private class LogManagementDataSelector_Tests {
         Schema.SObjectType targetSObjectType = Schema.User.SObjectType;
         Set<String> targetFieldNames = new Set<String>{ Schema.User.Id.getDescribe().getName(), Schema.User.Name.getDescribe().getName() };
         List<Id> targetIds = new List<Id>(new Map<Id, User>([SELECT Id FROM User LIMIT 3]).keySet());
-        List<User> expectedResults = Database.query(
-            'SELECT ' + String.join(new List<String>(targetFieldNames), ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds'
-        );
+        List<User> expectedResults = Database.query('SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds');
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getById(targetSObjectType, targetFieldNames, targetIds);
 
