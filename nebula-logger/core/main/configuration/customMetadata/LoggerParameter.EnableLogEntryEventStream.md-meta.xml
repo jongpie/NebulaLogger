@@ -8,7 +8,9 @@
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">When set to &apos;true&apos; (default), the LWC logEntryEventStream is enabled &amp; subscribes to LogEntryEvent__e records, using the Emp API. Using the Emp API counts towards your org's event delivery allocations, so the LWC can be disabled if the allocation needs to be conserved. See this page for more details may be generated that contain additional details about the logging system - https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm</value>
+        <value
+            xsi:type="xsd:string"
+        >When set to &apos;true&apos; (default), the LWC logEntryEventStream is enabled &amp; subscribes to LogEntryEvent__e records, using the Emp API. Using the Emp API counts towards your org's event delivery allocations, so the LWC can be disabled if the allocation needs to be conserved. See this page for more details may be generated that contain additional details about the logging system - https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm</value>
     </values>
     <values>
         <field>Value__c</field>

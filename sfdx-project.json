@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.6.NEXT",
-            "versionName": "More Log__c and LogEntry__c fields",
-            "versionDescription": "Added more fields to capture additional Flow details, organization details, and browser details via logger LWC",
+            "versionNumber": "4.11.0.NEXT",
+            "versionName": "Summer '23 Release",
+            "versionDescription": "Updated all metadata to API v58.0, added LoggerParameter__mdt record to disable the LWC logEntryEventStream",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

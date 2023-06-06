@@ -44,8 +44,6 @@ An instance of `LoggerHomeHeaderController.Environment`
 
 ###### `organizationDomainUrl` → `String`
 
-###### `organizationEnvironment` → `String`
-
 ###### `organizationFormattedCreatedDate` → `String`
 
 ###### `organizationId` → `String`
@@ -63,8 +61,6 @@ An instance of `LoggerHomeHeaderController.Environment`
 ###### `organizationReleaseNumber` → `String`
 
 ###### `organizationReleaseVersion` → `String`
-
-###### `organizationStatus` → `String`
 
 ###### `organizationType` → `String`
 
