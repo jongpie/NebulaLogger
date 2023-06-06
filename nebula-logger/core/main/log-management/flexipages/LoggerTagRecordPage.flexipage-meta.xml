@@ -124,7 +124,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Logger Tag Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Logger Tag Record Page</masterLabel>
     <sobjectType>LoggerTag__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSingleColTemplateDesktop</name>

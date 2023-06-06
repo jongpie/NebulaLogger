@@ -132,7 +132,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Logger Home Page</masterLabel>
+    <masterLabel>Nebula Logger: Logger Home Page</masterLabel>
     <template>
         <name>runtime_commerce_oci:homeTemplateOneRegion</name>
     </template>

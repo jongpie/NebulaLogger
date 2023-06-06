@@ -3,5 +3,5 @@
     <apiVersion>58.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>Log Mass Delete</label>
+    <label>Nebula Logger: Log Mass Delete</label>
 </ApexPage>
