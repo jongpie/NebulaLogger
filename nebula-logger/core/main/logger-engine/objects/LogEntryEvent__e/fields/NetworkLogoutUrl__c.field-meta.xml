@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>NetworkLogoutUrl__c</fullName>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>CCPA;GDPR;PII</complianceGroup>
+    <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <externalId>false</externalId>
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
