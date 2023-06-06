@@ -1199,7 +1199,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Logger: Log Viewer</label>
+    <label>Nebula Logger: Log Viewer</label>
     <objectPermissions>
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>

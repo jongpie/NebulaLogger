@@ -657,7 +657,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Logger: Log Entry Archive Admin</label>
+    <label>Nebula Logger: Log Entry Archive Admin</label>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>

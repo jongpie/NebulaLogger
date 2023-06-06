@@ -16,5 +16,5 @@
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Logger: Slack Plugin Admin</label>
+    <label>Nebula Logger: Slack Plugin Admin</label>
 </PermissionSet>
