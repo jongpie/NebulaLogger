@@ -67,6 +67,24 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
+     * @description Returns a list of `ApexClass` records, including the `Body` field on the record
+     * @param  apexClassNames The names of the Apex classes to query
+     * @return                `List<ApexClass>` containing any matching records
+     */
+    public virtual List<ApexClass> getApexClassesWithBody(List<String> apexClassNames) {
+        if (LoggerParameter.QUERY_APEX_CLASS_DATA == false) {
+            return new List<ApexClass>();
+        }
+
+        return [
+            SELECT ApiVersion, Body, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            FROM ApexClass
+            WHERE Name IN :apexClassNames
+            ORDER BY NamespacePrefix NULLS LAST
+        ];
+    }
+
+    /**
      * @description Returns a cached copy of the `ApexEmailNotification` records in the org
      * @return   The cached `List<ApexEmailNotification>` records
      */

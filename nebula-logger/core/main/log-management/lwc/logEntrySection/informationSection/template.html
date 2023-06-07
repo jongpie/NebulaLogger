@@ -1,0 +1,95 @@
+<template>
+    <template if:true={shouldDisplay}>
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button type="button" class="slds-button slds-section__title-action" onclick={toggleSection}>
+                    <lightning-icon
+                        icon-name="utility:switch"
+                        alternative-text="button icon"
+                        size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left"
+                    ></lightning-icon>
+                    <span class="slds-truncate" title="Information">Information</span>
+                </button>
+            </h3>
+            <lightning-layout multiple-rows vertical-align="start">
+                <lightning-layout-item padding="around-small" size="4">
+                    <lightning-record-view-form record-id={recordId} object-api-name="LogEntry__c">
+                        <lightning-output-field class="slds-form-element_readonly" field-name="Log__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="TransactionEntryNumber__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="LoggedByUsernameLink__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="Timestamp__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="EntryScenarioLink__c"></lightning-output-field>
+                    </lightning-record-view-form>
+                </lightning-layout-item>
+
+                <lightning-layout-item padding="around-small" size="4">
+                    <lightning-record-view-form record-id={recordId} object-api-name="LogEntry__c">
+                        <lightning-output-field class="slds-form-element_readonly" field-name="LoggingLevelWithImage__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="Origin__c"></lightning-output-field>
+                        <!-- TODO add conditional rendering to only show when not null -->
+                        <lightning-output-field class="slds-form-element_readonly" field-name="Trigger__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="EventUuid__c"></lightning-output-field>
+                    </lightning-record-view-form>
+                </lightning-layout-item>
+                <!-- <lightning-layout-item padding="around-small" size="5">
+                    <lightning-record-view-form record-id={recordId} object-api-name="LogEntry__c">
+                        <lightning-output-field field-name="Message__c"></lightning-output-field>
+                        <lightning-output-field field-name="MessageMasked__c"></lightning-output-field>
+                        <lightning-output-field field-name="MessageTruncated__c"></lightning-output-field>
+                    </lightning-record-view-form>
+                </lightning-layout-item> -->
+
+                <lightning-layout-item padding="around-small" size="4">
+                    <div class="slds-box">
+                        <lightning-card heading-level="5" icon-name="utility:labels" title="Tags">
+                            <!-- <div slot="actions">
+                                <lightning-input data-id="enter-search" placeholder="Type a tag name and press 'Enter'"
+                                    type="search" value={search} onchange={handleSearchChange}></lightning-input>
+                            </div> -->
+                            <lightning-input
+                                class="slds-m-bottom_small"
+                                label="Add Tag"
+                                placeholder="Type a tag name and press 'Enter'"
+                                onchange={handleAddTag}
+                                type="search"
+                                value={addTag}
+                                variant="label-hidden"
+                            >
+                            </lightning-input>
+
+                            <template for:each={logEntryContext.logEntryTags} for:item="logEntryTag">
+                                <!-- [link: {logEntryTag.Tag__r__Link}] -->
+                                <!-- <div class="slds-p-around_small" key={logEntryTag.Id}> -->
+                                <lightning-pill
+                                    href={logEntryTag.Tag__r__Link}
+                                    key={logEntryTag.Id}
+                                    label={logEntryTag.Tag__r.Name}
+                                    onclick={handleViewTag}
+                                    onremove={handleRemoveTag}
+                                >
+                                    <!-- <lightning-icon icon-name={logEntryTag.Tag__r.IconName__c}></lightning-icon> -->
+                                    <!-- <template if:true={logEntryTag.Tag__r.IconName__c}>
+                                        <lightning-icon icon-name={logEntryTag.Tag__r.IconName__c}></lightning-icon>
+                                    </template> -->
+                                </lightning-pill>
+                                <!-- </div> -->
+                            </template>
+                            <!--
+                            <lightning-pill-container class="slds-p-around_medium" is-collapsible is-expanded
+                                items={tags} label="Current Tags"></lightning-pill-container> -->
+                        </lightning-card>
+                    </div>
+                    <!-- <div class="pill-container">
+                        <template for:each={tags} for:item="tag">
+                            <lightning-pill variant="plain" class="pill" key={tag.name} name={tag.name}
+                                label={tag.label} onremove={handleRemoveTag} onclick={handleCurrentTagClick}>
+                            </lightning-pill>
+                        </template>
+                    </div> -->
+                    <!-- </div> -->
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,35 @@
+<template>
+    <template if:true={logEntryContext}>
+        <template if:false={logEntryContext.relatedRecords}>
+            <div class="disabled-warning-message slds-card slds-theme_shade">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                        <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>
+                        <div class="slds-text-heading_medium">No Related Record Data Available On This Log Entry</div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template if:true={logEntryContext.relatedRecords}>
+            <lightning-card title={title} icon-name="custom:custom83" class="log-entry-card">
+                <div slot="actions">
+                    <lightning-button-stateful
+                        icon-name-when-off="utility:hide"
+                        icon-name-when-on="utility:preview"
+                        label-when-off="Data Mask Disabled"
+                        label-when-on="Data Mask Enabled"
+                        variant="destructive"
+                    ></lightning-button-stateful>
+                </div>
+                <lightning-datatable columns={columns} data={logEntryContext.relatedRecords} hide-checkbox-column key-field="Id" show-row-number-column>
+                </lightning-datatable>
+            </lightning-card>
+        </template>
+
+        <pre>
+            <code>
+                {logEntryContext.logEntry.RecordJson__c}
+            </code>
+        </pre>
+    </template>
+</template>

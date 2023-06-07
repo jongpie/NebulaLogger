@@ -265,6 +265,26 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.ExceptionApexClassLineNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ExceptionApexClassName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ExceptionApexClassSnippet__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ExceptionApexMethodName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.ExceptionMessage__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1261,6 +1281,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.WasLoggedByCurrentUser__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerTag__c.IconName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

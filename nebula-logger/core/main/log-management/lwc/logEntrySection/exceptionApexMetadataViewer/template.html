@@ -1,0 +1,66 @@
+<template>
+    [Author Apex access:
+    <template if:true={logEntryContext}> {logEntryContext.permissionAccess.PermissionsAuthorApex}] </template>
+    <lightning-card title="Apex Class" class="line-numbers slds-p-around_large">
+        <div slot="actions">
+            <lightning-button icon-name="utility:open" label="Open Externally" onclick={handleOpenApexClass} variant="brand"></lightning-button>
+        </div>
+
+        <template if:true={logEntryContext}>
+            <template if:true={logEntryContext.exceptionApexClass}>
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_shade">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Exception Apex Class Snippet">Exception Apex Class Snippet</span>
+                    </h3>
+                    <lightning-layout class="slds-p-around_medium">
+                        <lightning-layout-item size="12">
+                            <div class="code-editor" lwc:dom="manual"></div>
+                            <pre class="line-numbers language-markup"><code>&lt;img src="example.png"&gt;</code></pre>
+                            <!-- <pre class="language-css"><code class="language-css">{logEntryContext.apexClass.Body}</code></pre>
+                <pre class="language-js"><code class="language-js">console.log("Hello World")</code></pre>
+                <pre class="language-apex">loading...</pre>
+                <pre class="language-javascript">loading...</pre> -->
+                            <!-- <pre style="background: #202124; color: #fff; padding: 10px"> -->
+
+                            Snippet<br />
+                            [logEntryContext.exceptionApexClassSnippet.startingLineNumber: {logEntryContext.exceptionApexClassSnippet.startingLineNumber}]<br />
+                            [logEntryContext.exceptionApexClassSnippet.endingLineNumber: {logEntryContext.exceptionApexClassSnippet.endingLineNumber}]<br />
+                            [logEntryContext.exceptionApexClassSnippet.targetLineNumber: {logEntryContext.exceptionApexClassSnippet.targetLineNumber}]<br />
+                            [logEntryContext.exceptionApexClassSnippet.relativeTargetLineNumber:
+                            {logEntryContext.exceptionApexClassSnippet.relativeTargetLineNumber}]<br />
+                            <pre class="language-apex line-numbers" data-line-offset={logEntryContext.exceptionApexClassSnippet.startLineNumber}>
+
+                    <code class="language-apex line-numbers">
+                        {logEntryContext.exceptionApexClassSnippet.code}
+                        <!-- {logEntryContext.loggingApexClass.Body} -->
+                    </code>
+                </pre>
+
+                            Full Class
+                            <pre class="language-apex line-numbers">
+                    <code class="language-apex line-numbers">
+                        {logEntryContext.exceptionApexClass.Body}
+                        <!-- {logEntryContext.loggingApexClass.Body} -->
+                    </code>
+                </pre>
+
+                            <!-- <pre class="language-js line-numbers">
+                    <code class="language-js line-numbers">
+                        console.log('hellow, world');
+                    </code>
+                </pre>
+
+                <pre class="line-numbers language-markup">
+                    <code>
+                        &lt;img src="example.png"&gt;
+                    </code>
+                </pre>
+
+                <pre class="line-numbers language-markup"><code>&lt;img src="example.png"&gt;</code></pre> -->
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

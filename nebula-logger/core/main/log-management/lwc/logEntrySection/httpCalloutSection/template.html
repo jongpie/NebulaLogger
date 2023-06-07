@@ -1,0 +1,38 @@
+<template>
+    HTTP callout details
+    <template if:true={showComponent}>
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button type="button" class="slds-button slds-section__title-action" onclick={toggleSection}>
+                    <lightning-icon
+                        icon-name="utility:switch"
+                        alternative-text="button icon"
+                        size="x-small"
+                        class="slds-section__title-action-icon slds-button__icon_left"
+                    ></lightning-icon>
+                    <span class="slds-truncate" title="Information">Information</span>
+                </button>
+            </h3>
+            <lightning-layout multiple-rows vertical-align="start">
+                <lightning-layout-item padding="around-small" size="4" title="HTTP Request">
+                    <lightning-record-view-form record-id={recordId} object-api-name="LogEntry__c">
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpRequestEndpoint__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpRequestMethod__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpRequestCompressed__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpRequestBody__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpRequestBodyMasked__c"></lightning-output-field>
+                    </lightning-record-view-form>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="4" title="HTTP Response">
+                    <lightning-record-view-form record-id={recordId} object-api-name="LogEntry__c">
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpResponseStatusCode__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpResponseStatus__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpResponseHeaderKeys__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpResponseBody__c"></lightning-output-field>
+                        <lightning-output-field class="slds-form-element_readonly" field-name="HttpResponseBodyMasked__c"></lightning-output-field>
+                    </lightning-record-view-form>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+</template>

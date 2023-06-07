@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>TotalLogEntries__c</fullName>
+    <fullName>ExceptionApexMethodName__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <label>Total Log Entries</label>
+    <label>Exception Apex Method</label>
+    <length>255</length>
+    <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <summaryForeignKey>LogEntryTag__c.Tag__c</summaryForeignKey>
-    <summaryOperation>count</summaryOperation>
-    <trackHistory>false</trackHistory>
+    <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
-    <type>Summary</type>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>

@@ -1,0 +1,10 @@
+<template>
+    [Author Apex access:
+    <template if:true={logEntryContext}> {logEntryContext.permissionAccess.PermissionsAuthorApex}] </template>
+    <lightning-card title="Apex Class" class="line-numbers">
+        <div slot="actions">
+            <lightning-button icon-name="utility:open" label="Open Externally" onclick={handleOpenApexClass} variant="brand"></lightning-button>
+        </div>
+        <div></div>
+    </lightning-card>
+</template>

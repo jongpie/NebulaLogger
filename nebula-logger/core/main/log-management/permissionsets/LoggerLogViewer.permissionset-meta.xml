@@ -1194,6 +1194,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LoggerTag__c.IconName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LoggerTag__c.TotalLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>

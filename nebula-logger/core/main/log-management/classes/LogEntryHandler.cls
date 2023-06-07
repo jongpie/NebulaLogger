@@ -26,7 +26,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         this.logEntries = (List<LogEntry__c>) triggerNew;
 
         this.setCheckboxFields();
-        this.setApexClassFields();
+        this.setApexLoggingClassFields();
+        this.setApexExceptionClassFields();
         this.setComponentFields();
         this.setFlowDefinitionFields();
         this.setFlowVersionFields();
@@ -41,6 +42,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         // and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
         // so keep them up to date just to be safe
         this.setCheckboxFields();
+
+        // TODO temp for testing, remove this method call
+        this.setApexLoggingClassFields();
+        this.setApexExceptionClassFields();
     }
 
     private void setCheckboxFields() {
@@ -54,18 +59,20 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void setApexClassFields() {
+    private void setApexLoggingClassFields() {
         List<String> apexClassNames = new List<String>();
         List<LogEntry__c> apexLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            if (logEntry.OriginType__c == 'Apex' && String.isNotBlank(logEntry.OriginLocation__c)) {
-                // OriginLocation__c contains the class name + method name. Examples:
-                // MyClass.someMethod
-                // MyClass.MyInnerClass.someMethod
-                String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
-                apexClassNames.add(apexClassName);
-                apexLogEntries.add(logEntry);
+            if (logEntry.OriginType__c != 'Apex' || String.isBlank(logEntry.OriginLocation__c) == true) {
+                continue;
             }
+
+            // OriginLocation__c contains the class name + method name. Examples:
+            // MyClass.someMethod
+            // MyClass.MyInnerClass.someMethod
+            String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
+            apexClassNames.add(apexClassName);
+            apexLogEntries.add(logEntry);
         }
 
         if (apexClassNames.isEmpty() == true) {
@@ -85,7 +92,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             String topLevelApexClassName = logEntry.OriginLocation__c?.substringBefore('.');
             ApexClass topLevelApexClass = classNameToApexClass.get(topLevelApexClassName);
             if (topLevelApexClass == null) {
-                continue;
+                return;
             }
 
             String methodName = logEntry.OriginLocation__c.substringAfterLast('.');
@@ -103,6 +110,49 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ApexClassName__c = topLevelApexClassName;
             logEntry.ApexInnerClassName__c = innerApexClassName;
             logEntry.ApexMethodName__c = methodName;
+        }
+    }
+
+    private void setApexExceptionClassFields() {
+        List<String> apexClassNames = new List<String>();
+        List<LogEntry__c> apexLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.ExceptionStackTrace__c == null) {
+                continue;
+            }
+
+            String exceptionOriginStackTraceLine = logEntry.ExceptionStackTrace__c.split('\n').get(0);
+            // Example: Class.ExampleClassWithLogging.throwSomeException: line 25, column 1
+            String apexClassName = exceptionOriginStackTraceLine.substringAfter('Class.').substringBeforeLast('.');
+            String methodName = exceptionOriginStackTraceLine.substringAfter(apexClassName + '.').substringBefore(':');
+            String lineNumberString = exceptionOriginStackTraceLine.substringAfter('line ').substringBefore(',');
+
+            logEntry.ExceptionApexClassLineNumber__c = Integer.valueOf(lineNumberString);
+            logEntry.ExceptionApexClassName__c = apexClassName;
+            logEntry.ExceptionApexMethodName__c = methodName;
+
+            apexClassNames.add(apexClassName);
+            apexLogEntries.add(logEntry);
+        }
+
+        if (apexClassNames.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, ApexClass> classNameToApexClass = new Map<String, ApexClass>();
+        for (ApexClass apexClass : LogManagementDataSelector.getInstance().getApexClassesWithBody(apexClassNames)) {
+            classNameToApexClass.put(apexClass.Name, apexClass);
+        }
+
+        if (classNameToApexClass.isEmpty() == true) {
+            return;
+        }
+
+        for (LogEntry__c logEntry : apexLogEntries) {
+            ApexClass topLevelApexClass = classNameToApexClass.get(logEntry.ExceptionApexClassName__c);
+            logEntry.ExceptionApexClassSnippet__c = JSON.serializePretty(
+                new ApexSnippet(topLevelApexClass, Integer.valueOf(logEntry.ExceptionApexClassLineNumber__c))
+            );
         }
     }
 
@@ -237,7 +287,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
 
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
-            String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
+            String sobjectDisplayFieldName = getDisplayFieldApiName(sobjectType);
 
             if (sobjectDisplayFieldName == null) {
                 continue;
@@ -261,7 +311,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
+            String sobjectDisplayFieldName = getDisplayFieldApiName(sobjectType);
             if (sobjectDisplayFieldName != null) {
                 if (recordIdToRecord.containsKey(logEntry.RecordId__c)) {
                     String recordName = (String) recordIdToRecord.get(logEntry.RecordId__c).get(sobjectDisplayFieldName);
@@ -271,7 +321,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
     }
 
-    private String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
+    // Static helper methods
+    private static String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
         if (SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.containsKey(sobjectType) == true) {
             return SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.get(sobjectType);
         }
@@ -348,5 +399,49 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
         return sobjectType;
+    }
+
+    @TestVisible
+    private class ApexSnippet {
+        public Integer startingLineNumber { get; set; }
+        public Integer endingLineNumber { get; set; }
+        public Integer targetLineNumber { get; set; }
+        public String code { get; set; }
+
+        public transient ApexClass apexClass;
+        public transient List<String> allCodeLines;
+
+        public ApexSnippet(ApexClass apexClass, Integer targetLineNumber) {
+            this.apexClass = apexClass;
+            this.targetLineNumber = targetLineNumber;
+            this.allCodeLines = this.apexClass.Body.split('\n');
+
+            this.calculateLineNumbers();
+            this.setCode();
+        }
+
+        private void calculateLineNumbers() {
+            final Integer targetLeadingLines = 10;
+            final Integer targetTrailingLines = 2;
+
+            this.startingLineNumber = this.targetLineNumber - targetLeadingLines;
+            if (this.startingLineNumber <= 0) {
+                this.startingLineNumber = 1;
+            }
+
+            this.endingLineNumber = this.targetLineNumber + targetTrailingLines;
+            if (this.endingLineNumber > this.allCodeLines.size()) {
+                this.endingLineNumber = this.allCodeLines.size();
+            }
+        }
+
+        private void setCode() {
+            List<String> snippetCodeLines = new List<String>();
+            for (Integer i = this.startingLineNumber; i <= this.endingLineNumber; i++) {
+                snippetCodeLines.add(this.allCodeLines.get(i));
+            }
+
+            this.code = String.join(snippetCodeLines, '\n');
+        }
     }
 }

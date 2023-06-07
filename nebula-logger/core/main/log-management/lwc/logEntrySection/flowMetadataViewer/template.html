@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title="Flow Builder">
+        <div slot="actions">
+            <lightning-button icon-name="utility:open" label="Open Externally" onclick={handleOpenFlowBuilder} variant="brand"></lightning-button>
+        </div>
+        <div>
+            <iframe style={flowBuilderIframeStyle} src={flowBuilderIframeUrl}></iframe>
+        </div>
+    </lightning-card>
+</template>
