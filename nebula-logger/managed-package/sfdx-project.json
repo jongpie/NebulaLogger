@@ -13,7 +13,7 @@
             "versionNumber": "4.11.0.NEXT",
             "versionName": "Summer '23 Release",
             "versionDescription": "View the v4.11.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/11?closed=1",
-            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
+            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases/tag/v4.11.0"
         }
     ],
     "packageAliases": {
