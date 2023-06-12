@@ -14,6 +14,7 @@ private class LogManagementDataSelector_Tests {
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getAll(targetSObjectType, targetFieldNames);
 
+        System.Assert.areEqual(1, returnedResults.size());
         System.Assert.areEqual(expectedResults, returnedResults);
     }
 
@@ -363,6 +364,18 @@ private class LogManagementDataSelector_Tests {
     }
 
     @IsTest
+    static void it_returns_empty_list_without_querying_when_specified_search_term_is_blank() {
+        String blankSearchTerm = '    \t \n \r    ';
+        System.Assert.isTrue(String.isBlank(blankSearchTerm));
+        List<User> expectedResults = new List<User>();
+
+        List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(blankSearchTerm);
+
+        System.Assert.areEqual(expectedResults, returnedResults);
+        System.Assert.areEqual(0, System.Limits.getQueries());
+    }
+
+    @IsTest
     static void it_returns_user_for_specified_search_term() {
         String searchTerm = System.UserInfo.getLastName();
         List<User> expectedResults = [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm];
@@ -372,6 +385,7 @@ private class LogManagementDataSelector_Tests {
         expectedResults.sort();
         returnedResults.sort();
         System.Assert.areEqual(expectedResults, returnedResults);
+        System.Assert.areEqual(2, System.Limits.getQueries());
     }
 
     @IsTest
@@ -387,6 +401,7 @@ private class LogManagementDataSelector_Tests {
         expectedResults.sort();
         returnedResults.sort();
         System.Assert.areEqual(expectedResults, returnedResults);
+        System.Assert.areEqual(2, System.Limits.getQueries());
     }
 
     @IsTest
