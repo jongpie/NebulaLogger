@@ -28,6 +28,10 @@ export default class LoggerHomeHeader extends NavigationMixin(LightningElement) 
         return `View Environment Details`;
     }
 
+    get showReleaseNotesButton() {
+        return !!this.environment?.loggerVersionNumber;
+    }
+
     get releaseNotesButtonLabel() {
         return `View ${this.environment.loggerVersionNumber} Release Notes`;
     }

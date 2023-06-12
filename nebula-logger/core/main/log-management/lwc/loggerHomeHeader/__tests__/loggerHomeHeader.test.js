@@ -114,6 +114,20 @@ describe('c-logger-home-header', () => {
         expect(modalElement).toBeFalsy();
     });
 
+    it('hides the "View Release Notes" button when version number is not available', async () => {
+        const element = createElement('c-logger-home-header', {
+            is: LoggerHomeHeader
+        });
+        document.body.appendChild(element);
+        getEnvironmentDetails.emit({ ...MOCK_ENVIRONMENT_DETAILS, ...{ loggerVersionNumber: null } });
+        await Promise.resolve('Resolve getEnvironmentDetails()');
+        const navigationHandler = jest.fn();
+        element.addEventListener('navigate', navigationHandler);
+
+        const button = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
+        expect(button).toBeFalsy();
+    });
+
     it('displays github release notes url when "View Release Notes" button is clicked', async () => {
         const element = createElement('c-logger-home-header', {
             is: LoggerHomeHeader

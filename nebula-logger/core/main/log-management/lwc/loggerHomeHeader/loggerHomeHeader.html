@@ -27,12 +27,14 @@
                                 label={environmentDetailsButtonLabel}
                                 onclick={handleViewEnvironmentDetails}
                             ></lightning-button>
-                            <lightning-button
-                                data-id="release-notes-button"
-                                icon-name="utility:announcement"
-                                label={releaseNotesButtonLabel}
-                                onclick={handleViewReleaseNotes}
-                            ></lightning-button>
+                            <template if:true={showReleaseNotesButton}>
+                                <lightning-button
+                                    data-id="release-notes-button"
+                                    icon-name="utility:announcement"
+                                    label={releaseNotesButtonLabel}
+                                    onclick={handleViewReleaseNotes}
+                                ></lightning-button>
+                            </template>
                         </lightning-button-group>
                     </div>
                 </div>
