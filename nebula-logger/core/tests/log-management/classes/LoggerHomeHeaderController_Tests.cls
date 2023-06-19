@@ -23,6 +23,8 @@ private class LoggerHomeHeaderController_Tests {
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
 
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        System.Assert.isNull(returnedEnvironment.loggerEnabledPluginsCount);
+        System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
             String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
             returnedEnvironment.loggerNamespacePrefix
@@ -56,6 +58,8 @@ private class LoggerHomeHeaderController_Tests {
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
 
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        System.Assert.isNull(returnedEnvironment.loggerEnabledPluginsCount);
+        System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
             String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
             returnedEnvironment.loggerNamespacePrefix
@@ -83,6 +87,8 @@ private class LoggerHomeHeaderController_Tests {
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
 
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        System.Assert.isNull(returnedEnvironment.loggerEnabledPluginsCount);
+        System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
             String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
             returnedEnvironment.loggerNamespacePrefix
@@ -101,6 +107,31 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual('Unknown', returnedEnvironment.organizationReleaseNumber);
         System.Assert.areEqual('Unknown', returnedEnvironment.organizationReleaseVersion);
         System.Assert.areEqual(organization.OrganizationType, returnedEnvironment.organizationType);
+    }
+
+    @IsTest
+    public static void it_returns_environment_details_when_plugins_are_installed() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(false)));
+        LoggerPlugin__mdt firstMockPluginConfiguration = createMockPluginConfiguration('Some_Mock_Plugin_Configuration');
+        LoggerPlugin.setMock(firstMockPluginConfiguration);
+        LoggerPlugin__mdt secondMockPluginConfiguration = createMockPluginConfiguration('Another_Mock_Plugin_Configuration');
+        LoggerPlugin.setMock(secondMockPluginConfiguration);
+        List<LoggerPlugin__mdt> expectedPluginConfigurations = LoggerPlugin.getPluginConfigurations();
+        System.Assert.areEqual(2, expectedPluginConfigurations.size());
+
+        LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
+
+        List<String> pluginLabels = new List<String>();
+        for (LoggerPlugin__mdt pluginConfiguration : expectedPluginConfigurations) {
+            pluginLabels.add(pluginConfiguration.Label);
+        }
+        pluginLabels.sort();
+        System.Assert.areEqual(pluginLabels.size(), returnedEnvironment.loggerEnabledPluginsCount);
+        System.Assert.areEqual(String.join(pluginLabels, ', '), returnedEnvironment.loggerEnabledPlugins);
+    }
+
+    private static LoggerPlugin__mdt createMockPluginConfiguration(String developerName) {
+        return new LoggerPlugin__mdt(DeveloperName = developerName, IsEnabled__c = true);
     }
 
     private static Logger.StatusApiResponse createMockStatusApiResponse() {

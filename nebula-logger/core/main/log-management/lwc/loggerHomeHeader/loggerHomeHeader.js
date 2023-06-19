@@ -24,6 +24,14 @@ export default class LoggerHomeHeader extends NavigationMixin(LightningElement) 
         return titleText;
     }
 
+    get enabledPluginsSummary() {
+        if (!this.environment.loggerEnabledPlugins) {
+            return undefined;
+        }
+
+        return this.environment.loggerEnabledPluginsCount + ' Enabled Plugins';
+    }
+
     get environmentDetailsButtonLabel() {
         return `View Environment Details`;
     }

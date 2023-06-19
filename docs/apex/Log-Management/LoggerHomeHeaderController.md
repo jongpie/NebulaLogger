@@ -34,6 +34,10 @@ An instance of `LoggerHomeHeaderController.Environment`
 
 ##### Properties
 
+###### `loggerEnabledPlugins` → `String`
+
+###### `loggerEnabledPluginsCount` → `Integer`
+
 ###### `loggerNamespacePrefix` → `String`
 
 ###### `loggerVersionNumber` → `String`
