@@ -39,12 +39,21 @@
                 <div class="slds-panel__body">
                     <div class="slds-p-horizontal_small">
                         <lightning-input
-                            label="Max Number of Events to Display"
                             disabled={isDisabled}
-                            onchange={handleMaxEventsChange}
+                            field-level-help={maxEventsToStreamHelp}
+                            label="Max Number of Events to Stream"
+                            onchange={handleMaxEventsStreamedChange}
+                            placeholder="Specify Max Events To Stream"
+                            type="number"
+                            value={maxEventsToStream}
+                        ></lightning-input>
+                        <lightning-input
+                            disabled={isDisabled}
+                            label="Max Number of Events to Display"
+                            onchange={handleMaxEventsToDisplayChange}
                             placeholder="Specify Max Events"
                             type="number"
-                            value={maxEvents}
+                            value={maxEventsToDisplay}
                         ></lightning-input>
                         <lightning-combobox
                             data-id="loggingLevelFilter"
@@ -100,16 +109,23 @@
                 </div>
             </div>
         </div>
-        <div class="slds-grow slds-m-horizontal_medium event-stream-container">
+        <div class="slds-grow slds-m-left_small event-stream-container" style="max-height: 65vh">
             <article style="height: 100%; width: 95%" data-id="event-stream-console" class="slds-card">
                 <div class="slds-card__header slds-grid">
                     <header class="slds-media slds-media_center slds-has-flexi-truncate">
                         <div class="slds-media__body">
-                            <h2 class="slds-card__header-title">
+                            <h2 class="slds-card__header-title slds-m-left_medium">
                                 <span>{title}</span>
                             </h2>
                         </div>
                         <template if:true={isEnabled}>
+                            <lightning-progress-ring
+                                class="slds-m-right_medium"
+                                title={eventDeliveryUsageSummary}
+                                value={eventDeliveryPercent}
+                                variant={eventDeliveryProgressVariant}
+                            >
+                            </lightning-progress-ring>
                             <div class="slds-no-flex">
                                 <lightning-button-group>
                                     <lightning-button-stateful

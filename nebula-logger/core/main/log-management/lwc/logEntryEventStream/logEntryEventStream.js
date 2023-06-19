@@ -48,11 +48,16 @@ export default class LogEntryEventStream extends LightningElement {
     originTypeFilter;
     originLocationFilter;
     scenarioFilter;
-    maxEvents = 50;
+    maxEventsToDisplay = 50;
+    maxEventsToStream = 500;
 
     _logEntryEventSchema;
     _channel;
     _subscription = {};
+    // Count of events delivered since the stream was most recently started
+    _currentEventsDelivered = 0;
+    // Count of events delivered to the component since it's been loaded
+    _totalEventsDelivered = 0;
 
     async connectedCallback() {
         Promise.all([isEnabled(), getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDatatableDisplayFields()])
@@ -70,34 +75,50 @@ export default class LogEntryEventStream extends LightningElement {
             .catch(this._handleError);
     }
 
-    loadDatatableColumns() {
-        this.datatableColumns = [];
-        if (this.tableViewDisplayFields) {
-            this.tableViewDisplayFields.forEach(column => {
-                const aField = this._logEntryEventSchema.fields[column];
-                if (aField) {
-                    const formattedColumn = {
-                        label: aField.label,
-                        fieldName: aField.apiName,
-                        type: aField.type
-                    };
-                    this.datatableColumns.push(formattedColumn);
-                }
-            });
-        }
-    }
-
     disconnectedCallback() {
         this.cancelSubscription();
     }
 
     get title() {
-        let logEntryString = ' Log Entry Events';
-        let startingTitle = this.logEntryEvents.length + logEntryString;
-        if (this.unfilteredEvents.length !== this.logEntryEvents.length) {
-            startingTitle = this.logEntryEvents.length + ' matching results out of ' + this.unfilteredEvents.length + logEntryString;
-        }
+        let logEntryString = ' Matching Log Entry Events';
+        let startingTitle = this.logEntryEvents.length + logEntryString + ' | ' + this._totalEventsDelivered + ' Total Streamed Events';
+        // if (this.unfilteredEvents.length !== this.logEntryEvents.length) {
+        //     startingTitle = this.logEntryEvents.length + ' matching results out of ' + this.unfilteredEvents.length + logEntryString;
+        // }
         return startingTitle;
+    }
+
+    get eventDeliveryUsageSummary() {
+        return this._currentEventsDelivered + ' Platform Events Delivered to Stream | ' + this.maxEventsToStream + ' Max Currently Configured';
+    }
+
+    get eventDeliveryPercent() {
+        if (this._currentEventsDelivered === 0) {
+            return 0;
+        } else if (this._currentEventsDelivered >= this.maxEventsToStream) {
+            return 100;
+        }
+        return (this._currentEventsDelivered / this.maxEventsToStream) * 100;
+    }
+
+    get eventDeliveryProgressVariant() {
+        if (!this.isStreamEnabled) {
+            return 'active-step';
+        } else if (this.eventDeliveryPercent < 50) {
+            return 'base';
+        } else if (this.eventDeliveryPercent >= 50 && this.eventDeliveryPercent < 75) {
+            return 'warning';
+        } 
+            return 'expired';
+        
+    }
+
+    get maxEventsToStreamHelp() {
+        return (
+            "Streaming platform events counts towards your org's daily allocation for Event Delivery." +
+            ' \n\nTo minimize usage of the daily allocation, this field controls the max number of LogEntryEvent__e records to deliver to your stream before the stream auto-pauses.' +
+            ' \n\nFor more information on platform event allocations, see https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm'
+        );
     }
 
     get disabledWarningMessage() {
@@ -138,8 +159,40 @@ export default class LogEntryEventStream extends LightningElement {
         return this.isStreamSettingExpanded ? 'Close Split View' : 'Open Split View';
     }
 
+    loadDatatableColumns() {
+        this.datatableColumns = [];
+        if (!this.tableViewDisplayFields) {
+            return;
+        }
+
+        this.tableViewDisplayFields.forEach(column => {
+            const aField = this._logEntryEventSchema.fields[column];
+            if (aField) {
+                const formattedColumn = {
+                    label: aField.label,
+                    fieldName: aField.apiName,
+                    type: aField.type
+                };
+                this.datatableColumns.push(formattedColumn);
+            }
+        });
+    }
+
     async createSubscription() {
+        this._currentEventsDelivered = 0;
         this._subscription = await subscribe(this._channel, -1, event => {
+            if (!this.isStreamEnabled) {
+                return;
+            }
+
+            if (this._currentEventsDelivered >= this.maxEventsToStream) {
+                this.onToggleStream();
+                return;
+            }
+
+            this._currentEventsDelivered++;
+            this._totalEventsDelivered++;
+
             const logEntryEvent = JSON.parse(JSON.stringify(event.data.payload));
             let cleanedLogEntryEvent;
             if (!this._logEntryEventSchema.namespacePrefix) {
@@ -173,8 +226,13 @@ export default class LogEntryEventStream extends LightningElement {
         this._filterEvents();
     }
 
-    handleMaxEventsChange(event) {
-        this.maxEvents = event.target.value;
+    handleMaxEventsStreamedChange(event) {
+        this.maxEventsToStream = event.target.value;
+    }
+
+    handleMaxEventsToDisplayChange(event) {
+        this.maxEventsToDisplay = event.target.value;
+        this._filterEvents();
     }
 
     onClear() {
@@ -220,7 +278,7 @@ export default class LogEntryEventStream extends LightningElement {
 
     // Private functions
     _filterEvents() {
-        while (this.unfilteredEvents.length > this.maxEvents) {
+        while (this.unfilteredEvents.length > this.maxEventsToDisplay) {
             this.unfilteredEvents.pop();
         }
 
