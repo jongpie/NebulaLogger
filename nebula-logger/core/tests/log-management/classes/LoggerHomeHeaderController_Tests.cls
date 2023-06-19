@@ -23,7 +23,7 @@ private class LoggerHomeHeaderController_Tests {
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
 
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        System.Assert.isNull(returnedEnvironment.loggerEnabledPluginsCount);
+        System.Assert.areEqual(0, returnedEnvironment.loggerEnabledPluginsCount);
         System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
             String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
@@ -58,7 +58,7 @@ private class LoggerHomeHeaderController_Tests {
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
 
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        System.Assert.isNull(returnedEnvironment.loggerEnabledPluginsCount);
+        System.Assert.areEqual(0, returnedEnvironment.loggerEnabledPluginsCount);
         System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
             String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
@@ -87,7 +87,7 @@ private class LoggerHomeHeaderController_Tests {
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
 
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        System.Assert.isNull(returnedEnvironment.loggerEnabledPluginsCount);
+        System.Assert.areEqual(0, returnedEnvironment.loggerEnabledPluginsCount);
         System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
             String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',

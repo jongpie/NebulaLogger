@@ -108,9 +108,8 @@ export default class LogEntryEventStream extends LightningElement {
             return 'base';
         } else if (this.eventDeliveryPercent >= 50 && this.eventDeliveryPercent < 75) {
             return 'warning';
-        } 
-            return 'expired';
-        
+        }
+        return 'expired';
     }
 
     get maxEventsToStreamHelp() {
