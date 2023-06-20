@@ -35,15 +35,15 @@ public without sharing class LoggerHomeHeaderController {
     }
 
     private static void setPluginDetails(Environment environment) {
-        List<LoggerPlugin__mdt> enabledplugins = LoggerPlugin.getPluginConfigurations();
-        environment.loggerEnabledPluginsCount = enabledplugins.size();
+        List<LoggerPlugin__mdt> enabledPlugins = LoggerPlugin.getPluginConfigurations();
+        environment.loggerEnabledPluginsCount = enabledPlugins.size();
         if (environment.loggerEnabledPluginsCount == 0) {
             environment.loggerEnabledPlugins = null;
             return;
         }
 
         List<String> pluginLabels = new List<String>();
-        for (LoggerPlugin__mdt plugin : enabledplugins) {
+        for (LoggerPlugin__mdt plugin : enabledPlugins) {
             pluginLabels.add(plugin.Label);
         }
         pluginLabels.sort();
