@@ -64,6 +64,12 @@ global inherited sharing class FlowLogEntry {
     global String scenario;
 
     /**
+     * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
+     */
+    @InvocableVariable(required=false label='(Optional) apply rollback for DB operations? (USE ONLY ON FAULT CONNECTORS)')
+    global Boolean rollbackOperations;
+
+    /**
      * @description Optionally provide a comma-separated String of tags to dynamically assign to the log entry
      */
     @InvocableVariable(required=false label='(Optional) Tags (comma-separated)')

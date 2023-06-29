@@ -51,6 +51,12 @@ global inherited sharing class FlowRecordLogEntry {
     global String saveMethodName;
 
     /**
+     * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
+     */
+    @InvocableVariable(required=false label='(Optional) apply rollback for DB operations? (USE ONLY ON FAULT CONNECTORS)')
+    global Boolean rollbackOperations;
+
+    /**
      * @description Optionally specify a logging level - the default is 'DEBUG'
      */
     @InvocableVariable(required=false label='(Optional) Logging Level')

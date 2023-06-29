@@ -56,6 +56,11 @@ public inherited sharing class FlowLogger {
         public String scenario;
 
         /**
+         * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
+         */
+        public Boolean rollbackOperations;
+
+        /**
          * @description Comma-separated string of tags
          */
         public String tagsString;
@@ -140,6 +145,9 @@ public inherited sharing class FlowLogger {
     public static List<String> addEntries(List<LogEntry> flowEntries) {
         Boolean saveLog = false;
         Logger.SaveMethod saveMethod = Logger.getSaveMethod();
+        Boolean rollbackOperations = false;
+        String faultMessage = '';
+
         for (LogEntry flowEntry : flowEntries) {
             flowEntry.addToLoggerBuffer();
 
@@ -148,6 +156,12 @@ public inherited sharing class FlowLogger {
                 if (String.isNotBlank(flowEntry.saveMethodName) == true) {
                     saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
                 }
+                if (flowEntry.rollbackOperations == true) {
+                    rollbackOperations = flowEntry.rollbackOperations;
+                }
+                if (String.isBlank(flowEntry.faultMessage) == true) {
+                    faultMessage = flowEntry.faultMessage;
+                }
             }
         }
 
@@ -155,12 +169,22 @@ public inherited sharing class FlowLogger {
             Logger.saveLog(saveMethod);
         }
 
+        // Here we throw an exception so we stop synchronous database updates from happening
+        // avoiding inconsistencies
+        if (rollbackOperations == true) {
+            throw new AutoLaunchedFlowException(faultMessage);
+        }
+
+        return setTransactionIds(flowEntries.size());
+    }
+
+    private static List<String> setTransactionIds(Integer size) {
         // Event though it's the same transaction ID, Salesforce expects the returned list...
         // to have the same number of items as the initial input.
         // When there's a mismatch, Salesforce throws an error:
         // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
         List<String> transactionIds = new List<String>();
-        for (Integer i = 0; i < flowEntries.size(); i++) {
+        for (Integer i = 0; i < size; i++) {
             transactionIds.add(Logger.getTransactionId());
         }
         return transactionIds;
