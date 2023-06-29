@@ -107,4 +107,49 @@ private class FlowLogger_Tests {
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
+
+    @IsTest
+    static void it_should_throw_exception_when_rollbackOperations_is_set_to_true() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String faultMessage = '';
+        System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
+        Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c]);
+        FlowLogger.LogEntry flowEntry = new FlowLogger.LogEntry();
+        flowEntry.flowName = 'MyFlow';
+        flowEntry.message = 'hello from Flow';
+        flowEntry.loggingLevelName = entryLoggingLevel.name();
+        flowEntry.saveLog = true;
+        flowEntry.faultMessage = 'Exception message';
+        flowEntry.rollbackOperations = true;
+        flowEntry.timestamp = System.now();
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        // Insert any SObject to force to later test if data stays the same.
+        Account testAccount = new Account(Name = 'Test Account');
+        insert testAccount;
+
+        try {
+            FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
+
+            System.Assert.areEqual(0, Logger.getBufferSize());
+            System.Assert.areEqual(1, Logger.saveLogCallCount);
+            System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+            System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+            LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+            System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
+            System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
+            System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
+            System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        } catch (Exception e) {
+            faultMessage = e.getMessage();
+
+            System.Assert.areEqual(flowEntry.faultMessage, faultMessage, 'fault message its not expected to be empty');
+            System.Assert.areEqual('AutolaunchedFlowException', e.getTypeName(), 'Exception type must match the one we are throwing');
+        }
+    }
 }

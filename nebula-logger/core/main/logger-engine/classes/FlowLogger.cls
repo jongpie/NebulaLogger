@@ -159,7 +159,7 @@ public inherited sharing class FlowLogger {
                 if (flowEntry.rollbackOperations == true) {
                     rollbackOperations = flowEntry.rollbackOperations;
                 }
-                if (String.isBlank(flowEntry.faultMessage) == true) {
+                if (String.isNotBlank(flowEntry.faultMessage) == true) {
                     faultMessage = flowEntry.faultMessage;
                 }
             }
