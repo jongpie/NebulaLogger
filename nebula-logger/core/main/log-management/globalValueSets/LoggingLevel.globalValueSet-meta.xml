@@ -38,6 +38,6 @@
         <default>false</default>
         <label>FINEST</label>
     </customValue>
-    <masterLabel>Logging Level</masterLabel>
+    <masterLabel>Nebula Logger: Logging Level</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

@@ -1547,7 +1547,7 @@
         <name>sidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Log Entry Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Log Entry Record Page</masterLabel>
     <sobjectType>LogEntry__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>

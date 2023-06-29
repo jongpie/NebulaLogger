@@ -31,6 +31,23 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Indicates if Nebula Logger's LWC `logEntryEventStream` is enabled. The component uses
+     *              the Emp API, which counts towards orgs' daily delivery allocations for platform events.
+     *              To help reduce usage of the daily allocation limit, orgs can disable the LWC.
+     *              Controlled by the custom metadata record `LoggerParameter.EnableLogEntryEventStream`,
+     *              or `true` as the default
+     */
+    public static final Boolean ENABLE_LOG_ENTRY_EVENT_STREAM {
+        get {
+            if (ENABLE_LOG_ENTRY_EVENT_STREAM == null) {
+                ENABLE_LOG_ENTRY_EVENT_STREAM = getBoolean('EnableLogEntryEventStream', true);
+            }
+            return ENABLE_LOG_ENTRY_EVENT_STREAM;
+        }
+        private set;
+    }
+
+    /**
      * @description Indicates if Nebula Logger will parse a stack trace for each log entry, which is then used to populate
      *              fields like `LogEntry__c.StackTrace__c` and `LogEntry__c.OriginLocation__c`.
      *              Controlled by the custom metadata record `LoggerParameter.EnableStackTraceParsing`, or `true` as the default

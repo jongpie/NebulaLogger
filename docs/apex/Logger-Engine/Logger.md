@@ -26,7 +26,7 @@ Enum used to control how LogEntryEvent\_\_e records are inserted
 
 #### `callStatusApi()` → `StatusApiResponse`
 
-**This is only intended to be used internally by Nebula Logger, and is subject to change.** Calls Salesforce&apos;s API endpoint https://api.status.salesforce.com/v1/instances/ to get more details about the current org, including the org&apos;s release number and release version
+**This is only intended to be used internally by Nebula Logger, and is subject to change.** Calls Salesforce&apos;s API endpoint https://api.status.salesforce.com/v1/instances/ to get more details about the current org, including the org&apos;s release number and release version. Trust API docs available at https://api.status.salesforce.com/v1/docs/
 
 ##### Return
 

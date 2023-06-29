@@ -12,6 +12,9 @@
                                 <h1>
                                     <span class="slds-page-header__title slds-p-top_xx-small" data-id="header-title" title={title}>{title}</span>
                                 </h1>
+                                <template if:true={enabledPluginsSummary}>
+                                    <p data-id="enabled-plugins-summary">{enabledPluginsSummary}</p>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -27,12 +30,14 @@
                                 label={environmentDetailsButtonLabel}
                                 onclick={handleViewEnvironmentDetails}
                             ></lightning-button>
-                            <lightning-button
-                                data-id="release-notes-button"
-                                icon-name="utility:announcement"
-                                label={releaseNotesButtonLabel}
-                                onclick={handleViewReleaseNotes}
-                            ></lightning-button>
+                            <template if:true={showReleaseNotesButton}>
+                                <lightning-button
+                                    data-id="release-notes-button"
+                                    icon-name="utility:announcement"
+                                    label={releaseNotesButtonLabel}
+                                    onclick={handleViewReleaseNotes}
+                                ></lightning-button>
+                            </template>
                         </lightning-button-group>
                     </div>
                 </div>
@@ -63,7 +68,7 @@
                         <h3 class="slds-section__title slds-theme_shade">
                             <span class="slds-truncate slds-p-horizontal_small" title="Nebula Logger">Nebula Logger</span>
                         </h3>
-                        <lightning-layout>
+                        <lightning-layout class="slds-p-around_small">
                             <lightning-layout-item size="12">
                                 <lightning-input
                                     data-id="environment-loggerVersionNumber"
@@ -81,6 +86,18 @@
                                     value={environment.loggerNamespacePrefix}
                                     variant="label-inline"
                                 ></lightning-input>
+                                <template if:true={environment.loggerEnabledPlugins}>
+                                    <div class="slds-form-element slds-form-element_horizontal">
+                                        <label class="slds-form-element__label" for="logger-enabled-plugins-output">Enabled Plugins</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-formatted-rich-text
+                                                data-id="environment-loggerEnabledPlugins"
+                                                id="logger-enabled-plugins-output"
+                                                value={environment.loggerEnabledPlugins}
+                                            ></lightning-formatted-rich-text>
+                                        </div>
+                                    </div>
+                                </template>
                             </lightning-layout-item>
                         </lightning-layout>
                     </div>
@@ -90,7 +107,7 @@
                         <h3 class="slds-section__title slds-theme_shade">
                             <span class="slds-truncate slds-p-horizontal_small" title="Organization">Organization</span>
                         </h3>
-                        <lightning-layout>
+                        <lightning-layout class="slds-p-around_small">
                             <lightning-layout-item size="12">
                                 <lightning-input
                                     data-id="environment-organizationId"
@@ -124,14 +141,16 @@
                                     value={environment.organizationInstanceName}
                                     variant="label-inline"
                                 ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationInstanceProducts"
-                                    label="Instance Products"
-                                    read-only
-                                    type="url"
-                                    value={environment.organizationInstanceProducts}
-                                    variant="label-inline"
-                                ></lightning-input>
+                                <div class="slds-form-element slds-form-element_horizontal">
+                                    <label class="slds-form-element__label" for="organization-instance-products-output">Instance Products</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-formatted-rich-text
+                                            data-id="environment-organizationInstanceProducts"
+                                            id="organization-instance-products-output"
+                                            value={environment.organizationInstanceProducts}
+                                        ></lightning-formatted-rich-text>
+                                    </div>
+                                </div>
                                 <lightning-input
                                     data-id="environment-organizationInstanceLocation"
                                     label="Instance Location"
@@ -208,6 +227,7 @@
                         label="Open Status Site"
                         onclick={handleViewStatusSite}
                         title="Open Status Site"
+                        variant="brand"
                     ></lightning-button>
                 </footer>
             </div>

@@ -41,6 +41,20 @@ List&lt;LoggerPlugin_t&gt;
 
 The list of matching `LoggerPlugin_t` records
 
+#### `getPluginConfigurations()` → `List<LoggerPlugin_t>`
+
+Returns all enabled `LoggerPlugin_t` records, based on `IsEnabled__c == true`
+
+##### Return
+
+**Type**
+
+List&lt;LoggerPlugin_t&gt;
+
+**Description**
+
+The list of enabled `LoggerPlugin_t` records
+
 #### `newBatchableInstance(String apexClassTypeName)` → `Batchable`
 
 Creates an instance of the class `LoggerPlugin.Batchable` based on the provided `LoggerPlugin_t` configuration

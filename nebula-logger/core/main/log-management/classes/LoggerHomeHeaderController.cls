@@ -28,6 +28,29 @@ public without sharing class LoggerHomeHeaderController {
         environment.organizationName = System.UserInfo.getOrganizationName();
         environment.organizationType = organization.OrganizationType;
 
+        setPluginDetails(environment);
+        setStatusApiResponseDetails(environment);
+
+        return environment;
+    }
+
+    private static void setPluginDetails(Environment environment) {
+        List<LoggerPlugin__mdt> enabledPlugins = LoggerPlugin.getPluginConfigurations();
+        environment.loggerEnabledPluginsCount = enabledPlugins.size();
+        if (environment.loggerEnabledPluginsCount == 0) {
+            environment.loggerEnabledPlugins = null;
+            return;
+        }
+
+        List<String> pluginLabels = new List<String>();
+        for (LoggerPlugin__mdt plugin : enabledPlugins) {
+            pluginLabels.add(plugin.Label);
+        }
+        pluginLabels.sort();
+        environment.loggerEnabledPlugins = String.join(pluginLabels, ', ');
+    }
+
+    private static void setStatusApiResponseDetails(Environment environment) {
         Logger.StatusApiResponse statusApiResponse = Logger.callStatusApi();
         if (statusApiResponse != null) {
             environment.organizationInstanceLocation = statusApiResponse.location;
@@ -39,8 +62,6 @@ public without sharing class LoggerHomeHeaderController {
                 environment.organizationInstanceProducts = getInstanceProductNames(statusApiResponse);
             }
         }
-
-        return environment;
     }
 
     private static String getInstanceProductNames(Logger.StatusApiResponse statusApiResponse) {
@@ -53,6 +74,10 @@ public without sharing class LoggerHomeHeaderController {
 
     @SuppressWarnings('PMD.ApexDoc, PMD.TooManyFields')
     public class Environment {
+        @AuraEnabled
+        public Integer loggerEnabledPluginsCount;
+        @AuraEnabled
+        public String loggerEnabledPlugins = 'Unknown';
         @AuraEnabled
         public String loggerNamespacePrefix = 'Unknown';
         @AuraEnabled

@@ -5,5 +5,6 @@
     <inlineHelpText>Optional - when set, the LoggerSettings__c record is only used when EndTime__c &gt;= System.now()</inlineHelpText>
     <label>End Time</label>
     <required>false</required>
+    <trackTrending>false</trackTrending>
     <type>DateTime</type>
 </CustomField>

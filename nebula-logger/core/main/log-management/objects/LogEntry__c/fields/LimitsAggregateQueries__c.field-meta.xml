@@ -13,7 +13,7 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; + IF(LimitsAggregateQueriesMax__c = 0, '100', TEXT(ROUND(LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100, 2))) + &apos;% (&apos;
+    + &apos; &apos; + IF(LimitsAggregateQueriesMax__c = 0, &apos;100&apos;, TEXT(ROUND(LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100, 2))) + &apos;% (&apos;
     + TEXT(LimitsAggregateQueriesUsed__c) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText>✅ when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>

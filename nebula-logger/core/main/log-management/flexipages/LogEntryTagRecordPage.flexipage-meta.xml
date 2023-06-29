@@ -54,7 +54,7 @@
         <name>sidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Log Entry Tag Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Log Entry Tag Record Page</masterLabel>
     <sobjectType>LogEntryTag__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>

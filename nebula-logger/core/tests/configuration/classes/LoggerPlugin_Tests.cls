@@ -9,6 +9,22 @@ private class LoggerPlugin_Tests {
     private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
     @IsTest
+    static void it_should_returned_all_enabled_plugin_configurations() {
+        LoggerPlugin__mdt firstMockPluginConfiguration = createMockPluginConfiguration('Some_Mock_Plugin_Configuration');
+        LoggerPlugin.setMock(firstMockPluginConfiguration);
+        LoggerPlugin__mdt secondMockPluginConfiguration = createMockPluginConfiguration('Another_Mock_Plugin_Configuration');
+        LoggerPlugin.setMock(secondMockPluginConfiguration);
+        List<LoggerPlugin__mdt> expectedPluginConfigurations = new List<LoggerPlugin__mdt>{ firstMockPluginConfiguration, secondMockPluginConfiguration };
+
+        List<LoggerPlugin__mdt> returnedPluginConfigurations = LoggerPlugin.getPluginConfigurations();
+
+        expectedPluginConfigurations.sort();
+        returnedPluginConfigurations.sort();
+        System.Assert.areEqual(expectedPluginConfigurations.size(), returnedPluginConfigurations.size());
+        System.Assert.areEqual(expectedPluginConfigurations, returnedPluginConfigurations);
+    }
+
+    @IsTest
     static void it_should_returned_filtered_plugin_configurations_in_sorted_order() {
         // The mock LoggerPlugin__mdt records are purposeful being added to LoggerPlugin.setMock()
         // in an order that's different from the order when sorting on SObjectHandlerExecutionOrder__c.

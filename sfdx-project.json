@@ -1,7 +1,7 @@
 {
     "name": "Nebula Logger",
     "namespace": "",
-    "sourceApiVersion": "57.0",
+    "sourceApiVersion": "58.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "plugins": {
         "sfdx-plugin-prettier": {
@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.6.NEXT",
-            "versionName": "More Log__c and LogEntry__c fields",
-            "versionDescription": "Added more fields to capture additional Flow details, organization details, and browser details via logger LWC",
+            "versionNumber": "4.11.0.NEXT",
+            "versionName": "Summer '23 Release",
+            "versionDescription": "Updated all metadata to API v58.0, added LoggerParameter__mdt record to disable the LWC logEntryEventStream",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -147,6 +147,7 @@
         "Nebula Logger - Core@4.10.4-new-logger-home-page": "04t5Y0000023SC7QAM",
         "Nebula Logger - Core@4.10.5-new-custom-index-for-origin-location-field": "04t5Y0000023SCHQA2",
         "Nebula Logger - Core@4.10.6-more-log__c-and-logentry__c-fields": "04t5Y0000023SCqQAM",
+        "Nebula Logger - Core@4.11.0-summer-'23-release": "04t5Y0000023SI6QAM",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

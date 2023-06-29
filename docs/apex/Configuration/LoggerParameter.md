@@ -14,6 +14,10 @@ Provides a centralized way to load parameters for SObject handlers &amp; plugins
 
 Indicates if Nebula Logger will make an async callout to `https://api.status.salesforce.com` to get additional details about the current org, which is then stored on the Log\_\_c record. Controlled by the custom metadata record `LoggerParameter.CallStatusApi`, or `false` as the default
 
+#### `ENABLE_LOG_ENTRY_EVENT_STREAM` → `Boolean`
+
+Indicates if Nebula Logger&apos;s LWC `logEntryEventStream` is enabled. The component uses the Emp API, which counts towards orgs&apos; daily delivery allocations for platform events. To help reduce usage of the daily allocation limit, orgs can disable the LWC. Controlled by the custom metadata record `LoggerParameter.EnableLogEntryEventStream`, or `true` as the default
+
 #### `ENABLE_STACK_TRACE_PARSING` → `Boolean`
 
 Indicates if Nebula Logger will parse a stack trace for each log entry, which is then used to populate fields like `LogEntry__c.StackTrace__c` and `LogEntry__c.OriginLocation__c`. Controlled by the custom metadata record `LoggerParameter.EnableStackTraceParsing`, or `true` as the default

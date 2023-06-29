@@ -212,7 +212,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Log Scenario Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Log Scenario Record Page</masterLabel>
     <sobjectType>LoggerScenario__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSingleColTemplateDesktop</name>

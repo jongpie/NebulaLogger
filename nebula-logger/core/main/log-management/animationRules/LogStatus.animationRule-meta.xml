@@ -3,7 +3,7 @@
     <animationFrequency>always</animationFrequency>
     <developerName>LogStatus</developerName>
     <isActive>true</isActive>
-    <masterLabel>Log Status</masterLabel>
+    <masterLabel>Nebula Logger: Log Status</masterLabel>
     <recordTypeContext>Master</recordTypeContext>
     <recordTypeName>__MASTER__</recordTypeName>
     <sobjectType>Log__c</sobjectType>
