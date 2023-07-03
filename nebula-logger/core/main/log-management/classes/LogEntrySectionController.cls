@@ -11,6 +11,7 @@ public without sharing class LogEntrySectionController {
             SELECT
                 ApexClassId__c,
                 ApexClassName__c,
+                ApexClassSnippet__c,
                 ExceptionApexClassName__c,
                 ExceptionApexClassSnippet__c,
                 FlowActiveVersionId__c,
@@ -35,18 +36,21 @@ public without sharing class LogEntrySectionController {
         }
         // TODO consolidate queries
         if (logEntry.ApexClassId__c != null) {
-            context.loggingApexClass = [
+            List<ApexClass> possibleMatches = [
                 SELECT Id, Body, LastModifiedBy.Name, LastModifiedBy.Username, LastModifiedDate
                 FROM ApexClass
                 WHERE Id = :logEntry.ApexClassId__c
             ];
+            context.loggingApexClass = possibleMatches.size() == 1 ? possibleMatches.get(0) : null;
         }
         if (logEntry.ExceptionApexClassName__c != null) {
-            context.exceptionApexClass = [
+            List<ApexClass> possibleMatches = [
                 SELECT Id, Body, LastModifiedBy.Name, LastModifiedBy.Username, LastModifiedDate
                 FROM ApexClass
                 WHERE Name = :logEntry.ExceptionApexClassName__c
+                LIMIT 1
             ];
+            context.exceptionApexClass = possibleMatches.size() == 1 ? possibleMatches.get(0) : null;
         }
 
         context.relatedRecords = getRelatedRecords(logEntry, showUnmaskedData);

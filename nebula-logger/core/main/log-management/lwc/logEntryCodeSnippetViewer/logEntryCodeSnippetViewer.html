@@ -1,0 +1,9 @@
+<template>
+    <template if:true={codeSnippet}>
+        <c-log-entry-section section-title={sectionTitle}>
+            <span slot="sectionContent">
+                <c-logger-code-viewer code={codeSnippet.code} ending-line-number={codeSnippet.endingLineNumber} starting-line-number={codeSnippet.startingLineNumber} target-line-number={codeSnippet.targetLineNumber}></c-logger-code-viewer>
+            </span>
+        </c-log-entry-section>
+    </template>
+</template>

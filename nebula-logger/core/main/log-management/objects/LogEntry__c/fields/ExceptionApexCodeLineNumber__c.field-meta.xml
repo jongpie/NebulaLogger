@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ExceptionApexClassLineNumber__c</fullName>
+    <fullName>ExceptionApexCodeLineNumber__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <description>For more details, see https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_classes_exception_methods.htm</description>
     <externalId>false</externalId>
     <inlineHelpText>The line number from where the exception was thrown</inlineHelpText>
-    <label>Exception Apex Class Line Number</label>
+    <label>Exception Apex Code Line Number</label>
     <precision>10</precision>
     <required>false</required>
     <scale>0</scale>

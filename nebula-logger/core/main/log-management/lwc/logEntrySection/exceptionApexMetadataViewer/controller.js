@@ -8,11 +8,11 @@ const ExceptionApexMetadataViewer = class {
     logEntryContext;
     mockJavaScript;
 
-    highlight() {
-        if (Prism) {
-            Prism.highlightAllUnder(this, false);
-        }
-    }
+    // highlight() {
+    //     if (Prism) {
+    //         Prism.highlightAllUnder(this, false);
+    //     }
+    // }
 
     setupParentController(parentController) {
         // Promise.all([loadScript(this, resources + '/prism.js'), loadStyle(this, resources + '/prism.css')]).then(result => {

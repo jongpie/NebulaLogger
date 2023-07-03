@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ExceptionApexClassSnippet__c</fullName>
+    <fullName>ApexClassSnippet__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <inlineHelpText>A JSON snippet of the Apex class's code that threw the exception</inlineHelpText>
-    <label>Exception Apex Class Snippet</label>
+    <inlineHelpText>A JSON snippet of the Apex class's code that generated the log entry</inlineHelpText>
+    <label>Apex Class Snippet</label>
     <!-- TODO finalize length needed -->
     <length>3000</length>
     <securityClassification>Confidential</securityClassification>

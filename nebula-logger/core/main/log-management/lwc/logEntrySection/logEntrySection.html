@@ -1,0 +1,17 @@
+<template>
+    <lightning-card class="slds-p-horizontal_medium">
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title slds-theme_shade" onclick={toggleSection}>
+                <lightning-icon class="slds-m-left_medium" icon-name={sectionToggleIcon} size="x-small"></lightning-icon>
+                <span class="slds-truncate slds-m-left_xx-small" title={sectionTitle}>{sectionTitle}</span>
+            </h3>
+            <template if:true={showSectionContent}>
+                <lightning-layout class="slds-p-around_medium">
+                    <lightning-layout-item size="12">
+                        <slot name="sectionContent"></slot>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </div>
+    </lightning-card>
+</template>

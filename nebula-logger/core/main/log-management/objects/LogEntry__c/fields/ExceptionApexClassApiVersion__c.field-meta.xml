@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ExceptionApexClassApiVersion__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <description
+    >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_apexclass.htm</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The API version for this class. Every class has an API version specified at creation.</inlineHelpText>
+    <label>Exception Apex Class API Version</label>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>v59.0</fullName>
+                <default>false</default>
+                <label>v59.0 - Winter &apos;24 Release</label>
+            </value>
+            <value>
+                <fullName>v58.0</fullName>
+                <default>false</default>
+                <label>v58.0 - Summer &apos;23 Release</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

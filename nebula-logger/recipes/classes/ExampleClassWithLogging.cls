@@ -1,5 +1,5 @@
 /**
- * @description An example Apex class for utilizing Nebula Logger.
+//  * @description An example Apex class for utilizing Nebula Logger.
  */
 public with sharing class ExampleClassWithLogging {
     /**
@@ -16,9 +16,13 @@ public with sharing class ExampleClassWithLogging {
     public void doSomething() {
         Logger.info('running doSomething() method!');
 
-        new ExampleInnerClass().doAnInnerSomething();
-
-        Logger.saveLog();
+        try {
+            new ExampleInnerClass().doAnInnerSomething();
+        } catch(Exception ex) {
+            Logger.error('some error, oh no!', ex);
+        } finally {
+            Logger.saveLog();
+        }
     }
 
     /**
@@ -38,6 +42,10 @@ public with sharing class ExampleClassWithLogging {
          */
         public void doAnInnerSomething() {
             Logger.info('running doAnInnerSomething() method!');
+            System.DmlException exceptionToThrow = new System.DmlException('some DML issue, whoops!');
+            Logger.warn('about to throw exception', exceptionToThrow);
+            Logger.saveLog();
+            throw exceptionToThrow;
         }
     }
 }

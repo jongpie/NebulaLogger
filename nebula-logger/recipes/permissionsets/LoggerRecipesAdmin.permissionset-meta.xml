@@ -25,7 +25,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Logger Recipes Admin</label>
+    <label>Nebula Logger: Recipes Admin</label>
     <license>Salesforce</license>
     <tabSettings>
         <tab>LoggerAuraDemo</tab>
