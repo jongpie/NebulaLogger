@@ -88,7 +88,7 @@
         "test:nocoverage": "npm run test:lwc && npm run test:apex"
     },
     "dependencies": {
-        "@xmldom/xmldom": ">=0.8.4",
+        "@xmldom/xmldom": ">=0.8.8",
         "ansi-regex": ">=5.0.1",
         "async": ">=2.6.4",
         "ejs": ">=3.1.7",
