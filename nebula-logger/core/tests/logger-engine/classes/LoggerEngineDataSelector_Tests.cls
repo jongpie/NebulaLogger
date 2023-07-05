@@ -176,6 +176,23 @@ private class LoggerEngineDataSelector_Tests {
         System.Assert.isNull(returnedUser);
     }
 
+    @IsTest
+    static void it_returns_a_list_of_network_proxies() {
+
+        Map<Id, Network> networkMap = new Map<Id, Network>([
+            SELECT Id
+            FROM Network
+        ]);
+
+        Test.startTest();
+
+        Map<Id, LoggerSObjectProxy.Network> proxyMap = LoggerEngineDataSelector.getInstance().getNetworkProxies(new List<Id>(networkMap.keySet()));
+
+        Test.stopTest();
+
+        System.assertEquals(networkMap.size(), proxyMap.size(), 'Should get a proxy for each provided network id');
+    }
+
     private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
         private Integer authSessionQueryCount = 0;
         private Integer organizationQueryCount = 0;
