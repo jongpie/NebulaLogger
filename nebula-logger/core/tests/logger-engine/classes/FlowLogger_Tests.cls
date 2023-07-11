@@ -109,7 +109,7 @@ private class FlowLogger_Tests {
     }
 
     @IsTest
-    static void it_should_throw_exception_when_rollbackOperations_is_set_to_true() {
+    static void it_should_throw_exception_when_shouldThrowFaultMessageException_is_set_to_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String faultMessage = '';
         System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
@@ -123,15 +123,11 @@ private class FlowLogger_Tests {
         flowEntry.loggingLevelName = entryLoggingLevel.name();
         flowEntry.saveLog = true;
         flowEntry.faultMessage = 'Exception message';
-        flowEntry.rollbackOperations = true;
+        flowEntry.shouldThrowFaultMessageException = true;
         flowEntry.timestamp = System.now();
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
-
-        // Insert any SObject to force to later test if data stays the same.
-        Account testAccount = new Account(Name = 'Test Account');
-        insert testAccount;
 
         try {
             FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
@@ -149,7 +145,7 @@ private class FlowLogger_Tests {
             faultMessage = e.getMessage();
 
             System.Assert.areEqual(flowEntry.faultMessage, faultMessage, 'fault message its not expected to be empty');
-            System.Assert.areEqual('AutolaunchedFlowException', e.getTypeName(), 'Exception type must match the one we are throwing');
+            System.Assert.areEqual('FlowException', e.getTypeName(), 'Exception type must match the one we are throwing');
         }
     }
 }

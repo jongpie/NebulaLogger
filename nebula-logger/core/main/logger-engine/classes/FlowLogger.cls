@@ -56,9 +56,9 @@ public inherited sharing class FlowLogger {
         public String scenario;
 
         /**
-         * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
+         * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
          */
-        public Boolean rollbackOperations;
+        public Boolean shouldThrowFaultMessageException;
 
         /**
          * @description Comma-separated string of tags
@@ -145,7 +145,7 @@ public inherited sharing class FlowLogger {
     public static List<String> addEntries(List<LogEntry> flowEntries) {
         Boolean saveLog = false;
         Logger.SaveMethod saveMethod = Logger.getSaveMethod();
-        Boolean rollbackOperations = false;
+        Boolean shouldThrowFaultMessageException = false;
         String faultMessage = '';
 
         for (LogEntry flowEntry : flowEntries) {
@@ -156,8 +156,8 @@ public inherited sharing class FlowLogger {
                 if (String.isNotBlank(flowEntry.saveMethodName) == true) {
                     saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
                 }
-                if (flowEntry.rollbackOperations == true) {
-                    rollbackOperations = flowEntry.rollbackOperations;
+                if (flowEntry.shouldThrowFaultMessageException == true) {
+                    shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
                 }
                 if (String.isNotBlank(flowEntry.faultMessage) == true) {
                     faultMessage = flowEntry.faultMessage;
@@ -171,8 +171,8 @@ public inherited sharing class FlowLogger {
 
         // Here we throw an exception so we stop synchronous database updates from happening
         // avoiding inconsistencies
-        if (rollbackOperations == true) {
-            throw new AutoLaunchedFlowException(faultMessage);
+        if (shouldThrowFaultMessageException == true) {
+            throw new System.FlowException(faultMessage);
         }
 
         return setTransactionIds(flowEntries.size());
