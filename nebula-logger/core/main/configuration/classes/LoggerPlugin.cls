@@ -9,7 +9,7 @@
  *              based on configurations stored in the custom metadata type `LoggerPlugin__mdt`
  */
 public without sharing class LoggerPlugin {
-    private static final Map<String, LoggerPlugin__mdt> DEVELOPER_NAME_TO_RECORD = loadRecords();
+    private static final Map<String, LoggerPlugin__mdt> DEVELOPER_NAME_TO_RECORD = loadEnabledRecords();
 
     /**
      * @description Interface used to create plugins that can be used within Logger's batch job `LogBatchPurger`
@@ -27,6 +27,14 @@ public without sharing class LoggerPlugin {
     @SuppressWarnings('PMD.ApexDoc')
     public interface Triggerable {
         void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input);
+    }
+
+    /**
+     * @description Returns all enabled `LoggerPlugin__mdt` records, based on `IsEnabled__c == true`
+     * @return      The list of enabled `LoggerPlugin__mdt` records
+     */
+    public static List<LoggerPlugin__mdt> getPluginConfigurations() {
+        return DEVELOPER_NAME_TO_RECORD.values();
     }
 
     /**
@@ -94,12 +102,17 @@ public without sharing class LoggerPlugin {
         return System.Type.forName(apexClassTypeName)?.newInstance();
     }
 
-    private static Map<String, LoggerPlugin__mdt> loadRecords() {
-        Map<String, LoggerPlugin__mdt> pluginConfigurations = LoggerPlugin__mdt.getAll().clone();
-        if (System.Test.isRunningTest() == true) {
-            pluginConfigurations.clear();
+    private static Map<String, LoggerPlugin__mdt> loadEnabledRecords() {
+        Map<String, LoggerPlugin__mdt> pluginDeveloperNameToConfiguration = new Map<String, LoggerPlugin__mdt>();
+        for (LoggerPlugin__mdt pluginConfiguration : LoggerPlugin__mdt.getAll().values()) {
+            if (pluginConfiguration.IsEnabled__c == true) {
+                pluginDeveloperNameToConfiguration.put(pluginConfiguration.DeveloperName, pluginConfiguration);
+            }
         }
-        return pluginConfigurations;
+        if (System.Test.isRunningTest() == true) {
+            pluginDeveloperNameToConfiguration.clear();
+        }
+        return pluginDeveloperNameToConfiguration;
     }
 
     @TestVisible

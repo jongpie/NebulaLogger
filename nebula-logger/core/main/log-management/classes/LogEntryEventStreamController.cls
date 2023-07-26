@@ -19,6 +19,16 @@ public with sharing class LogEntryEventStreamController {
         Schema.LogEntryEvent__e.LoggingLevel__c.getDescribe().getLocalName(),
         Schema.LogEntryEvent__e.Message__c.getDescribe().getLocalName()
     };
+
+    /**
+     * @description Indicates if the LWC `logEntryEventStream` has been enabled (default) or disabled
+     * @return   The `Boolean` value of the `LoggerParameter__mdt` record `LoggerParameter.EnableLogEntryEventStream`
+     */
+    @AuraEnabled
+    public static Boolean isEnabled() {
+        return LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
+    }
+
     /**
      * @description Returns the list of columns to be displayed in LogEntryEventStream datatable.
      *              The fields are configured in the custom metadata record LoggerParameter__mdt.LogEntryEventStreamDisplayFields.

@@ -31,7 +31,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return             `List<SObject>` containing any records in the specified `SObjectType`
      */
     public virtual List<SObject> getAll(Schema.SObjectType sobjectType, Set<String> fieldNames) {
-        String query = String.format('SELECT {0} FROM {1}', new List<Object>{ String.join(new List<String>(fieldNames), ', '), sobjectType });
+        String query = String.format('SELECT {0} FROM {1}', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
         return Database.query(String.escapeSingleQuotes(query));
     }
 
@@ -44,10 +44,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return             `List<SObject>` containing any matching records in the specified `SObjectType`
      */
     public virtual List<SObject> getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds) {
-        String query = String.format(
-            'SELECT {0} FROM {1} WHERE Id IN :recordIds',
-            new List<Object>{ String.join(new List<String>(fieldNames), ', '), sobjectType }
-        );
+        String query = String.format('SELECT {0} FROM {1} WHERE Id IN :recordIds', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
         return Database.query(String.escapeSingleQuotes(query));
     }
 

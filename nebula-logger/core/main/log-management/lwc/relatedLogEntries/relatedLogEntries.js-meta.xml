@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <masterLabel>Related Log Entries</masterLabel>
+    <masterLabel>Nebula Logger: Related Log Entries</masterLabel>
     <description>Displays a related list of log entries for the current record.</description>
-    <apiVersion>57.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <isExposed>true</isExposed>
     <targets>
         <target>lightning__RecordPage</target>

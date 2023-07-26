@@ -4,6 +4,8 @@ import getEnvironmentDetails from '@salesforce/apex/LoggerHomeHeaderController.g
 
 const MOCK_ENVIRONMENT_DETAILS = {
     loggerNamespacePrefix: '(none)',
+    loggerEnabledPluginsCount: 3,
+    loggerEnabledPlugins: 'A Plugin, My Other Plugin, Some Other Plugin',
     loggerVersionNumber: 'v4.10.4',
     organizationApiVersion: 'v57.0',
     organizationCreatedByUsername: 'some.username@test.com',
@@ -50,6 +52,9 @@ describe('c-logger-home-header', () => {
         const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
         expect(headerTitleElement).toBeTruthy();
         expect(headerTitleElement.innerHTML).toBe(`Nebula Logger ${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber}`);
+        const pluginsSummaryElement = element.shadowRoot.querySelector('[data-id="enabled-plugins-summary"]');
+        expect(pluginsSummaryElement).toBeTruthy();
+        expect(pluginsSummaryElement.innerHTML).toBe(MOCK_ENVIRONMENT_DETAILS.loggerEnabledPluginsCount + ' Enabled Plugins');
         const environmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
         expect(environmentDetailsButton.label).toBe('View Environment Details');
         const releaseNotesButton = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
@@ -71,6 +76,7 @@ describe('c-logger-home-header', () => {
         const modalTitleElement = element.shadowRoot.querySelector('[data-id="environment-details-modal-title"]');
         expect(modalTitleElement.innerHTML).toBe('Environment Details');
         const dataIdToEnvironmentProperty = {
+            'environment-loggerEnabledPlugins': MOCK_ENVIRONMENT_DETAILS.loggerEnabledPlugins,
             'environment-loggerVersionNumber': MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber,
             'environment-loggerNamespacePrefix': MOCK_ENVIRONMENT_DETAILS.loggerNamespacePrefix,
             'environment-organizationId': MOCK_ENVIRONMENT_DETAILS.organizationId,
@@ -112,6 +118,20 @@ describe('c-logger-home-header', () => {
 
         modalElement = element.shadowRoot.querySelector('.slds-modal');
         expect(modalElement).toBeFalsy();
+    });
+
+    it('hides the "View Release Notes" button when version number is not available', async () => {
+        const element = createElement('c-logger-home-header', {
+            is: LoggerHomeHeader
+        });
+        document.body.appendChild(element);
+        getEnvironmentDetails.emit({ ...MOCK_ENVIRONMENT_DETAILS, ...{ loggerVersionNumber: null } });
+        await Promise.resolve('Resolve getEnvironmentDetails()');
+        const navigationHandler = jest.fn();
+        element.addEventListener('navigate', navigationHandler);
+
+        const button = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
+        expect(button).toBeFalsy();
     });
 
     it('displays github release notes url when "View Release Notes" button is clicked', async () => {

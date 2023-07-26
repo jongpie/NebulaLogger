@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>57.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <isExposed>false</isExposed>
-    <masterLabel>Log Entry Archives</masterLabel>
+    <masterLabel>Nebula Logger: Log Entry Archives</masterLabel>
     <targets>
         <target>lightning__Tab</target>
     </targets>

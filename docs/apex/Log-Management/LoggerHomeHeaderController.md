@@ -34,6 +34,10 @@ An instance of `LoggerHomeHeaderController.Environment`
 
 ##### Properties
 
+###### `loggerEnabledPlugins` → `String`
+
+###### `loggerEnabledPluginsCount` → `Integer`
+
 ###### `loggerNamespacePrefix` → `String`
 
 ###### `loggerVersionNumber` → `String`
@@ -43,8 +47,6 @@ An instance of `LoggerHomeHeaderController.Environment`
 ###### `organizationCreatedByUsername` → `String`
 
 ###### `organizationDomainUrl` → `String`
-
-###### `organizationEnvironment` → `String`
 
 ###### `organizationFormattedCreatedDate` → `String`
 
@@ -63,8 +65,6 @@ An instance of `LoggerHomeHeaderController.Environment`
 ###### `organizationReleaseNumber` → `String`
 
 ###### `organizationReleaseVersion` → `String`
-
-###### `organizationStatus` → `String`
 
 ###### `organizationType` → `String`
 

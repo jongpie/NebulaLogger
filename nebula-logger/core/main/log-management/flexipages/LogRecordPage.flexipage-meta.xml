@@ -1207,7 +1207,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Log Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Log Record Page</masterLabel>
     <sobjectType>Log__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSimpleViewTemplate</name>

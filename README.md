@@ -5,21 +5,27 @@
 
 The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.10.6
+## Unlocked Package - v4.11.0
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023SCqQAM)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023SCqQAM)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023SI6QAM)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023SI6QAM)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sfdx package install --wait 20 --security-type AdminsOnly --package 04t5Y0000023SCqQAM`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000023SI6QAM`
 
-## Managed Package - v4.10.0
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000023SI6QAM`
 
-[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015nWeQAI)
-[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015nWeQAI)
-[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/10?closed=1)
+---
 
-`sfdx package install --wait 30 --security-type AdminsOnly --package 04t5Y0000015nWeQAI`
+## Managed Package - v4.11.0
+
+[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000023SI1QAM)
+[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000023SI1QAM)
+[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/11?closed=1)
+
+`sf package install --wait 30 --security-type AdminsOnly --package 04t5Y0000023SI1QAM`
+
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000023SI1QAM`
 
 ---
 
@@ -31,7 +37,7 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
     - In addition to the required fields on this Custom Setting record, `LoggerSettings__c` ships with `SystemLogMessageFormat__c`, which uses Handlebars-esque syntax to refer to fields on the `LogEntryEvent__e` Platform Event. You can use curly braces to denote merge field logic, eg: `{OriginLocation__c}\n{Message__c}` - this will output the contents of `LogEntryEvent__e.OriginLocation__c`, a line break, and then the contents of `LogEntryEvent__e.Message__c`
 5. Automatically mask sensitive data by configuring `LogEntryDataMaskRule__mdt` custom metadata rules
-6. View related log entries on any Lighting SObject flexipage by adding the 'Related Log Entries' component in App Builder
+6. View related log entries on any Lightning SObject flexipage by adding the 'Related Log Entries' component in App Builder
 7. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs
 8. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow (not currently available in the managed package)
 9. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)

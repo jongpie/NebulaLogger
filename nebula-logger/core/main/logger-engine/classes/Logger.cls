@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.10.6';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.11.0';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -3123,7 +3123,8 @@ global with sharing class Logger {
     /**
      * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
      *              Calls Salesforce's API endpoint https://api.status.salesforce.com/v1/instances/
-     *              to get more details about the current org, including the org's release number and release version
+     *              to get more details about the current org, including the org's release number and release version.
+     *              Trust API docs available at https://api.status.salesforce.com/v1/docs/
      * @return      Instance of `Logger.StatusApiResponse`, a data transfer object (DTO) that maps to the JSON returned
      *              by the status API endpoint.
      */

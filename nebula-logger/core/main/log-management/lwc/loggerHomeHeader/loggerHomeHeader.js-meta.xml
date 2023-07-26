@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>57.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>Logger Home Header</masterLabel>
+    <masterLabel>Nebula Logger: Logger Home Header</masterLabel>
     <description
     >Header component used on the Logger Console home page. This provides access to resources for configuring &amp; using Nebula Logger</description>
     <targets>
