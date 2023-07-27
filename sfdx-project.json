@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.0.NEXT",
-            "versionName": "Summer '23 Release",
-            "versionDescription": "Updated all metadata to API v58.0, added LoggerParameter__mdt record to disable the LWC logEntryEventStream",
+            "versionNumber": "4.11.1.NEXT",
+            "versionName": "Throw Exception in Flow Actions",
+            "versionDescription": "Added the ability in Flow to automatically re-throw fault exception messages after saving",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

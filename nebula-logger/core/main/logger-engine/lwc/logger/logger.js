@@ -6,7 +6,7 @@
 import { LightningElement, api } from 'lwc';
 import { createLoggerService } from './loggerService';
 
-const CURRENT_VERSION_NUMBER = 'v4.11.0';
+const CURRENT_VERSION_NUMBER = 'v4.11.1';
 
 export default class Logger extends LightningElement {
     #loggerService = createLoggerService();
