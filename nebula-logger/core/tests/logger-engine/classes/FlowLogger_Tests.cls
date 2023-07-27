@@ -145,7 +145,7 @@ private class FlowLogger_Tests {
             faultMessage = e.getMessage();
 
             System.Assert.areEqual(flowEntry.faultMessage, faultMessage, 'fault message its not expected to be empty');
-            System.Assert.areEqual('FlowException', e.getTypeName(), 'Exception type must match the one we are throwing');
+            System.Assert.areEqual('System.FlowException', e.getTypeName(), 'Exception type must match the one we are throwing');
         }
     }
 }
