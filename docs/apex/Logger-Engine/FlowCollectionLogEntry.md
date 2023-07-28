@@ -54,6 +54,10 @@ Optionally choose the save method to use when &apos;Save Log&apos; is true
 
 Optionally specify the name to use for the current transaction&apos;s scenario
 
+#### `shouldThrowFaultMessageException` → `Boolean`
+
+Optionally rollback Database operations executed until Apex action was called and save the log entry.
+
 #### `tagsString` → `String`
 
 Optionally provide a comma-separated String of tags to dynamically assign to the log entry

@@ -40,14 +40,19 @@ public inherited sharing class FlowLogger {
         public String message;
 
         /**
+         * @description String name of the entry's logging level
+         */
+        public String loggingLevelName;
+
+        /**
          * @description String containing fault message, if applicable
          */
         public String faultMessage;
 
         /**
-         * @description String name of the entry's logging level
+         * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
          */
-        public String loggingLevelName;
+        public Boolean shouldThrowFaultMessageException;
 
         /**
          * @description Optionally specify the scenario to use for the current transaction
@@ -140,6 +145,9 @@ public inherited sharing class FlowLogger {
     public static List<String> addEntries(List<LogEntry> flowEntries) {
         Boolean saveLog = false;
         Logger.SaveMethod saveMethod = Logger.getSaveMethod();
+        Boolean shouldThrowFaultMessageException = false;
+        String faultMessage = '';
+
         for (LogEntry flowEntry : flowEntries) {
             flowEntry.addToLoggerBuffer();
 
@@ -148,6 +156,12 @@ public inherited sharing class FlowLogger {
                 if (String.isNotBlank(flowEntry.saveMethodName) == true) {
                     saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
                 }
+                if (flowEntry.shouldThrowFaultMessageException == true) {
+                    shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
+                }
+                if (String.isNotBlank(flowEntry.faultMessage) == true) {
+                    faultMessage = flowEntry.faultMessage;
+                }
             }
         }
 
@@ -155,12 +169,22 @@ public inherited sharing class FlowLogger {
             Logger.saveLog(saveMethod);
         }
 
+        // Here we throw an exception so we stop synchronous database updates from happening
+        // avoiding inconsistencies
+        if (shouldThrowFaultMessageException == true) {
+            throw new System.FlowException(faultMessage);
+        }
+
+        return setTransactionIds(flowEntries.size());
+    }
+
+    private static List<String> setTransactionIds(Integer size) {
         // Event though it's the same transaction ID, Salesforce expects the returned list...
         // to have the same number of items as the initial input.
         // When there's a mismatch, Salesforce throws an error:
         // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
         List<String> transactionIds = new List<String>();
-        for (Integer i = 0; i < flowEntries.size(); i++) {
+        for (Integer i = 0; i < size; i++) {
             transactionIds.add(Logger.getTransactionId());
         }
         return transactionIds;
