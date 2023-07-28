@@ -82,6 +82,10 @@ String name of the instance of Logger.SaveMethod to use when &apos;Save Log&apos
 
 Optionally specify the scenario to use for the current transaction
 
+###### `shouldThrowFaultMessageException` → `Boolean`
+
+Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
+
 ###### `tagsString` → `String`
 
 Comma-separated string of tags

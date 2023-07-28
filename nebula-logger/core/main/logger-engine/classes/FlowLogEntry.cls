@@ -28,10 +28,22 @@ global inherited sharing class FlowLogEntry {
     global String message;
 
     /**
+     * @description Optionally specify a logging level - the default is 'DEBUG'
+     */
+    @InvocableVariable(required=false label='(Optional) Logging Level')
+    global String loggingLevelName;
+
+    /**
      * @description Optionally log a Flow fault error message
      */
     @InvocableVariable(required=false label='(Optional) Flow Fault Error Message')
     global String faultMessage;
+
+    /**
+     * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
+     */
+    @InvocableVariable(required=false label='(Optional) Throw FlowException for Fault Error Message')
+    global Boolean shouldThrowFaultMessageException;
 
     /**
      * @description Optionally choose to save any pending log entries
@@ -52,22 +64,10 @@ global inherited sharing class FlowLogEntry {
     global Id recordId;
 
     /**
-     * @description Optionally specify a logging level - the default is 'DEBUG'
-     */
-    @InvocableVariable(required=false label='(Optional) Logging Level')
-    global String loggingLevelName;
-
-    /**
      * @description Optionally specify the name to use for the current transaction's scenario
      */
     @InvocableVariable(required=false label='(Optional) Scenario')
     global String scenario;
-
-    /**
-     * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
-     */
-    @InvocableVariable(required=false label='(Optional) throws an exception when value is set to True (Use it on Fault connectors of your flow).')
-    global Boolean shouldThrowFaultMessageException;
 
     /**
      * @description Optionally provide a comma-separated String of tags to dynamically assign to the log entry

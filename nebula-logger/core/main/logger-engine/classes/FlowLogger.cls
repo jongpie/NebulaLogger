@@ -40,25 +40,25 @@ public inherited sharing class FlowLogger {
         public String message;
 
         /**
+         * @description String name of the entry's logging level
+         */
+        public String loggingLevelName;
+
+        /**
          * @description String containing fault message, if applicable
          */
         public String faultMessage;
 
         /**
-         * @description String name of the entry's logging level
+         * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
          */
-        public String loggingLevelName;
+        public Boolean shouldThrowFaultMessageException;
 
         /**
          * @description Optionally specify the scenario to use for the current transaction
          */
         @InvocableVariable(required=false label='(Optional) Scenario')
         public String scenario;
-
-        /**
-         * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
-         */
-        public Boolean shouldThrowFaultMessageException;
 
         /**
          * @description Comma-separated string of tags
