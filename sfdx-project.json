@@ -13,8 +13,8 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.1.NEXT",
-            "versionName": "Throw Exception in Flow Actions",
+            "versionNumber": "4.11.2.NEXT",
+            "versionName": "New Exception Methods for Apex",
             "versionDescription": "Added the ability in Flow to automatically re-throw fault exception messages after saving",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
