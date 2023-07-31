@@ -13,8 +13,6 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 
 `sf package install --wait 20 --security-type AdminsOnly --package 04t5Y000001TsX4QAK`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y000001TsX4QAK`
-
 ---
 
 ## Managed Package - v4.11.0
@@ -24,8 +22,6 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 [![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/11?closed=1)
 
 `sf package install --wait 30 --security-type AdminsOnly --package 04t5Y0000023SI1QAM`
-
-`sfdx force:package:install --wait 30 --securitytype AdminsOnly --package 04t5Y0000023SI1QAM`
 
 ---
 
