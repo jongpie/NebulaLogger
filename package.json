@@ -118,7 +118,7 @@
         "@ljharb/eslint-config": "latest",
         "@lwc/eslint-plugin-lwc": "latest",
         "@prettier/plugin-xml": "latest",
-        "@salesforce/cli": "^1.86.6",
+        "@salesforce/cli": "latest",
         "@salesforce/eslint-config-lwc": "latest",
         "@salesforce/eslint-plugin-lightning": "latest",
         "@salesforce/sfdx-lwc-jest": "^1.3.0",
@@ -133,6 +133,7 @@
         "jsdoc-to-markdown": "latest",
         "lint-staged": "latest",
         "prettier": "latest",
-        "prettier-plugin-apex": "latest"
+        "prettier-plugin-apex": "latest",
+        "pwsh": "^0.3.0"
     }
 }
