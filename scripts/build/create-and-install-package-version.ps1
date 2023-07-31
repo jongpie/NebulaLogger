@@ -70,7 +70,7 @@ function Build-New-Package-Version {
     $gitBranch = (git branch --show-current)
     $gitCommit = (git rev-parse HEAD)
 
-    $packageVersionCreateResult = npx sfdx package version create --json --skipancestorcheck --package $targetpackagealias --code-coverage --installation-key-bypass --wait 30 --branch $gitBranch --tag $gitCommit | ConvertFrom-Json
+    $packageVersionCreateResult = npx sf package version create --json --skip-ancestor-check --package $targetpackagealias --code-coverage --installation-key-bypass --wait 30 --branch $gitBranch --tag $gitCommit | ConvertFrom-Json
     $result = $packageVersionCreateResult.result
     Write-Debug "Package version creation result: $result"
     $packageVersionId = $packageVersionCreateResult.result.SubscriberPackageVersionId
@@ -122,8 +122,8 @@ function Update-README-Package-Version-Id {
     ((Get-Content -path $targetreadme -Raw) -replace "btn-install-unlocked-package-production.png\)\]\(https:\/\/login.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $productionUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
     $sfUnlockedPackageReplacement = "sf package install --wait 20 --security-type AdminsOnly --package $packageVersionId"
     ((Get-Content -path $targetreadme -Raw) -replace "sf package install --wait 20 --security-type AdminsOnly --package .{0,18}", $sfUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
-    $sfdxUnlockedPackageReplacement = "sfdx force:package:install --wait 20 --securitytype AdminsOnly --package $packageVersionId"
-    ((Get-Content -path $targetreadme -Raw) -replace "sfdx force:package:install --wait 20 --securitytype AdminsOnly --package .{0,18}", $sfdxUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
+    $sfdxUnlockedPackageReplacement = "sf package install --wait 20 --security-type AdminsOnly --package $packageVersionId"
+    ((Get-Content -path $targetreadme -Raw) -replace "sf package install --wait 20 --security-type AdminsOnly --package .{0,18}", $sfdxUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
 }
 
 function Install-Package-Version {
@@ -132,7 +132,7 @@ function Install-Package-Version {
     )
 
     $packageVersionId = "$packageVersionId".Trim()
-    npx sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --publishwait 5 --package $packageVersionId
+    npx sf package install --no-prompt --target-org $targetusername --wait 20 --publish-wait 5 --package $packageVersionId
     if ($LASTEXITCODE -ne 0) {
         throw "Error installing package version ID: $packageVersionId"
     }
