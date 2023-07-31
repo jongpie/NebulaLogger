@@ -13,6 +13,10 @@
  * @see LogEntryEventBuilder
  */
 public inherited sharing class FlowLogger {
+    private static final String FLOW_EXCEPTION_TYPE_NAME = 'Flow.FaultError';
+    @TestVisible
+    private static final String FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE = 'An unknown Flow exception has occurred';
+
     static {
         Logger.ignoreOrigin(FlowLogger.class);
     }
@@ -128,7 +132,7 @@ public inherited sharing class FlowLogger {
 
             if (String.isNotBlank(this.faultMessage)) {
                 this.logEntryEvent.ExceptionMessage__c = this.faultMessage;
-                this.logEntryEvent.ExceptionType__c = 'Flow.FaultError';
+                this.logEntryEvent.ExceptionType__c = FLOW_EXCEPTION_TYPE_NAME;
             }
 
             return this.logEntryEventBuilder;
@@ -146,7 +150,7 @@ public inherited sharing class FlowLogger {
         Boolean saveLog = false;
         Logger.SaveMethod saveMethod = Logger.getSaveMethod();
         Boolean shouldThrowFaultMessageException = false;
-        String faultMessage = '';
+        String faultMessage = FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
 
         for (LogEntry flowEntry : flowEntries) {
             flowEntry.addToLoggerBuffer();
@@ -156,12 +160,12 @@ public inherited sharing class FlowLogger {
                 if (String.isNotBlank(flowEntry.saveMethodName) == true) {
                     saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
                 }
-                if (flowEntry.shouldThrowFaultMessageException == true) {
-                    shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
-                }
-                if (String.isNotBlank(flowEntry.faultMessage) == true) {
-                    faultMessage = flowEntry.faultMessage;
-                }
+            }
+            if (String.isNotBlank(flowEntry.faultMessage) == true) {
+                faultMessage = flowEntry.faultMessage;
+            }
+            if (flowEntry.shouldThrowFaultMessageException == true) {
+                shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
             }
         }
 
@@ -169,9 +173,10 @@ public inherited sharing class FlowLogger {
             Logger.saveLog(saveMethod);
         }
 
-        // Here we throw an exception so we stop synchronous database updates from happening
-        // avoiding inconsistencies
+        // Here we throw an exception so we stop synchronous database updates from happening,
+        // avoiding inconsistencies in the data
         if (shouldThrowFaultMessageException == true) {
+            Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
             throw new System.FlowException(faultMessage);
         }
 

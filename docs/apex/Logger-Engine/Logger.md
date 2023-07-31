@@ -1494,18 +1494,18 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `exception(LogMessage logMessage, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
 | Param           | Description                                                               |
 | --------------- | ------------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
-| `apexException` | The instance of `System.Exception` to log                                 |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
 
 #### `exception(LogMessage logMessage, Id recordId, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
@@ -1513,11 +1513,11 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | --------------- | ------------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `recordId`      | The record ID of an `SObject` to log                                      |
-| `apexException` | The instance of `System.Exception` to log                                 |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
 
 #### `exception(LogMessage logMessage, SObject record, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
@@ -1525,11 +1525,11 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | --------------- | ------------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `record`        | The `SObject` record to log                                               |
-| `apexException` | The instance of `System.Exception` to log                                 |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
 
 #### `exception(LogMessage logMessage, List<SObject> records, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
@@ -1537,22 +1537,22 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | --------------- | ------------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `records`       | The list of `SObject` records to log                                      |
-| `apexException` | The instance of `System.Exception` to log                                 |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
 
 #### `exception(String message, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
 | Param           | Description                                             |
 | --------------- | ------------------------------------------------------- |
 | `message`       | The string to use to set the entry&apos;s message field |
-| `apexException` | The instance of `System.Exception` to log               |
+| `apexException` | The instance of `System.Exception` to log and throw     |
 
 #### `exception(String message, Id recordId, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
@@ -1560,11 +1560,11 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | --------------- | ------------------------------------------------------- |
 | `message`       | The string to use to set the entry&apos;s message field |
 | `recordId`      | The record ID of an `SObject` to log                    |
-| `apexException` | The instance of `System.Exception` to log               |
+| `apexException` | The instance of `System.Exception` to log and throw     |
 
 #### `exception(String message, SObject record, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
@@ -1572,11 +1572,11 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | --------------- | ------------------------------------------------------- |
 | `message`       | The string to use to set the entry&apos;s message field |
 | `record`        | The `SObject` record to log                             |
-| `apexException` | The instance of `System.Exception` to log               |
+| `apexException` | The instance of `System.Exception` to log and throw     |
 
 #### `exception(String message, List<SObject> records, System.Exception apexException)` → `void`
 
-Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
 
 ##### Parameters
 
@@ -1584,7 +1584,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | --------------- | ------------------------------------------------------------------------- |
 | `message`       | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `records`       | The list of `SObject` records to log                                      |
-| `apexException` | The instance of `System.Exception` to log                                 |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
 
 #### `fine(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 

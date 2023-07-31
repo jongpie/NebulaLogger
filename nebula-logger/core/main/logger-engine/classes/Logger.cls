@@ -390,9 +390,10 @@ global with sharing class Logger {
 
     // Exception methods - these all use ERROR logging level & automatically save & throw the provided exception
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(LogMessage logMessage, System.Exception apexException) {
         error().setExceptionDetails(apexException).setMessage(logMessage);
@@ -401,10 +402,11 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(LogMessage logMessage, Id recordId, System.Exception apexException) {
         error().setRecordId(recordId).setExceptionDetails(apexException).setMessage(logMessage);
@@ -413,10 +415,11 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(LogMessage logMessage, SObject record, System.Exception apexException) {
         error().setRecordId(record).setExceptionDetails(apexException).setMessage(logMessage);
@@ -425,10 +428,11 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(LogMessage logMessage, List<SObject> records, System.Exception apexException) {
         error().setRecord(records).setExceptionDetails(apexException).setMessage(logMessage);
@@ -437,9 +441,10 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
      * @param  message       The string to use to set the entry's message field
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(String message, System.Exception apexException) {
         error().setExceptionDetails(apexException).setMessage(message);
@@ -448,10 +453,11 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
      * @param  message       The string to use to set the entry's message field
      * @param  recordId      The record ID of an `SObject` to log
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(String message, Id recordId, System.Exception apexException) {
         error().setRecordId(recordId).setExceptionDetails(apexException).setMessage(message);
@@ -460,10 +466,11 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
      * @param  message       The string to use to set the entry's message field
      * @param  record        The `SObject` record to log
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(String message, SObject record, System.Exception apexException) {
         error().setRecordId(record).setExceptionDetails(apexException).setMessage(message);
@@ -472,10 +479,11 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
-     * @param  message    The instance of `LogMessage` to use to set the entry's message field
+     * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`,
+     *              automatically saves the log, and then throws the provided exception
+     * @param  message       The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
-     * @param  apexException The instance of `System.Exception` to log
+     * @param  apexException The instance of `System.Exception` to log and throw
      */
     global static void exception(String message, List<SObject> records, System.Exception apexException) {
         error().setRecord(records).setExceptionDetails(apexException).setMessage(message);
