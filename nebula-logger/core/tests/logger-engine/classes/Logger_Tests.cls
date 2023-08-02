@@ -804,63 +804,44 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_suspend_saving() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfExistingLogEntries);
-
-        System.Test.startTest();
-
-        Logger.getUserSettings().IsEnabled__c = true;
-        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.isTrue(Logger.isDebugEnabled());
+        Logger.debug('test log entry');
+        System.Assert.areEqual(1, Logger.getBufferSize());
 
         Logger.suspendSaving();
-
-        Logger.debug('test log entry');
         Logger.saveLog();
 
-        System.Test.stopTest();
-
-        countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfExistingLogEntries);
+        System.Assert.areEqual(1, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     }
 
     @IsTest
     static void it_should_resume_saving() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
-
-        System.Test.startTest();
-
-        Logger.getUserSettings().IsEnabled__c = true;
-        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
-
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.isTrue(Logger.isInfoEnabled());
         Integer logEntriesToCreate = 4;
-
-        Logger.suspendSaving();
-        System.Assert.isTrue(Logger.isSavingSuspended());
-
         for (Integer i = 0; i < logEntriesToCreate; i++) {
             Logger.info('test log entry #' + i);
         }
         System.Assert.areEqual(logEntriesToCreate, Logger.getBufferSize());
+        Logger.suspendSaving();
+        System.Assert.isTrue(Logger.isSavingSuspended());
         Logger.saveLog();
-
         System.Assert.areEqual(logEntriesToCreate, Logger.getBufferSize());
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
+        System.Assert.areEqual(logEntriesToCreate, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         Logger.resumeSaving();
         System.Assert.isFalse(Logger.isSavingSuspended());
-
         Logger.saveLog();
 
-        System.Test.getEventBus().deliver();
-
-        System.Test.stopTest();
-
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(logEntriesToCreate, countOfLogEntries);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(logEntriesToCreate, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     }
 
     @IsTest
@@ -896,6 +877,7 @@ private class Logger_Tests {
             System.Test.getEventBus().deliver();
         }
 
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         LogEntry__c logEntry = [SELECT Id, Timestamp__c FROM LogEntry__c];
         System.Assert.areEqual(originalTimestamp, logEntry.Timestamp__c);
     }
@@ -913,33 +895,23 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_not_save_when_saving_is_disabled() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
-
-        setUserLoggingLevel(System.LoggingLevel.DEBUG);
-
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         Logger.getUserSettings().IsSavingEnabled__c = false;
-
-        System.Assert.areEqual(Logger.SaveMethod.EVENT_BUS, Logger.getSaveMethod());
-
+        System.Assert.isFalse(Logger.getUserSettings().IsSavingEnabled__c);
+        System.Assert.isTrue(Logger.isDebugEnabled());
         Logger.debug('test log entry');
-        Logger.debug('another test log entry');
-
-        System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
-
-        System.Test.startTest();
+        System.Assert.areEqual(1, Logger.getBufferSize());
 
         Logger.saveLog();
+
+        System.Assert.areEqual(1, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
         System.Assert.areEqual(0, System.Limits.getCallouts());
         System.Assert.areEqual(0, System.Limits.getDmlStatements());
-
-        System.Test.stopTest();
-
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
     }
 
     @IsTest
@@ -1501,7 +1473,7 @@ private class Logger_Tests {
 
         System.Exception thrownException;
         try {
-            Logger.exception(logMessage.getMessage(), records, apexException);
+            Logger.exception(logMessage, records, apexException);
         } catch (Exception ex) {
             thrownException = ex;
         }
