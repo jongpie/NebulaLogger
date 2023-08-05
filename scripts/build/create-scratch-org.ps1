@@ -12,7 +12,7 @@ if ($devHubs -ne $null) {
     # Otherwise, get the configured default dev hub if no devHubs have been specified via parameter
     Write-Output "No dev hubs specified, checking for default dev hub instead"
 
-    $defaultDevHub = (npx sf config get target-dev-hub  --json | ConvertFrom-Json).result.value
+    $defaultDevHub = (npx sf config get target-org  --json | ConvertFrom-Json).result.value
     Write-Output "Default Dev Hub: $defaultDevHub"
 
     [string[]]$devHubs = $defaultDevHub
@@ -44,7 +44,7 @@ foreach($devHub in $devHubs) {
                 throw $1
             }
 
-            $defaultUsername = (npx sf config get target-dev-hub  --json | ConvertFrom-Json).result.value
+            $defaultUsername = (npx sf config get target-org  --json | ConvertFrom-Json).result.value
             if ($defaultUsername -ne $null) {
                 Write-Output "Scratch org created in dev hub $devHub, default username is: $defaultUsername"
                 break
@@ -55,7 +55,7 @@ foreach($devHub in $devHubs) {
     }
 }
 
-$defaultUsername = (npx sf config get target-dev-hub  --json | ConvertFrom-Json).result.value
+$defaultUsername = (npx sf config get target-org  --json | ConvertFrom-Json).result.value
 if ($defaultUsername -eq $null) {
     throw "Scratch org creation failed"
 }

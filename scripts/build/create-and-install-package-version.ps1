@@ -120,10 +120,10 @@ function Update-README-Package-Version-Id {
     ((Get-Content -path $targetreadme -Raw) -replace "btn-install-unlocked-package-sandbox.png\)\]\(https:\/\/test.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $sandboxUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
     $productionUnlockedPackageReplacement = "btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId"
     ((Get-Content -path $targetreadme -Raw) -replace "btn-install-unlocked-package-production.png\)\]\(https:\/\/login.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $productionUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
-    $sfUnlockedPackageReplacement = "sf package install --wait 20 --security-type AdminsOnly --package $packageVersionId"
+   $sfUnlockedPackageReplacement = "sf package install --wait 20 --security-type AdminsOnly --package $packageVersionId"
     ((Get-Content -path $targetreadme -Raw) -replace "sf package install --wait 20 --security-type AdminsOnly --package .{0,18}", $sfUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
-    $sfdxUnlockedPackageReplacement = "sf package install --wait 20 --security-type AdminsOnly --package $packageVersionId"
-    ((Get-Content -path $targetreadme -Raw) -replace "sf package install --wait 20 --security-type AdminsOnly --package .{0,18}", $sfdxUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
+    $sfdxUnlockedPackageReplacement = "sfdx force:package:install --wait 20 --securitytype AdminsOnly --package $packageVersionId"
+    ((Get-Content -path $targetreadme -Raw) -replace "sfdx force:package:install --wait 20 --securitytype AdminsOnly --package .{0,18}", $sfdxUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
 }
 
 function Install-Package-Version {

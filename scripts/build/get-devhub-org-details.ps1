@@ -12,4 +12,4 @@ if (!$devHub) {
 }
 
 Write-Output "Getting dev hub limits for dev hub: $devHub"
-npx sf org display --json --verbose -o $devHub
+npx sf org display --json --verbose --target-org $devHub
