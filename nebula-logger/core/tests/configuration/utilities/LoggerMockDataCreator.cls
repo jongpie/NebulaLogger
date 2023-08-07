@@ -486,7 +486,9 @@ public class LoggerMockDataCreator {
                 response.setBody(this.responseBody);
             }
             response.setStatusCode(this.statusCode);
-            response.setStatus(this.statusMessage);
+            if (String.isNotBlank(this.statusMessage) == true) {
+                response.setStatus(this.statusMessage);
+            }
             return response;
         }
     }

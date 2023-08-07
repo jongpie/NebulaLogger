@@ -7825,7 +7825,7 @@ private class Logger_Tests {
         String errorStatusMessage = 'Oops, did not understand request, or something... IDK.... it\'s broken ¯\\_(ツ)_/¯';
         System.Test.setMock(
             System.HttpCalloutMock.class,
-            LoggerMockDataCreator.createHttpCallout().setStatusCode(errorStatusCode).setResponseBody(mockErrorMessage)
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(errorStatusCode).setStatus(errorStatusMessage).setResponseBody(mockErrorMessage)
         );
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
@@ -7846,7 +7846,7 @@ private class Logger_Tests {
             errorStatusCode +
             ', status message: ' +
             errorStatusMessage;
-        System.Assert.isTrue(logEntryEvent.ExceptionMessage__c.startsWith('Callout failed for https://api.status.salesforce.com/v1/instances/'));
+        System.Assert.areEqual(expectedExceptionMessage, logEntryEvent.ExceptionMessage__c);
     }
 
     @IsTest

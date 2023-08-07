@@ -1131,23 +1131,13 @@ private class LogEntryEventHandler_Tests {
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
-        Database.SaveResult saveResult;
+        System.Assert.areEqual(0, System.Limits.getCallouts());
 
-        try {
-            // TODO System.Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
-            // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
-            System.Test.startTest();
-            saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
-            LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
-            System.Test.stopTest();
-            System.Assert.fail('System.Exception expected, this assert should not run');
-        } catch (System.Exception apexException) {
-            System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
-            String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
-            System.Assert.isTrue(apexException.getMessage().contains(expectedErrorMessage));
-        }
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(0, System.Limits.getCallouts());
         System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
