@@ -14,7 +14,7 @@ function Start-Package-Promotion {
             if ($packageIdSplit.Length -eq 2) {
                 $packageId = $packageIdSplit[1]
                 Write-Debug "Promoting $packageId from $readme"
-                npx sfdx force:package:version:promote --package $packageId --noprompt
+                npx sf package version promote --package $packageId --no-prompt
             }
         }
     }

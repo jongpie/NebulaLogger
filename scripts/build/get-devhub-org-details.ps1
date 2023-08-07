@@ -5,11 +5,11 @@ param ([string]$devHub)
 if (!$devHub) {
     Write-Output "No dev hub specified, checking for default dev hub instead"
 
-    $defaultDevHub = (npx sfdx config:get defaultdevhubusername  --json | ConvertFrom-Json).result.value
+    $defaultDevHub = (npx sf config get target-dev-hub  --json | ConvertFrom-Json).result.value
     Write-Output "Default Dev Hub: $defaultDevHub"
 
     $devHub = $defaultDevHub
 }
 
 Write-Output "Getting dev hub limits for dev hub: $devHub"
-npx sfdx force:org:display --json --verbose --targetusername $devHub
+npx sf org display --json --verbose --target-org $devHub
