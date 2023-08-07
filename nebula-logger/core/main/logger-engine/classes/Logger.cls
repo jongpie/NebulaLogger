@@ -3228,8 +3228,8 @@ global with sharing class Logger {
      *              Calls Salesforce's API endpoint https://api.status.salesforce.com/v1/instances/
      *              to get more details about the current org, including the org's release number and release version.
      *              Trust API docs available at https://api.status.salesforce.com/v1/docs/
-     * @return      Instance of `Logger.StatusApiResponse`, a data transfer object (DTO) that maps to the JSON returned
-     *              by the status API endpoint.
+     * @return      An instance of `Logger.StatusApiResponse` (a DTO that maps to the JSON returned by the status API endpoint),
+     *              or `null` when the callout fails (due to the remote site setting being disabled, the endpoint being unable, etc.).
      */
     public static StatusApiResponse callStatusApi() {
         if (LoggerParameter.CALL_STATUS_API == false) {
@@ -3243,20 +3243,27 @@ global with sharing class Logger {
         request.setEndpoint(statusApiEndpoint);
         request.setMethod('GET');
 
-        System.HttpResponse response = new System.Http().send(request);
-        if (response.getStatusCode() >= 400) {
-            String errorMessage =
-                'Callout failed for ' +
-                statusApiEndpoint +
-                '\nReceived request status code ' +
-                response.getStatusCode() +
-                ', status message: ' +
-                response.getStatus();
-            throw new System.CalloutException(errorMessage);
-        }
+        try {
+            System.HttpResponse response = new System.Http().send(request);
+            if (response.getStatusCode() >= 400) {
+                String errorMessage =
+                    'Callout failed for ' +
+                    statusApiEndpoint +
+                    '\nReceived request status code ' +
+                    response.getStatusCode() +
+                    ', status message: ' +
+                    response.getStatus();
+                throw new System.CalloutException(errorMessage);
+            }
 
-        StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        return statusApiResponse;
+            StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
+            return statusApiResponse;
+        } catch (Exception ex) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                finest('Callout to api.status.salesforce.com failed').setExceptionDetails(ex);
+            }
+            return null;
+        }
     }
 
     // Private logging level methods to keep global methods simpler/cleaner

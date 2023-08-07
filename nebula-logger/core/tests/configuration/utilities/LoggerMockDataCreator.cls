@@ -458,6 +458,7 @@ public class LoggerMockDataCreator {
         public System.HttpResponse response { get; private set; }
         public String responseBody { get; private set; }
         public Integer statusCode { get; private set; }
+        public String statusMessage { get; private set; }
 
         public MockHttpCallout() {
         }
@@ -472,6 +473,11 @@ public class LoggerMockDataCreator {
             return this;
         }
 
+        public MockHttpCallout setStatus(String statusMessage) {
+            this.statusMessage = statusMessage;
+            return this;
+        }
+
         public System.HttpResponse respond(System.HttpRequest request) {
             this.request = request;
 
@@ -480,6 +486,7 @@ public class LoggerMockDataCreator {
                 response.setBody(this.responseBody);
             }
             response.setStatusCode(this.statusCode);
+            response.setStatus(this.statusMessage);
             return response;
         }
     }

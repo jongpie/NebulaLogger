@@ -36,7 +36,7 @@ StatusApiResponse
 
 **Description**
 
-Instance of `Logger.StatusApiResponse`, a data transfer object (DTO) that maps to the JSON returned
+An instance of `Logger.StatusApiResponse` (a DTO that maps to the JSON returned by the status API endpoint),
 
 #### `createSettings()` → `LoggerSettings__c`
 

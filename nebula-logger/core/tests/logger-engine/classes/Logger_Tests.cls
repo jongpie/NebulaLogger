@@ -7815,6 +7815,41 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_gracefully_return_null_when_callout_fails_to_status_api() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = System.JSON.serialize(true)));
+        System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
+        String mockErrorMessage = 'It broke! 😥';
+        Integer errorStatusCode = 404;
+        String errorStatusMessage = 'Oops, did not understand request, or something... IDK.... it\'s broken ¯\\_(ツ)_/¯';
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(errorStatusCode).setResponseBody(mockErrorMessage)
+        );
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
+
+        System.Assert.isNull(returnedApiResponse);
+        Logger.saveLog();
+        System.Assert.areEqual(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual('Callout to api.status.salesforce.com failed', logEntryEvent.Message__c);
+        System.Assert.areEqual('System.CalloutException', logEntryEvent.ExceptionType__c);
+        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        String expectedExceptionMessage =
+            'Callout failed for https://api.status.salesforce.com/v1/instances/' +
+            organization.InstanceName +
+            '/status' +
+            '\nReceived request status code ' +
+            errorStatusCode +
+            ', status message: ' +
+            errorStatusMessage;
+        System.Assert.isTrue(logEntryEvent.ExceptionMessage__c.startsWith('Callout failed for https://api.status.salesforce.com/v1/instances/'));
+    }
+
+    @IsTest
     static void it_should_return_null_when_status_api_callout_is_disabled() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(false)));
         System.Assert.isFalse(LoggerParameter.CALL_STATUS_API);
