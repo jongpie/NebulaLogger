@@ -804,63 +804,44 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_suspend_saving() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfExistingLogEntries);
-
-        System.Test.startTest();
-
-        Logger.getUserSettings().IsEnabled__c = true;
-        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.isTrue(Logger.isDebugEnabled());
+        Logger.debug('test log entry');
+        System.Assert.areEqual(1, Logger.getBufferSize());
 
         Logger.suspendSaving();
-
-        Logger.debug('test log entry');
         Logger.saveLog();
 
-        System.Test.stopTest();
-
-        countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfExistingLogEntries);
+        System.Assert.areEqual(1, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     }
 
     @IsTest
     static void it_should_resume_saving() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
-
-        System.Test.startTest();
-
-        Logger.getUserSettings().IsEnabled__c = true;
-        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
-
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.isTrue(Logger.isInfoEnabled());
         Integer logEntriesToCreate = 4;
-
-        Logger.suspendSaving();
-        System.Assert.isTrue(Logger.isSavingSuspended());
-
         for (Integer i = 0; i < logEntriesToCreate; i++) {
             Logger.info('test log entry #' + i);
         }
         System.Assert.areEqual(logEntriesToCreate, Logger.getBufferSize());
+        Logger.suspendSaving();
+        System.Assert.isTrue(Logger.isSavingSuspended());
         Logger.saveLog();
-
         System.Assert.areEqual(logEntriesToCreate, Logger.getBufferSize());
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
+        System.Assert.areEqual(logEntriesToCreate, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         Logger.resumeSaving();
         System.Assert.isFalse(Logger.isSavingSuspended());
-
         Logger.saveLog();
 
-        System.Test.getEventBus().deliver();
-
-        System.Test.stopTest();
-
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(logEntriesToCreate, countOfLogEntries);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(logEntriesToCreate, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     }
 
     @IsTest
@@ -896,6 +877,7 @@ private class Logger_Tests {
             System.Test.getEventBus().deliver();
         }
 
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         LogEntry__c logEntry = [SELECT Id, Timestamp__c FROM LogEntry__c];
         System.Assert.areEqual(originalTimestamp, logEntry.Timestamp__c);
     }
@@ -913,33 +895,23 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_not_save_when_saving_is_disabled() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
-
-        setUserLoggingLevel(System.LoggingLevel.DEBUG);
-
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         Logger.getUserSettings().IsSavingEnabled__c = false;
-
-        System.Assert.areEqual(Logger.SaveMethod.EVENT_BUS, Logger.getSaveMethod());
-
+        System.Assert.isFalse(Logger.getUserSettings().IsSavingEnabled__c);
+        System.Assert.isTrue(Logger.isDebugEnabled());
         Logger.debug('test log entry');
-        Logger.debug('another test log entry');
-
-        System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
-
-        System.Test.startTest();
+        System.Assert.areEqual(1, Logger.getBufferSize());
 
         Logger.saveLog();
+
+        System.Assert.areEqual(1, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
         System.Assert.areEqual(0, System.Limits.getCallouts());
         System.Assert.areEqual(0, System.Limits.getDmlStatements());
-
-        System.Test.stopTest();
-
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.Assert.areEqual(0, countOfLogEntries);
     }
 
     @IsTest
@@ -1408,6 +1380,226 @@ private class Logger_Tests {
 
         System.Assert.areEqual(0, Logger.getBufferSize());
     }
+
+    // Start exception methods for LogMessage
+    @IsTest
+    static void it_should_save_and_throw_exception_for_logMessage() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogMessage logMessage = getLogMessage();
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(logMessage, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(logMessage.getMessage(), logEntryEvent.Message__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_save_and_throw_exception_for_logMessage_with_recordId() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogMessage logMessage = getLogMessage();
+        Id recordId = System.UserInfo.getUserId();
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(logMessage, recordId, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(logMessage.getMessage(), logEntryEvent.Message__c);
+        System.Assert.areEqual(recordId, logEntryEvent.RecordId__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_save_and_throw_exception_for_logMessage_with_record() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogMessage logMessage = getLogMessage();
+        User record = new User(Id = System.UserInfo.getUserId());
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(logMessage, record, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(logMessage.getMessage(), logEntryEvent.Message__c);
+        System.Assert.areEqual(record.Id, logEntryEvent.RecordId__c);
+        System.Assert.areEqual(JSON.serializePretty(record), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_save_and_throw_exception_for_logMessage_with_recordList() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogMessage logMessage = getLogMessage();
+        List<User> records = new List<User>{ new User(Id = System.UserInfo.getUserId()) };
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(logMessage, records, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(logMessage.getMessage(), logEntryEvent.Message__c);
+        System.Assert.isNull(logEntryEvent.RecordId__c);
+        System.Assert.areEqual(JSON.serializePretty(records), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+    // End exception methods for LogMessage
+
+    // Start exception methods for String
+    @IsTest
+    static void it_should_save_and_throw_exception_for_string_message() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        String message = 'Something broke 😥';
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(message, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(message, logEntryEvent.Message__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_save_and_throw_exception_for_string_message_with_recordId() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        String message = 'Something broke 😥';
+        Id recordId = System.UserInfo.getUserId();
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(message, recordId, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(message, logEntryEvent.Message__c);
+        System.Assert.areEqual(recordId, logEntryEvent.RecordId__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_save_and_throw_exception_for_string_message_with_record() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        String message = 'Something broke 😥';
+        User record = new User(Id = System.UserInfo.getUserId());
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(message, record, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(message, logEntryEvent.Message__c);
+        System.Assert.areEqual(record.Id, logEntryEvent.RecordId__c);
+        System.Assert.areEqual(JSON.serializePretty(record), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_save_and_throw_exception_for_string_message_with_recordList() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        String message = 'Something broke 😥';
+        List<User> records = new List<User>{ new User(Id = System.UserInfo.getUserId()) };
+        System.Exception apexException = new System.DmlException('oops, some DML broke');
+
+        System.Exception thrownException;
+        try {
+            Logger.exception(message, records, apexException);
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.areEqual(apexException, thrownException);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(message, logEntryEvent.Message__c);
+        System.Assert.isNull(logEntryEvent.RecordId__c);
+        System.Assert.areEqual(JSON.serializePretty(records), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
+    }
+    // End exception methods for String
 
     // Start ERROR methods for LogMessage
     @IsTest
@@ -7620,6 +7812,41 @@ private class Logger_Tests {
         Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
 
         System.Assert.areEqual(JSON.serialize(mockApiResponse), JSON.serialize(returnedApiResponse));
+    }
+
+    @IsTest
+    static void it_should_gracefully_return_null_when_callout_fails_to_status_api() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = System.JSON.serialize(true)));
+        System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
+        String mockErrorMessage = 'It broke! 😥';
+        Integer errorStatusCode = 404;
+        String errorStatusMessage = 'Oops, did not understand request, or something... IDK.... it\'s broken ¯\\_(ツ)_/¯';
+        System.Test.setMock(
+            System.HttpCalloutMock.class,
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(errorStatusCode).setStatus(errorStatusMessage).setResponseBody(mockErrorMessage)
+        );
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
+
+        System.Assert.isNull(returnedApiResponse);
+        Logger.saveLog();
+        System.Assert.areEqual(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual('Callout to api.status.salesforce.com failed', logEntryEvent.Message__c);
+        System.Assert.areEqual('System.CalloutException', logEntryEvent.ExceptionType__c);
+        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        String expectedExceptionMessage =
+            'Callout failed for https://api.status.salesforce.com/v1/instances/' +
+            organization.InstanceName +
+            '/status' +
+            '\nReceived request status code ' +
+            errorStatusCode +
+            ', status message: ' +
+            errorStatusMessage;
+        System.Assert.areEqual(expectedExceptionMessage, logEntryEvent.ExceptionMessage__c);
     }
 
     @IsTest

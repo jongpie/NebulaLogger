@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.1.NEXT",
-            "versionName": "Throw Exception in Flow Actions",
-            "versionDescription": "Added the ability in Flow to automatically re-throw fault exception messages after saving",
+            "versionNumber": "4.11.2.NEXT",
+            "versionName": "New Exception Methods for Apex",
+            "versionDescription": "Added new method overloads Logger.exception() that automatically log, save, and throw the provided exception",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -149,6 +149,7 @@
         "Nebula Logger - Core@4.10.6-more-log__c-and-logentry__c-fields": "04t5Y0000023SCqQAM",
         "Nebula Logger - Core@4.11.0-summer-'23-release": "04t5Y0000023SI6QAM",
         "Nebula Logger - Core@4.11.1-throw-exception-in-flow-actions": "04t5Y000001TsX4QAK",
+        "Nebula Logger - Core@4.11.2-new-exception-methods-for-apex": "04t5Y000001TsZAQA0",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

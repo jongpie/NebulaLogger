@@ -36,7 +36,7 @@ StatusApiResponse
 
 **Description**
 
-Instance of `Logger.StatusApiResponse`, a data transfer object (DTO) that maps to the JSON returned
+An instance of `Logger.StatusApiResponse` (a DTO that maps to the JSON returned by the status API endpoint),
 
 #### `createSettings()` → `LoggerSettings__c`
 
@@ -54,7 +54,7 @@ A new `LoggerSettings__c` record, with all fields populated with default field v
 
 #### `debug(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -75,7 +75,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -96,7 +96,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -117,7 +117,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -138,7 +138,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -159,7 +159,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -180,7 +180,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -201,7 +201,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -222,7 +222,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -243,7 +243,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -264,7 +264,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -285,7 +285,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -306,7 +306,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -327,7 +327,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -348,7 +348,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -368,7 +368,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -389,7 +389,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -410,7 +410,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -431,7 +431,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -452,7 +452,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -473,7 +473,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -494,7 +494,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -515,7 +515,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -536,7 +536,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -557,7 +557,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -578,7 +578,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -599,7 +599,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -620,7 +620,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -641,7 +641,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -662,7 +662,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `debug(String message)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.DEBUG`
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
@@ -692,7 +692,7 @@ End the specified scenario, if it&apos;s the currently active scenario, and roll
 
 #### `error(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -713,7 +713,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -734,7 +734,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -755,7 +755,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -776,7 +776,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -797,7 +797,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -818,7 +818,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -839,7 +839,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -860,7 +860,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -881,7 +881,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -902,7 +902,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -923,7 +923,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -944,7 +944,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, Id recordId, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -966,7 +966,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -987,7 +987,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, SObject record, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1009,7 +1009,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1030,7 +1030,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, List<SObject> records, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1052,7 +1052,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1073,7 +1073,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1093,7 +1093,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1114,7 +1114,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1135,7 +1135,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1156,7 +1156,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1177,7 +1177,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1198,7 +1198,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1219,7 +1219,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1240,7 +1240,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1261,7 +1261,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1282,7 +1282,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1303,7 +1303,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1324,7 +1324,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1345,7 +1345,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Id recordId, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1367,7 +1367,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1388,7 +1388,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, SObject record, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1410,7 +1410,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1431,7 +1431,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, List<SObject> records, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1453,7 +1453,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1474,7 +1474,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `error(String message)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.ERROR`
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 
 ##### Parameters
 
@@ -1492,9 +1492,103 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `exception(LogMessage logMessage, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
+
+#### `exception(LogMessage logMessage, Id recordId, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `recordId`      | The record ID of an `SObject` to log                                      |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
+
+#### `exception(LogMessage logMessage, SObject record, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `record`        | The `SObject` record to log                                               |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
+
+#### `exception(LogMessage logMessage, List<SObject> records, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `records`       | The list of `SObject` records to log                                      |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
+
+#### `exception(String message, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `apexException` | The instance of `System.Exception` to log and throw     |
+
+#### `exception(String message, Id recordId, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `recordId`      | The record ID of an `SObject` to log                    |
+| `apexException` | The instance of `System.Exception` to log and throw     |
+
+#### `exception(String message, SObject record, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `record`        | The `SObject` record to log                             |
+| `apexException` | The instance of `System.Exception` to log and throw     |
+
+#### `exception(String message, List<SObject> records, System.Exception apexException)` → `void`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, automatically saves the log, and then throws the provided exception
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `message`       | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `records`       | The list of `SObject` records to log                                      |
+| `apexException` | The instance of `System.Exception` to log and throw                       |
+
 #### `fine(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1515,7 +1609,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1536,7 +1630,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1557,7 +1651,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1578,7 +1672,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1599,7 +1693,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1620,7 +1714,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1641,7 +1735,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1662,7 +1756,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1683,7 +1777,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1704,7 +1798,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1725,7 +1819,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1746,7 +1840,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1767,7 +1861,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1788,7 +1882,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1808,7 +1902,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1829,7 +1923,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1850,7 +1944,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1871,7 +1965,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1892,7 +1986,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1913,7 +2007,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1934,7 +2028,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1955,7 +2049,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1976,7 +2070,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -1997,7 +2091,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -2018,7 +2112,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -2039,7 +2133,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -2060,7 +2154,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -2081,7 +2175,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -2102,7 +2196,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `fine(String message)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINE`
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 
 ##### Parameters
 
@@ -2122,7 +2216,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2143,7 +2237,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2164,7 +2258,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2185,7 +2279,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2206,7 +2300,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2227,7 +2321,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2248,7 +2342,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2269,7 +2363,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2290,7 +2384,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2311,7 +2405,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2332,7 +2426,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2353,7 +2447,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2374,7 +2468,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2395,7 +2489,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2416,7 +2510,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2436,7 +2530,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2457,7 +2551,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2478,7 +2572,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2499,7 +2593,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2520,7 +2614,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2541,7 +2635,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2562,7 +2656,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2583,7 +2677,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2604,7 +2698,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2625,7 +2719,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2646,7 +2740,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2667,7 +2761,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2688,7 +2782,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2709,7 +2803,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2730,7 +2824,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finer(String message)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINER`
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 
 ##### Parameters
 
@@ -2750,7 +2844,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2771,7 +2865,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2792,7 +2886,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2813,7 +2907,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2834,7 +2928,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2855,7 +2949,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2876,7 +2970,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2897,7 +2991,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2918,7 +3012,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2939,7 +3033,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2960,7 +3054,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -2981,7 +3075,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3002,7 +3096,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3023,7 +3117,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3044,7 +3138,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3064,7 +3158,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3085,7 +3179,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3106,7 +3200,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3127,7 +3221,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3148,7 +3242,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3169,7 +3263,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3190,7 +3284,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3211,7 +3305,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3232,7 +3326,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3253,7 +3347,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3274,7 +3368,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3295,7 +3389,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3316,7 +3410,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3337,7 +3431,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3358,7 +3452,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `finest(String message)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.FINEST`
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 
 ##### Parameters
 
@@ -3586,7 +3680,7 @@ Adds the specified Apex type to the list of ignored origin locations for the cur
 
 #### `info(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3607,7 +3701,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3628,7 +3722,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3649,7 +3743,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3670,7 +3764,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3691,7 +3785,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3712,7 +3806,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3733,7 +3827,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3754,7 +3848,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3775,7 +3869,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3796,7 +3890,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3817,7 +3911,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3838,7 +3932,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3859,7 +3953,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3880,7 +3974,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3900,7 +3994,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3921,7 +4015,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3942,7 +4036,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3963,7 +4057,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -3984,7 +4078,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4005,7 +4099,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4026,7 +4120,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4047,7 +4141,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4068,7 +4162,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4089,7 +4183,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4110,7 +4204,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4131,7 +4225,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4152,7 +4246,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4173,7 +4267,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4194,7 +4288,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `info(String message)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.INFO`
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 
 ##### Parameters
 
@@ -4792,7 +4886,7 @@ Pauses saving for the current transaction. Any calls to saveLog() are ignored un
 
 #### `warn(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4813,7 +4907,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4834,7 +4928,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4855,7 +4949,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4876,7 +4970,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4897,7 +4991,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4918,7 +5012,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4939,7 +5033,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4960,7 +5054,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -4981,7 +5075,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5002,7 +5096,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5023,7 +5117,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5044,7 +5138,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, Id recordId, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5066,7 +5160,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5087,7 +5181,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, SObject record, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5109,7 +5203,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5130,7 +5224,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, List<SObject> records, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5152,7 +5246,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5173,7 +5267,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5193,7 +5287,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5214,7 +5308,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5235,7 +5329,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5256,7 +5350,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5277,7 +5371,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5298,7 +5392,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5319,7 +5413,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5340,7 +5434,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5361,7 +5455,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5382,7 +5476,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5403,7 +5497,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5424,7 +5518,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5445,7 +5539,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Id recordId, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5467,7 +5561,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, Id recordId)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5488,7 +5582,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, SObject record, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5510,7 +5604,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, SObject record)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5531,7 +5625,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, List<SObject> records, System.Exception apexException)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5553,7 +5647,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 
@@ -5574,7 +5668,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `warn(String message)` → `LogEntryEventBuilder`
 
-Creates a new log entry with logging level == ` System.LoggingLevel.WARN`
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 
 ##### Parameters
 

@@ -52,15 +52,17 @@ public without sharing class LoggerHomeHeaderController {
 
     private static void setStatusApiResponseDetails(Environment environment) {
         Logger.StatusApiResponse statusApiResponse = Logger.callStatusApi();
-        if (statusApiResponse != null) {
-            environment.organizationInstanceLocation = statusApiResponse.location;
-            environment.organizationMaintenanceWindow = statusApiResponse.maintenanceWindow;
-            environment.organizationReleaseNumber = statusApiResponse.releaseNumber;
-            environment.organizationReleaseVersion = statusApiResponse.releaseVersion;
+        if (statusApiResponse == null) {
+            return;
+        }
 
-            if (statusApiResponse.Products != null && statusApiResponse.Products.isEmpty() == false) {
-                environment.organizationInstanceProducts = getInstanceProductNames(statusApiResponse);
-            }
+        environment.organizationInstanceLocation = statusApiResponse.location;
+        environment.organizationMaintenanceWindow = statusApiResponse.maintenanceWindow;
+        environment.organizationReleaseNumber = statusApiResponse.releaseNumber;
+        environment.organizationReleaseVersion = statusApiResponse.releaseVersion;
+
+        if (statusApiResponse.Products != null && statusApiResponse.Products.isEmpty() == false) {
+            environment.organizationInstanceProducts = getInstanceProductNames(statusApiResponse);
         }
     }
 

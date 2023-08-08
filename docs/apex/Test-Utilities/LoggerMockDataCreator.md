@@ -604,6 +604,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ###### `statusCode` → `Integer`
 
+###### `statusMessage` → `String`
+
 ---
 
 ##### Methods
@@ -611,6 +613,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 ###### `respond(System.HttpRequest request)` → `System.HttpResponse`
 
 ###### `setResponseBody(String responseBody)` → `MockHttpCallout`
+
+###### `setStatus(String statusMessage)` → `MockHttpCallout`
 
 ###### `setStatusCode(Integer statusCode)` → `MockHttpCallout`
 
