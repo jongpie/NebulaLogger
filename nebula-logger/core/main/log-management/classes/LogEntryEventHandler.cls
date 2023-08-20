@@ -348,22 +348,123 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logEntry.setOptions(DML_OPTIONS);
             this.logEntries.add(logEntry);
+            List<String> logEntryTagNames = new List<String>();
+            if (logEntryEvent.Tags__c != null) {
+                logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
+
+                this.tagNames.addAll(logEntryTagNames);
+            }
             if (logEntry.EventUuid__c == null) {
                 logEntriesWithoutUuid.add(logEntry);
             } else {
                 logEntriesWithUuid.add(logEntry);
-                if (logEntryEvent.Tags__c != null) {
-                    List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
-
-                    this.tagNames.addAll(logEntryTagNames);
-                    this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
-                }
+                this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
             }
         }
         List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(logEntriesWithoutUuid);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase().upsertRecords(logEntriesWithUuid, Schema.LogEntry__c.EventUuid__c);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResults);
+
+        if (this.logEntryEventUuidToTagNames.isEmpty() == true) {
+            List<String> logEntryTagNames = new List<String>();
+            Set<Id> logEntryIds = new Set<Id>();
+            for (Database.SaveResult sr : saveResults) {
+                if (sr.isSuccess() == true) {
+                    logEntryIds.add(sr.getId());
+                    for (String tag : this.tagNames) {
+                        logEntryTagNames.add(tag);
+                        this.logEntryEventUuidToTagNames.put(sr.getId(), logEntryTagNames);
+                    }
+                }
+            }
+            this.logEntries = [
+                SELECT
+                    BrowserFormFactor__c,
+                    BrowserLanguage__c,
+                    BrowserScreenResolution__c,
+                    BrowserUrl__c,
+                    BrowserUserAgent__c,
+                    BrowserWindowResolution__c,
+                    ComponentType__c,
+                    DatabaseResultCollectionSize__c,
+                    DatabaseResultCollectionType__c,
+                    DatabaseResultJson__c,
+                    DatabaseResultType__c,
+                    EpochTimestamp__c,
+                    EventUuid__c,
+                    ExceptionMessage__c,
+                    ExceptionStackTrace__c,
+                    ExceptionType__c,
+                    HttpRequestBody__c,
+                    HttpRequestBodyMasked__c,
+                    HttpRequestCompressed__c,
+                    HttpRequestEndpoint__c,
+                    HttpRequestMethod__c,
+                    HttpResponseBody__c,
+                    HttpResponseBodyMasked__c,
+                    HttpResponseHeaderKeys__c,
+                    HttpResponseStatus__c,
+                    HttpResponseStatusCode__c,
+                    LimitsAggregateQueriesMax__c,
+                    LimitsAggregateQueriesUsed__c,
+                    LimitsAsyncCallsMax__c,
+                    LimitsAsyncCallsUsed__c,
+                    LimitsCalloutsMax__c,
+                    LimitsCalloutsUsed__c,
+                    LimitsCpuTimeMax__c,
+                    LimitsCpuTimeUsed__c,
+                    LimitsDmlRowsMax__c,
+                    LimitsDmlRowsUsed__c,
+                    LimitsDmlStatementsMax__c,
+                    LimitsDmlStatementsUsed__c,
+                    LimitsEmailInvocationsMax__c,
+                    LimitsEmailInvocationsUsed__c,
+                    LimitsFutureCallsMax__c,
+                    LimitsFutureCallsUsed__c,
+                    LimitsHeapSizeMax__c,
+                    LimitsHeapSizeUsed__c,
+                    LimitsMobilePushApexCallsMax__c,
+                    LimitsMobilePushApexCallsUsed__c,
+                    LimitsPublishImmediateDmlStatementsMax__c,
+                    LimitsPublishImmediateDmlStatementsUsed__c,
+                    LimitsQueueableJobsMax__c,
+                    LimitsQueueableJobsUsed__c,
+                    LimitsSoqlQueriesMax__c,
+                    LimitsSoqlQueriesUsed__c,
+                    LimitsSoqlQueryLocatorRowsMax__c,
+                    LimitsSoqlQueryLocatorRowsUsed__c,
+                    LimitsSoqlQueryRowsMax__c,
+                    LimitsSoqlQueryRowsUsed__c,
+                    LimitsSoslSearchesMax__c,
+                    LimitsSoslSearchesUsed__c,
+                    Log__c,
+                    LoggingLevel__c,
+                    LoggingLevelOrdinal__c,
+                    Message__c,
+                    MessageMasked__c,
+                    MessageTruncated__c,
+                    Name,
+                    OriginLocation__c,
+                    OriginType__c,
+                    RecordCollectionSize__c,
+                    RecordCollectionType__c,
+                    RecordId__c,
+                    RecordJson__c,
+                    RecordJsonMasked__c,
+                    RecordSObjectClassification__c,
+                    RecordSObjectType__c,
+                    RecordSObjectTypeNamespace__c,
+                    StackTrace__c,
+                    Timestamp__c,
+                    TransactionEntryNumber__c,
+                    TriggerIsExecuting__c,
+                    TriggerOperationType__c,
+                    TriggerSObjectType__c
+                FROM LogEntry__c
+                WHERE Id IN :logEntryIds
+            ];
+        }
     }
 
     private void appendRuleBasedTags() {
@@ -376,13 +477,22 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 if (isRuleCriteriaMet(logEntry, rule) == true) {
                     List<String> configuredTagNames = getTagNames(rule.Tags__c);
                     this.tagNames.addAll(configuredTagNames);
-                    List<String> logEntryTags = logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
+                    List<String> logEntryTags = new List<String>();
+                    String mapKey = '';
+                    if (this.logEntryEventUuidToTagNames.containsKey(logEntry.EventUuid__c) == true) {
+                        logEntryTags = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
+                        mapKey = logEntry.EventUuid__c;
+                    } else if (this.logEntryEventUuidToTagNames.containsKey(logEntry.Id) == true) {
+                        logEntryTags = this.logEntryEventUuidToTagNames.get(logEntry.Id);
+                        mapKey = logEntry.Id;
+                    }
+
                     if (logEntryTags == null) {
                         logEntryTags = new List<String>();
                     }
                     logEntryTags.addAll(configuredTagNames);
 
-                    this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTags);
+                    this.logEntryEventUuidToTagNames.put(mapKey, logEntryTags);
                     this.tagNames.addAll(logEntryTags);
                 }
             }
@@ -403,11 +513,16 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Schema.SObjectType tagAssignmentSObjectType;
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
-            if (logEntry.EventUuid__c == null) {
-                continue;
-            }
+            // if (logEntry.EventUuid__c == null) {
+            //     continue;
+            // }
 
-            List<String> logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
+            List<String> logEntryTagNames = new List<String>();
+            if (this.logEntryEventUuidToTagNames.containsKey(logEntry.EventUuid__c) == true) {
+                logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
+            } else if (this.logEntryEventUuidToTagNames.containsKey(logEntry.Id) == true) {
+                logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.Id);
+            }
             if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty() == true) {
                 continue;
             }
