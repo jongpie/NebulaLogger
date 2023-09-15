@@ -306,13 +306,15 @@ private class LogEntryEventHandler_Tests {
         LoggerScenario__c existingLogScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
         insert existingLogScenario;
         System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
-        LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
-        firstLogEntryEvent.EntryScenario__c = null;
-        firstLogEntryEvent.TransactionScenario__c = existingLogScenario.UniqueId__c;
-        LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
-        secondLogEntryEvent.EntryScenario__c = null;
-        secondLogEntryEvent.TransactionScenario__c = existingLogScenario.UniqueId__c;
-        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstLogEntryEvent, secondLogEntryEvent };
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        for (Integer i = 0; i < 2; i++) {
+            LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+            logEntryEvent.TransactionEntryNumber__c = i;
+            logEntryEvent.TransactionId__c = '123-456';
+            logEntryEvent.EntryScenario__c = null;
+            logEntryEvent.TransactionScenario__c = existingLogScenario.UniqueId__c;
+            logEntryEvents.add(logEntryEvent);
+        }
 
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -350,9 +352,11 @@ private class LogEntryEventHandler_Tests {
         String newScenario = 'some new value';
         System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
+        firstLogEntryEvent.TransactionEntryNumber__c = 1;
         firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
         firstLogEntryEvent.TransactionScenario__c = null;
         LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
+        secondLogEntryEvent.TransactionEntryNumber__c = 2;
         secondLogEntryEvent.EntryScenario__c = newScenario;
         secondLogEntryEvent.TransactionScenario__c = null;
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstLogEntryEvent, secondLogEntryEvent };
@@ -394,8 +398,10 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
         firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
+        firstLogEntryEvent.TransactionEntryNumber__c = 1;
         firstLogEntryEvent.TransactionScenario__c = newTransactionScenario;
         LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
+        secondLogEntryEvent.TransactionEntryNumber__c = 2;
         secondLogEntryEvent.EntryScenario__c = newEntryScenario;
         secondLogEntryEvent.TransactionScenario__c = newTransactionScenario;
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstLogEntryEvent, secondLogEntryEvent };
@@ -1151,6 +1157,11 @@ private class LogEntryEventHandler_Tests {
         System.Assert.isNull(log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    //TODO implement
+    @isTest
+    static void it_should_save_log_entries_with_specified_tags_when_save_method_is_synchronousdml() {
     }
 
     private static LogEntryEvent__e createLogEntryEvent() {

@@ -239,8 +239,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLogEntries() {
-        List<LogEntry__c> logEntriesWithUuid = new List<LogEntry__c>();
-        List<LogEntry__c> logEntriesWithoutUuid = new List<LogEntry__c>();
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             // Salesforce does not provide precise datetimes in Apex triggers for platform events
             // Use the string value of timestamp to set the actual datetime field as a workaround
@@ -331,7 +329,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 TransactionEntryNumber__c = logEntryEvent.TransactionEntryNumber__c,
                 TriggerIsExecuting__c = logEntryEvent.TriggerIsExecuting__c,
                 TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
-                TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
+                TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c,
+                UniqueId__c = logEntryEvent.TransactionId__c + '-' + logEntryEvent.TransactionEntryNumber__c
             );
 
             if (String.isNotBlank(logEntryEvent.EntryScenario__c) == true) {
@@ -349,22 +348,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             logEntry.setOptions(DML_OPTIONS);
             this.logEntries.add(logEntry);
 
-            if (logEntry.EventUuid__c == null) {
-                logEntriesWithoutUuid.add(logEntry);
-            } else {
-                logEntriesWithUuid.add(logEntry);
-            }
-
             if (logEntryEvent.Tags__c != null) {
-                String compositeKey = logEntry.Log__c + '-' + logEntry.TransactionEntryNumber__c;
                 List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
                 this.tagNames.addAll(logEntryTagNames);
-                this.logEntryEventCompositeKeyToTagNames.put(compositeKey, logEntryTagNames);
+                this.logEntryEventCompositeKeyToTagNames.put(logEntry.UniqueId__c, logEntryTagNames);
             }
         }
-        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(logEntriesWithoutUuid);
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
-        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase().upsertRecords(logEntriesWithUuid, Schema.LogEntry__c.EventUuid__c);
+
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase().upsertRecords(this.logEntries, Schema.LogEntry__c.UniqueId__c);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResults);
     }
 
@@ -379,10 +370,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                     List<String> configuredTagNames = getTagNames(rule.Tags__c);
                     this.tagNames.addAll(configuredTagNames);
                     List<String> logEntryTags = new List<String>();
-                    String compositeKey = logEntry.Log__c + '-' + logEntry.TransactionEntryNumber__c;
-
-                    if (this.logEntryEventCompositeKeyToTagNames.containsKey(compositeKey) == true) {
-                        logEntryTags = this.logEntryEventCompositeKeyToTagNames.get(compositeKey);
+                    if (this.logEntryEventCompositeKeyToTagNames.containsKey(logEntry.UniqueId__c) == true) {
+                        logEntryTags = this.logEntryEventCompositeKeyToTagNames.get(logEntry.UniqueId__c);
                     }
 
                     if (logEntryTags == null) {
@@ -390,7 +379,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                     }
                     logEntryTags.addAll(configuredTagNames);
 
-                    this.logEntryEventCompositeKeyToTagNames.put(compositeKey, logEntryTags);
+                    this.logEntryEventCompositeKeyToTagNames.put(logEntry.UniqueId__c, logEntryTags);
                     this.tagNames.addAll(logEntryTags);
                 }
             }
@@ -411,15 +400,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Schema.SObjectType tagAssignmentSObjectType;
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
-            String compositeKey = logEntry.Log__c + '-' + logEntry.TransactionEntryNumber__c;
-            if (compositeKey == null) {
+            if (this.logEntryEventCompositeKeyToTagNames.containsKey(logEntry.UniqueId__c) == false) {
                 continue;
             }
 
-            List<String> logEntryTagNames = this.logEntryEventCompositeKeyToTagNames.get(compositeKey);
-            if (logEntryTagNames == null || this.logEntryEventCompositeKeyToTagNames.isEmpty() == true) {
-                continue;
-            }
+            List<String> logEntryTagNames = this.logEntryEventCompositeKeyToTagNames.get(logEntry.UniqueId__c);
 
             for (String tagName : logEntryTagNames) {
                 if (LoggerParameter.USE_TOPICS_FOR_TAGS == true) {
