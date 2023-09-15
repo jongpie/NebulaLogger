@@ -35,6 +35,8 @@ public without sharing class LoggerEmailSender {
                     IS_EMAIL_DELIVERABILITY_ENABLED = true;
                 } catch (System.NoAccessException e) {
                     IS_EMAIL_DELIVERABILITY_ENABLED = false;
+                } catch (System.HandledException handledException){ // exception thrown when org limits are reached
+                    IS_EMAIL_DELIVERABILITY_ENABLED = false;
                 }
             }
             return IS_EMAIL_DELIVERABILITY_ENABLED;
