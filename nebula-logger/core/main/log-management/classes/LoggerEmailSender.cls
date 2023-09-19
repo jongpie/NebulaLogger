@@ -31,11 +31,12 @@ public without sharing class LoggerEmailSender {
             if (IS_EMAIL_DELIVERABILITY_ENABLED == null) {
                 try {
                     System.Messaging.reserveSingleEmailCapacity(1);
-                    System.Messaging.reserveMassEmailCapacity(1);
                     IS_EMAIL_DELIVERABILITY_ENABLED = true;
                 } catch (System.NoAccessException e) {
+                    // Exception thrown when email deliverability is disabled
                     IS_EMAIL_DELIVERABILITY_ENABLED = false;
-                } catch (System.HandledException handledException){ // exception thrown when org limits are reached
+                } catch (System.HandledException handledException) {
+                    // Exception thrown when org limits are reached
                     IS_EMAIL_DELIVERABILITY_ENABLED = false;
                 }
             }
