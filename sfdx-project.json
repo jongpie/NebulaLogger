@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.3.NEXT",
-            "versionName": "Bugfix for Unhandled Email Exception",
-            "versionDescription": "Added an extra check in LoggerEmailSender to avoid sending more emails when the org's email limits have been exceeded",
+            "versionNumber": "4.11.4.NEXT",
+            "versionName": "Removed Chatter dependencies",
+            "versionDescription": "Removed several Chatter components from FlexiPages - the use of these components would block the installation of Nebula Logger in orgs with Chatter disabled",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
