@@ -26,21 +26,21 @@ public without sharing class LoggerEmailSender {
     }
 
     @TestVisible
-    private static Boolean IS_EMAIL_DELIVERABILITY_ENABLED {
+    private static Boolean IS_EMAIL_DELIVERABILITY_AVAILABLE {
         get {
-            if (IS_EMAIL_DELIVERABILITY_ENABLED == null) {
+            if (IS_EMAIL_DELIVERABILITY_AVAILABLE == null) {
                 try {
                     System.Messaging.reserveSingleEmailCapacity(1);
-                    IS_EMAIL_DELIVERABILITY_ENABLED = true;
+                    IS_EMAIL_DELIVERABILITY_AVAILABLE = true;
                 } catch (System.NoAccessException e) {
                     // Exception thrown when email deliverability is disabled
-                    IS_EMAIL_DELIVERABILITY_ENABLED = false;
+                    IS_EMAIL_DELIVERABILITY_AVAILABLE = false;
                 } catch (System.HandledException handledException) {
                     // Exception thrown when org limits are reached
-                    IS_EMAIL_DELIVERABILITY_ENABLED = false;
+                    IS_EMAIL_DELIVERABILITY_AVAILABLE = false;
                 }
             }
-            return IS_EMAIL_DELIVERABILITY_ENABLED;
+            return IS_EMAIL_DELIVERABILITY_AVAILABLE;
         }
         set;
     }
@@ -122,7 +122,7 @@ public without sharing class LoggerEmailSender {
 
     private static void sendEmail(Messaging.SingleEmailMessage message) {
         SENT_EMAILS.add(message);
-        if (IS_EMAIL_DELIVERABILITY_ENABLED == true) {
+        if (IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
             List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
 
