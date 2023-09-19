@@ -7,6 +7,17 @@
 @IsTest(IsParallel=true)
 private class LoggerEmailSender_Tests {
     @IsTest
+    static void it_should_indicate_email_deliverability_is_disabled_when_org_limits_exceeded() {
+        System.OrgLimit singleEmailOrgLimit = OrgLimits.getMap().get('SingleEmail');
+
+        // Reserve all of the available single email capacity, which is the effectively
+        // the same as the email limit being exceeded in the org
+        System.Messaging.reserveSingleEmailCapacity(singleEmailOrgLimit.getLimit());
+
+        System.Assert.isFalse(LoggerEmailSender.IS_EMAIL_DELIVERABILITY_ENABLED);
+    }
+
+    @IsTest
     static void it_should_filter_apex_error_recipients() {
         ApexEmailNotification emailListNotification = new ApexEmailNotification(Email = 'hello@test.com;fake.person@not.real.com.biz', UserId = null);
         ApexEmailNotification userNotification = new ApexEmailNotification(Email = null, UserId = System.UserInfo.getUserId());
