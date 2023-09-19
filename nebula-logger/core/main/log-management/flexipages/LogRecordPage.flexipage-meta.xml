@@ -925,6 +925,10 @@
                     <value>Facet-bd93b6fa-7edb-4404-9635-26fa1ec10da5</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Information</value>
                 </componentInstanceProperties>
@@ -937,6 +941,10 @@
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-45c75e70-6963-46be-859e-c1df0d4b5c08</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -953,6 +961,10 @@
                     <value>Facet-12145474-d012-4654-ba48-4100dbbbc893</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>User Details</value>
                 </componentInstanceProperties>
@@ -965,6 +977,10 @@
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-9fb0fd0b-69be-44f7-8c04-fb654709fe28</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -987,6 +1003,10 @@
                     <value>Facet-f8d82d02-dbf4-468f-aae1-45cfb6763435</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Experience Cloud Site Details</value>
                 </componentInstanceProperties>
@@ -1005,6 +1025,10 @@
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-d7efb447-a626-4612-8219-5b554c751159</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -1087,20 +1111,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>context</name>
-                    <value>RECORD</value>
-                </componentInstanceProperties>
-                <componentName>forceChatter:exposedFeed</componentName>
-                <identifier>forceChatter_exposedFeed</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-cd3bf9c9-7895-4537-a614-5e58e75317f2</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>active</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -1156,20 +1166,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>customTab3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-cd3bf9c9-7895-4537-a614-5e58e75317f2</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Standard.Tab.collaborate</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>collaborateTab</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-4be58932-ea47-4516-80d6-14dedd7c1fc0</name>

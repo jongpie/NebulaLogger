@@ -7,7 +7,7 @@
     "features": [],
     "settings": {
         "chatterSettings": {
-            "enableChatter": true
+            "enableChatter": false
         },
         "communitiesSettings": {
             "enableNetworksEnabled": false

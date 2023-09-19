@@ -64,20 +64,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>context</name>
-                    <value>RECORD</value>
-                </componentInstanceProperties>
-                <componentName>forceChatter:exposedFeed</componentName>
-                <identifier>forceChatter_exposedFeed</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-2defa18d-1986-4223-bed9-14b2917856f4</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>active</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -87,24 +73,10 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>Standard.Tab.relatedLists</value>
+                    <value>Log Entries</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>relatedListsTab</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-2defa18d-1986-4223-bed9-14b2917856f4</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Standard.Tab.collaborate</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>feedTab</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-67bbc836-1943-4c29-81cd-4434b0c30480</name>
