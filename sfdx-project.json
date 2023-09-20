@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.3.NEXT",
-            "versionName": "Bugfix for Unhandled Email Exception",
-            "versionDescription": "Added an extra check in LoggerEmailSender to avoid sending more emails when the org's email limits have been exceeded",
+            "versionNumber": "4.11.4.NEXT",
+            "versionName": "Removed Chatter dependencies",
+            "versionDescription": "Removed several Chatter components from FlexiPages - the use of these components would block the installation of Nebula Logger in orgs with Chatter disabled",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -151,6 +151,7 @@
         "Nebula Logger - Core@4.11.1-throw-exception-in-flow-actions": "04t5Y000001TsX4QAK",
         "Nebula Logger - Core@4.11.2-new-exception-methods-for-apex": "04t5Y000001TsZAQA0",
         "Nebula Logger - Core@4.11.3-bugfix-for-unhandled-email-exception": "04t5Y000001HZd0QAG",
+        "Nebula Logger - Core@4.11.4-removed-chatter-dependencies": "04t5Y000001HZdPQAW",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
