@@ -233,12 +233,21 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<LoggerScenario__c>` of records with the specified log scenario IDs
-     * @param  logScenarioIds The list of `ID` of the `Log__c` records to query
-     * @return                The list of matching `LoggerScenario__c` records
+     * @description Returns a `List<LoggerScenario__c>` of records with the specified scenario IDs
+     * @param  loggerScenarioIds The list of `ID` of the `Log__c` records to query
+     * @return                   The list of matching `LoggerScenario__c` records
      */
-    public virtual List<LoggerScenario__c> getLoggerScenariosById(List<Id> logScenarioIds) {
-        return [SELECT Id, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :logScenarioIds];
+    public virtual List<LoggerScenario__c> getLoggerScenariosById(List<Id> loggerScenarioIds) {
+        return [SELECT Id, Name, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :loggerScenarioIds];
+    }
+
+    /**
+     * @description Returns a `List<LoggerScenario__c>` of records with the specified scenario names
+     * @param  loggerScenarioNames The list of `String` of the `Log__c` records to query
+     * @return                     The list of matching `LoggerScenario__c` records
+     */
+    public virtual List<LoggerScenario__c> getLoggerScenariosByName(List<String> loggerScenarioNames) {
+        return [SELECT Id, Name, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Name IN :loggerScenarioNames];
     }
 
     /**

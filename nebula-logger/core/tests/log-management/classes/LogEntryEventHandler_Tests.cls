@@ -478,24 +478,15 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_logging_user_as_log_owner_when_anonymous_mode_is_disabled() {
+    static void it_should_set_logging_user_as_log_owner_by_default() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
-        User automatedProcessUser = [
-            SELECT Id, TimeZoneSidKey
-            FROM User
-            WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
-        ];
         User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
-        currentUserSettings.IsAnonymousModeEnabled__c = false;
-        insert currentUserSettings;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
-        System.runAs(automatedProcessUser) {
+        System.runAs(getAutomatedProcessUser()) {
             LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
             LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
         }
@@ -505,30 +496,65 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_not_set_logging_user_as_log_owner_when_anonymous_mode_is_enabled() {
+    static void it_should_set_fallback_queue_as_log_owner_when_user_type_is_not_standard() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
-        User automatedProcessUser = [
-            SELECT Id, TimeZoneSidKey
-            FROM User
-            WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
-        ];
         User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
-        currentUserSettings.IsAnonymousModeEnabled__c = true;
-        insert currentUserSettings;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.UserType__c = 'SomeValueThatIsNotStandard';
+        Group fallbackQueue = [SELECT Id FROM Group WHERE DeveloperName = :LoggerParameter.FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME AND Type = 'Queue'];
 
-        System.runAs(automatedProcessUser) {
+        System.runAs(getAutomatedProcessUser()) {
             LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
             LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
         }
 
         Log__c log = getLog();
-        System.Assert.areEqual(automatedProcessUser.Id, log.OwnerId);
+        System.Assert.areEqual(fallbackQueue.Id, log.OwnerId);
+    }
+
+    @IsTest
+    static void it_should_set_fallback_queue_as_log_owner_when_logged_by_id_is_null() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.LoggedById__c = null;
+        Group fallbackQueue = [SELECT Id FROM Group WHERE DeveloperName = :LoggerParameter.FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME AND Type = 'Queue'];
+
+        System.runAs(getAutomatedProcessUser()) {
+            LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+            LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        }
+
+        Log__c log = getLog();
+        System.Assert.areEqual(fallbackQueue.Id, log.OwnerId);
+    }
+
+    @IsTest
+    static void it_should_set_fallback_queue_as_log_owner_when_anonymous_mode_is_enabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.IsAnonymousModeEnabled__c = true;
+        insert currentUserSettings;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        Group fallbackQueue = [SELECT Id FROM Group WHERE DeveloperName = :LoggerParameter.FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME AND Type = 'Queue'];
+
+        System.runAs(getAutomatedProcessUser()) {
+            LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+            LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        }
+
+        Log__c log = getLog();
+        System.Assert.areEqual(fallbackQueue.Id, log.OwnerId);
     }
 
     @IsTest
@@ -1171,6 +1197,7 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
         logEntryEvent.UserLoggingLevel__c = System.LoggingLevel.INFO.name();
         logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
+        logEntryEvent.UserType__c = System.UserInfo.getUserType();
         logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(
             logEntryEvent,
             Schema.LogEntryEvent__e.EventUuid,
@@ -1186,6 +1213,15 @@ private class LogEntryEventHandler_Tests {
         mockApiResponse.releaseNumber = '242.19.17';
         mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
         return mockApiResponse;
+    }
+
+    private static User getAutomatedProcessUser() {
+        String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
+        return [
+            SELECT Id, TimeZoneSidKey
+            FROM User
+            WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+        ];
     }
 
     private static Log__c getLog() {

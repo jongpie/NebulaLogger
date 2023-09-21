@@ -14,10 +14,22 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
-    private static final String GUEST_USER_TYPE = 'Guest';
     private static final String NEW_LINE_DELIMITER = '\n';
     private static final Map<String, LoggerScenario__c> SCENARIO_UNIQUE_ID_TO_SCENARIO = new Map<String, LoggerScenario__c>();
+    private static final String STANDARD_USER_TYPE = 'Standard';
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
+
+    private static Group FALLBACK_QUEUE {
+        get {
+            if (FALLBACK_QUEUE == null) {
+                FALLBACK_QUEUE = LogManagementDataSelector.getInstance()
+                    .getQueuesByDeveloperName(new List<String>{ LoggerParameter.FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME })
+                    .get(0);
+            }
+            return FALLBACK_QUEUE;
+        }
+        set;
+    }
 
     @TestVisible
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES {
@@ -96,22 +108,41 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLoggerScenarios() {
+        if (LoggerParameter.NORMALIZE_SCENARIO_DATA == false) {
+            return;
+        }
+
         List<Schema.SObjectField> scenarioFields = new List<Schema.SObjectField>{
             Schema.LogEntryEvent__e.EntryScenario__c,
             Schema.LogEntryEvent__e.TransactionScenario__c
         };
+        List<String> scenarioNames = new List<String>();
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             for (Schema.SObjectField scenarioField : scenarioFields) {
-                String scenario = (String) logEntryEvent.get(scenarioField);
+                String scenarioName = (String) logEntryEvent.get(scenarioField);
 
-                if (String.isBlank(scenario) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
-                    continue;
-                } else if (LoggerParameter.NORMALIZE_SCENARIO_DATA == true) {
-                    LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
-                    loggerScenario.setOptions(DML_OPTIONS);
-                    SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+                if (String.isNotBlank(scenarioName) == true) {
+                    scenarioNames.add(scenarioName);
                 }
             }
+        }
+
+        if (scenarioNames.isEmpty() == true) {
+            return;
+        }
+
+        Set<String> existingScenarios = new Set<String>();
+        for (LoggerScenario__c scenario : LogManagementDataSelector.getInstance().getLoggerScenariosByName(scenarioNames)) {
+            existingScenarios.add(scenario.Name);
+        }
+        for (String scenarioName : scenarioNames) {
+            if (existingScenarios.contains(scenarioName) == true) {
+                continue;
+            }
+
+            LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenarioName, OwnerId = FALLBACK_QUEUE.Id, UniqueId__c = scenarioName);
+            loggerScenario.setOptions(DML_OPTIONS);
+            SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
         }
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
@@ -453,8 +484,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Id logOwnerId = logEntryEvent.LoggedById__c;
 
         LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
-        if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
-            logOwnerId = System.UserInfo.getUserId();
+        if (logEntryEvent.UserType__c != STANDARD_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
+            logOwnerId = FALLBACK_QUEUE.Id;
         }
 
         if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
@@ -498,6 +529,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         for (String tagName : this.tagNames) {
             if (existingTagNameToId.containsKey(tagName) == false) {
                 SObject tag = tagSObjectType.newSObject();
+                if (tagSObjectType == Schema.LoggerTag__c.SObjectType) {
+                    tag.put(Schema.LoggerTag__c.OwnerId, FALLBACK_QUEUE.Id);
+                }
                 tag.put('Name', tagName);
                 tag.setOptions(DML_OPTIONS);
                 missingTagsToCreate.add(tag);

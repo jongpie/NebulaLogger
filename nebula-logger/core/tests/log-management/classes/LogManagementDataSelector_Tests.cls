@@ -247,6 +247,36 @@ private class LogManagementDataSelector_Tests {
     }
 
     @IsTest
+    static void it_returns_logger_scenarios_for_specified_logger_scenario_ids() {
+        List<LoggerScenario__c> allLoggerScenarios = new List<LoggerScenario__c>();
+        for (Integer i = 0; i < 5; i++) {
+            allLoggerScenarios.add(new LoggerScenario__c(Name = 'some scenario ' + i));
+        }
+        insert allLoggerScenarios;
+        List<Id> targetLoggerScenarioIds = new List<Id>{ allLoggerScenarios.get(0).Id, allLoggerScenarios.get(1).Id };
+
+        List<LoggerScenario__c> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(targetLoggerScenarioIds);
+
+        System.Assert.areEqual(targetLoggerScenarioIds.size(), returnedResults);
+        System.Assert.areEqual([SELECT Id, Name, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :targetLoggerScenarioIds], returnedResults);
+    }
+
+    @IsTest
+    static void it_returns_logger_scenarios_for_specified_logger_scenario_names() {
+        List<LoggerScenario__c> allLoggerScenarios = new List<LoggerScenario__c>();
+        for (Integer i = 0; i < 5; i++) {
+            allLoggerScenarios.add(new LoggerScenario__c(Name = 'some scenario ' + i));
+        }
+        insert allLoggerScenarios;
+        List<String> targetLoggerScenarioNames = new List<Id>{ allLoggerScenarios.get(0).Name, allLoggerScenarios.get(1).Name };
+
+        List<LoggerScenario__c> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(targetLoggerScenarioNames);
+
+        System.Assert.areEqual(targetLoggerScenarioNames.size(), returnedResults);
+        System.Assert.areEqual([SELECT Id, Name, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Name IN :targetLoggerScenarioNames], returnedResults);
+    }
+
+    @IsTest
     static void it_returns_profiles_for_specified_profile_ids() {
         List<Profile> expectedResults = [SELECT Id, Name FROM Profile LIMIT 10];
         List<Id> targetProfileIds = new List<Id>(new Map<Id, Profile>(expectedResults).keySet());
