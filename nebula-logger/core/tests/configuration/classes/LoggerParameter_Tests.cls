@@ -80,6 +80,17 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME() {
+        String mockValue = 'my_queue_api_name';
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'FallbackRecordOwnerQueue', Value__c = mockValue);
+        LoggerParameter.setMock(mockParameter);
+
+        String returnedValue = LoggerParameter.FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_normalize_scenario_data() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(mockValue));

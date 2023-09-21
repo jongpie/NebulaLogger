@@ -91,6 +91,21 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Specifies the name of a queue to assign as the owner of new Log__c records when a valid
+     *              default Log__c owner cannot be determined.
+     *              Controlled by the custom metadata record `LoggerParameter.FallbackRecordOwnerQueue`, or `LoggerAdmin` as the default
+     */
+    public static final String FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME {
+        get {
+            if (FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME == null) {
+                FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME = getString('FallbackRecordOwnerQueue', 'LoggerAdmin');
+            }
+            return FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME;
+        }
+        private set;
+    }
+
+    /**
      * @description Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`,
      *              or in the fields `Log__c.TransactionScenarioName__c` & `LogEntry__c.EntryScenario__c`.
      *              Controlled by the custom metadata record `LoggerParameter.NormalizeScenarioData`, or `true` as the default

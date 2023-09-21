@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>Logger Admin</name>
+    <queueSobject>
+        <sobjectType>Log__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>LoggerScenario__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>LoggerTag__c</sobjectType>
+    </queueSobject>
+</Queue>
