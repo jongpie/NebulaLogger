@@ -34,7 +34,7 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`.
      *              This can be used when testing batch jobs.
-     * @param  jobId A string value to use as the async Apex job ID - this can be a true ID, or just a string
+     * @param  jobId A string value to use as the async Apex job ID
      * @return       The instance of `MockBatchableContext`
      */
     public static MockBatchableContext createBatchableContext(String jobId) {
@@ -44,7 +44,7 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates an instance of the class `MockFinalizerContext` that implements the interface `System.FinalizerContext`.
      *              This can be used when testing batch jobs.
-     * @param  asyncApexJobId A string value to use as the async Apex job ID - this can be a true ID, or just a string
+     * @param  asyncApexJobId A string value to use as the async Apex job ID
      * @return                The instance of `MockFinalizerContext`
      */
     public static MockFinalizerContext createFinalizerContext(String asyncApexJobId) {
@@ -54,7 +54,7 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates an instance of the class `MockQueueableContext` that implements the interface `System.QueueableContext`.
      *              This can be used when testing batch jobs.
-     * @param  jobId A string value to use as the async Apex job ID - this can be a true ID, or just a string
+     * @param  jobId A string value to use as the async Apex job ID
      * @return       The instance of `MockQueueableContext`
      */
     public static MockQueueableContext createQueueableContext(String jobId) {
@@ -461,36 +461,36 @@ public class LoggerMockDataCreator {
 
     @SuppressWarnings('PMD.ApexDoc')
     public class MockBatchableContext implements Database.BatchableContext {
-        private String childJobId;
-        private String jobId;
+        private Id childJobId;
+        private Id jobId;
 
-        public MockBatchableContext(String jobId) {
+        public MockBatchableContext(Id jobId) {
             this(jobId, null);
         }
 
-        public MockBatchableContext(String jobId, String childJobId) {
+        public MockBatchableContext(Id jobId, Id childJobId) {
             this.jobId = jobId;
             this.childJobId = childJobId;
         }
 
-        public String getJobId() {
+        public Id getJobId() {
             return this.jobId;
         }
 
-        public String getChildJobId() {
+        public Id getChildJobId() {
             return this.childJobId;
         }
     }
 
     @SuppressWarnings('PMD.ApexDoc')
     public class MockFinalizerContext implements System.FinalizerContext {
-        private String asyncApexJobId;
+        private Id asyncApexJobId;
 
-        public MockFinalizerContext(String asyncApexJobId) {
+        public MockFinalizerContext(Id asyncApexJobId) {
             this.asyncApexJobId = asyncApexJobId;
         }
 
-        public String getAsyncApexJobId() {
+        public Id getAsyncApexJobId() {
             return this.asyncApexJobId;
         }
 
@@ -509,26 +509,26 @@ public class LoggerMockDataCreator {
 
     @SuppressWarnings('PMD.ApexDoc')
     public class MockQueueableContext implements System.QueueableContext {
-        private String jobId;
+        private Id jobId;
 
-        public MockQueueableContext(String jobId) {
+        public MockQueueableContext(Id jobId) {
             this.jobId = jobId;
         }
 
-        public String getJobId() {
+        public Id getJobId() {
             return this.jobId;
         }
     }
 
     @SuppressWarnings('PMD.ApexDoc')
     public class MockSchedulableContext implements System.SchedulableContext {
-        private String triggerId;
+        private Id triggerId;
 
-        public MockSchedulableContext(String triggerId) {
+        public MockSchedulableContext(Id triggerId) {
             this.triggerId = triggerId;
         }
 
-        public String getTriggerId() {
+        public Id getTriggerId() {
             return this.triggerId;
         }
     }
