@@ -9,25 +9,26 @@
 public without sharing virtual class LogFinalizer implements System.Finalizer {
     /**
      * @description Is called by any `System.Queueable` where the finalizer is attached after the Queueable's `execute` method finishes
-     * @param fc The `System.FinalizerContext` associated with the finalizer
+     * @param finalizerContext The `System.FinalizerContext` associated with the finalizer
      */
-    public void execute(System.FinalizerContext fc) {
-        switch on fc.getResult() {
+    public void execute(System.FinalizerContext finalizerContext) {
+        Logger.setAsyncContext(finalizerContext);
+        switch on finalizerContext.getResult() {
             when UNHANDLED_EXCEPTION {
                 Logger.error('There was an error during this queueable job');
-                Logger.error('Error details', fc.getException());
+                Logger.error('Error details', finalizerContext.getException());
             }
         }
-        this.innerExecute(fc);
+        this.innerExecute(finalizerContext);
         Logger.saveLog();
     }
 
     /**
      * @description Subscribers can optionally override this method with their own implementation to do further processing/re-queueing
-     * @param fc The `System.FinalizerContext` associated with the finalizer
+     * @param finalizerContext The `System.FinalizerContext` associated with the finalizer
      */
     @SuppressWarnings('PMD.EmptyStatementBlock')
-    protected virtual void innerExecute(System.FinalizerContext fc) {
+    protected virtual void innerExecute(System.FinalizerContext finalizerContext) {
         // subscribers can override this to do their own post-processing if necessary, otherwise it's a no-op
     }
 }

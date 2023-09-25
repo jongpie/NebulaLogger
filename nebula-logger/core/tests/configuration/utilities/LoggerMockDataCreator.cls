@@ -451,7 +451,7 @@ public class LoggerMockDataCreator {
     public class MockFinalizerContext implements System.FinalizerContext {
         private Id asyncApexJobId;
 
-        public MockBatchableContext() {
+        public MockFinalizerContext() {
             this.asyncApexJobId = createId(Schema.AsyncApexJob.SObjectType);
         }
 
@@ -496,6 +496,10 @@ public class LoggerMockDataCreator {
     @SuppressWarnings('PMD.ApexDoc')
     public class MockSchedulableContext implements System.SchedulableContext {
         private Id triggerId;
+
+        public MockSchedulableContext() {
+            this.triggerId = createId(Schema.CronTrigger.SObjectType);
+        }
 
         public MockSchedulableContext(Id triggerId) {
             this.triggerId = triggerId;

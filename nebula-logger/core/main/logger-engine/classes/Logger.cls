@@ -3464,6 +3464,7 @@ global with sharing class Logger {
          * @param queueableContext The context of the current queue, provided by the platform
          */
         global void execute(System.QueueableContext queueableContext) {
+            Logger.setAsyncContext(queueableContext);
             LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
         }
     }

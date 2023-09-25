@@ -75,6 +75,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             throw noDeleteAccessException;
         }
 
+        Logger.setAsyncContext(batchableContext);
         // Each batchable method runs in a separate transaction,
         // so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
@@ -112,6 +113,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @param scopeRecords - The log records to purge.
      */
     global void execute(Database.BatchableContext batchableContext, List<SObject> scopeRecords) {
+        Logger.setAsyncContext(batchableContext);
         Logger.setParentLogTransactionId(this.originalTransactionId);
         try {
             this.totalProcessedRecords += scopeRecords.size();
@@ -135,6 +137,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @param batchableContext - The context of the batch jobs
      */
     global void finish(Database.BatchableContext batchableContext) {
+        Logger.setAsyncContext(batchableContext);
         Logger.setParentLogTransactionId(this.originalTransactionId);
         LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
         this.executePlugins(BatchableMethod.FINISH, input, null);
