@@ -17,7 +17,7 @@
             <sorted>false</sorted>
             <value>
                 <fullName>Database.BatchableContext</fullName>
-                <default>true</default>
+                <default>false</default>
                 <label>Database.BatchableContext</label>
             </value>
             <value>

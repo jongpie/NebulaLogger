@@ -424,6 +424,11 @@ public class LoggerMockDataCreator {
         private Id childJobId;
         private Id jobId;
 
+        public MockBatchableContext() {
+            this.jobId = createId(Schema.AsyncApexJob.SObjectType);
+            this.childJobId = createId(Schema.AsyncApexJob.SObjectType);
+        }
+
         public MockBatchableContext(Id jobId) {
             this(jobId, null);
         }
@@ -445,6 +450,10 @@ public class LoggerMockDataCreator {
     @SuppressWarnings('PMD.ApexDoc')
     public class MockFinalizerContext implements System.FinalizerContext {
         private Id asyncApexJobId;
+
+        public MockBatchableContext() {
+            this.asyncApexJobId = createId(Schema.AsyncApexJob.SObjectType);
+        }
 
         public MockFinalizerContext(Id asyncApexJobId) {
             this.asyncApexJobId = asyncApexJobId;
@@ -470,6 +479,10 @@ public class LoggerMockDataCreator {
     @SuppressWarnings('PMD.ApexDoc')
     public class MockQueueableContext implements System.QueueableContext {
         private Id jobId;
+
+        public MockQueueableContext() {
+            this.jobId = createId(Schema.AsyncApexJob.SObjectType);
+        }
 
         public MockQueueableContext(Id jobId) {
             this.jobId = jobId;
