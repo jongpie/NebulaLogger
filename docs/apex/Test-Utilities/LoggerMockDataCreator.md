@@ -30,26 +30,6 @@ AggregateResult
 
 The mock instance of `AggregateResult`
 
-#### `createBatchableContext(String jobId)` → `MockBatchableContext`
-
-Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`. This can be used when testing batch jobs.
-
-##### Parameters
-
-| Param   | Description                                                                              |
-| ------- | ---------------------------------------------------------------------------------------- |
-| `jobId` | A string value to use as the async Apex job ID - this can be a true ID, or just a string |
-
-##### Return
-
-**Type**
-
-MockBatchableContext
-
-**Description**
-
-The instance of `MockBatchableContext`
-
 #### `createDataBuilder(Schema.SObjectType sobjectType)` → `SObjectTestDataBuilder`
 
 Creates a new builder instance for the specified `SObjectType`, including creating a new `SObject` record. The new `SObject` record is created with any default field values that have been configured on the `SObjectType`.
@@ -338,26 +318,6 @@ Database.UpsertResult
 
 The mock instance of `Database.UpsertResult`
 
-#### `createFinalizerContext(String asyncApexJobId)` → `MockFinalizerContext`
-
-Creates an instance of the class `MockFinalizerContext` that implements the interface `System.FinalizerContext`. This can be used when testing batch jobs.
-
-##### Parameters
-
-| Param            | Description                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------------- |
-| `asyncApexJobId` | A string value to use as the async Apex job ID - this can be a true ID, or just a string |
-
-##### Return
-
-**Type**
-
-MockFinalizerContext
-
-**Description**
-
-The instance of `MockFinalizerContext`
-
 #### `createHttpCallout()` → `MockHttpCallout`
 
 Generates an instance of the class `MockHttpCallout` that implements the interface `System.HttpCalloutMock`. This can be used when testing batch jobs.
@@ -419,46 +379,6 @@ String
 **Description**
 
 The mock record ID for the specified SObject Type
-
-#### `createQueueableContext(String jobId)` → `MockQueueableContext`
-
-Creates an instance of the class `MockQueueableContext` that implements the interface `System.QueueableContext`. This can be used when testing batch jobs.
-
-##### Parameters
-
-| Param   | Description                                                                              |
-| ------- | ---------------------------------------------------------------------------------------- |
-| `jobId` | A string value to use as the async Apex job ID - this can be a true ID, or just a string |
-
-##### Return
-
-**Type**
-
-MockQueueableContext
-
-**Description**
-
-The instance of `MockQueueableContext`
-
-#### `createSchedulableContext(String jobId)` → `MockSchedulableContext`
-
-Creates an instance of the class `MockSchedulableContext` that implements the interface `System.SchedulableContext`. This can be used when testing batch jobs.
-
-##### Parameters
-
-| Param       | Description                                                                            |
-| ----------- | -------------------------------------------------------------------------------------- |
-| `triggerId` | A string value to use as the cron trigger ID - this can be a true ID, or just a string |
-
-##### Return
-
-**Type**
-
-MockSchedulableContext
-
-**Description**
-
-The instance of `MockSchedulableContext`
 
 #### `createUser()` → `User`
 
@@ -630,17 +550,17 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
-###### `MockBatchableContext(String jobId)`
+###### `MockBatchableContext(Id jobId)`
 
-###### `MockBatchableContext(String jobId, String childJobId)`
+###### `MockBatchableContext(Id jobId, Id childJobId)`
 
 ---
 
 ##### Methods
 
-###### `getChildJobId()` → `String`
+###### `getChildJobId()` → `Id`
 
-###### `getJobId()` → `String`
+###### `getJobId()` → `Id`
 
 ---
 
@@ -650,13 +570,13 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
-###### `MockFinalizerContext(String asyncApexJobId)`
+###### `MockFinalizerContext(Id asyncApexJobId)`
 
 ---
 
 ##### Methods
 
-###### `getAsyncApexJobId()` → `String`
+###### `getAsyncApexJobId()` → `Id`
 
 ###### `getException()` → `Exception`
 
@@ -708,13 +628,13 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
-###### `MockQueueableContext(String jobId)`
+###### `MockQueueableContext(Id jobId)`
 
 ---
 
 ##### Methods
 
-###### `getJobId()` → `String`
+###### `getJobId()` → `Id`
 
 ---
 
@@ -724,13 +644,13 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
-###### `MockSchedulableContext(String triggerId)`
+###### `MockSchedulableContext(Id triggerId)`
 
 ---
 
 ##### Methods
 
-###### `getTriggerId()` → `String`
+###### `getTriggerId()` → `Id`
 
 ---
 

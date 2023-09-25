@@ -32,46 +32,6 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`.
-     *              This can be used when testing batch jobs.
-     * @param  jobId A string value to use as the async Apex job ID
-     * @return       The instance of `MockBatchableContext`
-     */
-    public static MockBatchableContext createBatchableContext(String jobId) {
-        return new MockBatchableContext(jobId);
-    }
-
-    /**
-     * @description Creates an instance of the class `MockFinalizerContext` that implements the interface `System.FinalizerContext`.
-     *              This can be used when testing batch jobs.
-     * @param  asyncApexJobId A string value to use as the async Apex job ID
-     * @return                The instance of `MockFinalizerContext`
-     */
-    public static MockFinalizerContext createFinalizerContext(String asyncApexJobId) {
-        return new MockFinalizerContext(asyncApexJobId);
-    }
-
-    /**
-     * @description Creates an instance of the class `MockQueueableContext` that implements the interface `System.QueueableContext`.
-     *              This can be used when testing batch jobs.
-     * @param  jobId A string value to use as the async Apex job ID
-     * @return       The instance of `MockQueueableContext`
-     */
-    public static MockQueueableContext createQueueableContext(String jobId) {
-        return new MockQueueableContext(jobId);
-    }
-
-    /**
-     * @description Creates an instance of the class `MockSchedulableContext` that implements the interface `System.SchedulableContext`.
-     *              This can be used when testing batch jobs.
-     * @param  triggerId A string value to use as the cron trigger ID - this can be a true ID, or just a string
-     * @return           The instance of `MockSchedulableContext`
-     */
-    public static MockSchedulableContext createSchedulableContext(String triggerId) {
-        return new MockSchedulableContext(triggerId);
-    }
-
-    /**
      * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.

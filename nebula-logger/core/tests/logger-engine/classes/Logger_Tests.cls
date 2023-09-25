@@ -659,7 +659,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_set_async_context_details_for_batchable_context_when_event_published() {
         Id mockAsyncApexJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
-        Database.BatchableContext mockContext = LoggerMockDataCreator.createBatchableContext(mockAsyncApexJobId);
+        Database.BatchableContext mockContext = new LoggerMockDataCreator.MockBatchableContext(mockAsyncApexJobId);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e logEntryEvent = Logger.info('hello, world').getLogEntryEvent();
@@ -682,7 +682,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_set_async_context_details_for_finalizer_context_when_event_published() {
         Id mockAsyncApexJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
-        System.FinalizerContext mockContext = LoggerMockDataCreator.createFinalizerContext(mockAsyncApexJobId);
+        System.FinalizerContext mockContext = new LoggerMockDataCreator.MockFinalizerContext(mockAsyncApexJobId);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e logEntryEvent = Logger.info('hello, world').getLogEntryEvent();
@@ -705,7 +705,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_set_async_context_details_for_queueable_context_when_event_published() {
         Id mockAsyncApexJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
-        System.QueueableContext mockContext = LoggerMockDataCreator.createQueueableContext(mockAsyncApexJobId);
+        System.QueueableContext mockContext = new LoggerMockDataCreator.MockQueueableContext(mockAsyncApexJobId);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e logEntryEvent = Logger.info('hello, world').getLogEntryEvent();
@@ -728,7 +728,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_set_async_context_details_for_schedulable_context_when_event_published() {
         Id mockAsyncApexJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
-        System.SchedulableContext mockContext = LoggerMockDataCreator.createSchedulableContext(mockAsyncApexJobId);
+        System.SchedulableContext mockContext = new LoggerMockDataCreator.MockSchedulableContext(mockAsyncApexJobId);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e logEntryEvent = Logger.info('hello, world').getLogEntryEvent();
