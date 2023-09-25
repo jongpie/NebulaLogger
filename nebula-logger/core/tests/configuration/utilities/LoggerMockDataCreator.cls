@@ -67,8 +67,8 @@ public class LoggerMockDataCreator {
      * @param  triggerId A string value to use as the cron trigger ID - this can be a true ID, or just a string
      * @return           The instance of `MockSchedulableContext`
      */
-    public static MockSchedulableContext createSchedulableContext(String jobId) {
-        return new MockSchedulableContext(jobId);
+    public static MockSchedulableContext createSchedulableContext(String triggerId) {
+        return new MockSchedulableContext(triggerId);
     }
 
     /**

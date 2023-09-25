@@ -3486,6 +3486,7 @@ global with sharing class Logger {
     }
 
     // Inner class for tracking details about the current transaction's async context
+    @SuppressWarnings('PMD.ApexDoc')
     private class AsyncContext {
         public final String type;
         public final String parentJobId;
