@@ -24,6 +24,7 @@ global with sharing class Logger {
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
 
+    private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
@@ -159,6 +160,38 @@ global with sharing class Logger {
      */
     global static Quiddity getCurrentQuiddity() {
         return TRANSACTION_QUIDDITY;
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  batchableContext - The instance of `Database.BatchableContext` to track
+     */
+    global static void setAsyncContext(Database.BatchableContext batchableContext) {
+        currentAsyncContext = new AsyncContext(batchableContext);
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  finalizerContext - The instance of `System.FinalizerContext` to track
+     */
+    global static void setAsyncContext(System.FinalizerContext finalizerContext) {
+        currentAsyncContext = new AsyncContext(finalizerContext);
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  queueableContext - The instance of `System.QueueableContext` to track
+     */
+    global static void setAsyncContext(System.QueueableContext queueableContext) {
+        currentAsyncContext = new AsyncContext(queueableContext);
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  schedulableContext - The instance of `System.SchedulableContext` to track
+     */
+    global static void setAsyncContext(System.SchedulableContext schedulableContext) {
+        currentAsyncContext = new AsyncContext(schedulableContext);
     }
 
     /**
@@ -3144,11 +3177,8 @@ global with sharing class Logger {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
             if (logEntryEventBuilder.shouldSave() == true) {
-                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-                logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
-                logEntryEvent.TransactionScenario__c = transactionScenario;
-
-                logEntryEvents.add(logEntryEvent);
+                finalizeEntry(logEntryEventBuilder);
+                logEntryEvents.add(logEntryEventBuilder.getLogEntryEvent());
             }
         }
 
@@ -3320,6 +3350,19 @@ global with sharing class Logger {
         return logEntryEventBuilder;
     }
 
+    private static void finalizeEntry(LogEntryEventBuilder logEntryEventBuilder) {
+        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+        logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
+        logEntryEvent.TransactionScenario__c = transactionScenario;
+
+        if (currentAsyncContext != null) {
+            logEntryEvent.AsyncContextChildJobId__c = currentAsyncContext.childJobId;
+            logEntryEvent.AsyncContextParentJobId__c = currentAsyncContext.jobId;
+            logEntryEvent.AsyncContextTriggerId__c = currentAsyncContext.triggerId;
+            logEntryEvent.AsyncContextType__c = currentAsyncContext.type;
+        }
+    }
+
     private static Set<String> initializeIgnoredApexClasses() {
         return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName(), LogMessage.class.getName() };
     }
@@ -3440,6 +3483,35 @@ global with sharing class Logger {
     public class StatusApiResponseProduct {
         public String key { get; set; }
         public String name { get; set; }
+    }
+
+    // Inner class for tracking details about the current transaction's async context
+    private class AsyncContext {
+        public final String type;
+        public final String jobId;
+        public final String childJobId;
+        public final String triggerId;
+
+        public AsyncContext(Database.BatchableContext batchableContext) {
+            this.childJobId = batchableContext?.getChildJobId();
+            this.jobId = batchableContext?.getJobId();
+            this.type = Database.BatchableContext.class.getName();
+        }
+
+        public AsyncContext(System.FinalizerContext finalizerContext) {
+            this.jobId = finalizerContext?.getAsyncApexJobId();
+            this.type = System.FinalizerContext.class.getName();
+        }
+
+        public AsyncContext(System.QueueableContext queueableContext) {
+            this.jobId = queueableContext?.getJobId();
+            this.type = System.QueueableContext.class.getName();
+        }
+
+        public AsyncContext(System.SchedulableContext schedulableContext) {
+            this.triggerId = schedulableContext?.getTriggerId();
+            this.type = System.SchedulableContext.class.getName();
+        }
     }
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)

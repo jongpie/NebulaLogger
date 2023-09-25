@@ -3550,6 +3550,8 @@ String
 
 The current API version, in the format `v00.0`
 
+#### `getPackageId()` → `String`
+
 #### `getParentLogTransactionId()` → `String`
 
 Returns the transaction ID value that will be used to relate the current transaction&apos;s log to a parent log
@@ -4850,6 +4852,46 @@ Saves any entries in Logger&apos;s buffer, using the specified save method for o
 | ---------------- | ------------------------------------------------------------------------- |
 | `saveMethodName` | The String value of the save method to use for this specific save action. |
 
+#### `setAsyncContext(Database.BatchableContext batchableContext)` → `void`
+
+Stores additional details about the current transacation&apos;s async context
+
+##### Parameters
+
+| Param              | Description                                            |
+| ------------------ | ------------------------------------------------------ |
+| `batchableContext` | - The instance of `Database.BatchableContext` to track |
+
+#### `setAsyncContext(System.FinalizerContext finalizerContext)` → `void`
+
+Stores additional details about the current transacation&apos;s async context
+
+##### Parameters
+
+| Param              | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| `finalizerContext` | - The instance of `System.FinalizerContext` to track |
+
+#### `setAsyncContext(System.QueueableContext queueableContext)` → `void`
+
+Stores additional details about the current transacation&apos;s async context
+
+##### Parameters
+
+| Param              | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| `queueableContext` | - The instance of `System.QueueableContext` to track |
+
+#### `setAsyncContext(System.SchedulableContext schedulableContext)` → `void`
+
+Stores additional details about the current transacation&apos;s async context
+
+##### Parameters
+
+| Param                | Description                                            |
+| -------------------- | ------------------------------------------------------ |
+| `schedulableContext` | - The instance of `System.SchedulableContext` to track |
+
 #### `setParentLogTransactionId(String parentTransactionId)` → `void`
 
 Relates the current transaction&apos;s log to a parent log via the field Log**c.ParentLog**c This is useful for relating multiple asynchronous operations together, such as batch &amp; queueable jobs.
@@ -5764,13 +5806,29 @@ A string containing the UUID value.
 
 ##### Properties
 
+###### `childJobId` → `String`
+
+###### `jobId` → `String`
+
 ###### `key` → `String`
 
 ###### `name` → `String`
 
+###### `triggerId` → `String`
+
+###### `type` → `String`
+
 ---
 
 ##### Methods
+
+###### `AsyncContext(Database.BatchableContext batchableContext)` → `public`
+
+###### `AsyncContext(System.FinalizerContext finalizerContext)` → `public`
+
+###### `AsyncContext(System.QueueableContext queueableContext)` → `public`
+
+###### `AsyncContext(System.SchedulableContext schedulableContext)` → `public`
 
 ###### `insertRecords(List<SObject> records)` → `void`
 

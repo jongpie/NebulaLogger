@@ -1194,6 +1194,10 @@ private class LogEntryEventHandler_Tests {
                 ApiReleaseNumber__c,
                 ApiReleaseVersion__c,
                 ApiVersion__c,
+                AsyncContextChildJobId__c,
+                AsyncContextParentJobId__c,
+                AsyncContextTriggerId__c,
+                AsyncContextType__c,
                 Id,
                 Locale__c,
                 LoggedBy__c,
@@ -1354,6 +1358,10 @@ private class LogEntryEventHandler_Tests {
         Id logOwnerId = logEntryEvent.LoggedById__c == null ? System.UserInfo.getUserId() : logEntryEvent.LoggedById__c;
 
         System.Assert.areEqual(logEntryEvent.ApiVersion__c, log.ApiVersion__c, 'log.ApiVersion__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.AsyncContextChildJobId__c, log.AsyncContextChildJobId__c, 'log.AsyncContextChildJobId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.AsyncContextParentJobId__c, log.AsyncContextParentJobId__c, 'log.AsyncContextParentJobId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.AsyncContextTriggerId__c, log.AsyncContextTriggerId__c, 'log.AsyncContextTriggerId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.AsyncContextType__c, log.AsyncContextType__c, 'log.AsyncContextTriggerId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
