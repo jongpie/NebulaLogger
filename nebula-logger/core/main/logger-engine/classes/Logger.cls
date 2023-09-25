@@ -53,6 +53,23 @@ global with sharing class Logger {
         set;
     }
 
+    private static final String PACKAGE_ID {
+        get {
+            if (PACKAGE_ID == null) {
+                try {
+                    PACKAGE_ID = System.Packaging.getCurrentPackageId();
+                } catch (System.NoDataFoundException ex) {
+                    // No-op on this exception - when the code is deployed directly to an org (instead of using one of Nebula Logger's packages),
+                    // the method Packaging.getCurrentPackageId() throws an exception
+                    // Use an empty string (instead of null) so the logic executes a max of once per transaction
+                    PACKAGE_ID = '';
+                }
+            }
+            return PACKAGE_ID;
+        }
+        set;
+    }
+
     private static final Quiddity TRANSACTION_QUIDDITY {
         get {
             if (TRANSACTION_QUIDDITY == null) {
