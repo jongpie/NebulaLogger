@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <label>Async Context Async Child Job ID</label>
+    <label>Async Context Child Job ID</label>
     <length>18</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

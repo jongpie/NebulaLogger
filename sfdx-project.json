@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.5.NEXT",
-            "versionName": "Custom Index for Log Retention Date",
-            "versionDescription": "Added a custom index to Log__c.LogRetentionDate__c to help speed up the job LogBatchPurger in orgs with large data volumes (LDV)",
+            "versionNumber": "4.11.6.NEXT",
+            "versionName": "New Method Logger.setAsyncContext()",
+            "versionDescription": "Added a method Logger.setAsyncContext + new fields on LogEntryEvent__e and Log__c to track the current transacation's async context",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

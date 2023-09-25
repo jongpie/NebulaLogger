@@ -3550,8 +3550,6 @@ String
 
 The current API version, in the format `v00.0`
 
-#### `getPackageId()` → `String`
-
 #### `getParentLogTransactionId()` → `String`
 
 Returns the transaction ID value that will be used to relate the current transaction&apos;s log to a parent log
@@ -5808,11 +5806,11 @@ A string containing the UUID value.
 
 ###### `childJobId` → `String`
 
-###### `jobId` → `String`
-
 ###### `key` → `String`
 
 ###### `name` → `String`
+
+###### `parentJobId` → `String`
 
 ###### `triggerId` → `String`
 

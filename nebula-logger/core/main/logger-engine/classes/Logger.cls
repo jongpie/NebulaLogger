@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.11.5';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.11.6';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -3357,7 +3357,7 @@ global with sharing class Logger {
 
         if (currentAsyncContext != null) {
             logEntryEvent.AsyncContextChildJobId__c = currentAsyncContext.childJobId;
-            logEntryEvent.AsyncContextParentJobId__c = currentAsyncContext.jobId;
+            logEntryEvent.AsyncContextParentJobId__c = currentAsyncContext.parentJobId;
             logEntryEvent.AsyncContextTriggerId__c = currentAsyncContext.triggerId;
             logEntryEvent.AsyncContextType__c = currentAsyncContext.type;
         }
@@ -3488,23 +3488,23 @@ global with sharing class Logger {
     // Inner class for tracking details about the current transaction's async context
     private class AsyncContext {
         public final String type;
-        public final String jobId;
+        public final String parentJobId;
         public final String childJobId;
         public final String triggerId;
 
         public AsyncContext(Database.BatchableContext batchableContext) {
             this.childJobId = batchableContext?.getChildJobId();
-            this.jobId = batchableContext?.getJobId();
+            this.parentJobId = batchableContext?.getJobId();
             this.type = Database.BatchableContext.class.getName();
         }
 
         public AsyncContext(System.FinalizerContext finalizerContext) {
-            this.jobId = finalizerContext?.getAsyncApexJobId();
+            this.parentJobId = finalizerContext?.getAsyncApexJobId();
             this.type = System.FinalizerContext.class.getName();
         }
 
         public AsyncContext(System.QueueableContext queueableContext) {
-            this.jobId = queueableContext?.getJobId();
+            this.parentJobId = queueableContext?.getJobId();
             this.type = System.QueueableContext.class.getName();
         }
 
