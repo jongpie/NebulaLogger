@@ -582,7 +582,7 @@
                 <identifier>RecordAsyncContextTriggerId_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.AsyncContextChildJobId__c}</leftValue>
+                        <leftValue>{!Record.AsyncContextTriggerId__c}</leftValue>
                         <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
