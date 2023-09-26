@@ -65,6 +65,7 @@ jobs:
               if: ${{ github.event_name == 'pull_request' }}
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -149,6 +150,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -210,6 +212,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -283,6 +286,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -328,6 +332,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -401,6 +406,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
