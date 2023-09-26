@@ -318,6 +318,34 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Indicates if Nebula Logger will send a Slack notification for any logs that match the configure Slack filters
+     *              Controlled by the custom metadata record `LoggerParameter.SendSlackNotifications`, or `true` as the default
+     */
+    public static final Boolean SEND_SLACK_NOTIFICATIONS {
+        get {
+            if (SEND_SLACK_NOTIFICATIONS == null) {
+                SEND_SLACK_NOTIFICATIONS = getBoolean('SendSlackNotifications', true);
+            }
+            return SEND_SLACK_NOTIFICATIONS;
+        }
+        private set;
+    }
+
+    /**
+     * @description Specifies the developer name of the named credential to use when Nebula Logger sends Slack notifications
+     *              Controlled by the custom metadata record `LoggerParameter.SlackNamedCredential`, or `null` as the default
+     */
+    public static final Boolean SLACK_NAMED_CREDENTIAL_DEVELOPER_NAME {
+        get {
+            if (SLACK_NAMED_CREDENTIAL_DEVELOPER_NAME == null) {
+                SLACK_NAMED_CREDENTIAL_DEVELOPER_NAME = getBoolean('SlackNamedCredential', null);
+            }
+            return SLACK_NAMED_CREDENTIAL_DEVELOPER_NAME;
+        }
+        private set;
+    }
+
+    /**
      * @description The merge-field syntax to use when calling System.debug().
      *              Controlled by the custom metadata record `LoggerParameter.SystemDebugMessageFormat`, or `{OriginLocation__c}\n{Message__c}` as the default
      */

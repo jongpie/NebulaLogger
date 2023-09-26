@@ -75,6 +75,16 @@ global with sharing class Logger {
         set;
     }
 
+    private static String slackNotificationChannel {
+        get {
+            if (slackNotificationChannel == null) {
+                slackNotificationChannel = getUserSettings().DefaultSlackNotificationChannel__c;
+            }
+            return slackNotificationChannel;
+        }
+        set;
+    }
+
     private static String transactionSaveMethodName {
         get {
             if (transactionSaveMethodName == null) {
@@ -159,6 +169,10 @@ global with sharing class Logger {
      */
     global static Quiddity getCurrentQuiddity() {
         return TRANSACTION_QUIDDITY;
+    }
+
+    global static void setSlackNotificationChannel(String targetSlackChannel) {
+        slackNotificationChannel = targetSlackChannel;
     }
 
     /**
@@ -3041,6 +3055,9 @@ global with sharing class Logger {
             }
             if (String.isNotBlank(matchingScenarioRule.SaveMethod__c) == true) {
                 setSaveMethod(matchingScenarioRule.SaveMethod__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.SlackNotificationChannel__c) == true) {
+                slackNotificationChannel = matchingScenarioRule.SlackNotificationChannel__c;
             }
             if (String.isNotBlank(matchingScenarioRule.UserLoggingLevel__c) == true) {
                 userSettings.LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
