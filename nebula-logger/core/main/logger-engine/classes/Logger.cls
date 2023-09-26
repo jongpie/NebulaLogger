@@ -97,10 +97,11 @@ global with sharing class Logger {
     }
 
     static {
-        // 1 of 2 places in the codebase (except tests) that should use System.debug()
+        // One of few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Organization API Version: ' + getOrganizationApiVersion());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -167,7 +168,7 @@ global with sharing class Logger {
      * @param  batchableContext - The instance of `Database.BatchableContext` to track
      */
     global static void setAsyncContext(Database.BatchableContext batchableContext) {
-        currentAsyncContext = new AsyncContext(batchableContext);
+        setAsyncContext(new AsyncContext(batchableContext));
     }
 
     /**
@@ -175,7 +176,7 @@ global with sharing class Logger {
      * @param  finalizerContext - The instance of `System.FinalizerContext` to track
      */
     global static void setAsyncContext(System.FinalizerContext finalizerContext) {
-        currentAsyncContext = new AsyncContext(finalizerContext);
+        setAsyncContext(new AsyncContext(finalizerContext));
     }
 
     /**
@@ -183,7 +184,7 @@ global with sharing class Logger {
      * @param  queueableContext - The instance of `System.QueueableContext` to track
      */
     global static void setAsyncContext(System.QueueableContext queueableContext) {
-        currentAsyncContext = new AsyncContext(queueableContext);
+        setAsyncContext(new AsyncContext(queueableContext));
     }
 
     /**
@@ -191,7 +192,7 @@ global with sharing class Logger {
      * @param  schedulableContext - The instance of `System.SchedulableContext` to track
      */
     global static void setAsyncContext(System.SchedulableContext schedulableContext) {
-        currentAsyncContext = new AsyncContext(schedulableContext);
+        setAsyncContext(new AsyncContext(schedulableContext));
     }
 
     /**
@@ -3040,6 +3041,11 @@ global with sharing class Logger {
     global static void setScenario(String scenario) {
         if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario) == true) {
             transactionScenario = scenario;
+            // One of few limited places in the codebase (except tests) that should use System.debug()
+            // The rest of the codebase should use a method in Logger.cls
+            if (String.isNotBlank(transactionScenario) == true) {
+                System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction Scenario: ' + transactionScenario);
+            }
         }
 
         if (String.isNotBlank(scenario) == true && scenario == currentEntryScenario) {
@@ -3048,6 +3054,11 @@ global with sharing class Logger {
 
         currentEntryScenario = scenario;
         orderedScenarios.add(scenario);
+        // One of few limited places in the codebase (except tests) that should use System.debug()
+        // The rest of the codebase should use a method in Logger.cls
+        if (String.isNotBlank(transactionScenario) == true) {
+            System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Entry Scenario: ' + currentEntryScenario);
+        }
         LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
             LoggerSettings__c userSettings = getUserSettings();
@@ -3384,6 +3395,11 @@ global with sharing class Logger {
         } else {
             return null;
         }
+    }
+
+    private static void setAsyncContext(AsyncContext asyncContext) {
+        currentAsyncContext = asyncContext;
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + JSON.serializePretty(asyncContext));
     }
 
     private static SaveMethod getSaveMethod(String saveMethodName) {
