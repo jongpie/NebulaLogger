@@ -153,6 +153,7 @@
         "Nebula Logger - Core@4.11.3-bugfix-for-unhandled-email-exception": "04t5Y000001HZd0QAG",
         "Nebula Logger - Core@4.11.4-removed-chatter-dependencies": "04t5Y000001HZdPQAW",
         "Nebula Logger - Core@4.11.5-custom-index-for-log-retention-date": "04t5Y000001HZdZQAW",
+        "Nebula Logger - Core@4.11.6-new-method-logger.setasynccontext()": "04t5Y000001HZfGQAW",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
