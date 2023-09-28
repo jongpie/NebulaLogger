@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AsyncContextType__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <externalId>false</externalId>
+    <label>Async Context Type</label>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>sd
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Database.BatchableContext</fullName>
+                <default>false</default>
+                <label>Database.BatchableContext</label>
+            </value>
+            <value>
+                <fullName>System.FinalizerContext</fullName>
+                <default>false</default>
+                <label>System.FinalizerContext</label>
+            </value>
+            <value>
+                <fullName>System.QueueableContext</fullName>
+                <default>false</default>
+                <label>System.QueueableContext</label>
+            </value>
+            <value>
+                <fullName>System.SchedulableContext</fullName>
+                <default>false</default>
+                <label>System.SchedulableContext</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -59,7 +59,7 @@ private class LogBatchPurger_Tests_Flow {
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         batchJobInstance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
 
         batchJobInstance.start(mockBatchableContext);
 
@@ -109,7 +109,7 @@ private class LogBatchPurger_Tests_Flow {
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
         System.Assert.areNotEqual(0, logsToDelete.size());
-        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
 
         batchJobInstance.execute(mockBatchableContext, logsToDelete);
 
@@ -160,7 +160,7 @@ private class LogBatchPurger_Tests_Flow {
     //     LogBatchPurger batchJobInstance = new LogBatchPurger();
     //     List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
     //     System.Assert.areNotEqual(0, logsToDelete.size(), 'There should be some records to delete');
-    //     Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+    //     Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
 
     //     batchJobInstance.finish(mockBatchableContext);
 

@@ -32,16 +32,6 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`.
-     *              This can be used when testing batch jobs.
-     * @param  jobId A string value to use as the batchable job ID - this can be a true ID, or just a string
-     * @return       The instance of `MockBatchableContext`
-     */
-    public static MockBatchableContext createBatchableContext(String jobId) {
-        return new MockBatchableContext(jobId);
-    }
-
-    /**
      * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
@@ -431,24 +421,92 @@ public class LoggerMockDataCreator {
 
     @SuppressWarnings('PMD.ApexDoc')
     public class MockBatchableContext implements Database.BatchableContext {
-        private String childJobId;
-        private String jobId;
+        private Id childJobId;
+        private Id jobId;
 
-        public MockBatchableContext(String jobId) {
+        public MockBatchableContext() {
+            this.jobId = createId(Schema.AsyncApexJob.SObjectType);
+            this.childJobId = createId(Schema.AsyncApexJob.SObjectType);
+        }
+
+        public MockBatchableContext(Id jobId) {
             this(jobId, null);
         }
 
-        public MockBatchableContext(String jobId, Id childJobId) {
+        public MockBatchableContext(Id jobId, Id childJobId) {
             this.jobId = jobId;
             this.childJobId = childJobId;
         }
 
-        public String getJobId() {
+        public Id getJobId() {
             return this.jobId;
         }
 
-        public String getChildJobId() {
+        public Id getChildJobId() {
             return this.childJobId;
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    public class MockFinalizerContext implements System.FinalizerContext {
+        private Id asyncApexJobId;
+
+        public MockFinalizerContext() {
+            this.asyncApexJobId = createId(Schema.AsyncApexJob.SObjectType);
+        }
+
+        public MockFinalizerContext(Id asyncApexJobId) {
+            this.asyncApexJobId = asyncApexJobId;
+        }
+
+        public Id getAsyncApexJobId() {
+            return this.asyncApexJobId;
+        }
+
+        public Exception getException() {
+            return null;
+        }
+
+        public System.ParentJobResult getResult() {
+            return System.ParentJobResult.SUCCESS;
+        }
+
+        public Id getRequestId() {
+            return System.Request.getCurrent().getRequestId();
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    public class MockQueueableContext implements System.QueueableContext {
+        private Id jobId;
+
+        public MockQueueableContext() {
+            this.jobId = createId(Schema.AsyncApexJob.SObjectType);
+        }
+
+        public MockQueueableContext(Id jobId) {
+            this.jobId = jobId;
+        }
+
+        public Id getJobId() {
+            return this.jobId;
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    public class MockSchedulableContext implements System.SchedulableContext {
+        private Id triggerId;
+
+        public MockSchedulableContext() {
+            this.triggerId = createId(Schema.CronTrigger.SObjectType);
+        }
+
+        public MockSchedulableContext(Id triggerId) {
+            this.triggerId = triggerId;
+        }
+
+        public Id getTriggerId() {
+            return this.triggerId;
         }
     }
 

@@ -532,6 +532,96 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.AsyncContextType__c</fieldItem>
+                <identifier>RecordAsyncContextType_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-dd5e3466-ea03-4853-be00-33411ed46ec6</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.AsyncContextParentJobId__c</fieldItem>
+                <identifier>RecordAsyncContextParentJobId_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.AsyncContextParentJobId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.AsyncContextChildJobId__c</fieldItem>
+                <identifier>RecordAsyncContextChildJobId_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.AsyncContextChildJobId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.AsyncContextTriggerId__c</fieldItem>
+                <identifier>RecordAsyncContextTriggerId_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.AsyncContextTriggerId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-22c5f237-327a-4fc9-80b3-8305ba0accab</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-dd5e3466-ea03-4853-be00-33411ed46ec6</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column13</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-22c5f237-327a-4fc9-80b3-8305ba0accab</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column14</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-f8d9fe6c-1984-475a-82e2-ceeb68937d16</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.SessionId__c</fieldItem>
                 <identifier>RecordSessionId__cField</identifier>
             </fieldInstance>
@@ -970,6 +1060,47 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection3</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-f8d9fe6c-1984-475a-82e2-ceeb68937d16</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Async Context Details</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection7</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.AsyncContextType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Database.BatchableContext</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.AsyncContextType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>System.FinalizerContext</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.AsyncContextType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>System.QueueableContext</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.AsyncContextType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>System.SchedulableContext</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>

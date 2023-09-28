@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.11.5';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.11.6';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -24,6 +24,7 @@ global with sharing class Logger {
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
 
+    private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
@@ -96,10 +97,11 @@ global with sharing class Logger {
     }
 
     static {
-        // 1 of 2 places in the codebase (except tests) that should use System.debug()
+        // One of few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Organization API Version: ' + getOrganizationApiVersion());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -159,6 +161,38 @@ global with sharing class Logger {
      */
     global static Quiddity getCurrentQuiddity() {
         return TRANSACTION_QUIDDITY;
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  batchableContext - The instance of `Database.BatchableContext` to track
+     */
+    global static void setAsyncContext(Database.BatchableContext batchableContext) {
+        setAsyncContext(new AsyncContext(batchableContext));
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  finalizerContext - The instance of `System.FinalizerContext` to track
+     */
+    global static void setAsyncContext(System.FinalizerContext finalizerContext) {
+        setAsyncContext(new AsyncContext(finalizerContext));
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  queueableContext - The instance of `System.QueueableContext` to track
+     */
+    global static void setAsyncContext(System.QueueableContext queueableContext) {
+        setAsyncContext(new AsyncContext(queueableContext));
+    }
+
+    /**
+     * @description Stores additional details about the current transacation's async context
+     * @param  schedulableContext - The instance of `System.SchedulableContext` to track
+     */
+    global static void setAsyncContext(System.SchedulableContext schedulableContext) {
+        setAsyncContext(new AsyncContext(schedulableContext));
     }
 
     /**
@@ -3007,6 +3041,11 @@ global with sharing class Logger {
     global static void setScenario(String scenario) {
         if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario) == true) {
             transactionScenario = scenario;
+            // One of few limited places in the codebase (except tests) that should use System.debug()
+            // The rest of the codebase should use a method in Logger.cls
+            if (String.isNotBlank(transactionScenario) == true) {
+                System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction Scenario: ' + transactionScenario);
+            }
         }
 
         if (String.isNotBlank(scenario) == true && scenario == currentEntryScenario) {
@@ -3015,6 +3054,11 @@ global with sharing class Logger {
 
         currentEntryScenario = scenario;
         orderedScenarios.add(scenario);
+        // One of few limited places in the codebase (except tests) that should use System.debug()
+        // The rest of the codebase should use a method in Logger.cls
+        if (String.isNotBlank(transactionScenario) == true) {
+            System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Entry Scenario: ' + currentEntryScenario);
+        }
         LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
             LoggerSettings__c userSettings = getUserSettings();
@@ -3144,11 +3188,8 @@ global with sharing class Logger {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
             if (logEntryEventBuilder.shouldSave() == true) {
-                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-                logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
-                logEntryEvent.TransactionScenario__c = transactionScenario;
-
-                logEntryEvents.add(logEntryEvent);
+                finalizeEntry(logEntryEventBuilder);
+                logEntryEvents.add(logEntryEventBuilder.getLogEntryEvent());
             }
         }
 
@@ -3320,6 +3361,19 @@ global with sharing class Logger {
         return logEntryEventBuilder;
     }
 
+    private static void finalizeEntry(LogEntryEventBuilder logEntryEventBuilder) {
+        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+        logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
+        logEntryEvent.TransactionScenario__c = transactionScenario;
+
+        if (currentAsyncContext != null) {
+            logEntryEvent.AsyncContextChildJobId__c = currentAsyncContext.childJobId;
+            logEntryEvent.AsyncContextParentJobId__c = currentAsyncContext.parentJobId;
+            logEntryEvent.AsyncContextTriggerId__c = currentAsyncContext.triggerId;
+            logEntryEvent.AsyncContextType__c = currentAsyncContext.type;
+        }
+    }
+
     private static Set<String> initializeIgnoredApexClasses() {
         return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName(), LogMessage.class.getName() };
     }
@@ -3341,6 +3395,11 @@ global with sharing class Logger {
         } else {
             return null;
         }
+    }
+
+    private static void setAsyncContext(AsyncContext asyncContext) {
+        currentAsyncContext = asyncContext;
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + JSON.serializePretty(asyncContext));
     }
 
     private static SaveMethod getSaveMethod(String saveMethodName) {
@@ -3421,6 +3480,7 @@ global with sharing class Logger {
          * @param queueableContext The context of the current queue, provided by the platform
          */
         global void execute(System.QueueableContext queueableContext) {
+            Logger.setAsyncContext(queueableContext);
             LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
         }
     }
@@ -3440,6 +3500,36 @@ global with sharing class Logger {
     public class StatusApiResponseProduct {
         public String key { get; set; }
         public String name { get; set; }
+    }
+
+    // Inner class for tracking details about the current transaction's async context
+    @SuppressWarnings('PMD.ApexDoc')
+    private class AsyncContext {
+        public final String type;
+        public final String parentJobId;
+        public final String childJobId;
+        public final String triggerId;
+
+        public AsyncContext(Database.BatchableContext batchableContext) {
+            this.childJobId = batchableContext?.getChildJobId();
+            this.parentJobId = batchableContext?.getJobId();
+            this.type = Database.BatchableContext.class.getName();
+        }
+
+        public AsyncContext(System.FinalizerContext finalizerContext) {
+            this.parentJobId = finalizerContext?.getAsyncApexJobId();
+            this.type = System.FinalizerContext.class.getName();
+        }
+
+        public AsyncContext(System.QueueableContext queueableContext) {
+            this.parentJobId = queueableContext?.getJobId();
+            this.type = System.QueueableContext.class.getName();
+        }
+
+        public AsyncContext(System.SchedulableContext schedulableContext) {
+            this.triggerId = schedulableContext?.getTriggerId();
+            this.type = System.SchedulableContext.class.getName();
+        }
     }
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
