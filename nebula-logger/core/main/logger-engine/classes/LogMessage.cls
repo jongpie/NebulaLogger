@@ -80,6 +80,9 @@ global inherited sharing virtual class LogMessage {
         // No-op
     }
 
+    global void serializePretty() {
+    }
+
     /**
      * @description Returns the formatted string to use as the log entry's message
      * @return  String

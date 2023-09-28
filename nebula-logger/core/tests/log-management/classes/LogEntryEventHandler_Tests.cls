@@ -1202,6 +1202,7 @@ private class LogEntryEventHandler_Tests {
                 Locale__c,
                 LoggedBy__c,
                 LoggedByUsername__c,
+                LoggerPackageId__c,
                 LoggerVersionNumber__c,
                 LoginApplication__c,
                 LoginBrowser__c,
@@ -1365,6 +1366,7 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoggerPackageId__c, log.LoggerPackageId__c, 'log.LoggerPackageId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoginDomain__c, log.LoginDomain__c, 'log.LoginDomain__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c, 'log.LoginHistoryId__c was not properly set');

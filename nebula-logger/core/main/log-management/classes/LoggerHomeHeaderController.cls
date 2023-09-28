@@ -18,6 +18,7 @@ public without sharing class LoggerHomeHeaderController {
 
         Environment environment = new Environment();
         environment.loggerNamespacePrefix = String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)';
+        environment.loggerPackageId = Logger.getPackageId();
         environment.loggerVersionNumber = Logger.getVersionNumber();
         environment.organizationApiVersion = Logger.getOrganizationApiVersion();
         environment.organizationCreatedByUsername = organization.CreatedBy.Username;
@@ -82,6 +83,8 @@ public without sharing class LoggerHomeHeaderController {
         public String loggerEnabledPlugins = 'Unknown';
         @AuraEnabled
         public String loggerNamespacePrefix = 'Unknown';
+        @AuraEnabled
+        public String loggerPackageId = 'Unknown';
         @AuraEnabled
         public String loggerVersionNumber = 'Unknown';
         @AuraEnabled

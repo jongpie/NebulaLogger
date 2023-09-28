@@ -864,6 +864,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.LoggerPackageId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.LoggerVersionNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>

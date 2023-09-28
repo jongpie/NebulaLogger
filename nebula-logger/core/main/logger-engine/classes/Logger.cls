@@ -135,6 +135,15 @@ global with sharing class Logger {
     // System info methods
 
     /**
+     * @description Returns the package ID of Nebula Logger
+     * @return The package ID containing Nebula Logger, or `null` if the metadata
+     *         has been deployed directly to the org
+     */
+    global static String getPackageId() {
+        return PACKAGE_ID;
+    }
+
+    /**
      * @description Returns the current version number of Nebula Logger
      * @return The current version number, in the format `v0.0.0`
      */
@@ -3363,7 +3372,9 @@ global with sharing class Logger {
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
             logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.EntryScenario__c = currentEntryScenario;
-            logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            // logEntryEvent.LoggerPackageId__c = String.isBlank(PACKAGE_ID) == true ? null : PACKAGE_ID;
+            logEntryEvent.LoggerPackageId__c = getPackageId();
+            logEntryEvent.LoggerVersionNumber__c = getVersionNumber();
             logEntryEvent.OrganizationApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
             logEntryEvent.RequestId__c = REQUEST_ID;

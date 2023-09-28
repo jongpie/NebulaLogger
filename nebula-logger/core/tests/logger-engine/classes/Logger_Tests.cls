@@ -16,6 +16,20 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_return_package_id() {
+        String expectedPackageId;
+        try {
+            expectedPackageId = System.Packaging.getCurrentPackageId();
+        } catch (System.NoDataFoundException ex) {
+            // No-op: no package ID for the current context, so leave expectedPackageId null
+        }
+
+        String returnedPackageId = Logger.getVersionNumber();
+
+        System.Assert.areEqual(expectedPackageId, returnedPackageId);
+    }
+
+    @IsTest
     static void it_should_return_namespace_prefix() {
         String className = Logger_Tests.class.getName();
         String expectedNamespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
@@ -291,10 +305,18 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_set_transaction_details() {
+        String expectedPackageId;
+        try {
+            expectedPackageId = System.Packaging.getCurrentPackageId();
+        } catch (System.NoDataFoundException ex) {
+            // No-op: no package ID for the current context, so leave expectedPackageId null
+        }
+
         for (Integer i = 0; i < 3; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry for index ' + i);
 
             System.Assert.isNotNull(builder.getLogEntryEvent().LoggerVersionNumber__c);
+            System.Assert.areEqual(expectedPackageId, builder.getLogEntryEvent().LoggerPackageId__c);
             System.Assert.areEqual(Logger.getVersionNumber(), builder.getLogEntryEvent().LoggerVersionNumber__c);
             System.Assert.areEqual(Logger.getScenario(), builder.getLogEntryEvent().EntryScenario__c);
             System.Assert.areEqual(Logger.getOrganizationApiVersion(), builder.getLogEntryEvent().OrganizationApiVersion__c);
