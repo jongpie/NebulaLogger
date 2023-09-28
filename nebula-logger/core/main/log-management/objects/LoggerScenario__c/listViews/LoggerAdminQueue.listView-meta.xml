@@ -3,12 +3,11 @@
     <fullName>LoggerAdminQueue</fullName>
     <columns>NAME</columns>
     <columns>UniqueId__c</columns>
-    <columns>OWNER.ALIAS</columns>
     <columns>CREATEDBY_USER</columns>
     <columns>CREATED_DATE</columns>
     <columns>UPDATEDBY_USER</columns>
     <columns>LAST_UPDATE</columns>
-    <filterScope>Mine</filterScope>
+    <filterScope>Everything</filterScope>
     <label>Logger Admin Queue</label>
     <queue>LoggerAdmin</queue>
 </ListView>

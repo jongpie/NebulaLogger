@@ -3,7 +3,6 @@
     <fullName>LoggerAdminQueue</fullName>
     <columns>NAME</columns>
     <columns>TotalLogEntries__c</columns>
-    <columns>OWNER.ALIAS</columns>
     <columns>CREATED_DATE</columns>
     <columns>LAST_UPDATE</columns>
     <filterScope>Everything</filterScope>
