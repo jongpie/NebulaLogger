@@ -501,7 +501,6 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.UserType__c = 'SomeValueThatIsNotStandard';
         Group fallbackQueue = [SELECT Id FROM Group WHERE DeveloperName = :LoggerParameter.FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME AND Type = 'Queue'];
@@ -521,7 +520,6 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.LoggedById__c = null;
         Group fallbackQueue = [SELECT Id FROM Group WHERE DeveloperName = :LoggerParameter.FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME AND Type = 'Queue'];
