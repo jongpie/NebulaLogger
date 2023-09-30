@@ -131,30 +131,27 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Set<String> existingScenarios = new Set<String>();
+        Set<String> existingScenarioNames = new Set<String>();
+        Map<String, LoggerScenario__c> newScenarioUniqueIdToScenario = new Map<String, LoggerScenario__c>();
         for (LoggerScenario__c scenario : LogManagementDataSelector.getInstance().getLoggerScenariosByName(scenarioNames)) {
-            existingScenarios.add(scenario.Name);
+            existingScenarioNames.add(scenario.Name);
         }
         for (String scenarioName : scenarioNames) {
-            if (existingScenarios.contains(scenarioName) == true) {
+            if (existingScenarioNames.contains(scenarioName) == true || newScenarioUniqueIdToScenario.containsKey(scenarioName) == true) {
                 continue;
             }
 
             LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenarioName, OwnerId = FALLBACK_QUEUE.Id, UniqueId__c = scenarioName);
             loggerScenario.setOptions(DML_OPTIONS);
-            SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+            newScenarioUniqueIdToScenario.put(loggerScenario.UniqueId__c, loggerScenario);
         }
-
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
-            .upsertRecords(SCENARIO_UNIQUE_ID_TO_SCENARIO.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
+            .upsertRecords(newScenarioUniqueIdToScenario.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
+
         LoggerEmailSender.sendErrorEmail(Schema.LoggerScenario__c.SObjectType, upsertResults);
 
         // Requery to get the OwnerId field as well
-        for (LoggerScenario__c loggerScenario : [
-            SELECT Id, Name, OwnerId, UniqueId__c
-            FROM LoggerScenario__c
-            WHERE Id IN :SCENARIO_UNIQUE_ID_TO_SCENARIO.values()
-        ]) {
+        for (LoggerScenario__c loggerScenario : LogManagementDataSelector.getInstance().getLoggerScenariosByName(scenarioNames)) {
             SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
         }
     }
@@ -481,13 +478,18 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private Id determineLogOwnerId(LogEntryEvent__e logEntryEvent) {
+        // In general, the logging user is used as the log owner - it helps with ownership data skew,
+        // and also lets users see their own logs (in orgs where the LoggerEndUser permission set is used).
         Id logOwnerId = logEntryEvent.LoggedById__c;
 
+        // Some types of user licenses (like a Chatter Free users) can cause issues if they're the record owner.
+        // In this case, use the fallback queue as the owner.
         LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
         if (logEntryEvent.UserType__c != STANDARD_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
             logOwnerId = FALLBACK_QUEUE.Id;
         }
 
+        // Lastly, scenario rules can override the default owner
         if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
             LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
             if (
