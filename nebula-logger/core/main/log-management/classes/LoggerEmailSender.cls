@@ -124,7 +124,7 @@ public without sharing class LoggerEmailSender {
         SENT_EMAILS.add(message);
         if (IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
-            List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
+            List<Messaging.SendEmailResult> emailResults = System.Messaging.sendEmail(messages);
 
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == false) {
                 return;
