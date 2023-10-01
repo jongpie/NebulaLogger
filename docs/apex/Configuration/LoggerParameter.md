@@ -30,6 +30,10 @@ Indicates if Nebula Logger will append its own log entries about the logging sys
 
 Indicates if Nebula Logger&apos;s tagging system is enabled. Controlled by the custom metadata record `LoggerParameter.EnableTagging`, or `true` as the default
 
+#### `FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME` → `String`
+
+Specifies the name of a queue to assign as the owner of new records when a valid default owner cannot be determined. This is when creating new records in`Log__c`, `LoggerScenario__c`, and `LoggerTag__c`. Controlled by the custom metadata record `LoggerParameter.FallbackRecordOwnerQueue`, or `LoggerAdmin` as the default
+
 #### `NORMALIZE_SCENARIO_DATA` → `Boolean`
 
 Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`, or in the fields `Log__c.TransactionScenarioName__c` &amp; `LogEntry__c.EntryScenario__c`. Controlled by the custom metadata record `LoggerParameter.NormalizeScenarioData`, or `true` as the default

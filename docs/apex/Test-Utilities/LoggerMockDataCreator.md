@@ -550,6 +550,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
+###### `MockBatchableContext()`
+
 ###### `MockBatchableContext(Id jobId)`
 
 ###### `MockBatchableContext(Id jobId, Id childJobId)`
@@ -569,6 +571,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 ---
 
 ##### Constructors
+
+###### `MockFinalizerContext()`
 
 ###### `MockFinalizerContext(Id asyncApexJobId)`
 
@@ -628,6 +632,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
+###### `MockQueueableContext()`
+
 ###### `MockQueueableContext(Id jobId)`
 
 ---
@@ -643,6 +649,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 ---
 
 ##### Constructors
+
+###### `MockSchedulableContext()`
 
 ###### `MockSchedulableContext(Id triggerId)`
 

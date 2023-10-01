@@ -247,6 +247,36 @@ private class LogManagementDataSelector_Tests {
     }
 
     @IsTest
+    static void it_returns_logger_scenarios_for_specified_logger_scenario_ids() {
+        List<LoggerScenario__c> allLoggerScenarios = new List<LoggerScenario__c>();
+        for (Integer i = 0; i < 5; i++) {
+            allLoggerScenarios.add(new LoggerScenario__c(Name = 'some scenario ' + i, UniqueId__c = 'some scenario ' + i));
+        }
+        insert allLoggerScenarios;
+        List<Id> targetLoggerScenarioIds = new List<Id>{ allLoggerScenarios.get(0).Id, allLoggerScenarios.get(1).Id };
+
+        List<LoggerScenario__c> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(targetLoggerScenarioIds);
+
+        System.Assert.areEqual(targetLoggerScenarioIds.size(), returnedResults.size());
+        System.Assert.areEqual([SELECT Id, Name, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :targetLoggerScenarioIds], returnedResults);
+    }
+
+    @IsTest
+    static void it_returns_logger_scenarios_for_specified_logger_scenario_names() {
+        List<LoggerScenario__c> allLoggerScenarios = new List<LoggerScenario__c>();
+        for (Integer i = 0; i < 5; i++) {
+            allLoggerScenarios.add(new LoggerScenario__c(Name = 'some scenario ' + i, UniqueId__c = 'some scenario ' + i));
+        }
+        insert allLoggerScenarios;
+        List<String> targetLoggerScenarioNames = new List<String>{ allLoggerScenarios.get(0).Name, allLoggerScenarios.get(1).Name };
+
+        List<LoggerScenario__c> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosByName(targetLoggerScenarioNames);
+
+        System.Assert.areEqual(targetLoggerScenarioNames.size(), returnedResults.size());
+        System.Assert.areEqual([SELECT Id, Name, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Name IN :targetLoggerScenarioNames], returnedResults);
+    }
+
+    @IsTest
     static void it_returns_profiles_for_specified_profile_ids() {
         List<Profile> expectedResults = [SELECT Id, Name FROM Profile LIMIT 10];
         List<Id> targetProfileIds = new List<Id>(new Map<Id, Profile>(expectedResults).keySet());
@@ -417,7 +447,7 @@ private class LogManagementDataSelector_Tests {
     @SuppressWarnings('PMD.EmptyStatementBlock')
     @future
     private static void executeSomeFutureMethod() {
-        // This method intentionally does nothing - it\'s only used to help test queries on AsynxApexJob
+        // This method intentionally does nothing - it's only used to help test queries on AsyncApexJob
     }
 
     private class MockLogManagementDataSelector extends LogManagementDataSelector {

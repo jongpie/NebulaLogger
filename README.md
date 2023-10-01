@@ -5,7 +5,7 @@
 
 The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.11.6
+## Unlocked Package - v4.11.7
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000001HZfGQAW)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000001HZfGQAW)
@@ -629,7 +629,7 @@ Within Logger Console app, the Log Entry Event Stream tab provides real-time mon
 
 ### View Related Log Entries on a Record Page
 
-Within App Builder, admins can add the 'Related Log Entries' lightning web component (lwc) to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
+Within App Builder, admins can add the 'Related Log Entries' lightning web component (lwc) to any record page. Admins can also control which columns are displayed by creating & selecting a field set on `LogEntry__c` with the desired fields.
 
 -   The component automatically shows any related log entries, based on `LogEntry__c.RecordId__c == :recordId`
 -   Users can search the list of log entries for a particular record using the component's built-insearch box. The component dynamically searches all related log entries using SOSL.

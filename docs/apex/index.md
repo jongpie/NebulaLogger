@@ -54,6 +54,20 @@ Abstract class used by trigger handlers for shared logic
 
 Proxy class used as a middle layer between some problematic SObject Types and the rest of Nebula Logger&apos;s codebase. Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another, such as not being mockable or creatable, or not existing in all orgs.
 
+## Miscellaneous
+
+### [ExampleBatchPurgerPlugin](/Miscellaneous/ExampleBatchPurgerPlugin)
+
+### [LoggerPackageContext](/Miscellaneous/LoggerPackageContext)
+
+### [MockBatchPurgerPlugin](/Miscellaneous/MockBatchPurgerPlugin)
+
+### [MockClassWithLogging](/Miscellaneous/MockClassWithLogging)
+
+### [MockDefaultImplementationSObjectHandler](/Miscellaneous/MockDefaultImplementationSObjectHandler)
+
+Test class for LoggerSObjectHandler, the trigger-handler framework used by Nebula Logger. To demonstrate that the framework is standalone/would work with any SObject, these test methods all use mock implementations of the handler, using the `User` SObject
+
 ## Log Management
 
 ### [LogBatchPurgeController](Log-Management/LogBatchPurgeController)

@@ -257,15 +257,35 @@ List&lt;LogEntry\_\_c&gt;
 
 The matching `List&lt;LogEntry__c&gt;` records
 
-#### `getLoggerScenariosById(List<Id> logScenarioIds)` → `List<LoggerScenario__c>`
+#### `getLoggerScenariosById(List<Id> loggerScenarioIds)` → `List<LoggerScenario__c>`
 
-Returns a `List&lt;LoggerScenario__c&gt;` of records with the specified log scenario IDs
+Returns a `List&lt;LoggerScenario__c&gt;` of records with the specified scenario IDs
 
 ##### Parameters
 
-| Param            | Description                                       |
-| ---------------- | ------------------------------------------------- |
-| `logScenarioIds` | The list of `ID` of the `Log__c` records to query |
+| Param               | Description                                       |
+| ------------------- | ------------------------------------------------- |
+| `loggerScenarioIds` | The list of `ID` of the `Log__c` records to query |
+
+##### Return
+
+**Type**
+
+List&lt;LoggerScenario\_\_c&gt;
+
+**Description**
+
+The list of matching `LoggerScenario__c` records
+
+#### `getLoggerScenariosByName(List<String> loggerScenarioNames)` → `List<LoggerScenario__c>`
+
+Returns a `List&lt;LoggerScenario__c&gt;` of records with the specified scenario names
+
+##### Parameters
+
+| Param                 | Description                                           |
+| --------------------- | ----------------------------------------------------- |
+| `loggerScenarioNames` | The list of `String` of the `Log__c` records to query |
 
 ##### Return
 
