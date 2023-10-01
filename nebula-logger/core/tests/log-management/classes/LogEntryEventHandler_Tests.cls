@@ -1159,9 +1159,30 @@ private class LogEntryEventHandler_Tests {
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
-    //TODO implement
-    @isTest
-    static void it_should_save_log_entries_with_specified_tags_when_save_method_is_synchronousdml() {
+    @IsTest
+    static void it_should_save_data_when_saving_with_synchronous_dml() {
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c], 'Test has started under the wrong conditions');
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c], 'Test has started under the wrong conditions');
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntryTag__c], 'Test has started under the wrong conditions');
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerTag__c], 'Test has started under the wrong conditions');
+        String exampleTag = 'Some tag';
+
+        System.Test.startTest();
+        LogEntryEventBuilder builder = Logger.info('some INFO message').addTag(exampleTag);
+        System.Assert.areEqual(1, Logger.getBufferSize());
+        Logger.setSaveMethod(Logger.SaveMethod.SYNCHRONOUS_DML);
+        System.Assert.areEqual(Logger.getSaveMethod(), Logger.SaveMethod.SYNCHRONOUS_DML, 'Save method should be SYNCHRONOUS_DML');
+        Logger.saveLog();
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Test.stopTest();
+
+        System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c], '1 matching Log__c record should have been generated');
+        System.Assert.areEqual(
+            1,
+            [SELECT COUNT() FROM LogEntry__c WHERE LoggingLevel__c = :System.LoggingLevel.INFO.name()],
+            '1 matching LogEntry__c record should have been generated'
+        );
+        System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerTag__c WHERE Name = :exampleTag], '1 matching LoggerTag__c record should have been generated');
     }
 
     private static LogEntryEvent__e createLogEntryEvent() {
