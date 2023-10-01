@@ -91,9 +91,11 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Specifies the name of a queue to assign as the owner of new Log__c records when a valid
-     *              default Log__c owner cannot be determined.
-     *              Controlled by the custom metadata record `LoggerParameter.FallbackRecordOwnerQueue`, or `LoggerAdmin` as the default
+     * @description Specifies the name of a queue to assign as the owner of new records when a valid
+     *              default owner cannot be determined. This is when creating new records in`Log__c`,
+     *              `LoggerScenario__c`, and `LoggerTag__c`.
+     *              Controlled by the custom metadata record `LoggerParameter.FallbackRecordOwnerQueue`,
+     *              or `LoggerAdmin` as the default
      */
     public static final String FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME {
         get {

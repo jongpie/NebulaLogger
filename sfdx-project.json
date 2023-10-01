@@ -15,7 +15,7 @@
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "versionNumber": "4.11.7.NEXT",
             "versionName": "New Logger Admin Queue",
-            "versionDescription": "Added a 'Logger Admin' queue that is used as a fallback owner when new logging records are created for users without a Salesforce license",
+            "versionDescription": "Added a 'Logger Admin' queue that is used as a fallback owner when new logging records are created for user licenses that are problematic as record owners",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

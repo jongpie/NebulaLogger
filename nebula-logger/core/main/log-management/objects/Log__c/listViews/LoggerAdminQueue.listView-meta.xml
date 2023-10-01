@@ -8,7 +8,6 @@
     <columns>TotalLogEntries__c</columns>
     <columns>TotalERRORLogEntries__c</columns>
     <columns>TotalWARNLogEntries__c</columns>
-    <columns>OWNER.ALIAS</columns>
     <columns>Priority__c</columns>
     <columns>Status__c</columns>
     <columns>TransactionScenarioLink__c</columns>

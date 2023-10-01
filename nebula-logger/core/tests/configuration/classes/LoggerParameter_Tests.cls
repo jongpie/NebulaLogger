@@ -80,7 +80,7 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_FALLBACK_RECORD_OWNER_QUEUE_DEVELOPER_NAME() {
+    static void it_should_return_constant_value_for_fallback_record_owner_queue() {
         String mockValue = 'my_queue_api_name';
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'FallbackRecordOwnerQueue', Value__c = mockValue);
         LoggerParameter.setMock(mockParameter);

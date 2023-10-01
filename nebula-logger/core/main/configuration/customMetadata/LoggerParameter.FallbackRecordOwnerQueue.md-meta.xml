@@ -10,7 +10,7 @@
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
-        >Specifies the name of a queue to assign as the owner of new logging records when a valid default owner cannot be automatically determined</value>
+        >Specifies the developer name of a queue to assign as the owner of new logging records when a valid default owner cannot be automatically determined</value>
     </values>
     <values>
         <field>Value__c</field>

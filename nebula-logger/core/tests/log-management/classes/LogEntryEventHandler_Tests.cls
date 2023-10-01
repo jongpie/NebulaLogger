@@ -1200,7 +1200,7 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
         logEntryEvent.UserLoggingLevel__c = System.LoggingLevel.INFO.name();
         logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
-        logEntryEvent.UserType__c = System.UserInfo.getUserType();
+        logEntryEvent.UserType__c = 'Standard';
         logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(
             logEntryEvent,
             Schema.LogEntryEvent__e.EventUuid,
@@ -1219,11 +1219,10 @@ private class LogEntryEventHandler_Tests {
     }
 
     private static User getAutomatedProcessUser() {
-        String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
         return [
             SELECT Id, TimeZoneSidKey
             FROM User
-            WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+            WHERE UserType = 'AutomatedProcess'
         ];
     }
 
