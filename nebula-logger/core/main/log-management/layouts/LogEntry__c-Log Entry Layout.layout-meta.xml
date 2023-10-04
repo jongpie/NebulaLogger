@@ -383,6 +383,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>HttpResponseHeaders__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>HttpResponseBody__c</field>
             </layoutItems>
         </layoutColumns>

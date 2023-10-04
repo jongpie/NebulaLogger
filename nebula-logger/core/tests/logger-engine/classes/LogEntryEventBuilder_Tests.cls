@@ -1109,6 +1109,7 @@ private class LogEntryEventBuilder_Tests {
 
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().HttpResponseHeaders__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseStatus__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseStatusCode__c);
     }
@@ -1128,8 +1129,13 @@ private class LogEntryEventBuilder_Tests {
 
         builder.setHttpResponseDetails(response);
 
+        List<String> formattedHeaders = new List<String>();
+        for (String headerKey : response.getHeaderKeys()) {
+            formattedHeaders.add(headerKey + ': ' + response.getHeader(headerKey));
+        }
         System.Assert.areEqual(response.getBody(), builder.getLogEntryEvent().HttpResponseBody__c);
         System.Assert.areEqual(String.join(response.getHeaderKeys(), '\n'), builder.getLogEntryEvent().HttpResponseHeaderKeys__c);
+        System.Assert.areEqual(String.join(formattedHeaders, '\n'), builder.getLogEntryEvent().HttpResponseHeaders__c);
         System.Assert.areEqual(response.getStatus(), builder.getLogEntryEvent().HttpResponseStatus__c);
         System.Assert.areEqual(response.getStatusCode(), builder.getLogEntryEvent().HttpResponseStatusCode__c);
     }

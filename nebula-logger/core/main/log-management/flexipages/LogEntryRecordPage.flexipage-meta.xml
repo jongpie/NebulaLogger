@@ -602,6 +602,16 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.HttpResponseHeaders__c</fieldItem>
+                <identifier>RecordHttpResponseHeaders_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.HttpResponseBody__c</fieldItem>
                 <identifier>RecordHttpResponseBody_cField1</identifier>
             </fieldInstance>

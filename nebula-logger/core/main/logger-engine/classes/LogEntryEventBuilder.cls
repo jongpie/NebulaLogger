@@ -14,6 +14,7 @@
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final User CURRENT_USER = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+    private static final String HTTP_HEADER_FORMAT = '{0}: {1}';
     private static final String NEW_LINE_DELIMITER = '\n';
 
     private static String cachedOrganizationEnvironmentType;
@@ -583,9 +584,14 @@ global with sharing class LogEntryEventBuilder {
         String cleanedResponseBody = applyDataMaskRules(response.getBody());
         Boolean responseBodyMasked = cleanedResponseBody != response.getBody();
 
+        List<String> headers = new List<String>();
+        for (String headerKey : response.getHeaderKeys()) {
+            headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, response.getHeader(headerKey) }));
+        }
         this.logEntryEvent.HttpResponseBody__c = cleanedResponseBody;
         this.logEntryEvent.HttpResponseBodyMasked__c = responseBodyMasked;
         this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), NEW_LINE_DELIMITER);
+        this.logEntryEvent.HttpResponseHeaders__c = String.join(headers, NEW_LINE_DELIMITER);
         this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
         this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
         return this;

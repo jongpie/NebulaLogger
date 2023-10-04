@@ -277,6 +277,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 HttpResponseBody__c = logEntryEvent.HttpResponseBody__c,
                 HttpResponseBodyMasked__c = logEntryEvent.HttpResponseBodyMasked__c,
                 HttpResponseHeaderKeys__c = logEntryEvent.HttpResponseHeaderKeys__c,
+                HttpResponseHeaders__c = logEntryEvent.HttpResponseHeaders__c,
                 HttpResponseStatus__c = logEntryEvent.HttpResponseStatus__c,
                 HttpResponseStatusCode__c = logEntryEvent.HttpResponseStatusCode__c,
                 LimitsAggregateQueriesMax__c = logEntryEvent.LimitsAggregateQueriesMax__c,
