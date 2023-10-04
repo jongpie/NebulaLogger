@@ -4,8 +4,8 @@
     <caseSensitive>false</caseSensitive>
     <description>Composite key that will hold the value of the TransactionId + TransactionEntryNumber</description>
     <externalId>true</externalId>
-    <label>UniqueId</label>
-    <length>50</length>
+    <label>Unique ID</label>
+    <length>255</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
