@@ -90,6 +90,10 @@ Indicates if Nebula Logger queries `User` data is queried synchronously &amp; po
 
 Indicates if Nebula Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default
 
+#### `STORE_HTTP_RESPONSE_HEADER_VALUES` → `Boolean`
+
+Indicates if Nebula Logger will store the header values when logging an instance of `System.HttpResponse`. Controlled by the custom metadata record `LoggerParameter.StoreHttpResponseHeaderValues`, or `true` as the default. Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of `System.HttpResponse` that is logged - this parameter only controls if the header values are stored.
+
 #### `SYSTEM_DEBUG_MESSAGE_FORMAT` → `String`
 
 The merge-field syntax to use when calling System.debug(). Controlled by the custom metadata record `LoggerParameter.SystebugMessageFormat`, or `{OriginLocation__c}\n{Message__c}` as the default

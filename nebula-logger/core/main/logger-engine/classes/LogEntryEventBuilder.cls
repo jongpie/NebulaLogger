@@ -584,14 +584,18 @@ global with sharing class LogEntryEventBuilder {
         String cleanedResponseBody = applyDataMaskRules(response.getBody());
         Boolean responseBodyMasked = cleanedResponseBody != response.getBody();
 
-        List<String> headers = new List<String>();
-        for (String headerKey : response.getHeaderKeys()) {
-            headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, response.getHeader(headerKey) }));
+        String formattedHeadersString;
+        if (LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES == true) {
+            List<String> headers = new List<String>();
+            for (String headerKey : response.getHeaderKeys()) {
+                headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, response.getHeader(headerKey) }));
+            }
+            formattedHeadersString = String.join(headers, NEW_LINE_DELIMITER);
         }
         this.logEntryEvent.HttpResponseBody__c = cleanedResponseBody;
         this.logEntryEvent.HttpResponseBodyMasked__c = responseBodyMasked;
         this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), NEW_LINE_DELIMITER);
-        this.logEntryEvent.HttpResponseHeaders__c = String.join(headers, NEW_LINE_DELIMITER);
+        this.logEntryEvent.HttpResponseHeaders__c = formattedHeadersString;
         this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
         this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
         return this;
