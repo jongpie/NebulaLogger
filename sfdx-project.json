@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.6.NEXT",
-            "versionName": "New Method Logger.setAsyncContext()",
-            "versionDescription": "Added a method Logger.setAsyncContext + new fields on LogEntryEvent__e and Log__c to track the current transacation's async context",
+            "versionNumber": "4.11.7.NEXT",
+            "versionName": "Bugfix for Tags Not Saving for Save Method SYNCHRONOUS_DML",
+            "versionDescription": "Added a new composite key field, LogEntry__c.UniqueId__c, to fix a bug where tagging data would not save properly when using the save method SYNCHRONOUS_DML",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
