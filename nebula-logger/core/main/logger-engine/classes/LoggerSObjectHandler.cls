@@ -250,6 +250,10 @@ public without sharing abstract class LoggerSObjectHandler {
             sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
         }
 
+        if (System.Test.isRunningTest() == true) {
+            sobjectTypeToHandlerConfiguration.clear();
+        }
+
         return sobjectTypeToHandlerConfiguration;
     }
 

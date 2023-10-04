@@ -1165,6 +1165,7 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c], 'Test has started under the wrong conditions');
         System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntryTag__c], 'Test has started under the wrong conditions');
         System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerTag__c], 'Test has started under the wrong conditions');
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         String exampleTag = 'Some tag';
 
         System.Test.startTest();
