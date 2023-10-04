@@ -148,6 +148,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 // TODO Log__c.ApiVersion__c and LogEntryEvent__e.ApiVersion__c are both deprecated,
                 // in a future release, remove this reference (and delete the fields)
                 ApiVersion__c = logEntryEvent.ApiVersion__c,
+                AsyncContextChildJobId__c = logEntryEvent.AsyncContextChildJobId__c,
+                AsyncContextParentJobId__c = logEntryEvent.AsyncContextParentJobId__c,
+                AsyncContextTriggerId__c = logEntryEvent.AsyncContextTriggerId__c,
+                AsyncContextType__c = logEntryEvent.AsyncContextType__c,
                 ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
                 Locale__c = logEntryEvent.Locale__c,
                 LoggedBy__c = logEntryEvent.LoggedById__c,

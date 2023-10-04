@@ -3,46 +3,6 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentInstanceProperties>
-                    <name>context</name>
-                    <value>NEWS</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>eager</name>
-                    <type>decorator</type>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>height</name>
-                    <type>decorator</type>
-                    <value>480</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>icon</name>
-                    <type>decorator</type>
-                    <value>feed</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <type>decorator</type>
-                    <value>Chatter Feed</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>scrollable</name>
-                    <type>decorator</type>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>width</name>
-                    <type>decorator</type>
-                    <value>520</value>
-                </componentInstanceProperties>
-                <componentName>forceChatter:exposedFeed</componentName>
-                <identifier>forceChatter_exposedFeed</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentName>console:history</componentName>
                 <identifier>console_history</identifier>
             </componentInstance>

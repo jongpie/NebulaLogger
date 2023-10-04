@@ -59,7 +59,7 @@ private class LogBatchPurger_Tests {
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         batchJobInstance.currentSObjectType = Schema.Log__c.SObjectType;
         List<Log__c> nullLogsList = null;
-        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
         System.Exception thrownNullPointerException;
 
         try {
@@ -262,7 +262,7 @@ private class LogBatchPurger_Tests {
         System.Assert.isFalse(ranPluginFinish);
         System.Assert.isNull(pluginConfiguration);
         System.Assert.isNull(batchInput);
-        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
 
         batchJobInstance.start(mockBatchableContext);
 
@@ -315,7 +315,7 @@ private class LogBatchPurger_Tests {
         System.Assert.isNull(batchInput);
         List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
         System.Assert.areNotEqual(0, logsToDelete.size());
-        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
 
         batchJobInstance.execute(mockBatchableContext, logsToDelete);
 
@@ -367,7 +367,7 @@ private class LogBatchPurger_Tests {
         System.Assert.isFalse(ranPluginFinish);
         System.Assert.isNull(pluginConfiguration);
         System.Assert.isNull(batchInput);
-        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
 
         batchJobInstance.finish(mockBatchableContext);
 

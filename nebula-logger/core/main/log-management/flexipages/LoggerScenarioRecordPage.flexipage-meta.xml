@@ -124,20 +124,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>context</name>
-                    <value>RECORD</value>
-                </componentInstanceProperties>
-                <componentName>forceChatter:exposedFeed</componentName>
-                <identifier>forceChatter_exposedFeed</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-75112b31-f7b2-4fb3-9690-338e5b295cb2</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>active</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -181,20 +167,6 @@
                 <identifier>flexipage_tab2</identifier>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-75112b31-f7b2-4fb3-9690-338e5b295cb2</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Standard.Tab.collaborate</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>flexipage_tab</identifier>
-            </componentInstance>
-        </itemInstances>
         <name>maintabs</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -212,7 +184,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Nebula Logger: Log Scenario Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Logger Scenario Record Page</masterLabel>
     <sobjectType>LoggerScenario__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSingleColTemplateDesktop</name>

@@ -65,6 +65,7 @@ jobs:
               if: ${{ github.event_name == 'pull_request' }}
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -149,6 +150,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -210,6 +212,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -283,6 +286,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -290,6 +294,11 @@ jobs:
                   DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
                   DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
                   DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+
+            # TODO remove this after the plugin @salesforce/packaging has been upgraded
+            # to a new version that only looks at package directories
+            - name: 'Temporarily delete problematic metadata'
+              run: rm -rf ./config/experience-cloud
 
             - name: 'Create Beta Managed Package Version'
               run: npm run package:version:create:managed
@@ -323,6 +332,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:
@@ -338,6 +348,11 @@ jobs:
                   npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo
               env:
                   PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+
+            # TODO remove this after the plugin @salesforce/packaging has been upgraded
+            # to a new version that only looks at package directories
+            - name: 'Temporarily delete problematic metadata'
+              run: rm -rf ./config/experience-cloud
 
             - name: 'Create & Install Package Version'
               run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
@@ -391,6 +406,7 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
+                  npx sf version
                   echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
                   npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
               env:

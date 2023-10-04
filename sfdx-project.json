@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.2.NEXT",
-            "versionName": "New Exception Methods for Apex",
-            "versionDescription": "Added new method overloads Logger.exception() that automatically log, save, and throw the provided exception",
+            "versionNumber": "4.11.6.NEXT",
+            "versionName": "New Method Logger.setAsyncContext()",
+            "versionDescription": "Added a method Logger.setAsyncContext + new fields on LogEntryEvent__e and Log__c to track the current transacation's async context",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -150,6 +150,10 @@
         "Nebula Logger - Core@4.11.0-summer-'23-release": "04t5Y0000023SI6QAM",
         "Nebula Logger - Core@4.11.1-throw-exception-in-flow-actions": "04t5Y000001TsX4QAK",
         "Nebula Logger - Core@4.11.2-new-exception-methods-for-apex": "04t5Y000001TsZAQA0",
+        "Nebula Logger - Core@4.11.3-bugfix-for-unhandled-email-exception": "04t5Y000001HZd0QAG",
+        "Nebula Logger - Core@4.11.4-removed-chatter-dependencies": "04t5Y000001HZdPQAW",
+        "Nebula Logger - Core@4.11.5-custom-index-for-log-retention-date": "04t5Y000001HZdZQAW",
+        "Nebula Logger - Core@4.11.6-new-method-logger.setasynccontext()": "04t5Y000001HZfGQAW",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

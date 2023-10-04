@@ -764,7 +764,7 @@ global with sharing class LogEntryEventBuilder {
             this.debugMessage = message;
         }
 
-        // 1 of 2 places in the codebase (except tests) that should use System.debug()
+        // One of few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
         System.debug(this.entryLoggingLevel, this.debugMessage);
     }

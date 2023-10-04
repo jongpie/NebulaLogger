@@ -3,9 +3,48 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.MethodNamingConventions')
+@SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerEmailSender_Tests {
+    private static final Boolean IS_EMAIL_DELIVERABILITY_ENABLED {
+        get {
+            if (IS_EMAIL_DELIVERABILITY_ENABLED == null) {
+                try {
+                    System.Messaging.reserveSingleEmailCapacity(1);
+                    IS_EMAIL_DELIVERABILITY_ENABLED = true;
+                } catch (System.NoAccessException e) {
+                    IS_EMAIL_DELIVERABILITY_ENABLED = false;
+                }
+            }
+            return IS_EMAIL_DELIVERABILITY_ENABLED;
+        }
+        set;
+    }
+
+    @IsTest
+    static void it_should_indicate_email_deliverability_is_based_on_email_deliverability_when_org_limits_not_exceeded() {
+        System.OrgLimit singleEmailOrgLimit = OrgLimits.getMap().get('SingleEmail');
+        System.Assert.isTrue(singleEmailOrgLimit.getValue() < singleEmailOrgLimit.getLimit());
+
+        System.Assert.areEqual(IS_EMAIL_DELIVERABILITY_ENABLED, LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE);
+    }
+
+    @IsTest
+    static void it_should_indicate_email_deliverability_is_not_available_when_org_limits_exceeded() {
+        // No need to fail the test if it's running in an org that does not have email deliverability enabled
+        if (IS_EMAIL_DELIVERABILITY_ENABLED == false) {
+            return;
+        }
+
+        System.OrgLimit singleEmailOrgLimit = OrgLimits.getMap().get('SingleEmail');
+
+        // Reserve all of the available single email capacity, which is the effectively
+        // the same as the email limit being exceeded in the org
+        System.Messaging.reserveSingleEmailCapacity(singleEmailOrgLimit.getLimit() - singleEmailOrgLimit.getValue() - 1);
+
+        System.Assert.isFalse(LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE);
+    }
+
     @IsTest
     static void it_should_filter_apex_error_recipients() {
         ApexEmailNotification emailListNotification = new ApexEmailNotification(Email = 'hello@test.com;fake.person@not.real.com.biz', UserId = null);
@@ -44,7 +83,7 @@ private class LoggerEmailSender_Tests {
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(saveResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain SaveResult error message'
         );
-        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_ENABLED == true) {
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
             System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
             System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
@@ -95,7 +134,7 @@ private class LoggerEmailSender_Tests {
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(upsertResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain UpsertResult error message'
         );
-        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_ENABLED == true) {
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
             System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
             System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');

@@ -30,26 +30,6 @@ AggregateResult
 
 The mock instance of `AggregateResult`
 
-#### `createBatchableContext(String jobId)` → `MockBatchableContext`
-
-Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`. This can be used when testing batch jobs.
-
-##### Parameters
-
-| Param   | Description                                                                             |
-| ------- | --------------------------------------------------------------------------------------- |
-| `jobId` | A string value to use as the batchable job ID - this can be a true ID, or just a string |
-
-##### Return
-
-**Type**
-
-MockBatchableContext
-
-**Description**
-
-The instance of `MockBatchableContext`
-
 #### `createDataBuilder(Schema.SObjectType sobjectType)` → `SObjectTestDataBuilder`
 
 Creates a new builder instance for the specified `SObjectType`, including creating a new `SObject` record. The new `SObject` record is created with any default field values that have been configured on the `SObjectType`.
@@ -570,17 +550,39 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
-###### `MockBatchableContext(String jobId)`
+###### `MockBatchableContext(Id jobId)`
 
-###### `MockBatchableContext(String jobId, Id childJobId)`
+###### `MockBatchableContext(Id jobId, Id childJobId)`
 
 ---
 
 ##### Methods
 
-###### `getChildJobId()` → `String`
+###### `getChildJobId()` → `Id`
 
-###### `getJobId()` → `String`
+###### `getJobId()` → `Id`
+
+---
+
+#### LoggerMockDataCreator.MockFinalizerContext class
+
+---
+
+##### Constructors
+
+###### `MockFinalizerContext(Id asyncApexJobId)`
+
+---
+
+##### Methods
+
+###### `getAsyncApexJobId()` → `Id`
+
+###### `getException()` → `Exception`
+
+###### `getRequestId()` → `Id`
+
+###### `getResult()` → `System.ParentJobResult`
 
 ---
 
@@ -617,6 +619,38 @@ A new copy of the original `SObject` record that has the specified read-only fie
 ###### `setStatus(String statusMessage)` → `MockHttpCallout`
 
 ###### `setStatusCode(Integer statusCode)` → `MockHttpCallout`
+
+---
+
+#### LoggerMockDataCreator.MockQueueableContext class
+
+---
+
+##### Constructors
+
+###### `MockQueueableContext(Id jobId)`
+
+---
+
+##### Methods
+
+###### `getJobId()` → `Id`
+
+---
+
+#### LoggerMockDataCreator.MockSchedulableContext class
+
+---
+
+##### Constructors
+
+###### `MockSchedulableContext(Id triggerId)`
+
+---
+
+##### Methods
+
+###### `getTriggerId()` → `Id`
 
 ---
 
