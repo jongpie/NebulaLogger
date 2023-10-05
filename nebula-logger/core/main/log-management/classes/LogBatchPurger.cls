@@ -52,7 +52,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             Schema.LoggerPlugin__mdt.BatchPurgerExecutionOrder__c
         );
 
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             for (BatchableMethod method : BatchableMethod.values()) {
                 this.methodToExecutedApexPlugins.put(method, new List<LoggerPlugin.Batchable>());
                 this.methodToExecutedFlowPlugins.put(method, new List<Flow.Interview>());
@@ -85,7 +85,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         this.executePlugins(BatchableMethod.START, input, null);
         this.currentSObjectType = input.sobjectType;
 
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
             Logger.info('Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
         }
         Logger.saveLog();
@@ -123,7 +123,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             LoggerDataStore.getDatabase().hardDeleteRecords(scopeRecords);
             Logger.saveLog();
         } catch (System.Exception apexException) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.error('Logger - Error deleting logs', apexException);
             }
             Logger.saveLog();
@@ -147,7 +147,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             nextBatchJobId = Database.executeBatch(this, this.chainedBatchSize);
         }
 
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
             Logger.info(
                 new LogMessage(
                     'Logger - Finished LogBatchPurger job for {0}, {1} total log records processed',
@@ -251,17 +251,17 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
     private void executePlugins(BatchableMethod method, LoggerBatchableContext input, List<SObject> scopeRecords) {
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
-            if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c) == true) {
+            if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
                 this.executeApexPlugin(method, pluginConfiguration, input, scopeRecords);
             }
-            if (String.isNotBlank(pluginConfiguration.BatchPurgerFlowName__c) == true) {
+            if (String.isNotBlank(pluginConfiguration.BatchPurgerFlowName__c)) {
                 this.executeFlowPlugin(method, pluginConfiguration, input, scopeRecords);
             }
         }
     }
 
     private void executeApexPlugin(BatchableMethod method, LoggerPlugin__mdt pluginConfiguration, LoggerBatchableContext input, List<SObject> scopeRecords) {
-        if (String.isBlank(pluginConfiguration.BatchPurgerApexClass__c) == true) {
+        if (String.isBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
             return;
         }
 
@@ -279,18 +279,18 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 }
             }
 
-            if (System.Test.isRunningTest() == true && apexPlugin != null) {
+            if (System.Test.isRunningTest() && apexPlugin != null) {
                 this.methodToExecutedApexPlugins.get(method).add(apexPlugin);
             }
         } catch (TypeException ex) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.warn('Unknown Apex class ' + pluginConfiguration.BatchPurgerApexClass__c + ', skipping plugin execution', pluginConfiguration, ex);
             }
         }
     }
 
     private void executeFlowPlugin(BatchableMethod method, LoggerPlugin__mdt pluginConfiguration, LoggerBatchableContext input, List<SObject> scopeRecords) {
-        if (String.isBlank(pluginConfiguration.BatchPurgerFlowName__c) == true) {
+        if (String.isBlank(pluginConfiguration.BatchPurgerFlowName__c)) {
             return;
         }
 
@@ -305,11 +305,11 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             Flow.Interview flowPlugin = Flow.Interview.createInterview(pluginConfiguration.BatchPurgerFlowName__c, flowInputs);
             flowPlugin.start();
 
-            if (System.Test.isRunningTest() == true && flowPlugin != null) {
+            if (System.Test.isRunningTest() && flowPlugin != null) {
                 this.methodToExecutedFlowPlugins.get(method).add(flowPlugin);
             }
         } catch (TypeException ex) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.warn('Unknown Flow ' + pluginConfiguration.BatchPurgerFlowName__c + ', skipping plugin execution', pluginConfiguration, ex);
             }
         }

@@ -344,7 +344,7 @@ global with sharing class Logger {
         // First, check for User-level settings
         if (loggingUser.Id != null && LoggerSettings__c.getValues(loggingUser.Id) != null) {
             LoggerSettings__c userSettings = LoggerSettings__c.getValues(loggingUser.Id);
-            if (hasValidStartAndEndTimes(userSettings) == true) {
+            if (hasValidStartAndEndTimes(userSettings)) {
                 loggingUserSettings = userSettings;
             }
         }
@@ -352,7 +352,7 @@ global with sharing class Logger {
         // Next, check for Profile-level settings
         if (loggingUserSettings == null && loggingUser.ProfileId != null && LoggerSettings__c.getValues(loggingUser.ProfileId) != null) {
             LoggerSettings__c profileSettings = LoggerSettings__c.getValues(loggingUser.ProfileId);
-            if (hasValidStartAndEndTimes(profileSettings) == true) {
+            if (hasValidStartAndEndTimes(profileSettings)) {
                 loggingUserSettings = profileSettings;
             }
         }
@@ -360,7 +360,7 @@ global with sharing class Logger {
         // Next, use the org defaults (if configured)
         if (loggingUserSettings == null && loggingUser.Id != null && LoggerSettings__c.getOrgDefaults().Id != null) {
             LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-            if (hasValidStartAndEndTimes(orgDefaults) == true) {
+            if (hasValidStartAndEndTimes(orgDefaults)) {
                 loggingUserSettings = orgDefaults;
             }
         }
@@ -2823,7 +2823,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2853,7 +2853,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2883,7 +2883,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2913,7 +2913,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2943,7 +2943,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2977,12 +2977,12 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
-     * @description Adds a new instance of LogEntryEventBuilder to Logger's buffer, if shouldSave == true
+     * @description Adds a new instance of LogEntryEventBuilder to Logger's buffer, when `shouldSave` is `true`
      * @param  loggingLevel The logging level enum value for the new entry
      * @param  logMessage   The instance of LogMessage to use as the entry's message
      * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
@@ -3039,16 +3039,16 @@ global with sharing class Logger {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     global static void setScenario(String scenario) {
-        if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario) == true) {
+        if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario)) {
             transactionScenario = scenario;
             // One of few limited places in the codebase (except tests) that should use System.debug()
             // The rest of the codebase should use a method in Logger.cls
-            if (String.isNotBlank(transactionScenario) == true) {
+            if (String.isNotBlank(transactionScenario)) {
                 System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction Scenario: ' + transactionScenario);
             }
         }
 
-        if (String.isNotBlank(scenario) == true && scenario == currentEntryScenario) {
+        if (String.isNotBlank(scenario) && scenario == currentEntryScenario) {
             return;
         }
 
@@ -3056,37 +3056,37 @@ global with sharing class Logger {
         orderedScenarios.add(scenario);
         // One of few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
-        if (String.isNotBlank(transactionScenario) == true) {
+        if (String.isNotBlank(transactionScenario)) {
             System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Entry Scenario: ' + currentEntryScenario);
         }
         LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
             LoggerSettings__c userSettings = getUserSettings();
-            if (String.isNotBlank(matchingScenarioRule.IsLoggerEnabled__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.IsLoggerEnabled__c)) {
                 userSettings.IsEnabled__c = Boolean.valueOf(matchingScenarioRule.IsLoggerEnabled__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.IsAnonymousModeEnabled__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.IsAnonymousModeEnabled__c)) {
                 userSettings.IsAnonymousModeEnabled__c = Boolean.valueOf(matchingScenarioRule.IsAnonymousModeEnabled__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.IsApexSystemDebugLoggingEnabled__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.IsApexSystemDebugLoggingEnabled__c)) {
                 userSettings.IsApexSystemDebugLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsApexSystemDebugLoggingEnabled__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.IsDataMaskingEnabled__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.IsDataMaskingEnabled__c)) {
                 userSettings.IsDataMaskingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsDataMaskingEnabled__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c)) {
                 userSettings.IsJavaScriptConsoleLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.IsRecordFieldStrippingEnabled__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.IsRecordFieldStrippingEnabled__c)) {
                 userSettings.IsRecordFieldStrippingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsRecordFieldStrippingEnabled__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.IsSavingEnabled__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.IsSavingEnabled__c)) {
                 userSettings.IsSavingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsSavingEnabled__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.SaveMethod__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.SaveMethod__c)) {
                 setSaveMethod(matchingScenarioRule.SaveMethod__c);
             }
-            if (String.isNotBlank(matchingScenarioRule.UserLoggingLevel__c) == true) {
+            if (String.isNotBlank(matchingScenarioRule.UserLoggingLevel__c)) {
                 userSettings.LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
             }
         }
@@ -3098,7 +3098,7 @@ global with sharing class Logger {
      * @param  scenario The name of the scenario to end
      */
     global static void endScenario(String scenario) {
-        if (String.isBlank(scenario) == true || scenario != currentEntryScenario || orderedScenarios.isEmpty() == true) {
+        if (String.isBlank(scenario) || scenario != currentEntryScenario || orderedScenarios.isEmpty()) {
             return;
         }
 
@@ -3109,7 +3109,7 @@ global with sharing class Logger {
             Integer previousScenarioIndex = orderedScenarios.size() - 1;
             previousScenario = orderedScenarios.remove(previousScenarioIndex);
         }
-        if (String.isBlank(previousScenario) == true) {
+        if (String.isBlank(previousScenario)) {
             currentEntryScenario = null;
         }
 
@@ -3173,21 +3173,21 @@ global with sharing class Logger {
             return;
         }
 
-        if (suspendSaving == true) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+        if (suspendSaving) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 finest(getSuspendSavingLogSystemMessage());
             }
 
             return;
         }
 
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
             finest(getSavingLogSystemMessage(saveMethodName));
         }
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
-            if (logEntryEventBuilder.shouldSave() == true) {
+            if (logEntryEventBuilder.shouldSave()) {
                 finalizeEntry(logEntryEventBuilder);
                 logEntryEvents.add(logEntryEventBuilder.getLogEntryEvent());
             }
@@ -3222,7 +3222,7 @@ global with sharing class Logger {
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
-                if (String.isBlank(USER_SESSION_ID) == true) {
+                if (String.isBlank(USER_SESSION_ID)) {
                     saveLog(Logger.SaveMethod.EVENT_BUS);
                 } else {
                     new RestApiSaver().insertRecords(logEntryEvents);
@@ -3252,7 +3252,7 @@ global with sharing class Logger {
         try {
             return System.LoggingLevel.valueOf(loggingLevelName?.trim().toUpperCase());
         } catch (NoSuchElementException ex) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 LogMessage logMessage = new LogMessage(
                     'Logger - Unknown logging level {0} specified, using {1}',
                     loggingLevelName,
@@ -3300,7 +3300,7 @@ global with sharing class Logger {
             StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
             return statusApiResponse;
         } catch (Exception ex) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 finest('Callout to api.status.salesforce.com failed').setExceptionDetails(ex);
             }
             return null;
@@ -3342,7 +3342,7 @@ global with sharing class Logger {
 
     private static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
-        if (logEntryEventBuilder.shouldSave() == true) {
+        if (logEntryEventBuilder.shouldSave()) {
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
             logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.EntryScenario__c = currentEntryScenario;
@@ -3390,7 +3390,7 @@ global with sharing class Logger {
         // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
         // skip calling System.Request.getCurrent() if there is no user session.
         // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
-        if (String.isNotBlank(USER_SESSION_ID) == true) {
+        if (String.isNotBlank(USER_SESSION_ID)) {
             return System.Request.getCurrent().getQuiddity();
         } else {
             return null;
@@ -3403,7 +3403,7 @@ global with sharing class Logger {
     }
 
     private static SaveMethod getSaveMethod(String saveMethodName) {
-        if (SAVE_METHOD_NAME_TO_SAVE_METHOD.isEmpty() == true) {
+        if (SAVE_METHOD_NAME_TO_SAVE_METHOD.isEmpty()) {
             for (SaveMethod method : SaveMethod.values()) {
                 SAVE_METHOD_NAME_TO_SAVE_METHOD.put(method.name(), method);
             }

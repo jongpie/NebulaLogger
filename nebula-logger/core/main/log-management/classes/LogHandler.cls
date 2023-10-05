@@ -88,7 +88,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         for (Log__c log : this.logs) {
             String loggingUserDefaultLogOwner = getLoggingUserSettings(log).DefaultLogOwner__c;
 
-            if (String.isBlank(loggingUserDefaultLogOwner) == true) {
+            if (String.isBlank(loggingUserDefaultLogOwner)) {
                 continue;
             } else if (loggingUserDefaultLogOwner instanceof Id) {
                 log.OwnerId = Id.valueOf(loggingUserDefaultLogOwner);
@@ -98,7 +98,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (logsToUpdate.isEmpty() == true) {
+        if (logsToUpdate.isEmpty()) {
             return;
         }
 
@@ -118,12 +118,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     private void setParentLog() {
         List<String> parentLogTransactionIds = new List<String>();
         for (Log__c log : this.logs) {
-            if (String.isNotBlank(log.ParentLogTransactionId__c) == true) {
+            if (String.isNotBlank(log.ParentLogTransactionId__c)) {
                 parentLogTransactionIds.add(log.ParentLogTransactionId__c);
             }
         }
 
-        if (parentLogTransactionIds.isEmpty() == true) {
+        if (parentLogTransactionIds.isEmpty()) {
             return;
         }
 
@@ -133,7 +133,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
 
         for (Log__c log : this.logs) {
-            if (String.isNotBlank(log.ParentLogTransactionId__c) == true) {
+            if (String.isNotBlank(log.ParentLogTransactionId__c)) {
                 log.ParentLog__c = parentLogTransactionIdToRecordId.get(log.ParentLogTransactionId__c);
             }
         }
@@ -232,12 +232,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
         Map<String, LogStatus__mdt> logStatusNameToStatus = new Map<String, LogStatus__mdt>();
         for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
-            if (logStatus.IsActive__c == true) {
+            if (logStatus.IsActive__c) {
                 logStatusNameToStatus.put(logStatus.MasterLabel, logStatus);
             }
         }
 
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             logStatusNameToStatus.clear();
             logStatusNameToStatus.putAll(MOCK_LOG_STATUS_TO_STATUS);
         }
@@ -255,7 +255,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
         Map<Id, LoggerScenario__c> loggerScenariosById = new Map<Id, LoggerScenario__c>();
 
-        if (loggerScenarioIds.isEmpty() == true) {
+        if (loggerScenarioIds.isEmpty()) {
             return loggerScenariosById;
         }
 

@@ -49,7 +49,7 @@ global inherited sharing class FlowRecordLogEntry {
      * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
      */
     @InvocableVariable(required=false label='(Optional) Throw FlowException for Fault Error Message')
-    global Boolean shouldThrowFaultMessageException;
+    global Boolean shouldThrowFaultMessageException = false;
 
     /**
      * @description Optionally choose to save any pending log entries

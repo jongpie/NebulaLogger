@@ -1197,7 +1197,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_set_stack_trace_for_new_builder_instance_when_disabled_via_logger_parameter() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1215,7 +1215,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_set_stack_trace_for_parseStackTrace_method_when_disabled_via_logger_parameter() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1234,7 +1234,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_stack_trace_and_origin_location_for_class_constructor_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1258,7 +1258,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_stack_trace_and_origin_location_for_method_stack_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1431,7 +1431,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 

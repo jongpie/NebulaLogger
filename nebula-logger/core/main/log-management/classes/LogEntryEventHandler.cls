@@ -72,7 +72,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             // Apply logger scenario rules
             String platformEventStorageLocation = loggingUserSettings.DefaultPlatformEventStorageLocation__c;
-            if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
+            if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c)) {
                 LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
                 if (scenarioRule.IsPlatformEventStorageLocationEnabled__c == trueString) {
                     platformEventStorageLocation = scenarioRule.PlatformEventStorageLocation__c;
@@ -82,7 +82,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             if (platformEventStorageLocation == DEFAULT_STORAGE_LOCATION_NAME) {
                 // Then filter further based on storage logging level
                 String userStorageLoggingLevelName = loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c;
-                if (String.isBlank(userStorageLoggingLevelName) == true) {
+                if (String.isBlank(userStorageLoggingLevelName)) {
                     userStorageLoggingLevelName = loggingUserSettings.LoggingLevel__c;
                 }
                 System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(userStorageLoggingLevelName);
@@ -104,9 +104,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             for (Schema.SObjectField scenarioField : scenarioFields) {
                 String scenario = (String) logEntryEvent.get(scenarioField);
 
-                if (String.isBlank(scenario) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
+                if (String.isBlank(scenario) || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
                     continue;
-                } else if (LoggerParameter.NORMALIZE_SCENARIO_DATA == true) {
+                } else if (LoggerParameter.NORMALIZE_SCENARIO_DATA) {
                     LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
                     loggerScenario.setOptions(DML_OPTIONS);
                     SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
@@ -136,7 +136,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
             // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
-            if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
+            if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c)) {
                 continue;
             }
 
@@ -209,10 +209,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 log.TransactionScenarioName__c = logEntryEvent.TransactionScenario__c;
             }
 
-            if (
-                String.isNotBlank(logEntryEvent.TransactionScenario__c) == true &&
-                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c) == true
-            ) {
+            if (String.isNotBlank(logEntryEvent.TransactionScenario__c) && SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c)) {
                 log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).Id;
             }
 
@@ -234,7 +231,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         String apexClassName = LogEntryEventHandler.class.getName();
         List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
         if (
-            LoggerParameter.CALL_STATUS_API == true &&
+            LoggerParameter.CALL_STATUS_API &&
             recentLogWithApiReleaseDetails == null &&
             LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, null, jobStatuses) == 0
         ) {
@@ -248,7 +245,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             // Use the string value of timestamp to set the actual datetime field as a workaround
             // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
             Datetime timestamp = logEntryEvent.Timestamp__c;
-            if (String.isNotBlank(logEntryEvent.TimestampString__c) == true) {
+            if (String.isNotBlank(logEntryEvent.TimestampString__c)) {
                 timestamp = Datetime.valueOf(Long.valueOf(logEntryEvent.TimestampString__c));
             }
 
@@ -338,15 +335,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UniqueId__c = logEntryEvent.TransactionId__c + '-' + logEntryEvent.TransactionEntryNumber__c
             );
 
-            if (String.isNotBlank(logEntryEvent.EntryScenario__c) == true) {
-                if (LoggerParameter.NORMALIZE_SCENARIO_DATA == true && SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true) {
+            if (String.isNotBlank(logEntryEvent.EntryScenario__c)) {
+                if (LoggerParameter.NORMALIZE_SCENARIO_DATA && SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c)) {
                     logEntry.EntryScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.EntryScenario__c).Id;
                 } else {
                     logEntry.EntryScenarioName__c = logEntryEvent.EntryScenario__c;
                 }
             }
 
-            if (String.isNotBlank(logEntryEvent.Tags__c) == true && LoggerParameter.NORMALIZE_TAG_DATA == false) {
+            if (String.isNotBlank(logEntryEvent.Tags__c) && LoggerParameter.NORMALIZE_TAG_DATA == false) {
                 logEntry.Tags__c = logEntryEvent.Tags__c;
             }
 
@@ -365,17 +362,17 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void appendRuleBasedTags() {
-        if (LoggerParameter.ENABLE_TAGGING == false || TAG_ASSIGNMENT_RULES.isEmpty() == true) {
+        if (LoggerParameter.ENABLE_TAGGING == false || TAG_ASSIGNMENT_RULES.isEmpty()) {
             return;
         }
 
         for (LogEntry__c logEntry : this.logEntries) {
             for (LogEntryTagRule__mdt rule : TAG_ASSIGNMENT_RULES) {
-                if (isRuleCriteriaMet(logEntry, rule) == true) {
+                if (isRuleCriteriaMet(logEntry, rule)) {
                     List<String> configuredTagNames = getTagNames(rule.Tags__c);
                     this.tagNames.addAll(configuredTagNames);
                     List<String> logEntryTags = new List<String>();
-                    if (this.logEntryEventCompositeKeyToTagNames.containsKey(logEntry.UniqueId__c) == true) {
+                    if (this.logEntryEventCompositeKeyToTagNames.containsKey(logEntry.UniqueId__c)) {
                         logEntryTags = this.logEntryEventCompositeKeyToTagNames.get(logEntry.UniqueId__c);
                     }
 
@@ -392,12 +389,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLogEntryTags() {
-        if (LoggerParameter.ENABLE_TAGGING == false || LoggerParameter.NORMALIZE_TAG_DATA == false || this.tagNames.isEmpty() == true) {
+        if (LoggerParameter.ENABLE_TAGGING == false || LoggerParameter.NORMALIZE_TAG_DATA == false || this.tagNames.isEmpty()) {
             return;
         }
 
         // Orgs can be configured to either use LoggerTag__c & LogEntryTag__c (default), or use Topic & TopicAssignment
-        Schema.SObjectType tagSObjectType = LoggerParameter.USE_TOPICS_FOR_TAGS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
+        Schema.SObjectType tagSObjectType = LoggerParameter.USE_TOPICS_FOR_TAGS ? Topic.SObjectType : LoggerTag__c.SObjectType;
         Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
         this.tagNames.addAll(tagNameToId.keySet());
 
@@ -412,7 +409,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             List<String> logEntryTagNames = this.logEntryEventCompositeKeyToTagNames.get(logEntry.UniqueId__c);
 
             for (String tagName : logEntryTagNames) {
-                if (LoggerParameter.USE_TOPICS_FOR_TAGS == true) {
+                if (LoggerParameter.USE_TOPICS_FOR_TAGS) {
                     // Add TopicAssignment records for both the LogEntry__c & the parent Log__c
                     tagAssignmentSObjectType = Schema.TopicAssignment.SObjectType;
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
@@ -448,15 +445,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Id logOwnerId = logEntryEvent.LoggedById__c;
 
         LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
-        if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
+        if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) || loggingUserSettings.IsAnonymousModeEnabled__c) {
             logOwnerId = System.UserInfo.getUserId();
         }
 
-        if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
+        if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c)) {
             LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
             if (
                 scenarioRule.IsLogAssignmentEnabled__c == String.valueOf(true) &&
-                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c) == true
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c)
             ) {
                 logOwnerId = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).OwnerId;
             }
@@ -548,7 +545,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         List<String> cleanedTagNames = new List<String>();
 
         for (String tagName : tagsString.split(NEW_LINE_DELIMITER)) {
-            if (String.isNotBlank(tagName) == true) {
+            if (String.isNotBlank(tagName)) {
                 cleanedTagNames.add(tagName.trim());
             }
         }
@@ -558,7 +555,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
         List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
             tagAssignmentRules.clear();
         }
@@ -566,7 +563,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static void setQueriedAuthSessionDetails(List<Log__c> logs) {
-        if (LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == true) {
+        if (LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY) {
             return;
         }
 
@@ -601,7 +598,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static void setQueriedNetworkDetails(List<Log__c> logs) {
-        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == true) {
+        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY) {
             return;
         }
 
@@ -612,7 +609,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (networkIds.isEmpty() == true) {
+        if (networkIds.isEmpty()) {
             return;
         }
 
@@ -636,7 +633,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static void setQueriedOrganizationDetails(List<Log__c> logs) {
-        if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == true) {
+        if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY) {
             return;
         }
 
@@ -655,7 +652,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static void setQueriedUserDetails(List<Log__c> logs) {
-        if (LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY == true) {
+        if (LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY) {
             return;
         }
 

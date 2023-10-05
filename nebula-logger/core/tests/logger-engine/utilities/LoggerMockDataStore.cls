@@ -41,7 +41,7 @@ public without sharing class LoggerMockDataStore {
 
         public override List<Database.SaveResult> insertRecords(List<SObject> records) {
             List<Database.SaveResult> mockSaveResults = new List<Database.SaveResult>();
-            if (records == null || records.isEmpty() == true) {
+            if (records == null || records.isEmpty()) {
                 return mockSaveResults;
             }
 
@@ -99,7 +99,7 @@ public without sharing class LoggerMockDataStore {
         }
 
         public void deliver() {
-            if (this.publishedPlatformEvents.isEmpty() == true) {
+            if (this.publishedPlatformEvents.isEmpty()) {
                 return;
             }
 
@@ -161,7 +161,7 @@ public without sharing class LoggerMockDataStore {
         validateRequiredFieldsArePopulated(record);
         validateStringFieldsAreNotTooLong(record);
 
-        if (recordIsValid == true && populateMockId == true) {
+        if (recordIsValid && populateMockId) {
             record.Id = LoggerMockDataCreator.createId(record.getSObjectType());
         }
         return LoggerMockDataCreator.createDatabaseSaveResult(recordIsValid, record.Id);
@@ -188,7 +188,7 @@ public without sharing class LoggerMockDataStore {
         Schema.SObjectType sobjectType = record.getSObjectType();
         for (Schema.SObjectField stringField : SOBJECT_TYPE_TO_STRING_FIELDS.get(sobjectType)) {
             Boolean isFieldValueTooLong = ((String) record.get(stringField))?.length() > stringField.getDescribe().getLength();
-            if (isFieldValueTooLong == true) {
+            if (isFieldValueTooLong) {
                 SObjectException ex = new SObjectException();
                 ex.setMessage('The field value for ' + stringField + ' is too long: ' + record.get(stringField));
                 throw ex;
@@ -197,7 +197,7 @@ public without sharing class LoggerMockDataStore {
     }
 
     private static void loadFields(Schema.SObjectType sobjectType) {
-        if (SOBJECT_TYPE_TO_ALL_FIELDS.containsKey(sobjectType) == true && SOBJECT_TYPE_TO_REQUIRED_FIELDS.containsKey(sobjectType) == true) {
+        if (SOBJECT_TYPE_TO_ALL_FIELDS.containsKey(sobjectType) && SOBJECT_TYPE_TO_REQUIRED_FIELDS.containsKey(sobjectType)) {
             return;
         }
 

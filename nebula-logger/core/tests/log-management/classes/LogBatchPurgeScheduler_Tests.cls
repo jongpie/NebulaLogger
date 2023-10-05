@@ -66,7 +66,7 @@ private class LogBatchPurgeScheduler_Tests {
         Boolean foundExpectedMessage = false;
         String expectedMessage = new LogMessage(LogBatchPurgeScheduler.SCHEDULER_SYSTEM_MESSAGE_TEMPLATE, (System.SchedulableContext) null).getMessage();
         for (LogEntry__c logEntry : logEntries) {
-            if (logEntry.Message__c.contains(expectedMessage) == true) {
+            if (logEntry.Message__c.contains(expectedMessage)) {
                 foundExpectedMessage = true;
             }
         }

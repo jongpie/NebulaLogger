@@ -61,7 +61,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         Map<Id, Log__c> logIdToLog = new Map<Id, Log__c>();
         List<LogRetentionFilter.FilterResult> filterResults = this.runFilters(logEntries);
         for (LogRetentionFilter.FilterResult filterResult : filterResults) {
-            if (filterResult.matchesFilter() == true) {
+            if (filterResult.matchesFilter()) {
                 Id logId = (Id) filterResult.getRecord().get(Schema.LogEntry__c.Log__c);
                 Log__c log = logIdToLog.get(logId);
                 if (log == null) {
@@ -95,7 +95,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
             queriedRulesByDeveloperName.put(rule.DeveloperName, rule);
             queriedConditionsByRuleDeveloperName.put(rule.DeveloperName, rule.LogRetentionRuleConditions__r);
 
-            if (System.Test.isRunningTest() == true) {
+            if (System.Test.isRunningTest()) {
                 queriedRulesByDeveloperName.clear();
                 queriedConditionsByRuleDeveloperName.clear();
             }

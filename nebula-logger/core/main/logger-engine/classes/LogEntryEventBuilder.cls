@@ -147,7 +147,7 @@ global with sharing class LogEntryEventBuilder {
      */
     global LogEntryEventBuilder setMessage(String message) {
         // To help with debugging unit tests, always run System.debug statement in a test context
-        if ((this.shouldSave() == true || System.Test.isRunningTest() == true) && this.logEntryEvent != null) {
+        if ((this.shouldSave() || System.Test.isRunningTest()) && this.logEntryEvent != null) {
             String cleanedMessage = applyDataMaskRules(message);
             Boolean messageMasked = cleanedMessage != message;
             String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
@@ -176,7 +176,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
 
         // Stack traces are not returned for managed packages
-        if (isValidStackTrace(apexException.getStackTraceString()) == true) {
+        if (isValidStackTrace(apexException.getStackTraceString())) {
             this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
         }
 
@@ -585,7 +585,7 @@ global with sharing class LogEntryEventBuilder {
         Boolean responseBodyMasked = cleanedResponseBody != response.getBody();
 
         String formattedHeadersString;
-        if (LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES == true) {
+        if (LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES) {
             List<String> headers = new List<String>();
             for (String headerKey : response.getHeaderKeys()) {
                 headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, response.getHeader(headerKey) }));
@@ -622,7 +622,7 @@ global with sharing class LogEntryEventBuilder {
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTags(List<String> tags) {
-        if (tags == null || tags.isEmpty() == true) {
+        if (tags == null || tags.isEmpty()) {
             return this;
         }
 
@@ -789,7 +789,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setTagsDetails() {
-        if (this.tags.isEmpty() == true || this.tagDetailsAreSet == true) {
+        if (this.tags.isEmpty() || this.tagDetailsAreSet) {
             return;
         }
 
@@ -848,7 +848,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
-        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false || String.isBlank(networkId) == true) {
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false || String.isBlank(networkId)) {
             return;
         }
 
@@ -919,12 +919,12 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String applyDataMaskRules(String dataInput) {
-        if (this.userSettings.IsDataMaskingEnabled__c == false || String.isBlank(dataInput) == true) {
+        if (this.userSettings.IsDataMaskingEnabled__c == false || String.isBlank(dataInput)) {
             return dataInput;
         }
 
         for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
-            if (dataMaskRule.IsEnabled__c == true) {
+            if (dataMaskRule.IsEnabled__c) {
                 dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
             }
         }
@@ -980,9 +980,9 @@ global with sharing class LogEntryEventBuilder {
         String cachedOrganizationEnvironmentType;
         if (cachedOrganization == null) {
             cachedOrganizationEnvironmentType = '';
-        } else if (cachedOrganization.IsSandbox == true && cachedOrganization.TrialExpirationDate != null) {
+        } else if (cachedOrganization.IsSandbox && cachedOrganization.TrialExpirationDate != null) {
             cachedOrganizationEnvironmentType = 'Scratch Org';
-        } else if (cachedOrganization.IsSandbox == true) {
+        } else if (cachedOrganization.IsSandbox) {
             cachedOrganizationEnvironmentType = 'Sandbox';
         } else {
             cachedOrganizationEnvironmentType = 'Production';
@@ -1080,7 +1080,7 @@ global with sharing class LogEntryEventBuilder {
     } */
 
     private static Boolean isValidStackTrace(String stackTraceString) {
-        if (String.isBlank(stackTraceString) == true || stackTraceString == '()' || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+        if (String.isBlank(stackTraceString) || stackTraceString == '()' || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
             return false;
         }
 
@@ -1090,11 +1090,11 @@ global with sharing class LogEntryEventBuilder {
     private static Map<String, LogEntryDataMaskRule__mdt> loadDataMaskRules() {
         Map<String, LogEntryDataMaskRule__mdt> activeDataMaskRules = new Map<String, LogEntryDataMaskRule__mdt>();
         for (LogEntryDataMaskRule__mdt dataMaskRule : LogEntryDataMaskRule__mdt.getAll().values()) {
-            if (dataMaskRule.IsEnabled__c == true) {
+            if (dataMaskRule.IsEnabled__c) {
                 activeDataMaskRules.put(dataMaskRule.DeveloperName, dataMaskRule);
             }
         }
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             // Tests shouldn't rely on the actual CMDT rules in the org
             // Clear the org's loaded records during tests, and mock via setMockDataMaskRule()
             activeDataMaskRules.clear();
@@ -1103,7 +1103,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static List<SObject> stripInaccessible(List<SObject> records) {
-        if (records == null || records.isEmpty() == true || records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType) {
+        if (records == null || records.isEmpty() || records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType) {
             return records;
         }
 

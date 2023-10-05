@@ -43,7 +43,7 @@ The list of matching `LoggerPlugin_t` records
 
 #### `getPluginConfigurations()` → `List<LoggerPlugin_t>`
 
-Returns all enabled `LoggerPlugin_t` records, based on `IsEnabled__c == true`
+Returns all enabled `LoggerPlugin_t` records (where `IsEnabled__c` is set to `true`)
 
 ##### Return
 

@@ -68,7 +68,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (apexClassNames.isEmpty() == true) {
+        if (apexClassNames.isEmpty()) {
             return;
         }
 
@@ -77,7 +77,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }
 
-        if (classNameToApexClass.isEmpty() == true) {
+        if (classNameToApexClass.isEmpty()) {
             return;
         }
 
@@ -125,7 +125,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (flowApiNames.isEmpty() == true) {
+        if (flowApiNames.isEmpty()) {
             return;
         }
 
@@ -134,7 +134,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
         }
 
-        if (flowApiNameToDefinition.isEmpty() == true) {
+        if (flowApiNameToDefinition.isEmpty()) {
             return;
         }
 
@@ -168,7 +168,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (flowActiveVersionIds.isEmpty() == true) {
+        if (flowActiveVersionIds.isEmpty()) {
             return;
         }
 
@@ -180,7 +180,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (flowDurableIdToFlowVersionView.isEmpty() == true) {
+        if (flowDurableIdToFlowVersionView.isEmpty()) {
             return;
         }
 
@@ -272,7 +272,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
-        if (SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.containsKey(sobjectType) == true) {
+        if (SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.containsKey(sobjectType)) {
             return SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.get(sobjectType);
         }
 
@@ -316,7 +316,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
             Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
 
-            if (fieldDescribe.isNameField() == true) {
+            if (fieldDescribe.isNameField()) {
                 displayFieldApiName = fieldDescribe.getName();
                 break;
             } else {
@@ -328,7 +328,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         // For example, EmailMessage doesn't have a true display field, but it has a 'Subject' field. If one (and only one)
         // of the educated guess-fields exists on the object - and the object does not have a display field - then use the
         // educated guess-field as the fallback for the display field.
-        if (String.isBlank(displayFieldApiName) == true && fallbackFieldApiNames.size() == 1) {
+        if (String.isBlank(displayFieldApiName) && fallbackFieldApiNames.size() == 1) {
             displayFieldApiName = fallbackFieldApiNames.get(0);
         }
 

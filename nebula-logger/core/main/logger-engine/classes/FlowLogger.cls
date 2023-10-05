@@ -56,7 +56,7 @@ public inherited sharing class FlowLogger {
         /**
          * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
          */
-        public Boolean shouldThrowFaultMessageException;
+        public Boolean shouldThrowFaultMessageException = false;
 
         /**
          * @description Optionally specify the scenario to use for the current transaction
@@ -80,7 +80,7 @@ public inherited sharing class FlowLogger {
         public Boolean saveLog = false;
 
         /**
-         * @description String name of the instance of Logger.SaveMethod to use when 'Save Log' == true
+         * @description String name of the instance of Logger.SaveMethod to use when 'Save Log' is set to `true`
          */
         public String saveMethodName;
 
@@ -155,27 +155,27 @@ public inherited sharing class FlowLogger {
         for (LogEntry flowEntry : flowEntries) {
             flowEntry.addToLoggerBuffer();
 
-            if (flowEntry.saveLog == true) {
+            if (flowEntry.saveLog) {
                 saveLog = flowEntry.saveLog;
-                if (String.isNotBlank(flowEntry.saveMethodName) == true) {
+                if (String.isNotBlank(flowEntry.saveMethodName)) {
                     saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
                 }
             }
-            if (String.isNotBlank(flowEntry.faultMessage) == true) {
+            if (String.isNotBlank(flowEntry.faultMessage)) {
                 faultMessage = flowEntry.faultMessage;
             }
-            if (flowEntry.shouldThrowFaultMessageException == true) {
+            if (flowEntry.shouldThrowFaultMessageException) {
                 shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
             }
         }
 
-        if (saveLog == true) {
+        if (saveLog) {
             Logger.saveLog(saveMethod);
         }
 
         // Here we throw an exception so we stop synchronous database updates from happening,
         // avoiding inconsistencies in the data
-        if (shouldThrowFaultMessageException == true) {
+        if (shouldThrowFaultMessageException) {
             Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
             throw new System.FlowException(faultMessage);
         }

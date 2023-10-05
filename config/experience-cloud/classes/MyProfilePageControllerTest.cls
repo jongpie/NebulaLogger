@@ -19,7 +19,7 @@ public with sharing class MyProfilePageControllerTest {
             // System.Assert.areEqual(currentUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
             // System.Assert.isTrue(controller.getIsEdit() == false, 'isEdit should default to false');
             controller.edit();
-            // System.Assert.isTrue(controller.getIsEdit() == true);
+            // System.Assert.isTrue(controller.getIsEdit());
             controller.cancel();
             // System.Assert.isTrue(controller.getIsEdit() == false);
 
@@ -41,7 +41,7 @@ public with sharing class MyProfilePageControllerTest {
                 // System.Assert.areEqual(existingPortalUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
                 // System.Assert.isTrue(controller.getIsEdit() == false, 'isEdit should default to false');
                 controller.edit();
-                // System.Assert.isTrue(controller.getIsEdit() == true);
+                // System.Assert.isTrue(controller.getIsEdit());
 
                 controller.cancel();
                 // System.Assert.isTrue(controller.getIsEdit() == false);

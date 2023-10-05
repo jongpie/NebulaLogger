@@ -99,7 +99,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
             LOG_ENTRY_ARCHIVES_TO_SAVE.add(new LogEntryArchiveBuilder(logEntryEvent).getLogEntryArchive());
         }
 
-        if (LOG_ENTRY_ARCHIVES_TO_SAVE.isEmpty() == true) {
+        if (LOG_ENTRY_ARCHIVES_TO_SAVE.isEmpty()) {
             return;
         }
 
@@ -193,7 +193,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     }
 
     private void saveLogEntryArchives(String saveMethodName) {
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             lastSaveMethodUsed = saveMethodName;
         }
 

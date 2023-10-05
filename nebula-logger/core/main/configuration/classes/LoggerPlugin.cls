@@ -30,7 +30,7 @@ public without sharing class LoggerPlugin {
     }
 
     /**
-     * @description Returns all enabled `LoggerPlugin__mdt` records, based on `IsEnabled__c == true`
+     * @description Returns all enabled `LoggerPlugin__mdt` records (where `IsEnabled__c` is set to `true`)
      * @return      The list of enabled `LoggerPlugin__mdt` records
      */
     public static List<LoggerPlugin__mdt> getPluginConfigurations() {
@@ -54,7 +54,7 @@ public without sharing class LoggerPlugin {
                     break;
                 }
             }
-            if (matchesFilterFields == true) {
+            if (matchesFilterFields) {
                 matchingPluginConfigurationSorters.add(
                     new PluginConfigurationSorter(pluginConfiguration).sortBy(sortByField).sortBy(Schema.LoggerPlugin__mdt.DeveloperName)
                 );
@@ -105,11 +105,11 @@ public without sharing class LoggerPlugin {
     private static Map<String, LoggerPlugin__mdt> loadEnabledRecords() {
         Map<String, LoggerPlugin__mdt> pluginDeveloperNameToConfiguration = new Map<String, LoggerPlugin__mdt>();
         for (LoggerPlugin__mdt pluginConfiguration : LoggerPlugin__mdt.getAll().values()) {
-            if (pluginConfiguration.IsEnabled__c == true) {
+            if (pluginConfiguration.IsEnabled__c) {
                 pluginDeveloperNameToConfiguration.put(pluginConfiguration.DeveloperName, pluginConfiguration);
             }
         }
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             pluginDeveloperNameToConfiguration.clear();
         }
         return pluginDeveloperNameToConfiguration;
@@ -117,10 +117,10 @@ public without sharing class LoggerPlugin {
 
     @TestVisible
     private static void setMock(LoggerPlugin__mdt pluginConfiguration) {
-        if (String.isBlank(pluginConfiguration.DeveloperName) == true) {
+        if (String.isBlank(pluginConfiguration.DeveloperName)) {
             throw new System.IllegalArgumentException('DeveloperName is required on mock LoggerPlugin__mdt: \n' + JSON.serializePretty(pluginConfiguration));
         }
-        if (pluginConfiguration.IsEnabled__c == true) {
+        if (pluginConfiguration.IsEnabled__c) {
             DEVELOPER_NAME_TO_RECORD.put(pluginConfiguration.DeveloperName, pluginConfiguration);
         }
     }
@@ -154,7 +154,7 @@ public without sharing class LoggerPlugin {
                 // Now, the actual comparisons
                 if (this.pluginConfiguration.get(field) == that.pluginConfiguration.get(field)) {
                     continue;
-                } else if (this.pluginConfiguration.get(field) == null && that.pluginConfiguration.get(field) != null || thisIsGreaterThanThat == true) {
+                } else if (this.pluginConfiguration.get(field) == null && that.pluginConfiguration.get(field) != null || thisIsGreaterThanThat) {
                     return 1;
                 } else {
                     return -1;

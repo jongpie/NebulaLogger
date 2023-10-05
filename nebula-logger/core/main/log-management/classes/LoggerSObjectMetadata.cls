@@ -16,7 +16,7 @@ public without sharing class LoggerSObjectMetadata {
     @AuraEnabled(cacheable=true)
     public static SObjectSchema getSchemaForName(String sobjectApiName) {
         String namespacePrefix = getNamespacePrefix();
-        String qualifiedApiName = String.isBlank(namespacePrefix) == true ? sobjectApiName : namespacePrefix + '__' + sobjectApiName;
+        String qualifiedApiName = String.isBlank(namespacePrefix) ? sobjectApiName : namespacePrefix + '__' + sobjectApiName;
         System.Type apexType = System.Type.forName(qualifiedApiName) != null ? System.Type.forName(qualifiedApiName) : System.Type.forName(sobjectApiName);
         Schema.SObjectType sobjectType = ((SObject) apexType.newInstance()).getSObjectType();
         return getSchema(sobjectType);

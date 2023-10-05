@@ -647,7 +647,7 @@ public class LoggerParameter {
     public static List<LoggerParameter__mdt> matchOnPrefix(String developerNamePrefix) {
         List<LoggerParameter__mdt> matchingParameters = new List<LoggerParameter__mdt>();
         for (String parameterDeveloperName : DEVELOPER_NAME_TO_RECORD.keySet()) {
-            if (parameterDeveloperName.startsWith(developerNamePrefix) == true) {
+            if (parameterDeveloperName.startsWith(developerNamePrefix)) {
                 matchingParameters.add(DEVELOPER_NAME_TO_RECORD.get(parameterDeveloperName));
             }
         }
@@ -656,13 +656,13 @@ public class LoggerParameter {
 
     private static Map<String, LoggerParameter__mdt> loadRecords() {
         Map<String, LoggerParameter__mdt> parameters = LoggerParameter__mdt.getAll().clone();
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             // Keep a copy of any records that *should* be loaded during tests
             // Currently, only the record `SystemDebugMessageFormat` has a use case for this functionality,
             // but others can be easily added if other use cases are found
             Map<String, LoggerParameter__mdt> parametersToLoadDuringTests = new Map<String, LoggerParameter__mdt>();
             for (String testContextParameterName : PARAMETERS_TO_LOAD_DURING_TESTS) {
-                if (parameters.containsKey(testContextParameterName) == true) {
+                if (parameters.containsKey(testContextParameterName)) {
                     parametersToLoadDuringTests.put(testContextParameterName, parameters.get(testContextParameterName));
                 }
             }
@@ -674,7 +674,7 @@ public class LoggerParameter {
 
     @TestVisible
     private static void setMock(LoggerParameter__mdt parameter) {
-        if (String.isBlank(parameter.DeveloperName) == true) {
+        if (String.isBlank(parameter.DeveloperName)) {
             throw new System.IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + JSON.serializePretty(parameter));
         }
 

@@ -188,7 +188,7 @@ private class LoggerCache_Tests_PlatformCache {
         System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
-        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
+        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable()) {
             System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
             System.Assert.areEqual(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
@@ -209,7 +209,7 @@ private class LoggerCache_Tests_PlatformCache {
         System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
-        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
+        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable()) {
             System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
             System.Assert.areEqual(LoggerCache.PLATFORM_CACHE_NULL_VALUE, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
@@ -234,7 +234,7 @@ private class LoggerCache_Tests_PlatformCache {
         System.Assert.areEqual(newMockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
-        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
+        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable()) {
             System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
             System.Assert.areEqual(newMockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
@@ -253,7 +253,7 @@ private class LoggerCache_Tests_PlatformCache {
         System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
         // Depending on how you start Apex tests, you may or may not have an active session
         // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
-        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
+        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable()) {
             System.Assert.isTrue(Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
             System.Assert.areEqual(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }

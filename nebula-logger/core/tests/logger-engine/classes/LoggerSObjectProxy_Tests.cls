@@ -27,7 +27,7 @@ private class LoggerSObjectProxy_Tests {
             FROM AuthSession
             LIMIT 1
         ];
-        if (authSessionRecords.isEmpty() == true) {
+        if (authSessionRecords.isEmpty()) {
             // Since the AuthSession object cannot be mocked, the test can only run as an integration test
             // No need to fail the test if there isn't a AuthSession record available via querying
             return;
@@ -57,7 +57,7 @@ private class LoggerSObjectProxy_Tests {
             FROM LoginHistory
             LIMIT 1
         ];
-        if (loginHistoryRecords.isEmpty() == true) {
+        if (loginHistoryRecords.isEmpty()) {
             // Since the LoginHistory object cannot be mocked, the test can only run as an integration test
             // No need to fail the test if there isn't a LoginHistory record available via querying
             return;

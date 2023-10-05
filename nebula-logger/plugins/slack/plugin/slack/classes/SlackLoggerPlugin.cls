@@ -53,7 +53,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
      * @param  context The instance of `LoggerTriggerableContext`, provided by the logging system
      */
     public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext context) {
-        if (context.sobjectType != Schema.Log__c.SObjectType || String.isBlank(ENDPOINT) == true) {
+        if (context.sobjectType != Schema.Log__c.SObjectType || String.isBlank(ENDPOINT)) {
             return;
         }
 
@@ -78,7 +78,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         // TODO bulkify tags querying
         // this.requeryTags();
 
-        if (this.logs.isEmpty() == true) {
+        if (this.logs.isEmpty()) {
             return;
         }
 
@@ -99,12 +99,12 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
             String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
             request.setBody(notificationJson);
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.finest('Sending log entries to Slack endpoint').setHttpRequestDetails(request);
             }
 
             System.HttpResponse response = new System.Http().send(request);
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.finest('Sent log entries to Slack endpoint').setHttpResponseDetails(response);
             }
 
@@ -135,7 +135,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     private void sendAsyncSlackNotifications() {
         List<Log__c> logsToSend = new List<Log__c>();
         for (Log__c log : this.logs) {
-            if (log.SendSlackNotification__c == true) {
+            if (log.SendSlackNotification__c) {
                 logsToSend.add(log);
             }
         }
@@ -188,7 +188,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         request.setEndpoint(ENDPOINT);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
             Logger.finest('Created Slack HTTP Request').setHttpRequestDetails(request);
         }
         return request;
@@ -269,14 +269,14 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             fieldValue = record.get(fieldPath);
         }
 
-        if (IGNORE_NULL_FIELDS == true && fieldValue == null) {
+        if (IGNORE_NULL_FIELDS && fieldValue == null) {
             return null;
         }
 
         String stringValue = String.valueOf(fieldValue);
         Integer maxShortLength = 255;
         fieldDto.isShort = stringValue.contains('\n') == false || stringValue.length() <= maxShortLength;
-        String valueWrapper = fieldDto.isShort == true ? '`' : '\n```\n';
+        String valueWrapper = fieldDto.isShort ? '`' : '\n```\n';
         fieldDto.value = valueWrapper + stringValue + valueWrapper;
         return fieldDto;
     }
@@ -317,7 +317,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             ORDER BY UniqueId__c
         ];
 
-        if (tagNames.isEmpty() == true) {
+        if (tagNames.isEmpty()) {
             return null;
         }
 

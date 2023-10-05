@@ -28,8 +28,7 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static Boolean canUserModifyLoggerSettings() {
-        return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() == true ||
-            System.FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
+        return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() || System.FeatureManagement.checkPermission('CanModifyLoggerSettings');
     }
 
     /**
@@ -70,7 +69,7 @@ public without sharing class LoggerSettingsController {
 
         Map<Id, String> setupOwnerIdToName = querySetupOwnerNames(setupOwnerIds);
         for (SettingsRecordResult settingsRecordResult : settingsRecordResults) {
-            if (setupOwnerIdToName.containsKey((settingsRecordResult.record.SetupOwnerId)) == true) {
+            if (setupOwnerIdToName.containsKey((settingsRecordResult.record.SetupOwnerId))) {
                 settingsRecordResult.setupOwnerName = setupOwnerIdToName.get(settingsRecordResult.record.SetupOwnerId);
             }
         }
@@ -101,7 +100,7 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled
     public static void saveRecord(LoggerSettings__c settingsRecord) {
         try {
-            if (canUserModifyLoggerSettings() == true) {
+            if (canUserModifyLoggerSettings()) {
                 LoggerDataStore.getDatabase().upsertRecord(settingsRecord, Schema.LoggerSettings__c.Id);
             }
         } catch (System.Exception ex) {
@@ -116,7 +115,7 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled
     public static void deleteRecord(LoggerSettings__c settingsRecord) {
         try {
-            if (canUserModifyLoggerSettings() == true) {
+            if (canUserModifyLoggerSettings()) {
                 LoggerDataStore.getDatabase().deleteRecord(settingsRecord);
             }
         } catch (System.Exception ex) {

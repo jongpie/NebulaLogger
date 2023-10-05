@@ -23,8 +23,7 @@ public with sharing class LogBatchPurgeController {
      */
     @AuraEnabled
     public static Boolean canUserRunLogBatchPurger() {
-        return Schema.Log__c.SObjectType.getDescribe().isDeletable() == true ||
-            System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION) == true;
+        return Schema.Log__c.SObjectType.getDescribe().isDeletable() || System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION);
     }
 
     /**

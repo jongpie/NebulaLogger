@@ -72,7 +72,7 @@ public without sharing virtual class LogManagementDataSelector {
      */
     public virtual List<ApexEmailNotification> getCachedApexEmailNotifications() {
         String cacheKey = 'ApexEmailNotifications';
-        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+        if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
             return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
@@ -88,7 +88,7 @@ public without sharing virtual class LogManagementDataSelector {
      */
     public Log__c getCachedRecentLogWithApiReleaseDetails() {
         String cacheKey = 'RecentLogWithApiReleaseDetails';
-        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+        if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
             return (Log__c) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
@@ -104,7 +104,7 @@ public without sharing virtual class LogManagementDataSelector {
             ORDER BY CreatedDate DESC
             LIMIT 1
         ];
-        Log__c log = logs.isEmpty() == true ? null : logs.get(0);
+        Log__c log = logs.isEmpty() ? null : logs.get(0);
         LoggerCache.getOrganizationCache().put(cacheKey, log);
         return log;
     }
@@ -324,7 +324,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return            The list of matching `User` records
      */
     public virtual List<User> getUsersByNameSearch(String searchTerm) {
-        if (String.isBlank(searchTerm) == true) {
+        if (String.isBlank(searchTerm)) {
             return new List<User>();
         }
 

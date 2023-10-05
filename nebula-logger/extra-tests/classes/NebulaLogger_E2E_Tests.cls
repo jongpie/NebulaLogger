@@ -193,7 +193,7 @@ private class NebulaLogger_E2E_Tests {
             this.request = request;
 
             this.response = new System.HttpResponse();
-            if (String.isNotBlank(this.responseBody) == true) {
+            if (String.isNotBlank(this.responseBody)) {
                 response.setBody(this.responseBody);
             }
             response.setStatusCode(this.statusCode);
