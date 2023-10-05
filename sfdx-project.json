@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.10.NEXT",
-            "versionName": "Conditional Visibility for HTTP Response Headers",
-            "versionDescription": "Added several new checkbox fields on LogEntry__c that correspond to each long textarea field, and updated LogEntryRecordPage.flexipage to have conditional visibility for the fields HttpResponseHeaderKeys__c and HttpResponseHeaders__c based on new checkbox fields",
+            "versionNumber": "4.11.11.NEXT",
+            "versionName": "Reduced Usage of Email Limits Consumption in LoggerEmailSender",
+            "versionDescription": "Updated LoggerEmailSender to use the instance method Messaging.SingleEmailMessage.setTargetObjectId() when sending failure emails to internal users, which does not count towards the transactional email limits",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
