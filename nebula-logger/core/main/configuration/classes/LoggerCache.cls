@@ -220,7 +220,7 @@ public without sharing class LoggerCache {
         public void put(String key, Object value) {
             this.transactionCache.put(key, value);
 
-            if (LoggerParameter.USE_PLATFORM_CACHE == true && this.cachePartitionDelegate.isAvailable() == true) {
+            if (LoggerParameter.USE_PLATFORM_CACHE && this.cachePartitionDelegate.isAvailable()) {
                 // Platform cache does not support storing null values, so a predefined value is used as a substitute
                 if (value == null) {
                     value = PLATFORM_CACHE_NULL_VALUE;
@@ -232,7 +232,7 @@ public without sharing class LoggerCache {
         public void remove(String key) {
             this.transactionCache.remove(key);
 
-            if (LoggerParameter.USE_PLATFORM_CACHE == true && this.cachePartitionDelegate.isAvailable() == true) {
+            if (LoggerParameter.USE_PLATFORM_CACHE && this.cachePartitionDelegate.isAvailable()) {
                 this.cachePartitionDelegate.remove(key);
             }
         }

@@ -99,11 +99,11 @@ public without sharing abstract class LoggerSObjectHandler {
      * @description Runs the handler class's logic, as well as any configured plugins
      */
     public void execute() {
-        if (System.Test.isRunningTest() == true && SOBJECT_TYPE_TO_EXECUTED_HANDLERS.containsKey(this.getSObjectType()) == false) {
+        if (System.Test.isRunningTest() && SOBJECT_TYPE_TO_EXECUTED_HANDLERS.containsKey(this.getSObjectType()) == false) {
             SOBJECT_TYPE_TO_EXECUTED_HANDLERS.put(this.getSObjectType(), new List<LoggerSObjectHandler>());
         }
 
-        Boolean shouldExecute = isEnabled && (this.handlerConfiguration == null || this.handlerConfiguration.IsEnabled__c == true);
+        Boolean shouldExecute = isEnabled && (this.handlerConfiguration == null || this.handlerConfiguration.IsEnabled__c);
         if (shouldExecute == false) {
             return;
         }
@@ -138,7 +138,7 @@ public without sharing abstract class LoggerSObjectHandler {
 
         this.executePlugins();
 
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             SOBJECT_TYPE_TO_EXECUTED_HANDLERS.get(this.getSObjectType()).add(this);
         }
     }
@@ -169,7 +169,7 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     private void executePlugins() {
-        if (this.pluginConfigurations == null || this.pluginConfigurations.isEmpty() == true) {
+        if (this.pluginConfigurations == null || this.pluginConfigurations.isEmpty()) {
             return;
         }
 
@@ -187,7 +187,7 @@ public without sharing abstract class LoggerSObjectHandler {
         LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
         apexPlugin?.execute(configuration, this.input);
 
-        if (System.Test.isRunningTest() == true && apexPlugin != null) {
+        if (System.Test.isRunningTest() && apexPlugin != null) {
             this.executedApexPlugins.add(apexPlugin);
         }
     }
@@ -210,11 +210,11 @@ public without sharing abstract class LoggerSObjectHandler {
                     this.input.triggerNewMap.putAll(new Map<Id, SObject>(updatedTriggerNew));
                 }
             }
-            if (System.Test.isRunningTest() == true && flowPlugin != null) {
+            if (System.Test.isRunningTest() && flowPlugin != null) {
                 this.executedFlowPlugins.add(flowPlugin);
             }
         } catch (TypeException ex) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.warn('Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution', configuration, ex);
             }
         }
@@ -250,7 +250,7 @@ public without sharing abstract class LoggerSObjectHandler {
             sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
         }
 
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             sobjectTypeToHandlerConfiguration.clear();
         }
 
@@ -258,7 +258,7 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     private static Schema.SObjectType prepHandlerType(LoggerSObjectHandler__mdt handlerConfiguration) {
-        if (String.isNotBlank(handlerConfiguration.SObjectTypeOverride__c) == true) {
+        if (String.isNotBlank(handlerConfiguration.SObjectTypeOverride__c)) {
             handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectTypeOverride__c;
         }
 

@@ -52,7 +52,7 @@ public inherited sharing class ComponentLogger {
                 setComponentErrorDetails(logEntryEventBuilder, componentLogEntry.error);
                 setStackTraceDetails(logEntryEventBuilder, componentLogEntry.stack);
             }
-            if (String.isNotBlank(saveMethodName) == true) {
+            if (String.isNotBlank(saveMethodName)) {
                 saveMethod = Logger.SaveMethod.valueOf(saveMethodName);
             }
             Logger.saveLog(saveMethod);
@@ -89,7 +89,7 @@ public inherited sharing class ComponentLogger {
         String originLocation;
         Boolean isAuraComponent = false;
 
-        if (String.isNotBlank(stackTraceString) == true) {
+        if (String.isNotBlank(stackTraceString)) {
             String loggerComponentReferenceToIgnore = '/c/logger.js';
             String auraComponentContent = '/n/components/';
             String lwcModuleContent = '/n/modules/';
@@ -97,27 +97,27 @@ public inherited sharing class ComponentLogger {
 
             List<String> stackTraceLines = new List<String>();
             for (String currentStackTraceLine : stackTraceString.split('\n')) {
-                if (currentStackTraceLine.contains(loggerComponentReferenceToIgnore) == true) {
+                if (currentStackTraceLine.contains(loggerComponentReferenceToIgnore)) {
                     continue;
-                } else if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent) == true) {
+                } else if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent)) {
                     isAuraComponent = true;
                     parentComponentFound = true;
-                } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent) == true) {
+                } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent)) {
                     parentComponentFound = true;
                 }
 
-                if (parentComponentFound == true) {
+                if (parentComponentFound) {
                     stackTraceLines.add(currentStackTraceLine);
                 }
             }
 
             stackTraceString = String.join(stackTraceLines, '\n');
-            if (String.isNotBlank(stackTraceString) == true) {
-                String componentContent = isAuraComponent == true ? auraComponentContent : lwcModuleContent;
+            if (String.isNotBlank(stackTraceString)) {
+                String componentContent = isAuraComponent ? auraComponentContent : lwcModuleContent;
                 String componentName;
                 String componentFunction;
                 for (String currentStackTraceLine : stackTraceString.split('\n')) {
-                    if (currentStackTraceLine.trim().startsWith('at eval') == true) {
+                    if (currentStackTraceLine.trim().startsWith('at eval')) {
                         continue;
                     }
 
@@ -129,7 +129,7 @@ public inherited sharing class ComponentLogger {
             }
         }
 
-        logEntryEventBuilder.getLogEntryEvent().ComponentType__c = isAuraComponent == true ? 'Aura' : 'LWC';
+        logEntryEventBuilder.getLogEntryEvent().ComponentType__c = isAuraComponent ? 'Aura' : 'LWC';
         logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
         logEntryEventBuilder.getLogEntryEvent().OriginLocation__c = originLocation;
         logEntryEventBuilder.getLogEntryEvent().StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);

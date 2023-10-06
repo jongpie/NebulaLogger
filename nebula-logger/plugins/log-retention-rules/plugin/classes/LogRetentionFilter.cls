@@ -380,7 +380,7 @@ public without sharing class LogRetentionFilter {
             x = x.trim();
             x = x.replace('AND', '&&');
             x = x.replace('OR', '||');
-            while (x.contains('(') == true) {
+            while (x.contains('(')) {
                 String sub = x.substringAfterLast('(').substringBefore(')');
                 x = x.replace('(' + sub + ')', String.valueOf(evaluate(sub)));
             }

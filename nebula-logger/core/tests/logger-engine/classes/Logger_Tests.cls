@@ -470,7 +470,7 @@ private class Logger_Tests {
     static void it_should_not_ignore_origin_when_apex_class_type_not_specified() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (String.isNotBlank(Logger.getNamespacePrefix())) {
             return;
         }
 
@@ -487,7 +487,7 @@ private class Logger_Tests {
     static void it_should_ignore_origin_when_apex_class_type_specified() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (String.isNotBlank(Logger.getNamespacePrefix())) {
             return;
         }
 

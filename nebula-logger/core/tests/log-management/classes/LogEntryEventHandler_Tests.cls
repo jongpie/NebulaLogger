@@ -1180,7 +1180,7 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c], '1 matching Log__c record should have been generated');
         System.Assert.areEqual(
             1,
-            [SELECT COUNT() FROM LogEntry__c WHERE LoggingLevel__c = :System.LoggingLevel.INFO.name()],
+            [SELECT COUNT() FROM LogEntry__c WHERE LoggingLevel__c = :builder.getLogEntryEvent().LoggingLevel__c],
             '1 matching LogEntry__c record should have been generated'
         );
         System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerTag__c WHERE Name = :exampleTag], '1 matching LoggerTag__c record should have been generated');
@@ -1311,6 +1311,7 @@ private class LogEntryEventHandler_Tests {
                         HttpResponseBody__c,
                         HttpResponseBodyMasked__c,
                         HttpResponseHeaderKeys__c,
+                        HttpResponseHeaders__c,
                         HttpResponseStatus__c,
                         HttpResponseStatusCode__c,
                         LimitsAggregateQueriesMax__c,
@@ -1380,9 +1381,9 @@ private class LogEntryEventHandler_Tests {
     private static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
         Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         String orgEnvironmentType;
-        if (org.IsSandbox == true && org.TrialExpirationDate != null) {
+        if (org.IsSandbox && org.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';
-        } else if (org.IsSandbox == true) {
+        } else if (org.IsSandbox) {
             orgEnvironmentType = 'Sandbox';
         } else {
             orgEnvironmentType = 'Production';
@@ -1522,6 +1523,7 @@ private class LogEntryEventHandler_Tests {
             logEntry.HttpResponseHeaderKeys__c,
             'logEntry.HttpResponseHeaderKeys__c was not properly set'
         );
+        System.Assert.areEqual(logEntryEvent.HttpResponseHeaders__c, logEntry.HttpResponseHeaders__c, 'logEntry.HttpResponseHeaders__c was not properly set');
         System.Assert.areEqual(logEntryEvent.HttpResponseStatus__c, logEntry.HttpResponseStatus__c, 'logEntry.HttpResponseStatus__c was not properly set');
         System.Assert.areEqual(
             logEntryEvent.HttpResponseStatusCode__c,

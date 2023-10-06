@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.7.NEXT",
-            "versionName": "Bugfix for Tags Not Saving for Save Method SYNCHRONOUS_DML",
-            "versionDescription": "Added a new composite key field, LogEntry__c.UniqueId__c, to fix a bug where tagging data would not save properly when using the save method SYNCHRONOUS_DML",
+            "versionNumber": "4.11.8.NEXT",
+            "versionName": "New Field LogEntry__c.HttpResponseHeaders__c",
+            "versionDescription": "Added a new field, LogEntry__c.HttpResponseHeaders__c, to store header keys and values (the existing field LogEntry__c.HttpResponseHeaderKeys__c only stores the keys, not the values)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -155,6 +155,7 @@
         "Nebula Logger - Core@4.11.5-custom-index-for-log-retention-date": "04t5Y000001HZdZQAW",
         "Nebula Logger - Core@4.11.6-new-method-logger.setasynccontext()": "04t5Y000001HZfGQAW",
         "Nebula Logger - Core@4.11.7-bugfix-for-tags-not-saving-for-save-method-synchronous_dml": "04t5Y000001HZfaQAG",
+        "Nebula Logger - Core@4.11.8-new-field-logentry__c.httpresponseheaders__c": "04t5Y000001Oig9QAC",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

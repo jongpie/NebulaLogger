@@ -35,7 +35,7 @@ public class LoggerMockDataCreator {
      * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @return   The mock instance of `Database.LeadConvertResult`
      */
     public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess) {
@@ -45,12 +45,12 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests)
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.LeadConvertResult`
      */
     public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId) {
-        if (isSuccess == true) {
+        if (isSuccess) {
             return (Database.LeadConvertResult) JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
         } else {
             return (Database.LeadConvertResult) JSON.deserialize(
@@ -66,7 +66,7 @@ public class LoggerMockDataCreator {
      * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @return   The mock instance of `Database.DeleteResult`
      */
     public static Database.DeleteResult createDatabaseDeleteResult(Boolean isSuccess) {
@@ -76,12 +76,12 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests)
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.DeleteResult`
      */
     public static Database.DeleteResult createDatabaseDeleteResult(Boolean isSuccess, Id recordId) {
-        if (isSuccess == true) {
+        if (isSuccess) {
             return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
         } else {
             return (Database.DeleteResult) JSON.deserialize(
@@ -95,7 +95,7 @@ public class LoggerMockDataCreator {
      * @description Creates a mock instance of `Database.MergeResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @return   The mock instance of `Database.MergeResult`
      */
     public static Database.MergeResult createDatabaseMergeResult(Boolean isSuccess) {
@@ -105,12 +105,12 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates a mock instance of `Database.MergeResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests)
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.MergeResult`
      */
     public static Database.MergeResult createDatabaseMergeResult(Boolean isSuccess, Id recordId) {
-        if (isSuccess == true) {
+        if (isSuccess) {
             return (Database.MergeResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.MergeResult.class);
         } else {
             return (Database.MergeResult) JSON.deserialize(
@@ -124,7 +124,7 @@ public class LoggerMockDataCreator {
      * @description Creates a mock instance of `Database.SaveResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @return   The mock instance of `Database.SaveResult`
      */
     public static Database.SaveResult createDatabaseSaveResult(Boolean isSuccess) {
@@ -134,12 +134,12 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates a mock instance of `Database.SaveResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests)
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.SaveResult`
      */
     public static Database.SaveResult createDatabaseSaveResult(Boolean isSuccess, Id recordId) {
-        if (isSuccess == true) {
+        if (isSuccess) {
             return (Database.SaveResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.SaveResult.class);
         } else {
             return (Database.SaveResult) JSON.deserialize(
@@ -153,7 +153,7 @@ public class LoggerMockDataCreator {
      * @description Creates a mock instance of `Database.UndeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @return   The mock instance of `Database.UndeleteResult`
      */
     public static Database.UndeleteResult createDatabaseUndeleteResult(Boolean isSuccess) {
@@ -163,12 +163,12 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates a mock instance of `Database.UndeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests)
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.UndeleteResult`
      */
     public static Database.UndeleteResult createDatabaseUndeleteResult(Boolean isSuccess, Id recordId) {
-        if (isSuccess == true) {
+        if (isSuccess) {
             return (Database.UndeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.UndeleteResult.class);
         } else {
             return (Database.UndeleteResult) JSON.deserialize(
@@ -182,8 +182,8 @@ public class LoggerMockDataCreator {
      * @description Creates a mock instance of `Database.UpsertResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
-     * @param  isCreated Indicates if the generated mock should have `isCreated` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+     * @param  isCreated Indicates if the generated mock should have `isCreated`
      * @return   The mock instance of `Database.UpsertResult`
      */
     public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated) {
@@ -193,13 +193,13 @@ public class LoggerMockDataCreator {
     /**
      * @description Creates a mock instance of `Database.UpsertResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests)
-     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
-     * @param  isCreated Indicates if the generated mock should have `isCreated` == true
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+     * @param  isCreated Indicates if the generated mock should have `isCreated`
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.UpsertResult`
      */
     public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
-        if (isSuccess == true) {
+        if (isSuccess) {
             return (Database.UpsertResult) JSON.deserialize(
                 '{"success": ' + isSuccess + ', "created": ' + isCreated + ', "id": "' + recordId + '"}',
                 Database.UpsertResult.class
@@ -336,9 +336,9 @@ public class LoggerMockDataCreator {
         Organization organization = getOrganization();
 
         String orgEnvironmentType;
-        if (organization.IsSandbox == true && organization.TrialExpirationDate != null) {
+        if (organization.IsSandbox && organization.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';
-        } else if (organization.IsSandbox == true) {
+        } else if (organization.IsSandbox) {
             orgEnvironmentType = 'Sandbox';
         } else {
             orgEnvironmentType = 'Production';
@@ -540,11 +540,11 @@ public class LoggerMockDataCreator {
             this.request = request;
 
             this.response = new System.HttpResponse();
-            if (String.isNotBlank(this.responseBody) == true) {
+            if (String.isNotBlank(this.responseBody)) {
                 response.setBody(this.responseBody);
             }
             response.setStatusCode(this.statusCode);
-            if (String.isNotBlank(this.statusMessage) == true) {
+            if (String.isNotBlank(this.statusMessage)) {
                 response.setStatus(this.statusMessage);
             }
             return response;
@@ -620,7 +620,7 @@ public class LoggerMockDataCreator {
         }
 
         private void loadFields() {
-            if (SOBJECT_TYPE_TO_ALL_FIELDS.containsKey(this.sobjectType) == true && SOBJECT_TYPE_TO_REQUIRED_FIELDS.containsKey(this.sobjectType) == true) {
+            if (SOBJECT_TYPE_TO_ALL_FIELDS.containsKey(this.sobjectType) && SOBJECT_TYPE_TO_REQUIRED_FIELDS.containsKey(this.sobjectType)) {
                 return;
             }
 

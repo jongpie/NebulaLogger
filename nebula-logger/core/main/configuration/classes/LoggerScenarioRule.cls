@@ -33,11 +33,11 @@ public without sharing class LoggerScenarioRule {
 
     @TestVisible
     private static void setMock(LoggerScenarioRule__mdt scenarioRule) {
-        if (String.isBlank(scenarioRule.Scenario__c) == true) {
+        if (String.isBlank(scenarioRule.Scenario__c)) {
             throw new System.IllegalArgumentException('Scenario__c is required on `LoggerScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
         }
 
-        if (isValid(scenarioRule) == true) {
+        if (isValid(scenarioRule)) {
             SCENARIO_NAME_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
         }
     }
@@ -45,12 +45,12 @@ public without sharing class LoggerScenarioRule {
     private static Map<String, LoggerScenarioRule__mdt> loadLogScenarioRules() {
         Map<String, LoggerScenarioRule__mdt> scenarioRules = new Map<String, LoggerScenarioRule__mdt>();
         for (LoggerScenarioRule__mdt scenarioRule : LoggerScenarioRule__mdt.getAll().values()) {
-            if (isValid(scenarioRule) == true) {
+            if (isValid(scenarioRule)) {
                 scenarioRules.put(scenarioRule.Scenario__c, scenarioRule);
             }
         }
 
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             scenarioRules.clear();
         }
 
@@ -59,12 +59,12 @@ public without sharing class LoggerScenarioRule {
 
     private static Boolean isValid(LoggerScenarioRule__mdt scenarioRule) {
         Boolean isValid = false;
-        if (scenarioRule.IsEnabled__c == true) {
+        if (scenarioRule.IsEnabled__c) {
             Datetime currentTime = System.now();
             Boolean startTimeIsValid = scenarioRule.StartTime__c == null || scenarioRule.StartTime__c <= currentTime;
             Boolean endTimeIsValid = scenarioRule.EndTime__c == null || scenarioRule.EndTime__c >= currentTime;
 
-            isValid = startTimeIsValid == true && endTimeIsValid == true;
+            isValid = startTimeIsValid && endTimeIsValid;
         }
         return isValid;
     }

@@ -4738,7 +4738,7 @@ Boolean
 
 #### `newEntry(System.LoggingLevel loggingLevel, LogMessage logMessage, Boolean shouldSave)` → `LogEntryEventBuilder`
 
-Adds a new instance of LogEntryEventBuilder to Logger&apos;s buffer, if shouldSave == true
+Adds a new instance of LogEntryEventBuilder to Logger&apos;s buffer, when `shouldSave` is `true`
 
 ##### Parameters
 

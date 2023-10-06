@@ -1109,12 +1109,45 @@ private class LogEntryEventBuilder_Tests {
 
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().HttpResponseHeaders__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseStatus__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseStatusCode__c);
     }
 
     @IsTest
-    static void it_should_set_http_response_fields_when_populated() {
+    static void it_should_set_http_response_fields_when_storing_header_values_is_enabled() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = String.valueOf(true));
+        LoggerParameter.setMock(mockParameter);
+        System.Assert.isTrue(LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
+        System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
+        System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
+        System.HttpResponse response = new System.HttpResponse();
+        response.setBody('Hello, world!');
+        response.setHeader('someKey', 'some string value');
+        response.setHeader('anotherKey', 'an amazing example value, wow');
+        response.setStatus('STATUS_GOOD_JOB_YOU_DID_IT');
+        response.setStatusCode(201);
+
+        builder.setHttpResponseDetails(response);
+
+        List<String> formattedHeaders = new List<String>();
+        for (String headerKey : response.getHeaderKeys()) {
+            formattedHeaders.add(headerKey + ': ' + response.getHeader(headerKey));
+        }
+        System.Assert.areEqual(response.getBody(), builder.getLogEntryEvent().HttpResponseBody__c);
+        System.Assert.areEqual(String.join(response.getHeaderKeys(), '\n'), builder.getLogEntryEvent().HttpResponseHeaderKeys__c);
+        System.Assert.areEqual(String.join(formattedHeaders, '\n'), builder.getLogEntryEvent().HttpResponseHeaders__c);
+        System.Assert.areEqual(response.getStatus(), builder.getLogEntryEvent().HttpResponseStatus__c);
+        System.Assert.areEqual(response.getStatusCode(), builder.getLogEntryEvent().HttpResponseStatusCode__c);
+    }
+
+    @IsTest
+    static void it_should_set_http_response_fields_when_storing_header_values_is_disabled() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = String.valueOf(false));
+        LoggerParameter.setMock(mockParameter);
+        System.Assert.isFalse(LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES);
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
@@ -1130,6 +1163,7 @@ private class LogEntryEventBuilder_Tests {
 
         System.Assert.areEqual(response.getBody(), builder.getLogEntryEvent().HttpResponseBody__c);
         System.Assert.areEqual(String.join(response.getHeaderKeys(), '\n'), builder.getLogEntryEvent().HttpResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().HttpResponseHeaders__c);
         System.Assert.areEqual(response.getStatus(), builder.getLogEntryEvent().HttpResponseStatus__c);
         System.Assert.areEqual(response.getStatusCode(), builder.getLogEntryEvent().HttpResponseStatusCode__c);
     }
@@ -1163,7 +1197,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_set_stack_trace_for_new_builder_instance_when_disabled_via_logger_parameter() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1181,7 +1215,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_set_stack_trace_for_parseStackTrace_method_when_disabled_via_logger_parameter() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1200,7 +1234,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_stack_trace_and_origin_location_for_class_constructor_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1224,7 +1258,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_stack_trace_and_origin_location_for_method_stack_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 
@@ -1397,7 +1431,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
-        if (LogEntryEventBuilder.class.getName().contains('.') == true) {
+        if (LogEntryEventBuilder.class.getName().contains('.')) {
             return;
         }
 

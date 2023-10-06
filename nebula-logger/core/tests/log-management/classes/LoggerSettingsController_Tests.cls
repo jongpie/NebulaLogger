@@ -14,7 +14,7 @@ private class LoggerSettingsController_Tests {
 
         System.Assert.areEqual(expectedLoggingLevelSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
-            if (String.isBlank(picklistOption.value) == true) {
+            if (String.isBlank(picklistOption.value)) {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label);
@@ -43,7 +43,7 @@ private class LoggerSettingsController_Tests {
         Integer expectedLogPurgeActionsSize = expectedLogPurgeActions.size() + 1; // '--NONE--' is automatically included
         System.Assert.areEqual(expectedLogPurgeActionsSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
-            if (String.isBlank(picklistOption.value) == true) {
+            if (String.isBlank(picklistOption.value)) {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label);
@@ -60,7 +60,7 @@ private class LoggerSettingsController_Tests {
 
         System.Assert.areEqual(expectedLoggerSaveMethodSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
-            if (String.isBlank(picklistOption.value) == true) {
+            if (String.isBlank(picklistOption.value)) {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label);
@@ -89,7 +89,7 @@ private class LoggerSettingsController_Tests {
         Integer expectedPlatformEventStorageLocationSize = expectedSaveMethods.size() + 1; // '--NONE--' is automatically included
         System.Assert.areEqual(expectedPlatformEventStorageLocationSize, picklistOptions.size(), picklistOptions.toString());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
-            if (String.isBlank(picklistOption.value) == true) {
+            if (String.isBlank(picklistOption.value)) {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label, 'picklistOption==' + picklistOption);
@@ -117,7 +117,7 @@ private class LoggerSettingsController_Tests {
         Integer expectedLoggerSaveMethodSize = expectedSaveMethods.size() + 1; // '--NONE--' is automatically included
         System.Assert.areEqual(expectedLoggerSaveMethodSize, picklistOptions.size(), picklistOptions.toString());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
-            if (String.isBlank(picklistOption.value) == true) {
+            if (String.isBlank(picklistOption.value)) {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label, 'picklistOption==' + picklistOption);
@@ -135,7 +135,7 @@ private class LoggerSettingsController_Tests {
 
         System.Assert.areEqual(expectedSetupOwnerTypeSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
-            if (String.isBlank(picklistOption.value) == true) {
+            if (String.isBlank(picklistOption.value)) {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label);
@@ -159,7 +159,7 @@ private class LoggerSettingsController_Tests {
 
         System.Assert.areEqual(expectedShareAccessLevelSize, picklistOptions.size(), picklistOptions.toString());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
-            if (String.isBlank(picklistOption.value) == true) {
+            if (String.isBlank(picklistOption.value)) {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label);

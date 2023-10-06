@@ -26,7 +26,7 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(0, returnedEnvironment.loggerEnabledPluginsCount);
         System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
-            String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
+            String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : '(none)',
             returnedEnvironment.loggerNamespacePrefix
         );
         System.Assert.areEqual(Logger.getVersionNumber(), returnedEnvironment.loggerVersionNumber);
@@ -61,7 +61,7 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(0, returnedEnvironment.loggerEnabledPluginsCount);
         System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
-            String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
+            String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : '(none)',
             returnedEnvironment.loggerNamespacePrefix
         );
         System.Assert.areEqual(Logger.getVersionNumber(), returnedEnvironment.loggerVersionNumber);
@@ -90,7 +90,7 @@ private class LoggerHomeHeaderController_Tests {
         System.Assert.areEqual(0, returnedEnvironment.loggerEnabledPluginsCount);
         System.Assert.isNull(returnedEnvironment.loggerEnabledPlugins);
         System.Assert.areEqual(
-            String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)',
+            String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : '(none)',
             returnedEnvironment.loggerNamespacePrefix
         );
         System.Assert.areEqual(Logger.getVersionNumber(), returnedEnvironment.loggerVersionNumber);

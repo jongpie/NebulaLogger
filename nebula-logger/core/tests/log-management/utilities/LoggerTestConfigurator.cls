@@ -114,7 +114,7 @@ public without sharing class LoggerTestConfigurator {
 
     /**
      * @description Creates mock instances of `LoggerSObjectHandler__mdt` for each `SObjectType` used by Nebula Logger,
-     *              with each `LoggerSObjectHandler__mdt` automatically set to `IsEnabled__c == true`
+     *              with `IsEnabled__c` set to `true` on each `LoggerSObjectHandler__mdt` record
      */
     public static void setupMockSObjectHandlerConfigurations() {
         setupMockSObjectHandlerConfigurations(true);
@@ -122,7 +122,7 @@ public without sharing class LoggerTestConfigurator {
 
     /**
      * @description Creates mock instances of `LoggerSObjectHandler__mdt` for each `SObjectType` used by Nebula Logger,
-     *              with each `LoggerSObjectHandler__mdt` enabled/disabled based on the provided boolean
+     *              with `IsEnabled__c` set  based on the provided boolean on each `LoggerSObjectHandler__mdt` record
      * @param  isEnabled The Boolean value to control if all mock `LoggerSObjectHandler__mdt` records should be enabled (`true`) or disabled (`false`)
      */
     public static void setupMockSObjectHandlerConfigurations(Boolean isEnabled) {

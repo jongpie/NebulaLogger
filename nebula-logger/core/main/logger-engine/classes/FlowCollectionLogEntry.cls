@@ -49,7 +49,7 @@ global inherited sharing class FlowCollectionLogEntry {
      * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
      */
     @InvocableVariable(required=false label='(Optional) Throw FlowException for Fault Error Message')
-    global Boolean shouldThrowFaultMessageException;
+    global Boolean shouldThrowFaultMessageException = false;
 
     /**
      * @description Optionally choose to save any pending log entries
@@ -101,7 +101,7 @@ global inherited sharing class FlowCollectionLogEntry {
         for (FlowCollectionLogEntry flowCollectionLogEntry : flowCollectionLogEntries) {
             FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) JSON.deserialize(JSON.serialize(flowCollectionLogEntry), FlowLogger.LogEntry.class);
             LogEntryEventBuilder builder = shadowLogEntry.addToLoggerBuffer()?.setRecord(flowCollectionLogEntry.records);
-            if (builder.shouldSave() == true && flowCollectionLogEntry.records?.size() > 0) {
+            if (builder.shouldSave() && flowCollectionLogEntry.records?.size() > 0) {
                 builder.getLogEntryEvent().RecordSObjectType__c = flowCollectionLogEntry.records.get(0).getSObjectType().getDescribe().getName();
             }
 

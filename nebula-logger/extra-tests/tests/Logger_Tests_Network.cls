@@ -19,7 +19,7 @@ private class Logger_Tests_Network {
 
         List<Profile> matchingProfiles = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME];
 
-        if (matchingProfiles.isEmpty() == true) {
+        if (matchingProfiles.isEmpty()) {
             return;
         }
 
@@ -28,7 +28,7 @@ private class Logger_Tests_Network {
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
         List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
-        if (guestUsers.isEmpty() == true) {
+        if (guestUsers.isEmpty()) {
             return;
         }
 
@@ -50,7 +50,7 @@ private class Logger_Tests_Network {
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
         List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
-        if (guestUsers.isEmpty() == true) {
+        if (guestUsers.isEmpty()) {
             return;
         }
 
@@ -79,7 +79,7 @@ private class Logger_Tests_Network {
             FROM User
             WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
         ];
-        if (guestUsers.isEmpty() == true) {
+        if (guestUsers.isEmpty()) {
             return;
         }
 

@@ -37,7 +37,7 @@ public with sharing class LogEntryArchiveController {
         // Big Objects have very, very limited support for SOQL filtering, so additional filtering is applied after querying
         // Since additional filtering is applied below (outside of the query), so this query gets as many rows
         // as possible to maximize the possible matches from post-query filtering
-        Integer queryLimit = System.Test.isRunningTest() == true ? 1 : System.Limits.getLimitQueryRows();
+        Integer queryLimit = System.Test.isRunningTest() ? 1 : System.Limits.getLimitQueryRows();
         for (LogEntryArchive__b logEntryArchive : [
             SELECT
                 LoggedByUsername__c,
@@ -60,7 +60,7 @@ public with sharing class LogEntryArchiveController {
 
         // In a test context, creating Big Object data will actually, truly create the data - it's not isolated
         // from the org's data. That makes testing trickier, so mock records are injected here.
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             matchingLogEntryArchives.clear();
             for (LogEntryArchive__b mockLogEntryArchive : MOCK_RECORDS) {
                 addMatches(matchingLogEntryArchives, mockLogEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm, rowLimit);
@@ -82,7 +82,7 @@ public with sharing class LogEntryArchiveController {
             return;
         }
 
-        if (matchesFilterCriteria(potentialMatchingArchive, minimumLoggingLevelOrdinal, messageSearchTerm) == true) {
+        if (matchesFilterCriteria(potentialMatchingArchive, minimumLoggingLevelOrdinal, messageSearchTerm)) {
             matchingLogEntryArchives.add(potentialMatchingArchive);
         }
     }
@@ -93,9 +93,9 @@ public with sharing class LogEntryArchiveController {
         messageSearchTerm = messageSearchTerm == null ? '' : messageSearchTerm;
         String messageValue = logEntryArchive.Message__c == null ? '' : logEntryArchive.Message__c;
         Boolean matchesSearchTerm =
-            String.isBlank(messageSearchTerm) == true ||
-            messageValue.containsIgnoreCase(messageSearchTerm) == true ||
-            Pattern.matches(messageSearchTerm, messageValue) == true;
+            String.isBlank(messageSearchTerm) ||
+            messageValue.containsIgnoreCase(messageSearchTerm) ||
+            Pattern.matches(messageSearchTerm, messageValue);
 
         return matchesLoggingLevelOrdinal && matchesSearchTerm;
     }

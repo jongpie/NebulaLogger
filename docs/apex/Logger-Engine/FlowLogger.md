@@ -76,7 +76,7 @@ Boolean used to determine if logs are saved to Salesforce
 
 ###### `saveMethodName` → `String`
 
-String name of the instance of Logger.SaveMethod to use when &apos;Save Log&apos; == true
+String name of the instance of Logger.SaveMethod to use when &apos;Save Log&apos; is set to `true`
 
 ###### `scenario` → `String`
 

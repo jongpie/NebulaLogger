@@ -17,7 +17,7 @@ public without sharing class LoggerHomeHeaderController {
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
         Environment environment = new Environment();
-        environment.loggerNamespacePrefix = String.isNotBlank(Logger.getNamespacePrefix()) == true ? Logger.getNamespacePrefix() : '(none)';
+        environment.loggerNamespacePrefix = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : '(none)';
         environment.loggerVersionNumber = Logger.getVersionNumber();
         environment.organizationApiVersion = Logger.getOrganizationApiVersion();
         environment.organizationCreatedByUsername = organization.CreatedBy.Username;

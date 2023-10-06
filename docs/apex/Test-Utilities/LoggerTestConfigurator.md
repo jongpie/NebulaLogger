@@ -148,11 +148,11 @@ Loads the mock `LogStatus_t` during test execution
 
 #### `setupMockSObjectHandlerConfigurations()` → `void`
 
-Creates mock instances of `LoggerSObjectHandler_t` for each `SObjectType` used by Nebula Logger, with each `LoggerSObjectHandler_t` automatically set to `IsEnabled__c == true`
+Creates mock instances of `LoggerSObjectHandler_t` for each `SObjectType` used by Nebula Logger, with `IsEnabled__c` set to `true` on each `LoggerSObjectHandler_t` record
 
 #### `setupMockSObjectHandlerConfigurations(Boolean isEnabled)` → `void`
 
-Creates mock instances of `LoggerSObjectHandler_t` for each `SObjectType` used by Nebula Logger, with each `LoggerSObjectHandler_t` enabled/disabled based on the provided boolean
+Creates mock instances of `LoggerSObjectHandler_t` for each `SObjectType` used by Nebula Logger, with `IsEnabled__c` set based on the provided boolean on each `LoggerSObjectHandler_t` record
 
 ##### Parameters
 

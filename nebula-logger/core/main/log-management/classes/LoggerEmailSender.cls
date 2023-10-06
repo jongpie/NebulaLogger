@@ -53,7 +53,7 @@ public without sharing class LoggerEmailSender {
      *                     If no errors are found in the provided list, then no email will be sent.
      */
     public static void sendErrorEmail(Schema.SObjectType sobjectType, List<Database.SaveResult> saveResults) {
-        if (LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS == false || saveResults == null || saveResults.isEmpty() == true) {
+        if (LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS == false || saveResults == null || saveResults.isEmpty()) {
             return;
         }
 
@@ -69,7 +69,7 @@ public without sharing class LoggerEmailSender {
      *                     If no errors are found in the provided list, then no email will be sent.
      */
     public static void sendErrorEmail(Schema.SObjectType sobjectType, List<Database.UpsertResult> upsertResults) {
-        if (LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS == false || upsertResults == null || upsertResults.isEmpty() == true) {
+        if (LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS == false || upsertResults == null || upsertResults.isEmpty()) {
             return;
         }
 
@@ -78,12 +78,12 @@ public without sharing class LoggerEmailSender {
     }
 
     private static void sendErrorEmail(Schema.SObjectType sobjectType, List<String> errorMessages) {
-        if (errorMessages.isEmpty() == true) {
+        if (errorMessages.isEmpty()) {
             return;
         }
 
-        if (CACHED_APEX_ERROR_RECIPIENTS.isEmpty() == true) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+        if (CACHED_APEX_ERROR_RECIPIENTS.isEmpty()) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.info('Logger - no Apex email recipients configured, skipping sending email');
             }
             return;
@@ -122,13 +122,13 @@ public without sharing class LoggerEmailSender {
 
     private static void sendEmail(Messaging.SingleEmailMessage message) {
         SENT_EMAILS.add(message);
-        if (IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
+        if (IS_EMAIL_DELIVERABILITY_AVAILABLE) {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
             List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
 
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == false) {
                 return;
-            } else if (emailResults.get(0).success == true) {
+            } else if (emailResults.get(0).success) {
                 Logger.info('Logger - The email was sent successfully');
             } else {
                 Logger.warn('Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
@@ -161,7 +161,7 @@ public without sharing class LoggerEmailSender {
     private static List<String> queryApexErrrorRecipients() {
         List<String> apexErrrorRecipients = new List<String>();
         List<ApexEmailNotification> notifications = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
-        if (System.Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest()) {
             notifications.clear();
             notifications.addAll(MOCK_NOTIFICATIONS);
         }
@@ -169,7 +169,7 @@ public without sharing class LoggerEmailSender {
         for (ApexEmailNotification notification : notifications) {
             if (notification.UserId != null) {
                 apexErrrorRecipients.add(notification.UserId);
-            } else if (String.isNotBlank(notification.Email) == true) {
+            } else if (String.isNotBlank(notification.Email)) {
                 apexErrrorRecipients.addAll(notification.Email.split(';'));
             }
         }

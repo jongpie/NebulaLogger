@@ -457,7 +457,7 @@ private class LogEntryHandler_Tests {
         // FIXME the implementation does not seem to properly handle classes with a namespace prefix
         // (including when both the managed & unlocked packages are installed in an org), so skip the tests for now,
         // but revisit this test + implementation
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (String.isNotBlank(Logger.getNamespacePrefix())) {
             return;
         }
 
@@ -509,7 +509,7 @@ private class LogEntryHandler_Tests {
         // FIXME the implementation does not seem to properly handle classes with a namespace prefix
         // (including when both the managed & unlocked packages are installed in an org), so skip the tests for now,
         // but revisit this test + implementation
-        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+        if (String.isNotBlank(Logger.getNamespacePrefix())) {
             return;
         }
 

@@ -83,7 +83,7 @@ private class LoggerEmailSender_Tests {
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(saveResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain SaveResult error message'
         );
-        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
             System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
             System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
@@ -134,7 +134,7 @@ private class LoggerEmailSender_Tests {
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(upsertResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain UpsertResult error message'
         );
-        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
             System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
             System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');

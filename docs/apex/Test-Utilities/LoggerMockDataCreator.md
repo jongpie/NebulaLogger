@@ -76,9 +76,9 @@ Creates a mock instance of `Database.DeleteResult` - a mock is used instead of a
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
 
 ##### Return
 
@@ -96,10 +96,10 @@ Creates a mock instance of `Database.DeleteResult` - a mock is used instead of a
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
-| `recordId`  | The record ID to use within the mock result                     |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
 
 ##### Return
 
@@ -117,9 +117,9 @@ Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
 
 ##### Return
 
@@ -137,10 +137,10 @@ Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
-| `recordId`  | The record ID to use within the mock result                     |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
 
 ##### Return
 
@@ -158,9 +158,9 @@ Creates a mock instance of `Database.MergeResult` - a mock is used instead of an
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
 
 ##### Return
 
@@ -178,10 +178,10 @@ Creates a mock instance of `Database.MergeResult` - a mock is used instead of an
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
-| `recordId`  | The record ID to use within the mock result                     |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
 
 ##### Return
 
@@ -199,9 +199,9 @@ Creates a mock instance of `Database.SaveResult` - a mock is used instead of an 
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
 
 ##### Return
 
@@ -219,10 +219,10 @@ Creates a mock instance of `Database.SaveResult` - a mock is used instead of an 
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
-| `recordId`  | The record ID to use within the mock result                     |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
 
 ##### Return
 
@@ -240,9 +240,9 @@ Creates a mock instance of `Database.UndeleteResult` - a mock is used instead of
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
 
 ##### Return
 
@@ -260,10 +260,10 @@ Creates a mock instance of `Database.UndeleteResult` - a mock is used instead of
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
-| `recordId`  | The record ID to use within the mock result                     |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
 
 ##### Return
 
@@ -281,10 +281,10 @@ Creates a mock instance of `Database.UpsertResult` - a mock is used instead of a
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
-| `isCreated` | Indicates if the generated mock should have `isCreated` == true |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `isCreated` | Indicates if the generated mock should have `isCreated` |
 
 ##### Return
 
@@ -302,11 +302,11 @@ Creates a mock instance of `Database.UpsertResult` - a mock is used instead of a
 
 ##### Parameters
 
-| Param       | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
-| `isCreated` | Indicates if the generated mock should have `isCreated` == true |
-| `recordId`  | The record ID to use within the mock result                     |
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `isCreated` | Indicates if the generated mock should have `isCreated` |
+| `recordId`  | The record ID to use within the mock result             |
 
 ##### Return
 
@@ -550,6 +550,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
+###### `MockBatchableContext()`
+
 ###### `MockBatchableContext(Id jobId)`
 
 ###### `MockBatchableContext(Id jobId, Id childJobId)`
@@ -569,6 +571,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 ---
 
 ##### Constructors
+
+###### `MockFinalizerContext()`
 
 ###### `MockFinalizerContext(Id asyncApexJobId)`
 
@@ -628,6 +632,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ##### Constructors
 
+###### `MockQueueableContext()`
+
 ###### `MockQueueableContext(Id jobId)`
 
 ---
@@ -643,6 +649,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 ---
 
 ##### Constructors
+
+###### `MockSchedulableContext()`
 
 ###### `MockSchedulableContext(Id triggerId)`
 
