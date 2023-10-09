@@ -680,12 +680,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.LoggedByUsernameAsText__c</field>
+        <field>LogEntry__c.LoggedByUsernameLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.LoggedByUsernameLink__c</field>
+        <field>LogEntry__c.LoggedByUsernameText__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -935,12 +935,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.LoggedByUsernameAsText__c</field>
+        <field>Log__c.LoggedByUsernameLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.LoggedByUsernameLink__c</field>
+        <field>Log__c.LoggedByUsernameText__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
