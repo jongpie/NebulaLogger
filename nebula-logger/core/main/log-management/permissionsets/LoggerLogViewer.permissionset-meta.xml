@@ -604,6 +604,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.LoggedByUsernameAsText__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.LoggedByUsernameLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -749,11 +754,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntryTag__c.UniqueId__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Log__c.ApiReleaseNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -855,6 +855,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.LogRetentionDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.LoggedByUsernameAsText__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

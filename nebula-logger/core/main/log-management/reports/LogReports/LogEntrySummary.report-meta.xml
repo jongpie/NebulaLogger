@@ -14,7 +14,7 @@
         <groupingColumn>Log__c.StartTime__c</groupingColumn>
         <legendPosition>Right</legendPosition>
         <location>CHART_BOTTOM</location>
-        <secondaryGroupingColumn>Log__c.LoggedByUsernameLink__c</secondaryGroupingColumn>
+        <secondaryGroupingColumn>LogEntry__c.LoggedByUsernameAsText__c</secondaryGroupingColumn>
         <showAxisLabels>false</showAxisLabels>
         <showPercentage>false</showPercentage>
         <showTotal>false</showTotal>
@@ -91,7 +91,7 @@
     </groupingsDown>
     <groupingsDown>
         <dateGranularity>Day</dateGranularity>
-        <field>Log__c.LoggedByUsernameLink__c</field>
+        <field>LogEntry__c.LoggedByUsernameAsText__c</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <groupingsDown>
