@@ -156,6 +156,7 @@
         "Nebula Logger - Core@4.11.6-new-method-logger.setasynccontext()": "04t5Y000001HZfGQAW",
         "Nebula Logger - Core@4.11.7-bugfix-for-tags-not-saving-for-save-method-synchronous_dml": "04t5Y000001HZfaQAG",
         "Nebula Logger - Core@4.11.8-new-field-logentry__c.httpresponseheaders__c": "04t5Y000001Oig9QAC",
+        "Nebula Logger - Core@4.11.9-new-fields-log__c.loggedbyusernametext__c-and-logentry__c.loggedbyusernametext__c": "04t5Y000001OigJQAS",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

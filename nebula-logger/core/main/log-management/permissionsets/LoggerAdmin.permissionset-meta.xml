@@ -685,6 +685,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.LoggedByUsernameText__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.LoggingLevelOrdinal__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -824,8 +829,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>LogEntryTag__c.UniqueId__c</field>
+        <editable>false</editable>
+        <field>LogEntry__c.UniqueId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -936,6 +941,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.LoggedByUsernameLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.LoggedByUsernameText__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
