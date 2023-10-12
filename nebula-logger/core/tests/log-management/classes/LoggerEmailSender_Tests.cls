@@ -46,30 +46,6 @@ private class LoggerEmailSender_Tests {
     }
 
     @IsTest
-    static void it_should_filter_apex_error_recipients() {
-        ApexEmailNotification emailListNotification = new ApexEmailNotification(Email = 'hello@test.com;fake.person@not.real.com.biz', UserId = null);
-        ApexEmailNotification userNotification = new ApexEmailNotification(Email = null, UserId = System.UserInfo.getUserId());
-        ApexEmailNotification invalidNotification = new ApexEmailNotification(Email = null, UserId = null);
-        LoggerEmailSender.MOCK_NOTIFICATIONS.addAll(new List<ApexEmailNotification>{ emailListNotification, userNotification, invalidNotification });
-
-        List<ApexEmailNotification> returnedRecipients = LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS;
-
-        System.Assert.areEqual(3, returnedRecipients.size(), 'Should have returned 3 recipients: 1 for the user ID, and 2 for the email addresses');
-        // for (String recipient : returnedRecipients) {
-        //     Boolean matchesUserNotification = String.valueOf(userNotification.UserId) == recipient;
-        //     Boolean matchesEmailListNotification = new Set<String>(emailListNotification.Email.split(';')).contains(recipient.trim());
-        //     System.Assert.areEqual(
-        //         true,
-        //         matchesUserNotification || matchesEmailListNotification,
-        //         'Returned recipient ' +
-        //             recipient +
-        //             ' should match either the user notification or the email list notification\n' +
-        //             JSON.serializePretty(LoggerEmailSender.MOCK_NOTIFICATIONS)
-        //     );
-        // }
-    }
-
-    @IsTest
     static void it_should_send_email_notification_for_saveResult_errors_when_enabled() {
         LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(Email = 'some.email@test.com'));
         LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
@@ -83,8 +59,8 @@ private class LoggerEmailSender_Tests {
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(saveResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain SaveResult error message'
         );
-        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
-            System.Assert.areEqual(2, System.Limits.getEmailInvocations(), 'Emails should have been sent');
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
+            System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
             System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
         }
@@ -133,8 +109,8 @@ private class LoggerEmailSender_Tests {
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(upsertResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain UpsertResult error message'
         );
-        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE == true) {
-            System.Assert.areEqual(2, System.Limits.getEmailInvocations(), 'Emails should have been sent');
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
+            System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
             System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
         }

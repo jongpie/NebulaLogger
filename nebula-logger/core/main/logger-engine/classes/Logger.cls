@@ -97,7 +97,7 @@ global with sharing class Logger {
     }
 
     static {
-        // One of few limited places in the codebase (except tests) that should use System.debug()
+        // One of a few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
@@ -3041,7 +3041,7 @@ global with sharing class Logger {
     global static void setScenario(String scenario) {
         if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario)) {
             transactionScenario = scenario;
-            // One of few limited places in the codebase (except tests) that should use System.debug()
+            // One of a few limited places in the codebase (except tests) that should use System.debug()
             // The rest of the codebase should use a method in Logger.cls
             if (String.isNotBlank(transactionScenario)) {
                 System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction Scenario: ' + transactionScenario);
@@ -3054,7 +3054,7 @@ global with sharing class Logger {
 
         currentEntryScenario = scenario;
         orderedScenarios.add(scenario);
-        // One of few limited places in the codebase (except tests) that should use System.debug()
+        // One of a few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
         if (String.isNotBlank(transactionScenario)) {
             System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Entry Scenario: ' + currentEntryScenario);
