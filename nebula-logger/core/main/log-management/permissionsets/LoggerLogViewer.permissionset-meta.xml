@@ -272,7 +272,7 @@
         <field>LogEntry__c.FlowVersionRunInMode__c</field>
         <readable>true</readable>
     </fieldPermissions>
-     <fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HasDatabaseResultJson__c</field>
         <readable>true</readable>
@@ -340,6 +340,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HttpRequestBody__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HttpRequestCompressed__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

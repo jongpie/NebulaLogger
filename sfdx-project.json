@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.8.NEXT",
-            "versionName": "New Field LogEntry__c.HttpResponseHeaders__c",
-            "versionDescription": "Added a new field, LogEntry__c.HttpResponseHeaders__c, to store header keys and values (the existing field LogEntry__c.HttpResponseHeaderKeys__c only stores the keys, not the values)",
+            "versionNumber": "4.11.10.NEXT",
+            "versionName": "Conditional Visibility for Fields LogEntry__c.HttpResponseHeaders__c and LogEntry__c.HttpResponseHeaderKeys__c",
+            "versionDescription": "Added several new checkbox fields on LogEntry__c that correspond to each long textarea field, and updated LogEntryRecordPage.flexipage to have conditional visibility for the fields HttpResponseHeaderKeys__c and HttpResponseHeaders__c based on new checkbox fields",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
