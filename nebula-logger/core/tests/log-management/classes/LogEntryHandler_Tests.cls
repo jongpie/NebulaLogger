@@ -126,291 +126,368 @@ private class LogEntryHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_hasInlineTags_to_true_when_populated_on_insert() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String inlineTags = String.join(new List<String>{ 'some tag', 'another tag' }, '\n');
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = inlineTags);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+    static void it_should_set_hasDatabaseResultJson_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(DatabaseResultJson__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(DatabaseResultJson__c = null);
+        System.Assert.isNotNull(matchingLogEntry.DatabaseResultJson__c);
+        System.Assert.isNull(nonMatchingLogEntry.DatabaseResultJson__c);
 
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
-        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(true, logEntry.HasInlineTags__c);
-        System.Assert.areEqual(inlineTags, logEntry.Tags__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasDatabaseResultJson__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasDatabaseResultJson__c);
     }
 
     @IsTest
-    static void it_should_set_hasInlineTags_to_false_when_not_populated_on_insert() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String inlineTags = null;
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = inlineTags);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+    static void it_should_set_hasDatabaseResultJson_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(
+            DatabaseResultJson__c = 'some value',
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
         );
-        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(false, logEntry.HasInlineTags__c);
-        System.Assert.isNull(logEntry.Tags__c);
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(DatabaseResultJson__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.DatabaseResultJson__c);
+        System.Assert.isNull(nonMatchingLogEntry.DatabaseResultJson__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasDatabaseResultJson__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasDatabaseResultJson__c);
     }
 
     @IsTest
-    static void it_should_set_hasInlineTags_to_true_when_populated_on_updated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = null);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-        logEntry = [SELECT Id, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isNull(logEntry.Tags__c);
-        String inlineTags = String.join(new List<String>{ 'some tag', 'another tag' }, '\n');
-        logEntry.Tags__c = inlineTags;
+    static void it_should_set_hasExceptionStackTrace_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(ExceptionStackTrace__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(ExceptionStackTrace__c = null);
+        System.Assert.isNotNull(matchingLogEntry.ExceptionStackTrace__c);
+        System.Assert.isNull(nonMatchingLogEntry.ExceptionStackTrace__c);
 
-        update logEntry;
-
-        System.Assert.areEqual(
-            4,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
-        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(true, logEntry.HasInlineTags__c);
-        System.Assert.areEqual(inlineTags, logEntry.Tags__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasExceptionStackTrace__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasExceptionStackTrace__c);
     }
 
     @IsTest
-    static void it_should_set_hasInlineTags_to_false_when_not_populated_on_updated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String inlineTags = String.join(new List<String>{ 'some tag', 'another tag' }, '\n');
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Tags__c = inlineTags);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-        logEntry = [SELECT Id, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(inlineTags, logEntry.Tags__c);
-        logEntry.Tags__c = null;
-
-        update logEntry;
-
-        System.Assert.areEqual(
-            4,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+    static void it_should_set_hasExceptionStackTrace_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(
+            ExceptionStackTrace__c = 'some value',
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
         );
-        logEntry = [SELECT Id, HasInlineTags__c, Tags__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(false, logEntry.HasInlineTags__c);
-        System.Assert.isNull(logEntry.Tags__c);
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(ExceptionStackTrace__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.ExceptionStackTrace__c);
+        System.Assert.isNull(nonMatchingLogEntry.ExceptionStackTrace__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasExceptionStackTrace__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasExceptionStackTrace__c);
     }
 
     @IsTest
-    static void it_should_set_hasRecordJson_to_true_when_populated_on_insert() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String recordJson = '{}';
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = recordJson);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+    static void it_should_set_hasHttpRequestBody_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(HttpRequestBody__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpRequestBody__c = null);
+        System.Assert.isNotNull(matchingLogEntry.HttpRequestBody__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpRequestBody__c);
 
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(true, logEntry.HasRecordJson__c);
-        System.Assert.areEqual(recordJson, logEntry.RecordJson__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpRequestBody__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpRequestBody__c);
     }
 
     @IsTest
-    static void it_should_set_hasRecordJson_to_false_when_not_populated_on_insert() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String recordJson = null;
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = recordJson);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+    static void it_should_set_hasHttpRequestBody_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(HttpRequestBody__c = 'some value', Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpRequestBody__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.HttpRequestBody__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpRequestBody__c);
 
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
         );
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(false, logEntry.HasRecordJson__c);
-        System.Assert.isNull(logEntry.RecordJson__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpRequestBody__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpRequestBody__c);
     }
 
     @IsTest
-    static void it_should_set_hasRecordJson_to_true_when_populated_on_updated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = null);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-        logEntry = [SELECT Id, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isNull(logEntry.RecordJson__c);
-        String recordJson = '{}';
-        logEntry.RecordJson__c = recordJson;
+    static void it_should_set_hasHttpResponseBody_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(HttpResponseBody__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpResponseBody__c = null);
+        System.Assert.isNotNull(matchingLogEntry.HttpResponseBody__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpResponseBody__c);
 
-        update logEntry;
-
-        System.Assert.areEqual(
-            4,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(true, logEntry.HasRecordJson__c);
-        System.Assert.areEqual(recordJson, logEntry.RecordJson__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpResponseBody__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpResponseBody__c);
     }
 
     @IsTest
-    static void it_should_set_hasRecordJson_to_false_when_not_populated_on_updated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String recordJson = '{}';
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = recordJson);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-        logEntry = [SELECT Id, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isNotNull(logEntry.RecordJson__c);
-        logEntry.RecordJson__c = null;
+    static void it_should_set_hasHttpResponseBody_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(HttpResponseBody__c = 'some value', Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpResponseBody__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.HttpResponseBody__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpResponseBody__c);
 
-        update logEntry;
-
-        System.Assert.areEqual(
-            4,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
         );
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.areEqual(false, logEntry.HasRecordJson__c);
-        System.Assert.isNull(logEntry.RecordJson__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpResponseBody__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpResponseBody__c);
     }
 
     @IsTest
-    static void it_should_set_hasExceptionStackTrace_to_false_when_null() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, ExceptionStackTrace__c = null);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+    static void it_should_set_hasHttpResponseHeaderKeys_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(HttpResponseHeaderKeys__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpResponseHeaderKeys__c = null);
+        System.Assert.isNotNull(matchingLogEntry.HttpResponseHeaderKeys__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpResponseHeaderKeys__c);
 
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
-        logEntry = [SELECT Id, HasExceptionStackTrace__c, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isTrue(!logEntry.HasExceptionStackTrace__c);
-        System.Assert.isNull(logEntry.ExceptionStackTrace__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpResponseHeaderKeys__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpResponseHeaderKeys__c);
     }
 
     @IsTest
-    static void it_should_set_hasExceptionStackTrace_to_true_when_populated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String stackTrace = 'something';
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, ExceptionStackTrace__c = stackTrace);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+    static void it_should_set_hasHttpResponseHeaderKeys_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(
+            HttpResponseHeaderKeys__c = 'some value',
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
         );
-        logEntry = [SELECT Id, HasExceptionStackTrace__c, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isTrue(logEntry.HasExceptionStackTrace__c);
-        System.Assert.areEqual(stackTrace, logEntry.ExceptionStackTrace__c);
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(
+            HttpResponseHeaderKeys__c = null,
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
+        );
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.HttpResponseHeaderKeys__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpResponseHeaderKeys__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpResponseHeaderKeys__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpResponseHeaderKeys__c);
     }
 
     @IsTest
-    static void it_should_set_hasExceptionStackTrace_to_true_when_updated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, ExceptionStackTrace__c = null);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-        logEntry = [SELECT Id, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isNull(logEntry.ExceptionStackTrace__c);
+    static void it_should_set_hasHttpResponseHeaders_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(HttpResponseHeaders__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpResponseHeaders__c = null);
+        System.Assert.isNotNull(matchingLogEntry.HttpResponseHeaders__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpResponseHeaders__c);
 
-        String stackTrace = 'something';
-        logEntry.ExceptionStackTrace__c = stackTrace;
-        update logEntry;
-
-        System.Assert.areEqual(
-            4,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
-        logEntry = [SELECT Id, HasExceptionStackTrace__c, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isTrue(logEntry.HasExceptionStackTrace__c);
-        System.Assert.areEqual(stackTrace, logEntry.ExceptionStackTrace__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpResponseHeaders__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpResponseHeaders__c);
     }
 
     @IsTest
-    static void it_should_set_hasStackTrace_to_false_when_null() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, StackTrace__c = null);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+    static void it_should_set_hasHttpResponseHeaders_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(
+            HttpResponseHeaders__c = 'some value',
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
         );
-        logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isTrue(!logEntry.HasStackTrace__c);
-        System.Assert.isNull(logEntry.StackTrace__c);
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpResponseHeaders__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.HttpResponseHeaders__c);
+        System.Assert.isNull(nonMatchingLogEntry.HttpResponseHeaders__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasHttpResponseHeaders__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasHttpResponseHeaders__c);
+    }
+    @IsTest
+    static void it_should_set_hasInlineTags_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(Tags__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(Tags__c = null);
+        System.Assert.isNotNull(matchingLogEntry.Tags__c);
+        System.Assert.isNull(nonMatchingLogEntry.Tags__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasInlineTags__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasInlineTags__c);
     }
 
     @IsTest
-    static void it_should_set_hasStackTrace_to_true_when_populated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        String stackTrace = 'something';
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, StackTrace__c = stackTrace);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+    static void it_should_set_hasInlineTags_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(Tags__c = 'some value', Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(Tags__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.Tags__c);
+        System.Assert.isNull(nonMatchingLogEntry.Tags__c);
 
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-        System.Assert.areEqual(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
         );
-        logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isTrue(logEntry.HasStackTrace__c);
-        System.Assert.areEqual(stackTrace, logEntry.StackTrace__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasInlineTags__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasInlineTags__c);
     }
 
     @IsTest
-    static void it_should_set_hasStackTrace_to_true_when_updated() {
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, StackTrace__c = null);
-        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
-        LoggerDataStore.getDatabase().insertRecord(logEntry);
-        logEntry = [SELECT Id, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isNull(logEntry.StackTrace__c);
+    static void it_should_set_hasRecordJson_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(RecordJson__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(RecordJson__c = null);
+        System.Assert.isNotNull(matchingLogEntry.RecordJson__c);
+        System.Assert.isNull(nonMatchingLogEntry.RecordJson__c);
 
-        String stackTrace = 'something';
-        logEntry.StackTrace__c = stackTrace;
-        update logEntry;
-
-        System.Assert.areEqual(
-            4,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
-            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
-        logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.Assert.isTrue(logEntry.HasStackTrace__c);
-        System.Assert.areEqual(stackTrace, logEntry.StackTrace__c);
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRecordJson__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRecordJson__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasRecordJson_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(RecordJson__c = 'some value', Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(RecordJson__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.RecordJson__c);
+        System.Assert.isNull(nonMatchingLogEntry.RecordJson__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRecordJson__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRecordJson__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasStackTrace_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(StackTrace__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(StackTrace__c = null);
+        System.Assert.isNotNull(matchingLogEntry.StackTrace__c);
+        System.Assert.isNull(nonMatchingLogEntry.StackTrace__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasStackTrace__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasStackTrace__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasStackTrace_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(StackTrace__c = 'some value', Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(StackTrace__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.StackTrace__c);
+        System.Assert.isNull(nonMatchingLogEntry.StackTrace__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasStackTrace__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasStackTrace__c);
     }
 
     @IsTest
