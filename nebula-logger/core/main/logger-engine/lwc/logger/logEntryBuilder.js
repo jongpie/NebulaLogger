@@ -138,7 +138,7 @@ const LogEntryBuilder = class {
     /* eslint-disable no-console */
     _logToConsole() {
         this.#settingsPromise().then(setting => {
-            this.isConsoleLoggingEnabled = setting.isConsoleLoggingEnabled;
+            this.isConsoleLoggingEnabled = !!setting?.isConsoleLoggingEnabled;
 
             if (!this.isConsoleLoggingEnabled) {
                 return;
