@@ -5,7 +5,7 @@
     <complianceGroup>None</complianceGroup>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>Has HTTP Response Body</label>
+    <label>Has HTTP Request Body</label>
     <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>

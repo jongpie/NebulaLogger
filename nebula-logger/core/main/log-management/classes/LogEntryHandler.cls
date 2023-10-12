@@ -261,8 +261,9 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private void setCheckboxFields() {
-        // A formula field can't be used for checking if a long text area field is set/null
-        // So, this code handles maintaing some checkbox fields via Apex instead
+        // Long textarea fields can't be used in filters for SOQL, list views, etc, and a formula field can't be used
+        // for checking if a long text area field is set/null...
+        // So, this code handles maintaining some checkbox fields via Apex instead
         for (LogEntry__c logEntry : this.logEntries) {
             logEntry.HasDatabaseResultJson__c = logEntry.DatabaseResultJson__c != null;
             logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
