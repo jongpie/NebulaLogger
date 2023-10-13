@@ -51,12 +51,12 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
+        Database.SaveResult saveResultWithError = LoggerMockDataCreator.createDatabaseSaveResult(false);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.SaveResult>{ saveResultWithError });
 
         System.Assert.areEqual(
             true,
-            LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(saveResultsWithErrors.get(0).errors.get(0).getMessage()),
+            LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(saveResultWithError.errors.get(0).getMessage()),
             'Email message should contain SaveResult error message'
         );
         if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
@@ -73,8 +73,8 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.clear();
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
+        Database.SaveResult saveResultWithError = LoggerMockDataCreator.createDatabaseSaveResult(false);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.SaveResult>{ saveResultWithError });
 
         System.Assert.isTrue(LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
@@ -88,8 +88,8 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
+        Database.SaveResult saveResultWithError = LoggerMockDataCreator.createDatabaseSaveResult(false);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.SaveResult>{ saveResultWithError });
 
         System.Assert.isTrue(LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
@@ -101,12 +101,12 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
+        Database.UpsertResult upsertResultWithError = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.UpsertResult>{ upsertResultWithError });
 
         System.Assert.areEqual(
             true,
-            LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(upsertResultsWithErrors.get(0).errors.get(0).getMessage()),
+            LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(upsertResultWithError.errors.get(0).getMessage()),
             'Email message should contain UpsertResult error message'
         );
         if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
@@ -123,8 +123,8 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.clear();
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
+        Database.UpsertResult upsertResultWithError = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.UpsertResult>{ upsertResultWithError });
 
         System.Assert.isTrue(LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
@@ -138,8 +138,8 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
+        Database.UpsertResult upsertResultWithError = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.UpsertResult>{ upsertResultWithError });
 
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
         System.Assert.isTrue(LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
