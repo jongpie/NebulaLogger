@@ -594,6 +594,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HttpResponseHeaderKeys__c</fieldItem>
                 <identifier>RecordHttpResponseHeaderKeys_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasHttpResponseHeaders__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -604,6 +611,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HttpResponseHeaders__c</fieldItem>
                 <identifier>RecordHttpResponseHeaders_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasHttpResponseHeaders__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

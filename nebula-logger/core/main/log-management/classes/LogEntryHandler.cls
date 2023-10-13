@@ -25,12 +25,12 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logEntries = (List<LogEntry__c>) triggerNew;
 
-        this.setCheckboxFields();
         this.setApexClassFields();
         this.setComponentFields();
         this.setFlowDefinitionFields();
         this.setFlowVersionFields();
         this.setRecordNames();
+        this.setCheckboxFields();
     }
 
     protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -41,17 +41,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         // and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
         // so keep them up to date just to be safe
         this.setCheckboxFields();
-    }
-
-    private void setCheckboxFields() {
-        // A formula field can't be used for checking if a long text area field is set/null
-        // So, this code handles maintaing some checkbox fields via Apex instead
-        for (LogEntry__c logEntry : this.logEntries) {
-            logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
-            logEntry.HasInlineTags__c = logEntry.Tags__c != null;
-            logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
-            logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
-        }
     }
 
     private void setApexClassFields() {
@@ -268,6 +257,23 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                     logEntry.RecordName__c = recordName;
                 }
             }
+        }
+    }
+
+    private void setCheckboxFields() {
+        // Long textarea fields can't be used in filters for SOQL, list views, etc, and a formula field can't be used
+        // for checking if a long text area field is set/null...
+        // So, this code handles maintaining some checkbox fields via Apex instead
+        for (LogEntry__c logEntry : this.logEntries) {
+            logEntry.HasDatabaseResultJson__c = logEntry.DatabaseResultJson__c != null;
+            logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
+            logEntry.HasHttpRequestBody__c = logEntry.HttpRequestBody__c != null;
+            logEntry.HasHttpResponseBody__c = logEntry.HttpResponseBody__c != null;
+            logEntry.HasHttpResponseHeaderKeys__c = logEntry.HttpResponseHeaderKeys__c != null;
+            logEntry.HasHttpResponseHeaders__c = logEntry.HttpResponseHeaders__c != null;
+            logEntry.HasInlineTags__c = logEntry.Tags__c != null;
+            logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
+            logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
         }
     }
 

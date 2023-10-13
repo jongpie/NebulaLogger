@@ -5,15 +5,15 @@
 
 The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.11.8
+## Unlocked Package - v4.11.10
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000001OigJQAS)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000001OigJQAS)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000001OigxQAC)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000001OigxQAC)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y000001OigJQAS`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y000001OigxQAC`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y000001OigJQAS`
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y000001OigxQAC`
 
 ---
 

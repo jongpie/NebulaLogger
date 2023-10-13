@@ -188,6 +188,11 @@
         <field>LogEntry__c.FlowVersionRunInMode__c</field>
         <readable>true</readable>
     </fieldPermissions>
+     <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasDatabaseResultJson__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HasDatabaseResult__c</field>
@@ -201,6 +206,31 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HasException__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasHttpRequestBody__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasHttpResponseBody__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasHttpResponseHeaderKeys__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasHttpResponseHeaders__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasInlineTags__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
