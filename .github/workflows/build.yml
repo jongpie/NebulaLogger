@@ -298,7 +298,9 @@ jobs:
             # TODO remove this after the plugin @salesforce/packaging has been upgraded
             # to a new version that only looks at package directories
             - name: 'Temporarily delete problematic metadata'
-              run: rm -rf ./config/experience-cloud
+              run: |
+                  rm -rf ./config/experience-cloud/
+                  rm -rf ./nebula-logger/unsorted/main/default/profiles/
 
             - name: 'Create Beta Managed Package Version'
               run: npm run package:version:create:managed
@@ -352,7 +354,9 @@ jobs:
             # TODO remove this after the plugin @salesforce/packaging has been upgraded
             # to a new version that only looks at package directories
             - name: 'Temporarily delete problematic metadata'
-              run: rm -rf ./config/experience-cloud
+              run: |
+                  rm -rf ./config/experience-cloud/
+                  rm -rf ./nebula-logger/unsorted/main/default/profiles/
 
             - name: 'Create & Install Package Version'
               run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo

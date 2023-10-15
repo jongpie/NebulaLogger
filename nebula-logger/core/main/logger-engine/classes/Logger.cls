@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.11.10';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.11.11';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -97,7 +97,7 @@ global with sharing class Logger {
     }
 
     static {
-        // One of few limited places in the codebase (except tests) that should use System.debug()
+        // One of a few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
@@ -3041,7 +3041,7 @@ global with sharing class Logger {
     global static void setScenario(String scenario) {
         if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario)) {
             transactionScenario = scenario;
-            // One of few limited places in the codebase (except tests) that should use System.debug()
+            // One of a few limited places in the codebase (except tests) that should use System.debug()
             // The rest of the codebase should use a method in Logger.cls
             if (String.isNotBlank(transactionScenario)) {
                 System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction Scenario: ' + transactionScenario);
@@ -3054,7 +3054,7 @@ global with sharing class Logger {
 
         currentEntryScenario = scenario;
         orderedScenarios.add(scenario);
-        // One of few limited places in the codebase (except tests) that should use System.debug()
+        // One of a few limited places in the codebase (except tests) that should use System.debug()
         // The rest of the codebase should use a method in Logger.cls
         if (String.isNotBlank(transactionScenario)) {
             System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Entry Scenario: ' + currentEntryScenario);

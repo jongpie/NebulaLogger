@@ -15,7 +15,7 @@ public without sharing class LoggerEmailSender {
     private static final List<Messaging.SingleEmailMessage> SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
 
     @TestVisible
-    private static final List<String> CACHED_APEX_ERROR_RECIPIENTS {
+    private static final List<ApexEmailNotification> CACHED_APEX_ERROR_RECIPIENTS {
         get {
             if (CACHED_APEX_ERROR_RECIPIENTS == null) {
                 CACHED_APEX_ERROR_RECIPIENTS = queryApexErrrorRecipients();
@@ -82,18 +82,30 @@ public without sharing class LoggerEmailSender {
             return;
         }
 
-        if (CACHED_APEX_ERROR_RECIPIENTS.isEmpty()) {
-            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-                Logger.info('Logger - no Apex email recipients configured, skipping sending email');
+        if (CACHED_APEX_ERROR_RECIPIENTS.isEmpty() == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                // One of a few limited places in the codebase (except tests) that should use System.debug()
+                // The rest of the codebase should use a method in Logger.cls
+                System.debug(System.LoggingLevel.WARN, 'Nebula Logger - no Apex email recipients configured, skipping sending email'); // NOPMD
             }
             return;
         }
 
-        Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-        message.setToAddresses(CACHED_APEX_ERROR_RECIPIENTS);
-        message.setSubject(buildSubject(errorMessages));
-        message.setHtmlBody(buildHtmlBody(sobjectType, errorMessages));
-        sendEmail(message);
+        List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
+        for (Schema.ApexEmailNotification notification : CACHED_APEX_ERROR_RECIPIENTS) {
+            Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
+            message.setSubject(buildSubject(errorMessages));
+            message.setHtmlBody(buildHtmlBody(sobjectType, errorMessages));
+
+            if (notification.UserId != null) {
+                message.setTargetObjectId(notification.UserId);
+                message.setSaveAsActivity(false);
+            } else if (String.isNotBlank(notification.Email) == true) {
+                message.setToAddresses(new List<String>{ notification.Email });
+            }
+            messages.add(message);
+        }
+        sendEmail(messages);
     }
 
     private static List<String> getErrorMessages(List<Database.SaveResult> saveResults) {
@@ -120,24 +132,27 @@ public without sharing class LoggerEmailSender {
         return errorMessages;
     }
 
-    private static void sendEmail(Messaging.SingleEmailMessage message) {
-        SENT_EMAILS.add(message);
+    private static void sendEmail(List<Messaging.SingleEmailMessage> messages) {
+        SENT_EMAILS.addAll(messages);
         if (IS_EMAIL_DELIVERABILITY_AVAILABLE) {
-            List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
-            List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
+            List<Messaging.SendEmailResult> emailResults = System.Messaging.sendEmail(messages);
 
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == false) {
                 return;
-            } else if (emailResults.get(0).success) {
-                Logger.info('Logger - The email was sent successfully');
+            } else if (emailResults.get(0).success == true) {
+                // One of a few limited places in the codebase (except tests) that should use System.debug()
+                // The rest of the codebase should use a method in Logger.cls
+                System.debug(System.LoggingLevel.INFO, 'Nebula Logger - The email was sent successfully'); // NOPMD
             } else {
-                Logger.warn('Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
+                // One of a few limited places in the codebase (except tests) that should use System.debug()
+                // The rest of the codebase should use a method in Logger.cls
+                System.debug(System.LoggingLevel.WARN, 'Nebula Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message); // NOPMD
             }
         }
     }
 
     private static String buildSubject(List<String> errorMessages) {
-        String emailSubjectTemplate = 'Logger - Error Notification - {0} ({1})';
+        String emailSubjectTemplate = 'Nebula Logger - Error Notification - {0} ({1})';
         List<Object> emailSubjectInputs = new List<Object>{
             LoggerEngineDataSelector.getInstance().getCachedOrganization().Name,
             LoggerEngineDataSelector.getInstance().getCachedOrganization().Id
@@ -158,21 +173,13 @@ public without sharing class LoggerEmailSender {
         return String.format(emailBodyTemplate, emailBodyInputs);
     }
 
-    private static List<String> queryApexErrrorRecipients() {
-        List<String> apexErrrorRecipients = new List<String>();
+    private static List<ApexEmailNotification> queryApexErrrorRecipients() {
         List<ApexEmailNotification> notifications = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
         if (System.Test.isRunningTest()) {
             notifications.clear();
             notifications.addAll(MOCK_NOTIFICATIONS);
         }
 
-        for (ApexEmailNotification notification : notifications) {
-            if (notification.UserId != null) {
-                apexErrrorRecipients.add(notification.UserId);
-            } else if (String.isNotBlank(notification.Email)) {
-                apexErrrorRecipients.addAll(notification.Email.split(';'));
-            }
-        }
-        return apexErrrorRecipients;
+        return notifications;
     }
 }
