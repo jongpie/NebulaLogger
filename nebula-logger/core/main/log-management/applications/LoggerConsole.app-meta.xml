@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionOverrides>
         <actionName>Tab</actionName>
@@ -21,6 +21,7 @@
     <label>Nebula Logger</label>
     <navType>Console</navType>
     <tabs>standard-home</tabs>
+    <tabs>LoggerNotification__c</tabs>
     <tabs>LoggerScenario__c</tabs>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
@@ -41,6 +42,9 @@
         </mappings>
         <mappings>
             <tab>Log__c</tab>
+        </mappings>
+        <mappings>
+            <tab>LoggerNotification__c</tab>
         </mappings>
         <mappings>
             <tab>LoggerScenario__c</tab>
