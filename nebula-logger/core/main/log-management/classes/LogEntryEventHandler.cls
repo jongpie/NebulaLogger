@@ -116,7 +116,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
             .upsertRecords(SCENARIO_UNIQUE_ID_TO_SCENARIO.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
-        LoggerEmailSender.sendErrorEmail(Schema.LoggerScenario__c.SObjectType, upsertResults);
 
         // Requery to get the OwnerId field as well
         for (LoggerScenario__c loggerScenario : [
@@ -224,7 +223,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
             .upsertRecords(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, System.Test.isRunningTest());
-        LoggerEmailSender.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         // TODO this probably should be moved to LogHandler instead of here
@@ -358,7 +356,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase().upsertRecords(this.logEntries, Schema.LogEntry__c.UniqueId__c);
-        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResults);
     }
 
     private void appendRuleBasedTags() {
@@ -429,14 +426,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             when LogEntryTag__c logEntryTag {
                 List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
                     .upsertRecords(new List<SObject>(tagAssignments), Schema.LogEntryTag__c.UniqueId__c);
-                LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, upsertResults);
             }
             when TopicAssignment topicAssignment {
                 Database.DmlOptions topicAssignmentDmlOptions = createDmlOptions();
                 topicAssignmentDmlOptions.OptAllOrNone = false;
                 List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase()
                     .insertRecords(new List<SObject>(tagAssignments), topicAssignmentDmlOptions);
-                LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
             }
         }
     }
@@ -498,7 +493,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         if (missingTagsToCreate.isEmpty() == false) {
             List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(missingTagsToCreate);
-            LoggerEmailSender.sendErrorEmail(tagSObjectType, saveResults);
             for (SObject tag : missingTagsToCreate) {
                 missingTagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }
