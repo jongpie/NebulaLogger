@@ -24,13 +24,16 @@ public without sharing class LoggerNotificationHandler extends LoggerSObjectHand
     }
 
     private void validateFilters(List<LoggerNotification__c> loggerNotifications) {
-        for (LoggerNotification__c loggerNotification : this.loggerNotifications) {
-            // TODO
+        for (LoggerNotification__c loggerNotification : loggerNotifications) {
+            if (new LoggerEvaluator().isValid(loggerNotification.SourceSObjectFilter__c, Schema.LogEntry__c.SObjectType) == false) {
+                // TODO
+                // loggerNotification.addError('Invalid SOQL WHERE clause: ' + loggerNotification.SourceSObjectFilter__c);
+            }
         }
     }
 
     private void setOrganizationId(List<LoggerNotification__c> loggerNotifications) {
-        for (LoggerNotification__c loggerNotification : this.loggerNotifications) {
+        for (LoggerNotification__c loggerNotification : loggerNotifications) {
             loggerNotification.OrganizationId__c = LoggerEngineDataSelector.getInstance().getCachedOrganization().Id;
         }
     }

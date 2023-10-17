@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LoggerNotificationCompactLayout</fullName>
+    <fields>Name</fields>
+    <fields>OwnerId</fields>
+    <fields>IsSlackNotificationEnabled__c</fields>
+    <fields>SlackChannel__c</fields>
+    <fields>IsEmailNotificationEnabled__c</fields>
+    <fields>EmailUserRecipient__c</fields>
+    <fields>EmailAddressRecipient__c</fields>
+    <label>Logger Notification Compact Layout</label>
+</CompactLayout>

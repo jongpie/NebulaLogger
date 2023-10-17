@@ -1340,7 +1340,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotification__c.EmailRecipient__c</field>
+        <field>LoggerNotification__c.EmailAddressRecipient__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerNotification__c.EmailUserRecipient__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1350,12 +1355,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerNotification__c.IsMatchingEnabled__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerNotification__c.IsSlackNotificationEnabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotification__c.LogEntryFilter__c</field>
+        <field>LoggerNotification__c.SourceSObjectFilter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1371,11 +1381,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LoggerNotification__c.SlackNamedCredential__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerNotification__c.Summary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1471,6 +1476,10 @@
     </tabSettings>
     <tabSettings>
         <tab>Log__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LoggerNotification__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

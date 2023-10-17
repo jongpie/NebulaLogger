@@ -124,9 +124,11 @@ public without sharing abstract class LoggerSObjectHandler {
                 // 2 AFTER_INSERT methods are used here in the framework, with the expectation that only 1 will be implemented per handler class
                 this.executeAfterInsert(this.input.triggerNew);
                 this.executeAfterInsert(this.input.triggerNewMap);
+                new LoggerNotificationService().sendNotifications(new List<SObject>{ this.input.triggerNewMap.values() });
             }
             when AFTER_UPDATE {
                 this.executeAfterUpdate(this.input.triggerNewMap, this.input.triggerOldMap);
+                new LoggerNotificationService().sendNotifications(new List<SObject>{ this.input.triggerNewMap.values() });
             }
             when AFTER_DELETE {
                 this.executeAfterDelete(this.input.triggerNewMap);

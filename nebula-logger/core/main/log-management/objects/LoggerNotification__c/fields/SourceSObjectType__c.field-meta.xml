@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>TimePeriodUnit__c</fullName>
+    <fullName>SourceSObjectType__c</fullName>
     <externalId>false</externalId>
-    <label>Time Period Unit</label>
+    <label>Source SObject Type</label>
     <required>true</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
@@ -12,19 +12,24 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Minutes</fullName>
+                <fullName>LogEntryEvent__e</fullName>
                 <default>false</default>
-                <label>Minutes</label>
+                <label>LogEntryEvent__e</label>
             </value>
             <value>
-                <fullName>Hours</fullName>
+                <fullName>Log__c</fullName>
                 <default>false</default>
-                <label>Hours</label>
+                <label>Log__c</label>
             </value>
             <value>
-                <fullName>Days</fullName>
+                <fullName>LogEntry__c</fullName>
                 <default>false</default>
-                <label>Days</label>
+                <label>LogEntry__c</label>
+            </value>
+            <value>
+                <fullName>LogEntryTag__c</fullName>
+                <default>false</default>
+                <label>LogEntryTag__c</label>
             </value>
         </valueSetDefinition>
     </valueSet>
