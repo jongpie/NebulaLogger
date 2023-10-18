@@ -1,4 +1,4 @@
-public with sharing class LoggerNotificationService {
+public without sharing class LoggerNotificationService {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>{
         Schema.LogEntry__c.SObjectType => new List<Schema.SObjectField>{
             Schema.LogEntry__c.ExceptionStackTrace__c
@@ -16,13 +16,9 @@ public with sharing class LoggerNotificationService {
         set;
     }
 
-    // TODO this will be a copy of Apex Rollup's RollupEvaluator class
-    private Object evaluator;
+    private LoggerEvaluator evaluator = new LoggerEvaluator();
     private LoggerEmailSender emailSender = new LoggerEmailSender();
     private LoggerSlackBot slackBot = new LoggerSlackBot();
-
-    public LoggerNotificationService() {
-    }
 
     public void sendNotifications(List<SObject> records) {
         if (SOBJECT_TYPE_TO_NOTIFICATIONS.containsKey(records.getSObjectType()) == false) {
@@ -36,7 +32,7 @@ public with sharing class LoggerNotificationService {
             if (notification.IsEmailNotificationEnabled__c == false && notification.IsSlackNotificationEnabled__c == false) {
                 continue;
             }
-            List<SObject> matchingRecords = new LoggerEvaluator().getMatches(notification.SourceSObjectFilter__c, records);
+            List<SObject> matchingRecords = this.evaluator.getMatches(notification.SourceSObjectFilter__c, records);
             for (SObject record : matchingRecords) {
                 if (notification.IsEmailNotificationEnabled__c) {
                     Messaging.SingleEmailMessage emailNotification = new Messaging.SingleEmailMessage();
@@ -47,6 +43,7 @@ public with sharing class LoggerNotificationService {
                     // TODO add support for a new User lookup on LoggerNotification__c
                     // emailNotification.setTargetObjectId(notification.EmailUserRecipient__c);
 
+                    // TODO switch to private method this.buildEmail();
                     emailNotifications.add(emailNotification);
                 }
 
@@ -58,6 +55,12 @@ public with sharing class LoggerNotificationService {
 
         }
         this.emailSender.sendEmail(emailNotifications);
+    }
+
+    private Messaging.SingleEmailMessage buildEmail() {
+        Messaging.SingleEmailMessage emailNotification = new Messaging.SingleEmailMessage();
+
+        return emailNotification;
     }
 
     private LoggerSlackBot.SlackMessage buildSlackMessage(String namedCredentialDeveloperName, String channel, SObject record) {//, Schema.FieldSet fieldSet) {
@@ -80,12 +83,12 @@ public with sharing class LoggerNotificationService {
         LoggerSlackBot.SlackBlock fieldsSectionBlock = new LoggerSlackBot.SlackBlock();
         fieldsSectionBlock.type = 'section';
         fieldsSectionBlock.fields = new List<LoggerSlackBot.SlackBlockField>();
-        for (Schema.SObjectField field : new List<Schema.SObjectField>()) {
-            String recordValue = '```' + String.valueOf(record.get(field.getDescribe().getName())) + '```';
+        for (Schema.SObjectField recordField : new List<Schema.SObjectField>()) {
+            String recordFieldValue = '```' + String.valueOf(record.get(recordField.getDescribe().getName())) + '```';
 
             LoggerSlackBot.SlackBlockField slackField = new LoggerSlackBot.SlackBlockField();
             slackField.type = 'mrkdwn';
-            slackField.text = '*' + field.getDescribe().getLabel() + '*\n' + recordValue;
+            slackField.text = '*' + recordField.getDescribe().getLabel() + '*\n' + recordFieldValue;
             fieldsSectionBlock.fields.add(slackField);
         }
         slackMessage.blocks.add(fieldsSectionBlock);

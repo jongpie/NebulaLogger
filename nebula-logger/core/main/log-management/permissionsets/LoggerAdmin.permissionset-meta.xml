@@ -1360,17 +1360,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerNotification__c.IsOriginOrganizationIdValid__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerNotification__c.IsSlackNotificationEnabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotification__c.SourceSObjectFilter__c</field>
+        <field>LoggerNotification__c.OriginOrganizationId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotification__c.OrganizationId__c</field>
+        <field>LoggerNotification__c.SourceSObjectFilter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
