@@ -128,13 +128,11 @@ const LoggerService = class {
      * @return {Promise<void>} A promise to clear the entries
      */
     async flushBuffer() {
-        return Promise.all(this.#loggingPromises)
-            .then(() => {
-                this.#componentLogEntries = [];
-                this.#loggingPromises = [];
-                this.#isSavingLog = false;
-            })
-            .catch(err => console.error(err));
+        return Promise.all(this.#loggingPromises).then(() => {
+            this.#componentLogEntries = [];
+            this.#loggingPromises = [];
+            this.#isSavingLog = false;
+        });
     }
 
     /**
