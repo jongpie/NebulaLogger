@@ -175,6 +175,7 @@ const LoggerService = class {
                     }
                 });
         }
+        return Promise.resolve();
     }
 
     _loadSettingsFromServer(forceReload) {
@@ -211,20 +212,18 @@ const LoggerService = class {
         if (this.#scenario) {
             logEntryBuilder.scenario = this.#scenario;
         }
-        const loggingPromise = this._loadSettingsFromServer()
-            .then(() => {
-                const isEnabledEnum = this._meetsUserLoggingLevel(loggingLevel);
-                if (isEnabledEnum === LOADING_ENUM.enabled || isEnabledEnum === LOADING_ENUM.loading) {
-                    const componentLogEntry = logEntryBuilder.getComponentLogEntry();
-                    componentLogEntry.loadingEnum = isEnabledEnum;
-                    this.#componentLogEntries.push(componentLogEntry);
-                }
-                if (this.#isSavingLog) {
-                    this.#isSavingLog = false;
-                    this.saveLog();
-                }
-            })
-            .catch(err => console.error('there was an error building the logging promise: ' + err.message));
+        const loggingPromise = this._loadSettingsFromServer().then(() => {
+            const isEnabledEnum = this._meetsUserLoggingLevel(loggingLevel);
+            if (isEnabledEnum === LOADING_ENUM.enabled || isEnabledEnum === LOADING_ENUM.loading) {
+                const componentLogEntry = logEntryBuilder.getComponentLogEntry();
+                componentLogEntry.loadingEnum = isEnabledEnum;
+                this.#componentLogEntries.push(componentLogEntry);
+            }
+            if (this.#isSavingLog) {
+                this.#isSavingLog = false;
+                this.saveLog();
+            }
+        });
         this.#loggingPromises.push(loggingPromise);
 
         return logEntryBuilder;
