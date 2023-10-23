@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.11.NEXT",
-            "versionName": "Reduced Usage of Email Limits Consumption in LoggerEmailSender",
-            "versionDescription": "Updated LoggerEmailSender to use the instance method Messaging.SingleEmailMessage.setTargetObjectId() when sending failure emails to internal users, which does not count towards the transactional email limits",
+            "versionNumber": "4.11.12.NEXT",
+            "versionName": "Bugfix for Lightning Component Entries Not Always Saving",
+            "versionDescription": "Fixed an issue in the logger LWC where log entries in lightning components would be lost while trying to load LoggerSettings__c for the current user",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
