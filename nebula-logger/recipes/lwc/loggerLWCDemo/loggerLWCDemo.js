@@ -26,10 +26,21 @@ export default class LoggerLWCDemo extends LightningElement {
 
     connectedCallback() {
         console.log('>>> start of connectedCallback()');
-        this.logger.info('>>> running connectedCallback(), using createLogger()');
-        this.logger.info('>>> adding an extra log entry');
-        this.logger.saveLog();
-        console.log('>>> done with connectedCallback()');
+        try {
+            this.logger.error('test error entry');
+            this.logger.warn('test warn entry');
+            this.logger.info('test info entry');
+            this.logger.debug('test debug entry');
+            this.logger.fine('test fine entry');
+            this.logger.finer('test finer entry');
+            this.logger.finest('test finest entry');
+            throw new Error('A bad thing happened here');
+        } catch (error) {
+            this.logger.error('>>> connectedCallback error: ' + JSON.stringify(error));
+            this.logger.saveLog().then(() => {
+                console.log('done with async save');
+            });
+        }
     }
 
     disconnectedCallback() {
