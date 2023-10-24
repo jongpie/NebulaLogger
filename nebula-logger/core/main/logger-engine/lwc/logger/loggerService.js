@@ -7,10 +7,17 @@ import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
+const LOADING_ENUM = {
+    loading: 'loading',
+    enabled: 'enabled',
+    disabled: 'disabled'
+};
+
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LoggerService = class {
     static settings = undefined;
 
+    #isSavingLog = false;
     #componentLogEntries = [];
     #scenario;
     #loggingPromises = [];
@@ -113,17 +120,18 @@ const LoggerService = class {
      * @return {Integer} The buffer's current size
      */
     getBufferSize() {
-        return this.#componentLogEntries.length;
+        return this.#componentLogEntries.length + this.#loggingPromises.length;
     }
 
     /**
      * @description Discards any entries that have been generated but not yet saved
      * @return {Promise<void>} A promise to clear the entries
      */
-    flushBuffer() {
+    async flushBuffer() {
         return Promise.all(this.#loggingPromises).then(() => {
             this.#componentLogEntries = [];
             this.#loggingPromises = [];
+            this.#isSavingLog = false;
         });
     }
 
@@ -132,8 +140,17 @@ const LoggerService = class {
      *              All subsequent calls to saveLog() will use the transaction save method
      * @param  {String} saveMethod The enum value of LoggerService.SaveMethod to use for this specific save action
      */
-    saveLog(saveMethodName) {
-        if (this.getBufferSize() > 0) {
+    async saveLog(saveMethodName) {
+        this.#isSavingLog = true;
+
+        const filteredLogEntries = this.#componentLogEntries.filter(
+            possibleLogEntry =>
+                (possibleLogEntry.loadingEnum === LOADING_ENUM.loading &&
+                    this._meetsUserLoggingLevel(possibleLogEntry.loggingLevel) === LOADING_ENUM.enabled) ||
+                possibleLogEntry.loadingEnum === LOADING_ENUM.enabled
+        );
+
+        if (filteredLogEntries.length > 0) {
             let resolvedSaveMethodName;
             if (!saveMethodName && LoggerService.settings && LoggerService.settings.defaultSaveMethodName) {
                 resolvedSaveMethodName = LoggerService.settings.defaultSaveMethodName;
@@ -141,8 +158,13 @@ const LoggerService = class {
                 resolvedSaveMethodName = saveMethodName;
             }
 
-            Promise.all(this.#loggingPromises)
-                .then(saveComponentLogEntries({ componentLogEntries: this.#componentLogEntries, saveMethodName: resolvedSaveMethodName }))
+            return Promise.all(this.#loggingPromises)
+                .then(
+                    saveComponentLogEntries({
+                        componentLogEntries: filteredLogEntries,
+                        saveMethodName: resolvedSaveMethodName
+                    })
+                )
                 .then(this.flushBuffer())
                 .catch(error => {
                     if (LoggerService.settings.isConsoleLoggingEnabled === true) {
@@ -153,6 +175,7 @@ const LoggerService = class {
                     }
                 });
         }
+        return Promise.resolve();
     }
 
     _loadSettingsFromServer(forceReload) {
@@ -173,27 +196,36 @@ const LoggerService = class {
     }
 
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
-        let logEntryLoggingLevelOrdinal = LoggerService.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        return (
-            LoggerService.settings &&
-            LoggerService.settings.isEnabled === true &&
-            LoggerService.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal
-        );
+        if (LoggerService.settings && LoggerService.settings.supportedLoggingLevels && LoggerService.settings.userLoggingLevel) {
+            const currentIsEnabled =
+                LoggerService.settings.isEnabled === true &&
+                LoggerService.settings.userLoggingLevel.ordinal <= LoggerService.settings?.supportedLoggingLevels[logEntryLoggingLevel];
+            return currentIsEnabled ? LOADING_ENUM.enabled : LOADING_ENUM.disabled;
+        }
+        return LOADING_ENUM.loading;
     }
 
     _newEntry(loggingLevel, message) {
-        // Builder is returned immediately but console log will be determined after loadding settings from server
+        // Builder is returned immediately but console log will be determined after loading settings from server
         const logEntryBuilder = newLogEntry(loggingLevel, this._loadSettingsFromServer);
         logEntryBuilder.setMessage(message);
         if (this.#scenario) {
             logEntryBuilder.scenario = this.#scenario;
         }
         const loggingPromise = this._loadSettingsFromServer().then(() => {
-            if (this._meetsUserLoggingLevel(loggingLevel) === true) {
-                this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
+            const isEnabledEnum = this._meetsUserLoggingLevel(loggingLevel);
+            if (isEnabledEnum === LOADING_ENUM.enabled || isEnabledEnum === LOADING_ENUM.loading) {
+                const componentLogEntry = logEntryBuilder.getComponentLogEntry();
+                componentLogEntry.loadingEnum = isEnabledEnum;
+                this.#componentLogEntries.push(componentLogEntry);
+            }
+            if (this.#isSavingLog) {
+                this.#isSavingLog = false;
+                this.saveLog();
             }
         });
         this.#loggingPromises.push(loggingPromise);
+
         return logEntryBuilder;
     }
 };

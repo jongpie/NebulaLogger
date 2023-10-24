@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.11.NEXT",
-            "versionName": "Reduced Usage of Email Limits Consumption in LoggerEmailSender",
-            "versionDescription": "Updated LoggerEmailSender to use the instance method Messaging.SingleEmailMessage.setTargetObjectId() when sending failure emails to internal users, which does not count towards the transactional email limits",
+            "versionNumber": "4.11.12.NEXT",
+            "versionName": "Bugfix for Lightning Component Entries Not Always Saving",
+            "versionDescription": "Fixed an issue in the logger LWC where log entries in lightning components would be lost while trying to load LoggerSettings__c for the current user",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -159,6 +159,7 @@
         "Nebula Logger - Core@4.11.9-new-fields-log__c.loggedbyusernametext__c-and-logentry__c.loggedbyusernametext__c": "04t5Y000001OigJQAS",
         "Nebula Logger - Core@4.11.10-conditional-visibility-for-http-response-headers": "04t5Y000001OigxQAC",
         "Nebula Logger - Core@4.11.11-reduced-usage-of-email-limits-consumption-in-loggeremailsender": "04t5Y000001Oih7QAC",
+        "Nebula Logger - Core@4.11.12-bugfix-for-lightning-component-entries-not-always-saving": "04t5Y000001Mjx5QAC",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
