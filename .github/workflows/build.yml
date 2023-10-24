@@ -300,7 +300,6 @@ jobs:
             - name: 'Temporarily delete problematic metadata'
               run: |
                   rm -rf ./config/experience-cloud/
-                  rm -rf ./nebula-logger/unsorted/main/default/profiles/
 
             - name: 'Create Beta Managed Package Version'
               run: npm run package:version:create:managed

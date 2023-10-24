@@ -953,10 +953,12 @@ global with sharing class LogEntryEventBuilder {
             return null;
         }
 
-        // Record field-stripping isn't done by reference, so the map's values have to be reassigned
-        Map<String, SObject> strippedRecordIdToRecord = new Map<String, SObject>(); //changed key type from Id to String
+        // In Apex, a Map<Id, SObject> with a null ID value will break during serialization,
+        // so convert it to a Map<String, SObject> first
+        Map<String, SObject> strippedRecordIdToRecord = new Map<String, SObject>();
         for (Id recordId : recordIdToRecord.keySet()) {
             SObject record = recordIdToRecord.get(recordId);
+            // Record field-stripping isn't done by reference, so the record has to be reassigned
             record = isRecordFieldStrippingEnabled == false ? record : stripInaccessible(record);
             String recordIdString = recordId == null ? '' : recordId;
             strippedRecordIdToRecord.put(recordIdString, record);
