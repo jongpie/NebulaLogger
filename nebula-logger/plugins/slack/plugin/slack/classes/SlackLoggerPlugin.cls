@@ -210,13 +210,13 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
         String lastLogEntryMessage = 'Last Log Entry Message' + '\n```' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '```';
         LogDto notification = new LogDto();
-        notification.author_link = System.URL.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
+        notification.author_link = System.URL.getOrgDomainUrl().toExternalForm() + '/' + log.LoggedBy__c;
         notification.author_name = log.LoggedBy__r.Username;
         notification.color = this.getNotificationColor(log);
         notification.fields = new List<FieldDto>();
         notification.text = lastLogEntryMessage;
         notification.title = log.Name;
-        notification.title_link = System.URL.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
+        notification.title_link = System.URL.getOrgDomainUrl().toExternalForm() + '/' + log.Id;
 
         return notification;
     }

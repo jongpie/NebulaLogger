@@ -103,7 +103,7 @@ private class NebulaLogger_E2E_Tests {
 
         // Since this save method relies on a standard API endpoint to create the data, there won't be any records in Log__c or LogEntry__c
         // So instead, the callout is tested
-        String expectedEndpoint = System.URL.getSalesforceBaseUrl().toExternalForm() + '/services/data/' + getOrganizationApiVersion() + '/composite/sobjects';
+        String expectedEndpoint = System.URL.getOrgDomainUrl().toExternalForm() + '/services/data/' + getOrganizationApiVersion() + '/composite/sobjects';
         System.Assert.areEqual(expectedEndpoint, mockCallout.request.getEndpoint());
         Map<String, Object> untypedRequestBody = (Map<String, Object>) JSON.deserializeUntyped(mockCallout.request.getBody());
         Boolean requestAllOrNone = (Boolean) untypedRequestBody.get('allOrNone');
