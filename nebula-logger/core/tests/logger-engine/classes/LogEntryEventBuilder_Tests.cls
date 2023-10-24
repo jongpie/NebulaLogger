@@ -1023,10 +1023,10 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Map<Id, SObject> userIdToUser = new Map<Id, SObject>{null => new User(Id = System.UserInfo.getUserId())};
+        Map<Id, SObject> userIdToUser = new Map<Id, SObject>{ null => new User(Id = System.UserInfo.getUserId()) };
         builder.setRecord(userIdToUser);
 
-        Map<String, SObject> userIdStringToUser = new Map<String, SObject>{'' => userIdToUser.get(null)};
+        Map<String, SObject> userIdStringToUser = new Map<String, SObject>{ '' => userIdToUser.get(null) };
         System.Assert.areEqual(userIdToUser.size(), builder.getLogEntryEvent().RecordCollectionSize__c);
         System.Assert.areEqual('Map', builder.getLogEntryEvent().RecordCollectionType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);

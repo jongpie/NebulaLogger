@@ -97,7 +97,7 @@ private class LogEntryEventBuilder_Tests_Security {
                 .populateMockId()
                 .populateRequiredFields()
                 .getRecord();
-                mockIdToAccountBrand.put(mockAccountBrand.Id, mockAccountBrand);
+            mockIdToAccountBrand.put(mockAccountBrand.Id, mockAccountBrand);
 
             // The 'standard user' profile doesn't have access to AccountBrand,
             // so stripAccessible will remove everything except the ID field
@@ -106,7 +106,7 @@ private class LogEntryEventBuilder_Tests_Security {
         }
         // Previous versions of Nebula Logger would throw a runtime exception if the Map contained a null key,
         // so add one to ensure it works as expected
-        AccountBrand anotherMockAccountBrand =  (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
+        AccountBrand anotherMockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
             .populateRequiredFields()
             .getRecord();
         mockIdToAccountBrand.put(null, anotherMockAccountBrand);
