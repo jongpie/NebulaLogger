@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.11.12.NEXT",
-            "versionName": "Bugfix for Lightning Component Entries Not Always Saving",
-            "versionDescription": "Fixed an issue in the logger LWC where log entries in lightning components would be lost while trying to load LoggerSettings__c for the current user",
+            "versionNumber": "4.12.0.NEXT",
+            "versionName": "Winter '24 Release",
+            "versionDescription": "Updated all metadata to API v59.0, fixed a bug with logging Map<Id, SObject>, added new formula fields on Log__c & LogEntry__c for scenario names, added more metadata to the managed package",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
