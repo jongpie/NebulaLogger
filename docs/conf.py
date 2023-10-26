@@ -31,7 +31,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.duration',
-    'sphinx.ext.intersphinx',
+    'sphinx.ext.intersphinx'
 ]
 
 # intersphinx_mapping = {
