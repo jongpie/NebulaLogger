@@ -27,7 +27,7 @@ Contents
    :hidden:
    :caption: 📚 Reference
 
-   /api/index
+   api/index
 
 
 
