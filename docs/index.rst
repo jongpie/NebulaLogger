@@ -20,5 +20,7 @@ Contents
 
    index
    usage
-   api
+   api/index
+   Assigning-Permission-Sets
+   Slack-Plugin
    another-folder/index
