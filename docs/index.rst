@@ -21,7 +21,9 @@ Contents
    index
    usage
    api/index
-   Assigning-Permission-Sets
-   Slack-Plugin
-   Logger-for-Apex
+   wiki/Assigning-Permission-Sets
+   wiki/Slack-Plugin
+   wiki/Logger-for-Apex
+   usage
    another-folder/index
+   installation
