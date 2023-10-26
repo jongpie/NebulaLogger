@@ -13,15 +13,6 @@ This project is under active development, and I don't know how Read the Docs wor
 
 ```{toctree}
 :maxdepth: 2
-:caption: 'Contents:'
-
-wiki/index
-installation
-usage
-```
-
-```{toctree}
-:maxdepth: 2
 :caption: '🚀 Getting Started'
 
 getting-started/architecture
@@ -39,9 +30,11 @@ configuring/custom-metadata-type-log-entry-data-mask-rule
 ```
 
 <!-- TODO add a section for customizing other CMDT records -->
+<!-- TODO add a section for plugin framework -->
+<!-- TODO add a section for ISV guidelines -->
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 8
 :caption: '📚 Admin & Developer Implementation Reference'
 
 api/apex/index
