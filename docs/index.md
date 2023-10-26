@@ -33,11 +33,16 @@ installation
 :caption: '⚙ Configuring'
 
 configuring/permission-sets
+configuring/custom-hierarchy-object-logger-settings
+configuring/custom-metadata-type-logger-parameter
+configuring/custom-metadata-type-log-entry-data-mask-rule
 ```
+
+<!-- TODO add a section for customizing other CMDT records -->
 
 ```{toctree}
 :maxdepth: 2
-:caption: '📚 Developer Docs/Reference'
+:caption: '📚 Admin & Developer Implementation Reference'
 
 api/apex/index
 api/flow/index
