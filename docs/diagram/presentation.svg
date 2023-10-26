@@ -1,0 +1,1275 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">    
+    <svg id="cumulusci-diagram" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" viewBox="0 0 576 1093" width="100%" height="100%">
+      <defs>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" viewBox="-1 -2 4 4" markerWidth="4" markerHeight="4" color="#007aff">
+          <g>
+            <path d="M 1.92 0 L 0 -.72 L 0 .72 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <font-face font-family="octicons" font-size="16" panose-1="2 0 5 3 0 0 0 0 0 0" units-per-em="1000" underline-position="9.765625" underline-thickness="73.797345" slope="0" x-height="541.01562" cap-height="721.6797" ascent="812.5" descent="-187.5" font-weight="500">
+          <font-face-src>
+            <font-face-name name="octicons"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="16" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="14" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="12" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_2" viewBox="-1 -3 6 6" markerWidth="6" markerHeight="6" color="#007aff">
+          <g>
+            <path d="M 3.2 0 L 0 -1.2 L 0 1.2 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="lime">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <font-face font-family="Lucida Grande" font-size="10" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="octicons" font-size="20" panose-1="2 0 5 3 0 0 0 0 0 0" units-per-em="1000" underline-position="9.765625" underline-thickness="70.84545" slope="0" x-height="541.01562" cap-height="721.6797" ascent="812.5" descent="-187.5" font-weight="500">
+          <font-face-src>
+            <font-face-name name="octicons"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="1" panose-1="2 0 8 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="975.002" descent="-217.00044" font-weight="bold">
+          <font-face-src>
+            <font-face-name name="LucidaGrande-Bold"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="1" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="952.00193" descent="-213.00043" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="5" panose-1="2 0 8 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="975.002" descent="-217.00044" font-weight="bold">
+          <font-face-src>
+            <font-face-name name="LucidaGrande-Bold"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="5" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="952.00193" descent="-213.00043" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_2" viewBox="-3 -3 6 6" markerWidth="6" markerHeight="6" color="#007aff">
+          <g>
+            <path d="M 2 0 L -1.2 -1.2 L 0 0 L 0 0 L -1.2 1.2 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_3" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="#007aff">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_4" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="#ff8000">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_5" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#093">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_6" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#ff8000" opacity=".31">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_7" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#c30">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_8" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#093" opacity=".31">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <font-face font-family="octicons" font-size="12" panose-1="2 0 5 3 0 0 0 0 0 0" units-per-em="1000" underline-position="9.765625" underline-thickness="78.717168" slope="0" x-height="541.01562" cap-height="721.6797" ascent="812.5" descent="-187.5" font-weight="500">
+          <font-face-src>
+            <font-face-name name="octicons"/>
+          </font-face-src>
+        </font-face>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_9" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="red" opacity=".31">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_a" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="#ff8000" opacity=".31">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_b" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#007aff">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+      </defs>
+      <g id="canvas1" stroke="none" stroke-opacity="1" stroke-dasharray="none" fill="none" fill-opacity="1">
+        <title>Canvas 1</title>
+
+        <g id="layer-github">
+          <title>Version Contron (GitHub)</title>
+          <rect x="0" y="158.43615" width="576" height="363.56385" fill="#333" fill-opacity="0"/>
+          <rect x="0" y="162" width="36" height="360" fill="black" fill-opacity=".1"/>
+          <text transform="translate(28.5 265) rotate(90)" fill="black" fill-opacity=".72">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="black" fill-opacity=".72" x=".276" y="15">Version Control (GitHub)</tspan>
+          </text>
+          <line x1="54.439266" y1="404.47266" x2="500.54073" y2="405.44323" marker-end="url(#FilledArrow_Marker)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"/>
+          <circle cx="62.719633" cy="405.21963" r="18.219662" fill="#007aff"/>
+          <circle cx="62.719633" cy="405.21963" r="18.219662" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <g class="step">
+            <text transform="translate(87.428487 415.0869)" fill="black" data-toggle="popover" data-content="Master branch, ready to be packaged" data-placement="right">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".040039062" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.040039" y="15"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="14" font-weight="500" x="15.102539" y="15">dev</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-developer">
+          <title>Developer</title>
+          <rect x="0" y="0" width="576" height="162" fill="#333"/>
+          <rect x="0" y="0" width="36" height="162" fill="black" fill-opacity=".1"/>
+          <text transform="translate(29.5 43.5) rotate(90)" fill="white" fill-opacity=".76">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="white" fill-opacity=".76" x=".204" y="15">Developer</tspan>
+          </text>
+
+          <g class="step">
+            <rect x="486" y="9" width="81" height="54" id="path"/>
+            <clipPath id="clip_path">
+              <use xlink:href="#path"/>
+            </clipPath>
+            <g clip-path="url(#clip_path)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.79411765 0 0 .75 486 9)"/>
+            </g>
+            <text transform="translate(491 28.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="15.973633" y="12">DE org</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 62.1 80 L 99.9 80 C 104.3712 80 108 86.72 108 95 C 108 103.28 104.3712 110 99.9 110 L 62.1 110 C 57.6288 110 54 103.28 54 95 C 54 86.72 57.6288 80 62.1 80" fill="lime" data-toggle="popover" data-content="git clone git@github.com:OWNER/REPO" data-placement="right" />
+            <text transform="translate(64.4 85.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="2.06875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.06875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="15.13125" y="15"></tspan>
+            </text>
+            <line x1="108" y1="95" x2="467.1" y2="95" marker-end="url(#FilledArrow_Marker_2)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+          </g>
+
+          <g class="step" data-toggle="popover" data-content="git checkout -b feature/1">
+            <text transform="translate(43 60.5)" fill="white">
+              <tspan font-family="octicons" font-size="16" font-weight="500" fill="white" x=".4951172" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="white" x="10.495117" y="15"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x="15.557617" y="15">feature/1</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="141.05217" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="141.05217" cy="95" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="git add; git commit" data-placement="bottom" />
+            <path d="M 140.25874 84.52984 C 141.19092 66.73274 153.55177 31.314107 234 19 C 307.52922 7.744977 414.65592 19.354845 476.7964 28.14052" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(408.81797 32.699912)" fill="white">
+              <tspan font-family="octicons" font-size="20" font-weight="500" fill="white" x="40" y="16"></tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".815" y="32">Manual deployment</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".365" y="44">(Force IDE, Ant, etc)</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="195.15643" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="195.15643" cy="95" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 189.15056 86.385106 C 180.71399 71.26915 173.36819 40.398843 243 28 C 306.54343 16.685272 413.965 24.354668 476.74367 30.491346" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="275.78619" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="275.78619" cy="95" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 266.30661 90.478113 C 244.21628 79.30454 195.33773 50.334224 252 37 C 300.7263 25.533332 411.78175 29.32857 476.71827 32.842387" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="334.34865" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="334.34865" cy="95" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 324.336 91.831027 C 298.55471 83.292395 234.90696 59.538753 279 46 C 315.7427 34.718167 415.63764 34.11013 476.6967 34.90684" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="387.11411" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="387.11411" cy="95" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 376.88984 92.603267 C 350.26115 86.072995 282.98992 67.549395 315 54 C 340.72551 43.110768 422.69446 38.770124 476.70752 37.067178" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="438.00985" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="438.00985" cy="95" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 427.64695 93.30388 C 402.15824 88.87984 339.90315 76.399394 360 63 C 375.23267 52.843756 433.42489 45.06142 476.7473 40.517777" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+        </g>
+
+        <g id="layer-github-feature1">
+          <title>GitHub (feature/1)</title>
+          <g class="step">
+            <path d="M 63.02754 404.49134 L 63.02754 385.39134 L 63.02754 297 L 108.439266 297 L 399.43927 297 L 399.43927 351 L 399.43927 372.91326" marker-end="url(#SharpArrow_Marker_2)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+            <text transform="translate(68 305.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".4951172" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.495117" y="15"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="15.557617" y="15">feature/1</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="63" cy="297.39" r="9.0000144" fill="white"/>
+            <circle cx="63" cy="297.39" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="108.756616" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="108.756616" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="269.72132" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="269.72132" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="325.47179" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="325.47179" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="360.73476" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="360.73476" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-github-feature1-merge">
+          <circle cx="398.80388" cy="405.22188" r="18.219662" fill="#007aff"/>
+          <circle cx="398.80388" cy="405.22188" r="18.219662" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+
+        <g id="layer-github-feature1-pull">
+          <path d="M 138.03765 282 L 173.91265 282 C 178.15615 282 181.60015 288.72 181.60015 297 C 181.60015 305.28 178.15615 312 173.91265 312 L 138.03765 312 C 133.79415 312 130.35015 305.28 130.35015 297 C 130.35015 288.72 133.79415 282 138.03765 282" fill="lime" data-toggle="popover" data-content="GitHub Pull Request" data-placement="bottom"/>
+          <text transform="translate(140.47515 287.5)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="2.96875" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.96875" y="15"> </tspan>
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="16.03125" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="28.03125" y="15"> </tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 212.50735 282 L 245.75735 282 C 249.69035 282 252.88235 288.72 252.88235 297 C 252.88235 305.28 249.69035 312 245.75735 312 L 212.50735 312 C 208.57435 312 205.38235 305.28 205.38235 297 C 205.38235 288.72 208.57435 282 212.50735 282" fill="red" data-toggle="popover" data-content="Reviewer requests changes" data-placement="bottom"/>
+            <text transform="translate(215.13235 287.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 382.13535 282 L 413.63535 282 C 417.36135 282 420.38535 288.72 420.38535 297 C 420.38535 305.28 417.36135 312 413.63535 312 L 382.13535 312 C 378.40935 312 375.38535 305.28 375.38535 297 C 375.38535 288.72 378.40935 282 382.13535 282" fill="lime" data-toggle="popover" data-content="Reviewer merges Pull Request" data-placement="bottom"/>
+            <text transform="translate(384.88535 287.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature">
+          <title>Jenkins (feature)</title>
+          <g class="step" data-toggle="popover" data-content="Developer Edition Org">
+            <rect x="144" y="188" width="81" height="54" id="path_2"/>
+            <clipPath id="clip_path_2">
+              <use xlink:href="#path_2"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_2)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.79411765 0 0 .75 144 188)"/>
+            </g>
+            <text transform="translate(149 207.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="14.87207" y="12">feature</tspan>
+            </text>
+          </g>
+          <g class="step" data-toggle="popover" data-content="Jenkins, open source CI server">
+            <rect x="344.51733" y="198" width="30.816" height="36" id="path_3"/>
+            <clipPath id="clip_path_3">
+              <use xlink:href="#path_3"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_3)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(344.51733 198) scale(.144)"/>
+            </g>
+          </g>
+          <g class="step">
+            <text transform="translate(315 199.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".035" y="10">feature</tspan>
+            </text>
+            <path d="M 344.51733 216.30574 C 320.11012 216.78311 271.55852 217.63826 234.30346 217.50729" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-toggle="popover" data-content="Ant + Force.com Migration Tool" data-placement="bottom" />
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature1">
+          <title>Jenkins (feature/1)</title>
+          <g class="step">
+            <line x1="360.65381" y1="286.50055" x2="360.20742" y2="243.2995" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <line x1="225" y1="233.84124" x2="344.98336" y2="289.65939" marker-end="url(#SharpArrow_Marker_5)" stroke="#093" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="360.7623" cy="297" r="9.0000144" fill="#6f6"/>
+            <circle cx="360.7623" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Passed" data-placement="bottom"/>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature1-history1">
+          <title>Jenkins (feature/1 history 1)</title>
+          <line x1="329.6075" y1="287.334" x2="349.57617" y2="240.35025" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+
+          <g class="step">
+            <line x1="225" y1="238.5533" x2="310.45577" y2="288.25122" marker-end="url(#SharpArrow_Marker_7)" stroke="#c30" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="325.49933" cy="297" r="9.0000144" fill="red"/>
+            <circle cx="325.49933" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Failed" data-placement="bottom"/>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature1-history2">
+          <title>Jenkins (feature/1 history 2)</title>
+
+          <line x1="277.56048" y1="289.9833" x2="339.38411" y2="234.45092" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+
+          <g class="step">
+            <line x1="212.56975" y1="242" x2="257.20855" y2="284.9376" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="269.74886" cy="297" r="9.0000144" fill="#6f6"/>
+            <circle cx="269.74886" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <line x1="118.77936" y1="293.77627" x2="337.95044" y2="223.08751" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="159.56917" y1="242" x2="120.58831" y2="284.21614" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="108.784155" cy="297" r="9.0000144" fill="#6f6"/>
+            <circle cx="108.784155" cy="297" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <line x1="73.155676" y1="294.61352" x2="337.86285" y2="222.0481" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="144.6923" y1="242" x2="77.429288" y2="287.62185" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="63.02754" cy="297.39" r="9.0000144" fill="#6f6"/>
+            <circle cx="63.02754" cy="297.39" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-developer-github">
+          <title>Developer - GitHub</title>
+
+          <g class="step">
+            <path d="M 135.44268 103.8787 C 125.69001 119.78022 105.09532 155.43028 88.83435 197.61001 C 75.812007 231.38898 69.17654 259.99805 65.92224 277.80522" marker-end="url(#SharpArrow_Marker_3)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 100.99424 121.75913 L 132.49424 121.75913 C 136.22024 121.75913 139.24424 128.47913 139.24424 136.75913 C 139.24424 145.03913 136.22024 151.75913 132.49424 151.75913 L 100.99424 151.75913 C 97.26824 151.75913 94.24424 145.03913 94.24424 136.75913 C 94.24424 128.47913 97.26824 121.75913 100.99424 121.75913" fill="lime"/>
+            <text transform="translate(103.74424 127.25913)" fill="black" data-toggle="popover" data-content="git push" data-placement="bottom">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 265.60858 97.588507 C 241.58522 104.31109 180.57251 125.03885 143.215845 170.2242 C 111.494164 208.59367 106.8313 252.50163 107.20283 277.27299" marker-end="url(#SharpArrow_Marker_3)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 164.51338 121.788545 L 196.01338 121.788545 C 199.73938 121.788545 202.76338 128.508545 202.76338 136.788545 C 202.76338 145.068545 199.73938 151.788545 196.01338 151.788545 L 164.51338 151.788545 C 160.78738 151.788545 157.76338 145.068545 157.76338 136.788545 C 157.76338 128.508545 160.78738 121.788545 164.51338 121.788545" fill="lime"/>
+            <text transform="translate(167.26338 127.288545)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 325.02362 99.83247 C 306.56828 110.206024 265.96546 137.2716 252 180.94084 C 239.86421 218.88878 251.62737 257.54198 260.93064 279.27908" marker-end="url(#SharpArrow_Marker_3)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 261.78904 122.498264 L 293.28904 122.498264 C 297.01504 122.498264 300.03904 129.21826 300.03904 137.49826 C 300.03904 145.77826 297.01504 152.49826 293.28904 152.49826 L 261.78904 152.49826 C 258.06304 152.49826 255.03904 145.77826 255.03904 137.49826 C 255.03904 129.21826 258.06304 122.498264 261.78904 122.498264" fill="lime"/>
+            <text transform="translate(264.53904 127.99826)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+          <g class="step step-pull-push">
+            <path d="M 321.33963 287.35605 C 313.81362 268.17927 299.88817 223.35922 313.11376 180 C 324.42627 142.91267 352.15573 118.19626 370.27242 105.39275" marker-end="url(#SharpArrow_Marker_3)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 318.44864 122.4537 L 353.44864 122.4537 C 357.58864 122.4537 360.94864 129.1737 360.94864 137.4537 C 360.94864 145.7337 357.58864 152.4537 353.44864 152.4537 L 318.44864 152.4537 C 314.30864 152.4537 310.94864 145.7337 310.94864 137.4537 C 310.94864 129.1737 314.30864 122.4537 318.44864 122.4537" fill="#ff3"/>
+            <text transform="translate(320.94864 127.9537)" fill="black" data-toggle="popover" data-content="git pull" data-placement="bottom">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+          <g class="step step-pull-push">
+            <path d="M 439.2967 105.42134 C 439.86422 118.23304 438.17215 142.94025 424 180 C 409.17195 218.7749 385.40628 258.71806 371.62175 280.4455" marker-end="url(#SharpArrow_Marker_3)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 420.57418 123.24326 L 452.07418 123.24326 C 455.80018 123.24326 458.82418 129.96326 458.82418 138.24326 C 458.82418 146.52326 455.80018 153.24326 452.07418 153.24326 L 420.57418 153.24326 C 416.84818 153.24326 413.82418 146.52326 413.82418 138.24326 C 413.82418 129.96326 416.84818 123.24326 420.57418 123.24326" fill="lime"/>
+            <text transform="translate(423.32418 128.74326)" fill="black" >
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-background-beta">
+          <title>BG - Beta</title>
+          <rect x="0" y="522" width="576" height="243" fill="#a7caff" fill-opacity=".69"/>
+          <rect x="0" y="522" width="36" height="243" fill="black" fill-opacity=".1"/>
+          <text transform="translate(29.5 547.5) rotate(90)" fill="white">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="white" x=".372" y="15">Managed Package - Beta</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta-orgs">
+          <rect x="76" y="459" width="81" height="54" id="path_4" data-toggle="popover" data-content="DE org, tests unmanaged code"/>
+          <clipPath id="clip_path_4">
+            <use xlink:href="#path_4"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_4)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.79411765 0 0 .75 76 459)"/>
+          </g>
+          <text transform="translate(81 478.5)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="25.27539" y="12">dev</tspan>
+          </text>
+
+          <g class="step" data-toggle="popover" data-content="DE org, tests beta managed package">
+            <rect x="77" y="657" width="81" height="54" id="path_5"/>
+            <clipPath id="clip_path_5">
+              <use xlink:href="#path_5"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_5)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.79411765 0 0 .75 77 657)"/>
+            </g>
+            <text transform="translate(82 676.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="26.21875" y="12">uat</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-beta2-flow">
+          <title>Beta 2 - Flow</title>
+          <rect x="288" y="441" width="30.816" height="36" id="path_6"/>
+          <clipPath id="clip_path_6">
+            <use xlink:href="#path_6"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_6)">
+            <image xlink:href="img/image3.png" width="214" height="250" transform="translate(288 441) scale(.144)"/>
+          </g>
+          <line x1="382.92846" y1="414.17144" x2="326.91737" y2="445.74692" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(319 462.5)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".1" y="10">dev_flow</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta2-dev-uat">
+          <title>Beta 2 - dev / uat</title>
+          <line x1="288" y1="461.22578" x2="166.20446" y2="478.8199" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(187.37832 474.53332)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".35" y="10">dev</tspan>
+          </text>
+          <text transform="translate(282 477.5)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".46" y="10">uat</tspan>
+          </text>
+          <line x1="303.72" y1="477" x2="303.87082" y2="485.7014" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        </g>
+
+        <g id="layer-beta2-package-upload">
+          <title>Beta 2 - package upload</title>
+          <line x1="304.87663" y1="549" x2="305.15919" y2="569.25646" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(312 558.5)" fill="black" data-toggle="popover" data-content="Python Script + Selenium">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".415" y="10">uat_package_upload</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta2-package">
+          <path d="M 265.12988 627.44444 L 265.12988 583.44444 L 273.22988 578.55556 L 346.12988 578.55556 L 346.12988 622.55556 L 338.02988 627.44444 Z" fill="#996"/>
+          <path d="M 265.12988 627.44444 L 265.12988 583.44444 L 273.22988 578.55556 L 346.12988 578.55556 L 346.12988 622.55556 L 338.02988 627.44444 L 265.12988 627.44444 M 265.12988 583.44444 L 338.02988 583.44444 L 346.12988 578.55556 M 338.02988 583.44444 L 338.02988 627.44444" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <text transform="translate(270.12988 588.44444)" fill="black">
+            <tspan font-family="octicons" font-size="20" font-weight="500" x="21.45" y="16"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="41.45" y="16"> </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="3.674121" y="32">1.0 (Beta 2)</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta2-test">
+          <title>Beta 2 - test</title>
+          <line x1="265.12988" y1="620.43742" x2="166.54191" y2="662.88483" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(209.65147 628.01242) rotate(-23)" fill="black" data-toggle="popover" data-content="Ant: deployManagedUAT">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".125" y="10">uat_test</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta2-github-release">
+          <title>Beta 2 - github release</title>
+          <path d="M 158.00001 683.5733 C 220.40754 681.0751 338.8403 668.64876 396 612.0023 C 454.10793 554.4161 428.96993 470.87463 411.08833 429.8421" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(316.67103 660.738) rotate(-26)" fill="black" data-toggle="popover" data-content="Python Script">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".455" y="10">uat_github_release</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta2-tag">
+          <text transform="translate(391.26775 394.30883)" fill="black">
+            <tspan font-family="octicons" font-size="20" font-weight="500" x="0" y="16"></tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="17.5" y="16"> uat/1.0-Beta_2</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta2-mrbelvedere">
+          <title>Beta 2 - mrbelvedere</title>
+          <rect x="377" y="684" width="72" height="54" id="path_7"/>
+          <clipPath id="clip_path_7">
+            <use xlink:href="#path_7"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_7)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .75 377 684)"/>
+          </g>
+          <rect x="364" y="684" width="72" height="54" id="path_8"/>
+          <clipPath id="clip_path_8">
+            <use xlink:href="#path_8"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_8)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .75 364 684)"/>
+          </g>
+          <rect x="351" y="693" width="72" height="54" id="path_9"/>
+          <clipPath id="clip_path_9">
+            <use xlink:href="#path_9"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_9)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .75 351 693)"/>
+          </g>
+          <rect x="366" y="693" width="72" height="54" id="path_a"/>
+          <clipPath id="clip_path_a">
+            <use xlink:href="#path_a"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_a)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .75 366 693)"/>
+          </g>
+          <text transform="translate(371 705)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="7.1640625" y="12">UAT</tspan>
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="21.71875" y="27">Testers</tspan>
+          </text>
+
+          <g class="step">
+            <rect x="189" y="693" width="99" height="54" id="path_b"/>
+            <clipPath id="clip_path_b">
+              <use xlink:href="#path_b"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_b)">
+              <image xmlns="http://www.w3.org/2000/svg" xlink:href="img/image12.png" width="175" height="137" transform="translate(180 683)"/>
+            </g>
+            <text transform="translate(191 743.5)" fill="#007aff">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" fill="#007aff" x=".158" y="11">mrbelvedere</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <line x1="158" y1="696.0496" x2="180.08616" y2="702.62067" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(100 716.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".175" y="10">mrbelvedere_uat</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 288 724.58655 C 306.1038 725.91824 326.64054 727.02128 345 727.02128 C 349.1891 727.02128 353.0867 726.96385 356.71125 726.8594" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 306.44918 714.15503 L 334.44918 714.15503 C 337.76118 714.15503 340.44918 719.75503 340.44918 726.65503 C 340.44918 733.55503 337.76118 739.15503 334.44918 739.15503 L 306.44918 739.15503 C 303.13718 739.15503 300.44918 733.55503 300.44918 726.65503 C 300.44918 719.75503 303.13718 714.15503 306.44918 714.15503" fill="lime"/>
+            <text transform="translate(309.44918 719.15503)" fill="black">
+              <tspan font-family="octicons" font-size="12" font-weight="500" x=".1015625" y="12"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="6.1015625" y="12"> </tspan>
+              <tspan font-family="octicons" font-size="12" font-weight="500" x="9.8984375" y="12"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-github-feature2">
+          <title>GitHub (feature/2)</title>
+          <path d="M 91.438064 404.55315 L 91.438064 385.45315 L 91.438064 342 L 110.81892 342 L 278.74886 342 L 278.74886 369 L 278.74886 372.7119" marker-end="url(#SharpArrow_Marker_2)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+          <text transform="translate(99.53906 347.5)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x=".4951172" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.495117" y="15"> </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="15.557617" y="15">feature/2</tspan>
+          </text>
+
+          <g class="step">
+            <circle cx="91.643095" cy="342" r="9.0000144" fill="white"/>
+            <circle cx="91.643095" cy="342" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="153.07779" cy="342" r="9.0000144" fill="white"/>
+            <circle cx="153.07779" cy="342" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-github-feature2-merge">
+          <circle cx="277.09833" cy="404.9571" r="18.219662" fill="#007aff"/>
+          <circle cx="277.09833" cy="404.9571" r="18.219662" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+
+        <g id="layer-github-feature2-pull">
+          <path d="M 184.88097 327 L 220.75597 327 C 224.99947 327 228.44347 333.72 228.44347 342 C 228.44347 350.28 224.99947 357 220.75597 357 L 184.88097 357 C 180.63747 357 177.19347 350.28 177.19347 342 C 177.19347 333.72 180.63747 327 184.88097 327" fill="lime"/>
+          <text transform="translate(187.31847 332.5)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="2.96875" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.96875" y="15"> </tspan>
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="16.03125" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="28.03125" y="15"> </tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 261.09651 327 L 292.59651 327 C 296.32251 327 299.34651 333.72 299.34651 342 C 299.34651 350.28 296.32251 357 292.59651 357 L 261.09651 357 C 257.37051 357 254.34651 350.28 254.34651 342 C 254.34651 333.72 257.37051 327 261.09651 327" fill="lime"/>
+            <text transform="translate(263.84651 332.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature2">
+          <title>Jenkins (feature/2)</title>
+          <line x1="101.17706" y1="337.5348" x2="338.27196" y2="226.17065" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <line x1="164.76462" y1="242" x2="101.93936" y2="327.95134" marker-end="url(#SharpArrow_Marker_9)" stroke="red" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <circle cx="91.670635" cy="342" r="9.0000144" fill="red"/>
+          <circle cx="91.670635" cy="342" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+
+          <g class="step">
+            <line x1="162.07437" y1="336.53583" x2="338.62475" y2="228.97686" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <line x1="177.82554" y1="242" x2="157.28133" y2="325.10695" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="153.10533" cy="342" r="9.0000144" fill="#6f6"/>
+            <circle cx="153.10533" cy="342" r="9.0000144" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-beta1">
+          <title>Beta 1</title>
+          <rect x="198" y="432" width="30.816" height="36" id="path_c"/>
+          <clipPath id="clip_path_c">
+            <use xlink:href="#path_c"/>
+          </clipPath>
+          <line x1="262.22045" y1="415.47899" x2="234.44953" y2="435.11906" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <image xlink:href="img/image3.png" width="214" height="250" opacity=".31370633" transform="translate(198 432) scale(.144)"/>
+
+          <g class="step">
+            <line x1="198" y1="455.72386" x2="163.46811" y2="468.552" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <line x1="228.816" y1="462.17863" x2="264.92727" y2="490.72133" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="267" y1="538.2" x2="163.83421" y2="582.76762" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <path d="M 76.5 627.44444 L 76.5 583.44444 L 84.6 578.55556 L 157.5 578.55556 L 157.5 622.55556 L 149.4 627.44444 Z" fill="#996" fill-opacity=".31"/>
+            <path d="M 76.5 627.44444 L 76.5 583.44444 L 84.6 578.55556 L 157.5 578.55556 L 157.5 622.55556 L 149.4 627.44444 L 76.5 627.44444 M 76.5 583.44444 L 149.4 583.44444 L 157.5 578.55556 M 149.4 583.44444 L 149.4 627.44444" stroke="black" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <text transform="translate(81.5 588.44444)" fill="black" fill-opacity=".31">
+              <tspan font-family="octicons" font-size="20" font-weight="500" fill="black" fill-opacity=".31" x="21.45" y="16"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="black" fill-opacity=".31" x="41.45" y="16"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" fill-opacity=".31" x="3.674121" y="32">1.0 (Beta 1)</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <line x1="117.15089" y1="627.44444" x2="117.29074" y2="650.10013" marker-end="url(#SharpArrow_Marker_6)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <path d="M 144.42839 657.0001 C 161.71312 637.6651 185.22363 607.8101 208.56494 567 C 238.12793 515.31185 258.33021 461.94175 268.77439 431.18559" marker-end="url(#SharpArrow_Marker_a)" stroke="#ff8000" stroke-opacity=".31" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+        </g>
+
+        <g id="layer-beta1-tag">
+          <text transform="translate(269.93883 393.3782)" fill="black">
+            <tspan font-family="octicons" font-size="20" font-weight="500" x="0" y="16"></tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="17.5" y="16"> uat/1.0-Beta_1</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta1-dev-to-feature">
+          <title>Beta 1 - dev_to_feature</title>
+          <rect x="311.184" y="333" width="30.816" height="36" id="path_d"/>
+          <clipPath id="clip_path_d">
+            <use xlink:href="#path_d"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_d)">
+            <image xlink:href="img/image3.png" width="214" height="250" transform="translate(311.184 333) scale(.144)"/>
+          </g>
+          <line x1="289.41444" y1="391.5303" x2="304.89748" y2="374.65096" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <line x1="326.22778" y1="333" x2="325.8999" y2="316.79597" marker-end="url(#SharpArrow_Marker_3)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(309.89583 367.66667)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".44" y="10">dev_to_feature</tspan>
+          </text>
+          <text transform="translate(309 316.5)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x=".2875" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="12.2875" y="15">  </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="22.4125" y="15">dev</tspan>
+          </text>
+        </g>
+
+        <g id="layer-background-release">
+          <title>BG - Release</title>
+          <rect x="0" y="765" width="576" height="270" fill="#009"/>
+          <rect x="0" y="765" width="36" height="270" fill="black" fill-opacity=".1"/>
+          <text transform="translate(29 789) rotate(90)" fill="white" fill-opacity=".75">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="white" fill-opacity=".75" x=".344" y="15">Managed Package - Production</tspan>
+          </text>
+        </g>
+
+        <g id="layer-release-tag">
+          <title>Release - Tag</title>
+          <path d="M 515.8125 436 L 556.9375 436 C 561.802 436 565.75 444.736 565.75 455.5 C 565.75 466.264 561.802 475 556.9375 475 L 515.8125 475 C 510.948 475 507 466.264 507 455.5 C 507 444.736 510.948 436 515.8125 436" fill="lime"/>
+          <text transform="translate(517.875 441)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="14.5" y="13"></tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".22607422" y="27">Release</tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 536.07632 475 C 535.13894 482.43587 532.98374 490.25612 528.32597 495 C 526.4993 496.86045 524.43052 498.1023 522.25064 498.8798" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(517.5 501.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="0" y="10">rel_tag</tspan>
+            </text>
+            <rect x="482.184" y="477" width="30.816" height="36" id="path_10"/>
+            <clipPath id="clip_path_10">
+              <use xlink:href="#path_10"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_10)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(482.184 477) scale(.144)"/>
+            </g>
+          </g>
+
+          <g class="step">
+            <path d="M 482.184 494.66328 C 474.73268 493.7431 466.3623 491.43815 461.4657 486 C 459.14433 483.42192 457.84896 480.41206 457.2357 477.29462" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 434.4375 441 L 487.8125 441 C 494.126 441 499.25 447.048 499.25 454.5 C 499.25 461.952 494.126 468 487.8125 468 L 434.4375 468 C 428.124 468 423 461.952 423 454.5 C 423 447.048 428.124 441 434.4375 441" fill="#007aff"/>
+            <text transform="translate(435.625 446)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="0" y="13"></tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="14" y="13"> rel/1.0</tspan>
+            </text>
+            <path d="M 436.3434 441 C 432.19712 438.3347 427.8766 435.32072 423.67694 432 C 420.40858 429.41567 417.49793 426.87052 414.92455 424.4386" marker-end="url(#SharpArrow_Marker_b)" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <path d="M 443.63196 468 C 425.73846 481.217 396.71021 501.05785 369 513 C 362.47504 515.81204 356.47434 517.99167 350.98482 519.66408" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(370.78073 496.91873) rotate(-29)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".13" y="10">rel</tspan>
+            </text>
+            <rect x="386.89745" y="477.55815" width="30.816" height="36" id="path_f"/>
+            <clipPath id="clip_path_f">
+              <use xlink:href="#path_f"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_f)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(386.89745 477.55815) scale(.144)"/>
+            </g>
+          </g>
+        </g>
+
+        <g id="layer-release-upload">
+          <title>Release - Upload</title>
+          <path d="M 342 521.06525 C 372.83468 524.06517 415.46668 537.50013 441 585 C 471.23125 641.23947 467.60657 726.8407 462.5948 773.7643" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 442.3035 606.4545 L 466.8035 606.4545 C 469.7015 606.4545 472.0535 612.0545 472.0535 618.9545 C 472.0535 625.8545 469.7015 631.4545 466.8035 631.4545 L 442.3035 631.4545 C 439.4055 631.4545 437.0535 625.8545 437.0535 618.9545 C 437.0535 612.0545 439.4055 606.4545 442.3035 606.4545" fill="lime"/>
+          <text transform="translate(445.5535 611.4545)" fill="black">
+            <tspan font-family="octicons" font-size="12" font-weight="500" x=".3515625" y="12"></tspan>
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="6.3515625" y="12"> </tspan>
+            <tspan font-family="octicons" font-size="12" font-weight="500" x="10.1484375" y="12"></tspan>
+          </text>
+        </g>
+
+        <g id="layer-release-package">
+          <path d="M 417.43927 831.8889 L 417.43927 787.8889 L 425.53927 783 L 498.43927 783 L 498.43927 827 L 490.33927 831.8889 Z" fill="#996"/>
+          <path d="M 417.43927 831.8889 L 417.43927 787.8889 L 425.53927 783 L 498.43927 783 L 498.43927 827 L 490.33927 831.8889 L 417.43927 831.8889 M 417.43927 787.8889 L 490.33927 787.8889 L 498.43927 783 M 490.33927 787.8889 L 490.33927 831.8889" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <text transform="translate(422.43927 792.8889)" fill="black">
+            <tspan font-family="octicons" font-size="20" font-weight="500" x="21.45" y="16"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="41.45" y="16"> </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="23.544727" y="32">1.0</tspan>
+          </text>
+        </g>
+
+        <g id="layer-release-test">
+          <g class="step">
+            <title>Release - Test</title>
+            <rect x="81" y="783" width="81" height="51" id="path_e"/>
+            <clipPath id="clip_path_e">
+              <use xlink:href="#path_e"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_e)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.79411765 0 0 .70833333 81 783)"/>
+            </g>
+            <text transform="translate(86 801)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="27.967773" y="12">rel</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 315.59463 781 L 362.84463 781 C 368.43363 781 372.96963 792.872 372.96963 807.5 C 372.96963 822.128 368.43363 834 362.84463 834 L 315.59463 834 C 310.00563 834 305.46963 822.128 305.46963 807.5 C 305.46963 792.872 310.00563 781 315.59463 781" fill="lime"/>
+            <text transform="translate(317.21963 786)" fill="black">
+              <tspan font-family="octicons" font-size="12" font-weight="500" x="19" y="10"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="1.7763672" y="25">GitHub</tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x=".071289062" y="40">Release</tspan>
+            </text>
+            <line x1="417.43927" y1="807.4634" x2="382.26963" y2="807.47985" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <line x1="305.4698" y1="807.65117" x2="252.2999" y2="807.88933" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <rect x="212.184" y="790" width="30.816" height="36" id="path_11"/>
+            <clipPath id="clip_path_11">
+              <use xlink:href="#path_11"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_11)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(212.184 790) scale(.144)"/>
+            </g>
+            <line x1="212.184" y1="808.0726" x2="171.2999" y2="808.2653" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(246.5 812.5)" fill="white">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".295" y="10">rel_test</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-release-push">
+          <title>Release - Push</title>
+          <rect x="498" y="962" width="72" height="51" id="path_12"/>
+          <clipPath id="clip_path_12">
+            <use xlink:href="#path_12"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_12)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 498 962)"/>
+          </g>
+          <rect x="492" y="975" width="72" height="51" id="path_13"/>
+          <clipPath id="clip_path_13">
+            <use xlink:href="#path_13"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_13)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 492 975)"/>
+          </g>
+          <rect x="477" y="970" width="72" height="51" id="path_14"/>
+          <clipPath id="clip_path_14">
+            <use xlink:href="#path_14"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_14)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 477 970)"/>
+          </g>
+          <rect x="489" y="966" width="72" height="51" id="path_15"/>
+          <clipPath id="clip_path_15">
+            <use xlink:href="#path_15"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_15)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 489 966)"/>
+          </g>
+          <text transform="translate(494 976.5)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="2.7373047" y="12">Customer</tspan>
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="17.083984" y="27">Orgs</tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 498.43927 810.43167 C 511.1 815.5316 523.66398 825.8655 531 846 C 542.585 877.7963 537.8104 924.9167 532.32004 956.8496" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 509.21486 824.37706 L 556.01705 824.37706 C 561.5531 824.37706 566.0461 836.24906 566.0461 850.87706 C 566.0461 865.50506 561.5531 877.37706 556.01705 877.37706 L 509.21486 877.37706 C 503.67883 877.37706 499.18582 865.50506 499.18582 850.87706 C 499.18582 836.24906 503.67883 824.37706 509.21486 824.37706" fill="lime"/>
+            <text transform="translate(510.87184 829.37706)" fill="black">
+                <tspan font-family="octicons" font-size="16" font-weight="500" x="17.744112" y="15"></tspan>
+                <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="25.744112" y="15"> </tspan>
+                <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="9.8422563" y="29">push</tspan>
+                <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".054658645" y="41"> upgrade</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-release-trialforce">
+          <title>Release - TrialForce</title>
+          <rect x="387" y="962" width="72" height="51" id="path_16"/>
+          <clipPath id="clip_path_16">
+            <use xlink:href="#path_16"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_16)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 387 962)"/>
+          </g>
+          <rect x="381" y="975" width="72" height="51" id="path_17"/>
+          <clipPath id="clip_path_17">
+            <use xlink:href="#path_17"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_17)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 381 975)"/>
+          </g>
+          <rect x="366" y="970" width="72" height="51" id="path_18"/>
+          <clipPath id="clip_path_18">
+            <use xlink:href="#path_18"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_18)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 366 970)"/>
+          </g>
+          <rect x="378" y="966" width="72" height="51" id="path_19"/>
+          <clipPath id="clip_path_19">
+            <use xlink:href="#path_19"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_19)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 378 966)"/>
+          </g>
+          <text transform="translate(383 976.5)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="3.671875" y="12">New Trial </tspan>
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="17.083984" y="27">Orgs</tspan>
+          </text>
+
+          <g class="step">
+            <rect x="396" y="876" width="72" height="51" id="path_1a"/>
+            <clipPath id="clip_path_1a">
+              <use xlink:href="#path_1a"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_1a)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 396 876)"/>
+            </g>
+            <text transform="translate(401 894)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="5.4003906" y="12">template</tspan>
+            </text>
+            <line x1="501.17034" y1="866.6983" x2="476.30774" y2="879.20743" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <path d="M 396 909.40953 C 372.1826 915.9149 344.8272 926.36404 342 940.5 C 339.74036 951.7982 353.62022 963.09736 369.7801 972.1783" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 315.33814 919.5733 L 376.58814 919.5733 C 383.83314 919.5733 389.71314 925.6213 389.71314 933.0733 C 389.71314 940.5253 383.83314 946.5733 376.58814 946.5733 L 315.33814 946.5733 C 308.09314 946.5733 302.21314 940.5253 302.21314 933.0733 C 302.21314 925.6213 308.09314 919.5733 315.33814 919.5733" fill="lime"/>
+            <text transform="translate(315.96314 924.5733)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".09765625" y="13"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="8.0976562" y="13"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="11.894531" y="13">TrialForce</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-release-mrbelvedere">
+          <title>Release - mrbelvedere</title>
+          <rect x="63" y="962" width="72" height="51" id="path_1c"/>
+          <clipPath id="clip_path_1c">
+            <use xlink:href="#path_1c"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_1c)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 63 962)"/>
+          </g>
+          <rect x="57" y="975" width="72" height="51" id="path_1d"/>
+          <clipPath id="clip_path_1d">
+            <use xlink:href="#path_1d"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_1d)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 57 975)"/>
+          </g>
+          <rect x="42" y="970" width="72" height="51" id="path_1e"/>
+          <clipPath id="clip_path_1e">
+            <use xlink:href="#path_1e"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_1e)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 42 970)"/>
+          </g>
+          <rect x="54" y="966" width="72" height="51" id="path_1f"/>
+          <clipPath id="clip_path_1f">
+            <use xlink:href="#path_1f"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_1f)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 54 966)"/>
+          </g>
+
+          <text transform="translate(59 969)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="18.601562" y="12">New </tspan>
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="13.462891" y="27">Install </tspan>
+            <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="17.083984" y="42">Orgs</tspan>
+          </text>
+
+          <g class="step">
+            <rect x="165" y="962" width="72" height="51" id="path_20"/>
+            <clipPath id="clip_path_20">
+              <use xlink:href="#path_20"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_20)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 165 962)"/>
+            </g>
+            <rect x="159" y="975" width="72" height="51" id="path_21"/>
+            <clipPath id="clip_path_21">
+              <use xlink:href="#path_21"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_21)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 159 975)"/>
+            </g>
+            <rect x="144" y="970" width="72" height="51" id="path_22"/>
+            <clipPath id="clip_path_22">
+              <use xlink:href="#path_22"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_22)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 144 970)"/>
+            </g>
+            <rect x="156" y="966" width="72" height="51" id="path_23"/>
+            <clipPath id="clip_path_23">
+              <use xlink:href="#path_23"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_23)">
+              <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.70588235 0 0 .70833333 156 966)"/>
+            </g>
+            <text transform="translate(161 969)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="8" y="12">NPSP v2</tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="6.4375" y="27">Upgrade</tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="17.083984" y="42">Orgs</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <rect x="45" y="848" width="99" height="54" id="path_24"/>
+            <clipPath id="clip_path_24">
+              <use xlink:href="#path_24"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_24)">
+              <image xmlns="http://www.w3.org/2000/svg" xlink:href="img/image12.png" width="175" height="137" transform="translate(35 838.01064)"/>
+            </g>
+            <text transform="translate(49 898.5)" fill="#017aff">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" fill="#017aff" x=".158" y="11">mrbelvedere</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 450.33596 831.8889 C 442.9217 839.67674 429.37034 848.06434 405 855 C 358.7893 868.1513 289.0661 871.703 252.30103 872.65595" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 347.72526 848.70073 L 379.22526 848.70073 C 382.95126 848.70073 385.97526 855.42073 385.97526 863.70073 C 385.97526 871.98073 382.95126 878.70073 379.22526 878.70073 L 347.72526 878.70073 C 343.99926 878.70073 340.97526 871.98073 340.97526 863.70073 C 340.97526 855.42073 343.99926 848.70073 347.72526 848.70073" fill="lime"/>
+            <text transform="translate(350.47526 854.20073)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+            <rect x="212.184" y="855" width="30.816" height="36" id="path_1b"/>
+            <clipPath id="clip_path_1b">
+              <use xlink:href="#path_1b"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_1b)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(212.184 855) scale(.144)"/>
+            </g>
+            <text transform="translate(246.5 875.5)" fill="white">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".29" y="10">mrbelvedere_release</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <line x1="212.184" y1="873.23154" x2="153.29895" y2="874.1164" marker-end="url(#SharpArrow_Marker_4)" stroke="#ff8000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <line x1="146.3927" y1="942.43395" x2="161.96592" y2="959.1882" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 127.35574 902 C 132.13665 909.0811 135.368705 917.45465 135 927 C 134.57166 938.0893 129.35121 949.0081 122.60718 958.61915" marker-end="url(#SharpArrow_Marker)" stroke="lime" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 120.77385 917.43395 L 148.77385 917.43395 C 152.08585 917.43395 154.77385 923.03395 154.77385 929.93395 C 154.77385 936.83395 152.08585 942.43395 148.77385 942.43395 L 120.77385 942.43395 C 117.46185 942.43395 114.773847 936.83395 114.773847 929.93395 C 114.773847 923.03395 117.46185 917.43395 120.77385 917.43395" fill="lime"/>
+            <text transform="translate(123.77385 922.43395)" fill="black">
+              <tspan font-family="octicons" font-size="12" font-weight="500" x=".1015625" y="12"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="6.1015625" y="12"> </tspan>
+              <tspan font-family="octicons" font-size="12" font-weight="500" x="9.8984375" y="12"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-packaging">
+          <title>Packaging</title>
+          <rect x="267" y="495" width="75" height="54" id="path_25"/>
+          <clipPath id="clip_path_25">
+            <use xlink:href="#path_25"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_25)">
+            <image xlink:href="img/image1.png" width="102" height="72" transform="matrix(.7352941 0 0 .75 267 495)"/>
+          </g>
+          <text transform="translate(272 516)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="7.5634766" y="10">packaging</tspan>
+          </text>
+        </g>
+
+        <g id="layer-content-deployCIPackageOrg">
+          <title>Content - deployCIPackageOrg</title>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="bold" x="0" y="1">Ant Target: deployCIPackageOrg</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="3">updateDependentPackages</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="5">deployUnpackagedPre</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="7">destroyStaleMetadata</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="8">    - Retrieve all metadata from package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="9">    - Compare to src/package.xml</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="10">    - Build and deploy destructiveChanges.xml for any </tspan>
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="11">       metadata in the package but not in the repo</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="12">    - Allow failure with this execution</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="14">updatePackageXmlManaged</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="15">    - Regenerates the package.xml for managed package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="16">    - Includes install and uninstall classes</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="18">deploy</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="20">destroyStaleMetadata</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="21">     - Same as before, but fail on deployment failure</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="23">deployUnpackagedPost</tspan>
+            </text>
+          </g>
+        </g>
+    
+        <g id="layer-content-deployCI">
+          <title>Content - deployCI</title>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="bold" x="0" y="5">Ant Target: deployCI</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="17">uninstall</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="23">    - Retrieve all metadata from Unmanaged Package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="29">    - Build and deploy destructiveChanges.xml</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="41">updateDependentPackages</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="47">    - Get version of all dependent managed packages</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="53">    - For any packages not at the right version...</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="59">    - Install, Upgrade, Uninstall, Downgrade</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="71">deployUnpackagedPre</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="77">    - Deploy each directory under unpackaged/pre</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="89">deploy</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="95">    - Deploy code in src directory</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="101">        - Do not run tests or rollback</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="107">        - Deploy into Unmanaged Package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="113">    - runAllTests</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="119">        - Uses blank package.xml with runAllTests="true"</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="131">deployUnpackagedPost</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="137">    - Deploy each directory under unpackaged/post</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="149">uninstallUnpackagedPost</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="155">    - Build destructiveChanges.xml from</tspan>
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="161">       each directory in unmanaged/post</tspan>
+            </text>
+          </g>
+        </g>
+
+      </g>
+    </svg>

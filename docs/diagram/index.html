@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Test</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+
+    <style>
+      #current_slide {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: .3em .7em;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: rgba(255, 255, 255, 0.5)
+      }
+      .popover {
+        max-width: 600px;
+      }
+      .popover-content {
+        font-size: 200%;
+      }
+
+    </style>
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/jquery.touchSwipe.min.js"></script>
+    <script src="js/snap.svg.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+    
+    <script src="presentation.json"></script>
+    <script src="js/presentation.js"></script>
+
+  </head>
+  <body>
+    <div id="current_slide">
+    </div>
+    <div id="svg-wrapper">
+
+    <svg id="presentation" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" viewBox="0 0 576 1093" width="100%" height="100%">
+      <defs>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" viewBox="-1 -2 4 4" markerWidth="4" markerHeight="4" color="#00b2e9">
+          <g>
+            <path d="M 1.92 0 L 0 -.72 L 0 .72 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <font-face font-family="octicons" font-size="16" panose-1="2 0 5 3 0 0 0 0 0 0" units-per-em="1000" underline-position="9.765625" underline-thickness="73.797345" slope="0" x-height="541.01562" cap-height="721.6797" ascent="812.5" descent="-187.5" font-weight="500">
+          <font-face-src>
+            <font-face-name name="octicons"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="16" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="14" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="12" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_2" viewBox="-1 -3 6 6" markerWidth="6" markerHeight="6" color="#00b2e9">
+          <g>
+            <path d="M 3.2 0 L 0 -1.2 L 0 1.2 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="#78bb43">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <font-face font-family="Lucida Grande" font-size="10" panose-1="2 11 6 0 4 5 2 2 2 4" units-per-em="1000" underline-position="-97.65625" underline-thickness="48.828125" slope="0" x-height="530.27344" cap-height="722.65625" ascent="966.7969" descent="-210.9375" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="octicons" font-size="20" panose-1="2 0 5 3 0 0 0 0 0 0" units-per-em="1000" underline-position="9.765625" underline-thickness="70.84545" slope="0" x-height="541.01562" cap-height="721.6797" ascent="812.5" descent="-187.5" font-weight="500">
+          <font-face-src>
+            <font-face-name name="octicons"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="1" panose-1="2 0 8 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="975.002" descent="-217.00044" font-weight="bold">
+          <font-face-src>
+            <font-face-name name="LucidaGrande-Bold"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="1" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="952.00193" descent="-213.00043" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="5" panose-1="2 0 8 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="975.002" descent="-217.00044" font-weight="bold">
+          <font-face-src>
+            <font-face-name name="LucidaGrande-Bold"/>
+          </font-face-src>
+        </font-face>
+        <font-face font-family="Lucida Grande" font-size="5" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="952.00193" descent="-213.00043" font-weight="500">
+          <font-face-src>
+            <font-face-name name="LucidaGrande"/>
+          </font-face-src>
+        </font-face>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_2" viewBox="-3 -3 6 6" markerWidth="6" markerHeight="6" color="#00b2e9">
+          <g>
+            <path d="M 2 0 L -1.2 -1.2 L 0 0 L 0 0 L -1.2 1.2 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_3" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="#00b2e9">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_4" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="#fbc200">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_5" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#093">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_6" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#fbc200"">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_7" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#c30">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_8" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#093">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <font-face font-family="octicons" font-size="12" panose-1="2 0 5 3 0 0 0 0 0 0" units-per-em="1000" underline-position="9.765625" underline-thickness="78.717168" slope="0" x-height="541.01562" cap-height="721.6797" ascent="812.5" descent="-187.5" font-weight="500">
+          <font-face-src>
+            <font-face-name name="octicons"/>
+          </font-face-src>
+        </font-face>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_9" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#ff0009">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_a" viewBox="-3 -3 7 6" markerWidth="7" markerHeight="6" color="#fbc200">
+          <g>
+            <path d="M 3 0 L -1.8 -1.8 L 0 0 L 0 0 L -1.8 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+        <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="SharpArrow_Marker_b" viewBox="-4 -4 10 8" markerWidth="10" markerHeight="8" color="#00b2e9">
+          <g>
+            <path d="M 5 0 L -3 -3 L 0 0 L 0 0 L -3 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+          </g>
+        </marker>
+      </defs>
+      <g id="canvas1" stroke="none" stroke-opacity="1" stroke-dasharray="none" fill="none" fill-opacity="1">
+        <title>Canvas 1</title>
+
+        <g id="layer-github">
+          <title>Version Contron (GitHub)</title>
+          <rect x="0" y="158.43615" width="576" height="363.56385" fill="#333" fill-opacity="0"/>
+          <rect x="0" y="162" width="36" height="360" fill="black" fill-opacity=".1"/>
+          <text transform="translate(28.5 265) rotate(90)" fill="black" fill-opacity=".72">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="black" fill-opacity=".72" x=".276" y="15">Version Control (GitHub)</tspan>
+          </text>
+          <line x1="54.439266" y1="404.47266" x2="500.54073" y2="405.44323" marker-end="url(#FilledArrow_Marker)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"/>
+          <circle cx="62.719633" cy="405.21963" r="18.219662" fill="#00b2e9"/>
+          <circle cx="62.719633" cy="405.21963" r="18.219662" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <g class="step">
+            <text transform="translate(87.428487 415.0869)" fill="black" data-toggle="popover" data-content="Master branch, ready to be packaged" data-placement="right">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".040039062" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.040039" y="15"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="14" font-weight="500" x="15.102539" y="15">master</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-developer">
+          <title>Developer</title>
+          <rect x="0" y="0" width="576" height="162" fill="#020202"/>
+          <rect x="0" y="0" width="36" height="162" fill="black" fill-opacity=".1"/>
+          <text transform="translate(29.5 43.5) rotate(90)" fill="white" fill-opacity=".76">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="white" fill-opacity=".76" x=".204" y="15">Developer</tspan>
+          </text>
+
+          <g class="step" data-toggle="popover" data-content="Each developer works in their own DE org" data-placement="left">
+            <path d="M 561.06756 33.73254 L 567 36 L 561.06756 38.26746 L 566.20863 41.27364 L 559.76184 42.75 L 563.9147 46.33614 L 557.15202 46.9161 L 560.15793 50.97636 L 553.35474 50.71284 L 555.13512 55.09008 L 548.52957 53.92962 L 548.96454 58.46508 L 542.87415 56.46114 L 541.96452 60.94314 L 536.5853 58.20102 L 534.37077 62.47242 L 529.9012 59.04504 L 526.5 63 L 523.05912 59.04504 L 518.58954 62.47242 L 516.4147 58.20102 L 510.9958 60.94314 L 510.08616 56.46114 L 503.99577 58.46508 L 504.43074 53.92962 L 497.826 55.09008 L 499.60557 50.71284 L 492.80238 50.97636 L 495.8083 46.9161 L 489.0456 46.33614 L 493.19847 42.75 L 486.75168 41.27364 L 491.89275 38.26746 L 486 36 L 491.89275 33.73254 L 486.75168 30.72636 L 493.19847 29.25 L 489.0456 25.66386 L 495.8083 25.0839 L 492.80238 21.02364 L 499.60557 21.28716 L 497.826 16.90992 L 504.43074 18.07038 L 503.99577 13.53492 L 510.08616 15.53886 L 510.9958 11.05686 L 516.4147 13.79898 L 518.58954 9.52758 L 523.05912 12.90258 L 526.4603 9 L 529.9012 12.90258 L 534.37077 9.52758 L 536.5853 13.79898 L 541.96452 11.05686 L 542.87415 15.53886 L 548.96454 13.53492 L 548.52957 18.07038 L 555.13512 16.90992 L 553.35474 21.28716 L 560.15793 21.02364 L 557.15202 25.0839 L 563.9147 25.66386 L 559.76184 29.25 L 566.20863 30.72636 L 561.06756 33.73254 Z" fill="white"/>
+            <path d="M 561.06756 33.73254 L 567 36 L 561.06756 38.26746 L 566.20863 41.27364 L 559.76184 42.75 L 563.9147 46.33614 L 557.15202 46.9161 L 560.15793 50.97636 L 553.35474 50.71284 L 555.13512 55.09008 L 548.52957 53.92962 L 548.96454 58.46508 L 542.87415 56.46114 L 541.96452 60.94314 L 536.5853 58.20102 L 534.37077 62.47242 L 529.9012 59.04504 L 526.5 63 L 523.05912 59.04504 L 518.58954 62.47242 L 516.4147 58.20102 L 510.9958 60.94314 L 510.08616 56.46114 L 503.99577 58.46508 L 504.43074 53.92962 L 497.826 55.09008 L 499.60557 50.71284 L 492.80238 50.97636 L 495.8083 46.9161 L 489.0456 46.33614 L 493.19847 42.75 L 486.75168 41.27364 L 491.89275 38.26746 L 486 36 L 491.89275 33.73254 L 486.75168 30.72636 L 493.19847 29.25 L 489.0456 25.66386 L 495.8083 25.0839 L 492.80238 21.02364 L 499.60557 21.28716 L 497.826 16.90992 L 504.43074 18.07038 L 503.99577 13.53492 L 510.08616 15.53886 L 510.9958 11.05686 L 516.4147 13.79898 L 518.58954 9.52758 L 523.05912 12.90258 L 526.4603 9 L 529.9012 12.90258 L 534.37077 9.52758 L 536.5853 13.79898 L 541.96452 11.05686 L 542.87415 15.53886 L 548.96454 13.53492 L 548.52957 18.07038 L 555.13512 16.90992 L 553.35474 21.28716 L 560.15793 21.02364 L 557.15202 25.0839 L 563.9147 25.66386 L 559.76184 29.25 L 566.20863 30.72636 L 561.06756 33.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(498.29 30)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="11.938027" y="10" textLength="32.543945">DE org</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 62.1 80 L 99.9 80 C 104.3712 80 108 86.72 108 95 C 108 103.28 104.3712 110 99.9 110 L 62.1 110 C 57.6288 110 54 103.28 54 95 C 54 86.72 57.6288 80 62.1 80" fill="#78bb43" data-toggle="popover" data-content="Clone from GitHub" data-placement="right" />
+            <text transform="translate(64.4 85.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="2.06875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.06875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="15.13125" y="15"></tspan>
+            </text>
+            <line x1="108" y1="95" x2="467.1" y2="95" marker-end="url(#FilledArrow_Marker_2)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+          </g>
+
+          <g class="step" data-toggle="popover" data-content="Create a branch from master">
+            <text transform="translate(43 60.5)" fill="white">
+              <tspan font-family="octicons" font-size="16" font-weight="500" fill="white" x=".4951172" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="white" x="10.495117" y="15"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x="15.557617" y="15">feature/1</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="141.05217" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="141.05217" cy="95" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Commit" data-placement="bottom" />
+            <path d="M 140.25874 84.52984 C 141.19092 66.73274 153.55177 31.314107 234 19 C 307.52922 7.744977 414.65592 19.354845 476.7964 28.14052" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(408.81797 32.699912)" fill="white">
+              <tspan font-family="octicons" font-size="20" font-weight="500" fill="white" x="40" y="16"></tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".815" y="32">Manual deployment</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".365" y="44">(Force IDE, Ant, etc)</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="195.15643" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="195.15643" cy="95" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 189.15056 86.385106 C 180.71399 71.26915 173.36819 40.398843 243 28 C 306.54343 16.685272 413.965 24.354668 476.74367 30.491346" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="275.78619" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="275.78619" cy="95" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 266.30661 90.478113 C 244.21628 79.30454 195.33773 50.334224 252 37 C 300.7263 25.533332 411.78175 29.32857 476.71827 32.842387" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="334.34865" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="334.34865" cy="95" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 324.336 91.831027 C 298.55471 83.292395 234.90696 59.538753 279 46 C 315.7427 34.718167 415.63764 34.11013 476.6967 34.90684" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="387.11411" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="387.11411" cy="95" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 376.88984 92.603267 C 350.26115 86.072995 282.98992 67.549395 315 54 C 340.72551 43.110768 422.69446 38.770124 476.70752 37.067178" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <circle cx="438.00985" cy="95" r="9.0000144" fill="white"/>
+            <circle cx="438.00985" cy="95" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" />
+            <path d="M 427.64695 93.30388 C 402.15824 88.87984 339.90315 76.399394 360 63 C 375.23267 52.843756 433.42489 45.06142 476.7473 40.517777" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+        </g>
+
+        <g id="layer-github-feature2">
+          <title>GitHub (feature/2)</title>
+          <path d="M 91.438064 404.55315 L 91.438064 385.45315 L 91.438064 342 L 110.81892 342 L 278.74886 342 L 278.74886 369 L 278.74886 372.7119" marker-end="url(#SharpArrow_Marker_2)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+          <text transform="translate(99.53906 347.5)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x=".4951172" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.495117" y="15"> </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="15.557617" y="15">feature/2</tspan>
+          </text>
+
+          <g class="step">
+            <circle cx="91.643095" cy="342" r="9.0000144" fill="white"/>
+            <circle cx="91.643095" cy="342" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="153.07779" cy="342" r="9.0000144" fill="white"/>
+            <circle cx="153.07779" cy="342" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-github-feature2-merge">
+          <circle cx="277.09833" cy="404.9571" r="18.219662" fill="#00b2e9"/>
+          <circle cx="277.09833" cy="404.9571" r="18.219662" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+
+        <g id="layer-github-feature2-pull">
+          <path d="M 184.88097 327 L 220.75597 327 C 224.99947 327 228.44347 333.72 228.44347 342 C 228.44347 350.28 224.99947 357 220.75597 357 L 184.88097 357 C 180.63747 357 177.19347 350.28 177.19347 342 C 177.19347 333.72 180.63747 327 184.88097 327" fill="#78bb43"/>
+          <text transform="translate(187.31847 332.5)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="2.96875" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.96875" y="15"> </tspan>
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="16.03125" y="15"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="28.03125" y="15"> </tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 261.09651 327 L 292.59651 327 C 296.32251 327 299.34651 333.72 299.34651 342 C 299.34651 350.28 296.32251 357 292.59651 357 L 261.09651 357 C 257.37051 357 254.34651 350.28 254.34651 342 C 254.34651 333.72 257.37051 327 261.09651 327" fill="#78bb43"/>
+            <text transform="translate(263.84651 332.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature2">
+          <title>Jenkins (feature/2)</title>
+          <line x1="101.17706" y1="337.5348" x2="338.27196" y2="226.17065" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <g class="step">
+            <line x1="164.76462" y1="242" x2="101.93936" y2="327.95134" marker-end="url(#SharpArrow_Marker_9)" stroke="#ff0009" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="91.670635" cy="342" r="9.0000144" fill="#ff0009"/>
+            <circle cx="91.670635" cy="342" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <line x1="162.07437" y1="336.53583" x2="338.62475" y2="228.97686" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="177.82554" y1="242" x2="157.28133" y2="325.10695" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="153.10533" cy="342" r="9.0000144" fill="#6f6"/>
+            <circle cx="153.10533" cy="342" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-beta1">
+          <title>Beta 1</title>
+          <rect x="198" y="432" width="30.816" height="36" id="path_c"/>
+          <clipPath id="clip_path_c">
+            <use xlink:href="#path_c"/>
+          </clipPath>
+          <line x1="262.22045" y1="415.47899" x2="234.44953" y2="435.11906" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <image xlink:href="img/image3.png" width="214" height="250" transform="translate(198 432) scale(.144)"/>
+
+          <g class="step">
+            <line x1="198" y1="455.72386" x2="163.46811" y2="468.552" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <line x1="228.816" y1="462.17863" x2="264.92727" y2="490.72133" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="267" y1="538.2" x2="163.83421" y2="582.76762" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <path d="M 76.5 627.44444 L 76.5 583.44444 L 84.6 578.55556 L 157.5 578.55556 L 157.5 622.55556 L 149.4 627.44444 Z" fill="#a58855" />
+            <path d="M 76.5 627.44444 L 76.5 583.44444 L 84.6 578.55556 L 157.5 578.55556 L 157.5 622.55556 L 149.4 627.44444 L 76.5 627.44444 M 76.5 583.44444 L 149.4 583.44444 L 157.5 578.55556 M 149.4 583.44444 L 149.4 627.44444" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <text transform="translate(81.5 588.44444)" fill="black">
+              <tspan font-family="octicons" font-size="20" font-weight="500" fill="black" x="21.45" y="16"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="black" x="41.45" y="16"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="3.674121" y="32">1.0 (Beta 1)</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <line x1="117.15089" y1="627.44444" x2="117.29074" y2="650.10013" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <path d="M 144.42839 657.0001 C 161.71312 637.6651 185.22363 607.8101 208.56494 567 C 238.12793 515.31185 258.33021 461.94175 268.77439 431.18559" marker-end="url(#SharpArrow_Marker_a)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+        </g>
+
+        <g id="layer-github-feature1">
+          <title>GitHub (feature/1)</title>
+          <g class="step">
+            <path d="M 63.02754 404.49134 L 63.02754 385.39134 L 63.02754 297 L 108.439266 297 L 399.43927 297 L 399.43927 351 L 399.43927 372.91326" marker-end="url(#SharpArrow_Marker_2)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+            <text transform="translate(68 305.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".4951172" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.495117" y="15"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="15.557617" y="15">feature/1</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-github-feature1-commits">
+          <g class="step">
+            <circle cx="63" cy="297.39" r="9.0000144" fill="white"/>
+            <circle cx="63" cy="297.39" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="108.756616" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="108.756616" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="269.72132" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="269.72132" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="325.47179" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="325.47179" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="360.73476" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="360.73476" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-content-feature1-commit-status">
+          <title>Content - Commit Status</title>
+          <rect x="376.98545" y="236.25" width="91.014545" height="27" id="path_15"/>
+          <clipPath id="clip_path_15">
+            <use xlink:href="#path_15"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_15)">
+            <image xlink:href="img/image17.png" width="927" height="275" transform="translate(376.98545 236.25) scale(.09818182)"/>
+          </g>
+          <ellipse cx="428.75" cy="261" rx="18.000029" ry="9.0000144" stroke="#00b2e7" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+
+        <g id="layer-content-feature1-pull-request">
+          <title>Content - Merge Pull</title>
+          <rect x="405" y="315" width="175.15966" height="27" id="path_16"/>
+          <clipPath id="clip_path_16">
+            <use xlink:href="#path_16"/>
+          </clipPath>
+          <g clip-path="url(#clip_path_16)">
+            <image xlink:href="img/image15.png" width="772" height="119" transform="translate(405 315) scale(.22689076)"/>
+          </g>
+          <ellipse cx="553.5" cy="333" rx="31.50005" ry="9.0000144" stroke="#00b2e7" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+
+        <g id="layer-github-feature1-merge">
+          <g class="step" data-toggle="popover" data-content="Merge commit contains all history from feature branch" data-placement="bottom">
+            <circle cx="398.80388" cy="405.22188" r="18.219662" fill="#00b2e9"/>
+            <circle cx="398.80388" cy="405.22188" r="18.219662" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature">
+          <title>Jenkins (feature)</title>
+          <g class="step" data-toggle="popover" data-content="DE org: tests all feature branch commits">
+            <path d="M 219.06756 212.73254 L 225 215 L 219.06756 217.26746 L 224.20863 220.27364 L 217.76184 221.75 L 221.91471 225.33614 L 215.15202 225.9161 L 218.15793 229.97636 L 211.35474 229.71284 L 213.13512 234.09008 L 206.52957 232.92962 L 206.96454 237.46508 L 200.87415 235.46114 L 199.96452 239.94314 L 194.58531 237.20102 L 192.37077 241.47242 L 187.90119 238.04504 L 184.5 242 L 181.05912 238.04504 L 176.58954 241.47242 L 174.41469 237.20102 L 168.99579 239.94314 L 168.08616 235.46114 L 161.99577 237.46508 L 162.43074 232.92962 L 155.826 234.09008 L 157.60557 229.71284 L 150.80238 229.97636 L 153.80829 225.9161 L 147.0456 225.33614 L 151.19847 221.75 L 144.75168 220.27364 L 149.89275 217.26746 L 144 215 L 149.89275 212.73254 L 144.75168 209.72636 L 151.19847 208.25 L 147.0456 204.66386 L 153.80829 204.0839 L 150.80238 200.02364 L 157.60557 200.28716 L 155.826 195.90992 L 162.43074 197.07038 L 161.99577 192.53492 L 168.08616 194.53886 L 168.99579 190.05686 L 174.41469 192.79898 L 176.58954 188.52758 L 181.05912 191.90258 L 184.46031 188 L 187.90119 191.90258 L 192.37077 188.52758 L 194.58531 192.79898 L 199.96452 190.05686 L 200.87415 194.53886 L 206.96454 192.53492 L 206.52957 197.07038 L 213.13512 195.90992 L 211.35474 200.28716 L 218.15793 200.02364 L 215.15202 204.0839 L 221.91471 204.66386 L 217.76184 208.25 L 224.20863 209.72636 L 219.06756 212.73254 Z" fill="white"/>
+            <path d="M 219.06756 212.73254 L 225 215 L 219.06756 217.26746 L 224.20863 220.27364 L 217.76184 221.75 L 221.91471 225.33614 L 215.15202 225.9161 L 218.15793 229.97636 L 211.35474 229.71284 L 213.13512 234.09008 L 206.52957 232.92962 L 206.96454 237.46508 L 200.87415 235.46114 L 199.96452 239.94314 L 194.58531 237.20102 L 192.37077 241.47242 L 187.90119 238.04504 L 184.5 242 L 181.05912 238.04504 L 176.58954 241.47242 L 174.41469 237.20102 L 168.99579 239.94314 L 168.08616 235.46114 L 161.99577 237.46508 L 162.43074 232.92962 L 155.826 234.09008 L 157.60557 229.71284 L 150.80238 229.97636 L 153.80829 225.9161 L 147.0456 225.33614 L 151.19847 221.75 L 144.75168 220.27364 L 149.89275 217.26746 L 144 215 L 149.89275 212.73254 L 144.75168 209.72636 L 151.19847 208.25 L 147.0456 204.66386 L 153.80829 204.0839 L 150.80238 200.02364 L 157.60557 200.28716 L 155.826 195.90992 L 162.43074 197.07038 L 161.99577 192.53492 L 168.08616 194.53886 L 168.99579 190.05686 L 174.41469 192.79898 L 176.58954 188.52758 L 181.05912 191.90258 L 184.46031 188 L 187.90119 191.90258 L 192.37077 188.52758 L 194.58531 192.79898 L 199.96452 190.05686 L 200.87415 194.53886 L 206.96454 192.53492 L 206.52957 197.07038 L 213.13512 195.90992 L 211.35474 200.28716 L 218.15793 200.02364 L 215.15202 204.0839 L 221.91471 204.66386 L 217.76184 208.25 L 224.20863 209.72636 L 219.06756 212.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(156.29 203)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="11.0200586" y="10" textLength="34.379883">feature</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="19.975137" y="22" textLength="16.469727">org</tspan>
+            </text>
+          </g>
+          <g class="step" data-toggle="popover" data-content="Jenkins">
+            <rect x="344.51733" y="198" width="30.816" height="36" id="path_3"/>
+            <clipPath id="clip_path_3">
+              <use xlink:href="#path_3"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_3)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(344.51733 198) scale(.144)"/>
+            </g>
+          </g>
+          <g class="step">
+            <text transform="translate(315 199.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".035" y="10">feature</tspan>
+            </text>
+            <path d="M 344.51733 216.30574 C 320.11012 216.78311 271.55852 217.63826 234.30346 217.50729" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" data-toggle="popover" data-content="ant deployCI: clean, deploy, test" data-placement="bottom" />
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature1">
+          <title>Jenkins (feature/1)</title>
+          <g class="step" data-toggle="popover" data-content="Each commit triggers a feature build" data-placement="right">
+            <line x1="73.155676" y1="294.61352" x2="337.86285" y2="222.0481" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="144.6923" y1="242" x2="77.429288" y2="287.62185" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" data-toggle="popover" data-content="Build status recorded on commit via GitHub Commit Status API" />
+            <circle cx="63.02754" cy="297.39" r="9.0000144" fill="#6f6"/>
+            <circle cx="63.02754" cy="297.39" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Passed" data-placement="bottom"/>
+          </g>
+
+          <g class="step">
+            <line x1="118.77936" y1="293.77627" x2="337.95044" y2="223.08751" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="159.56917" y1="242" x2="120.58831" y2="284.21614" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="108.784155" cy="297" r="9.0000144" fill="#6f6"/>
+            <circle cx="108.784155" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Passed" data-placement
+="bottom"/>
+          </g>
+
+          <g class="step">
+            <path d="M 138.03765 282 L 173.91265 282 C 178.15615 282 181.60015 288.72 181.60015 297 C 181.60015 305.28 178.15615 312 173.91265 312 L 138.03765 312 C 133.79415 312 130.35015 305.28 130.35015 297 C 130.35015 288.72 133.79415 282 138.03765 282" fill="#78bb43" data-toggle="popover" data-content="GitHub Pull Request" data-placement="bottom"/>
+            <text transform="translate(140.47515 287.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="2.96875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="10.96875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="16.03125" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="28.03125" y="15"> </tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 212.50735 282 L 245.75735 282 C 249.69035 282 252.88235 288.72 252.88235 297 C 252.88235 305.28 249.69035 312 245.75735 312 L 212.50735 312 C 208.57435 312 205.38235 305.28 205.38235 297 C 205.38235 288.72 208.57435 282 212.50735 282" fill="#ff0009" data-toggle="popover" data-content="Reviewer comments on the Pull Request with changes that need to be made" data-placement="bottom"/>
+            <text transform="translate(215.13235 287.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <line x1="277.56048" y1="289.9833" x2="339.38411" y2="234.45092" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="212.56975" y1="242" x2="257.20855" y2="284.9376" marker-end="url(#SharpArrow_Marker_8)" stroke="#093" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="269.74886" cy="297" r="9.0000144" fill="#6f6"/>
+            <circle cx="269.74886" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Passed: Developer resolved issues from code review" data-placement="bottom"/>
+          </g>
+
+          <g class="step">
+            <line x1="329.6075" y1="287.334" x2="349.57617" y2="240.35025" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <line x1="225" y1="238.5533" x2="310.45577" y2="288.25122" marker-end="url(#SharpArrow_Marker_7)" stroke="#c30" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="325.49933" cy="297" r="9.0000144" fill="#ff0009"/>
+            <circle cx="325.49933" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Failed" data-placement="bottom"/>
+          </g>
+
+          <g class="step">
+            <line x1="360.65381" y1="286.50055" x2="360.20742" y2="243.2995" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <line x1="225" y1="233.84124" x2="344.98336" y2="289.65939" marker-end="url(#SharpArrow_Marker_5)" stroke="#093" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="360.7623" cy="297" r="9.0000144" fill="#6f6"/>
+            <circle cx="360.7623" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Passed" data-placement="bottom"/>
+          </g>
+
+          <g class="step step-merge">
+            <path d="M 382.13535 282 L 413.63535 282 C 417.36135 282 420.38535 288.72 420.38535 297 C 420.38535 305.28 417.36135 312 413.63535 312 L 382.13535 312 C 378.40935 312 375.38535 305.28 375.38535 297 C 375.38535 288.72 378.40935 282 382.13535 282" fill="#78bb43" data-toggle="popover" data-content="Reviewer merges Pull Request" data-placement="bottom"/>
+            <text transform="translate(384.88535 287.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature1-pull">
+          <g class="step step-pull-push">
+            <line x1="329.6075" y1="287.334" x2="349.57617" y2="240.35025" marker-end="url(#SharpArrow_Marker_6)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step step-pull-push">
+            <line x1="225" y1="238.5533" x2="310.45577" y2="288.25122" marker-end="url(#SharpArrow_Marker_7)" stroke="#c30" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="325.49933" cy="297" r="9.0000144" fill="#ff0009"/>
+            <circle cx="325.49933" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Failed" data-placement="bottom"/>
+          </g>
+        </g>
+
+        <g id="layer-jenkins-feature1-push">
+          <line x1="360.65381" y1="286.50055" x2="360.20742" y2="243.2995" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+
+          <g class="step step-pull-push">
+            <line x1="225" y1="233.84124" x2="344.98336" y2="289.65939" marker-end="url(#SharpArrow_Marker_5)" stroke="#093" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <circle cx="360.7623" cy="297" r="9.0000144" fill="#6f6"/>
+            <circle cx="360.7623" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" data-toggle="popover" data-content="Build Passed" data-placement="bottom"/>
+          </g>
+        </g>
+
+        <g id="layer-developer-github">
+          <title>Developer - GitHub</title>
+          <g class="step">
+            <path d="M 135.44268 103.8787 C 125.69001 119.78022 105.09532 155.43028 88.83435 197.61001 C 75.812007 231.38898 69.17654 259.99805 65.92224 277.80522" marker-end="url(#SharpArrow_Marker_3)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 100.99424 121.75913 L 132.49424 121.75913 C 136.22024 121.75913 139.24424 128.47913 139.24424 136.75913 C 139.24424 145.03913 136.22024 151.75913 132.49424 151.75913 L 100.99424 151.75913 C 97.26824 151.75913 94.24424 145.03913 94.24424 136.75913 C 94.24424 128.47913 97.26824 121.75913 100.99424 121.75913" fill="#78bb43"/>
+            <text transform="translate(103.74424 127.25913)" fill="black" data-toggle="popover" data-content="Push to GitHub" data-placement="bottom">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="63" cy="297.39" r="9.0000144" fill="white"/>
+            <circle cx="63" cy="297.39" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <path d="M 265.60858 97.588507 C 241.58522 104.31109 180.57251 125.03885 143.215845 170.2242 C 111.494164 208.59367 106.8313 252.50163 107.20283 277.27299" marker-end="url(#SharpArrow_Marker_3)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 164.51338 121.788545 L 196.01338 121.788545 C 199.73938 121.788545 202.76338 128.508545 202.76338 136.788545 C 202.76338 145.068545 199.73938 151.788545 196.01338 151.788545 L 164.51338 151.788545 C 160.78738 151.788545 157.76338 145.068545 157.76338 136.788545 C 157.76338 128.508545 160.78738 121.788545 164.51338 121.788545" fill="#78bb43"/>
+            <text transform="translate(167.26338 127.288545)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="108.756616" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="108.756616" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <path d="M 325.02362 99.83247 C 306.56828 110.206024 265.96546 137.2716 252 180.94084 C 239.86421 218.88878 251.62737 257.54198 260.93064 279.27908" marker-end="url(#SharpArrow_Marker_3)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 261.78904 122.498264 L 293.28904 122.498264 C 297.01504 122.498264 300.03904 129.21826 300.03904 137.49826 C 300.03904 145.77826 297.01504 152.49826 293.28904 152.49826 L 261.78904 152.49826 C 258.06304 152.49826 255.03904 145.77826 255.03904 137.49826 C 255.03904 129.21826 258.06304 122.498264 261.78904 122.498264" fill="#78bb43"/>
+            <text transform="translate(264.53904 127.99826)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="269.72132" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="269.72132" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step">
+            <circle cx="325.47179" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="325.47179" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+
+          <g class="step step-pull-push">
+            <path d="M 321.33963 287.35605 C 313.81362 268.17927 299.88817 223.35922 313.11376 180 C 324.42627 142.91267 352.15573 118.19626 370.27242 105.39275" marker-end="url(#SharpArrow_Marker_3)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 318.44864 122.4537 L 353.44864 122.4537 C 357.58864 122.4537 360.94864 129.1737 360.94864 137.4537 C 360.94864 145.7337 357.58864 152.4537 353.44864 152.4537 L 318.44864 152.4537 C 314.30864 152.4537 310.94864 145.7337 310.94864 137.4537 C 310.94864 129.1737 314.30864 122.4537 318.44864 122.4537" fill="#fd0"/>
+            <text transform="translate(320.94864 127.9537)" fill="black" data-toggle="popover" data-content="Pull from GitHub" data-placement="bottom">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step step-pull-push">
+            <path d="M 439.2967 105.42134 C 439.86422 118.23304 438.17215 142.94025 424 180 C 409.17195 218.7749 385.40628 258.71806 371.62175 280.4455" marker-end="url(#SharpArrow_Marker_3)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 420.57418 123.24326 L 452.07418 123.24326 C 455.80018 123.24326 458.82418 129.96326 458.82418 138.24326 C 458.82418 146.52326 455.80018 153.24326 452.07418 153.24326 L 420.57418 153.24326 C 416.84818 153.24326 413.82418 146.52326 413.82418 138.24326 C 413.82418 129.96326 416.84818 123.24326 420.57418 123.24326" fill="#78bb43"/>
+            <text transform="translate(423.32418 128.74326)" fill="black" >
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <circle cx="360.73476" cy="297" r="9.0000144" fill="white"/>
+            <circle cx="360.73476" cy="297" r="9.0000144" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+
+        <g id="layer-background-beta">
+          <title>BG - Beta</title>
+          <rect x="0" y="522" width="576" height="243" fill="#a7d1e0" fill-opacity=".69"/>
+          <rect x="0" y="522" width="36" height="243" fill="black" fill-opacity=".1"/>
+          <text transform="translate(29.5 547.5) rotate(90)" fill="#235f96">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="#235f96" x=".372" y="15">Managed Package - Beta</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta-orgs">
+          <path d="M 151.06756 483.73254 L 157 486 L 151.06756 488.26746 L 156.20863 491.27364 L 149.76184 492.75 L 153.91471 496.33614 L 147.15202 496.9161 L 150.15793 500.97636 L 143.35474 500.71284 L 145.13512 505.09008 L 138.52957 503.92962 L 138.96454 508.46508 L 132.87415 506.46114 L 131.96452 510.94314 L 126.58531 508.20102 L 124.37077 512.47242 L 119.90119 509.04504 L 116.5 513 L 113.05912 509.04504 L 108.58954 512.47242 L 106.41469 508.20102 L 100.99579 510.94314 L 100.08616 506.46114 L 93.99577 508.46508 L 94.43074 503.92962 L 87.826 505.09008 L 89.60557 500.71284 L 82.80238 500.97636 L 85.80829 496.9161 L 79.0456 496.33614 L 83.19847 492.75 L 76.75168 491.27364 L 81.89275 488.26746 L 76 486 L 81.89275 483.73254 L 76.75168 480.72636 L 83.19847 479.25 L 79.0456 475.66386 L 85.80829 475.0839 L 82.80238 471.02364 L 89.60557 471.28716 L 87.826 466.90992 L 94.43074 468.07038 L 93.99577 463.53492 L 100.08616 465.53886 L 100.99579 461.05686 L 106.41469 463.79898 L 108.58954 459.52758 L 113.05912 462.90258 L 116.46031 459 L 119.90119 462.90258 L 124.37077 459.52758 L 126.58531 463.79898 L 131.96452 461.05686 L 132.87415 465.53886 L 138.96454 463.53492 L 138.52957 468.07038 L 145.13512 466.90992 L 143.35474 471.28716 L 150.15793 471.02364 L 147.15202 475.0839 L 153.91471 475.66386 L 149.76184 479.25 L 156.20863 480.72636 L 151.06756 483.73254 Z" fill="white"/>
+          <path d="M 151.06756 483.73254 L 157 486 L 151.06756 488.26746 L 156.20863 491.27364 L 149.76184 492.75 L 153.91471 496.33614 L 147.15202 496.9161 L 150.15793 500.97636 L 143.35474 500.71284 L 145.13512 505.09008 L 138.52957 503.92962 L 138.96454 508.46508 L 132.87415 506.46114 L 131.96452 510.94314 L 126.58531 508.20102 L 124.37077 512.47242 L 119.90119 509.04504 L 116.5 513 L 113.05912 509.04504 L 108.58954 512.47242 L 106.41469 508.20102 L 100.99579 510.94314 L 100.08616 506.46114 L 93.99577 508.46508 L 94.43074 503.92962 L 87.826 505.09008 L 89.60557 500.71284 L 82.80238 500.97636 L 85.80829 496.9161 L 79.0456 496.33614 L 83.19847 492.75 L 76.75168 491.27364 L 81.89275 488.26746 L 76 486 L 81.89275 483.73254 L 76.75168 480.72636 L 83.19847 479.25 L 79.0456 475.66386 L 85.80829 475.0839 L 82.80238 471.02364 L 89.60557 471.28716 L 87.826 466.90992 L 94.43074 468.07038 L 93.99577 463.53492 L 100.08616 465.53886 L 100.99579 461.05686 L 106.41469 463.79898 L 108.58954 459.52758 L 113.05912 462.90258 L 116.46031 459 L 119.90119 462.90258 L 124.37077 459.52758 L 126.58531 463.79898 L 131.96452 461.05686 L 132.87415 465.53886 L 138.96454 463.53492 L 138.52957 468.07038 L 145.13512 466.90992 L 143.35474 471.28716 L 150.15793 471.02364 L 147.15202 475.0839 L 153.91471 475.66386 L 149.76184 479.25 L 156.20863 480.72636 L 151.06756 483.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <g class="step" data-toggle="popover" data-content="DE org: tests master as unmanaged">
+            <text transform="translate(88.29 474)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="11.5303125" y="10" textLength="33.359375">master</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="19.975137" y="22" textLength="16.469727">org</tspan>
+            </text>
+          </g>
+
+          <g class="step" data-toggle="popover" data-content="DE org: tests beta managed package">
+            <path d="M 152.06756 681.73254 L 158 684 L 152.06756 686.26746 L 157.20863 689.27364 L 150.76184 690.75 L 154.91471 694.33614 L 148.15202 694.9161 L 151.15793 698.97636 L 144.35474 698.71284 L 146.13512 703.0901 L 139.52957 701.9296 L 139.96454 706.4651 L 133.87415 704.46114 L 132.96452 708.94314 L 127.58531 706.201 L 125.37077 710.4724 L 120.90119 707.04504 L 117.5 711 L 114.05912 707.04504 L 109.58954 710.4724 L 107.41469 706.201 L 101.99579 708.94314 L 101.08616 704.46114 L 94.99577 706.4651 L 95.43074 701.9296 L 88.826 703.0901 L 90.60557 698.71284 L 83.80238 698.97636 L 86.80829 694.9161 L 80.0456 694.33614 L 84.19847 690.75 L 77.75168 689.27364 L 82.89275 686.26746 L 77 684 L 82.89275 681.73254 L 77.75168 678.72636 L 84.19847 677.25 L 80.0456 673.66386 L 86.80829 673.0839 L 83.80238 669.02364 L 90.60557 669.28716 L 88.826 664.90992 L 95.43074 666.07038 L 94.99577 661.53492 L 101.08616 663.53886 L 101.99579 659.05686 L 107.41469 661.79898 L 109.58954 657.52758 L 114.05912 660.90258 L 117.46031 657 L 120.90119 660.90258 L 125.37077 657.52758 L 127.58531 661.79898 L 132.96452 659.05686 L 133.87415 663.53886 L 139.96454 661.53492 L 139.52957 666.07038 L 146.13512 664.90992 L 144.35474 669.28716 L 151.15793 669.02364 L 148.15202 673.0839 L 154.91471 673.66386 L 150.76184 677.25 L 157.20863 678.72636 L 152.06756 681.73254 Z" fill="white"/>
+            <path d="M 152.06756 681.73254 L 158 684 L 152.06756 686.26746 L 157.20863 689.27364 L 150.76184 690.75 L 154.91471 694.33614 L 148.15202 694.9161 L 151.15793 698.97636 L 144.35474 698.71284 L 146.13512 703.0901 L 139.52957 701.9296 L 139.96454 706.4651 L 133.87415 704.46114 L 132.96452 708.94314 L 127.58531 706.201 L 125.37077 710.4724 L 120.90119 707.04504 L 117.5 711 L 114.05912 707.04504 L 109.58954 710.4724 L 107.41469 706.201 L 101.99579 708.94314 L 101.08616 704.46114 L 94.99577 706.4651 L 95.43074 701.9296 L 88.826 703.0901 L 90.60557 698.71284 L 83.80238 698.97636 L 86.80829 694.9161 L 80.0456 694.33614 L 84.19847 690.75 L 77.75168 689.27364 L 82.89275 686.26746 L 77 684 L 82.89275 681.73254 L 77.75168 678.72636 L 84.19847 677.25 L 80.0456 673.66386 L 86.80829 673.0839 L 83.80238 669.02364 L 90.60557 669.28716 L 88.826 664.90992 L 95.43074 666.07038 L 94.99577 661.53492 L 101.08616 663.53886 L 101.99579 659.05686 L 107.41469 661.79898 L 109.58954 657.52758 L 114.05912 660.90258 L 117.46031 657 L 120.90119 660.90258 L 125.37077 657.52758 L 127.58531 661.79898 L 132.96452 659.05686 L 133.87415 663.53886 L 139.96454 661.53492 L 139.52957 666.07038 L 146.13512 664.90992 L 144.35474 669.28716 L 151.15793 669.02364 L 148.15202 673.0839 L 154.91471 673.66386 L 150.76184 677.25 L 157.20863 678.72636 L 152.06756 681.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(89.29 678)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="7.8291406" y="10" textLength="40.761719">beta org</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-beta2-flow">
+          <title>Beta 2 - Flow</title>
+          <g class="step" data-toggle="popover" data-content="Build a beta managed package from every commit to master" data-placement="right">
+            <rect x="288" y="441" width="30.816" height="36" id="path_6"/>
+            <clipPath id="clip_path_6">
+              <use xlink:href="#path_6"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_6)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(288 441) scale(.144)"/>
+            </g>
+            <line x1="382.92846" y1="414.17144" x2="326.91737" y2="445.74692" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(319 452.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".1" y="10">master_flow</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <title>Beta 2 - master / beta</title>
+            <line x1="288" y1="461.22578" x2="166.20446" y2="478.8199" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(187.37832 474.53332)" fill="black" data-toggle="popover" data-content="ant deployCI: clean, deploy, test" data-placement="top">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".35" y="10">master</tspan>
+            </text>
+            <text transform="translate(275 477.5)" fill="black" data-toggle="popover" data-content="ant deployCIPackageOrg: deploy, clean, test" data-placement="right">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".46" y="10">beta</tspan>
+            </text>
+            <line x1="303.72" y1="477" x2="303.87082" y2="485.7014" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <title>Beta 2 - package upload</title>
+            <line x1="304.87663" y1="549" x2="305.15919" y2="569.25646" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(312 558.5)" fill="black" data-toggle="popover" data-content="Python Script + Selenium: Upload beta managed package" data-toggle="popover" data-placement="right">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".415" y="10">beta_upload</tspan>
+            </text>
+
+            <path d="M 265.12988 627.44444 L 265.12988 583.44444 L 273.22988 578.55556 L 346.12988 578.55556 L 346.12988 622.55556 L 338.02988 627.44444 Z" fill="#a58855"/>
+            <path d="M 265.12988 627.44444 L 265.12988 583.44444 L 273.22988 578.55556 L 346.12988 578.55556 L 346.12988 622.55556 L 338.02988 627.44444 L 265.12988 627.44444 M 265.12988 583.44444 L 338.02988 583.44444 L 346.12988 578.55556 M 338.02988 583.44444 L 338.02988 627.44444" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+            <text transform="translate(270.12988 588.44444)" fill="black">
+              <tspan font-family="octicons" font-size="20" font-weight="500" x="21.45" y="16"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="41.45" y="16"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="3.674121" y="32">1.0 (Beta 2)</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <title>Beta 2 - test</title>
+            <line x1="265.12988" y1="620.43742" x2="166.54191" y2="662.88483" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(209.65147 628.01242) rotate(-23)" fill="black" data-toggle="popover" data-content="ant deployManagedBeta: clean, install beta, test" data-placement="right">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".125" y="10">beta_test</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <title>Beta 2 - github release</title>
+            <path d="M 158.00001 683.5733 C 220.40754 681.0751 338.8403 668.64876 396 612.0023 C 454.10793 554.4161 428.96993 470.87463 411.08833 429.8421" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(316.67103 660.738) rotate(-26)" fill="black" data-toggle="popover" data-content="Python Script + GitHub API: Create tag and a GitHub Release">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".455" y="10">beta_github_release</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-beta2-mrbelvedere">
+          <title>Beta 2 - mrbelvedere</title>
+          <path d="M 439.72672 718.73254 L 445 721 L 439.72672 723.26746 L 444.29656 726.27364 L 438.56608 727.75 L 442.25752 731.33614 L 436.24624 731.9161 L 438.91816 735.97636 L 432.87088 735.71284 L 434.45344 740.0901 L 428.58184 738.9296 L 428.96848 743.4651 L 423.5548 741.46114 L 422.74624 745.94314 L 417.96472 743.201 L 415.99624 747.4724 L 412.02328 744.04504 L 409 748 L 405.94144 744.04504 L 401.96848 747.4724 L 400.03528 743.201 L 395.21848 745.94314 L 394.40992 741.46114 L 388.99624 743.4651 L 389.38288 738.9296 L 383.512 740.0901 L 385.09384 735.71284 L 379.04656 735.97636 L 381.71848 731.9161 L 375.7072 731.33614 L 379.39864 727.75 L 373.66816 726.27364 L 378.238 723.26746 L 373 721 L 378.238 718.73254 L 373.66816 715.72636 L 379.39864 714.25 L 375.7072 710.66386 L 381.71848 710.0839 L 379.04656 706.02364 L 385.09384 706.28716 L 383.512 701.9099 L 389.38288 703.0704 L 388.99624 698.5349 L 394.40992 700.53886 L 395.21848 696.05686 L 400.03528 698.799 L 401.96848 694.5276 L 405.94144 697.9026 L 408.96472 694 L 412.02328 697.9026 L 415.99624 694.5276 L 417.96472 698.799 L 422.74624 696.05686 L 423.5548 700.53886 L 428.96848 698.5349 L 428.58184 703.0704 L 434.45344 701.9099 L 432.87088 706.28716 L 438.91816 706.02364 L 436.24624 710.0839 L 442.25752 710.66386 L 438.56608 714.25 L 444.29656 715.72636 L 439.72672 718.73254 Z" fill="white"/>
+          <path d="M 439.72672 718.73254 L 445 721 L 439.72672 723.26746 L 444.29656 726.27364 L 438.56608 727.75 L 442.25752 731.33614 L 436.24624 731.9161 L 438.91816 735.97636 L 432.87088 735.71284 L 434.45344 740.0901 L 428.58184 738.9296 L 428.96848 743.4651 L 423.5548 741.46114 L 422.74624 745.94314 L 417.96472 743.201 L 415.99624 747.4724 L 412.02328 744.04504 L 409 748 L 405.94144 744.04504 L 401.96848 747.4724 L 400.03528 743.201 L 395.21848 745.94314 L 394.40992 741.46114 L 388.99624 743.4651 L 389.38288 738.9296 L 383.512 740.0901 L 385.09384 735.71284 L 379.04656 735.97636 L 381.71848 731.9161 L 375.7072 731.33614 L 379.39864 727.75 L 373.66816 726.27364 L 378.238 723.26746 L 373 721 L 378.238 718.73254 L 373.66816 715.72636 L 379.39864 714.25 L 375.7072 710.66386 L 381.71848 710.0839 L 379.04656 706.02364 L 385.09384 706.28716 L 383.512 701.9099 L 389.38288 703.0704 L 388.99624 698.5349 L 394.40992 700.53886 L 395.21848 696.05686 L 400.03528 698.799 L 401.96848 694.5276 L 405.94144 697.9026 L 408.96472 694 L 412.02328 697.9026 L 415.99624 694.5276 L 417.96472 698.799 L 422.74624 696.05686 L 423.5548 700.53886 L 428.96848 698.5349 L 428.58184 703.0704 L 434.45344 701.9099 L 432.87088 706.28716 L 438.91816 706.02364 L 436.24624 710.0839 L 442.25752 710.66386 L 438.56608 714.25 L 444.29656 715.72636 L 439.72672 718.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 430.72672 712.73254 L 436 715 L 430.72672 717.26746 L 435.29656 720.27364 L 429.56608 721.75 L 433.25752 725.33614 L 427.24624 725.9161 L 429.91816 729.97636 L 423.87088 729.71284 L 425.45344 734.0901 L 419.58184 732.9296 L 419.96848 737.4651 L 414.5548 735.46114 L 413.74624 739.94314 L 408.96472 737.201 L 406.99624 741.4724 L 403.02328 738.04504 L 400 742 L 396.94144 738.04504 L 392.96848 741.4724 L 391.03528 737.201 L 386.21848 739.94314 L 385.40992 735.46114 L 379.99624 737.4651 L 380.38288 732.9296 L 374.512 734.0901 L 376.09384 729.71284 L 370.04656 729.97636 L 372.71848 725.9161 L 366.7072 725.33614 L 370.39864 721.75 L 364.66816 720.27364 L 369.238 717.26746 L 364 715 L 369.238 712.73254 L 364.66816 709.72636 L 370.39864 708.25 L 366.7072 704.66386 L 372.71848 704.0839 L 370.04656 700.02364 L 376.09384 700.28716 L 374.512 695.9099 L 380.38288 697.0704 L 379.99624 692.5349 L 385.40992 694.53886 L 386.21848 690.05686 L 391.03528 692.799 L 392.96848 688.5276 L 396.94144 691.9026 L 399.96472 688 L 403.02328 691.9026 L 406.99624 688.5276 L 408.96472 692.799 L 413.74624 690.05686 L 414.5548 694.53886 L 419.96848 692.5349 L 419.58184 697.0704 L 425.45344 695.9099 L 423.87088 700.28716 L 429.91816 700.02364 L 427.24624 704.0839 L 433.25752 704.66386 L 429.56608 708.25 L 435.29656 709.72636 L 430.72672 712.73254 Z" fill="white"/>
+          <path d="M 430.72672 712.73254 L 436 715 L 430.72672 717.26746 L 435.29656 720.27364 L 429.56608 721.75 L 433.25752 725.33614 L 427.24624 725.9161 L 429.91816 729.97636 L 423.87088 729.71284 L 425.45344 734.0901 L 419.58184 732.9296 L 419.96848 737.4651 L 414.5548 735.46114 L 413.74624 739.94314 L 408.96472 737.201 L 406.99624 741.4724 L 403.02328 738.04504 L 400 742 L 396.94144 738.04504 L 392.96848 741.4724 L 391.03528 737.201 L 386.21848 739.94314 L 385.40992 735.46114 L 379.99624 737.4651 L 380.38288 732.9296 L 374.512 734.0901 L 376.09384 729.71284 L 370.04656 729.97636 L 372.71848 725.9161 L 366.7072 725.33614 L 370.39864 721.75 L 364.66816 720.27364 L 369.238 717.26746 L 364 715 L 369.238 712.73254 L 364.66816 709.72636 L 370.39864 708.25 L 366.7072 704.66386 L 372.71848 704.0839 L 370.04656 700.02364 L 376.09384 700.28716 L 374.512 695.9099 L 380.38288 697.0704 L 379.99624 692.5349 L 385.40992 694.53886 L 386.21848 690.05686 L 391.03528 692.799 L 392.96848 688.5276 L 396.94144 691.9026 L 399.96472 688 L 403.02328 691.9026 L 406.99624 688.5276 L 408.96472 692.799 L 413.74624 690.05686 L 414.5548 694.53886 L 419.96848 692.5349 L 419.58184 697.0704 L 425.45344 695.9099 L 423.87088 700.28716 L 429.91816 700.02364 L 427.24624 704.0839 L 433.25752 704.66386 L 429.56608 708.25 L 435.29656 709.72636 L 430.72672 712.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 424.72672 717.73254 L 430 720 L 424.72672 722.26746 L 429.29656 725.27364 L 423.56608 726.75 L 427.25752 730.33614 L 421.24624 730.9161 L 423.91816 734.97636 L 417.87088 734.71284 L 419.45344 739.0901 L 413.58184 737.9296 L 413.96848 742.4651 L 408.5548 740.46114 L 407.74624 744.94314 L 402.96472 742.201 L 400.99624 746.4724 L 397.02328 743.04504 L 394 747 L 390.94144 743.04504 L 386.96848 746.4724 L 385.03528 742.201 L 380.21848 744.94314 L 379.40992 740.46114 L 373.99624 742.4651 L 374.38288 737.9296 L 368.512 739.0901 L 370.09384 734.71284 L 364.04656 734.97636 L 366.71848 730.9161 L 360.7072 730.33614 L 364.39864 726.75 L 358.66816 725.27364 L 363.238 722.26746 L 358 720 L 363.238 717.73254 L 358.66816 714.72636 L 364.39864 713.25 L 360.7072 709.66386 L 366.71848 709.0839 L 364.04656 705.02364 L 370.09384 705.28716 L 368.512 700.9099 L 374.38288 702.0704 L 373.99624 697.5349 L 379.40992 699.53886 L 380.21848 695.05686 L 385.03528 697.799 L 386.96848 693.5276 L 390.94144 696.9026 L 393.96472 693 L 397.02328 696.9026 L 400.99624 693.5276 L 402.96472 697.799 L 407.74624 695.05686 L 408.5548 699.53886 L 413.96848 697.5349 L 413.58184 702.0704 L 419.45344 700.9099 L 417.87088 705.28716 L 423.91816 705.02364 L 421.24624 709.0839 L 427.25752 709.66386 L 423.56608 713.25 L 429.29656 714.72636 L 424.72672 717.73254 Z" fill="white"/>
+          <path d="M 424.72672 717.73254 L 430 720 L 424.72672 722.26746 L 429.29656 725.27364 L 423.56608 726.75 L 427.25752 730.33614 L 421.24624 730.9161 L 423.91816 734.97636 L 417.87088 734.71284 L 419.45344 739.0901 L 413.58184 737.9296 L 413.96848 742.4651 L 408.5548 740.46114 L 407.74624 744.94314 L 402.96472 742.201 L 400.99624 746.4724 L 397.02328 743.04504 L 394 747 L 390.94144 743.04504 L 386.96848 746.4724 L 385.03528 742.201 L 380.21848 744.94314 L 379.40992 740.46114 L 373.99624 742.4651 L 374.38288 737.9296 L 368.512 739.0901 L 370.09384 734.71284 L 364.04656 734.97636 L 366.71848 730.9161 L 360.7072 730.33614 L 364.39864 726.75 L 358.66816 725.27364 L 363.238 722.26746 L 358 720 L 363.238 717.73254 L 358.66816 714.72636 L 364.39864 713.25 L 360.7072 709.66386 L 366.71848 709.0839 L 364.04656 705.02364 L 370.09384 705.28716 L 368.512 700.9099 L 374.38288 702.0704 L 373.99624 697.5349 L 379.40992 699.53886 L 380.21848 695.05686 L 385.03528 697.799 L 386.96848 693.5276 L 390.94144 696.9026 L 393.96472 693 L 397.02328 696.9026 L 400.99624 693.5276 L 402.96472 697.799 L 407.74624 695.05686 L 408.5548 699.53886 L 413.96848 697.5349 L 413.58184 702.0704 L 419.45344 700.9099 L 417.87088 705.28716 L 423.91816 705.02364 L 421.24624 709.0839 L 427.25752 709.66386 L 423.56608 713.25 L 429.29656 714.72636 L 424.72672 717.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 432.72672 717.73254 L 438 720 L 432.72672 722.26746 L 437.29656 725.27364 L 431.56608 726.75 L 435.25752 730.33614 L 429.24624 730.9161 L 431.91816 734.97636 L 425.87088 734.71284 L 427.45344 739.0901 L 421.58184 737.9296 L 421.96848 742.4651 L 416.5548 740.46114 L 415.74624 744.94314 L 410.96472 742.201 L 408.99624 746.4724 L 405.02328 743.04504 L 402 747 L 398.94144 743.04504 L 394.96848 746.4724 L 393.03528 742.201 L 388.21848 744.94314 L 387.40992 740.46114 L 381.99624 742.4651 L 382.38288 737.9296 L 376.512 739.0901 L 378.09384 734.71284 L 372.04656 734.97636 L 374.71848 730.9161 L 368.7072 730.33614 L 372.39864 726.75 L 366.66816 725.27364 L 371.238 722.26746 L 366 720 L 371.238 717.73254 L 366.66816 714.72636 L 372.39864 713.25 L 368.7072 709.66386 L 374.71848 709.0839 L 372.04656 705.02364 L 378.09384 705.28716 L 376.512 700.9099 L 382.38288 702.0704 L 381.99624 697.5349 L 387.40992 699.53886 L 388.21848 695.05686 L 393.03528 697.799 L 394.96848 693.5276 L 398.94144 696.9026 L 401.96472 693 L 405.02328 696.9026 L 408.99624 693.5276 L 410.96472 697.799 L 415.74624 695.05686 L 416.5548 699.53886 L 421.96848 697.5349 L 421.58184 702.0704 L 427.45344 700.9099 L 425.87088 705.28716 L 431.91816 705.02364 L 429.24624 709.0839 L 435.25752 709.66386 L 431.56608 713.25 L 437.29656 714.72636 L 432.72672 717.73254 Z" fill="white"/>
+          <path d="M 432.72672 717.73254 L 438 720 L 432.72672 722.26746 L 437.29656 725.27364 L 431.56608 726.75 L 435.25752 730.33614 L 429.24624 730.9161 L 431.91816 734.97636 L 425.87088 734.71284 L 427.45344 739.0901 L 421.58184 737.9296 L 421.96848 742.4651 L 416.5548 740.46114 L 415.74624 744.94314 L 410.96472 742.201 L 408.99624 746.4724 L 405.02328 743.04504 L 402 747 L 398.94144 743.04504 L 394.96848 746.4724 L 393.03528 742.201 L 388.21848 744.94314 L 387.40992 740.46114 L 381.99624 742.4651 L 382.38288 737.9296 L 376.512 739.0901 L 378.09384 734.71284 L 372.04656 734.97636 L 374.71848 730.9161 L 368.7072 730.33614 L 372.39864 726.75 L 366.66816 725.27364 L 371.238 722.26746 L 366 720 L 371.238 717.73254 L 366.66816 714.72636 L 372.39864 713.25 L 368.7072 709.66386 L 374.71848 709.0839 L 372.04656 705.02364 L 378.09384 705.28716 L 376.512 700.9099 L 382.38288 702.0704 L 381.99624 697.5349 L 387.40992 699.53886 L 388.21848 695.05686 L 393.03528 697.799 L 394.96848 693.5276 L 398.94144 696.9026 L 401.96472 693 L 405.02328 696.9026 L 408.99624 693.5276 L 410.96472 697.799 L 415.74624 695.05686 L 416.5548 699.53886 L 421.96848 697.5349 L 421.58184 702.0704 L 427.45344 700.9099 L 425.87088 705.28716 L 431.91816 705.02364 L 429.24624 709.0839 L 435.25752 709.66386 L 431.56608 713.25 L 437.29656 714.72636 L 432.72672 717.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <g class="step" data-toggle="popover" data-content="Make it easy for human testers to install and test" data-placement="right">
+            <text transform="translate(377.48 702)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="13.956035" y="10" textLength="24.291992">beta </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="10.61375" y="22" textLength="27.8125">tester</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="13.736309" y="34" textLength="21.567383">orgs</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <rect x="189" y="693" width="99" height="54" id="path_b"/>
+            <clipPath id="clip_path_b">
+              <use xlink:href="#path_b"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_b)">
+              <image xmlns="http://www.w3.org/2000/svg" xlink:href="img/image12.png" width="175" height="137" transform="translate(180 683)"/>
+            </g>
+            <text transform="translate(191 743.5)" fill="#00b2e9">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" fill="#00b2e9" x=".158" y="11">mrbelvedere</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <line x1="158" y1="696.0496" x2="180.08616" y2="702.62067" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(100 716.5)" fill="black" data-toggle="popover" data-content="Python Script: Configure mrbelvedere to install 1.0 (Beta 2)" data-placement="bottom">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".175" y="10">mrbelvedere_beta</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 288 724.58655 C 306.1038 725.91824 326.64054 727.02128 345 727.02128 C 349.1891 727.02128 353.0867 726.96385 356.71125 726.8594" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 306.44918 714.15503 L 334.44918 714.15503 C 337.76118 714.15503 340.44918 719.75503 340.44918 726.65503 C 340.44918 733.55503 337.76118 739.15503 334.44918 739.15503 L 306.44918 739.15503 C 303.13718 739.15503 300.44918 733.55503 300.44918 726.65503 C 300.44918 719.75503 303.13718 714.15503 306.44918 714.15503" fill="#78bb43"/>
+            <text transform="translate(309.44918 719.15503)" fill="black">
+              <tspan font-family="octicons" font-size="12" font-weight="500" x=".1015625" y="12"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="6.1015625" y="12"> </tspan>
+              <tspan font-family="octicons" font-size="12" font-weight="500" x="9.8984375" y="12"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-beta2-tag">
+          <g class="step">
+            <text transform="translate(391.26775 394.30883)" fill="black" data-toggle="popover" data-content="Git Tag (read only)" data-placement="bottom">
+              <tspan font-family="octicons" font-size="20" font-weight="500" x="0" y="16"></tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="17.5" y="16"> beta/1.0-Beta_2</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-beta1-tag">
+          <text transform="translate(269.93883 393.3782)" fill="black">
+            <tspan font-family="octicons" font-size="20" font-weight="500" x="0" y="16"></tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="17.5" y="16"> beta/1.0-Beta_1</tspan>
+          </text>
+        </g>
+
+        <g id="layer-beta1-master-to-feature">
+          <title>Beta 1 - master_to_feature</title>
+          <g class="step">
+            <rect x="311.184" y="333" width="30.816" height="36" id="path_d"/>
+            <clipPath id="clip_path_d">
+              <use xlink:href="#path_d"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_d)" data-toggle="popover" data-content="Python Script + GitHub API: Merge master commit to all open feature branches" data-placement="left">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(311.184 333) scale(.144)"/>
+            </g>
+            <line x1="289.41444" y1="391.5303" x2="304.89748" y2="374.65096" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <line x1="326.22778" y1="333" x2="325.8999" y2="316.79597" marker-end="url(#SharpArrow_Marker_3)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(309.89583 367.66667)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".44" y="10">master_to_feature</tspan>
+            </text>
+            <text transform="translate(309 316.5)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".2875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="12.2875" y="15">  </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="22.4125" y="15">master</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-background-release">
+          <title>BG - Release</title>
+          <rect x="0" y="765" width="576" height="270" fill="#235f96"/>
+          <rect x="0" y="765" width="36" height="270" fill="black" fill-opacity=".1"/>
+          <text transform="translate(29 789) rotate(90)" fill="white" fill-opacity=".75">
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" fill="white" fill-opacity=".75" x=".344" y="15">Managed Package - Production</tspan>
+          </text>
+        </g>
+
+        <g id="layer-release-tag">
+          <title>Release - Tag</title>
+          <path d="M 515.8125 436 L 556.9375 436 C 561.802 436 565.75 444.736 565.75 455.5 C 565.75 466.264 561.802 475 556.9375 475 L 515.8125 475 C 510.948 475 507 466.264 507 455.5 C 507 444.736 510.948 436 515.8125 436" fill="#78bb43"/>
+          <text transform="translate(517.875 441)" fill="black">
+            <tspan font-family="octicons" font-size="16" font-weight="500" x="14.5" y="13"></tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".22607422" y="27">Release</tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 536.07632 475 C 535.13894 482.43587 532.98374 490.25612 528.32597 495 C 526.4993 496.86045 524.43052 498.1023 522.25064 498.8798" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(517.5 501.5)" fill="black" data-toggle="popover" data-content="Python script + GitHub API" data-placement="left">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="0" y="10">release_tag</tspan>
+            </text>
+            <rect x="482.184" y="477" width="30.816" height="36" id="path_10"/>
+            <clipPath id="clip_path_10">
+              <use xlink:href="#path_10"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_10)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(482.184 477) scale(.144)"/>
+            </g>
+          </g>
+
+          <g class="step">
+            <path d="M 482.184 494.66328 C 474.73268 493.7431 466.3623 491.43815 461.4657 486 C 459.14433 483.42192 457.84896 480.41206 457.2357 477.29462" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 434.4375 441 L 487.8125 441 C 494.126 441 499.25 447.048 499.25 454.5 C 499.25 461.952 494.126 468 487.8125 468 L 434.4375 468 C 428.124 468 423 461.952 423 454.5 C 423 447.048 428.124 441 434.4375 441" fill="#00b2e9"/>
+            <text transform="translate(425.625 446)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="0" y="13"></tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="14" y="13"> release/1.0</tspan>
+            </text>
+            <path d="M 436.3434 441 C 432.19712 438.3347 427.8766 435.32072 423.67694 432 C 420.40858 429.41567 417.49793 426.87052 414.92455 424.4386" marker-end="url(#SharpArrow_Marker_b)" stroke="#00b2e9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          </g>
+
+          <g class="step">
+            <path d="M 443.63196 468 C 425.73846 481.217 396.71021 501.05785 369 513 C 362.47504 515.81204 356.47434 517.99167 350.98482 519.66408" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(350.78073 500.91873) rotate(-29)" fill="black" data-toggle="popover" data-content="deployCIPackageOrg: deploy, clean, test" data-placement="bottom">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".13" y="10">release</tspan>
+            </text>
+            <rect x="386.89745" y="477.55815" width="30.816" height="36" id="path_f"/>
+            <clipPath id="clip_path_f">
+              <use xlink:href="#path_f"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_f)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(386.89745 477.55815) scale(.144)"/>
+            </g>
+          </g>
+        </g>
+
+        <g id="layer-release-upload">
+          <title>Release - Upload</title>
+          <path d="M 342 521.06525 C 372.83468 524.06517 415.46668 537.50013 441 585 C 471.23125 641.23947 467.60657 726.8407 462.5948 773.7643" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 442.3035 606.4545 L 466.8035 606.4545 C 469.7015 606.4545 472.0535 612.0545 472.0535 618.9545 C 472.0535 625.8545 469.7015 631.4545 466.8035 631.4545 L 442.3035 631.4545 C 439.4055 631.4545 437.0535 625.8545 437.0535 618.9545 C 437.0535 612.0545 439.4055 606.4545 442.3035 606.4545" fill="#78bb43"/>
+          <g class="step">
+            <text transform="translate(445.5535 611.4545)" fill="black" data-toggle="popover" data-content="Release manager uploads release from packaging org" data-placement="left">
+              <tspan font-family="octicons" font-size="12" font-weight="500" x=".3515625" y="12"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="6.3515625" y="12"> </tspan>
+              <tspan font-family="octicons" font-size="12" font-weight="500" x="10.1484375" y="12"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-release-package">
+          <path d="M 417.43927 831.8889 L 417.43927 787.8889 L 425.53927 783 L 498.43927 783 L 498.43927 827 L 490.33927 831.8889 Z" fill="#a58855"/>
+          <path d="M 417.43927 831.8889 L 417.43927 787.8889 L 425.53927 783 L 498.43927 783 L 498.43927 827 L 490.33927 831.8889 L 417.43927 831.8889 M 417.43927 787.8889 L 490.33927 787.8889 L 498.43927 783 M 490.33927 787.8889 L 490.33927 831.8889" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+          <text transform="translate(422.43927 792.8889)" fill="black">
+            <tspan font-family="octicons" font-size="20" font-weight="500" x="21.45" y="16"></tspan>
+            <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="41.45" y="16"> </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="23.544727" y="32">1.0</tspan>
+          </text>
+        </g>
+
+        <g id="layer-release-test">
+          <g class="step">
+            <title>Release - Test</title>
+            <path d="M 156.06756 806.3585 L 162 808.5 L 156.06756 810.6415 L 161.20863 813.48066 L 154.76184 814.875 L 158.91471 818.2619 L 152.15202 818.80965 L 155.15793 822.64434 L 148.35474 822.39546 L 150.13512 826.5295 L 143.52957 825.43353 L 143.96454 829.717 L 137.87415 827.8244 L 136.96452 832.0574 L 131.58531 829.46763 L 129.37077 833.50173 L 124.90119 830.26476 L 121.5 834 L 118.05912 830.26476 L 113.58954 833.50173 L 111.41469 829.46763 L 105.99579 832.0574 L 105.08616 827.8244 L 98.99577 829.717 L 99.43074 825.43353 L 92.826 826.5295 L 94.60557 822.39546 L 87.80238 822.64434 L 90.80829 818.80965 L 84.0456 818.2619 L 88.19847 814.875 L 81.75168 813.48066 L 86.89275 810.6415 L 81 808.5 L 86.89275 806.3585 L 81.75168 803.51934 L 88.19847 802.125 L 84.0456 798.7381 L 90.80829 798.19035 L 87.80238 794.35566 L 94.60557 794.60454 L 92.826 790.4705 L 99.43074 791.56647 L 98.99577 787.283 L 105.08616 789.1756 L 105.99579 784.9426 L 111.41469 787.53237 L 113.58954 783.49827 L 118.05912 786.68577 L 121.46031 783 L 124.90119 786.68577 L 129.37077 783.49827 L 131.58531 787.53237 L 136.96452 784.9426 L 137.87415 789.1756 L 143.96454 787.283 L 143.52957 791.56647 L 150.13512 790.4705 L 148.35474 794.60454 L 155.15793 794.35566 L 152.15202 798.19035 L 158.91471 798.7381 L 154.76184 802.125 L 161.20863 803.51934 L 156.06756 806.3585 Z" fill="white"/>
+            <path d="M 156.06756 806.3585 L 162 808.5 L 156.06756 810.6415 L 161.20863 813.48066 L 154.76184 814.875 L 158.91471 818.2619 L 152.15202 818.80965 L 155.15793 822.64434 L 148.35474 822.39546 L 150.13512 826.5295 L 143.52957 825.43353 L 143.96454 829.717 L 137.87415 827.8244 L 136.96452 832.0574 L 131.58531 829.46763 L 129.37077 833.50173 L 124.90119 830.26476 L 121.5 834 L 118.05912 830.26476 L 113.58954 833.50173 L 111.41469 829.46763 L 105.99579 832.0574 L 105.08616 827.8244 L 98.99577 829.717 L 99.43074 825.43353 L 92.826 826.5295 L 94.60557 822.39546 L 87.80238 822.64434 L 90.80829 818.80965 L 84.0456 818.2619 L 88.19847 814.875 L 81.75168 813.48066 L 86.89275 810.6415 L 81 808.5 L 86.89275 806.3585 L 81.75168 803.51934 L 88.19847 802.125 L 84.0456 798.7381 L 90.80829 798.19035 L 87.80238 794.35566 L 94.60557 794.60454 L 92.826 790.4705 L 99.43074 791.56647 L 98.99577 787.283 L 105.08616 789.1756 L 105.99579 784.9426 L 111.41469 787.53237 L 113.58954 783.49827 L 118.05912 786.68577 L 121.46031 783 L 124.90119 786.68577 L 129.37077 783.49827 L 131.58531 787.53237 L 136.96452 784.9426 L 137.87415 789.1756 L 143.96454 787.283 L 143.52957 791.56647 L 150.13512 790.4705 L 148.35474 794.60454 L 155.15793 794.35566 L 152.15202 798.19035 L 158.91471 798.7381 L 154.76184 802.125 L 161.20863 803.51934 L 156.06756 806.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(93.29 796.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="11.051797" y="10" textLength="34.316406">release</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="19.975137" y="22" textLength="16.469727">org</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 315.59463 781 L 362.84463 781 C 368.43363 781 372.96963 792.872 372.96963 807.5 C 372.96963 822.128 368.43363 834 362.84463 834 L 315.59463 834 C 310.00563 834 305.46963 822.128 305.46963 807.5 C 305.46963 792.872 310.00563 781 315.59463 781" fill="#78bb43"/>
+            <text transform="translate(317.21963 786)" fill="black">
+              <tspan font-family="octicons" font-size="12" font-weight="500" x="19" y="10"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="1.7763672" y="25">GitHub</tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x=".071289062" y="40">Release</tspan>
+            </text>
+            <line x1="417.43927" y1="807.4634" x2="382.26963" y2="807.47985" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <line x1="305.4698" y1="807.65117" x2="252.2999" y2="807.88933" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <rect x="212.184" y="790" width="30.816" height="36" id="path_11"/>
+            <clipPath id="clip_path_11">
+              <use xlink:href="#path_11"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_11)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(212.184 790) scale(.144)"/>
+            </g>
+            <line x1="212.184" y1="808.0726" x2="171.2999" y2="808.2653" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(246.5 812.5)" fill="white" data-toggle="popover" data-content="deployManaged: upgrade and test production release" data-placement="bottom">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".295" y="10">release_test</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-release-push">
+          <title>Release - Push</title>
+            <path d="M 564.72672 985.3585 L 570 987.5 L 564.72672 989.6415 L 569.29656 992.48066 L 563.56608 993.875 L 567.25752 997.2619 L 561.24624 997.80965 L 563.91816 1001.64434 L 557.87088 1001.39546 L 559.45344 1005.5295 L 553.58184 1004.43353 L 553.96848 1008.717 L 548.5548 1006.8244 L 547.74624 1011.0574 L 542.96472 1008.4676 L 540.99624 1012.5017 L 537.02328 1009.26476 L 534 1013 L 530.94144 1009.26476 L 526.96848 1012.5017 L 525.03528 1008.4676 L 520.21848 1011.0574 L 519.40992 1006.8244 L 513.99624 1008.717 L 514.38288 1004.43353 L 508.512 1005.5295 L 510.09384 1001.39546 L 504.04656 1001.64434 L 506.71848 997.80965 L 500.7072 997.2619 L 504.39864 993.875 L 498.66816 992.48066 L 503.238 989.6415 L 498 987.5 L 503.238 985.3585 L 498.66816 982.51934 L 504.39864 981.125 L 500.7072 977.7381 L 506.71848 977.19035 L 504.04656 973.35566 L 510.09384 973.60454 L 508.512 969.4705 L 514.38288 970.56647 L 513.99624 966.283 L 519.40992 968.1756 L 520.21848 963.9426 L 525.03528 966.53237 L 526.96848 962.49827 L 530.94144 965.68577 L 533.96472 962 L 537.02328 965.68577 L 540.99624 962.49827 L 542.96472 966.53237 L 547.74624 963.9426 L 548.5548 968.1756 L 553.96848 966.283 L 553.58184 970.56647 L 559.45344 969.4705 L 557.87088 973.60454 L 563.91816 973.35566 L 561.24624 977.19035 L 567.25752 977.7381 L 563.56608 981.125 L 569.29656 982.51934 L 564.72672 985.3585 Z" fill="white"/>
+            <path d="M 564.72672 985.3585 L 570 987.5 L 564.72672 989.6415 L 569.29656 992.48066 L 563.56608 993.875 L 567.25752 997.2619 L 561.24624 997.80965 L 563.91816 1001.64434 L 557.87088 1001.39546 L 559.45344 1005.5295 L 553.58184 1004.43353 L 553.96848 1008.717 L 548.5548 1006.8244 L 547.74624 1011.0574 L 542.96472 1008.4676 L 540.99624 1012.5017 L 537.02328 1009.26476 L 534 1013 L 530.94144 1009.26476 L 526.96848 1012.5017 L 525.03528 1008.4676 L 520.21848 1011.0574 L 519.40992 1006.8244 L 513.99624 1008.717 L 514.38288 1004.43353 L 508.512 1005.5295 L 510.09384 1001.39546 L 504.04656 1001.64434 L 506.71848 997.80965 L 500.7072 997.2619 L 504.39864 993.875 L 498.66816 992.48066 L 503.238 989.6415 L 498 987.5 L 503.238 985.3585 L 498.66816 982.51934 L 504.39864 981.125 L 500.7072 977.7381 L 506.71848 977.19035 L 504.04656 973.35566 L 510.09384 973.60454 L 508.512 969.4705 L 514.38288 970.56647 L 513.99624 966.283 L 519.40992 968.1756 L 520.21848 963.9426 L 525.03528 966.53237 L 526.96848 962.49827 L 530.94144 965.68577 L 533.96472 962 L 537.02328 965.68577 L 540.99624 962.49827 L 542.96472 966.53237 L 547.74624 963.9426 L 548.5548 968.1756 L 553.96848 966.283 L 553.58184 970.56647 L 559.45344 969.4705 L 557.87088 973.60454 L 563.91816 973.35566 L 561.24624 977.19035 L 567.25752 977.7381 L 563.56608 981.125 L 569.29656 982.51934 L 564.72672 985.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 558.72672 998.3585 L 564 1000.5 L 558.72672 1002.6415 L 563.29656 1005.48066 L 557.56608 1006.875 L 561.25752 1010.2619 L 555.24624 1010.80965 L 557.91816 1014.64434 L 551.87088 1014.39546 L 553.45344 1018.5295 L 547.58184 1017.4335 L 547.96848 1021.717 L 542.5548 1019.8244 L 541.74624 1024.0574 L 536.96472 1021.4676 L 534.99624 1025.5017 L 531.02328 1022.26476 L 528 1026 L 524.94144 1022.26476 L 520.96848 1025.5017 L 519.03528 1021.4676 L 514.21848 1024.0574 L 513.40992 1019.8244 L 507.99624 1021.717 L 508.38288 1017.4335 L 502.512 1018.5295 L 504.09384 1014.39546 L 498.04656 1014.64434 L 500.71848 1010.80965 L 494.7072 1010.2619 L 498.39864 1006.875 L 492.66816 1005.48066 L 497.238 1002.6415 L 492 1000.5 L 497.238 998.3585 L 492.66816 995.51934 L 498.39864 994.125 L 494.7072 990.7381 L 500.71848 990.19035 L 498.04656 986.35566 L 504.09384 986.60454 L 502.512 982.4705 L 508.38288 983.56647 L 507.99624 979.283 L 513.40992 981.1756 L 514.21848 976.9426 L 519.03528 979.53237 L 520.96848 975.49827 L 524.94144 978.68577 L 527.96472 975 L 531.02328 978.68577 L 534.99624 975.49827 L 536.96472 979.53237 L 541.74624 976.9426 L 542.5548 981.1756 L 547.96848 979.283 L 547.58184 983.56647 L 553.45344 982.4705 L 551.87088 986.60454 L 557.91816 986.35566 L 555.24624 990.19035 L 561.25752 990.7381 L 557.56608 994.125 L 563.29656 995.51934 L 558.72672 998.3585 Z" fill="white"/>
+            <path d="M 558.72672 998.3585 L 564 1000.5 L 558.72672 1002.6415 L 563.29656 1005.48066 L 557.56608 1006.875 L 561.25752 1010.2619 L 555.24624 1010.80965 L 557.91816 1014.64434 L 551.87088 1014.39546 L 553.45344 1018.5295 L 547.58184 1017.4335 L 547.96848 1021.717 L 542.5548 1019.8244 L 541.74624 1024.0574 L 536.96472 1021.4676 L 534.99624 1025.5017 L 531.02328 1022.26476 L 528 1026 L 524.94144 1022.26476 L 520.96848 1025.5017 L 519.03528 1021.4676 L 514.21848 1024.0574 L 513.40992 1019.8244 L 507.99624 1021.717 L 508.38288 1017.4335 L 502.512 1018.5295 L 504.09384 1014.39546 L 498.04656 1014.64434 L 500.71848 1010.80965 L 494.7072 1010.2619 L 498.39864 1006.875 L 492.66816 1005.48066 L 497.238 1002.6415 L 492 1000.5 L 497.238 998.3585 L 492.66816 995.51934 L 498.39864 994.125 L 494.7072 990.7381 L 500.71848 990.19035 L 498.04656 986.35566 L 504.09384 986.60454 L 502.512 982.4705 L 508.38288 983.56647 L 507.99624 979.283 L 513.40992 981.1756 L 514.21848 976.9426 L 519.03528 979.53237 L 520.96848 975.49827 L 524.94144 978.68577 L 527.96472 975 L 531.02328 978.68577 L 534.99624 975.49827 L 536.96472 979.53237 L 541.74624 976.9426 L 542.5548 981.1756 L 547.96848 979.283 L 547.58184 983.56647 L 553.45344 982.4705 L 551.87088 986.60454 L 557.91816 986.35566 L 555.24624 990.19035 L 561.25752 990.7381 L 557.56608 994.125 L 563.29656 995.51934 L 558.72672 998.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 543.72672 993.3585 L 549 995.5 L 543.72672 997.6415 L 548.29656 1000.48066 L 542.56608 1001.875 L 546.25752 1005.2619 L 540.24624 1005.80965 L 542.91816 1009.64434 L 536.87088 1009.39546 L 538.45344 1013.5295 L 532.58184 1012.4335 L 532.96848 1016.717 L 527.5548 1014.8244 L 526.74624 1019.0574 L 521.96472 1016.4676 L 519.99624 1020.5017 L 516.02328 1017.26476 L 513 1021 L 509.94144 1017.26476 L 505.96848 1020.5017 L 504.03528 1016.4676 L 499.21848 1019.0574 L 498.40992 1014.8244 L 492.99624 1016.717 L 493.38288 1012.4335 L 487.512 1013.5295 L 489.09384 1009.39546 L 483.04656 1009.64434 L 485.71848 1005.80965 L 479.7072 1005.2619 L 483.39864 1001.875 L 477.66816 1000.48066 L 482.238 997.6415 L 477 995.5 L 482.238 993.3585 L 477.66816 990.51934 L 483.39864 989.125 L 479.7072 985.7381 L 485.71848 985.19035 L 483.04656 981.35566 L 489.09384 981.60454 L 487.512 977.4705 L 493.38288 978.56647 L 492.99624 974.283 L 498.40992 976.1756 L 499.21848 971.9426 L 504.03528 974.53237 L 505.96848 970.49827 L 509.94144 973.68577 L 512.96472 970 L 516.02328 973.68577 L 519.99624 970.49827 L 521.96472 974.53237 L 526.74624 971.9426 L 527.5548 976.1756 L 532.96848 974.283 L 532.58184 978.56647 L 538.45344 977.4705 L 536.87088 981.60454 L 542.91816 981.35566 L 540.24624 985.19035 L 546.25752 985.7381 L 542.56608 989.125 L 548.29656 990.51934 L 543.72672 993.3585 Z" fill="white"/>
+            <path d="M 543.72672 993.3585 L 549 995.5 L 543.72672 997.6415 L 548.29656 1000.48066 L 542.56608 1001.875 L 546.25752 1005.2619 L 540.24624 1005.80965 L 542.91816 1009.64434 L 536.87088 1009.39546 L 538.45344 1013.5295 L 532.58184 1012.4335 L 532.96848 1016.717 L 527.5548 1014.8244 L 526.74624 1019.0574 L 521.96472 1016.4676 L 519.99624 1020.5017 L 516.02328 1017.26476 L 513 1021 L 509.94144 1017.26476 L 505.96848 1020.5017 L 504.03528 1016.4676 L 499.21848 1019.0574 L 498.40992 1014.8244 L 492.99624 1016.717 L 493.38288 1012.4335 L 487.512 1013.5295 L 489.09384 1009.39546 L 483.04656 1009.64434 L 485.71848 1005.80965 L 479.7072 1005.2619 L 483.39864 1001.875 L 477.66816 1000.48066 L 482.238 997.6415 L 477 995.5 L 482.238 993.3585 L 477.66816 990.51934 L 483.39864 989.125 L 479.7072 985.7381 L 485.71848 985.19035 L 483.04656 981.35566 L 489.09384 981.60454 L 487.512 977.4705 L 493.38288 978.56647 L 492.99624 974.283 L 498.40992 976.1756 L 499.21848 971.9426 L 504.03528 974.53237 L 505.96848 970.49827 L 509.94144 973.68577 L 512.96472 970 L 516.02328 973.68577 L 519.99624 970.49827 L 521.96472 974.53237 L 526.74624 971.9426 L 527.5548 976.1756 L 532.96848 974.283 L 532.58184 978.56647 L 538.45344 977.4705 L 536.87088 981.60454 L 542.91816 981.35566 L 540.24624 985.19035 L 546.25752 985.7381 L 542.56608 989.125 L 548.29656 990.51934 L 543.72672 993.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 559.84784 989.3585 L 566 991.5 L 559.84784 993.6415 L 565.17932 996.48066 L 558.49376 997.875 L 562.80044 1001.2619 L 555.78728 1001.80965 L 558.90452 1005.64434 L 551.84936 1005.39546 L 553.69568 1009.5295 L 546.84548 1008.4335 L 547.29656 1012.717 L 540.9806 1010.8244 L 540.03728 1015.0574 L 534.45884 1012.4676 L 532.16228 1016.5017 L 527.52716 1013.26476 L 524 1017 L 520.43168 1013.26476 L 515.79656 1016.5017 L 513.54116 1012.4676 L 507.92156 1015.0574 L 506.97824 1010.8244 L 500.66228 1012.717 L 501.11336 1008.4335 L 494.264 1009.5295 L 496.10948 1005.39546 L 489.05432 1005.64434 L 492.17156 1001.80965 L 485.1584 1001.2619 L 489.46508 997.875 L 482.77952 996.48066 L 488.111 993.6415 L 482 991.5 L 488.111 989.3585 L 482.77952 986.51934 L 489.46508 985.125 L 485.1584 981.7381 L 492.17156 981.19035 L 489.05432 977.35566 L 496.10948 977.60454 L 494.264 973.4705 L 501.11336 974.56647 L 500.66228 970.283 L 506.97824 972.1756 L 507.92156 967.9426 L 513.54116 970.53237 L 515.79656 966.49827 L 520.43168 969.68577 L 523.95884 966 L 527.52716 969.68577 L 532.16228 966.49827 L 534.45884 970.53237 L 540.03728 967.9426 L 540.9806 972.1756 L 547.29656 970.283 L 546.84548 974.56647 L 553.69568 973.4705 L 551.84936 977.60454 L 558.90452 977.35566 L 555.78728 981.19035 L 562.80044 981.7381 L 558.49376 985.125 L 565.17932 986.51934 L 559.84784 989.3585 Z" fill="white"/>
+            <path d="M 559.84784 989.3585 L 566 991.5 L 559.84784 993.6415 L 565.17932 996.48066 L 558.49376 997.875 L 562.80044 1001.2619 L 555.78728 1001.80965 L 558.90452 1005.64434 L 551.84936 1005.39546 L 553.69568 1009.5295 L 546.84548 1008.4335 L 547.29656 1012.717 L 540.9806 1010.8244 L 540.03728 1015.0574 L 534.45884 1012.4676 L 532.16228 1016.5017 L 527.52716 1013.26476 L 524 1017 L 520.43168 1013.26476 L 515.79656 1016.5017 L 513.54116 1012.4676 L 507.92156 1015.0574 L 506.97824 1010.8244 L 500.66228 1012.717 L 501.11336 1008.4335 L 494.264 1009.5295 L 496.10948 1005.39546 L 489.05432 1005.64434 L 492.17156 1001.80965 L 485.1584 1001.2619 L 489.46508 997.875 L 482.77952 996.48066 L 488.111 993.6415 L 482 991.5 L 488.111 989.3585 L 482.77952 986.51934 L 489.46508 985.125 L 485.1584 981.7381 L 492.17156 981.19035 L 489.05432 977.35566 L 496.10948 977.60454 L 494.264 973.4705 L 501.11336 974.56647 L 500.66228 970.283 L 506.97824 972.1756 L 507.92156 967.9426 L 513.54116 970.53237 L 515.79656 966.49827 L 520.43168 969.68577 L 523.95884 966 L 527.52716 969.68577 L 532.16228 966.49827 L 534.45884 970.53237 L 540.03728 967.9426 L 540.9806 972.1756 L 547.29656 970.283 L 546.84548 974.56647 L 553.69568 973.4705 L 551.84936 977.60454 L 558.90452 977.35566 L 555.78728 981.19035 L 562.80044 981.7381 L 558.49376 985.125 L 565.17932 986.51934 L 559.84784 989.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(494.56 979.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="6.7861914" y="10" textLength="45.307617">customer</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="18.656309" y="22" textLength="21.567383">orgs</tspan>
+            </text>
+
+          <g class="step">
+            <path d="M 498.43927 810.43167 C 511.1 815.5316 523.66398 825.8655 531 846 C 542.585 877.7963 537.8104 924.9167 532.32004 956.8496" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 509.21486 824.37706 L 556.01705 824.37706 C 561.5531 824.37706 566.0461 836.24906 566.0461 850.87706 C 566.0461 865.50506 561.5531 877.37706 556.01705 877.37706 L 509.21486 877.37706 C 503.67883 877.37706 499.18582 865.50506 499.18582 850.87706 C 499.18582 836.24906 503.67883 824.37706 509.21486 824.37706" fill="#78bb43"/>
+            <text transform="translate(510.87184 829.37706)" fill="black">
+                <tspan font-family="octicons" font-size="16" font-weight="500" x="17.744112" y="15"></tspan>
+                <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="25.744112" y="15"> </tspan>
+                <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="9.8422563" y="29">push</tspan>
+                <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x=".054658645" y="41"> upgrade</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-release-trialforce">
+          <title>Release - TrialForce</title>
+          <path d="M 453.72672 985.3585 L 459 987.5 L 453.72672 989.6415 L 458.29656 992.48066 L 452.56608 993.875 L 456.25752 997.2619 L 450.24624 997.80965 L 452.91816 1001.64434 L 446.87088 1001.39546 L 448.45344 1005.5295 L 442.58184 1004.43353 L 442.96848 1008.717 L 437.5548 1006.8244 L 436.74624 1011.0574 L 431.96472 1008.4676 L 429.99624 1012.5017 L 426.02328 1009.26476 L 423 1013 L 419.94144 1009.26476 L 415.96848 1012.5017 L 414.03528 1008.4676 L 409.21848 1011.0574 L 408.40992 1006.8244 L 402.99624 1008.717 L 403.38288 1004.43353 L 397.512 1005.5295 L 399.09384 1001.39546 L 393.04656 1001.64434 L 395.71848 997.80965 L 389.7072 997.2619 L 393.39864 993.875 L 387.66816 992.48066 L 392.238 989.6415 L 387 987.5 L 392.238 985.3585 L 387.66816 982.51934 L 393.39864 981.125 L 389.7072 977.7381 L 395.71848 977.19035 L 393.04656 973.35566 L 399.09384 973.60454 L 397.512 969.4705 L 403.38288 970.56647 L 402.99624 966.283 L 408.40992 968.1756 L 409.21848 963.9426 L 414.03528 966.53237 L 415.96848 962.49827 L 419.94144 965.68577 L 422.96472 962 L 426.02328 965.68577 L 429.99624 962.49827 L 431.96472 966.53237 L 436.74624 963.9426 L 437.5548 968.1756 L 442.96848 966.283 L 442.58184 970.56647 L 448.45344 969.4705 L 446.87088 973.60454 L 452.91816 973.35566 L 450.24624 977.19035 L 456.25752 977.7381 L 452.56608 981.125 L 458.29656 982.51934 L 453.72672 985.3585 Z" fill="white"/>
+          <path d="M 453.72672 985.3585 L 459 987.5 L 453.72672 989.6415 L 458.29656 992.48066 L 452.56608 993.875 L 456.25752 997.2619 L 450.24624 997.80965 L 452.91816 1001.64434 L 446.87088 1001.39546 L 448.45344 1005.5295 L 442.58184 1004.43353 L 442.96848 1008.717 L 437.5548 1006.8244 L 436.74624 1011.0574 L 431.96472 1008.4676 L 429.99624 1012.5017 L 426.02328 1009.26476 L 423 1013 L 419.94144 1009.26476 L 415.96848 1012.5017 L 414.03528 1008.4676 L 409.21848 1011.0574 L 408.40992 1006.8244 L 402.99624 1008.717 L 403.38288 1004.43353 L 397.512 1005.5295 L 399.09384 1001.39546 L 393.04656 1001.64434 L 395.71848 997.80965 L 389.7072 997.2619 L 393.39864 993.875 L 387.66816 992.48066 L 392.238 989.6415 L 387 987.5 L 392.238 985.3585 L 387.66816 982.51934 L 393.39864 981.125 L 389.7072 977.7381 L 395.71848 977.19035 L 393.04656 973.35566 L 399.09384 973.60454 L 397.512 969.4705 L 403.38288 970.56647 L 402.99624 966.283 L 408.40992 968.1756 L 409.21848 963.9426 L 414.03528 966.53237 L 415.96848 962.49827 L 419.94144 965.68577 L 422.96472 962 L 426.02328 965.68577 L 429.99624 962.49827 L 431.96472 966.53237 L 436.74624 963.9426 L 437.5548 968.1756 L 442.96848 966.283 L 442.58184 970.56647 L 448.45344 969.4705 L 446.87088 973.60454 L 452.91816 973.35566 L 450.24624 977.19035 L 456.25752 977.7381 L 452.56608 981.125 L 458.29656 982.51934 L 453.72672 985.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 447.72672 998.3585 L 453 1000.5 L 447.72672 1002.6415 L 452.29656 1005.48066 L 446.56608 1006.875 L 450.25752 1010.2619 L 444.24624 1010.80965 L 446.91816 1014.64434 L 440.87088 1014.39546 L 442.45344 1018.5295 L 436.58184 1017.4335 L 436.96848 1021.717 L 431.5548 1019.8244 L 430.74624 1024.0574 L 425.96472 1021.4676 L 423.99624 1025.5017 L 420.02328 1022.26476 L 417 1026 L 413.94144 1022.26476 L 409.96848 1025.5017 L 408.03528 1021.4676 L 403.21848 1024.0574 L 402.40992 1019.8244 L 396.99624 1021.717 L 397.38288 1017.4335 L 391.512 1018.5295 L 393.09384 1014.39546 L 387.04656 1014.64434 L 389.71848 1010.80965 L 383.7072 1010.2619 L 387.39864 1006.875 L 381.66816 1005.48066 L 386.238 1002.6415 L 381 1000.5 L 386.238 998.3585 L 381.66816 995.51934 L 387.39864 994.125 L 383.7072 990.7381 L 389.71848 990.19035 L 387.04656 986.35566 L 393.09384 986.60454 L 391.512 982.4705 L 397.38288 983.56647 L 396.99624 979.283 L 402.40992 981.1756 L 403.21848 976.9426 L 408.03528 979.53237 L 409.96848 975.49827 L 413.94144 978.68577 L 416.96472 975 L 420.02328 978.68577 L 423.99624 975.49827 L 425.96472 979.53237 L 430.74624 976.9426 L 431.5548 981.1756 L 436.96848 979.283 L 436.58184 983.56647 L 442.45344 982.4705 L 440.87088 986.60454 L 446.91816 986.35566 L 444.24624 990.19035 L 450.25752 990.7381 L 446.56608 994.125 L 452.29656 995.51934 L 447.72672 998.3585 Z" fill="white"/>
+          <path d="M 447.72672 998.3585 L 453 1000.5 L 447.72672 1002.6415 L 452.29656 1005.48066 L 446.56608 1006.875 L 450.25752 1010.2619 L 444.24624 1010.80965 L 446.91816 1014.64434 L 440.87088 1014.39546 L 442.45344 1018.5295 L 436.58184 1017.4335 L 436.96848 1021.717 L 431.5548 1019.8244 L 430.74624 1024.0574 L 425.96472 1021.4676 L 423.99624 1025.5017 L 420.02328 1022.26476 L 417 1026 L 413.94144 1022.26476 L 409.96848 1025.5017 L 408.03528 1021.4676 L 403.21848 1024.0574 L 402.40992 1019.8244 L 396.99624 1021.717 L 397.38288 1017.4335 L 391.512 1018.5295 L 393.09384 1014.39546 L 387.04656 1014.64434 L 389.71848 1010.80965 L 383.7072 1010.2619 L 387.39864 1006.875 L 381.66816 1005.48066 L 386.238 1002.6415 L 381 1000.5 L 386.238 998.3585 L 381.66816 995.51934 L 387.39864 994.125 L 383.7072 990.7381 L 389.71848 990.19035 L 387.04656 986.35566 L 393.09384 986.60454 L 391.512 982.4705 L 397.38288 983.56647 L 396.99624 979.283 L 402.40992 981.1756 L 403.21848 976.9426 L 408.03528 979.53237 L 409.96848 975.49827 L 413.94144 978.68577 L 416.96472 975 L 420.02328 978.68577 L 423.99624 975.49827 L 425.96472 979.53237 L 430.74624 976.9426 L 431.5548 981.1756 L 436.96848 979.283 L 436.58184 983.56647 L 442.45344 982.4705 L 440.87088 986.60454 L 446.91816 986.35566 L 444.24624 990.19035 L 450.25752 990.7381 L 446.56608 994.125 L 452.29656 995.51934 L 447.72672 998.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 432.72672 993.3585 L 438 995.5 L 432.72672 997.6415 L 437.29656 1000.48066 L 431.56608 1001.875 L 435.25752 1005.2619 L 429.24624 1005.80965 L 431.91816 1009.64434 L 425.87088 1009.39546 L 427.45344 1013.5295 L 421.58184 1012.4335 L 421.96848 1016.717 L 416.5548 1014.8244 L 415.74624 1019.0574 L 410.96472 1016.4676 L 408.99624 1020.5017 L 405.02328 1017.26476 L 402 1021 L 398.94144 1017.26476 L 394.96848 1020.5017 L 393.03528 1016.4676 L 388.21848 1019.0574 L 387.40992 1014.8244 L 381.99624 1016.717 L 382.38288 1012.4335 L 376.512 1013.5295 L 378.09384 1009.39546 L 372.04656 1009.64434 L 374.71848 1005.80965 L 368.7072 1005.2619 L 372.39864 1001.875 L 366.66816 1000.48066 L 371.238 997.6415 L 366 995.5 L 371.238 993.3585 L 366.66816 990.51934 L 372.39864 989.125 L 368.7072 985.7381 L 374.71848 985.19035 L 372.04656 981.35566 L 378.09384 981.60454 L 376.512 977.4705 L 382.38288 978.56647 L 381.99624 974.283 L 387.40992 976.1756 L 388.21848 971.9426 L 393.03528 974.53237 L 394.96848 970.49827 L 398.94144 973.68577 L 401.96472 970 L 405.02328 973.68577 L 408.99624 970.49827 L 410.96472 974.53237 L 415.74624 971.9426 L 416.5548 976.1756 L 421.96848 974.283 L 421.58184 978.56647 L 427.45344 977.4705 L 425.87088 981.60454 L 431.91816 981.35566 L 429.24624 985.19035 L 435.25752 985.7381 L 431.56608 989.125 L 437.29656 990.51934 L 432.72672 993.3585 Z" fill="white"/>
+          <path d="M 432.72672 993.3585 L 438 995.5 L 432.72672 997.6415 L 437.29656 1000.48066 L 431.56608 1001.875 L 435.25752 1005.2619 L 429.24624 1005.80965 L 431.91816 1009.64434 L 425.87088 1009.39546 L 427.45344 1013.5295 L 421.58184 1012.4335 L 421.96848 1016.717 L 416.5548 1014.8244 L 415.74624 1019.0574 L 410.96472 1016.4676 L 408.99624 1020.5017 L 405.02328 1017.26476 L 402 1021 L 398.94144 1017.26476 L 394.96848 1020.5017 L 393.03528 1016.4676 L 388.21848 1019.0574 L 387.40992 1014.8244 L 381.99624 1016.717 L 382.38288 1012.4335 L 376.512 1013.5295 L 378.09384 1009.39546 L 372.04656 1009.64434 L 374.71848 1005.80965 L 368.7072 1005.2619 L 372.39864 1001.875 L 366.66816 1000.48066 L 371.238 997.6415 L 366 995.5 L 371.238 993.3585 L 366.66816 990.51934 L 372.39864 989.125 L 368.7072 985.7381 L 374.71848 985.19035 L 372.04656 981.35566 L 378.09384 981.60454 L 376.512 977.4705 L 382.38288 978.56647 L 381.99624 974.283 L 387.40992 976.1756 L 388.21848 971.9426 L 393.03528 974.53237 L 394.96848 970.49827 L 398.94144 973.68577 L 401.96472 970 L 405.02328 973.68577 L 408.99624 970.49827 L 410.96472 974.53237 L 415.74624 971.9426 L 416.5548 976.1756 L 421.96848 974.283 L 421.58184 978.56647 L 427.45344 977.4705 L 425.87088 981.60454 L 431.91816 981.35566 L 429.24624 985.19035 L 435.25752 985.7381 L 431.56608 989.125 L 437.29656 990.51934 L 432.72672 993.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 444.72672 989.3585 L 450 991.5 L 444.72672 993.6415 L 449.29656 996.48066 L 443.56608 997.875 L 447.25752 1001.2619 L 441.24624 1001.80965 L 443.91816 1005.64434 L 437.87088 1005.39546 L 439.45344 1009.5295 L 433.58184 1008.4335 L 433.96848 1012.717 L 428.5548 1010.8244 L 427.74624 1015.0574 L 422.96472 1012.4676 L 420.99624 1016.5017 L 417.02328 1013.26476 L 414 1017 L 410.94144 1013.26476 L 406.96848 1016.5017 L 405.03528 1012.4676 L 400.21848 1015.0574 L 399.40992 1010.8244 L 393.99624 1012.717 L 394.38288 1008.4335 L 388.512 1009.5295 L 390.09384 1005.39546 L 384.04656 1005.64434 L 386.71848 1001.80965 L 380.7072 1001.2619 L 384.39864 997.875 L 378.66816 996.48066 L 383.238 993.6415 L 378 991.5 L 383.238 989.3585 L 378.66816 986.51934 L 384.39864 985.125 L 380.7072 981.7381 L 386.71848 981.19035 L 384.04656 977.35566 L 390.09384 977.60454 L 388.512 973.4705 L 394.38288 974.56647 L 393.99624 970.283 L 399.40992 972.1756 L 400.21848 967.9426 L 405.03528 970.53237 L 406.96848 966.49827 L 410.94144 969.68577 L 413.96472 966 L 417.02328 969.68577 L 420.99624 966.49827 L 422.96472 970.53237 L 427.74624 967.9426 L 428.5548 972.1756 L 433.96848 970.283 L 433.58184 974.56647 L 439.45344 973.4705 L 437.87088 977.60454 L 443.91816 977.35566 L 441.24624 981.19035 L 447.25752 981.7381 L 443.56608 985.125 L 449.29656 986.51934 L 444.72672 989.3585 Z" fill="white"/>
+          <path d="M 444.72672 989.3585 L 450 991.5 L 444.72672 993.6415 L 449.29656 996.48066 L 443.56608 997.875 L 447.25752 1001.2619 L 441.24624 1001.80965 L 443.91816 1005.64434 L 437.87088 1005.39546 L 439.45344 1009.5295 L 433.58184 1008.4335 L 433.96848 1012.717 L 428.5548 1010.8244 L 427.74624 1015.0574 L 422.96472 1012.4676 L 420.99624 1016.5017 L 417.02328 1013.26476 L 414 1017 L 410.94144 1013.26476 L 406.96848 1016.5017 L 405.03528 1012.4676 L 400.21848 1015.0574 L 399.40992 1010.8244 L 393.99624 1012.717 L 394.38288 1008.4335 L 388.512 1009.5295 L 390.09384 1005.39546 L 384.04656 1005.64434 L 386.71848 1001.80965 L 380.7072 1001.2619 L 384.39864 997.875 L 378.66816 996.48066 L 383.238 993.6415 L 378 991.5 L 383.238 989.3585 L 378.66816 986.51934 L 384.39864 985.125 L 380.7072 981.7381 L 386.71848 981.19035 L 384.04656 977.35566 L 390.09384 977.60454 L 388.512 973.4705 L 394.38288 974.56647 L 393.99624 970.283 L 399.40992 972.1756 L 400.21848 967.9426 L 405.03528 970.53237 L 406.96848 966.49827 L 410.94144 969.68577 L 413.96472 966 L 417.02328 969.68577 L 420.99624 966.49827 L 422.96472 970.53237 L 427.74624 967.9426 L 428.5548 972.1756 L 433.96848 970.283 L 433.58184 974.56647 L 439.45344 973.4705 L 437.87088 977.60454 L 443.91816 977.35566 L 441.24624 981.19035 L 447.25752 981.7381 L 443.56608 985.125 L 449.29656 986.51934 L 444.72672 989.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(389.48 979.5)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="3.6288867" y="10" textLength="41.782227">new trial</tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="13.736309" y="22" textLength="21.567383">orgs</tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 462.72672 899.3585 L 468 901.5 L 462.72672 903.6415 L 467.29656 906.48066 L 461.56608 907.875 L 465.25752 911.2619 L 459.24624 911.80965 L 461.91816 915.64434 L 455.87088 915.39546 L 457.45344 919.5295 L 451.58184 918.43353 L 451.96848 922.717 L 446.5548 920.8244 L 445.74624 925.0574 L 440.96472 922.46763 L 438.99624 926.50173 L 435.02328 923.26476 L 432 927 L 428.94144 923.26476 L 424.96848 926.50173 L 423.03528 922.46763 L 418.21848 925.0574 L 417.40992 920.8244 L 411.99624 922.717 L 412.38288 918.43353 L 406.512 919.5295 L 408.09384 915.39546 L 402.04656 915.64434 L 404.71848 911.80965 L 398.7072 911.2619 L 402.39864 907.875 L 396.66816 906.48066 L 401.238 903.6415 L 396 901.5 L 401.238 899.3585 L 396.66816 896.51934 L 402.39864 895.125 L 398.7072 891.7381 L 404.71848 891.19035 L 402.04656 887.35566 L 408.09384 887.60454 L 406.512 883.4705 L 412.38288 884.56647 L 411.99624 880.283 L 417.40992 882.1756 L 418.21848 877.9426 L 423.03528 880.53237 L 424.96848 876.49827 L 428.94144 879.68577 L 431.96472 876 L 435.02328 879.68577 L 438.99624 876.49827 L 440.96472 880.53237 L 445.74624 877.9426 L 446.5548 882.1756 L 451.96848 880.283 L 451.58184 884.56647 L 457.45344 883.4705 L 455.87088 887.60454 L 461.91816 887.35566 L 459.24624 891.19035 L 465.25752 891.7381 L 461.56608 895.125 L 467.29656 896.51934 L 462.72672 899.3585 Z" fill="white"/>
+            <path d="M 462.72672 899.3585 L 468 901.5 L 462.72672 903.6415 L 467.29656 906.48066 L 461.56608 907.875 L 465.25752 911.2619 L 459.24624 911.80965 L 461.91816 915.64434 L 455.87088 915.39546 L 457.45344 919.5295 L 451.58184 918.43353 L 451.96848 922.717 L 446.5548 920.8244 L 445.74624 925.0574 L 440.96472 922.46763 L 438.99624 926.50173 L 435.02328 923.26476 L 432 927 L 428.94144 923.26476 L 424.96848 926.50173 L 423.03528 922.46763 L 418.21848 925.0574 L 417.40992 920.8244 L 411.99624 922.717 L 412.38288 918.43353 L 406.512 919.5295 L 408.09384 915.39546 L 402.04656 915.64434 L 404.71848 911.80965 L 398.7072 911.2619 L 402.39864 907.875 L 396.66816 906.48066 L 401.238 903.6415 L 396 901.5 L 401.238 899.3585 L 396.66816 896.51934 L 402.39864 895.125 L 398.7072 891.7381 L 404.71848 891.19035 L 402.04656 887.35566 L 408.09384 887.60454 L 406.512 883.4705 L 412.38288 884.56647 L 411.99624 880.283 L 417.40992 882.1756 L 418.21848 877.9426 L 423.03528 880.53237 L 424.96848 876.49827 L 428.94144 879.68577 L 431.96472 876 L 435.02328 879.68577 L 438.99624 876.49827 L 440.96472 880.53237 L 445.74624 877.9426 L 446.5548 882.1756 L 451.96848 880.283 L 451.58184 884.56647 L 457.45344 883.4705 L 455.87088 887.60454 L 461.91816 887.35566 L 459.24624 891.19035 L 465.25752 891.7381 L 461.56608 895.125 L 467.29656 896.51934 L 462.72672 899.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(407.48 889.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="3.1869922" y="10" textLength="42.666016">template</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="16.285137" y="22" textLength="16.469727">org</tspan>
+            </text>
+            <line x1="501.201" y1="866.8918" x2="470.5207" y2="882.23537" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <path d="M 396 909.40953 C 372.1826 915.9149 344.8272 926.36404 342 940.5 C 339.74036 951.7982 353.62022 963.09736 369.7801 972.1783" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 315.33814 919.5733 L 376.58814 919.5733 C 383.83314 919.5733 389.71314 925.6213 389.71314 933.0733 C 389.71314 940.5253 383.83314 946.5733 376.58814 946.5733 L 315.33814 946.5733 C 308.09314 946.5733 302.21314 940.5253 302.21314 933.0733 C 302.21314 925.6213 308.09314 919.5733 315.33814 919.5733" fill="#78bb43"/>
+            <text transform="translate(315.96314 924.5733)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".09765625" y="13"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="8.0976562" y="13"> </tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" x="11.894531" y="13">TrialForce</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-release-mrbelvedere">
+          <title>Release - mrbelvedere</title>
+          <path d="M 129.72672 985.3585 L 135 987.5 L 129.72672 989.6415 L 134.29656 992.48066 L 128.56608 993.875 L 132.25752 997.2619 L 126.24624 997.80965 L 128.91816 1001.64434 L 122.87088 1001.39546 L 124.45344 1005.5295 L 118.58184 1004.43353 L 118.96848 1008.717 L 113.5548 1006.8244 L 112.74624 1011.0574 L 107.96472 1008.4676 L 105.99624 1012.5017 L 102.02328 1009.26476 L 99 1013 L 95.94144 1009.26476 L 91.96848 1012.5017 L 90.03528 1008.4676 L 85.21848 1011.0574 L 84.40992 1006.8244 L 78.99624 1008.717 L 79.38288 1004.43353 L 73.512 1005.5295 L 75.09384 1001.39546 L 69.04656 1001.64434 L 71.71848 997.80965 L 65.7072 997.2619 L 69.39864 993.875 L 63.66816 992.48066 L 68.238 989.6415 L 63 987.5 L 68.238 985.3585 L 63.66816 982.51934 L 69.39864 981.125 L 65.7072 977.7381 L 71.71848 977.19035 L 69.04656 973.35566 L 75.09384 973.60454 L 73.512 969.4705 L 79.38288 970.56647 L 78.99624 966.283 L 84.40992 968.1756 L 85.21848 963.9426 L 90.03528 966.53237 L 91.96848 962.49827 L 95.94144 965.68577 L 98.96472 962 L 102.02328 965.68577 L 105.99624 962.49827 L 107.96472 966.53237 L 112.74624 963.9426 L 113.5548 968.1756 L 118.96848 966.283 L 118.58184 970.56647 L 124.45344 969.4705 L 122.87088 973.60454 L 128.91816 973.35566 L 126.24624 977.19035 L 132.25752 977.7381 L 128.56608 981.125 L 134.29656 982.51934 L 129.72672 985.3585 Z" fill="white"/>
+          <path d="M 129.72672 985.3585 L 135 987.5 L 129.72672 989.6415 L 134.29656 992.48066 L 128.56608 993.875 L 132.25752 997.2619 L 126.24624 997.80965 L 128.91816 1001.64434 L 122.87088 1001.39546 L 124.45344 1005.5295 L 118.58184 1004.43353 L 118.96848 1008.717 L 113.5548 1006.8244 L 112.74624 1011.0574 L 107.96472 1008.4676 L 105.99624 1012.5017 L 102.02328 1009.26476 L 99 1013 L 95.94144 1009.26476 L 91.96848 1012.5017 L 90.03528 1008.4676 L 85.21848 1011.0574 L 84.40992 1006.8244 L 78.99624 1008.717 L 79.38288 1004.43353 L 73.512 1005.5295 L 75.09384 1001.39546 L 69.04656 1001.64434 L 71.71848 997.80965 L 65.7072 997.2619 L 69.39864 993.875 L 63.66816 992.48066 L 68.238 989.6415 L 63 987.5 L 68.238 985.3585 L 63.66816 982.51934 L 69.39864 981.125 L 65.7072 977.7381 L 71.71848 977.19035 L 69.04656 973.35566 L 75.09384 973.60454 L 73.512 969.4705 L 79.38288 970.56647 L 78.99624 966.283 L 84.40992 968.1756 L 85.21848 963.9426 L 90.03528 966.53237 L 91.96848 962.49827 L 95.94144 965.68577 L 98.96472 962 L 102.02328 965.68577 L 105.99624 962.49827 L 107.96472 966.53237 L 112.74624 963.9426 L 113.5548 968.1756 L 118.96848 966.283 L 118.58184 970.56647 L 124.45344 969.4705 L 122.87088 973.60454 L 128.91816 973.35566 L 126.24624 977.19035 L 132.25752 977.7381 L 128.56608 981.125 L 134.29656 982.51934 L 129.72672 985.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 123.72672 998.3585 L 129 1000.5 L 123.72672 1002.6415 L 128.29656 1005.48066 L 122.56608 1006.875 L 126.25752 1010.2619 L 120.24624 1010.80965 L 122.91816 1014.64434 L 116.87088 1014.39546 L 118.45344 1018.5295 L 112.58184 1017.4335 L 112.96848 1021.717 L 107.5548 1019.8244 L 106.74624 1024.0574 L 101.96472 1021.4676 L 99.99624 1025.5017 L 96.02328 1022.26476 L 93 1026 L 89.94144 1022.26476 L 85.96848 1025.5017 L 84.03528 1021.4676 L 79.21848 1024.0574 L 78.40992 1019.8244 L 72.99624 1021.717 L 73.38288 1017.4335 L 67.512 1018.5295 L 69.09384 1014.39546 L 63.04656 1014.64434 L 65.71848 1010.80965 L 59.7072 1010.2619 L 63.39864 1006.875 L 57.66816 1005.48066 L 62.238 1002.6415 L 57 1000.5 L 62.238 998.3585 L 57.66816 995.51934 L 63.39864 994.125 L 59.7072 990.7381 L 65.71848 990.19035 L 63.04656 986.35566 L 69.09384 986.60454 L 67.512 982.4705 L 73.38288 983.56647 L 72.99624 979.283 L 78.40992 981.1756 L 79.21848 976.9426 L 84.03528 979.53237 L 85.96848 975.49827 L 89.94144 978.68577 L 92.96472 975 L 96.02328 978.68577 L 99.99624 975.49827 L 101.96472 979.53237 L 106.74624 976.9426 L 107.5548 981.1756 L 112.96848 979.283 L 112.58184 983.56647 L 118.45344 982.4705 L 116.87088 986.60454 L 122.91816 986.35566 L 120.24624 990.19035 L 126.25752 990.7381 L 122.56608 994.125 L 128.29656 995.51934 L 123.72672 998.3585 Z" fill="white"/>
+          <path d="M 123.72672 998.3585 L 129 1000.5 L 123.72672 1002.6415 L 128.29656 1005.48066 L 122.56608 1006.875 L 126.25752 1010.2619 L 120.24624 1010.80965 L 122.91816 1014.64434 L 116.87088 1014.39546 L 118.45344 1018.5295 L 112.58184 1017.4335 L 112.96848 1021.717 L 107.5548 1019.8244 L 106.74624 1024.0574 L 101.96472 1021.4676 L 99.99624 1025.5017 L 96.02328 1022.26476 L 93 1026 L 89.94144 1022.26476 L 85.96848 1025.5017 L 84.03528 1021.4676 L 79.21848 1024.0574 L 78.40992 1019.8244 L 72.99624 1021.717 L 73.38288 1017.4335 L 67.512 1018.5295 L 69.09384 1014.39546 L 63.04656 1014.64434 L 65.71848 1010.80965 L 59.7072 1010.2619 L 63.39864 1006.875 L 57.66816 1005.48066 L 62.238 1002.6415 L 57 1000.5 L 62.238 998.3585 L 57.66816 995.51934 L 63.39864 994.125 L 59.7072 990.7381 L 65.71848 990.19035 L 63.04656 986.35566 L 69.09384 986.60454 L 67.512 982.4705 L 73.38288 983.56647 L 72.99624 979.283 L 78.40992 981.1756 L 79.21848 976.9426 L 84.03528 979.53237 L 85.96848 975.49827 L 89.94144 978.68577 L 92.96472 975 L 96.02328 978.68577 L 99.99624 975.49827 L 101.96472 979.53237 L 106.74624 976.9426 L 107.5548 981.1756 L 112.96848 979.283 L 112.58184 983.56647 L 118.45344 982.4705 L 116.87088 986.60454 L 122.91816 986.35566 L 120.24624 990.19035 L 126.25752 990.7381 L 122.56608 994.125 L 128.29656 995.51934 L 123.72672 998.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 108.72672 993.3585 L 114 995.5 L 108.72672 997.6415 L 113.29656 1000.48066 L 107.56608 1001.875 L 111.25752 1005.2619 L 105.24624 1005.80965 L 107.91816 1009.64434 L 101.87088 1009.39546 L 103.45344 1013.5295 L 97.58184 1012.4335 L 97.96848 1016.717 L 92.5548 1014.8244 L 91.74624 1019.0574 L 86.96472 1016.4676 L 84.99624 1020.5017 L 81.02328 1017.26476 L 78 1021 L 74.94144 1017.26476 L 70.96848 1020.5017 L 69.03528 1016.4676 L 64.21848 1019.0574 L 63.40992 1014.8244 L 57.99624 1016.717 L 58.38288 1012.4335 L 52.512 1013.5295 L 54.09384 1009.39546 L 48.04656 1009.64434 L 50.71848 1005.80965 L 44.7072 1005.2619 L 48.39864 1001.875 L 42.66816 1000.48066 L 47.238 997.6415 L 42 995.5 L 47.238 993.3585 L 42.66816 990.51934 L 48.39864 989.125 L 44.7072 985.7381 L 50.71848 985.19035 L 48.04656 981.35566 L 54.09384 981.60454 L 52.512 977.4705 L 58.38288 978.56647 L 57.99624 974.283 L 63.40992 976.1756 L 64.21848 971.9426 L 69.03528 974.53237 L 70.96848 970.49827 L 74.94144 973.68577 L 77.96472 970 L 81.02328 973.68577 L 84.99624 970.49827 L 86.96472 974.53237 L 91.74624 971.9426 L 92.5548 976.1756 L 97.96848 974.283 L 97.58184 978.56647 L 103.45344 977.4705 L 101.87088 981.60454 L 107.91816 981.35566 L 105.24624 985.19035 L 111.25752 985.7381 L 107.56608 989.125 L 113.29656 990.51934 L 108.72672 993.3585 Z" fill="white"/>
+          <path d="M 108.72672 993.3585 L 114 995.5 L 108.72672 997.6415 L 113.29656 1000.48066 L 107.56608 1001.875 L 111.25752 1005.2619 L 105.24624 1005.80965 L 107.91816 1009.64434 L 101.87088 1009.39546 L 103.45344 1013.5295 L 97.58184 1012.4335 L 97.96848 1016.717 L 92.5548 1014.8244 L 91.74624 1019.0574 L 86.96472 1016.4676 L 84.99624 1020.5017 L 81.02328 1017.26476 L 78 1021 L 74.94144 1017.26476 L 70.96848 1020.5017 L 69.03528 1016.4676 L 64.21848 1019.0574 L 63.40992 1014.8244 L 57.99624 1016.717 L 58.38288 1012.4335 L 52.512 1013.5295 L 54.09384 1009.39546 L 48.04656 1009.64434 L 50.71848 1005.80965 L 44.7072 1005.2619 L 48.39864 1001.875 L 42.66816 1000.48066 L 47.238 997.6415 L 42 995.5 L 47.238 993.3585 L 42.66816 990.51934 L 48.39864 989.125 L 44.7072 985.7381 L 50.71848 985.19035 L 48.04656 981.35566 L 54.09384 981.60454 L 52.512 977.4705 L 58.38288 978.56647 L 57.99624 974.283 L 63.40992 976.1756 L 64.21848 971.9426 L 69.03528 974.53237 L 70.96848 970.49827 L 74.94144 973.68577 L 77.96472 970 L 81.02328 973.68577 L 84.99624 970.49827 L 86.96472 974.53237 L 91.74624 971.9426 L 92.5548 976.1756 L 97.96848 974.283 L 97.58184 978.56647 L 103.45344 977.4705 L 101.87088 981.60454 L 107.91816 981.35566 L 105.24624 985.19035 L 111.25752 985.7381 L 107.56608 989.125 L 113.29656 990.51934 L 108.72672 993.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <path d="M 120.72672 989.3585 L 126 991.5 L 120.72672 993.6415 L 125.29656 996.48066 L 119.56608 997.875 L 123.25752 1001.2619 L 117.24624 1001.80965 L 119.91816 1005.64434 L 113.87088 1005.39546 L 115.45344 1009.5295 L 109.58184 1008.4335 L 109.96848 1012.717 L 104.5548 1010.8244 L 103.74624 1015.0574 L 98.96472 1012.4676 L 96.99624 1016.5017 L 93.02328 1013.26476 L 90 1017 L 86.94144 1013.26476 L 82.96848 1016.5017 L 81.03528 1012.4676 L 76.21848 1015.0574 L 75.40992 1010.8244 L 69.99624 1012.717 L 70.38288 1008.4335 L 64.512 1009.5295 L 66.09384 1005.39546 L 60.04656 1005.64434 L 62.71848 1001.80965 L 56.7072 1001.2619 L 60.39864 997.875 L 54.66816 996.48066 L 59.238 993.6415 L 54 991.5 L 59.238 989.3585 L 54.66816 986.51934 L 60.39864 985.125 L 56.7072 981.7381 L 62.71848 981.19035 L 60.04656 977.35566 L 66.09384 977.60454 L 64.512 973.4705 L 70.38288 974.56647 L 69.99624 970.283 L 75.40992 972.1756 L 76.21848 967.9426 L 81.03528 970.53237 L 82.96848 966.49827 L 86.94144 969.68577 L 89.96472 966 L 93.02328 969.68577 L 96.99624 966.49827 L 98.96472 970.53237 L 103.74624 967.9426 L 104.5548 972.1756 L 109.96848 970.283 L 109.58184 974.56647 L 115.45344 973.4705 L 113.87088 977.60454 L 119.91816 977.35566 L 117.24624 981.19035 L 123.25752 981.7381 L 119.56608 985.125 L 125.29656 986.51934 L 120.72672 989.3585 Z" fill="white"/>
+          <path d="M 120.72672 989.3585 L 126 991.5 L 120.72672 993.6415 L 125.29656 996.48066 L 119.56608 997.875 L 123.25752 1001.2619 L 117.24624 1001.80965 L 119.91816 1005.64434 L 113.87088 1005.39546 L 115.45344 1009.5295 L 109.58184 1008.4335 L 109.96848 1012.717 L 104.5548 1010.8244 L 103.74624 1015.0574 L 98.96472 1012.4676 L 96.99624 1016.5017 L 93.02328 1013.26476 L 90 1017 L 86.94144 1013.26476 L 82.96848 1016.5017 L 81.03528 1012.4676 L 76.21848 1015.0574 L 75.40992 1010.8244 L 69.99624 1012.717 L 70.38288 1008.4335 L 64.512 1009.5295 L 66.09384 1005.39546 L 60.04656 1005.64434 L 62.71848 1001.80965 L 56.7072 1001.2619 L 60.39864 997.875 L 54.66816 996.48066 L 59.238 993.6415 L 54 991.5 L 59.238 989.3585 L 54.66816 986.51934 L 60.39864 985.125 L 56.7072 981.7381 L 62.71848 981.19035 L 60.04656 977.35566 L 66.09384 977.60454 L 64.512 973.4705 L 70.38288 974.56647 L 69.99624 970.283 L 75.40992 972.1756 L 76.21848 967.9426 L 81.03528 970.53237 L 82.96848 966.49827 L 86.94144 969.68577 L 89.96472 966 L 93.02328 969.68577 L 96.99624 966.49827 L 98.96472 970.53237 L 103.74624 967.9426 L 104.5548 972.1756 L 109.96848 970.283 L 109.58184 974.56647 L 115.45344 973.4705 L 113.87088 977.60454 L 119.91816 977.35566 L 117.24624 981.19035 L 123.25752 981.7381 L 119.56608 985.125 L 125.29656 986.51934 L 120.72672 989.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(65.48 973.5)" fill="black">
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="14.187969" y="10" textLength="23.828125">new </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="9.905742" y="22" textLength="32.392578">install </tspan>
+            <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="12.92332" y="34" textLength="23.19336">orgs</tspan>
+          </text>
+
+          <g class="step">
+            <path d="M 231.72672 985.3585 L 237 987.5 L 231.72672 989.6415 L 236.29656 992.48066 L 230.56608 993.875 L 234.25752 997.2619 L 228.24624 997.80965 L 230.91816 1001.64434 L 224.87088 1001.39546 L 226.45344 1005.5295 L 220.58184 1004.43353 L 220.96848 1008.717 L 215.5548 1006.8244 L 214.74624 1011.0574 L 209.96472 1008.4676 L 207.99624 1012.5017 L 204.02328 1009.26476 L 201 1013 L 197.94144 1009.26476 L 193.96848 1012.5017 L 192.03528 1008.4676 L 187.21848 1011.0574 L 186.40992 1006.8244 L 180.99624 1008.717 L 181.38288 1004.43353 L 175.512 1005.5295 L 177.09384 1001.39546 L 171.04656 1001.64434 L 173.71848 997.80965 L 167.7072 997.2619 L 171.39864 993.875 L 165.66816 992.48066 L 170.238 989.6415 L 165 987.5 L 170.238 985.3585 L 165.66816 982.51934 L 171.39864 981.125 L 167.7072 977.7381 L 173.71848 977.19035 L 171.04656 973.35566 L 177.09384 973.60454 L 175.512 969.4705 L 181.38288 970.56647 L 180.99624 966.283 L 186.40992 968.1756 L 187.21848 963.9426 L 192.03528 966.53237 L 193.96848 962.49827 L 197.94144 965.68577 L 200.96472 962 L 204.02328 965.68577 L 207.99624 962.49827 L 209.96472 966.53237 L 214.74624 963.9426 L 215.5548 968.1756 L 220.96848 966.283 L 220.58184 970.56647 L 226.45344 969.4705 L 224.87088 973.60454 L 230.91816 973.35566 L 228.24624 977.19035 L 234.25752 977.7381 L 230.56608 981.125 L 236.29656 982.51934 L 231.72672 985.3585 Z" fill="white"/>
+            <path d="M 231.72672 985.3585 L 237 987.5 L 231.72672 989.6415 L 236.29656 992.48066 L 230.56608 993.875 L 234.25752 997.2619 L 228.24624 997.80965 L 230.91816 1001.64434 L 224.87088 1001.39546 L 226.45344 1005.5295 L 220.58184 1004.43353 L 220.96848 1008.717 L 215.5548 1006.8244 L 214.74624 1011.0574 L 209.96472 1008.4676 L 207.99624 1012.5017 L 204.02328 1009.26476 L 201 1013 L 197.94144 1009.26476 L 193.96848 1012.5017 L 192.03528 1008.4676 L 187.21848 1011.0574 L 186.40992 1006.8244 L 180.99624 1008.717 L 181.38288 1004.43353 L 175.512 1005.5295 L 177.09384 1001.39546 L 171.04656 1001.64434 L 173.71848 997.80965 L 167.7072 997.2619 L 171.39864 993.875 L 165.66816 992.48066 L 170.238 989.6415 L 165 987.5 L 170.238 985.3585 L 165.66816 982.51934 L 171.39864 981.125 L 167.7072 977.7381 L 173.71848 977.19035 L 171.04656 973.35566 L 177.09384 973.60454 L 175.512 969.4705 L 181.38288 970.56647 L 180.99624 966.283 L 186.40992 968.1756 L 187.21848 963.9426 L 192.03528 966.53237 L 193.96848 962.49827 L 197.94144 965.68577 L 200.96472 962 L 204.02328 965.68577 L 207.99624 962.49827 L 209.96472 966.53237 L 214.74624 963.9426 L 215.5548 968.1756 L 220.96848 966.283 L 220.58184 970.56647 L 226.45344 969.4705 L 224.87088 973.60454 L 230.91816 973.35566 L 228.24624 977.19035 L 234.25752 977.7381 L 230.56608 981.125 L 236.29656 982.51934 L 231.72672 985.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 225.72672 998.3585 L 231 1000.5 L 225.72672 1002.6415 L 230.29656 1005.48066 L 224.56608 1006.875 L 228.25752 1010.2619 L 222.24624 1010.80965 L 224.91816 1014.64434 L 218.87088 1014.39546 L 220.45344 1018.5295 L 214.58184 1017.4335 L 214.96848 1021.717 L 209.5548 1019.8244 L 208.74624 1024.0574 L 203.96472 1021.4676 L 201.99624 1025.5017 L 198.02328 1022.26476 L 195 1026 L 191.94144 1022.26476 L 187.96848 1025.5017 L 186.03528 1021.4676 L 181.21848 1024.0574 L 180.40992 1019.8244 L 174.99624 1021.717 L 175.38288 1017.4335 L 169.512 1018.5295 L 171.09384 1014.39546 L 165.04656 1014.64434 L 167.71848 1010.80965 L 161.7072 1010.2619 L 165.39864 1006.875 L 159.66816 1005.48066 L 164.238 1002.6415 L 159 1000.5 L 164.238 998.3585 L 159.66816 995.51934 L 165.39864 994.125 L 161.7072 990.7381 L 167.71848 990.19035 L 165.04656 986.35566 L 171.09384 986.60454 L 169.512 982.4705 L 175.38288 983.56647 L 174.99624 979.283 L 180.40992 981.1756 L 181.21848 976.9426 L 186.03528 979.53237 L 187.96848 975.49827 L 191.94144 978.68577 L 194.96472 975 L 198.02328 978.68577 L 201.99624 975.49827 L 203.96472 979.53237 L 208.74624 976.9426 L 209.5548 981.1756 L 214.96848 979.283 L 214.58184 983.56647 L 220.45344 982.4705 L 218.87088 986.60454 L 224.91816 986.35566 L 222.24624 990.19035 L 228.25752 990.7381 L 224.56608 994.125 L 230.29656 995.51934 L 225.72672 998.3585 Z" fill="white"/>
+            <path d="M 225.72672 998.3585 L 231 1000.5 L 225.72672 1002.6415 L 230.29656 1005.48066 L 224.56608 1006.875 L 228.25752 1010.2619 L 222.24624 1010.80965 L 224.91816 1014.64434 L 218.87088 1014.39546 L 220.45344 1018.5295 L 214.58184 1017.4335 L 214.96848 1021.717 L 209.5548 1019.8244 L 208.74624 1024.0574 L 203.96472 1021.4676 L 201.99624 1025.5017 L 198.02328 1022.26476 L 195 1026 L 191.94144 1022.26476 L 187.96848 1025.5017 L 186.03528 1021.4676 L 181.21848 1024.0574 L 180.40992 1019.8244 L 174.99624 1021.717 L 175.38288 1017.4335 L 169.512 1018.5295 L 171.09384 1014.39546 L 165.04656 1014.64434 L 167.71848 1010.80965 L 161.7072 1010.2619 L 165.39864 1006.875 L 159.66816 1005.48066 L 164.238 1002.6415 L 159 1000.5 L 164.238 998.3585 L 159.66816 995.51934 L 165.39864 994.125 L 161.7072 990.7381 L 167.71848 990.19035 L 165.04656 986.35566 L 171.09384 986.60454 L 169.512 982.4705 L 175.38288 983.56647 L 174.99624 979.283 L 180.40992 981.1756 L 181.21848 976.9426 L 186.03528 979.53237 L 187.96848 975.49827 L 191.94144 978.68577 L 194.96472 975 L 198.02328 978.68577 L 201.99624 975.49827 L 203.96472 979.53237 L 208.74624 976.9426 L 209.5548 981.1756 L 214.96848 979.283 L 214.58184 983.56647 L 220.45344 982.4705 L 218.87088 986.60454 L 224.91816 986.35566 L 222.24624 990.19035 L 228.25752 990.7381 L 224.56608 994.125 L 230.29656 995.51934 L 225.72672 998.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 210.72672 993.3585 L 216 995.5 L 210.72672 997.6415 L 215.29656 1000.48066 L 209.56608 1001.875 L 213.25752 1005.2619 L 207.24624 1005.80965 L 209.91816 1009.64434 L 203.87088 1009.39546 L 205.45344 1013.5295 L 199.58184 1012.4335 L 199.96848 1016.717 L 194.5548 1014.8244 L 193.74624 1019.0574 L 188.96472 1016.4676 L 186.99624 1020.5017 L 183.02328 1017.26476 L 180 1021 L 176.94144 1017.26476 L 172.96848 1020.5017 L 171.03528 1016.4676 L 166.21848 1019.0574 L 165.40992 1014.8244 L 159.99624 1016.717 L 160.38288 1012.4335 L 154.512 1013.5295 L 156.09384 1009.39546 L 150.04656 1009.64434 L 152.71848 1005.80965 L 146.7072 1005.2619 L 150.39864 1001.875 L 144.66816 1000.48066 L 149.238 997.6415 L 144 995.5 L 149.238 993.3585 L 144.66816 990.51934 L 150.39864 989.125 L 146.7072 985.7381 L 152.71848 985.19035 L 150.04656 981.35566 L 156.09384 981.60454 L 154.512 977.4705 L 160.38288 978.56647 L 159.99624 974.283 L 165.40992 976.1756 L 166.21848 971.9426 L 171.03528 974.53237 L 172.96848 970.49827 L 176.94144 973.68577 L 179.96472 970 L 183.02328 973.68577 L 186.99624 970.49827 L 188.96472 974.53237 L 193.74624 971.9426 L 194.5548 976.1756 L 199.96848 974.283 L 199.58184 978.56647 L 205.45344 977.4705 L 203.87088 981.60454 L 209.91816 981.35566 L 207.24624 985.19035 L 213.25752 985.7381 L 209.56608 989.125 L 215.29656 990.51934 L 210.72672 993.3585 Z" fill="white"/>
+            <path d="M 210.72672 993.3585 L 216 995.5 L 210.72672 997.6415 L 215.29656 1000.48066 L 209.56608 1001.875 L 213.25752 1005.2619 L 207.24624 1005.80965 L 209.91816 1009.64434 L 203.87088 1009.39546 L 205.45344 1013.5295 L 199.58184 1012.4335 L 199.96848 1016.717 L 194.5548 1014.8244 L 193.74624 1019.0574 L 188.96472 1016.4676 L 186.99624 1020.5017 L 183.02328 1017.26476 L 180 1021 L 176.94144 1017.26476 L 172.96848 1020.5017 L 171.03528 1016.4676 L 166.21848 1019.0574 L 165.40992 1014.8244 L 159.99624 1016.717 L 160.38288 1012.4335 L 154.512 1013.5295 L 156.09384 1009.39546 L 150.04656 1009.64434 L 152.71848 1005.80965 L 146.7072 1005.2619 L 150.39864 1001.875 L 144.66816 1000.48066 L 149.238 997.6415 L 144 995.5 L 149.238 993.3585 L 144.66816 990.51934 L 150.39864 989.125 L 146.7072 985.7381 L 152.71848 985.19035 L 150.04656 981.35566 L 156.09384 981.60454 L 154.512 977.4705 L 160.38288 978.56647 L 159.99624 974.283 L 165.40992 976.1756 L 166.21848 971.9426 L 171.03528 974.53237 L 172.96848 970.49827 L 176.94144 973.68577 L 179.96472 970 L 183.02328 973.68577 L 186.99624 970.49827 L 188.96472 974.53237 L 193.74624 971.9426 L 194.5548 976.1756 L 199.96848 974.283 L 199.58184 978.56647 L 205.45344 977.4705 L 203.87088 981.60454 L 209.91816 981.35566 L 207.24624 985.19035 L 213.25752 985.7381 L 209.56608 989.125 L 215.29656 990.51934 L 210.72672 993.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 222.72672 989.3585 L 228 991.5 L 222.72672 993.6415 L 227.29656 996.48066 L 221.56608 997.875 L 225.25752 1001.2619 L 219.24624 1001.80965 L 221.91816 1005.64434 L 215.87088 1005.39546 L 217.45344 1009.5295 L 211.58184 1008.4335 L 211.96848 1012.717 L 206.5548 1010.8244 L 205.74624 1015.0574 L 200.96472 1012.4676 L 198.99624 1016.5017 L 195.02328 1013.26476 L 192 1017 L 188.94144 1013.26476 L 184.96848 1016.5017 L 183.03528 1012.4676 L 178.21848 1015.0574 L 177.40992 1010.8244 L 171.99624 1012.717 L 172.38288 1008.4335 L 166.512 1009.5295 L 168.09384 1005.39546 L 162.04656 1005.64434 L 164.71848 1001.80965 L 158.7072 1001.2619 L 162.39864 997.875 L 156.66816 996.48066 L 161.238 993.6415 L 156 991.5 L 161.238 989.3585 L 156.66816 986.51934 L 162.39864 985.125 L 158.7072 981.7381 L 164.71848 981.19035 L 162.04656 977.35566 L 168.09384 977.60454 L 166.512 973.4705 L 172.38288 974.56647 L 171.99624 970.283 L 177.40992 972.1756 L 178.21848 967.9426 L 183.03528 970.53237 L 184.96848 966.49827 L 188.94144 969.68577 L 191.96472 966 L 195.02328 969.68577 L 198.99624 966.49827 L 200.96472 970.53237 L 205.74624 967.9426 L 206.5548 972.1756 L 211.96848 970.283 L 211.58184 974.56647 L 217.45344 973.4705 L 215.87088 977.60454 L 221.91816 977.35566 L 219.24624 981.19035 L 225.25752 981.7381 L 221.56608 985.125 L 227.29656 986.51934 L 222.72672 989.3585 Z" fill="white"/>
+            <path d="M 222.72672 989.3585 L 228 991.5 L 222.72672 993.6415 L 227.29656 996.48066 L 221.56608 997.875 L 225.25752 1001.2619 L 219.24624 1001.80965 L 221.91816 1005.64434 L 215.87088 1005.39546 L 217.45344 1009.5295 L 211.58184 1008.4335 L 211.96848 1012.717 L 206.5548 1010.8244 L 205.74624 1015.0574 L 200.96472 1012.4676 L 198.99624 1016.5017 L 195.02328 1013.26476 L 192 1017 L 188.94144 1013.26476 L 184.96848 1016.5017 L 183.03528 1012.4676 L 178.21848 1015.0574 L 177.40992 1010.8244 L 171.99624 1012.717 L 172.38288 1008.4335 L 166.512 1009.5295 L 168.09384 1005.39546 L 162.04656 1005.64434 L 164.71848 1001.80965 L 158.7072 1001.2619 L 162.39864 997.875 L 156.66816 996.48066 L 161.238 993.6415 L 156 991.5 L 161.238 989.3585 L 156.66816 986.51934 L 162.39864 985.125 L 158.7072 981.7381 L 164.71848 981.19035 L 162.04656 977.35566 L 168.09384 977.60454 L 166.512 973.4705 L 172.38288 974.56647 L 171.99624 970.283 L 177.40992 972.1756 L 178.21848 967.9426 L 183.03528 970.53237 L 184.96848 966.49827 L 188.94144 969.68577 L 191.96472 966 L 195.02328 969.68577 L 198.99624 966.49827 L 200.96472 970.53237 L 205.74624 967.9426 L 206.5548 972.1756 L 211.96848 970.283 L 211.58184 974.56647 L 217.45344 973.4705 L 215.87088 977.60454 L 221.91816 977.35566 L 219.24624 981.19035 L 225.25752 981.7381 L 221.56608 985.125 L 227.29656 986.51934 L 222.72672 989.3585 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <text transform="translate(167.48 973.5)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="12.6059375" y="10" textLength="23.828125">NPSP</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="4.05125" y="22" textLength="40.9375">Upgrade</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="12.92332" y="34" textLength="23.19336">Orgs</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <rect x="45" y="848" width="99" height="54" id="path_24"/>
+            <clipPath id="clip_path_24">
+              <use xlink:href="#path_24"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_24)">
+              <image xmlns="http://www.w3.org/2000/svg" xlink:href="img/image12.png" width="175" height="137" transform="translate(35 838.01064)"/>
+            </g>
+            <text transform="translate(49 898.5)" fill="#017aff">
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" fill="#017aff" x=".158" y="11">mrbelvedere</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <path d="M 450.33596 831.8889 C 442.9217 839.67674 429.37034 848.06434 405 855 C 358.7893 868.1513 289.0661 871.703 252.30103 872.65595" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 347.72526 848.70073 L 379.22526 848.70073 C 382.95126 848.70073 385.97526 855.42073 385.97526 863.70073 C 385.97526 871.98073 382.95126 878.70073 379.22526 878.70073 L 347.72526 878.70073 C 343.99926 878.70073 340.97526 871.98073 340.97526 863.70073 C 340.97526 855.42073 343.99926 848.70073 347.72526 848.70073" fill="#78bb43"/>
+            <text transform="translate(350.47526 854.20073)" fill="black">
+              <tspan font-family="octicons" font-size="16" font-weight="500" x=".46875" y="15"></tspan>
+              <tspan font-family="Lucida Grande" font-size="16" font-weight="500" x="8.46875" y="15"> </tspan>
+              <tspan font-family="octicons" font-size="16" font-weight="500" x="13.53125" y="15"></tspan>
+            </text>
+            <rect x="212.184" y="855" width="30.816" height="36" id="path_1b"/>
+            <clipPath id="clip_path_1b">
+              <use xlink:href="#path_1b"/>
+            </clipPath>
+            <g clip-path="url(#clip_path_1b)">
+              <image xlink:href="img/image3.png" width="214" height="250" transform="translate(212.184 855) scale(.144)"/>
+            </g>
+            <text transform="translate(246.5 875.5)" fill="white">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="white" x=".29" y="10">mrbelvedere_release</tspan>
+            </text>
+          </g>
+
+          <g class="step">
+            <line x1="212.184" y1="873.23154" x2="153.29895" y2="874.1164" marker-end="url(#SharpArrow_Marker_4)" stroke="#fbc200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          </g>
+
+          <g class="step">
+            <line x1="146.3927" y1="942.43395" x2="161.96592" y2="959.1882" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 127.35574 902 C 132.13665 909.0811 135.368705 917.45465 135 927 C 134.57166 938.0893 129.35121 949.0081 122.60718 958.61915" marker-end="url(#SharpArrow_Marker)" stroke="#78bb43" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            <path d="M 120.77385 917.43395 L 148.77385 917.43395 C 152.08585 917.43395 154.77385 923.03395 154.77385 929.93395 C 154.77385 936.83395 152.08585 942.43395 148.77385 942.43395 L 120.77385 942.43395 C 117.46185 942.43395 114.773847 936.83395 114.773847 929.93395 C 114.773847 923.03395 117.46185 917.43395 120.77385 917.43395" fill="#78bb43"/>
+            <text transform="translate(123.77385 922.43395)" fill="black">
+              <tspan font-family="octicons" font-size="12" font-weight="500" x=".1015625" y="12"></tspan>
+              <tspan font-family="Lucida Grande" font-size="12" font-weight="500" x="6.1015625" y="12"> </tspan>
+              <tspan font-family="octicons" font-size="12" font-weight="500" x="9.8984375" y="12"></tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-packaging">
+          <title>Packaging</title>
+          <path d="M 336.507 519.73254 L 342 522 L 336.507 524.26746 L 341.26725 527.27364 L 335.298 528.75 L 339.14325 532.33614 L 332.8815 532.9161 L 335.66475 536.97636 L 329.3655 536.71284 L 331.014 541.09008 L 324.89775 539.92962 L 325.3005 544.46508 L 319.66125 542.46114 L 318.819 546.94314 L 313.83825 544.20102 L 311.78775 548.47242 L 307.64925 545.04504 L 304.5 549 L 301.314 545.04504 L 297.1755 548.47242 L 295.16175 544.20102 L 290.14425 546.94314 L 289.302 542.46114 L 283.66275 544.46508 L 284.0655 539.92962 L 277.95 541.09008 L 279.59775 536.71284 L 273.2985 536.97636 L 276.08175 532.9161 L 269.82 532.33614 L 273.66525 528.75 L 267.696 527.27364 L 272.45625 524.26746 L 267 522 L 272.45625 519.73254 L 267.696 516.72636 L 273.66525 515.25 L 269.82 511.66386 L 276.08175 511.0839 L 273.2985 507.02364 L 279.59775 507.28716 L 277.95 502.90992 L 284.0655 504.07038 L 283.66275 499.53492 L 289.302 501.53886 L 290.14425 497.05686 L 295.16175 499.79898 L 297.1755 495.52758 L 301.314 498.90258 L 304.46325 495 L 307.64925 498.90258 L 311.78775 495.52758 L 313.83825 499.79898 L 318.819 497.05686 L 319.66125 501.53886 L 325.3005 499.53492 L 324.89775 504.07038 L 331.014 502.90992 L 329.3655 507.28716 L 335.66475 507.02364 L 332.8815 511.0839 L 339.14325 511.66386 L 335.298 515.25 L 341.26725 516.72636 L 336.507 519.73254 Z" fill="white"/>
+          <path d="M 336.507 519.73254 L 342 522 L 336.507 524.26746 L 341.26725 527.27364 L 335.298 528.75 L 339.14325 532.33614 L 332.8815 532.9161 L 335.66475 536.97636 L 329.3655 536.71284 L 331.014 541.09008 L 324.89775 539.92962 L 325.3005 544.46508 L 319.66125 542.46114 L 318.819 546.94314 L 313.83825 544.20102 L 311.78775 548.47242 L 307.64925 545.04504 L 304.5 549 L 301.314 545.04504 L 297.1755 548.47242 L 295.16175 544.20102 L 290.14425 546.94314 L 289.302 542.46114 L 283.66275 544.46508 L 284.0655 539.92962 L 277.95 541.09008 L 279.59775 536.71284 L 273.2985 536.97636 L 276.08175 532.9161 L 269.82 532.33614 L 273.66525 528.75 L 267.696 527.27364 L 272.45625 524.26746 L 267 522 L 272.45625 519.73254 L 267.696 516.72636 L 273.66525 515.25 L 269.82 511.66386 L 276.08175 511.0839 L 273.2985 507.02364 L 279.59775 507.28716 L 277.95 502.90992 L 284.0655 504.07038 L 283.66275 499.53492 L 289.302 501.53886 L 290.14425 497.05686 L 295.16175 499.79898 L 297.1755 495.52758 L 301.314 498.90258 L 304.46325 495 L 307.64925 498.90258 L 311.78775 495.52758 L 313.83825 499.79898 L 318.819 497.05686 L 319.66125 501.53886 L 325.3005 499.53492 L 324.89775 504.07038 L 331.014 502.90992 L 329.3655 507.28716 L 335.66475 507.02364 L 332.8815 511.0839 L 339.14325 511.66386 L 335.298 515.25 L 341.26725 516.72636 L 336.507 519.73254 Z" stroke="#007aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <g class="step" data-toggle="popover" data-content="Use only for packaging, not development" data-placement="bottom">
+            <text transform="translate(278.75 510)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x=".81347656" y="10" textLength="49.873047">packaging</tspan>
+              <tspan font-family="Lucida Grande" font-size="10" font-weight="500" fill="black" x="17.515137" y="22" textLength="16.469727">org</tspan>
+            </text>
+          </g>
+        </g>
+
+        <g id="layer-content-deployCIPackageOrg">
+          <title>Content - deployCIPackageOrg</title>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="bold" x="0" y="1">Ant Target: deployCIPackageOrg</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="3">updateDependentPackages</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="5">deployUnpackagedPre</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="7">destroyStaleMetadata</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="8">    - Retrieve all metadata from package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="9">    - Compare to src/package.xml</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="10">    - Build and deploy destructiveChanges.xml for any </tspan>
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="11">       metadata in the package but not in the repo</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="12">    - Allow failure with this execution</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="14">updatePackageXmlManaged</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="15">    - Regenerates the package.xml for managed package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="16">    - Includes install and uninstall classes</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="18">deploy</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="20">destroyStaleMetadata</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="21">     - Same as before, but fail on deployment failure</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(250.41237 475.09828)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="1" font-weight="500" x="0" y="23">deployUnpackagedPost</tspan>
+            </text>
+          </g>
+        </g>
+    
+        <g id="layer-content-deployCI">
+          <title>Content - deployCI</title>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="bold" x="0" y="5">Ant Target: deployCI</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="17">uninstall</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="23">    - Retrieve all metadata from Unmanaged Package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="29">    - Build and deploy destructiveChanges.xml</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="41">updateDependentPackages</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="47">    - Get version of all dependent managed packages</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="53">    - For any packages not at the right version...</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="59">    - Install, Upgrade, Uninstall, Downgrade</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="71">deployUnpackagedPre</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="77">    - Deploy each directory under unpackaged/pre</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="89">deploy</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="95">    - Deploy code in src directory</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="101">        - Do not run tests or rollback</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="107">        - Deploy into Unmanaged Package</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="113">    - runAllTests</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="119">        - Uses blank package.xml with runAllTests="true"</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="131">deployUnpackagedPost</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="137">    - Deploy each directory under unpackaged/post</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="149">uninstallUnpackagedPost</tspan>
+            </text>
+          </g>
+          <g class="step">
+            <text transform="translate(239 233)" fill="black">
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="155">    - Build destructiveChanges.xml from</tspan>
+              <tspan font-family="Lucida Grande" font-size="5" font-weight="500" x="0" y="161">       each directory in unmanaged/post</tspan>
+            </text>
+          </g>
+        </g>
+
+      </g>
+    </svg>
+    </div>
+  </body>
+</html>

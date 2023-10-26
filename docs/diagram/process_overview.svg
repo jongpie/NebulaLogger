@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" viewBox="-383 -97 783 445" width="783pt" height="445pt" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata> Produced by OmniGraffle 7.3.1 
+    <dc:date>2017-06-20 17:23:33 +0000</dc:date>
+  </metadata>
+  <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 8 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="975.0061" descent="-216.99524" font-weight="bold">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue-Bold"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="500">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Helvetica Neue" font-size="29" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="500">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <g stroke="none" stroke-opacity="1" stroke-dasharray="none" fill="none" fill-opacity="1">
+    <title>Canvas 1</title>
+    <rect fill="white" width="855" height="698"/>
+    <g id="layer-master">
+      <title>master</title>
+      <line x1="382" y1="234.8679" x2="-365" y2="234.8679" stroke="#00b1e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <ellipse cx="-320.99408" cy="235.3679" rx="32.55663" ry="31.36795" fill="white"/>
+      <ellipse cx="-320.99408" cy="235.3679" rx="32.55663" ry="31.36795" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+      <ellipse cx="-320.99408" cy="235.3679" rx="13.734829" ry="13.233354" fill="white"/>
+      <ellipse cx="-320.99408" cy="235.3679" rx="13.734829" ry="13.233354" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+      <text transform="translate(-344.99408 285.5359)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x="12.88" y="16" textLength="22.24">1.0</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x=".288" y="35.46411" textLength="6.224">r</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x="6.224" y="35.46411" textLength="41.488">el/1.0</tspan>
+      </text>
+      <text transform="translate(-267 222.63585)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x=".344" y="16" textLength="53.312">master</tspan>
+      </text>
+      <path d="M -320.99408 229.18395 C -324.40762 229.18395 -327.17803 231.95436 -327.17803 235.3679 C -327.17803 238.78144 -324.40762 241.55185 -320.99408 241.55185 C -317.58054 241.55185 -314.81013 238.78144 -314.81013 235.3679 C -314.81013 231.95436 -317.58054 229.18395 -320.99408 229.18395 Z M -322.23087 238.45988 L -325.32284 235.3679 L -324.4509 234.49596 L -322.23087 236.70982 L -317.53725 232.0162 L -316.6653 232.89432 L -322.23087 238.45988 Z" fill="lime"/>
+    </g>
+    <g id="layer-1_1_beta3_merge">
+      <title>1_1_beta3_merge</title>
+      <line x1="173.14062" y1="235.3679" x2="174" y2="-7.867901" stroke="#00b1e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+    </g>
+    <g id="layer-1_1_beta2_merge">
+      <title>1_1_beta2_merge</title>
+      <line x1="-1.71875" y1="235.3679" x2="-1.71875" y2="-7.367901" stroke="#00b1e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+    </g>
+    <g id="layer-1_1_beta1_merge">
+      <title>1_1_beta1_merge</title>
+      <line x1="-176.46875" y1="235.55185" x2="-176.57812" y2="-7.367901" stroke="#00b1e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+    </g>
+    <g id="layer-long_feature">
+      <title>long_feature</title>
+      <line x1="382" y1="-7.867901" x2="-365" y2="-7.867901" stroke="#e63b28" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <circle cx="266" cy="-7.051852" r="18.000029" fill="white"/>
+      <circle cx="266" cy="-7.051852" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <path d="M 266 -13.235802 C 262.58646 -13.235802 259.81605 -10.465393 259.81605 -7.051852 C 259.81605 -3.638311 262.58646 -.8679012 266 -.8679012 C 269.41354 -.8679012 272.18395 -3.638311 272.18395 -7.051852 C 272.18395 -10.465393 269.41354 -13.235802 266 -13.235802 Z M 264.7632 -3.9598765 L 261.67123 -7.051852 L 262.54317 -7.923789 L 264.7632 -5.7099346 L 269.45683 -10.403553 L 270.32877 -9.525432 L 264.7632 -3.9598765 Z" fill="lime"/>
+      <circle cx="-1.71875" cy="-7.367901" r="18.000029" fill="white"/>
+      <circle cx="-1.71875" cy="-7.367901" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="173.14062" cy="-7.367901" r="18.000029" fill="white"/>
+      <circle cx="173.14062" cy="-7.367901" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="-176.57813" cy="-7.367901" r="18.000029" fill="white"/>
+      <circle cx="-176.57813" cy="-7.367901" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="-286.5" cy="-7.367901" r="18.000029" fill="white"/>
+      <circle cx="-286.5" cy="-7.367901" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="85.71094" cy="-7.051852" r="18.000029" fill="white"/>
+      <circle cx="85.71094" cy="-7.051852" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="-364.5" cy="-7.367901" r="18.000029" fill="white"/>
+      <circle cx="-364.5" cy="-7.367901" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <path d="M 173.14062 -13.235802 C 169.72708 -13.235802 166.95667 -10.465393 166.95667 -7.051852 C 166.95667 -3.638311 169.72708 -.8679012 173.14062 -.8679012 C 176.55417 -.8679012 179.32458 -3.638311 179.32458 -7.051852 C 179.32458 -10.465393 176.55417 -13.235802 173.14062 -13.235802 Z M 171.90383 -3.9598765 L 168.81186 -7.051852 L 169.6838 -7.923789 L 171.90383 -5.7099346 L 176.59745 -10.403553 L 177.4694 -9.525432 L 171.90383 -3.9598765 Z" fill="lime"/>
+      <path d="M 85.71094 -13.617901 C 82.2974 -13.617901 79.52699 -10.847491 79.52699 -7.433951 C 79.52699 -4.02041 82.2974 -1.25 85.71094 -1.25 C 89.12448 -1.25 91.89489 -4.02041 91.89489 -7.433951 C 91.89489 -10.847491 89.12448 -13.617901 85.71094 -13.617901 Z M 84.47415 -4.3419753 L 81.38217 -7.433951 L 82.25411 -8.305888 L 84.47415 -6.092033 L 89.16777 -10.785652 L 90.0397 -9.907531 L 84.47415 -4.3419753 Z" fill="lime"/>
+      <path d="M -8.521096 -1.4931481 L 5.0835957 -1.4931481 L -1.71875 -13.242654 L -8.521096 -1.4931481 Z M -1.100355 -3.3483333 L -2.337145 -3.3483333 L -2.337145 -4.5851235 L -1.100355 -4.5851235 L -1.100355 -3.3483333 Z M -1.100355 -5.8219136 L -2.337145 -5.8219136 L -2.337145 -8.295494 L -1.100355 -8.295494 L -1.100355 -5.8219136 Z" fill="#ff9804"/>
+      <path d="M -183.76208 -1.4931481 L -170.15738 -1.4931481 L -176.95973 -13.242654 L -183.76208 -1.4931481 Z M -176.34133 -3.3483333 L -177.57812 -3.3483333 L -177.57812 -4.5851235 L -176.34133 -4.5851235 L -176.34133 -3.3483333 Z M -176.34133 -5.8219136 L -177.57812 -5.8219136 L -177.57812 -8.295494 L -176.34133 -8.295494 L -176.34133 -5.8219136 Z" fill="#ff9804"/>
+      <path d="M -293.30235 -1.4931481 L -279.69765 -1.4931481 L -286.5 -13.242654 L -293.30235 -1.4931481 Z M -285.8816 -3.3483333 L -287.1184 -3.3483333 L -287.1184 -4.5851235 L -285.8816 -4.5851235 L -285.8816 -3.3483333 Z M -285.8816 -5.8219136 L -287.1184 -5.8219136 L -287.1184 -8.295494 L -285.8816 -8.295494 L -285.8816 -5.8219136 Z" fill="#ff9804"/>
+      <path d="M -364.5 -13.235802 C -367.91354 -13.235802 -370.68395 -10.465393 -370.68395 -7.051852 C -370.68395 -3.638311 -367.91354 -.8679012 -364.5 -.8679012 C -361.08646 -.8679012 -358.31605 -3.638311 -358.31605 -7.051852 C -358.31605 -10.465393 -361.08646 -13.235802 -364.5 -13.235802 Z M -365.7368 -3.9598765 L -368.82877 -7.051852 L -367.95683 -7.923789 L -365.7368 -5.7099346 L -361.04317 -10.403553 L -360.17123 -9.525432 L -365.7368 -3.9598765 Z" fill="lime"/>
+      <text transform="translate(-360 -45.5919)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x=".164" y="15" textLength="41.184">featur</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="41.06" y="15" textLength="19.248">e/r</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="60.02" y="15" textLength="50.064">efactor</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="109.204" y="15" textLength="29.328">-cor</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="138.244" y="15" textLength="8.592">e</tspan>
+      </text>
+    </g>
+    <g id="layer-1_1_beta3">
+      <title>1_1_beta3</title>
+      <line x1="111.35354" y1="75.5" x2="173.14062" y2="235.3679" stroke="#75d100" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <circle cx="173.14062" cy="235.3679" r="18.000029" fill="white"/>
+      <circle cx="173.14062" cy="235.3679" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <text transform="translate(115.14062 287.552)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="17.248" y="15" textLength="81.504">1.1 (Beta 3)</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x=".208" y="33.448" textLength="115.584">beta/1.1-Beta_3</tspan>
+      </text>
+      <line x1="110.14062" y1="74.5" x2="-365" y2="72.1321" stroke="#75d100" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <circle cx="-364.5" cy="72.6321" r="18.000029" fill="white"/>
+      <circle cx="-364.5" cy="72.6321" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <text transform="translate(-360 34.4081)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x=".044" y="15" textLength="41.184">featur</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="40.94" y="15" textLength="112.016">e/data-importer</tspan>
+      </text>
+      <path d="M 111 56.31605 L 102.64 56.31605 C 101.8 53.99605 99.6 52.31605 97 52.31605 C 94.4 52.31605 92.2 53.99605 91.36 56.31605 L 83 56.31605 C 80.8 56.31605 79 58.11605 79 60.31605 L 79 88.31605 C 79 90.51605 80.8 92.31605 83 92.31605 L 111 92.31605 C 113.2 92.31605 115 90.51605 115 88.31605 L 115 60.31605 C 115 58.11605 113.2 56.31605 111 56.31605 Z M 97 56.31605 C 98.1 56.31605 99 57.21605 99 58.31605 C 99 59.41605 98.1 60.31605 97 60.31605 C 95.9 60.31605 95 59.41605 95 58.31605 C 95 57.21605 95.9 56.31605 97 56.31605 Z M 93 84.31605 L 85 76.31605 L 87.82 73.49605 L 93 78.65605 L 106.18 65.47605 L 109 68.31605 L 93 84.31605 Z" fill="black"/>
+      <circle cx="-257.5" cy="72.31605" r="18.000029" fill="white"/>
+      <circle cx="-257.5" cy="72.31605" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="-100.5" cy="73.31605" r="18.000029" fill="white"/>
+      <circle cx="-100.5" cy="73.31605" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="-176.57813" cy="72.31605" r="18.000029" fill="white"/>
+      <circle cx="-176.57813" cy="72.31605" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="-1.71875" cy="73.31605" r="18.000029" fill="white"/>
+      <circle cx="-1.71875" cy="73.31605" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <path d="M -364.5 66.974074 C -367.91354 66.974074 -370.68395 69.74448 -370.68395 73.158025 C -370.68395 76.571565 -367.91354 79.34198 -364.5 79.34198 C -361.08646 79.34198 -358.31605 76.571565 -358.31605 73.158025 C -358.31605 69.74448 -361.08646 66.974074 -364.5 66.974074 Z M -365.7368 76.25 L -368.82877 73.158025 L -367.95683 72.28609 L -365.7368 74.49994 L -361.04317 69.80632 L -360.17123 70.684444 L -365.7368 76.25 Z" fill="lime"/>
+      <path d="M -257.5 66.1321 C -260.91354 66.1321 -263.68395 68.90251 -263.68395 72.31605 C -263.68395 75.72959 -260.91354 78.5 -257.5 78.5 C -254.08646 78.5 -251.31605 75.72959 -251.31605 72.31605 C -251.31605 68.90251 -254.08646 66.1321 -257.5 66.1321 Z M -256.8816 75.408025 L -258.1184 75.408025 L -258.1184 74.171235 L -256.8816 74.171235 L -256.8816 75.408025 Z M -256.8816 72.934444 L -258.1184 72.934444 L -258.1184 69.22407 L -256.8816 69.22407 L -256.8816 72.934444 Z" fill="red"/>
+      <path d="M -176.57812 66.1321 C -179.99167 66.1321 -182.76208 68.90251 -182.76208 72.31605 C -182.76208 75.72959 -179.99167 78.5 -176.57812 78.5 C -173.16458 78.5 -170.39417 75.72959 -170.39417 72.31605 C -170.39417 68.90251 -173.16458 66.1321 -176.57812 66.1321 Z M -175.95973 75.408025 L -177.19652 75.408025 L -177.19652 74.171235 L -175.95973 74.171235 L -175.95973 75.408025 Z M -175.95973 72.934444 L -177.19652 72.934444 L -177.19652 69.22407 L -175.95973 69.22407 L -175.95973 72.934444 Z" fill="red"/>
+      <path d="M -100.81605 67.1321 C -104.22959 67.1321 -107 69.90251 -107 73.31605 C -107 76.72959 -104.22959 79.5 -100.81605 79.5 C -97.40251 79.5 -94.6321 76.72959 -94.6321 73.31605 C -94.6321 69.90251 -97.40251 67.1321 -100.81605 67.1321 Z M -102.05284 76.408025 L -105.14481 73.31605 L -104.27288 72.44411 L -102.05284 74.65797 L -97.35922 69.96435 L -96.48728 70.84247 L -102.05284 76.408025 Z" fill="lime"/>
+      <path d="M -1.4722994 67.1321 C -4.88584 67.1321 -7.65625 69.90251 -7.65625 73.31605 C -7.65625 76.72959 -4.88584 79.5 -1.4722994 79.5 C 1.9412414 79.5 4.711651 76.72959 4.711651 73.31605 C 4.711651 69.90251 1.9412414 67.1321 -1.4722994 67.1321 Z M -2.7090895 76.408025 L -5.801065 73.31605 L -4.929128 72.44411 L -2.7090895 74.65797 L 1.984529 69.96435 L 2.856466 70.84247 L -2.7090895 76.408025 Z" fill="lime"/>
+      <path d="M 173.14062 229.18395 C 169.72708 229.18395 166.95667 231.95436 166.95667 235.3679 C 166.95667 238.78144 169.72708 241.55185 173.14062 241.55185 C 176.55417 241.55185 179.32458 238.78144 179.32458 235.3679 C 179.32458 231.95436 176.55417 229.18395 173.14062 229.18395 Z M 171.90383 238.45988 L 168.81186 235.3679 L 169.6838 234.49596 L 171.90383 236.70982 L 176.59745 232.0162 L 177.4694 232.89432 L 171.90383 238.45988 Z" fill="lime"/>
+    </g>
+    <g id="layer-1_1_beta2">
+      <title>1_1_beta2</title>
+      <line x1="-1.71875" y1="235.3679" x2="-35" y2="154.5" stroke="#8a2169" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <line x1="-176.57812" y1="235.3679" x2="-142.78906" y2="153.8086" stroke="#8a2169" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <circle cx="-1.71875" cy="235.3679" r="18.000029" fill="white"/>
+      <circle cx="-1.71875" cy="235.3679" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <text transform="translate(-59.71875 287.552)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="17.248" y="15" textLength="81.504">1.1 (Beta 2)</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x=".208" y="33.448" textLength="115.584">beta/1.1-Beta_2</tspan>
+      </text>
+      <line x1="-35" y1="154.5" x2="-141" y2="153.5" stroke="#8a2169" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <circle cx="-141.5" cy="154" r="18.000029" fill="white"/>
+      <circle cx="-141.5" cy="154" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <text transform="translate(-136 115.4081)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x=".296" y="15" textLength="41.184">featur</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="41.192" y="15" textLength="22.208">e/fi</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="63.4" y="15" textLength="32.304">x-27</tspan>
+      </text>
+      <circle cx="-88" cy="153.68395" r="18.000029" fill="white"/>
+      <circle cx="-88" cy="153.68395" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <path d="M -31.5 136.68395 L -39.86 136.68395 C -40.7 134.36395 -42.9 132.68395 -45.5 132.68395 C -48.1 132.68395 -50.3 134.36395 -51.14 136.68395 L -59.5 136.68395 C -61.7 136.68395 -63.5 138.48395 -63.5 140.68395 L -63.5 168.68395 C -63.5 170.88395 -61.7 172.68395 -59.5 172.68395 L -31.5 172.68395 C -29.3 172.68395 -27.5 170.88395 -27.5 168.68395 L -27.5 140.68395 C -27.5 138.48395 -29.3 136.68395 -31.5 136.68395 Z M -45.5 136.68395 C -44.4 136.68395 -43.5 137.58395 -43.5 138.68395 C -43.5 139.78395 -44.4 140.68395 -45.5 140.68395 C -46.6 140.68395 -47.5 139.78395 -47.5 138.68395 C -47.5 137.58395 -46.6 136.68395 -45.5 136.68395 Z M -49.5 164.68395 L -57.5 156.68395 L -54.68 153.86395 L -49.5 159.02395 L -36.32 145.84395 L -33.5 148.68395 L -49.5 164.68395 Z" fill="black"/>
+      <path d="M -1.71875 229.18395 C -5.132291 229.18395 -7.902701 231.95436 -7.902701 235.3679 C -7.902701 238.78144 -5.132291 241.55185 -1.71875 241.55185 C 1.6947907 241.55185 4.4652006 238.78144 4.4652006 235.3679 C 4.4652006 231.95436 1.6947907 229.18395 -1.71875 229.18395 Z M -2.95554 238.45988 L -6.0475154 235.3679 L -5.1755784 234.49596 L -2.95554 236.70982 L 1.7380784 232.0162 L 2.6100154 232.89432 L -2.95554 238.45988 Z" fill="lime"/>
+      <path d="M -141.5 148.5 C -144.91354 148.5 -147.68395 151.27041 -147.68395 154.68395 C -147.68395 158.0975 -144.91354 160.8679 -141.5 160.8679 C -138.08646 160.8679 -135.31605 158.0975 -135.31605 154.68395 C -135.31605 151.27041 -138.08646 148.5 -141.5 148.5 Z M -142.73679 157.77593 L -145.82877 154.68395 L -144.95683 153.81201 L -142.73679 156.02587 L -138.04317 151.33225 L -137.17123 152.21037 L -142.73679 157.77593 Z" fill="lime"/>
+      <path d="M -87.68395 147.5 C -91.09749 147.5 -93.8679 150.27041 -93.8679 153.68395 C -93.8679 157.0975 -91.09749 159.8679 -87.68395 159.8679 C -84.27041 159.8679 -81.5 157.0975 -81.5 153.68395 C -81.5 150.27041 -84.27041 147.5 -87.68395 147.5 Z M -88.92074 156.77593 L -92.01272 153.68395 L -91.14078 152.81201 L -88.92074 155.02587 L -84.22712 150.33225 L -83.35519 151.21037 L -88.92074 156.77593 Z" fill="lime"/>
+    </g>
+    <g id="layer-1_1_beta1">
+      <title>1_1_beta1</title>
+      <line x1="-214.42582" y1="153.5" x2="-365" y2="153.5" stroke="#ef7f0f" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <line x1="-176.57812" y1="235.3679" x2="-208" y2="153.5" stroke="#ef7f0f" stroke-linecap="round" stroke-linejoin="round" stroke-width="36"/>
+      <circle cx="-176.57813" cy="235.3679" r="18.000029" fill="white"/>
+      <circle cx="-176.57813" cy="235.3679" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <text transform="translate(-234.57812 287.552)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="17.248" y="15" textLength="81.504">1.1 (Beta 1)</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x=".208" y="33.448" textLength="115.584">beta/1.1-Beta_1</tspan>
+      </text>
+      <circle cx="-364.5" cy="153.68395" r="18.000029" fill="white"/>
+      <circle cx="-364.5" cy="153.68395" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <circle cx="-289.7129" cy="153.68395" r="18.000029" fill="white"/>
+      <circle cx="-289.7129" cy="153.68395" r="18.000029" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+      <text transform="translate(-360 115.4081)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x=".296" y="15" textLength="41.184">featur</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="41.192" y="15" textLength="22.208">e/fi</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="500" x="63.4" y="15" textLength="32.304">x-14</tspan>
+      </text>
+      <path d="M -204.42582 135.68395 L -212.78582 135.68395 C -213.62582 133.36395 -215.82582 131.68395 -218.42582 131.68395 C -221.02582 131.68395 -223.22582 133.36395 -224.06582 135.68395 L -232.42582 135.68395 C -234.62582 135.68395 -236.42582 137.48395 -236.42582 139.68395 L -236.42582 167.68395 C -236.42582 169.88395 -234.62582 171.68395 -232.42582 171.68395 L -204.42582 171.68395 C -202.22582 171.68395 -200.42582 169.88395 -200.42582 167.68395 L -200.42582 139.68395 C -200.42582 137.48395 -202.22582 135.68395 -204.42582 135.68395 Z M -218.42582 135.68395 C -217.32582 135.68395 -216.42582 136.58395 -216.42582 137.68395 C -216.42582 138.78395 -217.32582 139.68395 -218.42582 139.68395 C -219.52582 139.68395 -220.42582 138.78395 -220.42582 137.68395 C -220.42582 136.58395 -219.52582 135.68395 -218.42582 135.68395 Z M -222.42582 163.68395 L -230.42582 155.68395 L -227.60582 152.86395 L -222.42582 158.02395 L -209.24582 144.84395 L -206.42582 147.68395 L -222.42582 163.68395 Z" fill="black"/>
+      <path d="M -364.5 147.81605 C -367.91354 147.81605 -370.68395 150.58646 -370.68395 154 C -370.68395 157.41354 -367.91354 160.18395 -364.5 160.18395 C -361.08646 160.18395 -358.31605 157.41354 -358.31605 154 C -358.31605 150.58646 -361.08646 147.81605 -364.5 147.81605 Z M -365.7368 157.09198 L -368.82877 154 L -367.95683 153.12806 L -365.7368 155.34192 L -361.04317 150.6483 L -360.17123 151.52642 L -365.7368 157.09198 Z" fill="lime"/>
+      <path d="M -289.7129 147.94815 C -293.12645 147.94815 -295.89686 150.71856 -295.89686 154.1321 C -295.89686 157.54564 -293.12645 160.31605 -289.7129 160.31605 C -286.29937 160.31605 -283.52896 157.54564 -283.52896 154.1321 C -283.52896 150.71856 -286.29937 147.94815 -289.7129 147.94815 Z M -290.9497 157.22407 L -294.04168 154.1321 L -293.16974 153.26016 L -290.9497 155.47402 L -286.25608 150.7804 L -285.38414 151.65852 L -290.9497 157.22407 Z" fill="lime"/>
+      <path d="M -176.57812 229.18395 C -179.99167 229.18395 -182.76208 231.95436 -182.76208 235.3679 C -182.76208 238.78144 -179.99167 241.55185 -176.57812 241.55185 C -173.16458 241.55185 -170.39417 238.78144 -170.39417 235.3679 C -170.39417 231.95436 -173.16458 229.18395 -176.57812 229.18395 Z M -175.95973 238.45988 L -177.19652 238.45988 L -177.19652 237.2231 L -175.95973 237.2231 L -175.95973 238.45988 Z M -175.95973 235.9863 L -177.19652 235.9863 L -177.19652 232.27593 L -175.95973 232.27593 L -175.95973 235.9863 Z" fill="red"/>
+    </g>
+    <g id="layer-layer-1_1">
+      <title>1_1</title>
+      <path d="M 317.55658 229.18395 C 314.14304 229.18395 311.37263 231.95436 311.37263 235.3679 C 311.37263 238.78144 314.14304 241.55185 317.55658 241.55185 C 320.97012 241.55185 323.74053 238.78144 323.74053 235.3679 C 323.74053 231.95436 320.97012 229.18395 317.55658 229.18395 Z M 316.3198 238.45988 L 313.2278 235.3679 L 314.09975 234.49596 L 316.3198 236.70982 L 321.0134 232.0162 L 321.88534 232.89432 L 316.3198 238.45988 Z" fill="lime"/>
+      <ellipse cx="317.55658" cy="235.3679" rx="32.55663" ry="31.36795" fill="white"/>
+      <ellipse cx="317.55658" cy="235.3679" rx="32.55663" ry="31.36795" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+      <ellipse cx="317.55658" cy="235.3679" rx="13.734829" ry="13.233354" fill="white"/>
+      <ellipse cx="317.55658" cy="235.3679" rx="13.734829" ry="13.233354" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+      <text transform="translate(293.55658 285.5359)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x="12.88" y="16" textLength="22.24">1.1</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x=".288" y="35.46411" textLength="6.224">r</tspan>
+        <tspan font-family="Helvetica Neue" font-size="16" font-weight="bold" x="6.224" y="35.46411" textLength="41.488">el/1.1</tspan>
+      </text>
+    </g>
+    <g>
+      <title>title</title>
+      <text transform="translate(-249.21875 -91.2739)" fill="black">
+        <tspan font-family="Helvetica Neue" font-size="29" font-weight="500" x=".159" y="28" textLength="418.412">CumulusCI Branch &amp; Release Pr</tspan>
+        <tspan font-family="Helvetica Neue" font-size="29" font-weight="500" x="418.049" y="28" textLength="76.792">ocess</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

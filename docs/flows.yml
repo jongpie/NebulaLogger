@@ -1,0 +1,32 @@
+intro_blurb: >
+    CumulusCI's suite of standard flows are grouped into various categories depending on their intended purpose.
+
+groups:
+    Org Setup:
+        description: |
+            These are the primary flows for doing full setup of an org.
+            They typically include a flow from the Dependency Management group,
+            a flow from either the Deployment or Install / Uninstall group,
+            and a flow from the Post-Install Configuration group.
+    Dependency Management:
+        description: |
+            These flows deploy dependencies (base packages and unmanaged metadata) to a target org environment.
+    Deployment:
+        description: |
+            These flows deploy the main package metadata to a target org environment.
+    Install / Uninstall:
+        description: |
+            These flows handle package installation and uninstallation in particular scenarios.
+    Post-Install Configuration:
+        description: |
+            These flows perform configuration after the main package has been installed or deployed.
+    Continuous Integration:
+        description: |
+            These flows are designed to be run automatically by a continuous integration (CI) system
+            in response to new commits. They typically set up an org and run Apex tests.
+    Release Operations:
+        description: |
+            These flows are used to release new package versions.
+    Other:
+        description: |
+            This is a catch-all group for any flows without a designated "group" attribute in ``cumulusci.yml``.

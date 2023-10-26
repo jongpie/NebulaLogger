@@ -1,0 +1,519 @@
+slides = [
+    {
+        'translate': ['center', 0],
+        'scale': [.33, .33],
+        'opacity_speed': 1,
+        'transform_speed': 1
+    },
+    {
+        'visible': [
+            'layer-packaging'
+        ],
+        'translate': ['center', -870],
+        'scale': [2, 2],
+        'opacity_speed': 1000,
+        'transform_speed': 1000,
+        'step_layer': 'layer-packaging'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github'
+        ],
+        'translate': ['center', -200],
+        'scale': [1, 1],
+        'step_layer': 'layer-github'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-developer'
+        ],
+        'translate': ['center', 0],
+        'scale': [1, 1],
+        'step_layer': 'layer-developer'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-developer',
+            'layer-github-feature1'
+        ],
+        'translate': ['center', -90],
+        'scale': [1, 1],
+        'step_layer': 'layer-github-feature1'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-developer',
+            'layer-github-feature1',
+            'layer-developer-github'
+        ],
+        'translate': ['center', 0],
+        'scale': [.75, .75],
+        'step_layer': 'layer-developer-github'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-jenkins-feature'
+        ],
+        'translate': ['center', -150],
+        'scale': [1, 1],
+        'step_layer': 'layer-jenkins-feature'
+    },
+/*
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-jenkins-feature',
+            'layer-content-deployCI'
+        ],
+        'translate': ['center', -440],
+        'scale': [2, 2],
+        'step_layer': 'layer-content-deployCI'
+    },
+*/
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1'
+        ],
+        'translate': ['center', -150],
+        'scale': [1, 1],
+        'step_layer': 'layer-jenkins-feature1'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1',
+            'layer-content-feature1-commit-status'
+        ],
+        'translate': [-1820, -1150],
+        'scale': [5, 5],
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1',
+            'layer-content-feature1-pull-request'
+        ],
+        'translate': [-1200, -850],
+        'scale': [3, 3],
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-github-feature1-merge',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1'
+        ],
+        'translate': ['center', -150],
+        'scale': [1, 1],
+        'step_layer': 'layer-github-feature1-merge'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+        ],
+        'translate': ['center', -150],
+        'scale': [1, 1],
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta'
+        ],
+        'translate': ['center', -330],
+        'scale': [.9, .9],
+        'step_layer': 'layer-background-beta'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-beta-orgs'
+        ],
+        'translate': ['center', -330],
+        'scale': [.9, .9],
+        'step_layer': 'layer-beta-orgs'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-beta-orgs',
+            'layer-beta2-flow'
+        ],
+        'translate': ['center', -330],
+        'scale': [.9, .9],
+        'step_layer': 'layer-beta2-flow'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-beta-orgs',
+            'layer-beta2-flow',
+            'layer-beta2-tag'
+        ],
+        'translate': ['center', -330],
+        'scale': [.9, .9],
+        'step_layer': 'layer-beta2-tag'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-beta-orgs',
+            'layer-beta2-flow',
+            'layer-beta2-tag',
+            'layer-beta2-mrbelvedere'
+        ],
+        'translate': ['center', -330],
+        'scale': [.9, .9],
+        'step_layer': 'layer-beta2-mrbelvedere'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-beta2-tag',
+            'layer-release-tag'
+        ],
+        'translate': [-400, -640],
+        'scale': [1.7, 1.7],
+        'step_layer': 'layer-release-tag'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-background-release',
+            'layer-beta2-tag',
+            'layer-release-tag',
+            'layer-release-upload',
+            'layer-release-package'
+        ],
+        'translate': ['center', -280],
+        'scale': [.75, .75],
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-background-release',
+            'layer-beta2-tag',
+            'layer-release-package',
+            'layer-release-test'
+        ],
+        'translate': ['center', -720],
+        'scale': [1, 1],
+        'step_layer': 'layer-release-test',
+        'opacity_speed': 2000,
+        'transform_speed': 3000,
+
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-background-release',
+            'layer-beta2-tag',
+            'layer-release-package',
+            'layer-release-test',
+            'layer-release-push'
+        ],
+        'translate': ['center', -720],
+        'scale': [1, 1],
+        'step_layer': 'layer-release-push'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-background-release',
+            'layer-beta2-tag',
+            'layer-release-package',
+            'layer-release-test',
+            'layer-release-push',
+            'layer-release-trialforce'
+        ],
+        'translate': ['center', -720],
+        'scale': [1, 1],
+        'step_layer': 'layer-release-trialforce'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1-merge',
+            'layer-background-beta',
+            'layer-background-release',
+            'layer-beta2-tag',
+            'layer-release-package',
+            'layer-release-test',
+            'layer-release-push',
+            'layer-release-trialforce',
+            'layer-release-mrbelvedere'
+        ],
+        'translate': ['center', -720],
+        'scale': [1, 1],
+        'step_layer': 'layer-release-mrbelvedere'
+    },
+    {
+        'visible': [
+            'layer-github',
+            'layer-github-feature1',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1-pull'
+        ],
+        'translate': ['center', -130],
+        'scale': [1, 1],
+        'opacity_speed': 3000,
+        'transform_speed': 3000,
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature2',
+            'layer-jenkins-feature',
+        ],
+        'translate': ['center', -130],
+        'scale': [1, 1],
+        'step_layer': 'layer-github-feature2'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature2',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature2'
+        ],
+        'translate': ['center', -130],
+        'scale': [1, 1],
+        'step_layer': 'layer-jenkins-feature2'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature2',
+            'layer-github-feature2-pull',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature2'
+        ],
+        'translate': ['center', -130],
+        'scale': [1, 1],
+        'step_layer': 'layer-github-feature2-pull'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature2',
+            'layer-github-feature2-pull',
+            'layer-github-feature2-merge',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature2'
+        ],
+        'translate': ['center', -130],
+        'scale': [1, 1]
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature2-merge',
+            'layer-background-beta',
+            'layer-beta-orgs',
+            'layer-beta1'
+        ],
+        'translate': ['center', -330],
+        'scale': [.9, .9],
+        'step_layer': 'layer-beta1',
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature2-merge',
+            'layer-background-beta',
+            'layer-beta-orgs',
+            'layer-beta1',
+            'layer-beta1-tag'
+        ],
+        'translate': ['center', -330],
+        'scale': [.9, .9]
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-github-feature2-merge',
+            'layer-background-beta',
+            'layer-beta1-tag',
+            'layer-beta1-master-to-feature'
+        ],
+        'translate': [-350, -480],
+        'scale': [2, 2],
+        'step_layer': 'layer-beta1-master-to-feature'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-github-feature2-merge',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1-pull',
+            'layer-background-beta',
+            'layer-beta1-tag',
+            'layer-beta1-master-to-feature'
+        ],
+        'translate': ['center', -80],
+        'scale': [.9, .9],
+        'step_layer': 'layer-jenkins-feature1-pull'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-developer',
+            'layer-developer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-github-feature2-merge',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1-pull',
+            'layer-background-beta',
+            'layer-beta1-tag',
+            'layer-beta1-master-to-feature'
+        ],
+        'translate': ['center', 0],
+        'scale': [.9, .9],
+        'step_layer': 'layer-developer-github',
+        'step_class': 'step-pull-push'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-developer',
+            'layer-developer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-github-feature2-merge',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1-pull',
+            'layer-jenkins-feature1-push',
+            'layer-background-beta',
+            'layer-beta1-tag',
+            'layer-beta1-master-to-feature'
+        ],
+        'translate': ['center', 0],
+        'scale': [.9, .9],
+        'step_layer': 'layer-jenkins-feature1-push'
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-developer',
+            'layer-developer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-commits',
+            'layer-github-feature2-merge',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1',
+            'layer-jenkins-feature1-pull',
+            'layer-jenkins-feature1-push',
+            'layer-background-beta',
+            'layer-beta1-tag',
+            'layer-beta1-master-to-feature'
+        ],
+        'translate': ['center', 0],
+        'scale': [.9, .9],
+        'step_layer': 'layer-jenkins-feature1',
+        'step_class': 'step-merge',
+    },
+    {
+        'visible': [
+            'layer-packaging',
+            'layer-github',
+            'layer-developer',
+            'layer-developer-github',
+            'layer-github-feature1',
+            'layer-github-feature1-merge',
+            'layer-github-feature2-merge',
+            'layer-jenkins-feature',
+            'layer-jenkins-feature1',
+            'layer-jenkins-feature1-pull',
+            'layer-jenkins-feature1-push',
+            'layer-background-beta',
+            'layer-beta1-tag',
+            'layer-beta1-master-to-feature'
+        ],
+        'translate': ['center', 0],
+        'scale': [.9, .9]
+    },
+    {
+        'translate': ['center', 0],
+        'scale': [.33, .33],
+        'transform_speed': 5000,
+        'opacity_speed': 10000
+    }
+]
