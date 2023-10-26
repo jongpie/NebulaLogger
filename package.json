@@ -28,8 +28,8 @@
         "big objects"
     ],
     "engines": {
-        "node": ">= 12.18.0",
-        "npm": ">= 6.14.0"
+        "node": ">= 18.18.2",
+        "npm": ">= 9.4.0"
     },
     "scripts": {
         "devhub:details": "pwsh ./scripts/build/get-devhub-org-details.ps1",
