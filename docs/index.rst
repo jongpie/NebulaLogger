@@ -23,4 +23,5 @@ Contents
    api/index
    Assigning-Permission-Sets
    Slack-Plugin
+   Logger-for-Apex
    another-folder/index
