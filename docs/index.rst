@@ -22,7 +22,21 @@ Contents
    usage
 
 
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: 📚 Reference
 
+   /api/index
+
+
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: 🪄 How-to guides
+
+   Project setup and configuration </wiki/index>
 
 
 
