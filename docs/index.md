@@ -15,7 +15,6 @@ This project is under active development, and I don't know how Read the Docs wor
 :maxdepth: 2
 :caption: 'Contents:'
 
-api/index
 wiki/index
 installation
 usage
@@ -25,12 +24,24 @@ usage
 :maxdepth: 2
 :caption: '🚀 Getting Started'
 
+getting-started/architecture
 installation
 ```
 
 ```{toctree}
 :maxdepth: 2
+:caption: '⚙ Configuring'
+
+configuring/permission-sets
+```
+
+```{toctree}
+:maxdepth: 2
 :caption: '📚 Developer Docs/Reference'
+
+api/apex/index
+api/flow/index
+api/lightning-components/index
 
 installation
 ```

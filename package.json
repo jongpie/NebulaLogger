@@ -115,7 +115,7 @@
     "devDependencies": {
         "@babel/core": "latest",
         "@babel/eslint-parser": "latest",
-        "@cparra/apexdocs": "1.13.7",
+        "@cparra/apexdocs": "^2.18.0",
         "@jayree/sfdx-plugin-prettier": "latest",
         "@jongpie/sfdx-bummer-plugin": "^0.0.18",
         "@ljharb/eslint-config": "latest",
