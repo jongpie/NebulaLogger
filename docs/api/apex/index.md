@@ -1,4 +1,13 @@
----
+# Apex Logging
+
+```{toctree}
+:maxdepth: 8
+:caption: 'IDK'
+
+**/*
+```
+
+<!-- ---
 layout: default
 ---
 
@@ -170,4 +179,4 @@ Utility class used to mock any data-related operations for the database, event b
 
 ### [LoggerTestConfigurator](/Test-Utilities/LoggerTestConfigurator)
 
-Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins.
+Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins. -->

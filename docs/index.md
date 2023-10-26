@@ -35,7 +35,7 @@ configuring/custom-metadata-type-log-entry-data-mask-rule
 
 ```{toctree}
 :maxdepth: 8
-:caption: '📚 Admin & Developer Implementation Reference'
+:caption: '📚 Implementation Reference'
 
 api/apex/index
 api/flow/index
