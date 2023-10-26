@@ -1,4 +1,10 @@
-Usage
+Installation
 =====
 
 WIP
+
+
+Some Section
+--------------
+
+Hiya!

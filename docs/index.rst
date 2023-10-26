@@ -20,6 +20,8 @@ Contents
 
    installation
    usage
+   api/index
+   wiki/index
 
 
 
