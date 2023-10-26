@@ -1,6 +1,6 @@
 # Welcome to Nebula Logger's documentation!
 
-🚧👷‍♀️ Coming soon!
+🚧👷‍♀️ Coming soon! 🏗👷‍♂️
 
 **Nebula Logger** - The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
