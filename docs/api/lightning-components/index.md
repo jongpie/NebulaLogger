@@ -1,4 +1,4 @@
-# Nebula Logger for Lightning Components
+# Lightning Components Logging
 
 ### [logger.js](./Logger)
 

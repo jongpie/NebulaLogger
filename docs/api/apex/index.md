@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Nebula Logger for Apex
+# Apex Logging
 
 ## Logger Engine
 

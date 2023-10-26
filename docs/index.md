@@ -42,8 +42,6 @@ configuring/permission-sets
 api/apex/index
 api/flow/index
 api/lightning-components/index
-
-installation
 ```
 
 ## Contents
