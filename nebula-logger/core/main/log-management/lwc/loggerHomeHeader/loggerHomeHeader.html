@@ -38,6 +38,14 @@
                                     onclick={handleViewReleaseNotes}
                                 ></lightning-button>
                             </template>
+                            <template if:true={showDocsButton}>
+                                <lightning-button
+                                    data-id="docs-button"
+                                    icon-name="utility:knowledge_base"
+                                    label={docsButtonLabel}
+                                    onclick={handleViewDocs}
+                                ></lightning-button>
+                            </template>
                         </lightning-button-group>
                     </div>
                 </div>

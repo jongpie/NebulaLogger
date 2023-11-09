@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import getEnvironmentDetails from '@salesforce/apex/LoggerHomeHeaderController.getEnvironmentDetails';
 
 const GITHUB_REPO_URL = 'https://github.com/jongpie/NebulaLogger/';
+const READ_THE_DOCS_URL = 'https://nebulalogger.readthedocs.io/';
 const STATUS_SITE_URL = 'https://status.salesforce.com/instances/';
 
 export default class LoggerHomeHeader extends NavigationMixin(LightningElement) {
@@ -44,6 +45,14 @@ export default class LoggerHomeHeader extends NavigationMixin(LightningElement) 
         return `View ${this.environment.loggerVersionNumber} Release Notes`;
     }
 
+    get showDocsButton() {
+        return !!this.environment?.loggerVersionNumber;
+    }
+
+    get docsButtonLabel() {
+        return `View ${this.environment.loggerVersionNumber} Docs`;
+    }
+
     handleViewEnvironmentDetails() {
         this.showEnvironmentDetailsModal = true;
     }
@@ -67,6 +76,16 @@ export default class LoggerHomeHeader extends NavigationMixin(LightningElement) 
             type: 'standard__webPage',
             attributes: {
                 url: `${GITHUB_REPO_URL}releases/tag/${this.environment.loggerVersionNumber}`
+            }
+        };
+        this[NavigationMixin.Navigate](pageReference);
+    }
+
+    handleViewDocs() {
+        const pageReference = {
+            type: 'standard__webPage',
+            attributes: {
+                url: `${READ_THE_DOCS_URL}en/${this.environment.loggerVersionNumber}`
             }
         };
         this[NavigationMixin.Navigate](pageReference);
