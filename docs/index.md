@@ -21,6 +21,14 @@ installation
 
 ```{toctree}
 :maxdepth: 2
+:caption: '💻 Logging Instrumentation'
+
+automatic-instrumentation/apex
+manual-instrumentation/apex
+```
+
+```{toctree}
+:maxdepth: 2
 :caption: '⚙ Configuring'
 
 configuring/permission-sets
@@ -35,7 +43,7 @@ configuring/custom-metadata-type-log-entry-data-mask-rule
 
 ```{toctree}
 :maxdepth: 8
-:caption: '📚 Implementation Reference'
+:caption: '📚 API Reference'
 
 api/apex/index
 api/flow/index
