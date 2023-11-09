@@ -953,16 +953,15 @@ global with sharing class LogEntryEventBuilder {
             return null;
         }
 
-        Map<Id, SObject> strippedRecordIdToRecord = new Map<Id, SObject>();
-        List<SObject> records = strippedRecordIdToRecord.values().deepClone();
-        records = isRecordFieldStrippingEnabled == false ? records : stripInaccessible(records);
-        // Record field-stripping isn't done by reference, so the map's values have to be reassigned
-        for (Id recordid : recordIdToRecord.keySet()) {
+        // In Apex, a Map<Id, SObject> with a null ID value will break during serialization,
+        // so convert it to a Map<String, SObject> first
+        Map<String, SObject> strippedRecordIdToRecord = new Map<String, SObject>();
+        for (Id recordId : recordIdToRecord.keySet()) {
             SObject record = recordIdToRecord.get(recordId);
-            if (recordId == null) {
-                recordId = '';
-            }
-            strippedRecordIdToRecord.put(recordId, record);
+            // Record field-stripping isn't done by reference, so the record has to be reassigned
+            record = isRecordFieldStrippingEnabled == false ? record : stripInaccessible(record);
+            String recordIdString = recordId == null ? '' : recordId;
+            strippedRecordIdToRecord.put(recordIdString, record);
         }
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecordIdToRecord));
     }
@@ -1100,6 +1099,10 @@ global with sharing class LogEntryEventBuilder {
             activeDataMaskRules.clear();
         }
         return activeDataMaskRules;
+    }
+
+    private static SObject stripInaccessible(SObject record) {
+        return stripInaccessible(new List<SObject>{ record }).get(0);
     }
 
     private static List<SObject> stripInaccessible(List<SObject> records) {

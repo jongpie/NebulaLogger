@@ -249,6 +249,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.EntryScenarioText__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>LogEntry__c.EntryScenario__c</field>
         <readable>true</readable>
@@ -1281,6 +1286,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Log__c.TransactionScenarioName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.TransactionScenarioText__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

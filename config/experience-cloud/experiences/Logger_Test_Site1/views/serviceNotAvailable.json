@@ -1,6 +1,7 @@
 {
     "appPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
     "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
     "id": "59f97560-6ead-4050-b3ba-2fcdf0e281e9",
     "label": "Service Not Available",
     "regions": [

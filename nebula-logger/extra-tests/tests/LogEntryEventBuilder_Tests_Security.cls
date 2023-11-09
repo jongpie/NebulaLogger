@@ -9,7 +9,7 @@ private class LogEntryEventBuilder_Tests_Security {
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @IsTest
-    static void it_should_strip_inaccessible_fields_for_record_when_enabled() {
+    static void it_should_strip_inaccessible_fields_for_single_record_when_enabled() {
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         AccountBrand mockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
             .populateMockId()
@@ -49,7 +49,7 @@ private class LogEntryEventBuilder_Tests_Security {
     }
 
     @IsTest
-    static void it_should_strip_inaccessible_fields_for_records_when_enabled() {
+    static void it_should_strip_inaccessible_fields_for_record_list_when_enabled() {
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
@@ -85,6 +85,51 @@ private class LogEntryEventBuilder_Tests_Security {
 
         System.Assert.areNotEqual(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
         System.Assert.areEqual(JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
+    }
+
+    @IsTest
+    static void it_should_strip_inaccessible_fields_for_record_map_when_enabled() {
+        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        Map<Id, AccountBrand> mockIdToAccountBrand = new Map<Id, AccountBrand>();
+        Map<String, AccountBrand> mockIdStringToStrippedAccountBrand = new Map<String, AccountBrand>();
+        for (Integer i = 0; i < 5; i++) {
+            AccountBrand mockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
+                .populateMockId()
+                .populateRequiredFields()
+                .getRecord();
+            mockIdToAccountBrand.put(mockAccountBrand.Id, mockAccountBrand);
+
+            // The 'standard user' profile doesn't have access to AccountBrand,
+            // so stripAccessible will remove everything except the ID field
+            AccountBrand strippedAccountBrand = new AccountBrand(Id = mockAccountBrand.Id);
+            mockIdStringToStrippedAccountBrand.put(strippedAccountBrand.Id, strippedAccountBrand);
+        }
+        // Previous versions of Nebula Logger would throw a runtime exception if the Map contained a null key,
+        // so add one to ensure it works as expected
+        AccountBrand anotherMockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
+        mockIdToAccountBrand.put(null, anotherMockAccountBrand);
+        mockIdStringToStrippedAccountBrand.put('', new AccountBrand());
+
+        LogEntryEventBuilder builder;
+        System.runAs(standardUser) {
+            System.Assert.isFalse(Schema.AccountBrand.SObjectType.getDescribe().isAccessible(), 'AccountBrand was accessible, and should not have been.');
+            System.Assert.areEqual(
+                false,
+                Schema.AccountBrand.CompanyName.getDescribe().isAccessible(),
+                'AccountBrand Company Name was accessible and should not have been.'
+            );
+            System.Assert.isFalse(Schema.AccountBrand.Email.getDescribe().isAccessible(), 'AccountBrand Email was accessible, and should not have been,');
+            System.Assert.isFalse(Schema.AccountBrand.Name.getDescribe().isAccessible(), 'AccountBrand Name was accessible, and should not have been.');
+            System.Assert.isFalse(Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
+
+            LoggerSettings__c userSettings = getUserSettings();
+            userSettings.IsRecordFieldStrippingEnabled__c = true;
+            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockIdToAccountBrand);
+        }
+
+        System.Assert.areEqual(JSON.serializePretty(mockIdStringToStrippedAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
     }
 
     static LoggerSettings__c getUserSettings() {
