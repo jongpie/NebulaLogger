@@ -4,6 +4,7 @@
 :maxdepth: 8
 :caption: 'IDK'
 :glob:
+:hidden:
 
 *
 ```
