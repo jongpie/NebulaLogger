@@ -108,12 +108,28 @@ public without sharing class LoggerEmailSender {
         sendEmail(messages);
     }
 
+    private static String getErrorMessageFromDatabaseError(Database.Error error) {
+        List<String> messageParts = new List<String>();
+
+        // Add the status code
+        messageParts.add('StatusCode: ' + error.getStatusCode());
+        // Add the message
+        messageParts.add('Message: ' + error.getMessage());
+        // Add the fields if available
+        List<String> fields = error.getFields();
+        if (fields?.isEmpty() == false) {
+            messageParts.add('Field(s): [' + String.join(fields, ', ') + ']');
+        }
+
+        return String.join(messageParts, ', ');
+    }
+
     private static List<String> getErrorMessages(List<Database.SaveResult> saveResults) {
         List<String> errorMessages = new List<String>();
         for (Database.SaveResult result : saveResults) {
             if (result.isSuccess() == false) {
                 for (Database.Error error : result.getErrors()) {
-                    errorMessages.add(error.getMessage());
+                    errorMessages.add(getErrorMessageFromDatabaseError(error));
                 }
             }
         }
@@ -125,7 +141,7 @@ public without sharing class LoggerEmailSender {
         for (Database.UpsertResult result : upsertResults) {
             if (result.isSuccess() == false) {
                 for (Database.Error error : result.getErrors()) {
-                    errorMessages.add(error.getMessage());
+                    errorMessages.add(getErrorMessageFromDatabaseError(error));
                 }
             }
         }
@@ -161,7 +177,7 @@ public without sharing class LoggerEmailSender {
     }
 
     private static String buildHtmlBody(Schema.SObjectType sobjectType, List<String> errorMessages) {
-        final String emailBodyTemplate = 'Logger failed to save {0} {1} records for {2} (User ID: {3})<br /><br />Error Messages:<ul>{4}</ul>';
+        final String emailBodyTemplate = 'Logger failed to save {0} {1} records for {2} (User ID: {3})<br /><br />Errors:<ul>{4}</ul>';
         final String formattedErrorMessages = '<li>' + String.join(errorMessages, '</li><li>') + '</li>';
         List<Object> emailBodyInputs = new List<Object>{
             errorMessages.size(),

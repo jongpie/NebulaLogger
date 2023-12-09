@@ -143,7 +143,7 @@ public class LoggerMockDataCreator {
             return (Database.SaveResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.SaveResult.class);
         } else {
             return (Database.SaveResult) JSON.deserialize(
-                '{"success":false,"errors":[{"message": "Could not save...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                '{"success":false,"errors":[{"message": "Could not save...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION", "fields": ["Name"]}]}',
                 Database.SaveResult.class
             );
         }
@@ -172,7 +172,7 @@ public class LoggerMockDataCreator {
             return (Database.UndeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.UndeleteResult.class);
         } else {
             return (Database.UndeleteResult) JSON.deserialize(
-                '{"success":false,"errors":[{"message": "Could not undelete...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                '{"success":false,"errors":[{"message": "Could not undelete...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION", "fields": ["Name"]}]}',
                 Database.UndeleteResult.class
             );
         }
@@ -208,7 +208,7 @@ public class LoggerMockDataCreator {
             return (Database.UpsertResult) JSON.deserialize(
                 '{"success":false, "created":' +
                     isCreated +
-                    ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                    ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION", "fields": ["Name"]}]}',
                 Database.UpsertResult.class
             );
         }
