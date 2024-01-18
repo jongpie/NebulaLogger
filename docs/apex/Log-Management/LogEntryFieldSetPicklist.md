@@ -12,7 +12,7 @@ Dynamically returns `LogEntry__c` field sets in App Builder when configuring the
 
 #### `getDefaultValue()` → `VisualEditor.DataRow`
 
-Returns a default value of null - admins must select a field set within App Builder
+Returns the default `LogEntry__c` field set, based on the `LoggerParameter_t` record `DefaultLogEntryRelatedListFieldSet`
 
 ##### Return
 
@@ -22,7 +22,7 @@ VisualEditor.DataRow
 
 **Description**
 
-null (no default value)
+And instance of `VisualEditor.DataRow` if a valid, matching field set exists, or `null`
 
 #### `getValues()` → `VisualEditor.DynamicPickListRows`
 
