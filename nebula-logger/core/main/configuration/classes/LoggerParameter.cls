@@ -31,6 +31,23 @@ public class LoggerParameter {
     }
 
     /**
+     * @description The name of the `LogEntry__c` field set to use as the default field set when configuring
+     *              the LWC `<c-related-log-entries>` within App Builder.
+     *              Controlled by the custom metadata record `LoggerParameter.DefaultLogEntryRelatedListFieldSet`,
+     *              or `Related_List_Defaults` as the default
+     */
+    public static final String DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET {
+        get {
+            if (DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET == null) {
+                String configuredValue = getString('DefaultLogEntryRelatedListFieldSet', 'Related_List_Defaults');
+                DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET = String.isNotBlank(configuredValue) ? configuredValue : '';
+            }
+            return DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET;
+        }
+        private set;
+    }
+
+    /**
      * @description Indicates if Nebula Logger's LWC `logEntryEventStream` is enabled. The component uses
      *              the Emp API, which counts towards orgs' daily delivery allocations for platform events.
      *              To help reduce usage of the daily allocation limit, orgs can disable the LWC.
