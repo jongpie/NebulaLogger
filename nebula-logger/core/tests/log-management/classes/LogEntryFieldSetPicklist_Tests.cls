@@ -34,7 +34,8 @@ private class LogEntryFieldSetPicklist_Tests {
 
     @IsTest
     static void it_should_return_non_null_for_default_value_when_valid_value_is_configured() {
-        String validFieldSetName = 'Related_List_Defaults';
+        String namespacePrefix = String.isBlank(Logger.getNamespacePrefix()) ? '' : Logger.getNamespacePrefix() + '__';
+        String validFieldSetName = namespacePrefix + 'Related_List_Defaults';
         Schema.FieldSet expectedFieldSet = Schema.SObjectType.LogEntry__c.fieldSets.getMap().get(validFieldSetName);
         System.Assert.isNotNull(expectedFieldSet);
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'DefaultLogEntryRelatedListFieldSet', Value__c = validFieldSetName);
@@ -44,7 +45,7 @@ private class LogEntryFieldSetPicklist_Tests {
 
         System.Assert.isNotNull(instance.getDefaultValue());
         System.Assert.areEqual(expectedFieldSet.getLabel(), instance.getDefaultValue().getLabel());
-        System.Assert.areEqual(expectedFieldSet.getName(), instance.getDefaultValue().getValue());
+        System.Assert.areEqual(namespacePrefix + expectedFieldSet.getName(), instance.getDefaultValue().getValue());
     }
 
     @IsTest
@@ -56,12 +57,13 @@ private class LogEntryFieldSetPicklist_Tests {
         List<VisualEditor.DataRow> dataRows = instance.getValues().getDataRows();
         System.Assert.areEqual(expectedFieldSets.size(), dataRows.size());
         for (VisualEditor.DataRow dataRow : dataRows) {
-            String fieldSetLabel = (String) dataRow.getLabel();
-            String fieldSetName = (String) dataRow.getValue();
-            System.Assert.isTrue(expectedFieldSets.containsKey(fieldSetName));
-            Schema.FieldSet fieldSet = expectedFieldSets.get(fieldSetName);
-            System.Assert.areEqual(fieldSet.getLabel(), fieldSetLabel);
-            System.Assert.areEqual(fieldSet.getName(), fieldSetName);
+            String dataRowLabel = (String) dataRow.getLabel();
+            String dataRowValue = (String) dataRow.getValue();
+            System.Assert.isTrue(expectedFieldSets.containsKey(dataRowValue));
+            Schema.FieldSet matchingFieldSet = expectedFieldSets.get(dataRowValue);
+            String matchingFieldSetNamespacePrefix = String.isBlank(matchingFieldSet.getNameSpace()) ? '' : matchingFieldSet.getNameSpace() + '__';
+            System.Assert.areEqual(matchingFieldSet.getLabel(), dataRowLabel);
+            System.Assert.areEqual(matchingFieldSetNamespacePrefix + matchingFieldSet.getName(), dataRowValue);
         }
     }
 }
