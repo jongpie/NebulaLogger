@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.1.NEXT",
-            "versionName": "Improved Error Emails",
-            "versionDescription": "Updated error emails (sent by LoggerEmailSender) to include all Database.Error fields",
+            "versionNumber": "4.12.2.NEXT",
+            "versionName": "Automatically Select Default Field Set in relatedLogEntries LWC",
+            "versionDescription": "Updated the relatedLogEntries LWC to automatically select the default field set when the component is added to a FlexiPage. Also made the default field set name configurable via LoggerParameter__mdt record DefaultLogEntryRelatedListFieldSet.",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
