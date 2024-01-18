@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.0.NEXT",
-            "versionName": "Winter '24 Release",
-            "versionDescription": "Updated all metadata to API v59.0, fixed a bug with logging Map<Id, SObject>, added new formula fields on Log__c & LogEntry__c for scenario names, added more metadata to the managed package",
+            "versionNumber": "4.12.1.NEXT",
+            "versionName": "Improved Error Emails",
+            "versionDescription": "Updated error emails (sent by LoggerEmailSender) to include all Database.Error fields",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -161,6 +161,7 @@
         "Nebula Logger - Core@4.11.11-reduced-usage-of-email-limits-consumption-in-loggeremailsender": "04t5Y000001Oih7QAC",
         "Nebula Logger - Core@4.11.12-bugfix-for-lightning-component-entries-not-always-saving": "04t5Y000001Mjx5QAC",
         "Nebula Logger - Core@4.12.0-winter-'24-release": "04t5Y000001Mk1wQAC",
+        "Nebula Logger - Core@4.12.1-improved-error-emails": "04t5Y000001Mk4bQAC",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

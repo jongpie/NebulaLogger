@@ -54,10 +54,15 @@ private class LoggerEmailSender_Tests {
         Database.SaveResult saveResultWithError = LoggerMockDataCreator.createDatabaseSaveResult(false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.SaveResult>{ saveResultWithError });
 
-        System.Assert.areEqual(
-            true,
+        System.Assert.isTrue(
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(saveResultWithError.errors.get(0).getMessage()),
             'Email message should contain SaveResult error message'
+        );
+        List<String> errorFields = saveResultWithError.getErrors().get(0).getFields();
+        String expectedFieldsError = 'Field(s): [' + String.join(errorFields, ', ') + ']';
+        System.Assert.isTrue(
+            LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(expectedFieldsError),
+            'Email message should contain SaveResult error fields: ' + expectedFieldsError
         );
         if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
             System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
@@ -104,10 +109,15 @@ private class LoggerEmailSender_Tests {
         Database.UpsertResult upsertResultWithError = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, new List<Database.UpsertResult>{ upsertResultWithError });
 
-        System.Assert.areEqual(
-            true,
+        System.Assert.isTrue(
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(upsertResultWithError.errors.get(0).getMessage()),
             'Email message should contain UpsertResult error message'
+        );
+        List<String> errorFields = upsertResultWithError.getErrors().get(0).getFields();
+        String expectedFieldsError = 'Field(s): [' + String.join(errorFields, ', ') + ']';
+        System.Assert.isTrue(
+            LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(expectedFieldsError),
+            'Email message should contain UpsertResult error fields: ' + expectedFieldsError
         );
         if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_AVAILABLE) {
             System.Assert.areEqual(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
