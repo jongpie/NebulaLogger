@@ -10,10 +10,10 @@
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
             "ancestorVersion": "HIGHEST",
-            "versionNumber": "4.12.0.NEXT",
-            "versionName": "Winter '24 Release",
-            "versionDescription": "View the v4.12.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/12?closed=1",
-            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases/tag/v4.11.0"
+            "versionNumber": "4.13.0.NEXT",
+            "versionName": "Spring '24 Release",
+            "versionDescription": "View the v4.13.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/13?closed=1",
+            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases/tag/v4.13.0"
         }
     ],
     "packageAliases": {
