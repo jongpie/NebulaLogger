@@ -23,6 +23,7 @@ global with sharing class Logger {
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
+    private static final Quiddity TRANSACTION_QUIDDITY = loadTransactionQuiddity();
 
     private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
@@ -49,16 +50,6 @@ global with sharing class Logger {
                 ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
             }
             return ORGANIZATION_API_VERSION;
-        }
-        set;
-    }
-
-    private static final Quiddity TRANSACTION_QUIDDITY {
-        get {
-            if (TRANSACTION_QUIDDITY == null) {
-                TRANSACTION_QUIDDITY = getTransactionQuiddity();
-            }
-            return TRANSACTION_QUIDDITY;
         }
         set;
     }
@@ -3385,7 +3376,7 @@ global with sharing class Logger {
         return isStartTimeValid && isEndTimeValid;
     }
 
-    private static Quiddity getTransactionQuiddity() {
+    private static Quiddity loadTransactionQuiddity() {
         // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
         // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
         // skip calling System.Request.getCurrent() if there is no user session.
