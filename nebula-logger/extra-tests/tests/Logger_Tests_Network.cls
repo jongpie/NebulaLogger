@@ -24,7 +24,7 @@ private class Logger_Tests_Network {
         }
 
         Schema.Profile loggerSiteProfile = matchingProfiles.get(0);
-        System.Assert.areEqual('Guest Schema.User License', loggerSiteProfile.UserLicense.Name, 'Schema.User license did not match Guest Schema.User License.');
+        System.Assert.areEqual('Guest Schema.User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
         List<Schema.User> guestUsers = [

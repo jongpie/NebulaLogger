@@ -128,7 +128,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_setupOwnerType_picklist_options() {
-        Set<String> expectedSetupOwnerType = new Set<String>{ 'Schema.Organization', 'Profile', 'Schema.User' };
+        Set<String> expectedSetupOwnerType = new Set<String>{ 'Organization', 'Profile', 'User' };
         Integer expectedSetupOwnerTypeSize = 4; // Options are org, profile, and user, and '--NONE--' is automatically included
 
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().setupOwnerTypeOptions;
@@ -208,7 +208,7 @@ private class LoggerSettingsController_Tests {
             true
         );
         System.Assert.isTrue(mockOrganization.IsSandbox);
-        LoggerCache.getOrganizationCache().put('Schema.Organization', mockOrganization);
+        LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
         System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
         LoggerSettings__c expectedNewRecord = Logger.createSettings();
 
@@ -227,7 +227,7 @@ private class LoggerSettingsController_Tests {
             false
         );
         System.Assert.isFalse(mockOrganization.IsSandbox);
-        LoggerCache.getOrganizationCache().put('Schema.Organization', mockOrganization);
+        LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
         System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
         LoggerSettings__c expectedNewRecord = Logger.createSettings();
         expectedNewRecord.IsApexSystemDebugLoggingEnabled__c = false;
@@ -353,7 +353,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_empty_user_search_results_list_when_no_matches_found() {
         String nonsenseSearchTerm = 'asdfqwert;lkhpoiy';
 
-        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Schema.User', nonsenseSearchTerm);
+        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('User', nonsenseSearchTerm);
 
         System.Assert.areEqual(0, results.size());
     }
@@ -366,7 +366,7 @@ private class LoggerSettingsController_Tests {
             [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm]
         );
 
-        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Schema.User', searchTerm);
+        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('User', searchTerm);
 
         System.Assert.isFalse(results.isEmpty());
         System.Assert.areEqual(expectedResultsById.size(), results.size());

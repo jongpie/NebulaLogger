@@ -90,7 +90,7 @@ public without sharing virtual class LogManagementDataSelector {
      *              that has API details populated from calling https://api.status.salesforce.com
      * @return   The cached `Log__c` record, or `null` if no match is found
      */
-    public Log__c getCachedRecentLogWithApiReleaseDetails() {
+    public virtual Log__c getCachedRecentLogWithApiReleaseDetails() {
         String cacheKey = 'RecentLogWithApiReleaseDetails';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
             return (Log__c) LoggerCache.getOrganizationCache().get(cacheKey);
@@ -277,11 +277,11 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<Group>` of records with the specified developer names and type == 'Queue'
+     * @description Returns a `List<Schema.Group>` of records with the specified developer names and type == 'Queue'
      * @param  queueDeveloperNames The list of `String` queue developer names to query
-     * @return                     The list of matching `Group` records
+     * @return                     The list of matching `Schema.Group` records
      */
-    public virtual List<Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
+    public virtual List<Schema.Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
         return [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :queueDeveloperNames];
     }
 
@@ -294,7 +294,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return               The list of matching `LogEntry__c` records
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public List<LogEntry__c> getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
+    public virtual List<LogEntry__c> getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
         List<Object> queryTextReplacements = new List<Object>{
             fieldsClause,
             Schema.LogEntry__c.SObjectType.getDescribe().getName(),
@@ -336,7 +336,7 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<Schema.User>` of records where the Schema.User's names or username partially matches the specified search term
+     * @description Returns a `List<Schema.User>` of records where the User's names or username partially matches the specified search term
      * @param  searchTerm The `String` search term to use for searching `Schema.User` records
      * @return            The list of matching `Schema.User` records
      */

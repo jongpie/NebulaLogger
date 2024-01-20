@@ -47,7 +47,7 @@ global with sharing class Logger {
                 // Then parse the JSON to get the API version
                 // Expected JSON: {"attributes":{"type":"Schema.User","url":"/services/data/v53.0/sobjects/Schema.User/005J000000AugnYIAR"}
                 String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
-                ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/Schema.User');
+                ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
             }
             return ORGANIZATION_API_VERSION;
         }

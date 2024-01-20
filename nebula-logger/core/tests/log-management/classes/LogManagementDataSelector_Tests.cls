@@ -312,19 +312,19 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_queues_for_specified_developer_names() {
-        List<Group> queuesToInsert = new List<Group>();
-        Group nonMatchingQueue = new Group(DeveloperName = 'non_matching_queue', Name = 'Non-Matching Queue', Type = 'Queue');
+        List<Schema.Group> queuesToInsert = new List<Schema.Group>();
+        Schema.Group nonMatchingQueue = new Schema.Group(DeveloperName = 'non_matching_queue', Name = 'Non-Matching Queue', Type = 'Queue');
         queuesToInsert.add(nonMatchingQueue);
         List<String> targetQueueNames = new List<String>();
         for (Integer i = 0; i < 3; i++) {
-            Group matchingQueue = new Group(DeveloperName = 'some_queue' + i, Name = 'Some Queue' + i, Type = 'Queue');
+            Schema.Group matchingQueue = new Schema.Group(DeveloperName = 'some_queue' + i, Name = 'Some Queue' + i, Type = 'Queue');
             targetQueueNames.add(matchingQueue.DeveloperName);
             queuesToInsert.add(matchingQueue);
         }
         insert queuesToInsert;
-        List<Group> expectedResults = [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :targetQueueNames];
+        List<Schema.Group> expectedResults = [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :targetQueueNames];
 
-        List<Group> returnedResults = LogManagementDataSelector.getInstance().getQueuesByDeveloperName(targetQueueNames);
+        List<Schema.Group> returnedResults = LogManagementDataSelector.getInstance().getQueuesByDeveloperName(targetQueueNames);
 
         System.Assert.areEqual(expectedResults, returnedResults);
     }

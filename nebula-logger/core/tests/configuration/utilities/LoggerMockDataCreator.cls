@@ -368,13 +368,13 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Creates and inserts a `Group` record for testing queues, using the specified SObject Type
-     * @param  queueDeveloperName The developer name to use for the new queue (stored in `Group.DeveloperName`)
+     * @description Creates and inserts a `Schema.Group` record for testing queues, using the specified SObject Type
+     * @param  queueDeveloperName The developer name to use for the new queue (stored in `Schema.Group.DeveloperName`)
      * @param  sobjectType        The `SObjectType` that the queue should be able to own (stored in `QueueSObject.SObjectType`)
-     * @return                    The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
+     * @return                    The inserted `Schema.Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
      */
-    public static Group insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType) {
-        Group queue = new Group(DeveloperName = queueDeveloperName, Name = queueDeveloperName, Type = 'Queue');
+    public static Schema.Group insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType) {
+        Schema.Group queue = new Schema.Group(DeveloperName = queueDeveloperName, Name = queueDeveloperName, Type = 'Queue');
         insert queue;
 
         // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record

@@ -154,7 +154,7 @@ private class NebulaLogger_E2E_Tests {
         // Then parse the JSON to get the API version
         // Expected JSON: {"attributes":{"type":"Schema.User","url":"/services/data/v53.0/sobjects/Schema.User/005J000000AugnYIAR"}
         String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('/sobjects/Schema.User');
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static SObject setReadOnlyField(SObject record, Map<Schema.SObjectField, Object> changesToFields) {

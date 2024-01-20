@@ -132,7 +132,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @return   The cached `Schema.Organization` record
      */
     public virtual Schema.Organization getCachedOrganization() {
-        String cacheKey = 'Schema.Organization';
+        String cacheKey = 'Organization';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
             return (Schema.Organization) LoggerCache.getOrganizationCache().get(cacheKey);
         }
@@ -191,7 +191,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      */
     public virtual Schema.User getCachedUser() {
         Id userId = System.UserInfo.getUserId();
-        String cacheKey = 'Schema.User' + userId;
+        String cacheKey = 'User' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey)) {
             return (Schema.User) LoggerCache.getSessionCache().get(cacheKey);
         }

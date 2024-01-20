@@ -165,7 +165,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             Schema.Log__c.Name.getDescribe().getName(),
             logEntryChildQuery,
             'LoggedBy__r.Username',
-            'TYPEOF Owner WHEN Schema.User THEN Username ELSE Name END'
+            'TYPEOF Owner WHEN User THEN Username ELSE Name END'
         };
         for (Schema.FieldSetMember fieldSetMember : getFieldSet().getFields()) {
             fieldNames.add(fieldSetMember.getFieldPath());

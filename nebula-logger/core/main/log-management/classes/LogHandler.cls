@@ -285,7 +285,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private static Map<String, Id> queryQueues(List<String> possibleQueueNames) {
         Map<String, Id> queuesByDeveloperName = new Map<String, Id>();
-        for (Group queue : LogManagementDataSelector.getInstance().getQueuesByDeveloperName(possibleQueueNames)) {
+        for (Schema.Group queue : LogManagementDataSelector.getInstance().getQueuesByDeveloperName(possibleQueueNames)) {
             queuesByDeveloperName.put(queue.DeveloperName, queue.Id);
         }
         return queuesByDeveloperName;

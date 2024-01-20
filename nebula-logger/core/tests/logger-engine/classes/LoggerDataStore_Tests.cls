@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // TODO switch to using standard object(s) available in all orgs (instead of Log__c) so this can be split off as a separate repo
-// Possible objects to use: Schema.User, Group (Queue) and QueueSObject (none support undelete though), and not sure if it's possible
+// Possible objects to use: Schema.User, Schema.Group (Queue) and QueueSObject (none support undelete though), and not sure if it's possible
 // to test platform events/EventBus using only standard objects
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)

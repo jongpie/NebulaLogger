@@ -692,7 +692,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.areEqual(currentUserId, builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.Assert.areEqual('Schema.User', builder.getLogEntryEvent().RecordSObjectType__c);
+        System.Assert.areEqual('User', builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
     }
 
@@ -796,7 +796,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.areEqual(currentUser.Id, builder.getLogEntryEvent().RecordId__c);
         System.Assert.areEqual(JSON.serializePretty(currentUser), builder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.Assert.areEqual('Schema.User', builder.getLogEntryEvent().RecordSObjectType__c);
+        System.Assert.areEqual('User', builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
     }
 
@@ -1032,7 +1032,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.areEqual(JSON.serializePretty(userIdStringToUser), builder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.Assert.areEqual('Schema.User', builder.getLogEntryEvent().RecordSObjectType__c);
+        System.Assert.areEqual('User', builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @IsTest

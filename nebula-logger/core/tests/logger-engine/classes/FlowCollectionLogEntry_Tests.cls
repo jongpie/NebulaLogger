@@ -51,7 +51,7 @@ private class FlowCollectionLogEntry_Tests {
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(publishedLogEntryEvent.RecordId__c);
         System.Assert.areEqual('List', publishedLogEntryEvent.RecordCollectionType__c);
-        System.Assert.areEqual('Schema.User', publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual('User', publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
         System.Assert.areEqual(flowCollectionEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -90,7 +90,7 @@ private class FlowCollectionLogEntry_Tests {
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(publishedLogEntryEvent.RecordId__c);
         System.Assert.areEqual('List', publishedLogEntryEvent.RecordCollectionType__c);
-        System.Assert.areEqual('Schema.User', publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual('User', publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
     }
 
@@ -137,7 +137,7 @@ private class FlowCollectionLogEntry_Tests {
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(publishedLogEntryEvent.RecordId__c);
         System.Assert.areEqual('List', publishedLogEntryEvent.RecordCollectionType__c);
-        System.Assert.areEqual('Schema.User', publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual('User', publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
     }
 

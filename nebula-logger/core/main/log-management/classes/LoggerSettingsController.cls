@@ -155,7 +155,7 @@ public without sharing class LoggerSettingsController {
                         searchResults.add(result);
                     }
                 }
-                when 'Schema.User' {
+                when 'User' {
                     for (Schema.User matchingUser : LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingUser.Id;
@@ -259,7 +259,7 @@ public without sharing class LoggerSettingsController {
 
     private static List<PicklistOption> getSetupOwnerTypeOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
-        List<String> optionNames = new List<String>{ 'Schema.Organization', 'Profile', 'Schema.User' };
+        List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'User' };
         for (String optionName : optionNames) {
             PicklistOption picklistOption = new PicklistOption();
             picklistOption.label = optionName;
@@ -301,7 +301,7 @@ public without sharing class LoggerSettingsController {
         String setupOwnerType;
         switch on settingsRecord.SetupOwner.Type {
             when '00D' {
-                setupOwnerType = 'Schema.Organization';
+                setupOwnerType = 'Organization';
             }
             when '00e' {
                 setupOwnerType = 'Profile';

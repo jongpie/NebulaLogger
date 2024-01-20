@@ -28,7 +28,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_organization_api_version() {
         String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
-        String expectedApiVersion = userJson.substringAfter('/data/').substringBefore('/sobjects/Schema.User');
+        String expectedApiVersion = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
 
         String returnedApiVersion = Logger.getOrganizationApiVersion();
 
