@@ -870,7 +870,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         if (cachedOrganization == null) {
             return;
         }
@@ -975,7 +975,7 @@ global with sharing class LogEntryEventBuilder {
             return '';
         }
 
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String cachedOrganizationEnvironmentType;
         if (cachedOrganization == null) {
             cachedOrganizationEnvironmentType = '';

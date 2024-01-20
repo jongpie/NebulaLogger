@@ -128,7 +128,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_setupOwnerType_picklist_options() {
-        Set<String> expectedSetupOwnerType = new Set<String>{ 'Organization', 'Profile', 'Schema.User' };
+        Set<String> expectedSetupOwnerType = new Set<String>{ 'Schema.Organization', 'Profile', 'Schema.User' };
         Integer expectedSetupOwnerTypeSize = 4; // Options are org, profile, and user, and '--NONE--' is automatically included
 
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().setupOwnerTypeOptions;
@@ -202,9 +202,13 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_create_new_record_when_organization_is_a_sandbox() {
-        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
+        Schema.Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+            new Schema.Organization(),
+            Schema.Organization.IsSandbox,
+            true
+        );
         System.Assert.isTrue(mockOrganization.IsSandbox);
-        LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
+        LoggerCache.getOrganizationCache().put('Schema.Organization', mockOrganization);
         System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
         LoggerSettings__c expectedNewRecord = Logger.createSettings();
 
@@ -217,9 +221,13 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_create_new_record_when_organization_is_not_a_sandbox() {
-        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
+        Schema.Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+            new Schema.Organization(),
+            Schema.Organization.IsSandbox,
+            false
+        );
         System.Assert.isFalse(mockOrganization.IsSandbox);
-        LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
+        LoggerCache.getOrganizationCache().put('Schema.Organization', mockOrganization);
         System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
         LoggerSettings__c expectedNewRecord = Logger.createSettings();
         expectedNewRecord.IsApexSystemDebugLoggingEnabled__c = false;
@@ -307,9 +315,9 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_organization_record() {
-        Organization expectedRecord = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization expectedRecord = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
-        Organization returnedRecord = LoggerSettingsController.getOrganization();
+        Schema.Organization returnedRecord = LoggerSettingsController.getOrganization();
 
         System.Assert.areEqual(expectedRecord, returnedRecord);
     }

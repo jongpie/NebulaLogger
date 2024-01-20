@@ -152,7 +152,7 @@ private class LogEntryEventBuilder_Tests {
             .getLogEntryEvent();
 
         System.Assert.areNotEqual(0, mockSelector.getCachedOrganizationQueryCount());
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         System.Assert.areEqual(cachedOrganization.Id, logEntryEvent.OrganizationId__c);
         System.Assert.areEqual(cachedOrganization.InstanceName, logEntryEvent.OrganizationInstanceName__c);
         System.Assert.areEqual(cachedOrganization.Name, logEntryEvent.OrganizationName__c);
@@ -1391,7 +1391,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_user_fields_when_anonymous_mode_disabled() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
-        Organization organization = LoggerMockDataCreator.getOrganization();
+        Schema.Organization organization = LoggerMockDataCreator.getOrganization();
         String organizationEnvironmentType = LoggerMockDataCreator.getOrganizationEnvironmentType();
         Schema.User user = LoggerMockDataCreator.getUser();
 
@@ -1541,7 +1541,7 @@ private class LogEntryEventBuilder_Tests {
             return cachedAuthSessionQueryCount;
         }
 
-        public override Organization getCachedOrganization() {
+        public override Schema.Organization getCachedOrganization() {
             this.cachedOrganizationQueryCount++;
             return super.getCachedOrganization();
         }

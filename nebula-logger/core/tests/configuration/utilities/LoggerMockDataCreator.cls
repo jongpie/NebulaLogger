@@ -18,7 +18,7 @@ public class LoggerMockDataCreator {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_REQUIRED_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
 
-    private static Organization cachedOrganization;
+    private static Schema.Organization cachedOrganization;
     private static Integer userMockUsernameCount = 0;
 
     /**
@@ -317,11 +317,11 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Queries for the `Organization` record for the current environment.
-     * @return   The matching `Organization` record
+     * @description Queries for the `Schema.Organization` record for the current environment.
+     * @return   The matching `Schema.Organization` record
      */
-    public static Organization getOrganization() {
-        // TODO Switch to creating mock instance of Organization with sensible defaults that tests can then update as needed for different scenarios
+    public static Schema.Organization getOrganization() {
+        // TODO Switch to creating mock instance of Schema.Organization with sensible defaults that tests can then update as needed for different scenarios
         if (cachedOrganization == null) {
             cachedOrganization = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         }
@@ -333,7 +333,7 @@ public class LoggerMockDataCreator {
      * @return   The environment type
      */
     public static String getOrganizationEnvironmentType() {
-        Organization organization = getOrganization();
+        Schema.Organization organization = getOrganization();
 
         String orgEnvironmentType;
         if (organization.IsSandbox && organization.TrialExpirationDate != null) {

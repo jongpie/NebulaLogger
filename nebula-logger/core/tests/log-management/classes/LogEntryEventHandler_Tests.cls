@@ -620,7 +620,7 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        Organization expectedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization expectedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         Log__c log = getLog();
         System.Assert.areEqual(String.valueOf(expectedOrganization.Id), log.OrganizationId__c);
         System.Assert.areEqual(expectedOrganization.InstanceName, log.OrganizationInstanceName__c);
@@ -1379,7 +1379,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     private static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-        Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+        Schema.Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         String orgEnvironmentType;
         if (org.IsSandbox && org.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';

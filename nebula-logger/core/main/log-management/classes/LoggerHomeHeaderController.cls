@@ -14,7 +14,7 @@ public without sharing class LoggerHomeHeaderController {
      */
     @AuraEnabled(cacheable=true)
     public static Environment getEnvironmentDetails() {
-        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
         Environment environment = new Environment();
         environment.loggerNamespacePrefix = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : '(none)';

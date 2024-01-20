@@ -7942,7 +7942,7 @@ private class Logger_Tests {
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Callout to api.status.salesforce.com failed', logEntryEvent.Message__c);
         System.Assert.areEqual('System.CalloutException', logEntryEvent.ExceptionType__c);
-        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String expectedExceptionMessage =
             'Callout failed for https://api.status.salesforce.com/v1/instances/' +
             organization.InstanceName +

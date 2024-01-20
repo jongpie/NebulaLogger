@@ -639,7 +639,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         if (cachedOrganization == null) {
             return;
         }

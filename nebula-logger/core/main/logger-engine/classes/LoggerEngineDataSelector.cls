@@ -128,16 +128,16 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of the `Organization` record in the org, including some fields that cannot be accessed via `UserInfo`
-     * @return   The cached `Organization` record
+     * @description Returns a cached copy of the `Schema.Organization` record in the org, including some fields that cannot be accessed via `UserInfo`
+     * @return   The cached `Schema.Organization` record
      */
-    public virtual Organization getCachedOrganization() {
-        String cacheKey = 'Organization';
+    public virtual Schema.Organization getCachedOrganization() {
+        String cacheKey = 'Schema.Organization';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
-            return (Organization) LoggerCache.getOrganizationCache().get(cacheKey);
+            return (Schema.Organization) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        Organization organization;
+        Schema.Organization organization;
         if (LoggerParameter.QUERY_ORGANIZATION_DATA) {
             organization = [
                 SELECT

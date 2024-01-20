@@ -90,7 +90,7 @@ private class LoggerEngineDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_organization() {
-        Organization expectedOrganization = [
+        Schema.Organization expectedOrganization = [
             SELECT
                 Id,
                 CreatedById,
@@ -110,7 +110,7 @@ private class LoggerEngineDataSelector_Tests {
         System.Assert.areEqual(mockSelector, LoggerEngineDataSelector.getInstance());
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
 
-        Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
         System.Assert.areEqual(1, mockSelector.getCachedOrganizationQueryCount());
         LoggerEngineDataSelector.getInstance().getCachedOrganization();
@@ -125,7 +125,7 @@ private class LoggerEngineDataSelector_Tests {
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = String.valueOf(false)));
 
-        Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
         System.Assert.isNull(returnedOrganization);
@@ -193,9 +193,9 @@ private class LoggerEngineDataSelector_Tests {
             return authSessionQueryCount;
         }
 
-        public override Organization getCachedOrganization() {
+        public override Schema.Organization getCachedOrganization() {
             Integer originalQueryCount = System.Limits.getQueries();
-            Organization result = super.getCachedOrganization();
+            Schema.Organization result = super.getCachedOrganization();
             if (System.Limits.getQueries() != originalQueryCount) {
                 organizationQueryCount = System.Limits.getQueries() - originalQueryCount;
             }

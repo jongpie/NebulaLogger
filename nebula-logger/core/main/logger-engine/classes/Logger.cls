@@ -98,7 +98,7 @@ global with sharing class Logger {
         // The rest of the codebase should use a method in Logger.cls
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
-        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Organization API Version: ' + getOrganizationApiVersion());
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Schema.Organization API Version: ' + getOrganizationApiVersion());
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -3274,7 +3274,7 @@ global with sharing class Logger {
             return null;
         }
 
-        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
         System.HttpRequest request = new System.HttpRequest();

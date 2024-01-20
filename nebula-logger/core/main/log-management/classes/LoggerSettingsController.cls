@@ -125,11 +125,11 @@ public without sharing class LoggerSettingsController {
 
     // Setup Owner methods
     /**
-     * @description Returns the `Organization` record for the current environment
-     * @return   The current environment's `Organization` record
+     * @description Returns the `Schema.Organization` record for the current environment
+     * @return   The current environment's `Schema.Organization` record
      */
     @AuraEnabled(cacheable=true)
-    public static Organization getOrganization() {
+    public static Schema.Organization getOrganization() {
         return LoggerEngineDataSelector.getInstance().getCachedOrganization();
     }
 
@@ -259,7 +259,7 @@ public without sharing class LoggerSettingsController {
 
     private static List<PicklistOption> getSetupOwnerTypeOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
-        List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'Schema.User' };
+        List<String> optionNames = new List<String>{ 'Schema.Organization', 'Profile', 'Schema.User' };
         for (String optionName : optionNames) {
             PicklistOption picklistOption = new PicklistOption();
             picklistOption.label = optionName;
@@ -301,7 +301,7 @@ public without sharing class LoggerSettingsController {
         String setupOwnerType;
         switch on settingsRecord.SetupOwner.Type {
             when '00D' {
-                setupOwnerType = 'Organization';
+                setupOwnerType = 'Schema.Organization';
             }
             when '00e' {
                 setupOwnerType = 'Profile';
