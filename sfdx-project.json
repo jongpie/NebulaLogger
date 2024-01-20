@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.2.NEXT",
-            "versionName": "Automatically Select Default Field Set in relatedLogEntries LWC",
-            "versionDescription": "Updated the relatedLogEntries LWC to automatically select the default field set when the component is added to a FlexiPage. The default field set name is configurable via LoggerParameter__mdt record DefaultLogEntryRelatedListFieldSet.",
+            "versionNumber": "4.12.3.NEXT",
+            "versionName": "Bugfix for UserInfo.getSessionId() Exception",
+            "versionDescription": "Added a try-catch block to usage of UserInfo.getSessionId() to handle a platform-thrown exception that occurs in some transactions (such as connected apps with JWT).",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
