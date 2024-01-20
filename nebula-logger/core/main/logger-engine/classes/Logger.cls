@@ -57,7 +57,13 @@ global with sharing class Logger {
     private static final String USER_SESSION_ID {
         get {
             if (USER_SESSION_ID == null) {
-                USER_SESSION_ID = System.UserInfo.getSessionId();
+                // TODO Spring '24 release - simplify this (and other lazy-loaded values)
+                // by switching to the fancy, new ?? null coalescing operator
+                try {
+                    USER_SESSION_ID = System.UserInfo.getSessionId();
+                } catch (Exception ex) {
+                    USER_SESSION_ID = '';
+                }
                 // If System.UserInfo.getSessionId() returns null, set to an empty string to
                 // avoid calling System.UserInfo.getSessionId() again
                 USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
