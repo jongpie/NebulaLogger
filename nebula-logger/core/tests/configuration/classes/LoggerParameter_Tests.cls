@@ -47,6 +47,17 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_default_log_entry_related_list_field_set() {
+        String mockValue = 'SomeValue';
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'DefaultLogEntryRelatedListFieldSet', Value__c = mockValue);
+        LoggerParameter.setMock(mockParameter);
+
+        String returnedValue = LoggerParameter.DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_enable_log_entry_event_stream() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(mockValue));

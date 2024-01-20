@@ -9,11 +9,16 @@
  */
 public without sharing class LogEntryFieldSetPicklist extends VisualEditor.DynamicPickList {
     /**
-     * @description Returns a default value of null - admins must select a field set within App Builder
-     * @return null (no default value)
+     * @description Returns the default `LogEntry__c` field set, based on the `LoggerParameter__mdt` record `DefaultLogEntryRelatedListFieldSet`
+     * @return And instance of `VisualEditor.DataRow` if a valid, matching field set exists, or `null`
      */
     public override VisualEditor.DataRow getDefaultValue() {
-        return null;
+        if (String.isBlank(LoggerParameter.DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET)) {
+            return null;
+        }
+
+        Schema.FieldSet configuredFieldSet = Schema.SObjectType.LogEntry__c.fieldSets.getMap().get(LoggerParameter.DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET);
+        return configuredFieldSet == null ? null : this.createDataRow(configuredFieldSet);
     }
 
     /**
@@ -26,12 +31,14 @@ public without sharing class LogEntryFieldSetPicklist extends VisualEditor.Dynam
 
         List<Schema.FieldSet> fieldSets = Schema.SObjectType.LogEntry__c.fieldSets.getMap().values();
         for (Schema.FieldSet fieldSet : fieldSets) {
-            String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
-
-            VisualEditor.DataRow picklistRow = new VisualEditor.DataRow(fieldSet.getLabel(), namespacePrefix + fieldSet.getName());
-            picklistRows.addRow(picklistRow);
+            picklistRows.addRow(this.createDataRow(fieldSet));
         }
 
         return picklistRows;
+    }
+
+    private VisualEditor.DataRow createDataRow(Schema.FieldSet fieldSet) {
+        String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
+        return new VisualEditor.DataRow(fieldSet.getLabel(), namespacePrefix + fieldSet.getName());
     }
 }
