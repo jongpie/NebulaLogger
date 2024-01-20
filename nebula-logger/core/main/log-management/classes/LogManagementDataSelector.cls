@@ -318,11 +318,11 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a list of `Topic` records with one of the specified topic names
+     * @description Returns a list of `Schema.Topic` records with one of the specified topic names
      * @param  topicNames The set of `String` topic names to query
-     * @return            The list of matching `Topic` records
+     * @return            The list of matching `Schema.Topic` records
      */
-    public virtual List<Topic> getTopicsByName(Set<String> topicNames) {
+    public virtual List<Schema.Topic> getTopicsByName(Set<String> topicNames) {
         return [SELECT Id, Name FROM Topic WHERE Name IN :topicNames];
     }
 

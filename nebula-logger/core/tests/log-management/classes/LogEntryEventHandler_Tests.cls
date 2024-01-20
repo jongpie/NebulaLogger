@@ -687,8 +687,8 @@ private class LogEntryEventHandler_Tests {
     //     validateLogEntryFields(logEntryEvent, logEntry);
 
     //     Set<String> tagsSet = new Set<String>(tags);
-    //     List<TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
-    //     for (TopicAssignment topicAssignment : topicAssignments) {
+    //     List<Schema.TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
+    //     for (Schema.TopicAssignment topicAssignment : topicAssignments) {
     //         System.Assert.isTrue(tagsSet.contains(topicAssignment.Topic.Name));
     //     }
     // }

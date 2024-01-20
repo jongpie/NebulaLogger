@@ -376,17 +376,17 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_topics_for_specified_names() {
-        List<Topic> topics = new List<Topic>();
-        Topic matchingTopic = new Topic(Name = 'some fake topic name');
+        List<Schema.Topic> topics = new List<Schema.Topic>();
+        Schema.Topic matchingTopic = new Schema.Topic(Name = 'some fake topic name');
         topics.add(matchingTopic);
-        Topic nonMatchingTopic = new Topic(Name = 'another fake topic name');
+        Schema.Topic nonMatchingTopic = new Schema.Topic(Name = 'another fake topic name');
         topics.add(nonMatchingTopic);
         insert topics;
         Set<String> targetTopicNames = new Set<String>{ matchingTopic.Name };
-        List<Topic> expectedResults = [SELECT Id, Name FROM Topic WHERE Name IN :targetTopicNames];
+        List<Schema.Topic> expectedResults = [SELECT Id, Name FROM Topic WHERE Name IN :targetTopicNames];
         System.Assert.areEqual(1, expectedResults.size());
 
-        List<Topic> returnedResults = LogManagementDataSelector.getInstance().getTopicsByName(targetTopicNames);
+        List<Schema.Topic> returnedResults = LogManagementDataSelector.getInstance().getTopicsByName(targetTopicNames);
 
         System.Assert.areEqual(expectedResults, returnedResults);
     }

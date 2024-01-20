@@ -393,8 +393,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        // Orgs can be configured to either use LoggerTag__c & LogEntryTag__c (default), or use Topic & TopicAssignment
-        Schema.SObjectType tagSObjectType = LoggerParameter.USE_TOPICS_FOR_TAGS ? Topic.SObjectType : LoggerTag__c.SObjectType;
+        // Orgs can be configured to either use LoggerTag__c & LogEntryTag__c (default), or use Schema.Topic & Schema.TopicAssignment
+        Schema.SObjectType tagSObjectType = LoggerParameter.USE_TOPICS_FOR_TAGS ? Schema.Topic.SObjectType : LoggerTag__c.SObjectType;
         Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
         this.tagNames.addAll(tagNameToId.keySet());
 
@@ -412,8 +412,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 if (LoggerParameter.USE_TOPICS_FOR_TAGS) {
                     // Add TopicAssignment records for both the LogEntry__c & the parent Log__c
                     tagAssignmentSObjectType = Schema.TopicAssignment.SObjectType;
-                    tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
-                    tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
+                    tagAssignments.add(new Schema.TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
+                    tagAssignments.add(new Schema.TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
                 } else {
                     // Add a LogEntryTag__c record for only the LogEntry__c - this approach does not directly link to the Log__c record
                     tagAssignmentSObjectType = Schema.LogEntryTag__c.SObjectType;
@@ -431,7 +431,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                     .upsertRecords(new List<SObject>(tagAssignments), Schema.LogEntryTag__c.UniqueId__c);
                 LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, upsertResults);
             }
-            when TopicAssignment topicAssignment {
+            when Schema.TopicAssignment topicAssignment {
                 Database.DmlOptions topicAssignmentDmlOptions = createDmlOptions();
                 topicAssignmentDmlOptions.OptAllOrNone = false;
                 List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase()
@@ -472,7 +472,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             when LoggerTag__c loggerTag {
                 tagRecords = LogManagementDataSelector.getInstance().getTagsByName(this.tagNames);
             }
-            when Topic topic {
+            when Schema.Topic topic {
                 tagRecords = LogManagementDataSelector.getInstance().getTopicsByName(this.tagNames);
             }
         }

@@ -393,7 +393,7 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Indicates if Logger's tagging will use `Topic` and `TopicAssignment` for storing tags (when `true`),
+     * @description Indicates if Logger's tagging will use `Schema.Topic` and `Schema.TopicAssignment` for storing tags (when `true`),
      *              or uses Nebula Logger's custom objects `LoggerTag__c` and `LogEntryTag__c` (when `false`)
      *              Controlled by the custom metadata record `LoggerParameter.UseTopicsForTags`, or `false` as the default
      */
