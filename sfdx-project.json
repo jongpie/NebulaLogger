@@ -162,6 +162,7 @@
         "Nebula Logger - Core@4.11.12-bugfix-for-lightning-component-entries-not-always-saving": "04t5Y000001Mjx5QAC",
         "Nebula Logger - Core@4.12.0-winter-'24-release": "04t5Y000001Mk1wQAC",
         "Nebula Logger - Core@4.12.1-improved-error-emails": "04t5Y000001Mk4bQAC",
+        "Nebula Logger - Core@4.12.2-automatically-select-default-field-set-in-relatedlogentries-lwc": "04t5Y000001Mk55QAC",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
@@ -179,5 +180,6 @@
         "Nebula Logger - Core Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
-    }
+    },
+    "target-dev-hub": "sf.nebula.logger.package.bot@jongpie.com"
 }
