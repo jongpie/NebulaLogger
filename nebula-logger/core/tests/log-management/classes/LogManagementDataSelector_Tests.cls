@@ -288,10 +288,10 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_profiles_for_specified_profile_ids() {
-        List<Profile> expectedResults = [SELECT Id, Name FROM Profile LIMIT 10];
-        List<Id> targetProfileIds = new List<Id>(new Map<Id, Profile>(expectedResults).keySet());
+        List<Schema.Profile> expectedResults = [SELECT Id, Name FROM Profile LIMIT 10];
+        List<Id> targetProfileIds = new List<Id>(new Map<Id, Schema.Profile>(expectedResults).keySet());
 
-        List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesById(targetProfileIds);
+        List<Schema.Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesById(targetProfileIds);
 
         expectedResults.sort();
         returnedResults.sort();
@@ -301,9 +301,9 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_profiles_for_specified_search_term() {
         String searchTerm = 'Admin';
-        List<Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
+        List<Schema.Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
 
-        List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm);
+        List<Schema.Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm);
 
         expectedResults.sort();
         returnedResults.sort();

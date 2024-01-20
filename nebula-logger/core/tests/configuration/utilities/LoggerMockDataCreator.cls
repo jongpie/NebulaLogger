@@ -299,7 +299,7 @@ public class LoggerMockDataCreator {
 
     /**
      * @description Creates a `Schema.User` record for testing purposes, using the specified profile ID
-     * @param  profileId The `Profile` ID to use for the created `Schema.User`
+     * @param  profileId The `Schema.Profile` ID to use for the created `Schema.User`
      * @return   The generated `Schema.User` record - it is not automatically inserted into the database.
      */
     public static Schema.User createUser(Id profileId) {

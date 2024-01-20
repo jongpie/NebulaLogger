@@ -323,16 +323,16 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_profile_search_results_list_when_matches_found() {
-        Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
+        Schema.Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
         String searchTerm = '%' + currentProfile.Name.left(4) + '%';
-        Map<Id, Profile> expectedResultsById = new Map<Id, Profile>([SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm]);
+        Map<Id, Schema.Profile> expectedResultsById = new Map<Id, Schema.Profile>([SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm]);
 
         List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Profile', searchTerm);
 
         System.Assert.isFalse(results.isEmpty());
         System.Assert.areEqual(expectedResultsById.size(), results.size());
         for (LoggerSettingsController.SetupOwnerSearchResult result : results) {
-            Profile matchingProfile = expectedResultsById.get(result.recordId);
+            Schema.Profile matchingProfile = expectedResultsById.get(result.recordId);
             System.Assert.isNotNull(matchingProfile);
             System.Assert.areEqual(matchingProfile.Name, result.label);
             System.Assert.areEqual('License: ' + matchingProfile.UserLicense.Name, result.secondaryLabel);

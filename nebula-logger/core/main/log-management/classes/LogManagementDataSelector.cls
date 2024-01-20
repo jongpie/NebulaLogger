@@ -259,20 +259,20 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<Profile>` of records with the specified profile IDs
-     * @param  profileIds The list of `ID` of the `Profile` records to query
-     * @return            The list of matching `Profile` records
+     * @description Returns a `List<Schema.Profile>` of records with the specified profile IDs
+     * @param  profileIds The list of `ID` of the `Schema.Profile` records to query
+     * @return            The list of matching `Schema.Profile` records
      */
-    public virtual List<Profile> getProfilesById(List<Id> profileIds) {
+    public virtual List<Schema.Profile> getProfilesById(List<Id> profileIds) {
         return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds];
     }
 
     /**
-     * @description Returns a `List<Profile>` of records where the profile's names partially matches the specified search term
-     * @param  searchTerm The `String` search term to use for searching `Profile` records
-     * @return            The list of matching `Profile` records
+     * @description Returns a `List<Schema.Profile>` of records where the profile's names partially matches the specified search term
+     * @param  searchTerm The `String` search term to use for searching `Schema.Profile` records
+     * @return            The list of matching `Schema.Profile` records
      */
-    public virtual List<Profile> getProfilesByNameSearch(String searchTerm) {
+    public virtual List<Schema.Profile> getProfilesByNameSearch(String searchTerm) {
         return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
     }
 
