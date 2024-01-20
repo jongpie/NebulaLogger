@@ -51,6 +51,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
         this.logs = (List<Log__c>) triggerNewMap.values();
 
+        this.updateUnlinkedChildLogs();
         this.shareLogsWithLoggingUsers();
     }
 
@@ -132,8 +133,14 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             parentLogTransactionIdToRecordId.put(parentLog.TransactionId__c, parentLog.Id);
         }
 
+        // List<Log__c> logsWithParentLog = new List<Log__c>();
+        // List<Log__c> logsWithParentTransactionId = new List<Log__c>();
+
         for (Log__c log : this.logs) {
             if (String.isNotBlank(log.ParentLogTransactionId__c)) {
+                // if (parentLogTransactionIdToRecordId.containsKey(log.ParentLogTransactionId__c) == false) {
+                //     parentLogTransactionIdToRecordId.get(log.ParentLogTransactionId__c);
+                // }
                 log.ParentLog__c = parentLogTransactionIdToRecordId.get(log.ParentLogTransactionId__c);
             }
         }
@@ -194,6 +201,22 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
                 log.Priority__c = secondPriority;
             }
         }
+    }
+
+    private void updateUnlinkedChildLogs() {
+        Map<String, Log__c> transactionIdToPossibleParentLog = new Map<String, Log__c>();
+        for (Log__c log : this.logs) {
+            if (log.TransactionId__c != log.ParentLogTransactionId__c) {
+                transactionIdToPossibleParentLog.put(log.TransactionId__c, log);
+            }
+        }
+        List<String> possibleParentLogTransactionIds = new List<String>(transactionIdToPossibleParentLog.keySet());
+
+        List<Log__c> unlinkedChildLogs = LogManagementDataSelector.getInstance().getLogsWithoutParentLogByParentTransactionId(possibleParentLogTransactionIds);
+        for (Log__c unlinkedChildLog : unlinkedChildLogs) {
+            unlinkedChildLog.ParentLog__c = transactionIdToPossibleParentLog.get(unlinkedChildLog.ParentLogTransactionId__c)?.Id;
+        }
+        LoggerDataStore.getDatabase().updateRecords(unlinkedChildLogs);
     }
 
     private void shareLogsWithLoggingUsers() {

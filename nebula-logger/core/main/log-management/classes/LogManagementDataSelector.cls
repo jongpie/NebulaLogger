@@ -224,6 +224,19 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
+     * @description Returns a `List<Log__c>` of records with the specified parent transaction IDs and a `null` value in `ParentLog__c`
+     * @param  transactionIds The list of `String` parent transaction IDs of the `Log__c` records to query
+     * @return                The list of matching `Log__c` records
+     */
+    public virtual List<Log__c> getLogsWithoutParentLogByParentTransactionId(List<String> parentTransactionIds) {
+        return [
+            SELECT Id, ParentLogTransactionId__c, ParentLog__c, ParentLog__r.TransactionId__c, TransactionId__c
+            FROM Log__c
+            WHERE ParentLogTransactionId__c IN :parentTransactionIds AND ParentLog__c = NULL
+        ];
+    }
+
+    /**
      * @description Returns a `List<Log__c>` of records with the specified transaction IDs
      * @param  transactionIds The list of `String` transaction IDs of the `Log__c` records to query
      * @return                The list of matching `Log__c` records
