@@ -264,45 +264,48 @@ jobs:
         runs-on: ubuntu-latest
         environment: 'Demo Org'
         steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v3
-              with:
-                  ref: ${{ github.event.pull_request.head.ref }}
+            # - name: 'Checkout source code'
+            #   uses: actions/checkout@v3
+            #   with:
+            #       ref: ${{ github.event.pull_request.head.ref }}
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v3
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+            # - name: 'Restore node_modules cache'
+            #   id: cache-npm
+            #   uses: actions/cache@v3
+            #   with:
+            #       path: node_modules
+            #       key: npm-${{ hashFiles('**/package-lock.json') }}
+            #       restore-keys: |
+            #           npm-${{ env.cache-name }}-
+            #           npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+            # - name: 'Install npm dependencies'
+            #   if: steps.cache-npm.outputs.cache-hit != 'true'
+            #   run: npm ci
 
-            - name: 'Authorize Dev Hub'
-              shell: bash
-              run: |
-                  npx sf version
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+            # - name: 'Authorize Dev Hub'
+            #   shell: bash
+            #   run: |
+            #       npx sf version
+            #       echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+            #       npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+            #   env:
+            #       DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+            #       DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+            #       DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+            #       DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            # TODO remove this after the plugin @salesforce/packaging has been upgraded
-            # to a new version that only looks at package directories
-            - name: 'Temporarily delete problematic metadata'
-              run: |
-                  rm -rf ./config/experience-cloud/
+            # # TODO remove this after the plugin @salesforce/packaging has been upgraded
+            # # to a new version that only looks at package directories
+            # - name: 'Temporarily delete problematic metadata'
+            #   run: |
+            #       rm -rf ./config/experience-cloud/
 
-            - name: 'Create Beta Managed Package Version'
-              run: npm run package:version:create:managed
+            # - name: 'Create Beta Managed Package Version'
+            #   run: npm run package:version:create:managed
+
+            - name: 'Placeholder because the sf cli and its plugins are trash'
+              run: echo hello
 
     create-unlocked-package-release-candidate:
         name: 'Create Core Package Release Candidate'
