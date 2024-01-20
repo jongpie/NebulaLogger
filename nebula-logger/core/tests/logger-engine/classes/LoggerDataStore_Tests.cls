@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // TODO switch to using standard object(s) available in all orgs (instead of Log__c) so this can be split off as a separate repo
-// Possible objects to use: User, Group (Queue) and QueueSObject (none support undelete though), and not sure if it's possible
+// Possible objects to use: Schema.User, Group (Queue) and QueueSObject (none support undelete though), and not sure if it's possible
 // to test platform events/EventBus using only standard objects
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
@@ -543,7 +543,7 @@ private class LoggerDataStore_Tests {
         LoggerDataStore.setMock(mockDatabaseInstance);
         System.Assert.areEqual(mockDatabaseInstance, LoggerDataStore.getDatabase());
 
-        LoggerDataStore.getDatabase().updateRecord(new User(Id = System.UserInfo.getUserId()));
+        LoggerDataStore.getDatabase().updateRecord(new Schema.User(Id = System.UserInfo.getUserId()));
 
         System.Assert.areEqual(1, mockDatabaseInstance.callCount);
     }
@@ -555,7 +555,7 @@ private class LoggerDataStore_Tests {
         LoggerDataStore.setMock(mockEventBusInstance);
         System.Assert.areEqual(mockEventBusInstance, LoggerDataStore.getEventBus());
 
-        LoggerDataStore.getEventBus().publishRecord(new User()); // Not an actual platform event, but for mocking/test purposes, User is fine
+        LoggerDataStore.getEventBus().publishRecord(new Schema.User()); // Not an actual platform event, but for mocking/test purposes, Schema.User is fine
 
         System.Assert.areEqual(1, mockEventBusInstance.callCount);
     }

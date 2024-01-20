@@ -6,11 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests_Security {
-    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
+    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard Schema.User', 'Usuario estándar')];
 
     @IsTest
     static void it_should_strip_inaccessible_fields_for_single_record_when_enabled() {
-        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         AccountBrand mockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
             .populateMockId()
             .populateRequiredFields()
@@ -50,7 +50,7 @@ private class LogEntryEventBuilder_Tests_Security {
 
     @IsTest
     static void it_should_strip_inaccessible_fields_for_record_list_when_enabled() {
-        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
         for (Integer i = 0; i < 5; i++) {
@@ -89,7 +89,7 @@ private class LogEntryEventBuilder_Tests_Security {
 
     @IsTest
     static void it_should_strip_inaccessible_fields_for_record_map_when_enabled() {
-        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         Map<Id, AccountBrand> mockIdToAccountBrand = new Map<Id, AccountBrand>();
         Map<String, AccountBrand> mockIdStringToStrippedAccountBrand = new Map<String, AccountBrand>();
         for (Integer i = 0; i < 5; i++) {

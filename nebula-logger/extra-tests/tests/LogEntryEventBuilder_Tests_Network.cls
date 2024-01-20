@@ -7,7 +7,7 @@
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests_Network {
     private static final String EXPERIENCE_CLOUD_NETWORK_NAME = 'Logger Test Site';
-    private static final String EXPERIENCE_CLOUD_USER_PROFILE_NAME = 'Logger Test Site User Profile';
+    private static final String EXPERIENCE_CLOUD_USER_PROFILE_NAME = 'Logger Test Site Schema.User Profile';
 
     @IsTest
     static void it_should_set_network_fields_for_experience_site_user() {
@@ -20,7 +20,7 @@ private class LogEntryEventBuilder_Tests_Network {
         SObject networkRecord = getExperienceCloudNetwork();
         System.Assert.isNotNull(networkRecord.Id);
         LogEntryEventBuilder.networkId = networkRecord.Id;
-        User experienceSiteUser = setupExperienceSiteUser();
+        Schema.User experienceSiteUser = setupExperienceSiteUser();
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
@@ -47,7 +47,7 @@ private class LogEntryEventBuilder_Tests_Network {
         SObject networkRecord = getExperienceCloudNetwork();
         System.Assert.isNotNull(networkRecord.Id);
         LogEntryEventBuilder.networkId = networkRecord.Id;
-        User experienceSiteUser = setupExperienceSiteUser();
+        Schema.User experienceSiteUser = setupExperienceSiteUser();
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
@@ -71,12 +71,12 @@ private class LogEntryEventBuilder_Tests_Network {
         return userSettings;
     }
 
-    static User setupExperienceSiteUser() {
+    static Schema.User setupExperienceSiteUser() {
         UserRole userRole = new UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
         insert userRole;
-        User currentUser = new User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
         update currentUser;
-        User experienceSiteUser;
+        Schema.User experienceSiteUser;
         System.runAs(currentUser) {
             Account account = new Account(Name = 'Test Account', OwnerId = currentUser.Id);
             insert account;

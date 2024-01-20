@@ -76,7 +76,11 @@ public without sharing virtual class LogManagementDataSelector {
             return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        List<ApexEmailNotification> apexEmailNotifications = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
+        List<ApexEmailNotification> apexEmailNotifications = [
+            SELECT Email, UserId
+            FROM ApexEmailNotification
+            WHERE Email != NULL OR User.IsActive = TRUE
+        ];
         LoggerCache.getOrganizationCache().put(cacheKey, apexEmailNotifications);
         return apexEmailNotifications;
     }
@@ -155,7 +159,7 @@ public without sharing virtual class LogManagementDataSelector {
                 Description,
                 DurableId,
                 Label,
-                LastModifiedBy, // This is a text field of the person's name - it's NOT a lookup to User :'(
+                LastModifiedBy, // This is a text field of the person's name - it's NOT a lookup to Schema.User :'(
                 LastModifiedDate,
                 ManageableState,
                 ProcessType,
@@ -323,33 +327,33 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<User>` of records with the specified user IDs
-     * @param  userIds The list of `ID` of the `User` records to query
-     * @return         The list of matching `User` records
+     * @description Returns a `List<Schema.User>` of records with the specified user IDs
+     * @param  userIds The list of `ID` of the `Schema.User` records to query
+     * @return         The list of matching `Schema.User` records
      */
-    public virtual List<User> getUsersById(List<Id> userIds) {
+    public virtual List<Schema.User> getUsersById(List<Id> userIds) {
         return [SELECT Id, Username FROM User WHERE Id IN :userIds];
     }
 
     /**
-     * @description Returns a `List<User>` of records where the User's names or username partially matches the specified search term
-     * @param  searchTerm The `String` search term to use for searching `User` records
-     * @return            The list of matching `User` records
+     * @description Returns a `List<Schema.User>` of records where the Schema.User's names or username partially matches the specified search term
+     * @param  searchTerm The `String` search term to use for searching `Schema.User` records
+     * @return            The list of matching `Schema.User` records
      */
-    public virtual List<User> getUsersByNameSearch(String searchTerm) {
+    public virtual List<Schema.User> getUsersByNameSearch(String searchTerm) {
         if (String.isBlank(searchTerm)) {
-            return new List<User>();
+            return new List<Schema.User>();
         }
 
         return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username LIMIT 20];
     }
 
     /**
-     * @description Returns a `List<User>` of records with the specified usernames (`Schema.User.Username`)
+     * @description Returns a `List<Schema.User>` of records with the specified usernames (`Schema.User.Username`)
      * @param  usernames The list of `String` user usernames to query
-     * @return           Tje list of matching `User` records
+     * @return           Tje list of matching `Schema.User` records
      */
-    public virtual List<User> getUsersByUsername(List<String> usernames) {
+    public virtual List<Schema.User> getUsersByUsername(List<String> usernames) {
         return [SELECT Id, Username FROM User WHERE Username IN :userNames];
     }
 

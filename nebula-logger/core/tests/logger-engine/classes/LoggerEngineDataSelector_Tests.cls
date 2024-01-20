@@ -150,14 +150,14 @@ private class LoggerEngineDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_user() {
-        User expectedUser = [
+        Schema.User expectedUser = [
             SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User
             WHERE Id = :System.UserInfo.getUserId()
         ];
         System.Assert.areEqual(1, System.Limits.getQueries());
 
-        User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+        Schema.User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
 
         System.Assert.areEqual(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedUser();
@@ -170,7 +170,7 @@ private class LoggerEngineDataSelector_Tests {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = String.valueOf(false)));
         System.Assert.isFalse(LoggerParameter.QUERY_USER_DATA);
 
-        User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+        Schema.User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
 
         System.Assert.areEqual(0, System.Limits.getQueries());
         System.Assert.isNull(returnedUser);

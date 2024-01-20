@@ -13,7 +13,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     private static final Integer DEFAULT_BATCH_SIZE = 2000;
     private static final Date LOG_RETENTION_END_DATE = System.today();
     @TestVisible
-    private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
+    private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'Schema.User does not have access to delete logs';
 
     @TestVisible
     private enum BatchableMethod {

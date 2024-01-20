@@ -187,16 +187,16 @@ public without sharing virtual class LoggerEngineDataSelector {
 
     /**
      * @description Returns a cached copy of the current user, including some profile fields that cannot be accessed via `UserInfo`
-     * @return   The cached `User` record for the current user
+     * @return   The cached `Schema.User` record for the current user
      */
-    public virtual User getCachedUser() {
+    public virtual Schema.User getCachedUser() {
         Id userId = System.UserInfo.getUserId();
-        String cacheKey = 'User' + userId;
+        String cacheKey = 'Schema.User' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey)) {
-            return (User) LoggerCache.getSessionCache().get(cacheKey);
+            return (Schema.User) LoggerCache.getSessionCache().get(cacheKey);
         }
 
-        User user;
+        Schema.User user;
         if (LoggerParameter.QUERY_USER_DATA) {
             user = getUsers(new List<Id>{ userId }).get(userId);
             LoggerCache.getSessionCache().put(cacheKey, user);
@@ -228,16 +228,16 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a list of matching `User` records based on the provided list of user IDs
-     * @param  userIds The list of `User` IDs to query
-     * @return         The instance of `Map<Id, User>` containing any matching `User` records
+     * @description Returns a list of matching `Schema.User` records based on the provided list of user IDs
+     * @param  userIds The list of `Schema.User` IDs to query
+     * @return         The instance of `Map<Id, Schema.User>` containing any matching `Schema.User` records
      */
-    public Map<Id, User> getUsers(List<Id> userIds) {
+    public Map<Id, Schema.User> getUsers(List<Id> userIds) {
         if (LoggerParameter.QUERY_USER_DATA == false) {
-            return new Map<Id, User>();
+            return new Map<Id, Schema.User>();
         }
 
-        return new Map<Id, User>(
+        return new Map<Id, Schema.User>(
             [
                 SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
                 FROM User

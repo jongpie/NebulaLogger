@@ -490,12 +490,12 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
-        User automatedProcessUser = [
+        Schema.User automatedProcessUser = [
             SELECT Id, TimeZoneSidKey
             FROM User
             WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
         ];
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = false;
         insert currentUserSettings;
@@ -517,12 +517,12 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
-        User automatedProcessUser = [
+        Schema.User automatedProcessUser = [
             SELECT Id, TimeZoneSidKey
             FROM User
             WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
         ];
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = true;
         insert currentUserSettings;
@@ -544,7 +544,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        User loggerScenarioOwner = LoggerMockDataCreator.createUser();
+        Schema.User loggerScenarioOwner = LoggerMockDataCreator.createUser();
         insert loggerScenarioOwner;
         LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
         insert loggerScenario;
@@ -643,7 +643,7 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
-        User expectedUser = LoggerEngineDataSelector.getInstance().getUsers(userIds).get(logEntryEvent.LoggedById__c);
+        Schema.User expectedUser = LoggerEngineDataSelector.getInstance().getUsers(userIds).get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
         System.Assert.areEqual(expectedUser.Username, log.LoggedByUsername__c);
         System.Assert.areEqual(expectedUser.Profile.Name, log.ProfileName__c);

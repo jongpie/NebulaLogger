@@ -135,7 +135,7 @@ public without sharing class LoggerSettingsController {
 
     /**
      * @description searchForSetupOwner description
-     * @param  setupOwnerType The object to search (`Profile` or `User`)
+     * @param  setupOwnerType The object to search (`Profile` or `Schema.User`)
      * @param  searchTerm     The search term to use when searching records
      * @return                The list of `SetupOwnerSearchResult`, based on any matching SObject records
      */
@@ -155,8 +155,8 @@ public without sharing class LoggerSettingsController {
                         searchResults.add(result);
                     }
                 }
-                when 'User' {
-                    for (User matchingUser : LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm)) {
+                when 'Schema.User' {
+                    for (Schema.User matchingUser : LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingUser.Id;
                         result.label = matchingUser.Username;
@@ -259,7 +259,7 @@ public without sharing class LoggerSettingsController {
 
     private static List<PicklistOption> getSetupOwnerTypeOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
-        List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'User' };
+        List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'Schema.User' };
         for (String optionName : optionNames) {
             PicklistOption picklistOption = new PicklistOption();
             picklistOption.label = optionName;
@@ -327,7 +327,7 @@ public without sharing class LoggerSettingsController {
         for (Profile profile : LogManagementDataSelector.getInstance().getProfilesById(setupOwnerIds)) {
             setupOwnerIdToName.put(profile.Id, profile.Name);
         }
-        for (User user : LogManagementDataSelector.getInstance().getUsersById(setupOwnerIds)) {
+        for (Schema.User user : LogManagementDataSelector.getInstance().getUsersById(setupOwnerIds)) {
             setupOwnerIdToName.put(user.Id, user.Username);
         }
         return setupOwnerIdToName;
@@ -401,7 +401,7 @@ public without sharing class LoggerSettingsController {
     }
 
     /**
-     * @description Inner class used for returning search results for `Profile` and `User` records
+     * @description Inner class used for returning search results for `Profile` and `Schema.User` records
      */
     public class SetupOwnerSearchResult {
         @AuraEnabled

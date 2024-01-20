@@ -67,7 +67,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         final String trueString = String.valueOf(true);
         List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
-            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
+            Schema.User loggingUser = new Schema.User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
 
             // Apply logger scenario rules
@@ -444,7 +444,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private Id determineLogOwnerId(LogEntryEvent__e logEntryEvent) {
         Id logOwnerId = logEntryEvent.LoggedById__c;
 
-        LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
+        LoggerSettings__c loggingUserSettings = Logger.getUserSettings(
+            new Schema.User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c)
+        );
         if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) || loggingUserSettings.IsAnonymousModeEnabled__c) {
             logOwnerId = System.UserInfo.getUserId();
         }
@@ -663,13 +665,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
 
-        Map<Id, User> userIdToUser = LoggerEngineDataSelector.getInstance().getUsers(userIds);
+        Map<Id, Schema.User> userIdToUser = LoggerEngineDataSelector.getInstance().getUsers(userIds);
         for (Log__c log : logs) {
             if (log.LoggedBy__c == null) {
                 continue;
             }
 
-            User matchingUser = userIdToUser.get(log.LoggedBy__c);
+            Schema.User matchingUser = userIdToUser.get(log.LoggedBy__c);
             log.LoggedByUsername__c = matchingUser.Username;
             log.ProfileName__c = matchingUser.Profile.Name;
             log.UserLicenseDefinitionKey__c = matchingUser.Profile.UserLicense.LicenseDefinitionKey;

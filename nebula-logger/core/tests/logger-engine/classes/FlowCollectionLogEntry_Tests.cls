@@ -18,7 +18,7 @@ private class FlowCollectionLogEntry_Tests {
     @IsTest
     static void it_should_save_entry_when_logging_level_met() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(
+        Schema.User currentUser = new Schema.User(
             Id = System.UserInfo.getUserId(),
             FirstName = System.UserInfo.getFirstName(),
             LastName = System.UserInfo.getLastName(),
@@ -51,7 +51,7 @@ private class FlowCollectionLogEntry_Tests {
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(publishedLogEntryEvent.RecordId__c);
         System.Assert.areEqual('List', publishedLogEntryEvent.RecordCollectionType__c);
-        System.Assert.areEqual('User', publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual('Schema.User', publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
         System.Assert.areEqual(flowCollectionEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -59,7 +59,7 @@ private class FlowCollectionLogEntry_Tests {
     @IsTest
     static void it_should_auto_save_entry_when_saveLog_is_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(
+        Schema.User currentUser = new Schema.User(
             Id = System.UserInfo.getUserId(),
             FirstName = System.UserInfo.getFirstName(),
             LastName = System.UserInfo.getLastName(),
@@ -90,7 +90,7 @@ private class FlowCollectionLogEntry_Tests {
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(publishedLogEntryEvent.RecordId__c);
         System.Assert.areEqual('List', publishedLogEntryEvent.RecordCollectionType__c);
-        System.Assert.areEqual('User', publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual('Schema.User', publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
     }
 
@@ -98,7 +98,7 @@ private class FlowCollectionLogEntry_Tests {
     static void it_should_auto_save_entry_with_save_method_when_saveMethodName_specified() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
-        User currentUser = new User(
+        Schema.User currentUser = new Schema.User(
             Id = System.UserInfo.getUserId(),
             FirstName = System.UserInfo.getFirstName(),
             LastName = System.UserInfo.getLastName(),
@@ -137,14 +137,14 @@ private class FlowCollectionLogEntry_Tests {
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(publishedLogEntryEvent.RecordId__c);
         System.Assert.areEqual('List', publishedLogEntryEvent.RecordCollectionType__c);
-        System.Assert.areEqual('User', publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual('Schema.User', publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
     }
 
     @IsTest
     static void it_should_not_save_entry_when_logging_level_not_met() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(
+        Schema.User currentUser = new Schema.User(
             Id = System.UserInfo.getUserId(),
             FirstName = System.UserInfo.getFirstName(),
             LastName = System.UserInfo.getLastName(),

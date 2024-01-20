@@ -242,7 +242,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private static LoggerSettings__c getLoggingUserSettings(Log__c log) {
-        User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
+        Schema.User loggingUser = new Schema.User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
         return Logger.getUserSettings(loggingUser);
     }
 
@@ -293,7 +293,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private static Map<String, Id> queryUsers(List<String> possibleUsernames) {
         Map<String, Id> usersByUsername = new Map<String, Id>();
-        for (User user : LogManagementDataSelector.getInstance().getUsersByUsername(possibleUsernames)) {
+        for (Schema.User user : LogManagementDataSelector.getInstance().getUsersByUsername(possibleUsernames)) {
             usersByUsername.put(user.Username, user.Id);
         }
         return usersByUsername;

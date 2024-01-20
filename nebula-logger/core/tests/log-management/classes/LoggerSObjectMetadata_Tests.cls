@@ -7,7 +7,7 @@
  * @description Test class for LoggerSObjectMetadata, used for dynamically converting SObject describe details
  *              into `@AuraEnabled` objects that can be used in LWCs
  *              To demonstrate that the class is standalone/would work with any SObject, these test methods
- *              all use the `User` SObject
+ *              all use the `Schema.User` SObject
  */
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexUnitTestClassShouldHaveAsserts, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)

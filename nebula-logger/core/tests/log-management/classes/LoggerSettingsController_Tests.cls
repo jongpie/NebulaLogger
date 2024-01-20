@@ -128,7 +128,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_setupOwnerType_picklist_options() {
-        Set<String> expectedSetupOwnerType = new Set<String>{ 'Organization', 'Profile', 'User' };
+        Set<String> expectedSetupOwnerType = new Set<String>{ 'Organization', 'Profile', 'Schema.User' };
         Integer expectedSetupOwnerTypeSize = 4; // Options are org, profile, and user, and '--NONE--' is automatically included
 
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().setupOwnerTypeOptions;
@@ -345,7 +345,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_empty_user_search_results_list_when_no_matches_found() {
         String nonsenseSearchTerm = 'asdfqwert;lkhpoiy';
 
-        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('User', nonsenseSearchTerm);
+        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Schema.User', nonsenseSearchTerm);
 
         System.Assert.areEqual(0, results.size());
     }
@@ -354,16 +354,16 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_user_search_results_list_when_matches_found() {
         // Using lastName (required field) instead of the optional field firstName
         String searchTerm = '%' + System.UserInfo.getLastName() + '%';
-        Map<Id, User> expectedResultsById = new Map<Id, User>(
+        Map<Id, Schema.User> expectedResultsById = new Map<Id, Schema.User>(
             [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm]
         );
 
-        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('User', searchTerm);
+        List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Schema.User', searchTerm);
 
         System.Assert.isFalse(results.isEmpty());
         System.Assert.areEqual(expectedResultsById.size(), results.size());
         for (LoggerSettingsController.SetupOwnerSearchResult result : results) {
-            User matchingUser = expectedResultsById.get(result.recordId);
+            Schema.User matchingUser = expectedResultsById.get(result.recordId);
             System.Assert.isNotNull(matchingUser);
             System.Assert.areEqual(matchingUser.Username, result.label);
             System.Assert.areEqual('Name: ' + matchingUser.Name, result.secondaryLabel);

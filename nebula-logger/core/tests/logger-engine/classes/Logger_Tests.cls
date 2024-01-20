@@ -27,8 +27,8 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_organization_api_version() {
-        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
-        String expectedApiVersion = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
+        String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
+        String expectedApiVersion = userJson.substringAfter('/data/').substringBefore('/sobjects/Schema.User');
 
         String returnedApiVersion = Logger.getOrganizationApiVersion();
 
@@ -953,8 +953,8 @@ private class Logger_Tests {
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
         // TODO Move this test to LogEntryEventBuilder_Tests
         String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
-        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Username = :automatedProcessUsername AND Profile.Name = NULL];
-        User currentUser = new User(Id = System.UserInfo.getUserId());
+        Schema.User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Username = :automatedProcessUsername AND Profile.Name = NULL];
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId());
         // Make sure that the test user has a different time zone from the automated process user
         if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
             switch on automatedProcessUser.TimeZoneSidKey {
@@ -1545,7 +1545,7 @@ private class Logger_Tests {
         System.Assert.areEqual(0, Logger.getBufferSize());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogMessage logMessage = getLogMessage();
-        User record = new User(Id = System.UserInfo.getUserId());
+        Schema.User record = new Schema.User(Id = System.UserInfo.getUserId());
         System.Exception apexException = new System.DmlException('oops, some DML broke');
 
         System.Exception thrownException;
@@ -1573,7 +1573,7 @@ private class Logger_Tests {
         System.Assert.areEqual(0, Logger.getBufferSize());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogMessage logMessage = getLogMessage();
-        List<User> records = new List<User>{ new User(Id = System.UserInfo.getUserId()) };
+        List<Schema.User> records = new List<Schema.User>{ new Schema.User(Id = System.UserInfo.getUserId()) };
         System.Exception apexException = new System.DmlException('oops, some DML broke');
 
         System.Exception thrownException;
@@ -1655,7 +1655,7 @@ private class Logger_Tests {
         System.Assert.areEqual(0, Logger.getBufferSize());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         String message = 'Something broke 😥';
-        User record = new User(Id = System.UserInfo.getUserId());
+        Schema.User record = new Schema.User(Id = System.UserInfo.getUserId());
         System.Exception apexException = new System.DmlException('oops, some DML broke');
 
         System.Exception thrownException;
@@ -1683,7 +1683,7 @@ private class Logger_Tests {
         System.Assert.areEqual(0, Logger.getBufferSize());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         String message = 'Something broke 😥';
-        List<User> records = new List<User>{ new User(Id = System.UserInfo.getUserId()) };
+        List<Schema.User> records = new List<Schema.User>{ new Schema.User(Id = System.UserInfo.getUserId()) };
         System.Exception apexException = new System.DmlException('oops, some DML broke');
 
         System.Exception thrownException;
@@ -2209,7 +2209,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), users, getException());
 
         System.Test.stopTest();
@@ -2232,7 +2232,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), users);
 
         System.Test.stopTest();
@@ -2773,7 +2773,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), users, getException());
 
         System.Test.stopTest();
@@ -2796,7 +2796,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), users);
 
         System.Test.stopTest();
@@ -3240,7 +3240,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), users, getException());
 
         System.Test.stopTest();
@@ -3263,7 +3263,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), users);
 
         System.Test.stopTest();
@@ -3708,7 +3708,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), users, getException());
 
         System.Test.stopTest();
@@ -3731,7 +3731,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), users);
 
         System.Test.stopTest();
@@ -4062,7 +4062,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), users);
 
         System.Test.stopTest();
@@ -4393,7 +4393,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), users);
 
         System.Test.stopTest();
@@ -4724,7 +4724,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), users);
 
         System.Test.stopTest();
@@ -5055,7 +5055,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), users);
 
         System.Test.stopTest();
@@ -5386,7 +5386,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), users);
 
         System.Test.stopTest();
@@ -5717,7 +5717,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), users);
 
         System.Test.stopTest();
@@ -6048,7 +6048,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), users);
 
         System.Test.stopTest();
@@ -6379,7 +6379,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), users);
 
         System.Test.stopTest();
@@ -6710,7 +6710,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), users);
 
         System.Test.stopTest();
@@ -7041,7 +7041,7 @@ private class Logger_Tests {
 
         System.Test.startTest();
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), users);
 
         System.Test.stopTest();
@@ -7979,7 +7979,7 @@ private class Logger_Tests {
     }
 
     static SObject getRecord() {
-        return new User(
+        return new Schema.User(
             Id = System.UserInfo.getUserId(),
             ProfileId = System.UserInfo.getProfileId(),
             Username = System.UserInfo.getUsername(),

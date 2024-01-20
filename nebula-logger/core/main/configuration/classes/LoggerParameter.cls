@@ -290,8 +290,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `User` data.
-     *              When set to `false`, any `User` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.User` data.
+     *              When set to `false`, any `Schema.User` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryUserData`, or `true` as the default
      */
     public static final Boolean QUERY_USER_DATA {
@@ -305,8 +305,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Indicates if Nebula Logger queries `User` data is queried synchronously & populated on `LogEntryEvent__e` records.
-     *              When set to `false`, any `User` fields on `LogEntryEvent__e` that rely on querying will not be populated - the data
+     * @description Indicates if Nebula Logger queries `Schema.User` data is queried synchronously & populated on `LogEntryEvent__e` records.
+     *              When set to `false`, any `Schema.User` fields on `LogEntryEvent__e` that rely on querying will not be populated - the data
      *              will instead be queried asynchronously and populated on any resulting `Log__c` records.
      *              Controlled by the custom metadata record `LoggerParameter.QueryUserDataSynchronously`, or `true` as the default
      */

@@ -45,9 +45,9 @@ global with sharing class Logger {
                 // Serializing any SObject w/ an ID will include the API version
                 // So, use System.UserInfo.getUserId() to create the current user's record without querying
                 // Then parse the JSON to get the API version
-                // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-                String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
-                ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
+                // Expected JSON: {"attributes":{"type":"Schema.User","url":"/services/data/v53.0/sobjects/Schema.User/005J000000AugnYIAR"}
+                String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
+                ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/Schema.User');
             }
             return ORGANIZATION_API_VERSION;
         }
@@ -318,7 +318,7 @@ global with sharing class Logger {
     public static LoggerSettings__c getUserSettings() {
         // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
         if (userSettings == null) {
-            User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+            Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
             userSettings = getUserSettings(currentUser);
         }
         return userSettings;
@@ -330,7 +330,7 @@ global with sharing class Logger {
      * @param       loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
      * @return      LoggerSettings__c - The specified user's instance of the custom settings
      */
-    public static LoggerSettings__c getUserSettings(User loggingUser) {
+    public static LoggerSettings__c getUserSettings(Schema.User loggingUser) {
         // Typically, using LoggerSettings__c.getInstance() would be easier
         // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
         // So, instead use LoggerSettings__c.getValues(Id userOrProfileId) to load exactly what's been configured (including nulls)
@@ -338,7 +338,7 @@ global with sharing class Logger {
         // TODO cache the generated instances of LoggerSettings__c in LoggerCache.getTransactionCache().put()
         // (key would be 'Settings' + user ID)
         LoggerSettings__c loggingUserSettings;
-        // First, check for User-level settings
+        // First, check for Schema.User-level settings
         if (loggingUser.Id != null && LoggerSettings__c.getValues(loggingUser.Id) != null) {
             LoggerSettings__c userSettings = LoggerSettings__c.getValues(loggingUser.Id);
             if (hasValidStartAndEndTimes(userSettings)) {

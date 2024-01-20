@@ -22,8 +22,10 @@ private class LogManagementDataSelector_Tests {
     static void it_dynamically_queries_records_for_specified_sobject_type_and_fields_and_ids() {
         Schema.SObjectType targetSObjectType = Schema.User.SObjectType;
         Set<String> targetFieldNames = new Set<String>{ Schema.User.Id.getDescribe().getName(), Schema.User.Name.getDescribe().getName() };
-        List<Id> targetIds = new List<Id>(new Map<Id, User>([SELECT Id FROM User LIMIT 3]).keySet());
-        List<User> expectedResults = Database.query('SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds');
+        List<Id> targetIds = new List<Id>(new Map<Id, Schema.User>([SELECT Id FROM User LIMIT 3]).keySet());
+        List<Schema.User> expectedResults = Database.query(
+            'SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds'
+        );
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getById(targetSObjectType, targetFieldNames, targetIds);
 
@@ -163,7 +165,7 @@ private class LogManagementDataSelector_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c deleteableRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert deleteableRecord;
-        User undeleteableRecord = new User(Id = System.UserInfo.getUserId());
+        Schema.User undeleteableRecord = new Schema.User(Id = System.UserInfo.getUserId());
         List<Id> recordIds = new List<Id>{ deleteableRecord.Id, undeleteableRecord.Id };
 
         List<UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
@@ -391,10 +393,10 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_users_for_user_ids() {
-        List<User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
-        List<Id> targetUserIds = new List<Id>(new Map<Id, User>(expectedResults).keySet());
+        List<Schema.User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
+        List<Id> targetUserIds = new List<Id>(new Map<Id, Schema.User>(expectedResults).keySet());
 
-        List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersById(targetUserIds);
+        List<Schema.User> returnedResults = LogManagementDataSelector.getInstance().getUsersById(targetUserIds);
 
         expectedResults.sort();
         returnedResults.sort();
@@ -405,9 +407,9 @@ private class LogManagementDataSelector_Tests {
     static void it_returns_empty_list_without_querying_when_specified_search_term_is_blank() {
         String blankSearchTerm = '    \t \n \r    ';
         System.Assert.isTrue(String.isBlank(blankSearchTerm));
-        List<User> expectedResults = new List<User>();
+        List<Schema.User> expectedResults = new List<Schema.User>();
 
-        List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(blankSearchTerm);
+        List<Schema.User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(blankSearchTerm);
 
         System.Assert.areEqual(expectedResults, returnedResults);
         System.Assert.areEqual(0, System.Limits.getQueries());
@@ -416,9 +418,13 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_user_for_specified_search_term() {
         String searchTerm = System.UserInfo.getLastName();
-        List<User> expectedResults = [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm];
+        List<Schema.User> expectedResults = [
+            SELECT Id, Name, Username, SmallPhotoUrl
+            FROM User
+            WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
+        ];
 
-        List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm);
+        List<Schema.User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm);
 
         expectedResults.sort();
         returnedResults.sort();
@@ -428,13 +434,13 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_users_for_user_usernames() {
-        List<User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
+        List<Schema.User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
         List<String> targetUserUsernames = new List<String>();
-        for (User user : expectedResults) {
+        for (Schema.User user : expectedResults) {
             targetUserUsernames.add(user.Username);
         }
 
-        List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByUsername(targetUserUsernames);
+        List<Schema.User> returnedResults = LogManagementDataSelector.getInstance().getUsersByUsername(targetUserUsernames);
 
         expectedResults.sort();
         returnedResults.sort();

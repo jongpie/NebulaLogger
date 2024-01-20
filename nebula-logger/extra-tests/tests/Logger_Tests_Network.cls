@@ -24,15 +24,19 @@ private class Logger_Tests_Network {
         }
 
         Profile loggerSiteProfile = matchingProfiles.get(0);
-        System.Assert.areEqual('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
+        System.Assert.areEqual('Guest Schema.User License', loggerSiteProfile.UserLicense.Name, 'Schema.User license did not match Guest Schema.User License.');
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
+        List<Schema.User> guestUsers = [
+            SELECT Id
+            FROM User
+            WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
+        ];
         if (guestUsers.isEmpty()) {
             return;
         }
 
-        User guestUser = guestUsers.get(0);
+        Schema.User guestUser = guestUsers.get(0);
         LoggerTestConfigurator.assignLogCreatorPermissionSet(guestUser.Id);
     }
 
@@ -49,12 +53,16 @@ private class Logger_Tests_Network {
         System.Test.startTest();
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
+        List<Schema.User> guestUsers = [
+            SELECT Id
+            FROM User
+            WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
+        ];
         if (guestUsers.isEmpty()) {
             return;
         }
 
-        User guestUser = guestUsers.get(0);
+        Schema.User guestUser = guestUsers.get(0);
         try {
             log.OwnerId = guestUser.Id;
             update log;
@@ -74,7 +82,7 @@ private class Logger_Tests_Network {
         }
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [
+        List<Schema.User> guestUsers = [
             SELECT Id, Profile.UserType
             FROM User
             WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
@@ -83,7 +91,7 @@ private class Logger_Tests_Network {
             return;
         }
 
-        User guestUser = guestUsers.get(0);
+        Schema.User guestUser = guestUsers.get(0);
         String message = 'testing logging as a guest user';
 
         System.runAs(guestUser) {
