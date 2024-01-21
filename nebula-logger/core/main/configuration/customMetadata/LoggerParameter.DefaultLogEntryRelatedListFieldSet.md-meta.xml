@@ -12,7 +12,7 @@
             xsi:type="xsd:string"
         >The name of the LogEntry__c field set to use as the default field set when configuring the LWC &lt;c-related-log-entries&gt; within App Builder.
 
-By default, the included field set partition &apos;Related_List_Defaults&apos; is used.</value>
+By default, the included field set &apos;Related_List_Defaults&apos; is used.</value>
     </values>
     <values>
         <field>Value__c</field>

@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.2.NEXT",
-            "versionName": "Automatically Select Default Field Set in relatedLogEntries LWC",
-            "versionDescription": "Updated the relatedLogEntries LWC to automatically select the default field set when the component is added to a FlexiPage. The default field set name is configurable via LoggerParameter__mdt record DefaultLogEntryRelatedListFieldSet.",
+            "versionNumber": "4.12.3.NEXT",
+            "versionName": "Bugfix for UserInfo.getSessionId() Exception",
+            "versionDescription": "Added a try-catch block to usage of UserInfo.getSessionId() to handle a platform-thrown exception that occurs in some transactions (such as connected apps with JWT).",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -163,6 +163,7 @@
         "Nebula Logger - Core@4.12.0-winter-'24-release": "04t5Y000001Mk1wQAC",
         "Nebula Logger - Core@4.12.1-improved-error-emails": "04t5Y000001Mk4bQAC",
         "Nebula Logger - Core@4.12.2-automatically-select-default-field-set-in-relatedlogentries-lwc": "04t5Y000001Mk55QAC",
+        "Nebula Logger - Core@4.12.3-bugfix-for-userinfo.getsessionid()-exception": "04t5Y000001Mk5AQAS",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
@@ -180,5 +181,6 @@
         "Nebula Logger - Core Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
-    }
+    },
+    "target-dev-hub": "sf.nebula.logger.package.bot@jongpie.com"
 }

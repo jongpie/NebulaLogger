@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.12.2';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.12.3';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -23,6 +23,7 @@ global with sharing class Logger {
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
+    private static final Quiddity TRANSACTION_QUIDDITY = loadTransactionQuiddity();
 
     private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
@@ -53,20 +54,16 @@ global with sharing class Logger {
         set;
     }
 
-    private static final Quiddity TRANSACTION_QUIDDITY {
-        get {
-            if (TRANSACTION_QUIDDITY == null) {
-                TRANSACTION_QUIDDITY = getTransactionQuiddity();
-            }
-            return TRANSACTION_QUIDDITY;
-        }
-        set;
-    }
-
     private static final String USER_SESSION_ID {
         get {
             if (USER_SESSION_ID == null) {
-                USER_SESSION_ID = System.UserInfo.getSessionId();
+                // TODO Spring '24 release - simplify this (and other lazy-loaded values)
+                // by switching to the fancy, new ?? null coalescing operator
+                try {
+                    USER_SESSION_ID = System.UserInfo.getSessionId();
+                } catch (Exception ex) {
+                    USER_SESSION_ID = '';
+                }
                 // If System.UserInfo.getSessionId() returns null, set to an empty string to
                 // avoid calling System.UserInfo.getSessionId() again
                 USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
@@ -3385,7 +3382,7 @@ global with sharing class Logger {
         return isStartTimeValid && isEndTimeValid;
     }
 
-    private static Quiddity getTransactionQuiddity() {
+    private static Quiddity loadTransactionQuiddity() {
         // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
         // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
         // skip calling System.Request.getCurrent() if there is no user session.
