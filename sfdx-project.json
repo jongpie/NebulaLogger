@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.4.NEXT",
-            "versionName": "Bugfix Child Log__c Records Not Properly Linked to Parent Log__c Records",
-            "versionDescription": "Fixed some scenarios where a Log__c record would have a value in ParentLogTransactionId__c but a null value in ParentLog__c",
+            "versionNumber": "4.12.5.NEXT",
+            "versionName": "Bugfix for Name-Shadowing Issues with Schema Namespace",
+            "versionDescription": "Switched to using fully-qualified Apex class references to several classes in the Schema namespace, like Schema.User, to avoid collision issues in orgs that use name-shadowing classes",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
