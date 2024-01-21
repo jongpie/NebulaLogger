@@ -52,7 +52,7 @@ private class LoggerSObjectProxy_Tests {
 
     @IsTest
     static void it_converts_login_history_record_to_proxy() {
-        List<LoginHistory> loginHistoryRecords = [
+        List<Schema.LoginHistory> loginHistoryRecords = [
             SELECT Application, Browser, Platform, UserId
             FROM LoginHistory
             LIMIT 1
@@ -62,7 +62,7 @@ private class LoggerSObjectProxy_Tests {
             // No need to fail the test if there isn't a LoginHistory record available via querying
             return;
         }
-        LoginHistory loginHistoryRecord = loginHistoryRecords.get(0);
+        Schema.LoginHistory loginHistoryRecord = loginHistoryRecords.get(0);
 
         LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory(loginHistoryRecord);
 

@@ -574,7 +574,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         // The createLogEntryEvent() method sets all fields on LogEntryEvent__e, so clear the relevant fields to ensure
-        // that the values are only set based on the queried Schema.LoggerSObjectProxy.AuthSessionAuthSession record
+        // that the values are only set based on the queried Schema.AuthSession record
         logEntryEvent.LoginApplication__c = null;
         logEntryEvent.LoginBrowser__c = null;
         logEntryEvent.LoginHistoryId__c = null;
