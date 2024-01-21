@@ -287,13 +287,40 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_parent_log_when_it_exists() {
+    static void it_should_set_parent_log_when_it_exists_in_the_database() {
         String parentLogTransactionId = 'ABC-1234';
         Log__c parentLog = new Log__c(TransactionId__c = parentLogTransactionId);
         insert parentLog;
         Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
 
         insert log;
+
+        log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, JSON.serializePretty(log));
+        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, JSON.serializePretty(log));
+    }
+
+    @IsTest
+    static void it_should_set_parent_log_when_it_is_created_after_child_log() {
+        String parentLogTransactionId = 'ABC-1234';
+        Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
+        insert log;
+        Log__c parentLog = new Log__c(TransactionId__c = parentLogTransactionId);
+
+        insert parentLog;
+
+        log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, JSON.serializePretty(log));
+        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, JSON.serializePretty(log));
+    }
+
+    @IsTest
+    static void it_should_set_parent_log_when_it_exists_in_the_same_trigger_context() {
+        String parentLogTransactionId = 'ABC-1234';
+        Log__c parentLog = new Log__c(TransactionId__c = parentLogTransactionId);
+        Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
+
+        insert new List<Log__c>{ log, parentLog };
 
         log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, JSON.serializePretty(log));

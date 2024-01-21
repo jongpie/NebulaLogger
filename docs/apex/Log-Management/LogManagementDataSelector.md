@@ -317,6 +317,26 @@ List&lt;Log\_\_c&gt;
 
 The list of matching `Log__c` records
 
+#### `getLogsWithoutParentLogByParentTransactionId(List<String> parentTransactionIds)` → `List<Log__c>`
+
+Returns a `List&lt;Log__c&gt;` of records with the specified parent transaction IDs and a `null` value in `ParentLog__c`
+
+##### Parameters
+
+| Param                  | Description                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| `parentTransactionIds` | The list of `String` parent transaction IDs of the `Log__c` records to query |
+
+##### Return
+
+**Type**
+
+List&lt;Log\_\_c&gt;
+
+**Description**
+
+The list of matching `Log__c` records
+
 #### `getProfilesById(List<Id> profileIds)` → `List<Profile>`
 
 Returns a `List&lt;Profile&gt;` of records with the specified profile IDs

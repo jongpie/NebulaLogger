@@ -229,6 +229,44 @@ private class LogManagementDataSelector_Tests {
     }
 
     @IsTest
+    static void it_returns_logs_for_specified_parent_log_transaction_ids_and_no_parent_log() {
+        LoggerSObjectHandler.shouldExecute(false);
+        Log__c parentLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        parentLog.TransactionId__c = 'some unique value for this log';
+        insert parentLog;
+        List<Log__c> logsToCreate = new List<Log__c>();
+        List<Log__c> expectedLogs = new List<Log__c>();
+        List<String> parentLogTransactionIds = new List<String>();
+        for (Integer i = 0; i < 5; i++) {
+            Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+            log.TransactionId__c = 'some_fake_transaction_id_' + i;
+            // Make 1 log with an actual an actual parent log
+            if (i == 0) {
+                log.ParentLog__c = parentLog.Id;
+                log.ParentLogTransactionId__c = parentLog.TransactionId__c;
+            }
+            // Make a few logs with a parent transaction ID but no parent log
+            if (i == 1 || i == 2 || i == 3) {
+                log.ParentLog__c = null;
+                log.ParentLogTransactionId__c = 'some other value';
+                expectedLogs.add(log);
+            }
+            if (String.isNotBlank(log.ParentLogTransactionId__c)) {
+                parentLogTransactionIds.add(log.ParentLogTransactionId__c);
+            }
+            logsToCreate.add(log);
+        }
+        System.Assert.areEqual(parentLogTransactionIds.size(), expectedLogs.size() + 1, 'Test has started under the wrong conditions');
+        insert logsToCreate;
+
+        List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsWithoutParentLogByParentTransactionId(parentLogTransactionIds);
+
+        System.Assert.isFalse(returnedResults.isEmpty());
+        System.Assert.areEqual(expectedLogs.size(), returnedResults.size());
+        System.Assert.areEqual(new Map<Id, Log__c>(expectedLogs).keySet(), new Map<Id, Log__c>(returnedResults).keySet());
+    }
+
+    @IsTest
     static void it_returns_logs_for_specified_log_transaction_ids() {
         LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = new List<Log__c>();
