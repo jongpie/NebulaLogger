@@ -167,8 +167,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `AuthSession` data.
-     *              When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.AuthSession` data.
+     *              When set to `false`, any `Schema.AuthSession` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionData`, or `true` as the default
      */
     public static final Boolean QUERY_AUTH_SESSION_DATA {
@@ -182,8 +182,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `AuthSession` data synchronously & populated on `LogEntryEvent__e` records.
-     *              When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
+     * @description Controls if Nebula Logger queries `Schema.AuthSession` data synchronously & populated on `LogEntryEvent__e` records.
+     *              When set to `false`, any `Schema.AuthSession` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
      *              asynchronously and populated on any resulting `Log__c` records.
      *              Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionDataSynchronously`, or `true` as the default
      */

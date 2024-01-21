@@ -28,10 +28,10 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a `Map<Id, AuthSession>` for the specified user IDs & their matching active sessions,
+     * @description Returns a `Map<Id, LoggerSObjectProxy.AuthSession>` for the specified user IDs & their matching active sessions,
      *              or `null` if there is not a current session
      * @param  userIds userIds description
-     * @return The instance of `Map<Id, AuthSession>` containing any matching `AuthSession` records
+     * @return The instance of `Map<Id, LoggerSObjectProxy.AuthSession>` containing any matching `Schema.AuthSession` records
      */
     public virtual Map<Id, LoggerSObjectProxy.AuthSession> getAuthSessionProxies(List<Id> userIds) {
         Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = new Map<Id, LoggerSObjectProxy.AuthSession>();
@@ -40,7 +40,7 @@ public without sharing virtual class LoggerEngineDataSelector {
             return userIdToAuthSessionProxy;
         }
 
-        for (AuthSession authSession : [
+        for (Schema.AuthSession authSession : [
             SELECT
                 Id,
                 LoginType,
@@ -64,9 +64,9 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of `AuthSession` for the current user's current session,
+     * @description Returns a cached copy of `LoggerSObjectProxy.AuthSession` for the current user's current session,
      *              or `null` if there is not a current session
-     * @return   The cached `AuthSession` record
+     * @return   The cached `LoggerSObjectProxy.AuthSession` record
      */
     public virtual LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
         Id userId = System.UserInfo.getUserId();

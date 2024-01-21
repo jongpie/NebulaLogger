@@ -18,7 +18,7 @@ private class LoggerEngineDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_auth_session_proxy() {
-        List<AuthSession> sessions = [
+        List<Schema.AuthSession> sessions = [
             SELECT
                 Id,
                 LoginType,
