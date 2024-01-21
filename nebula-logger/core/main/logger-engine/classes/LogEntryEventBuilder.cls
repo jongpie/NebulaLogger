@@ -13,7 +13,7 @@
 )
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
-    private static final User CURRENT_USER = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+    private static final Schema.User CURRENT_USER = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     private static final String HTTP_HEADER_FORMAT = '{0}: {1}';
     private static final String NEW_LINE_DELIMITER = '\n';
 
@@ -870,7 +870,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         if (cachedOrganization == null) {
             return;
         }
@@ -888,7 +888,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+        Schema.User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
         if (cachedUser == null) {
             return;
         }
@@ -975,7 +975,7 @@ global with sharing class LogEntryEventBuilder {
             return '';
         }
 
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String cachedOrganizationEnvironmentType;
         if (cachedOrganization == null) {
             cachedOrganizationEnvironmentType = '';

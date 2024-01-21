@@ -18,7 +18,7 @@ public class LoggerMockDataCreator {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_REQUIRED_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
 
-    private static Organization cachedOrganization;
+    private static Schema.Organization cachedOrganization;
     private static Integer userMockUsernameCount = 0;
 
     /**
@@ -290,20 +290,20 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Creates a `User` record for testing purposes, using the current user's profile
-     * @return   The generated `User` record - it is not automatically inserted into the database.
+     * @description Creates a `Schema.User` record for testing purposes, using the current user's profile
+     * @return   The generated `Schema.User` record - it is not automatically inserted into the database.
      */
-    public static User createUser() {
+    public static Schema.User createUser() {
         return createUser(System.UserInfo.getProfileId());
     }
 
     /**
-     * @description Creates a `User` record for testing purposes, using the specified profile ID
-     * @param  profileId The `Profile` ID to use for the created `User`
-     * @return   The generated `User` record - it is not automatically inserted into the database.
+     * @description Creates a `Schema.User` record for testing purposes, using the specified profile ID
+     * @param  profileId The `Schema.Profile` ID to use for the created `Schema.User`
+     * @return   The generated `Schema.User` record - it is not automatically inserted into the database.
      */
-    public static User createUser(Id profileId) {
-        return new User(
+    public static Schema.User createUser(Id profileId) {
+        return new Schema.User(
             Alias = 'user_xyz',
             Email = 'user_xyz@test.com.net.org',
             EmailEncodingKey = 'ISO-8859-1',
@@ -317,11 +317,11 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Queries for the `Organization` record for the current environment.
-     * @return   The matching `Organization` record
+     * @description Queries for the `Schema.Organization` record for the current environment.
+     * @return   The matching `Schema.Organization` record
      */
-    public static Organization getOrganization() {
-        // TODO Switch to creating mock instance of Organization with sensible defaults that tests can then update as needed for different scenarios
+    public static Schema.Organization getOrganization() {
+        // TODO Switch to creating mock instance of Schema.Organization with sensible defaults that tests can then update as needed for different scenarios
         if (cachedOrganization == null) {
             cachedOrganization = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         }
@@ -333,7 +333,7 @@ public class LoggerMockDataCreator {
      * @return   The environment type
      */
     public static String getOrganizationEnvironmentType() {
-        Organization organization = getOrganization();
+        Schema.Organization organization = getOrganization();
 
         String orgEnvironmentType;
         if (organization.IsSandbox && organization.TrialExpirationDate != null) {
@@ -348,18 +348,18 @@ public class LoggerMockDataCreator {
 
     /**
      * @description Returns the current user
-     * @return   The matching `User` record
+     * @return   The matching `Schema.User` record
      */
-    public static User getUser() {
+    public static Schema.User getUser() {
         return getUser(System.UserInfo.getUserId());
     }
 
     /**
      * @description Returns the specified user
-     * @param  userId The ID of the `User` record to query
-     * @return   The matching `User` record
+     * @param  userId The ID of the `Schema.User` record to query
+     * @return   The matching `Schema.User` record
      */
-    public static User getUser(Id userId) {
+    public static Schema.User getUser(Id userId) {
         return [
             SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User
@@ -368,17 +368,17 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Creates and inserts a `Group` record for testing queues, using the specified SObject Type
-     * @param  queueDeveloperName The developer name to use for the new queue (stored in `Group.DeveloperName`)
+     * @description Creates and inserts a `Schema.Group` record for testing queues, using the specified SObject Type
+     * @param  queueDeveloperName The developer name to use for the new queue (stored in `Schema.Group.DeveloperName`)
      * @param  sobjectType        The `SObjectType` that the queue should be able to own (stored in `QueueSObject.SObjectType`)
-     * @return                    The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
+     * @return                    The inserted `Schema.Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
      */
-    public static Group insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType) {
-        Group queue = new Group(DeveloperName = queueDeveloperName, Name = queueDeveloperName, Type = 'Queue');
+    public static Schema.Group insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType) {
+        Schema.Group queue = new Schema.Group(DeveloperName = queueDeveloperName, Name = queueDeveloperName, Type = 'Queue');
         insert queue;
 
         // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
-        System.runAs(new User(Id = System.UserInfo.getUserId())) {
+        System.runAs(new Schema.User(Id = System.UserInfo.getUserId())) {
             QueueSObject queueSObject = new QueueSObject(QueueId = queue.Id, SObjectType = sobjectType.getDescribe().getName());
             insert queueSObject;
         }

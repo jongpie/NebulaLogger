@@ -152,8 +152,8 @@ private class NebulaLogger_E2E_Tests {
         // Serializing any SObject w/ an ID will include the API version
         // So, use System.UserInfo.getUserId() to create the current user's record without querying
         // Then parse the JSON to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
+        // Expected JSON: {"attributes":{"type":"Schema.User","url":"/services/data/v53.0/sobjects/Schema.User/005J000000AugnYIAR"}
+        String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 

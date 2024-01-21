@@ -27,10 +27,10 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.setDatabaseResult(new List<Database.UpsertResult>()).getLogEntryEvent());
         System.Assert.isNull(builder.setDatabaseResult(new List<Database.UndeleteResult>()).getLogEntryEvent());
         System.Assert.isNull(builder.setRecordId(System.UserInfo.getUserId()).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecordId(new User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecordId(new Schema.User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
         System.Assert.isNull(builder.setRecord(System.UserInfo.getUserId()).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecord(new User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecord(new List<User>{ new User(Id = System.UserInfo.getUserId()) }).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecord(new Schema.User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecord(new List<Schema.User>{ new Schema.User(Id = System.UserInfo.getUserId()) }).getLogEntryEvent());
         System.Assert.isNull(builder.addTags(new List<String>{ 'tag-1', 'tag-2' }).getLogEntryEvent());
         System.Assert.isNull(builder.parseStackTrace(new System.DmlException().getStackTraceString()).getLogEntryEvent());
     }
@@ -152,7 +152,7 @@ private class LogEntryEventBuilder_Tests {
             .getLogEntryEvent();
 
         System.Assert.areNotEqual(0, mockSelector.getCachedOrganizationQueryCount());
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         System.Assert.areEqual(cachedOrganization.Id, logEntryEvent.OrganizationId__c);
         System.Assert.areEqual(cachedOrganization.InstanceName, logEntryEvent.OrganizationInstanceName__c);
         System.Assert.areEqual(cachedOrganization.Name, logEntryEvent.OrganizationName__c);
@@ -194,7 +194,7 @@ private class LogEntryEventBuilder_Tests {
             .getLogEntryEvent();
 
         System.Assert.areNotEqual(0, mockSelector.getCachedUserQueryCount());
-        User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+        Schema.User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
         System.Assert.areEqual(cachedUser.Username, logEntryEvent.LoggedByUsername__c);
         System.Assert.areEqual(cachedUser.Profile.Name, logEntryEvent.ProfileName__c);
         System.Assert.areEqual(cachedUser.Profile.UserLicense.LicenseDefinitionKey, logEntryEvent.UserLicenseDefinitionKey__c);
@@ -287,7 +287,7 @@ private class LogEntryEventBuilder_Tests {
         rule.IsEnabled__c = false;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
-        Account account = new Account(Name = message);
+        Schema.Account account = new Schema.Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
@@ -307,7 +307,7 @@ private class LogEntryEventBuilder_Tests {
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
-        Account account = new Account(Name = message);
+        Schema.Account account = new Schema.Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
@@ -346,9 +346,9 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
-        Account account = new Account(Name = sensitiveString);
+        Schema.Account account = new Schema.Account(Name = sensitiveString);
         String accountJson = JSON.serializePretty(account);
-        String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = expectedSanitizedString));
+        String expectedSanitizedAccountJson = JSON.serializePretty(new Schema.Account(Name = expectedSanitizedString));
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(account);
@@ -368,9 +368,9 @@ private class LogEntryEventBuilder_Tests {
 
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
-        List<Account> accounts = new List<Account>{ new Account(Name = sensitiveString) };
+        List<Schema.Account> accounts = new List<Schema.Account>{ new Schema.Account(Name = sensitiveString) };
         String accountListJson = JSON.serializePretty(accounts);
-        String expectedSanitizedAccountListJson = JSON.serializePretty(new List<Account>{ new Account(Name = expectedSanitizedString) });
+        String expectedSanitizedAccountListJson = JSON.serializePretty(new List<Schema.Account>{ new Schema.Account(Name = expectedSanitizedString) });
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(accounts);
 
@@ -766,7 +766,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        User nullUser;
+        Schema.User nullUser;
         System.Assert.isNull(nullUser);
         builder.setRecordId(nullUser);
 
@@ -788,7 +788,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        User currentUser = [SELECT Id, Name, ProfileId, Profile.Name, IsActive FROM User WHERE Id = :System.UserInfo.getUserId()];
+        Schema.User currentUser = [SELECT Id, Name, ProfileId, Profile.Name, IsActive FROM User WHERE Id = :System.UserInfo.getUserId()];
         builder.setRecordId(currentUser);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().RecordCollectionSize__c);
@@ -863,7 +863,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_result() {
-        User standardUser = LoggerMockDataCreator.createUser();
+        Schema.User standardUser = LoggerMockDataCreator.createUser();
         AggregateResult mockAggregateResult = LoggerMockDataCreator.createAggregateResult();
 
         LogEntryEventBuilder builder;
@@ -878,7 +878,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_results() {
-        User standardUser = LoggerMockDataCreator.createUser();
+        Schema.User standardUser = LoggerMockDataCreator.createUser();
         List<AggregateResult> mockAggregateResults = new List<AggregateResult>{ LoggerMockDataCreator.createAggregateResult() };
 
         LogEntryEventBuilder builder;
@@ -941,9 +941,9 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
         List<SObject> users = new List<SObject>();
-        User nullUser;
+        Schema.User nullUser;
         users.add(nullUser);
-        users.add(new User(Id = System.UserInfo.getUserId()));
+        users.add(new Schema.User(Id = System.UserInfo.getUserId()));
         builder.setRecord(users);
 
         System.Assert.areEqual('List', builder.getLogEntryEvent().RecordCollectionType__c);
@@ -962,14 +962,14 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        List<Schema.User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         builder.setRecord(users);
 
         System.Assert.areEqual('List', builder.getLogEntryEvent().RecordCollectionType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.areEqual(JSON.serializePretty(users), builder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.Assert.areEqual(User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+        System.Assert.areEqual(Schema.User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @IsTest
@@ -1023,7 +1023,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Map<Id, SObject> userIdToUser = new Map<Id, SObject>{ null => new User(Id = System.UserInfo.getUserId()) };
+        Map<Id, SObject> userIdToUser = new Map<Id, SObject>{ null => new Schema.User(Id = System.UserInfo.getUserId()) };
         builder.setRecord(userIdToUser);
 
         Map<String, SObject> userIdStringToUser = new Map<String, SObject>{ '' => userIdToUser.get(null) };
@@ -1045,10 +1045,10 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
         Id mockUserId = LoggerMockDataCreator.createId(Schema.User.SObjectType);
-        User nullUser;
+        Schema.User nullUser;
         Map<Id, SObject> userIdToUser = new Map<Id, SObject>{
             mockUserId => nullUser,
-            System.UserInfo.getUserId() => new User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername())
+            System.UserInfo.getUserId() => new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername())
         };
         builder.setRecord(userIdToUser);
 
@@ -1070,7 +1070,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Map<Id, User> userIdToUser = new Map<Id, User>([SELECT Id, Name, Username, IsActive FROM User LIMIT 5]);
+        Map<Id, Schema.User> userIdToUser = new Map<Id, Schema.User>([SELECT Id, Name, Username, IsActive FROM User LIMIT 5]);
         builder.setRecord(userIdToUser);
 
         System.Assert.areEqual(userIdToUser.size(), builder.getLogEntryEvent().RecordCollectionSize__c);
@@ -1078,7 +1078,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.areEqual(JSON.serializePretty(userIdToUser), builder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.Assert.areEqual(User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+        System.Assert.areEqual(Schema.User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @IsTest
@@ -1391,9 +1391,9 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_user_fields_when_anonymous_mode_disabled() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
-        Organization organization = LoggerMockDataCreator.getOrganization();
+        Schema.Organization organization = LoggerMockDataCreator.getOrganization();
         String organizationEnvironmentType = LoggerMockDataCreator.getOrganizationEnvironmentType();
-        User user = LoggerMockDataCreator.getUser();
+        Schema.User user = LoggerMockDataCreator.getUser();
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
 
@@ -1541,7 +1541,7 @@ private class LogEntryEventBuilder_Tests {
             return cachedAuthSessionQueryCount;
         }
 
-        public override Organization getCachedOrganization() {
+        public override Schema.Organization getCachedOrganization() {
             this.cachedOrganizationQueryCount++;
             return super.getCachedOrganization();
         }
@@ -1550,7 +1550,7 @@ private class LogEntryEventBuilder_Tests {
             return cachedOrganizationQueryCount;
         }
 
-        public override User getCachedUser() {
+        public override Schema.User getCachedUser() {
             this.cachedUserQueryCount++;
             return super.getCachedUser();
         }

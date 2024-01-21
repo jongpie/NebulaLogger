@@ -48,19 +48,19 @@ Deletes the specified `LoggerSettings__c` record
 | ---------------- | -------------------- |
 | `settingsRecord` | The record to delete |
 
-#### `getOrganization()` → `Organization`
+#### `getOrganization()` → `Schema.Organization`
 
-Returns the `Organization` record for the current environment
+Returns the `Schema.Organization` record for the current environment
 
 ##### Return
 
 **Type**
 
-Organization
+Schema.Organization
 
 **Description**
 
-The current environment&apos;s `Organization` record
+The current environment&apos;s `Schema.Organization` record
 
 #### `getPicklistOptions()` → `LoggerSettingsPicklistOptions`
 
@@ -106,10 +106,10 @@ searchForSetupOwner description
 
 ##### Parameters
 
-| Param            | Description                                   |
-| ---------------- | --------------------------------------------- |
-| `setupOwnerType` | The object to search (`Profile` or `User`)    |
-| `searchTerm`     | The search term to use when searching records |
+| Param            | Description                                              |
+| ---------------- | -------------------------------------------------------- |
+| `setupOwnerType` | The object to search (`Schema.Profile` or `Schema.User`) |
+| `searchTerm`     | The search term to use when searching records            |
 
 ##### Return
 
@@ -207,7 +207,7 @@ The sorting result
 
 #### LoggerSettingsController.SetupOwnerSearchResult class
 
-Inner class used for returning search results for `Profile` and `User` records
+Inner class used for returning search results for `Schema.Profile` and `Schema.User` records
 
 ---
 

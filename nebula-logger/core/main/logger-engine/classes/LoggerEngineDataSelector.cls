@@ -28,10 +28,10 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a `Map<Id, AuthSession>` for the specified user IDs & their matching active sessions,
+     * @description Returns a `Map<Id, LoggerSObjectProxy.AuthSession>` for the specified user IDs & their matching active sessions,
      *              or `null` if there is not a current session
      * @param  userIds userIds description
-     * @return The instance of `Map<Id, AuthSession>` containing any matching `AuthSession` records
+     * @return The instance of `Map<Id, LoggerSObjectProxy.AuthSession>` containing any matching `Schema.AuthSession` records
      */
     public virtual Map<Id, LoggerSObjectProxy.AuthSession> getAuthSessionProxies(List<Id> userIds) {
         Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = new Map<Id, LoggerSObjectProxy.AuthSession>();
@@ -40,7 +40,7 @@ public without sharing virtual class LoggerEngineDataSelector {
             return userIdToAuthSessionProxy;
         }
 
-        for (AuthSession authSession : [
+        for (Schema.AuthSession authSession : [
             SELECT
                 Id,
                 LoginType,
@@ -64,9 +64,9 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of `AuthSession` for the current user's current session,
+     * @description Returns a cached copy of `LoggerSObjectProxy.AuthSession` for the current user's current session,
      *              or `null` if there is not a current session
-     * @return   The cached `AuthSession` record
+     * @return   The cached `LoggerSObjectProxy.AuthSession` record
      */
     public virtual LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
         Id userId = System.UserInfo.getUserId();
@@ -104,10 +104,10 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of the current user's `Network` site, or `null` if the current user is not associated
-     *              with a `Network` site
-     * @param  networkId The record ID of the `Network` to query
-     * @return           The cached `Network` record
+     * @description Returns a cached copy of the current user's `Schema.Network` site, or `null` if the current user is not associated
+     *              with a `Schema.Network` site
+     * @param  networkId The record ID of the `Schema.Network` to query
+     * @return           The cached `Schema.Network` record
      */
     public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
         if (networkId == null || IS_EXPERIENCE_CLOUD_ENABLED == false) {
@@ -128,16 +128,16 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of the `Organization` record in the org, including some fields that cannot be accessed via `UserInfo`
-     * @return   The cached `Organization` record
+     * @description Returns a cached copy of the `Schema.Organization` record in the org, including some fields that cannot be accessed via `UserInfo`
+     * @return   The cached `Schema.Organization` record
      */
-    public virtual Organization getCachedOrganization() {
+    public virtual Schema.Organization getCachedOrganization() {
         String cacheKey = 'Organization';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
-            return (Organization) LoggerCache.getOrganizationCache().get(cacheKey);
+            return (Schema.Organization) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        Organization organization;
+        Schema.Organization organization;
         if (LoggerParameter.QUERY_ORGANIZATION_DATA) {
             organization = [
                 SELECT
@@ -187,16 +187,16 @@ public without sharing virtual class LoggerEngineDataSelector {
 
     /**
      * @description Returns a cached copy of the current user, including some profile fields that cannot be accessed via `UserInfo`
-     * @return   The cached `User` record for the current user
+     * @return   The cached `Schema.User` record for the current user
      */
-    public virtual User getCachedUser() {
+    public virtual Schema.User getCachedUser() {
         Id userId = System.UserInfo.getUserId();
         String cacheKey = 'User' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey)) {
-            return (User) LoggerCache.getSessionCache().get(cacheKey);
+            return (Schema.User) LoggerCache.getSessionCache().get(cacheKey);
         }
 
-        User user;
+        Schema.User user;
         if (LoggerParameter.QUERY_USER_DATA) {
             user = getUsers(new List<Id>{ userId }).get(userId);
             LoggerCache.getSessionCache().put(cacheKey, user);
@@ -205,9 +205,9 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a list of matching `Network` records based on the provided list of network IDs
-     * @param  networkIds The list of `Network` IDs to query
-     * @return            The instance of `Map<Id, SObject>` containing any matching `Network` records
+     * @description Returns a list of matching `Schema.Network` records based on the provided list of network IDs
+     * @param  networkIds The list of `Schema.Network` IDs to query
+     * @return            The instance of `Map<Id, SObject>` containing any matching `Schema.Network` records
      */
     public Map<Id, LoggerSObjectProxy.Network> getNetworkProxies(List<Id> networkIds) {
         // TODO add caching in a future release
@@ -216,7 +216,7 @@ public without sharing virtual class LoggerEngineDataSelector {
         }
 
         // Networks (aka experience sites aka community sites aka portal sites ò_ô)
-        // may not be enabled in the org (no Network object), so run everything dynamically
+        // may not be enabled in the org (no Schema.Network object), so run everything dynamically
         // return new Map<Id, SObject>(Database.query(String.escapeSingleQuotes(query)));
         Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
         String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
@@ -228,16 +228,16 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a list of matching `User` records based on the provided list of user IDs
-     * @param  userIds The list of `User` IDs to query
-     * @return         The instance of `Map<Id, User>` containing any matching `User` records
+     * @description Returns a list of matching `Schema.User` records based on the provided list of user IDs
+     * @param  userIds The list of `Schema.User` IDs to query
+     * @return         The instance of `Map<Id, Schema.User>` containing any matching `Schema.User` records
      */
-    public Map<Id, User> getUsers(List<Id> userIds) {
+    public Map<Id, Schema.User> getUsers(List<Id> userIds) {
         if (LoggerParameter.QUERY_USER_DATA == false) {
-            return new Map<Id, User>();
+            return new Map<Id, Schema.User>();
         }
 
-        return new Map<Id, User>(
+        return new Map<Id, Schema.User>(
             [
                 SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
                 FROM User

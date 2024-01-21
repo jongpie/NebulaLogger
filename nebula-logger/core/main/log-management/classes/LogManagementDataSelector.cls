@@ -76,7 +76,11 @@ public without sharing virtual class LogManagementDataSelector {
             return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        List<ApexEmailNotification> apexEmailNotifications = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
+        List<ApexEmailNotification> apexEmailNotifications = [
+            SELECT Email, UserId
+            FROM ApexEmailNotification
+            WHERE Email != NULL OR User.IsActive = TRUE
+        ];
         LoggerCache.getOrganizationCache().put(cacheKey, apexEmailNotifications);
         return apexEmailNotifications;
     }
@@ -86,7 +90,7 @@ public without sharing virtual class LogManagementDataSelector {
      *              that has API details populated from calling https://api.status.salesforce.com
      * @return   The cached `Log__c` record, or `null` if no match is found
      */
-    public Log__c getCachedRecentLogWithApiReleaseDetails() {
+    public virtual Log__c getCachedRecentLogWithApiReleaseDetails() {
         String cacheKey = 'RecentLogWithApiReleaseDetails';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
             return (Log__c) LoggerCache.getOrganizationCache().get(cacheKey);
@@ -155,7 +159,7 @@ public without sharing virtual class LogManagementDataSelector {
                 Description,
                 DurableId,
                 Label,
-                LastModifiedBy, // This is a text field of the person's name - it's NOT a lookup to User :'(
+                LastModifiedBy, // This is a text field of the person's name - it's NOT a lookup to Schema.User :'(
                 LastModifiedDate,
                 ManageableState,
                 ProcessType,
@@ -255,29 +259,29 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<Profile>` of records with the specified profile IDs
-     * @param  profileIds The list of `ID` of the `Profile` records to query
-     * @return            The list of matching `Profile` records
+     * @description Returns a `List<Schema.Profile>` of records with the specified profile IDs
+     * @param  profileIds The list of `ID` of the `Schema.Profile` records to query
+     * @return            The list of matching `Schema.Profile` records
      */
-    public virtual List<Profile> getProfilesById(List<Id> profileIds) {
+    public virtual List<Schema.Profile> getProfilesById(List<Id> profileIds) {
         return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds];
     }
 
     /**
-     * @description Returns a `List<Profile>` of records where the profile's names partially matches the specified search term
-     * @param  searchTerm The `String` search term to use for searching `Profile` records
-     * @return            The list of matching `Profile` records
+     * @description Returns a `List<Schema.Profile>` of records where the profile's names partially matches the specified search term
+     * @param  searchTerm The `String` search term to use for searching `Schema.Profile` records
+     * @return            The list of matching `Schema.Profile` records
      */
-    public virtual List<Profile> getProfilesByNameSearch(String searchTerm) {
+    public virtual List<Schema.Profile> getProfilesByNameSearch(String searchTerm) {
         return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
     }
 
     /**
-     * @description Returns a `List<Group>` of records with the specified developer names and type == 'Queue'
+     * @description Returns a `List<Schema.Group>` of records with the specified developer names and type == 'Queue'
      * @param  queueDeveloperNames The list of `String` queue developer names to query
-     * @return                     The list of matching `Group` records
+     * @return                     The list of matching `Schema.Group` records
      */
-    public virtual List<Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
+    public virtual List<Schema.Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
         return [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :queueDeveloperNames];
     }
 
@@ -290,7 +294,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return               The list of matching `LogEntry__c` records
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public List<LogEntry__c> getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
+    public virtual List<LogEntry__c> getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
         List<Object> queryTextReplacements = new List<Object>{
             fieldsClause,
             Schema.LogEntry__c.SObjectType.getDescribe().getName(),
@@ -314,42 +318,42 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a list of `Topic` records with one of the specified topic names
+     * @description Returns a list of `Schema.Topic` records with one of the specified topic names
      * @param  topicNames The set of `String` topic names to query
-     * @return            The list of matching `Topic` records
+     * @return            The list of matching `Schema.Topic` records
      */
-    public virtual List<Topic> getTopicsByName(Set<String> topicNames) {
+    public virtual List<Schema.Topic> getTopicsByName(Set<String> topicNames) {
         return [SELECT Id, Name FROM Topic WHERE Name IN :topicNames];
     }
 
     /**
-     * @description Returns a `List<User>` of records with the specified user IDs
-     * @param  userIds The list of `ID` of the `User` records to query
-     * @return         The list of matching `User` records
+     * @description Returns a `List<Schema.User>` of records with the specified user IDs
+     * @param  userIds The list of `ID` of the `Schema.User` records to query
+     * @return         The list of matching `Schema.User` records
      */
-    public virtual List<User> getUsersById(List<Id> userIds) {
+    public virtual List<Schema.User> getUsersById(List<Id> userIds) {
         return [SELECT Id, Username FROM User WHERE Id IN :userIds];
     }
 
     /**
-     * @description Returns a `List<User>` of records where the User's names or username partially matches the specified search term
-     * @param  searchTerm The `String` search term to use for searching `User` records
-     * @return            The list of matching `User` records
+     * @description Returns a `List<Schema.User>` of records where the User's names or username partially matches the specified search term
+     * @param  searchTerm The `String` search term to use for searching `Schema.User` records
+     * @return            The list of matching `Schema.User` records
      */
-    public virtual List<User> getUsersByNameSearch(String searchTerm) {
+    public virtual List<Schema.User> getUsersByNameSearch(String searchTerm) {
         if (String.isBlank(searchTerm)) {
-            return new List<User>();
+            return new List<Schema.User>();
         }
 
         return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username LIMIT 20];
     }
 
     /**
-     * @description Returns a `List<User>` of records with the specified usernames (`Schema.User.Username`)
+     * @description Returns a `List<Schema.User>` of records with the specified usernames (`Schema.User.Username`)
      * @param  usernames The list of `String` user usernames to query
-     * @return           Tje list of matching `User` records
+     * @return           Tje list of matching `Schema.User` records
      */
-    public virtual List<User> getUsersByUsername(List<String> usernames) {
+    public virtual List<Schema.User> getUsersByUsername(List<String> usernames) {
         return [SELECT Id, Username FROM User WHERE Username IN :userNames];
     }
 

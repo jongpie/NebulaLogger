@@ -69,7 +69,7 @@ private class LogMessage_Tests {
         String unformattedMessage = 'my string with 1 input: {0} and then {1} and finally {2}';
         Datetime argument1 = System.now();
         Date argument2 = System.today();
-        User argument3 = new User(Id = System.UserInfo.getUserId());
+        Schema.User argument3 = new Schema.User(Id = System.UserInfo.getUserId());
         String expectedMessage = String.format(unformattedMessage, new List<Object>{ argument1, argument2, argument3 });
 
         String returnedMessage = new LogMessage(unformattedMessage, argument1, argument2, argument3).getMessage();

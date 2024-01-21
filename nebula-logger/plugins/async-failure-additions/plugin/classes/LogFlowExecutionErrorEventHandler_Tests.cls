@@ -26,7 +26,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         flowExecutionErrorEvent.FlowVersionNumber = 1;
         flowExecutionErrorEvent.Username = System.UserInfo.getUserName();
 
-        System.runAs(new User(Id = [SELECT Id FROM User WHERE Alias = 'autoproc'].Id)) {
+        System.runAs(new Schema.User(Id = [SELECT Id FROM User WHERE Alias = 'autoproc'].Id)) {
             System.Test.startTest();
             LogFlowExecutionErrorEventHandler.logErrors(new List<FlowExecutionErrorEvent>{ flowExecutionErrorEvent });
             System.Test.stopTest();
@@ -76,7 +76,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         System.Assert.areEqual(flowExecutionErrorEvent.EventDate, entry.Timestamp__c, 'Should take timestamp from flow error event');
 
         // Log__c related asserts
-        User currentUser = [
+        Schema.User currentUser = [
             SELECT
                 Id,
                 ProfileId,

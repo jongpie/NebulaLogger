@@ -8,7 +8,7 @@ private class LogBatchPurgeController_Tests {
     private static final String CUSTOM_PURGE_ACTION = 'Custom';
     private static final String DEFAULT_PURGE_ACTION = 'Delete';
     private static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';
-    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
+    private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @IsTest
     static void it_should_return_logPurgeAction_options() {
@@ -315,7 +315,7 @@ private class LogBatchPurgeController_Tests {
 
     @IsTest
     static void it_should_permit_user_to_execute_purge_batch_when_custom_permission_is_assigned() {
-        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
         PermissionSet permissionSet = new PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
         insert permissionSet;
@@ -358,7 +358,7 @@ private class LogBatchPurgeController_Tests {
 
     @IsTest
     static void it_should_not_permit_user_to_execute_purge_batch_when_custom_permission_is_not_assigned() {
-        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
         PermissionSet permissionSet = new PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
         insert permissionSet;

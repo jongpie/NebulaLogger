@@ -183,7 +183,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         // as 'BIG_OBJECT' set as their storage location for platform events (DefaultPlatformEventStorageLocation__c)
         List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
         for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) input.triggerNew) {
-            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
+            Schema.User loggingUser = new Schema.User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
             if (loggingUserSettings.DefaultPlatformEventStorageLocation__c == BIG_OBJECT_STORAGE_LOCATION) {
                 logEntryEventsToSave.add(logEntryEvent);

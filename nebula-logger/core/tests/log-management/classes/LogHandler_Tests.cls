@@ -171,8 +171,8 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_user_id() {
         setupConfigurations();
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
@@ -193,8 +193,8 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_username() {
         setupConfigurations();
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;
@@ -215,8 +215,8 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_queue_id() {
         setupConfigurations();
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.Id;
         insert currentUserSettings;
@@ -236,8 +236,8 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_queue_developer_name() {
         setupConfigurations();
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.DeveloperName;
         insert currentUserSettings;
@@ -257,7 +257,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_use_current_user_as_owner_when_no_default_configured() {
         setupConfigurations();
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = null;
         insert currentUserSettings;

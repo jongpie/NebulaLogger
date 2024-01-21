@@ -18,7 +18,7 @@ private class LoggerEngineDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_auth_session_proxy() {
-        List<AuthSession> sessions = [
+        List<Schema.AuthSession> sessions = [
             SELECT
                 Id,
                 LoginType,
@@ -90,7 +90,7 @@ private class LoggerEngineDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_organization() {
-        Organization expectedOrganization = [
+        Schema.Organization expectedOrganization = [
             SELECT
                 Id,
                 CreatedById,
@@ -110,7 +110,7 @@ private class LoggerEngineDataSelector_Tests {
         System.Assert.areEqual(mockSelector, LoggerEngineDataSelector.getInstance());
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
 
-        Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
         System.Assert.areEqual(1, mockSelector.getCachedOrganizationQueryCount());
         LoggerEngineDataSelector.getInstance().getCachedOrganization();
@@ -125,7 +125,7 @@ private class LoggerEngineDataSelector_Tests {
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = String.valueOf(false)));
 
-        Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
         System.Assert.isNull(returnedOrganization);
@@ -150,14 +150,14 @@ private class LoggerEngineDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_user() {
-        User expectedUser = [
+        Schema.User expectedUser = [
             SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User
             WHERE Id = :System.UserInfo.getUserId()
         ];
         System.Assert.areEqual(1, System.Limits.getQueries());
 
-        User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+        Schema.User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
 
         System.Assert.areEqual(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedUser();
@@ -170,7 +170,7 @@ private class LoggerEngineDataSelector_Tests {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = String.valueOf(false)));
         System.Assert.isFalse(LoggerParameter.QUERY_USER_DATA);
 
-        User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+        Schema.User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
 
         System.Assert.areEqual(0, System.Limits.getQueries());
         System.Assert.isNull(returnedUser);
@@ -193,9 +193,9 @@ private class LoggerEngineDataSelector_Tests {
             return authSessionQueryCount;
         }
 
-        public override Organization getCachedOrganization() {
+        public override Schema.Organization getCachedOrganization() {
             Integer originalQueryCount = System.Limits.getQueries();
-            Organization result = super.getCachedOrganization();
+            Schema.Organization result = super.getCachedOrganization();
             if (System.Limits.getQueries() != originalQueryCount) {
                 organizationQueryCount = System.Limits.getQueries() - originalQueryCount;
             }

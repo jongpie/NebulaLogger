@@ -177,7 +177,7 @@ public without sharing class LoggerEmailSender {
     }
 
     private static String buildHtmlBody(Schema.SObjectType sobjectType, List<String> errorMessages) {
-        final String emailBodyTemplate = 'Logger failed to save {0} {1} records for {2} (User ID: {3})<br /><br />Errors:<ul>{4}</ul>';
+        final String emailBodyTemplate = 'Logger failed to save {0} {1} records for {2} (Schema.User ID: {3})<br /><br />Errors:<ul>{4}</ul>';
         final String formattedErrorMessages = '<li>' + String.join(errorMessages, '</li><li>') + '</li>';
         List<Object> emailBodyInputs = new List<Object>{
             errorMessages.size(),

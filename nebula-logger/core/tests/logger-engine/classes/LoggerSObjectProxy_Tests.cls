@@ -10,7 +10,7 @@ private class LoggerSObjectProxy_Tests {
 
     @IsTest
     static void it_converts_auth_session_record_to_proxy() {
-        List<AuthSession> authSessionRecords = [
+        List<Schema.AuthSession> authSessionRecords = [
             SELECT
                 Id,
                 LoginHistory.Application,
@@ -28,11 +28,11 @@ private class LoggerSObjectProxy_Tests {
             LIMIT 1
         ];
         if (authSessionRecords.isEmpty()) {
-            // Since the AuthSession object cannot be mocked, the test can only run as an integration test
-            // No need to fail the test if there isn't a AuthSession record available via querying
+            // Since the Schema.AuthSession object cannot be mocked, the test can only run as an integration test
+            // No need to fail the test if there isn't a Schema.AuthSession record available via querying
             return;
         }
-        AuthSession authSessionRecord = authSessionRecords.get(0);
+        Schema.AuthSession authSessionRecord = authSessionRecords.get(0);
 
         LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSessionRecord);
 
@@ -52,7 +52,7 @@ private class LoggerSObjectProxy_Tests {
 
     @IsTest
     static void it_converts_login_history_record_to_proxy() {
-        List<LoginHistory> loginHistoryRecords = [
+        List<Schema.LoginHistory> loginHistoryRecords = [
             SELECT Application, Browser, Platform, UserId
             FROM LoginHistory
             LIMIT 1
@@ -62,7 +62,7 @@ private class LoggerSObjectProxy_Tests {
             // No need to fail the test if there isn't a LoginHistory record available via querying
             return;
         }
-        LoginHistory loginHistoryRecord = loginHistoryRecords.get(0);
+        Schema.LoginHistory loginHistoryRecord = loginHistoryRecords.get(0);
 
         LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory(loginHistoryRecord);
 

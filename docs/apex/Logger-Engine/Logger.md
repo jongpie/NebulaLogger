@@ -3634,7 +3634,7 @@ LoggerSettings\_\_c
 
 LoggerSettings\_\_c - The current user&apos;s instance of the custom settings
 
-#### `getUserSettings(User loggingUser)` → `LoggerSettings__c`
+#### `getUserSettings(Schema.User loggingUser)` → `LoggerSettings__c`
 
 **This is only intended to be used internally by Nebula Logger, and is subject to change.** Returns the specified user&apos;s instance of `LoggerSettings__c`
 

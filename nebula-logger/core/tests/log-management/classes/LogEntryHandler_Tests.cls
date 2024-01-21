@@ -55,7 +55,7 @@ private class LogEntryHandler_Tests {
     @IsTest
     static void it_should_populate_related_record_fields_on_log_entry_with_related_user_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId()];
+        Schema.User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId()];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentUser.Id);
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
@@ -73,7 +73,7 @@ private class LogEntryHandler_Tests {
     @IsTest
     static void it_should_populate_related_record_fields_on_log_entry_with_related_profile_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
+        Schema.Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentProfile.Id);
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
@@ -109,7 +109,7 @@ private class LogEntryHandler_Tests {
     @IsTest
     static void it_should_not_populate_related_record_fields_on_log_entry_when_disabled_via_logger_parameter() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId()];
+        Schema.User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId()];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentUser.Id);
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = String.valueOf(false)));
 

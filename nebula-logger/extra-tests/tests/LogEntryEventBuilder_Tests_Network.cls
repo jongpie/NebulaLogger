@@ -20,7 +20,7 @@ private class LogEntryEventBuilder_Tests_Network {
         SObject networkRecord = getExperienceCloudNetwork();
         System.Assert.isNotNull(networkRecord.Id);
         LogEntryEventBuilder.networkId = networkRecord.Id;
-        User experienceSiteUser = setupExperienceSiteUser();
+        Schema.User experienceSiteUser = setupExperienceSiteUser();
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
@@ -47,7 +47,7 @@ private class LogEntryEventBuilder_Tests_Network {
         SObject networkRecord = getExperienceCloudNetwork();
         System.Assert.isNotNull(networkRecord.Id);
         LogEntryEventBuilder.networkId = networkRecord.Id;
-        User experienceSiteUser = setupExperienceSiteUser();
+        Schema.User experienceSiteUser = setupExperienceSiteUser();
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
@@ -71,14 +71,14 @@ private class LogEntryEventBuilder_Tests_Network {
         return userSettings;
     }
 
-    static User setupExperienceSiteUser() {
+    static Schema.User setupExperienceSiteUser() {
         UserRole userRole = new UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
         insert userRole;
-        User currentUser = new User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
         update currentUser;
-        User experienceSiteUser;
+        Schema.User experienceSiteUser;
         System.runAs(currentUser) {
-            Account account = new Account(Name = 'Test Account', OwnerId = currentUser.Id);
+            Schema.Account account = new Schema.Account(Name = 'Test Account', OwnerId = currentUser.Id);
             insert account;
             Contact contact = new Contact(AccountId = account.Id, LastName = 'testcontact');
             insert contact;

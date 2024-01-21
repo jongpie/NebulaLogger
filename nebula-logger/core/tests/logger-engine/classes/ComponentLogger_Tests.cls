@@ -277,7 +277,11 @@ private class ComponentLogger_Tests {
     }
 
     private static ComponentLogger.ComponentLogEntry createMockComponentLogEntry() {
-        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User currentUser = new Schema.User(
+            FirstName = System.UserInfo.getFirstName(),
+            Id = System.UserInfo.getUserId(),
+            ProfileId = System.UserInfo.getProfileId()
+        );
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.browserFormFactor = 'Large';
         componentLogEntry.browserLanguage = 'en-US';

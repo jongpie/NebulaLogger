@@ -52,11 +52,11 @@ Controls if Nebula Logger queries `ApexClass` data. When set to `false`, any `Ap
 
 #### `QUERY_AUTH_SESSION_DATA` → `Boolean`
 
-Controls if Nebula Logger queries `AuthSession` data. When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionData`, or `true` as the default
+Controls if Nebula Logger queries `Schema.AuthSession` data. When set to `false`, any `Schema.AuthSession` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionData`, or `true` as the default
 
 #### `QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY` → `Boolean`
 
-Controls if Nebula Logger queries `AuthSession` data synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionDataSynchronously`, or `true` as the default
+Controls if Nebula Logger queries `Schema.AuthSession` data synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Schema.AuthSession` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionDataSynchronously`, or `true` as the default
 
 #### `QUERY_FLOW_DEFINITION_VIEW_DATA` → `Boolean`
 
@@ -64,19 +64,19 @@ Controls if Nebula Logger queries `FlowDefinitionView` data. When set to `false`
 
 #### `QUERY_NETWORK_DATA` → `Boolean`
 
-Controls if Nebula Logger queries `Network` data. When set to `false`, any `Network` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryNetworkData`, or `true` as the default
+Controls if Nebula Logger queries `Schema.Network` data. When set to `false`, any `Schema.Network` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryNetworkData`, or `true` as the default
 
 #### `QUERY_NETWORK_DATA_SYNCHRONOUSLY` → `Boolean`
 
-Controls if Nebula Logger queries `Network` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryNetworkDataSynchronously`, or `true` as the default
+Controls if Nebula Logger queries `Schema.Network` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Schema.Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryNetworkDataSynchronously`, or `true` as the default
 
 #### `QUERY_ORGANIZATION_DATA` → `Boolean`
 
-Controls if Nebula Logger queries `Organization` data. When set to `false`, any `Organization` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryOrganizationData`, or `true` as the default
+Controls if Nebula Logger queries `Schema.Organization` data. When set to `false`, any `Schema.Organization` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryOrganizationData`, or `true` as the default
 
 #### `QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY` → `Boolean`
 
-Indicates if Nebula Logger queries `Organization` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Organization` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryOrganizationDataSynchronously`, or `true` as the default
+Indicates if Nebula Logger queries `Schema.Organization` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Schema.Organization` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryOrganizationDataSynchronously`, or `true` as the default
 
 #### `QUERY_RELATED_RECORD_DATA` → `Boolean`
 
@@ -84,11 +84,11 @@ Controls if Nebula Logger queries data for records synthetically related to a `L
 
 #### `QUERY_USER_DATA` → `Boolean`
 
-Controls if Nebula Logger queries `User` data. When set to `false`, any `User` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryUserData`, or `true` as the default
+Controls if Nebula Logger queries `Schema.User` data. When set to `false`, any `Schema.User` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryUserData`, or `true` as the default
 
 #### `QUERY_USER_DATA_SYNCHRONOUSLY` → `Boolean`
 
-Indicates if Nebula Logger queries `User` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `User` fields on `LogEntryEvent__e` that rely on querying will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryUserDataSynchronously`, or `true` as the default
+Indicates if Nebula Logger queries `Schema.User` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Schema.User` fields on `LogEntryEvent__e` that rely on querying will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryUserDataSynchronously`, or `true` as the default
 
 #### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
 
@@ -112,7 +112,7 @@ Indicates if Platform Cache is used to cache organization &amp; session data in 
 
 #### `USE_TOPICS_FOR_TAGS` → `Boolean`
 
-Indicates if Logger&apos;s tagging will use `Topic` and `TopicAssignment` for storing tags (when `true`), or uses Nebula Logger&apos;s custom objects `LoggerTag__c` and `LogEntryTag__c` (when `false`) Controlled by the custom metadata record `LoggerParameter.UseTopicsForTags`, or `false` as the default
+Indicates if Logger&apos;s tagging will use `Schema.Topic` and `Schema.TopicAssignment` for storing tags (when `true`), or uses Nebula Logger&apos;s custom objects `LoggerTag__c` and `LogEntryTag__c` (when `false`) Controlled by the custom metadata record `LoggerParameter.UseTopicsForTags`, or `false` as the default
 
 ---
 

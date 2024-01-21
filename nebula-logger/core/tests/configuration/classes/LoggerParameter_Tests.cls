@@ -6,8 +6,8 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
-    private static User getUserRecord() {
-        return new User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+    private static Schema.User getUserRecord() {
+        return new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     }
 
     @IsTest

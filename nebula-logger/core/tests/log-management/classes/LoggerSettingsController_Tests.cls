@@ -202,7 +202,11 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_create_new_record_when_organization_is_a_sandbox() {
-        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, true);
+        Schema.Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+            new Schema.Organization(),
+            Schema.Organization.IsSandbox,
+            true
+        );
         System.Assert.isTrue(mockOrganization.IsSandbox);
         LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
         System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
@@ -217,7 +221,11 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_create_new_record_when_organization_is_not_a_sandbox() {
-        Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(new Organization(), Schema.Organization.IsSandbox, false);
+        Schema.Organization mockOrganization = (Schema.Organization) LoggerMockDataCreator.setReadOnlyField(
+            new Schema.Organization(),
+            Schema.Organization.IsSandbox,
+            false
+        );
         System.Assert.isFalse(mockOrganization.IsSandbox);
         LoggerCache.getOrganizationCache().put('Organization', mockOrganization);
         System.Assert.areEqual(mockOrganization, LoggerEngineDataSelector.getInstance().getCachedOrganization());
@@ -307,9 +315,9 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_organization_record() {
-        Organization expectedRecord = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization expectedRecord = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
-        Organization returnedRecord = LoggerSettingsController.getOrganization();
+        Schema.Organization returnedRecord = LoggerSettingsController.getOrganization();
 
         System.Assert.areEqual(expectedRecord, returnedRecord);
     }
@@ -323,16 +331,16 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_profile_search_results_list_when_matches_found() {
-        Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
+        Schema.Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
         String searchTerm = '%' + currentProfile.Name.left(4) + '%';
-        Map<Id, Profile> expectedResultsById = new Map<Id, Profile>([SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm]);
+        Map<Id, Schema.Profile> expectedResultsById = new Map<Id, Schema.Profile>([SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm]);
 
         List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Profile', searchTerm);
 
         System.Assert.isFalse(results.isEmpty());
         System.Assert.areEqual(expectedResultsById.size(), results.size());
         for (LoggerSettingsController.SetupOwnerSearchResult result : results) {
-            Profile matchingProfile = expectedResultsById.get(result.recordId);
+            Schema.Profile matchingProfile = expectedResultsById.get(result.recordId);
             System.Assert.isNotNull(matchingProfile);
             System.Assert.areEqual(matchingProfile.Name, result.label);
             System.Assert.areEqual('License: ' + matchingProfile.UserLicense.Name, result.secondaryLabel);
@@ -354,7 +362,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_user_search_results_list_when_matches_found() {
         // Using lastName (required field) instead of the optional field firstName
         String searchTerm = '%' + System.UserInfo.getLastName() + '%';
-        Map<Id, User> expectedResultsById = new Map<Id, User>(
+        Map<Id, Schema.User> expectedResultsById = new Map<Id, Schema.User>(
             [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm]
         );
 
@@ -363,7 +371,7 @@ private class LoggerSettingsController_Tests {
         System.Assert.isFalse(results.isEmpty());
         System.Assert.areEqual(expectedResultsById.size(), results.size());
         for (LoggerSettingsController.SetupOwnerSearchResult result : results) {
-            User matchingUser = expectedResultsById.get(result.recordId);
+            Schema.User matchingUser = expectedResultsById.get(result.recordId);
             System.Assert.isNotNull(matchingUser);
             System.Assert.areEqual(matchingUser.Username, result.label);
             System.Assert.areEqual('Name: ' + matchingUser.Name, result.secondaryLabel);

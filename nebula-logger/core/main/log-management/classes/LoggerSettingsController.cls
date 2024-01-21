@@ -125,17 +125,17 @@ public without sharing class LoggerSettingsController {
 
     // Setup Owner methods
     /**
-     * @description Returns the `Organization` record for the current environment
-     * @return   The current environment's `Organization` record
+     * @description Returns the `Schema.Organization` record for the current environment
+     * @return   The current environment's `Schema.Organization` record
      */
     @AuraEnabled(cacheable=true)
-    public static Organization getOrganization() {
+    public static Schema.Organization getOrganization() {
         return LoggerEngineDataSelector.getInstance().getCachedOrganization();
     }
 
     /**
      * @description searchForSetupOwner description
-     * @param  setupOwnerType The object to search (`Profile` or `User`)
+     * @param  setupOwnerType The object to search (`Schema.Profile` or `Schema.User`)
      * @param  searchTerm     The search term to use when searching records
      * @return                The list of `SetupOwnerSearchResult`, based on any matching SObject records
      */
@@ -146,7 +146,7 @@ public without sharing class LoggerSettingsController {
             List<SetupOwnerSearchResult> searchResults = new List<SetupOwnerSearchResult>();
             switch on setupOwnerType {
                 when 'Profile' {
-                    for (Profile matchingProfile : LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm)) {
+                    for (Schema.Profile matchingProfile : LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingProfile.Id;
                         result.label = matchingProfile.Name;
@@ -156,7 +156,7 @@ public without sharing class LoggerSettingsController {
                     }
                 }
                 when 'User' {
-                    for (User matchingUser : LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm)) {
+                    for (Schema.User matchingUser : LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingUser.Id;
                         result.label = matchingUser.Username;
@@ -324,10 +324,10 @@ public without sharing class LoggerSettingsController {
 
     private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {
         Map<Id, String> setupOwnerIdToName = new Map<Id, String>();
-        for (Profile profile : LogManagementDataSelector.getInstance().getProfilesById(setupOwnerIds)) {
+        for (Schema.Profile profile : LogManagementDataSelector.getInstance().getProfilesById(setupOwnerIds)) {
             setupOwnerIdToName.put(profile.Id, profile.Name);
         }
-        for (User user : LogManagementDataSelector.getInstance().getUsersById(setupOwnerIds)) {
+        for (Schema.User user : LogManagementDataSelector.getInstance().getUsersById(setupOwnerIds)) {
             setupOwnerIdToName.put(user.Id, user.Username);
         }
         return setupOwnerIdToName;
@@ -401,7 +401,7 @@ public without sharing class LoggerSettingsController {
     }
 
     /**
-     * @description Inner class used for returning search results for `Profile` and `User` records
+     * @description Inner class used for returning search results for `Schema.Profile` and `Schema.User` records
      */
     public class SetupOwnerSearchResult {
         @AuraEnabled

@@ -490,12 +490,12 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
-        User automatedProcessUser = [
+        Schema.User automatedProcessUser = [
             SELECT Id, TimeZoneSidKey
             FROM User
             WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
         ];
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = false;
         insert currentUserSettings;
@@ -517,12 +517,12 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
-        User automatedProcessUser = [
+        Schema.User automatedProcessUser = [
             SELECT Id, TimeZoneSidKey
             FROM User
             WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
         ];
-        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+        Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = true;
         insert currentUserSettings;
@@ -544,7 +544,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        User loggerScenarioOwner = LoggerMockDataCreator.createUser();
+        Schema.User loggerScenarioOwner = LoggerMockDataCreator.createUser();
         insert loggerScenarioOwner;
         LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
         insert loggerScenario;
@@ -574,7 +574,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         // The createLogEntryEvent() method sets all fields on LogEntryEvent__e, so clear the relevant fields to ensure
-        // that the values are only set based on the queried AuthSession record
+        // that the values are only set based on the queried Schema.AuthSession record
         logEntryEvent.LoginApplication__c = null;
         logEntryEvent.LoginBrowser__c = null;
         logEntryEvent.LoginHistoryId__c = null;
@@ -620,7 +620,7 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        Organization expectedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization expectedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         Log__c log = getLog();
         System.Assert.areEqual(String.valueOf(expectedOrganization.Id), log.OrganizationId__c);
         System.Assert.areEqual(expectedOrganization.InstanceName, log.OrganizationInstanceName__c);
@@ -643,7 +643,7 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
-        User expectedUser = LoggerEngineDataSelector.getInstance().getUsers(userIds).get(logEntryEvent.LoggedById__c);
+        Schema.User expectedUser = LoggerEngineDataSelector.getInstance().getUsers(userIds).get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
         System.Assert.areEqual(expectedUser.Username, log.LoggedByUsername__c);
         System.Assert.areEqual(expectedUser.Profile.Name, log.ProfileName__c);
@@ -687,8 +687,8 @@ private class LogEntryEventHandler_Tests {
     //     validateLogEntryFields(logEntryEvent, logEntry);
 
     //     Set<String> tagsSet = new Set<String>(tags);
-    //     List<TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
-    //     for (TopicAssignment topicAssignment : topicAssignments) {
+    //     List<Schema.TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
+    //     for (Schema.TopicAssignment topicAssignment : topicAssignments) {
     //         System.Assert.isTrue(tagsSet.contains(topicAssignment.Topic.Name));
     //     }
     // }
@@ -1379,7 +1379,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     private static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-        Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+        Schema.Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         String orgEnvironmentType;
         if (org.IsSandbox && org.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';

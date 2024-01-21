@@ -23,7 +23,7 @@ public class MicrobatchSelfRegController {
         String profileId = null; //to be filled by customer
         String UUID;
 
-        User u = new User();
+        Schema.User u = new Schema.User();
         u.Username = userName;
         u.Email = email;
         u.FirstName = firstName;
@@ -35,9 +35,9 @@ public class MicrobatchSelfRegController {
         u.LanguageLocaleKey = 'en_US';
         u.EmailEncodingKey = 'UTF-8';
 
-        Account acc = new Account();
+        Schema.Account acc = new Schema.Account();
         acc.Name = 'Account for ' + lastName;
-        Contact c = new Contact();
+        Schema.Contact c = new Schema.Contact();
         c.lastName = lastName;
 
         try {

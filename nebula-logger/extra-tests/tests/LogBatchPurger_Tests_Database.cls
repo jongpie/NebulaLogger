@@ -7,7 +7,7 @@
 @IsTest(IsParallel=false)
 private class LogBatchPurger_Tests_Database {
     private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
-    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
+    private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @TestSetup
     static void setupData() {
@@ -43,7 +43,7 @@ private class LogBatchPurger_Tests_Database {
     static void it_should_throw_exception_when_user_does_not_have_delete_access() {
         Integer originalCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
 
-        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
             System.Assert.isFalse(Schema.Log__c.SObjectType.getDescribe().isDeletable());
 
