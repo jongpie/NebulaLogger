@@ -67,12 +67,17 @@ public without sharing class LoggerMockDataStore {
     }
 
     public class MockEventBus extends LoggerDataStore.EventBus {
+        private Database.DmlOptions lastUsedDmlOptions;
         private List<SObject> publishedPlatformEvents;
         private Integer publishCount;
 
         private MockEventBus() {
             this.publishedPlatformEvents = new List<SObject>();
             this.publishCount = 0;
+        }
+
+        public Database.DmlOptions getLastUsedDmlOptions() {
+            return this.lastUsedDmlOptions;
         }
 
         public Integer getPublishCallCount() {
@@ -90,6 +95,18 @@ public without sharing class LoggerMockDataStore {
         public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents) {
             this.publishCount++;
             this.publishedPlatformEvents.addAll(platformEvents);
+
+            List<Database.SaveResult> mockSaveResults = new List<Database.SaveResult>();
+            for (SObject platformEvent : platformEvents) {
+                mockSaveResults.add(validateBeforeSave(platformEvent, false));
+            }
+            return mockSaveResults;
+        }
+
+        public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents, Database.DmlOptions dmlOptions) {
+            this.publishCount++;
+            this.publishedPlatformEvents.addAll(platformEvents);
+            this.lastUsedDmlOptions = dmlOptions;
 
             List<Database.SaveResult> mockSaveResults = new List<Database.SaveResult>();
             for (SObject platformEvent : platformEvents) {

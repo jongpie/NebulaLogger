@@ -54,6 +54,17 @@ global with sharing class Logger {
         set;
     }
 
+    private static final Database.DmlOptions PLATFORM_EVENT_DML_OPTIONS {
+        get {
+            if (PLATFORM_EVENT_DML_OPTIONS == null) {
+                PLATFORM_EVENT_DML_OPTIONS = new Database.DmlOptions();
+                PLATFORM_EVENT_DML_OPTIONS.AllowFieldTruncation = true;
+            }
+            return PLATFORM_EVENT_DML_OPTIONS;
+        }
+        set;
+    }
+
     private static final String USER_SESSION_ID {
         get {
             if (USER_SESSION_ID == null) {
@@ -3210,7 +3221,7 @@ global with sharing class Logger {
 
         switch on getSaveMethod(saveMethodName) {
             when EVENT_BUS {
-                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents);
+                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents, PLATFORM_EVENT_DML_OPTIONS);
                 LoggerEmailSender.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
             when QUEUEABLE {
@@ -3478,7 +3489,7 @@ global with sharing class Logger {
          */
         global void execute(System.QueueableContext queueableContext) {
             Logger.setAsyncContext(queueableContext);
-            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
+            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents, PLATFORM_EVENT_DML_OPTIONS);
         }
     }
 
