@@ -29,12 +29,12 @@ public with sharing class Account_Batch_Logger_Example implements Database.Batch
      * @param batchableContext The current batch job context.
      * @param scope The list of accounts for the particular batch job.
      */
-    public void execute(Database.BatchableContext batchableContext, List<Account> scope) {
+    public void execute(Database.BatchableContext batchableContext, List<Schema.Account> scope) {
         // One-time call (per transaction) to set the parent log
         Logger.fine('this.originalTransactionId==' + this.originalTransactionId);
         Logger.setParentLogTransactionId(this.originalTransactionId);
 
-        for (Account account : scope) {
+        for (Schema.Account account : scope) {
             // TODO add your batch job's logic
 
             // Then log the result

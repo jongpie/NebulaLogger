@@ -142,7 +142,7 @@ private class LoggerCache_Tests_PlatformCache {
         System.Assert.areEqual(oldMockValue, LoggerCache.getOrganizationCache().get(mockKey));
         System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
-        Account newMockValue = new Account(Name = 'Some fake account');
+        Schema.Account newMockValue = new Schema.Account(Name = 'Some fake account');
 
         LoggerCache.getOrganizationCache().put(mockKey, newMockValue);
 
@@ -226,7 +226,7 @@ private class LoggerCache_Tests_PlatformCache {
         System.Assert.areEqual(oldMockValue, LoggerCache.getSessionCache().get(mockKey));
         System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
-        Account newMockValue = new Account(Name = 'Some fake account');
+        Schema.Account newMockValue = new Schema.Account(Name = 'Some fake account');
 
         LoggerCache.getSessionCache().put(mockKey, newMockValue);
 

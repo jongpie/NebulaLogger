@@ -46,7 +46,7 @@ private class LoggerCache_Tests {
         LoggerCache.getTransactionCache().put(mockKey, oldMockValue);
         System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
-        Account newMockValue = new Account(Name = 'Some fake account');
+        Schema.Account newMockValue = new Schema.Account(Name = 'Some fake account');
 
         LoggerCache.getTransactionCache().put(mockKey, newMockValue);
 
@@ -153,7 +153,7 @@ private class LoggerCache_Tests {
         System.Assert.areEqual(oldMockValue, LoggerCache.getOrganizationCache().get(mockKey));
         System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
-        Account newMockValue = new Account(Name = 'Some fake account');
+        Schema.Account newMockValue = new Schema.Account(Name = 'Some fake account');
         System.Assert.areEqual(1, mockOrganizationPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getOrganizationCache().put(mockKey, newMockValue);
@@ -171,7 +171,7 @@ private class LoggerCache_Tests {
     static void it_returns_value_in_transaction_cache_when_organization_and_transaction_cache_both_contain_key() {
         String mockKey = 'SomeKey';
         Schema.User transactionCacheValue = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        Account organizationCacheValue = new Account(Name = 'Some fake account');
+        Schema.Account organizationCacheValue = new Schema.Account(Name = 'Some fake account');
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
@@ -296,7 +296,7 @@ private class LoggerCache_Tests {
         System.Assert.areEqual(oldMockValue, LoggerCache.getSessionCache().get(mockKey));
         System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
-        Account newMockValue = new Account(Name = 'Some fake account');
+        Schema.Account newMockValue = new Schema.Account(Name = 'Some fake account');
         System.Assert.areEqual(1, mockSessionPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getSessionCache().put(mockKey, newMockValue);
@@ -314,7 +314,7 @@ private class LoggerCache_Tests {
     static void it_returns_value_in_transaction_cache_when_session_and_transaction_cache_both_contain_key() {
         String mockKey = 'SomeKey';
         Schema.User transactionCacheValue = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-        Account sessionCacheValue = new Account(Name = 'Some fake account');
+        Schema.Account sessionCacheValue = new Schema.Account(Name = 'Some fake account');
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);

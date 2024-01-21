@@ -78,7 +78,7 @@ private class LogEntryEventBuilder_Tests_Network {
         update currentUser;
         Schema.User experienceSiteUser;
         System.runAs(currentUser) {
-            Account account = new Account(Name = 'Test Account', OwnerId = currentUser.Id);
+            Schema.Account account = new Schema.Account(Name = 'Test Account', OwnerId = currentUser.Id);
             insert account;
             Contact contact = new Contact(AccountId = account.Id, LastName = 'testcontact');
             insert contact;

@@ -287,7 +287,7 @@ private class LogEntryEventBuilder_Tests {
         rule.IsEnabled__c = false;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
-        Account account = new Account(Name = message);
+        Schema.Account account = new Schema.Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
@@ -307,7 +307,7 @@ private class LogEntryEventBuilder_Tests {
         rule.IsEnabled__c = true;
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
-        Account account = new Account(Name = message);
+        Schema.Account account = new Schema.Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
@@ -346,9 +346,9 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.setMockDataMaskRule(rule);
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
-        Account account = new Account(Name = sensitiveString);
+        Schema.Account account = new Schema.Account(Name = sensitiveString);
         String accountJson = JSON.serializePretty(account);
-        String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = expectedSanitizedString));
+        String expectedSanitizedAccountJson = JSON.serializePretty(new Schema.Account(Name = expectedSanitizedString));
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(account);
@@ -368,9 +368,9 @@ private class LogEntryEventBuilder_Tests {
 
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
-        List<Account> accounts = new List<Account>{ new Account(Name = sensitiveString) };
+        List<Schema.Account> accounts = new List<Schema.Account>{ new Schema.Account(Name = sensitiveString) };
         String accountListJson = JSON.serializePretty(accounts);
-        String expectedSanitizedAccountListJson = JSON.serializePretty(new List<Account>{ new Account(Name = expectedSanitizedString) });
+        String expectedSanitizedAccountListJson = JSON.serializePretty(new List<Schema.Account>{ new Schema.Account(Name = expectedSanitizedString) });
         LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(accounts);
 
