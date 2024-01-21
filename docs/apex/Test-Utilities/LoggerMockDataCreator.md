@@ -380,53 +380,53 @@ String
 
 The mock record ID for the specified SObject Type
 
-#### `createUser()` → `User`
+#### `createUser()` → `Schema.User`
 
-Creates a `User` record for testing purposes, using the current user&apos;s profile
+Creates a `Schema.User` record for testing purposes, using the current user&apos;s profile
 
 ##### Return
 
 **Type**
 
-User
+Schema.User
 
 **Description**
 
-The generated `User` record - it is not automatically inserted into the database.
+The generated `Schema.User` record - it is not automatically inserted into the database.
 
-#### `createUser(Id profileId)` → `User`
+#### `createUser(Id profileId)` → `Schema.User`
 
-Creates a `User` record for testing purposes, using the specified profile ID
+Creates a `Schema.User` record for testing purposes, using the specified profile ID
 
 ##### Parameters
 
-| Param       | Description                                    |
-| ----------- | ---------------------------------------------- |
-| `profileId` | The `Profile` ID to use for the created `User` |
+| Param       | Description                                                  |
+| ----------- | ------------------------------------------------------------ |
+| `profileId` | The `Schema.Profile` ID to use for the created `Schema.User` |
 
 ##### Return
 
 **Type**
 
-User
+Schema.User
 
 **Description**
 
-The generated `User` record - it is not automatically inserted into the database.
+The generated `Schema.User` record - it is not automatically inserted into the database.
 
-#### `getOrganization()` → `Organization`
+#### `getOrganization()` → `Schema.Organization`
 
-Queries for the `Organization` record for the current environment.
+Queries for the `Schema.Organization` record for the current environment.
 
 ##### Return
 
 **Type**
 
-Organization
+Schema.Organization
 
 **Description**
 
-The matching `Organization` record
+The matching `Schema.Organization` record
 
 #### `getOrganizationEnvironmentType()` → `String`
 
@@ -442,7 +442,7 @@ String
 
 The environment type
 
-#### `getUser()` → `User`
+#### `getUser()` → `Schema.User`
 
 Returns the current user
 
@@ -450,52 +450,52 @@ Returns the current user
 
 **Type**
 
-User
+Schema.User
 
 **Description**
 
-The matching `User` record
+The matching `Schema.User` record
 
-#### `getUser(Id userId)` → `User`
+#### `getUser(Id userId)` → `Schema.User`
 
 Returns the specified user
 
 ##### Parameters
 
-| Param    | Description                          |
-| -------- | ------------------------------------ |
-| `userId` | The ID of the `User` record to query |
+| Param    | Description                                 |
+| -------- | ------------------------------------------- |
+| `userId` | The ID of the `Schema.User` record to query |
 
 ##### Return
 
 **Type**
 
-User
+Schema.User
 
 **Description**
 
-The matching `User` record
+The matching `Schema.User` record
 
-#### `insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType)` → `Group`
+#### `insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType)` → `Schema.Group`
 
-Creates and inserts a `Group` record for testing queues, using the specified SObject Type
+Creates and inserts a `Schema.Group` record for testing queues, using the specified SObject Type
 
 ##### Parameters
 
 | Param                | Description                                                                                   |
 | -------------------- | --------------------------------------------------------------------------------------------- |
-| `queueDeveloperName` | The developer name to use for the new queue (stored in `Group.DeveloperName`)                 |
+| `queueDeveloperName` | The developer name to use for the new queue (stored in `Schema.Group.DeveloperName`)          |
 | `sobjectType`        | The `SObjectType` that the queue should be able to own (stored in `QueueSObject.SObjectType`) |
 
 ##### Return
 
 **Type**
 
-Group
+Schema.Group
 
 **Description**
 
-The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
+The inserted `Schema.Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
 
 #### `setReadOnlyField(SObject record, Schema.SObjectField field, Object value)` → `SObject`
 

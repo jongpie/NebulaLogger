@@ -337,49 +337,49 @@ List&lt;Log\_\_c&gt;
 
 The list of matching `Log__c` records
 
-#### `getProfilesById(List<Id> profileIds)` → `List<Profile>`
+#### `getProfilesById(List<Id> profileIds)` → `List<Schema.Profile>`
 
-Returns a `List&lt;Profile&gt;` of records with the specified profile IDs
+Returns a `List&lt;Schema.Profile&gt;` of records with the specified profile IDs
 
 ##### Parameters
 
-| Param        | Description                                        |
-| ------------ | -------------------------------------------------- |
-| `profileIds` | The list of `ID` of the `Profile` records to query |
+| Param        | Description                                               |
+| ------------ | --------------------------------------------------------- |
+| `profileIds` | The list of `ID` of the `Schema.Profile` records to query |
 
 ##### Return
 
 **Type**
 
-List&lt;Profile&gt;
+List&lt;Schema.Profile&gt;
 
 **Description**
 
-The list of matching `Profile` records
+The list of matching `Schema.Profile` records
 
-#### `getProfilesByNameSearch(String searchTerm)` → `List<Profile>`
+#### `getProfilesByNameSearch(String searchTerm)` → `List<Schema.Profile>`
 
-Returns a `List&lt;Profile&gt;` of records where the profile&apos;s names partially matches the specified search term
+Returns a `List&lt;Schema.Profile&gt;` of records where the profile&apos;s names partially matches the specified search term
 
 ##### Parameters
 
-| Param        | Description                                                     |
-| ------------ | --------------------------------------------------------------- |
-| `searchTerm` | The `String` search term to use for searching `Profile` records |
+| Param        | Description                                                            |
+| ------------ | ---------------------------------------------------------------------- |
+| `searchTerm` | The `String` search term to use for searching `Schema.Profile` records |
 
 ##### Return
 
 **Type**
 
-List&lt;Profile&gt;
+List&lt;Schema.Profile&gt;
 
 **Description**
 
-The list of matching `Profile` records
+The list of matching `Schema.Profile` records
 
-#### `getQueuesByDeveloperName(List<String> queueDeveloperNames)` → `List<Group>`
+#### `getQueuesByDeveloperName(List<String> queueDeveloperNames)` → `List<Schema.Group>`
 
-Returns a `List&lt;Group&gt;` of records with the specified developer names and type == &apos;Queue&apos;
+Returns a `List&lt;Schema.Group&gt;` of records with the specified developer names and type == &apos;Queue&apos;
 
 ##### Parameters
 
@@ -391,11 +391,11 @@ Returns a `List&lt;Group&gt;` of records with the specified developer names and 
 
 **Type**
 
-List&lt;Group&gt;
+List&lt;Schema.Group&gt;
 
 **Description**
 
-The list of matching `Group` records
+The list of matching `Schema.Group` records
 
 #### `getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit)` → `List<LogEntry__c>`
 
@@ -440,9 +440,9 @@ List&lt;LoggerTag\_\_c&gt;
 
 The list of matching `LoggerTag__c` records
 
-#### `getTopicsByName(Set<String> topicNames)` → `List<Topic>`
+#### `getTopicsByName(Set<String> topicNames)` → `List<Schema.Topic>`
 
-Returns a list of `Topic` records with one of the specified topic names
+Returns a list of `Schema.Topic` records with one of the specified topic names
 
 ##### Parameters
 
@@ -454,55 +454,55 @@ Returns a list of `Topic` records with one of the specified topic names
 
 **Type**
 
-List&lt;Topic&gt;
+List&lt;Schema.Topic&gt;
 
 **Description**
 
-The list of matching `Topic` records
+The list of matching `Schema.Topic` records
 
-#### `getUsersById(List<Id> userIds)` → `List<User>`
+#### `getUsersById(List<Id> userIds)` → `List<Schema.User>`
 
-Returns a `List&lt;User&gt;` of records with the specified user IDs
+Returns a `List&lt;Schema.User&gt;` of records with the specified user IDs
 
 ##### Parameters
 
-| Param     | Description                                     |
-| --------- | ----------------------------------------------- |
-| `userIds` | The list of `ID` of the `User` records to query |
+| Param     | Description                                            |
+| --------- | ------------------------------------------------------ |
+| `userIds` | The list of `ID` of the `Schema.User` records to query |
 
 ##### Return
 
 **Type**
 
-List&lt;User&gt;
+List&lt;Schema.User&gt;
 
 **Description**
 
-The list of matching `User` records
+The list of matching `Schema.User` records
 
-#### `getUsersByNameSearch(String searchTerm)` → `List<User>`
+#### `getUsersByNameSearch(String searchTerm)` → `List<Schema.User>`
 
-Returns a `List&lt;User&gt;` of records where the User&apos;s names or username partially matches the specified search term
+Returns a `List&lt;Schema.User&gt;` of records where the User&apos;s names or username partially matches the specified search term
 
 ##### Parameters
 
-| Param        | Description                                                  |
-| ------------ | ------------------------------------------------------------ |
-| `searchTerm` | The `String` search term to use for searching `User` records |
+| Param        | Description                                                         |
+| ------------ | ------------------------------------------------------------------- |
+| `searchTerm` | The `String` search term to use for searching `Schema.User` records |
 
 ##### Return
 
 **Type**
 
-List&lt;User&gt;
+List&lt;Schema.User&gt;
 
 **Description**
 
-The list of matching `User` records
+The list of matching `Schema.User` records
 
-#### `getUsersByUsername(List<String> usernames)` → `List<User>`
+#### `getUsersByUsername(List<String> usernames)` → `List<Schema.User>`
 
-Returns a `List&lt;User&gt;` of records with the specified usernames (`Schema.User.Username`)
+Returns a `List&lt;Schema.User&gt;` of records with the specified usernames (`Schema.User.Username`)
 
 ##### Parameters
 
@@ -514,10 +514,10 @@ Returns a `List&lt;User&gt;` of records with the specified usernames (`Schema.Us
 
 **Type**
 
-List&lt;User&gt;
+List&lt;Schema.User&gt;
 
 **Description**
 
-Tje list of matching `User` records
+Tje list of matching `Schema.User` records
 
 ---
