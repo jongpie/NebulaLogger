@@ -7,7 +7,7 @@
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests_Network {
     private static final String EXPERIENCE_CLOUD_NETWORK_NAME = 'Logger Test Site';
-    private static final String EXPERIENCE_CLOUD_USER_PROFILE_NAME = 'Logger Test Site Schema.User Profile';
+    private static final String EXPERIENCE_CLOUD_USER_PROFILE_NAME = 'Logger Test Site User Profile';
 
     @IsTest
     static void it_should_set_network_fields_for_experience_site_user() {

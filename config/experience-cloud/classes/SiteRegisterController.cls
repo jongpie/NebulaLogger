@@ -41,7 +41,7 @@ public with sharing class SiteRegisterController {
             ApexPages.addMessage(msg);
             return null;
         }
-        User u = new User();
+        Schema.User u = new Schema.User();
         u.Username = username;
         u.Email = email;
         u.CommunityNickname = communityNickname;

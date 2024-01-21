@@ -3,10 +3,10 @@
    Guest users are never able to access this page.
  */
 public with sharing class MyProfilePageController {
-    private User user;
+    private Schema.User user;
     private boolean isEdit = false;
 
-    public User getUser() {
+    public Schema.User getUser() {
         return user;
     }
 

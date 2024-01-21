@@ -7,10 +7,10 @@ public with sharing class MyProfilePageControllerTest {
     @IsTest(SeeAllData=true)
     static void testSave() {
         // Modify the test to query for a portal user that exists in your org
-        List<User> existingPortalUsers = [SELECT id, profileId, userRoleId FROM User WHERE UserRoleId != NULL AND UserType = 'CustomerSuccess'];
+        List<Schema.User> existingPortalUsers = [SELECT id, profileId, userRoleId FROM User WHERE UserRoleId != NULL AND UserType = 'CustomerSuccess'];
 
         if (existingPortalUsers.isEmpty()) {
-            User currentUser = [
+            Schema.User currentUser = [
                 SELECT id, title, firstname, lastname, email, phone, mobilephone, fax, street, city, state, postalcode, country
                 FROM User
                 WHERE id = :System.UserInfo.getUserId()
@@ -33,7 +33,7 @@ public with sharing class MyProfilePageControllerTest {
             currentUser = [SELECT id, fax FROM User WHERE id = :currentUser.Id];
             // System.Assert.isTrue(currentUser.fax == randFax);
         } else {
-            User existingPortalUser = existingPortalUsers[0];
+            Schema.User existingPortalUser = existingPortalUsers[0];
             String randFax = Math.rint(Math.random() * 1000) + '5551234';
 
             System.runAs(existingPortalUser) {

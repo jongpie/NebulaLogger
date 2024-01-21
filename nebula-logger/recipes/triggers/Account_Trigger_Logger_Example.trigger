@@ -4,14 +4,14 @@
  */
 trigger Account_Trigger_Logger_Example on Account(before insert, before update, before delete, after insert, after update, after delete, after undelete) {
     // Get the trigger's list of records
-    List<Account> triggerRecords = Trigger.new != null ? Trigger.new : Trigger.old;
+    List<Schema.Account> triggerRecords = Trigger.new != null ? Trigger.new : Trigger.old;
 
     // Log using an instance of LogMessage for more complex strings
     String messageTemplate = 'Example log entry from Account trigger, processing {0} records';
     LogMessage logMessage = new LogMessage(messageTemplate, triggerRecords.size());
     Logger.fine(logMessage, triggerRecords);
 
-    for (Account account : triggerRecords) {
+    for (Schema.Account account : triggerRecords) {
         // Log a string for simpler log entries
         Logger.fine('Here\'s an entry for a specific Account record', account);
     }
