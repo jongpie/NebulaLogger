@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.3.NEXT",
-            "versionName": "Bugfix for UserInfo.getSessionId() Exception",
-            "versionDescription": "Added a try-catch block to usage of UserInfo.getSessionId() to handle a platform-thrown exception that occurs in some transactions (such as connected apps with JWT).",
+            "versionNumber": "4.12.4.NEXT",
+            "versionName": "Bugfix Child Log__c Records Not Properly Linked to Parent Log__c Records",
+            "versionDescription": "Fixed some scenarios where a Log__c record would have a value in ParentLogTransactionId__c but a null value in ParentLog__c",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
