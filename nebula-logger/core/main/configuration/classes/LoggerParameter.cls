@@ -213,8 +213,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `Network` data.
-     *              When set to `false`, any `Network` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.Network` data.
+     *              When set to `false`, any `Schema.Network` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryNetworkData`, or `true` as the default
      */
     public static final Boolean QUERY_NETWORK_DATA {
@@ -228,8 +228,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `Network` data is queried synchronously & populated on `LogEntryEvent__e` records.
-     *              When set to `false`, any `Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
+     * @description Controls if Nebula Logger queries `Schema.Network` data is queried synchronously & populated on `LogEntryEvent__e` records.
+     *              When set to `false`, any `Schema.Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
      *              asynchronously and populated on any resulting `Log__c` records.
      *              Controlled by the custom metadata record `LoggerParameter.QueryNetworkDataSynchronously`, or `true` as the default
      */

@@ -104,10 +104,10 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of the current user's `Network` site, or `null` if the current user is not associated
-     *              with a `Network` site
-     * @param  networkId The record ID of the `Network` to query
-     * @return           The cached `Network` record
+     * @description Returns a cached copy of the current user's `Schema.Network` site, or `null` if the current user is not associated
+     *              with a `Schema.Network` site
+     * @param  networkId The record ID of the `Schema.Network` to query
+     * @return           The cached `Schema.Network` record
      */
     public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
         if (networkId == null || IS_EXPERIENCE_CLOUD_ENABLED == false) {
@@ -205,9 +205,9 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a list of matching `Network` records based on the provided list of network IDs
-     * @param  networkIds The list of `Network` IDs to query
-     * @return            The instance of `Map<Id, SObject>` containing any matching `Network` records
+     * @description Returns a list of matching `Schema.Network` records based on the provided list of network IDs
+     * @param  networkIds The list of `Schema.Network` IDs to query
+     * @return            The instance of `Map<Id, SObject>` containing any matching `Schema.Network` records
      */
     public Map<Id, LoggerSObjectProxy.Network> getNetworkProxies(List<Id> networkIds) {
         // TODO add caching in a future release
@@ -216,7 +216,7 @@ public without sharing virtual class LoggerEngineDataSelector {
         }
 
         // Networks (aka experience sites aka community sites aka portal sites ò_ô)
-        // may not be enabled in the org (no Network object), so run everything dynamically
+        // may not be enabled in the org (no Schema.Network object), so run everything dynamically
         // return new Map<Id, SObject>(Database.query(String.escapeSingleQuotes(query)));
         Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
         String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
