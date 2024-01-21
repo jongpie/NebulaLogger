@@ -133,14 +133,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             parentLogTransactionIdToRecordId.put(parentLog.TransactionId__c, parentLog.Id);
         }
 
-        // List<Log__c> logsWithParentLog = new List<Log__c>();
-        // List<Log__c> logsWithParentTransactionId = new List<Log__c>();
-
         for (Log__c log : this.logs) {
             if (String.isNotBlank(log.ParentLogTransactionId__c)) {
-                // if (parentLogTransactionIdToRecordId.containsKey(log.ParentLogTransactionId__c) == false) {
-                //     parentLogTransactionIdToRecordId.get(log.ParentLogTransactionId__c);
-                // }
                 log.ParentLog__c = parentLogTransactionIdToRecordId.get(log.ParentLogTransactionId__c);
             }
         }
