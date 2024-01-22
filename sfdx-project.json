@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.5.NEXT",
-            "versionName": "Bugfix for Name-Shadowing Issues with Schema Namespace",
-            "versionDescription": "Switched to using fully-qualified Apex class references to several classes in the Schema namespace, like Schema.User, to avoid collision issues in orgs that use name-shadowing classes",
+            "versionNumber": "4.12.6.NEXT",
+            "versionName": "Bugfix to Automatically Truncate LogEntryEvent__e Fields",
+            "versionDescription": "Updated LoggerDataStore, Logger, and LogEntryEventBuilder to automatically truncate string field values that are too long for the corresponding LogEntryEvent__e fields",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
