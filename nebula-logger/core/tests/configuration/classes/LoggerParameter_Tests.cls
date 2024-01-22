@@ -273,6 +273,17 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_store_rest_response_header_values() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_system_debug_message_format() {
         // The constant LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT is unique - its value should always be
         // loaded from LoggerParameter__mdt, even in a test context so that orgs can control the output of debug

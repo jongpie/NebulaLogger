@@ -565,6 +565,26 @@ LogEntryEventBuilder
 
 An instance of LogEntryEventBuilder with the given record.
 
+#### `setRestResponseDetails(System.RestResponse response)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s REST Response fields
+
+##### Parameters
+
+| Param      | Description                           |
+| ---------- | ------------------------------------- |
+| `response` | The instance of `RestResponse` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `setTopics(List<String> tags)` → `LogEntryEventBuilder`
 
 Deprecated - use `addTags(List&lt;String&gt; tags)` instead. This method will be removed in a future release

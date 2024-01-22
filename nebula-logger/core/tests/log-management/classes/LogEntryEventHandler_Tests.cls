@@ -1363,6 +1363,11 @@ private class LogEntryEventHandler_Tests {
                         RecordSObjectClassification__c,
                         RecordSObjectType__c,
                         RecordSObjectTypeNamespace__c,
+                        RestResponseBody__c,
+                        RestResponseBodyMasked__c,
+                        RestResponseHeaderKeys__c,
+                        RestResponseHeaders__c,
+                        RestResponseStatusCode__c,
                         StackTrace__c,
                         Tags__c,
                         Timestamp__c,
@@ -1685,18 +1690,22 @@ private class LogEntryEventHandler_Tests {
             logEntry.RecordSObjectTypeNamespace__c,
             'logEntry.RecordSObjectTypeNamespace__c was not properly set'
         );
-        System.Assert.areEqual(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
-        System.Assert.areEqual(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.RestResponseBody__c, logEntry.RestResponseBody__c, 'logEntry.RestResponseBody__c was not properly set');
         System.Assert.areEqual(
-            logEntryEvent.RecordSObjectClassification__c,
-            logEntry.RecordSObjectClassification__c,
-            'logEntry.RecordSObjectClassification__c was not properly set'
+            logEntryEvent.RestResponseBodyMasked__c,
+            logEntry.RestResponseBodyMasked__c,
+            'logEntry.RestResponseBodyMasked__c was not properly set'
         );
-        System.Assert.areEqual(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c, 'logEntry.RecordSObjectType__c was not properly set');
         System.Assert.areEqual(
-            logEntryEvent.RecordSObjectTypeNamespace__c,
-            logEntry.RecordSObjectTypeNamespace__c,
-            'logEntry.RecordSObjectTypeNamespace__c was not properly set'
+            logEntryEvent.RestResponseHeaderKeys__c,
+            logEntry.RestResponseHeaderKeys__c,
+            'logEntry.RestResponseHeaderKeys__c was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.RestResponseHeaders__c, logEntry.RestResponseHeaders__c, 'logEntry.RestResponseHeaders__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.RestResponseStatusCode__c,
+            logEntry.RestResponseStatusCode__c,
+            'logEntry.RestResponseStatusCode__c was not properly set'
         );
         System.Assert.areEqual(logEntryEvent.StackTrace__c, logEntry.StackTrace__c, 'logEntry.StackTrace__c was not properly set');
         System.Assert.areEqual(logEntryEvent.Timestamp__c, logEntry.Timestamp__c, 'logEntry.Timestamp__c was not properly set');

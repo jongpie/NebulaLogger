@@ -273,6 +273,9 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.HasHttpResponseHeaders__c = logEntry.HttpResponseHeaders__c != null;
             logEntry.HasInlineTags__c = logEntry.Tags__c != null;
             logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
+            logEntry.HasRestResponseBody__c = logEntry.RestResponseBody__c != null;
+            logEntry.HasRestResponseHeaderKeys__c = logEntry.RestResponseHeaderKeys__c != null;
+            logEntry.HasRestResponseHeaders__c = logEntry.RestResponseHeaders__c != null;
             logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
         }
     }

@@ -373,6 +373,133 @@ private class LogEntryHandler_Tests {
         System.Assert.isTrue(matchingLogEntry.HasHttpResponseHeaders__c);
         System.Assert.isFalse(nonMatchingLogEntry.HasHttpResponseHeaders__c);
     }
+
+    @IsTest
+    static void it_should_set_hasRestResponseBody_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(RestResponseBody__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(RestResponseBody__c = null);
+        System.Assert.isNotNull(matchingLogEntry.RestResponseBody__c);
+        System.Assert.isNull(nonMatchingLogEntry.RestResponseBody__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRestResponseBody__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRestResponseBody__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasRestResponseBody_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(RestResponseBody__c = 'some value', Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(RestResponseBody__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.RestResponseBody__c);
+        System.Assert.isNull(nonMatchingLogEntry.RestResponseBody__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRestResponseBody__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRestResponseBody__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasRestResponseHeaderKeys_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(RestResponseHeaderKeys__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(RestResponseHeaderKeys__c = null);
+        System.Assert.isNotNull(matchingLogEntry.RestResponseHeaderKeys__c);
+        System.Assert.isNull(nonMatchingLogEntry.RestResponseHeaderKeys__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRestResponseHeaderKeys__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRestResponseHeaderKeys__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasRestResponseHeaderKeys_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(
+            RestResponseHeaderKeys__c = 'some value',
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
+        );
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(
+            RestResponseHeaderKeys__c = null,
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
+        );
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.RestResponseHeaderKeys__c);
+        System.Assert.isNull(nonMatchingLogEntry.RestResponseHeaderKeys__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRestResponseHeaderKeys__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRestResponseHeaderKeys__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasRestResponseHeaders_on_before_insert() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(RestResponseHeaders__c = 'some value');
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(RestResponseHeaders__c = null);
+        System.Assert.isNotNull(matchingLogEntry.RestResponseHeaders__c);
+        System.Assert.isNull(nonMatchingLogEntry.RestResponseHeaders__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRestResponseHeaders__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRestResponseHeaders__c);
+    }
+
+    @IsTest
+    static void it_should_set_hasRestResponseHeaders_on_before_update() {
+        LogEntry__c matchingLogEntry = new LogEntry__c(
+            RestResponseHeaders__c = 'some value',
+            Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
+        );
+        LogEntry__c nonMatchingLogEntry = new LogEntry__c(RestResponseHeaders__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+        List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+        System.Assert.isNotNull(matchingLogEntry.RestResponseHeaders__c);
+        System.Assert.isNull(nonMatchingLogEntry.RestResponseHeaders__c);
+
+        LoggerTriggerableContext context = new LoggerTriggerableContext(
+            Schema.LogEntry__c.SObjectType,
+            TriggerOperation.BEFORE_UPDATE,
+            updatedRecords,
+            new Map<Id, SObject>(updatedRecords),
+            null
+        );
+        new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+        System.Assert.isTrue(matchingLogEntry.HasRestResponseHeaders__c);
+        System.Assert.isFalse(nonMatchingLogEntry.HasRestResponseHeaders__c);
+    }
+
     @IsTest
     static void it_should_set_hasInlineTags_on_before_insert() {
         LogEntry__c matchingLogEntry = new LogEntry__c(Tags__c = 'some value');

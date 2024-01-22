@@ -612,6 +612,42 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description Sets the log entry event's REST Response fields
+     * @param  response The instance of `RestResponse` to log
+     * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setRestResponseDetails(System.RestResponse response) {
+        if (this.shouldSave() == false || response == null) {
+            return this;
+        }
+
+        String stringifiedResponseBody = response.responseBody?.toString();
+        String truncatedResponseBody = truncateFieldValue(Schema.LogEntryEvent__e.RestResponseBody__c, stringifiedResponseBody);
+        String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
+        Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
+
+        String formattedHeaderKeysString;
+        String formattedHeadersString;
+        if (response.headers != null) {
+            formattedHeaderKeysString = String.join(response.headers.keySet(), NEW_LINE_DELIMITER);
+            if (LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES) {
+                List<String> headers = new List<String>();
+                for (String headerKey : response.headers.keySet()) {
+                    headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, response.headers.get(headerKey) }));
+                }
+                formattedHeadersString = String.join(headers, NEW_LINE_DELIMITER);
+            }
+        }
+
+        this.logEntryEvent.RestResponseBody__c = cleanedResponseBody;
+        this.logEntryEvent.RestResponseBodyMasked__c = responseBodyMasked;
+        this.logEntryEvent.RestResponseHeaderKeys__c = formattedHeaderKeysString;
+        this.logEntryEvent.RestResponseHeaders__c = formattedHeadersString;
+        this.logEntryEvent.RestResponseStatusCode__c = response.statusCode;
+        return this;
+    }
+
+    /**
      * @description Appends the tag to the existing list of tags
      * @param tag The string to use as a tag for the current entry
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods

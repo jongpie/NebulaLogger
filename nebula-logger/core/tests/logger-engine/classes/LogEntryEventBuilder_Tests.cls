@@ -437,6 +437,26 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_apply_data_mask_rule_to_rest_response_body_when_enabled() {
+        LoggerSettings__c userSettings = getUserSettings();
+        userSettings.IsDataMaskingEnabled__c = true;
+        LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+        rule.IsEnabled__c = true;
+        LogEntryEventBuilder.setMockDataMaskRule(rule);
+        String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
+        String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
+        System.RestResponse restResponse = new System.RestResponse();
+        restResponse.responseBody = Blob.valueOf(sensitiveString);
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>());
+        builder.setRestResponseDetails(restResponse);
+
+        System.Assert.isTrue(builder.getLogEntryEvent().RestResponseBodyMasked__c);
+        System.Assert.areNotEqual(sensitiveString, builder.getLogEntryEvent().RestResponseBody__c);
+        System.Assert.areEqual(expectedSanitizedString, builder.getLogEntryEvent().RestResponseBody__c);
+    }
+
+    @IsTest
     static void it_should_truncate_message_for_long_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
@@ -1243,6 +1263,94 @@ private class LogEntryEventBuilder_Tests {
                 Schema.LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength() +
                 ' for field HttpResponseBody__c, actual length is ' +
                 builder.getLogEntryEvent().HttpResponseBody__c.length()
+        );
+    }
+
+    @IsTest
+    static void it_should_skip_setting_rest_response_fields_when_response_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseBody__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaders__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseStatusCode__c);
+        System.RestResponse response = null;
+
+        builder.setRestResponseDetails(response);
+
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseBody__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaders__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseStatusCode__c);
+    }
+
+    @IsTest
+    static void it_should_set_rest_response_fields_when_storing_header_values_is_enabled() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = String.valueOf(true));
+        LoggerParameter.setMock(mockParameter);
+        System.Assert.isTrue(LoggerParameter.STORE_Rest_RESPONSE_HEADER_VALUES);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseBody__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaders__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseStatusCode__c);
+        System.RestResponse response = new System.RestResponse();
+        response.addHeader('some-header', 'some value');
+        response.responseBody = Blob.valueOf('{hello:"world"}');
+        response.statusCode = 200;
+
+        builder.setRestResponseDetails(response);
+
+        List<String> formattedHeaders = new List<String>();
+        for (String headerKey : response.headers.keySet()) {
+            formattedHeaders.add(headerKey + ': ' + response.headers.get(headerKey));
+        }
+        System.Assert.areEqual(response.responseBody.toString(), builder.getLogEntryEvent().RestResponseBody__c);
+        System.Assert.areEqual(String.join(response.headers.keySet(), '\n'), builder.getLogEntryEvent().RestResponseHeaderKeys__c);
+        System.Assert.areEqual(String.join(formattedHeaders, '\n'), builder.getLogEntryEvent().RestResponseHeaders__c);
+        System.Assert.areEqual(response.statusCode, builder.getLogEntryEvent().RestResponseStatusCode__c);
+    }
+
+    @IsTest
+    static void it_should_set_rest_response_fields_when_storing_header_values_is_disabled() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = String.valueOf(false));
+        LoggerParameter.setMock(mockParameter);
+        System.Assert.isFalse(LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseBody__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaders__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseStatusCode__c);
+        System.RestResponse response = new System.RestResponse();
+        response.responseBody = Blob.valueOf('Hello, world!');
+        response.addHeader('someKey', 'some string value');
+        response.addHeader('anotherKey', 'an amazing example value, wow');
+        response.statusCode = 201;
+
+        builder.setRestResponseDetails(response);
+
+        System.Assert.areEqual(response.responseBody.toString(), builder.getLogEntryEvent().RestResponseBody__c);
+        System.Assert.areEqual(String.join(response.headers.keySet(), '\n'), builder.getLogEntryEvent().RestResponseHeaderKeys__c);
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaders__c);
+        System.Assert.areEqual(response.statusCode, builder.getLogEntryEvent().RestResponseStatusCode__c);
+    }
+
+    @IsTest
+    static void it_should_truncate_rest_response_body_field_when_string_is_too_long() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().RestResponseBody__c);
+        String excessivelyLongResponseBody = 'a'.repeat(Schema.LogEntryEvent__e.RestResponseBody__c.getDescribe().getLength() + 1);
+        System.RestResponse response = new System.RestResponse();
+        response.responseBody = Blob.valueOf(excessivelyLongResponseBody);
+
+        builder.setRestResponseDetails(response);
+
+        System.Assert.areEqual(
+            excessivelyLongResponseBody.left(Schema.LogEntryEvent__e.RestResponseBody__c.getDescribe().getLength()),
+            builder.getLogEntryEvent().RestResponseBody__c,
+            'Expected string length ' +
+                Schema.LogEntryEvent__e.RestResponseBody__c.getDescribe().getLength() +
+                ' for field RestResponseBody__c, actual length is ' +
+                builder.getLogEntryEvent().RestResponseBody__c.length()
         );
     }
 

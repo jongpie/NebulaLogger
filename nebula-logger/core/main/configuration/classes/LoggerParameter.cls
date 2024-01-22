@@ -351,6 +351,22 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Indicates if Nebula Logger will store the header values when logging an instance of `System.RestResponse`.
+     *              Controlled by the custom metadata record `LoggerParameter.StoreRestResponseHeaderValues`, or `true` as the default.
+     *              Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of
+     *              `System.RestResponse` that is logged - this parameter only controls if the header values are stored.
+     */
+    public static final Boolean STORE_REST_RESPONSE_HEADER_VALUES {
+        get {
+            if (STORE_REST_RESPONSE_HEADER_VALUES == null) {
+                STORE_REST_RESPONSE_HEADER_VALUES = getBoolean('StoreRestResponseHeaderValues', true);
+            }
+            return STORE_REST_RESPONSE_HEADER_VALUES;
+        }
+        private set;
+    }
+
+    /**
      * @description The merge-field syntax to use when calling System.debug().
      *              Controlled by the custom metadata record `LoggerParameter.SystemDebugMessageFormat`, or `{OriginLocation__c}\n{Message__c}` as the default
      */
