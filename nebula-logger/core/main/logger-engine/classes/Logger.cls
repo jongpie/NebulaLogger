@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.12.5';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.12.6';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -50,6 +50,17 @@ global with sharing class Logger {
                 ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
             }
             return ORGANIZATION_API_VERSION;
+        }
+        set;
+    }
+
+    private static final Database.DmlOptions PLATFORM_EVENT_DML_OPTIONS {
+        get {
+            if (PLATFORM_EVENT_DML_OPTIONS == null) {
+                PLATFORM_EVENT_DML_OPTIONS = new Database.DmlOptions();
+                PLATFORM_EVENT_DML_OPTIONS.AllowFieldTruncation = true;
+            }
+            return PLATFORM_EVENT_DML_OPTIONS;
         }
         set;
     }
@@ -3210,7 +3221,7 @@ global with sharing class Logger {
 
         switch on getSaveMethod(saveMethodName) {
             when EVENT_BUS {
-                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents);
+                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents, PLATFORM_EVENT_DML_OPTIONS);
                 LoggerEmailSender.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
             when QUEUEABLE {
@@ -3478,7 +3489,7 @@ global with sharing class Logger {
          */
         global void execute(System.QueueableContext queueableContext) {
             Logger.setAsyncContext(queueableContext);
-            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
+            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents, PLATFORM_EVENT_DML_OPTIONS);
         }
     }
 

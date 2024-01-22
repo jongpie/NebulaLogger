@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.5.NEXT",
-            "versionName": "Bugfix for Name-Shadowing Issues with Schema Namespace",
-            "versionDescription": "Switched to using fully-qualified Apex class references to several classes in the Schema namespace, like Schema.User, to avoid collision issues in orgs that use name-shadowing classes",
+            "versionNumber": "4.12.6.NEXT",
+            "versionName": "Bugfix to Automatically Truncate LogEntryEvent__e Fields",
+            "versionDescription": "Updated LoggerDataStore, Logger, and LogEntryEventBuilder to automatically truncate string field values that are too long for the corresponding LogEntryEvent__e fields",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -166,6 +166,7 @@
         "Nebula Logger - Core@4.12.3-bugfix-for-userinfo.getsessionid()-exception": "04t5Y000001Mk5AQAS",
         "Nebula Logger - Core@4.12.4-bugfix-child-log__c-records-not-properly-linked-to-parent-log__c-records": "04t5Y000001Mk5KQAS",
         "Nebula Logger - Core@4.12.5-bugfix-for-name-shadowing-issues-with-schema-namespace": "04t5Y000001Mk5PQAS",
+        "Nebula Logger - Core@4.12.6-bugfix-to-automatically-truncate-logentryevent__e-fields": "04t5Y000001Mk5UQAS",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
