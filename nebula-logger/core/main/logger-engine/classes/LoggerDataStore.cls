@@ -331,8 +331,14 @@ public without sharing class LoggerDataStore {
                 for (String populatedFieldName : platformEvent.getPopulatedFieldsAsMap().keySet()) {
                     if (stringFieldNameToField.containsKey(populatedFieldName) && platformEvent.get(populatedFieldName) != null) {
                         Schema.SObjectField field = stringFieldNameToField.get(populatedFieldName);
+                        if (field == null) {
+                            continue;
+                        }
+
+                        Integer fieldMaxLength = field.getDescribe().getLength();
                         String stringValue = (String) platformEvent.get(populatedFieldName);
-                        String truncatedStringValue = stringValue?.left(field.getDescribe().getLength());
+                        // String.abbreviate() will throw a StringException if the target length is less than 4
+                        String truncatedStringValue = fieldMaxLength < 4 ? stringValue?.left(fieldMaxLength) : stringValue?.abbreviate(fieldMaxLength);
                         platformEvent.put(populatedFieldName, truncatedStringValue);
                     }
                 }

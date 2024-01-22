@@ -546,7 +546,7 @@ private class LoggerDataStore_Tests {
     static void it_should_automatically_truncate_string_fields_when_publishing_platform_event_record_list_with_truncation_dml_options() {
         List<LogEntryEvent__e> logEntryEventsToPublish = new List<LogEntryEvent__e>();
         String originalValue = 'a'.repeat(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength() + 1);
-        String expectedTruncatedValue = originalValue.left(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength());
+        String expectedTruncatedValue = originalValue.abbreviate(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength());
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateRequiredFields()
             .getRecord();
