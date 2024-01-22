@@ -280,6 +280,23 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_truncate_message_field_when_string_is_too_long() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
+        System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
+        System.Assert.isNull(builder.getLogEntryEvent().Message__c);
+        String excessivelyLongMessage = 'a'.repeat(Schema.LogEntryEvent__e.Message__c.getDescribe().getLength() + 1);
+
+        builder.setMessage(excessivelyLongMessage);
+
+        String expectedTruncatedMessage = excessivelyLongMessage.left(Schema.LogEntryEvent__e.Message__c.getDescribe().getLength());
+        System.Assert.areNotEqual(expectedTruncatedMessage, excessivelyLongMessage);
+        System.Assert.isTrue(builder.getLogEntryEvent().MessageTruncated__c);
+        System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
+        System.Assert.areEqual(expectedTruncatedMessage, builder.getLogEntryEvent().Message__c);
+    }
+
+    @IsTest
     static void it_should_not_apply_data_mask_rule_when_rule_disabled() {
         LoggerSettings__c userSettings = getUserSettings();
         userSettings.IsDataMaskingEnabled__c = true;
@@ -1119,6 +1136,26 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_truncate_http_request_body_field_when_string_is_too_long() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
+        String excessivelyLongRequestBody = 'a'.repeat(Schema.LogEntryEvent__e.HttpRequestBody__c.getDescribe().getLength() + 1);
+        System.HttpRequest request = new System.HttpRequest();
+        request.setBody(excessivelyLongRequestBody);
+
+        builder.setHttpRequestDetails(request);
+
+        System.Assert.areEqual(
+            excessivelyLongRequestBody.left(Schema.LogEntryEvent__e.HttpRequestBody__c.getDescribe().getLength()),
+            builder.getLogEntryEvent().HttpRequestBody__c,
+            'Expected string length ' +
+                Schema.LogEntryEvent__e.HttpRequestBody__c.getDescribe().getLength() +
+                ' for field HttpRequestBody__c, actual length is ' +
+                builder.getLogEntryEvent().HttpRequestBody__c.length()
+        );
+    }
+
+    @IsTest
     static void it_should_skip_setting_http_response_fields_when_response_is_null() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
@@ -1187,6 +1224,26 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().HttpResponseHeaders__c);
         System.Assert.areEqual(response.getStatus(), builder.getLogEntryEvent().HttpResponseStatus__c);
         System.Assert.areEqual(response.getStatusCode(), builder.getLogEntryEvent().HttpResponseStatusCode__c);
+    }
+
+    @IsTest
+    static void it_should_truncate_http_response_body_field_when_string_is_too_long() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
+        System.Assert.isNull(builder.getLogEntryEvent().HttpResponseBody__c);
+        String excessivelyLongResponseBody = 'a'.repeat(Schema.LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength() + 1);
+        System.HttpResponse response = new System.HttpResponse();
+        response.setBody(excessivelyLongResponseBody);
+
+        builder.setHttpResponseDetails(response);
+
+        System.Assert.areEqual(
+            excessivelyLongResponseBody.left(Schema.LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength()),
+            builder.getLogEntryEvent().HttpResponseBody__c,
+            'Expected string length ' +
+                Schema.LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength() +
+                ' for field HttpResponseBody__c, actual length is ' +
+                builder.getLogEntryEvent().HttpResponseBody__c.length()
+        );
     }
 
     @IsTest
