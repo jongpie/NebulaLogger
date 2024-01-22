@@ -93,14 +93,7 @@ public without sharing class LoggerMockDataStore {
         }
 
         public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents) {
-            this.publishCount++;
-            this.publishedPlatformEvents.addAll(platformEvents);
-
-            List<Database.SaveResult> mockSaveResults = new List<Database.SaveResult>();
-            for (SObject platformEvent : platformEvents) {
-                mockSaveResults.add(validateBeforeSave(platformEvent, false));
-            }
-            return mockSaveResults;
+            return this.publishRecords(platformEvents, null);
         }
 
         public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents, Database.DmlOptions dmlOptions) {

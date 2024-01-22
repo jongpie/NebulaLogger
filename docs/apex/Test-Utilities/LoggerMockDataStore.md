@@ -50,6 +50,8 @@ Utility class used to mock any data-related operations for the database, event b
 
 ###### `deliver(LoggerSObjectHandler sobjectHandlerInstance)` → `void`
 
+###### `getLastUsedDmlOptions()` → `Database.DmlOptions`
+
 ###### `getPublishCallCount()` → `Integer`
 
 ###### `getPublishedPlatformEvents()` → `List<SObject>`
@@ -57,6 +59,8 @@ Utility class used to mock any data-related operations for the database, event b
 ###### `publishRecord(SObject platformEvent)` → `Database.SaveResult`
 
 ###### `publishRecords(List<SObject> platformEvents)` → `List<Database.SaveResult>`
+
+###### `publishRecords(List<SObject> platformEvents, Database.DmlOptions dmlOptions)` → `List<Database.SaveResult>`
 
 ---
 
