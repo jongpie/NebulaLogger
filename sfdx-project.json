@@ -13,6 +13,7 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
+            "scopeProfiles": true,
             "versionNumber": "4.12.7.NEXT",
             "versionName": "Bugfix for LWC Stack Trace Parsing",
             "versionDescription": "Fixed ComponentLogger.cls so it handles recent-ish changes to the format of stack traces in LWCs. The field LogEntry__c.OriginLocation__c should now be correctly populated again for LWCs.",
@@ -20,7 +21,7 @@
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
             },
-            "default": false
+            "default": true
         },
         {
             "default": false,
@@ -81,10 +82,6 @@
         {
             "path": "./nebula-logger/recipes",
             "default": false
-        },
-        {
-            "path": "./nebula-logger/unsorted",
-            "default": true
         }
     ],
     "packageAliases": {
