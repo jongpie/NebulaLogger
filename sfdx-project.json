@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.12.8.NEXT",
-            "versionName": "Bugfix for HTTP Response Page Section Visibility",
-            "versionDescription": "Updated visibility rules on LogEntryRecordPage flexipage to show the HTTP Response section if status, body, or header keys are not null. Also added new-ish Analytics standard tab to the LoggerConsole app.",
+            "versionNumber": "4.12.9.NEXT",
+            "versionName": "RestRequest and RestResponse Logging Support",
+            "versionDescription": "Added new methods setRestRequestDetails() and setRestResponseDetails() in LogEntryEventBuilder that store RestRequest & RestResponse data in new fields on LogEntryEvent__e and LogEntry__c",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -183,6 +183,5 @@
         "Nebula Logger - Core Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
-    },
-    "target-dev-hub": "sf.nebula.logger.package.bot@jongpie.com"
+    }
 }
