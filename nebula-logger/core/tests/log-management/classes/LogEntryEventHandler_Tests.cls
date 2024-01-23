@@ -1363,6 +1363,15 @@ private class LogEntryEventHandler_Tests {
                         RecordSObjectClassification__c,
                         RecordSObjectType__c,
                         RecordSObjectTypeNamespace__c,
+                        RestRequestBody__c,
+                        RestRequestBodyMasked__c,
+                        RestRequestHeaderKeys__c,
+                        RestRequestHeaders__c,
+                        RestRequestMethod__c,
+                        RestRequestParameters__c,
+                        RestRequestRemoteAddress__c,
+                        RestRequestResourcePath__c,
+                        RestRequestUri__c,
                         RestResponseBody__c,
                         RestResponseBodyMasked__c,
                         RestResponseHeaderKeys__c,
@@ -1690,6 +1699,35 @@ private class LogEntryEventHandler_Tests {
             logEntry.RecordSObjectTypeNamespace__c,
             'logEntry.RecordSObjectTypeNamespace__c was not properly set'
         );
+        System.Assert.areEqual(logEntryEvent.RestRequestBody__c, logEntry.RestRequestBody__c, 'logEntry.RestRequestBody__c, was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.RestRequestBodyMasked__c,
+            logEntry.RestRequestBodyMasked__c,
+            'logEntry.RestRequestBodyMasked__c, was not properly set'
+        );
+        System.Assert.areEqual(
+            logEntryEvent.RestRequestHeaderKeys__c,
+            logEntry.RestRequestHeaderKeys__c,
+            'logEntry.RestRequestHeaderKeys__c, was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.RestRequestHeaders__c, logEntry.RestRequestHeaders__c, 'logEntry.RestRequestHeaders__c, was not properly set');
+        System.Assert.areEqual(logEntryEvent.RestRequestMethod__c, logEntry.RestRequestMethod__c, 'logEntry.RestRequestMethod__c, was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.RestRequestParameters__c,
+            logEntry.RestRequestParameters__c,
+            'logEntry.RestRequestParameters__c, was not properly set'
+        );
+        System.Assert.areEqual(
+            logEntryEvent.RestRequestRemoteAddress__c,
+            logEntry.RestRequestRemoteAddress__c,
+            'logEntry.RestRequestRemoteAddress__c, was not properly set'
+        );
+        System.Assert.areEqual(
+            logEntryEvent.RestRequestResourcePath__c,
+            logEntry.RestRequestResourcePath__c,
+            'logEntry.RestRequestResourcePath__c, was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.RestRequestUri__c, logEntry.RestRequestUri__c, 'logEntry.RestRequestUri__c, was not properly set');
         System.Assert.areEqual(logEntryEvent.RestResponseBody__c, logEntry.RestResponseBody__c, 'logEntry.RestResponseBody__c was not properly set');
         System.Assert.areEqual(
             logEntryEvent.RestResponseBodyMasked__c,

@@ -10,7 +10,7 @@ Logger.setScenario('an example transaction scenario name');
 Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
 Logger.getUserSettings().IsDataMaskingEnabled__c = true;
 
-User currentUser = [SELECT Id, Name, Username, Profile.Name FROM User WHERE Id = :System.UserInfo.getUserId()];
+Schema.User currentUser = [SELECT Id, Name, Username, Profile.Name FROM User WHERE Id = :System.UserInfo.getUserId()];
 currentUser.AboutMe = 'I hope you dont leak my social, which is 400-11-9999, btw.';
 
 // new ExampleClassWithLogging().doSomething();

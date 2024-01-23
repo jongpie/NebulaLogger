@@ -565,6 +565,26 @@ LogEntryEventBuilder
 
 An instance of LogEntryEventBuilder with the given record.
 
+#### `setRestRequestDetails(System.RestRequest request)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s REST Request fields
+
+##### Parameters
+
+| Param     | Description                          |
+| --------- | ------------------------------------ |
+| `request` | The instance of `RestRequest` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `setRestResponseDetails(System.RestResponse response)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s REST Response fields

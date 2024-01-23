@@ -575,7 +575,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.HttpRequestBody__c = cleanedRequestBody;
         this.logEntryEvent.HttpRequestBodyMasked__c = requestBodyMasked;
         this.logEntryEvent.HttpRequestCompressed__c = request.getCompressed();
-        this.logEntryEvent.HttpRequestEndpoint__c = truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestEndpoint__c, request.getEndpoint());
+        this.logEntryEvent.HttpRequestEndpoint__c = request.getEndpoint();
         this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
         return this;
     }
@@ -608,6 +608,54 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.HttpResponseHeaders__c = formattedHeadersString;
         this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
         this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's REST Request fields
+     * @param  request The instance of `RestRequest` to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setRestRequestDetails(System.RestRequest request) {
+        if (this.shouldSave() == false || request == null) {
+            return this;
+        }
+
+        String stringifiedRequestBody = request.requestBody?.toString();
+        String truncatedRequestBody = truncateFieldValue(Schema.LogEntryEvent__e..RestRequestBody__c, stringifiedRequestBody);
+        String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
+        Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
+
+        String formattedHeaderKeysString;
+        String formattedHeadersString;
+        if (request.headers != null) {
+            formattedHeaderKeysString = String.join(request.headers.keySet(), NEW_LINE_DELIMITER);
+            if (LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES) {
+                List<String> headers = new List<String>();
+                for (String headerKey : request.headers.keySet()) {
+                    headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, request.headers.get(headerKey) }));
+                }
+                formattedHeadersString = String.join(headers, NEW_LINE_DELIMITER);
+            }
+        }
+        String formattedParametersString;
+        if (request.params != null) {
+            List<String> parameters = new List<String>();
+            for (String headerKey : request.params.keySet()) {
+                parameters.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, request.params.get(headerKey) }));
+            }
+            formattedParametersString = String.join(parameters, NEW_LINE_DELIMITER);
+        }
+
+        this.logEntryEvent.RestRequestBody__c = cleanedRequestBody;
+        this.logEntryEvent.RestRequestBodyMasked__c = requestBodyMasked;
+        this.logEntryEvent.RestRequestHeaderKeys__c = formattedHeaderKeysString;
+        this.logEntryEvent.RestRequestHeaders__c = formattedHeadersString;
+        this.logEntryEvent.RestRequestMethod__c = request.httpMethod;
+        this.logEntryEvent.RestRequestParameters__c = formattedParametersString;
+        this.logEntryEvent.RestRequestRemoteAddress__c = request.remoteAddress;
+        this.logEntryEvent.RestRequestResourcePath__c = request.resourcePath;
+        this.logEntryEvent.RestRequestUri__c = request.requestURI;
         return this;
     }
 
