@@ -167,6 +167,7 @@
         "Nebula Logger - Core@4.12.4-bugfix-child-log__c-records-not-properly-linked-to-parent-log__c-records": "04t5Y000001Mk5KQAS",
         "Nebula Logger - Core@4.12.5-bugfix-for-name-shadowing-issues-with-schema-namespace": "04t5Y000001Mk5PQAS",
         "Nebula Logger - Core@4.12.6-bugfix-to-automatically-truncate-logentryevent__e-fields": "04t5Y000001Mk5UQAS",
+        "Nebula Logger - Core@4.12.7-bugfix-for-lwc-stack-trace-parsing": "04t5Y000001Mk6IQAS",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
