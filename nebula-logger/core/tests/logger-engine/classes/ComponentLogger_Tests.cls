@@ -241,13 +241,49 @@ private class ComponentLogger_Tests {
     }
 
     @IsTest
-    static void it_should_parse_web_component_stack_trace() {
+    static void it_should_parse_web_component_stack_trace_when_stack_trace_is_modern_format() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String expectedComponentType = 'LWC';
+        String expectedComponentApiName = 'c/loggerLWCDemo';
+        String expectedComponentFunctionName = 'logErrorExample';
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+        componentLogEntry.stack = getMockModernWebComponentStackTrace();
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
+        // TODO Move these asserts to LogEntryHandler_Tests
+        // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
+        // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
+        System.Assert.areEqual(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+    }
+
+    @IsTest
+    static void it_should_parse_web_component_stack_trace_when_stack_trace_is_legacy_format() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String expectedComponentType = 'LWC';
         String expectedComponentApiName = 'c/loggerLWCDemo';
         String expectedComponentFunctionName = 'saveLogWebExample';
         ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
-        componentLogEntry.stack = getMockWebComponentStackTrace();
+        componentLogEntry.stack = getMockLegacyWebComponentStackTrace();
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -422,8 +458,39 @@ private class ComponentLogger_Tests {
             '\nloggerAuraDemo.js:17:17';
     }
 
-    private static String getMockWebComponentStackTrace() {
-        // This is a copy of an actual stack trace generated from c/loggerLWCDemo
+    private static String getMockModernWebComponentStackTrace() {
+        // This is a partial copy of an actual stack trace generated from c/loggerLWCDemo in January 2024
+        List<String> lwcStackTraceLines = new List<String>{
+            '@modules/c/logger.js:33:22',
+            'LogEntryBuilder@modules/c/logger.js:59:87',
+            'newLogEntry@modules/c/logger.js:189:14',
+            '_newEntry@modules/c/logger.js:397:44',
+            'error@modules/c/logger.js:264:21',
+            'logErrorExample@modules/c/loggerLWCDemo.js:266:35',
+            'createHooksCallback$LWS/<@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js line 35465 > eval:2583:24',
+            'applyOrConstructTrapForTwoOrMoreArgs$LWS@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:32254:38',
+            'callHook@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:10035:19',
+            'invokeEventListener/<@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:9926:21',
+            'runWithBoundaryProtection@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:10517:13',
+            'invokeEventListener@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:9921:34',
+            'b/<@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:9365:32',
+            'handleEvent@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:1615:51',
+            'invokeListenersByPlacement/<@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:1660:46',
+            'invokeListenersByPlacement@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:1655:21',
+            'domListener@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:1670:39',
+            'EventListener.handleEvent*attachDOMListener@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:1687:30',
+            'addCustomElementEventListener@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:1712:30',
+            'patchedAddEventListener@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:3022:50',
+            'value@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:5567:53',
+            'addEventListener@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:11554:20',
+            'applyEventListeners@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:8200:29',
+            '...blah,blah,blah more javascript code goes here, etc.'
+        };
+        return String.join(lwcStackTraceLines, '\n');
+    }
+
+    private static String getMockLegacyWebComponentStackTrace() {
+        // This is a copy of an actual stack trace generated from c/loggerLWCDemo in August 2021
         return 'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/c/logger.js:28:24' +
             '\nnewLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/c/logger.js:172:14' +
             '\n_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/c/logger.js:349:44' +

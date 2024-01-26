@@ -11,6 +11,17 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.StdCyclomaticComplexity')
 public inherited sharing class ComponentLogger {
+    private static final String LOGGER_COMPONENT_NAME {
+        get {
+            if (LOGGER_COMPONENT_NAME == null) {
+                String namespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
+                LOGGER_COMPONENT_NAME = '/' + namespace + '/logger.js';
+            }
+            return LOGGER_COMPONENT_NAME;
+        }
+        set;
+    }
+
     static {
         Logger.ignoreOrigin(ComponentLogger.class);
     }
@@ -90,14 +101,13 @@ public inherited sharing class ComponentLogger {
         Boolean isAuraComponent = false;
 
         if (String.isNotBlank(stackTraceString)) {
-            String loggerComponentReferenceToIgnore = '/c/logger.js';
             String auraComponentContent = '/n/components/';
-            String lwcModuleContent = '/n/modules/';
+            String lwcModuleContent = 'modules/';
             Boolean parentComponentFound = false;
 
             List<String> stackTraceLines = new List<String>();
             for (String currentStackTraceLine : stackTraceString.split('\n')) {
-                if (currentStackTraceLine.contains(loggerComponentReferenceToIgnore)) {
+                if (currentStackTraceLine.contains(LOGGER_COMPONENT_NAME)) {
                     continue;
                 } else if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent)) {
                     isAuraComponent = true;
