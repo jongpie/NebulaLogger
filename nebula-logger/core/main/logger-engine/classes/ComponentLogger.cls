@@ -9,7 +9,7 @@
  * @see Logger
  * @see LogEntryEventBuilder
  */
-@SuppressWarnings('PMD.ExcessivePublicCount, PMD.StdCyclomaticComplexity')
+@SuppressWarnings('PMD.ExcessivePublicCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity')
 public inherited sharing class ComponentLogger {
     private static final String LOGGER_COMPONENT_NAME {
         get {
