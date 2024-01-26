@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.6.NEXT",
-            "versionName": "Bugfix to Automatically Truncate LogEntryEvent__e Fields",
-            "versionDescription": "Updated LoggerDataStore, Logger, and LogEntryEventBuilder to automatically truncate string field values that are too long for the corresponding LogEntryEvent__e fields",
+            "versionNumber": "4.12.7.NEXT",
+            "versionName": "Bugfix for LWC Stack Trace Parsing",
+            "versionDescription": "Fixed ComponentLogger.cls so it handles recent-ish changes to the format of stack traces in LWCs. The field LogEntry__c.OriginLocation__c should now be correctly populated again for LWCs.",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
