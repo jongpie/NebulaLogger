@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.12.7.NEXT",
-            "versionName": "Bugfix for LWC Stack Trace Parsing",
-            "versionDescription": "Fixed ComponentLogger.cls so it handles recent-ish changes to the format of stack traces in LWCs. The field LogEntry__c.OriginLocation__c should now be correctly populated again for LWCs.",
+            "versionNumber": "4.12.8.NEXT",
+            "versionName": "Bugfix for HTTP Response Page Section Visibility",
+            "versionDescription": "Updated visibility rules on LogEntryRecordPage flexipage to show the HTTP Response section if status, body, or header keys are not null. Also added new-ish Analytics standard tab to the LoggerConsole app.",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
