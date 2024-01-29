@@ -9,6 +9,7 @@
             "default": true,
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
+            "scopeProfiles": true,
             "ancestorVersion": "HIGHEST",
             "versionNumber": "4.13.0.NEXT",
             "versionName": "Spring '24 Release",

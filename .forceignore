@@ -5,7 +5,6 @@
 nebula-logger/managed-package/sfdx-project.json
 nebula-logger/managed-package/**/*.animationRule-meta.xml
 nebula-logger/managed-package/**/*.testSuite-meta.xml
-/**/Admin.profile-meta.xml
 
 # Directory/package-specific README files
 **/README.md

@@ -13,14 +13,15 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.12.7.NEXT",
-            "versionName": "Bugfix for LWC Stack Trace Parsing",
-            "versionDescription": "Fixed ComponentLogger.cls so it handles recent-ish changes to the format of stack traces in LWCs. The field LogEntry__c.OriginLocation__c should now be correctly populated again for LWCs.",
+            "scopeProfiles": true,
+            "versionNumber": "4.12.8.NEXT",
+            "versionName": "Bugfix for HTTP Response Page Section Visibility",
+            "versionDescription": "Updated visibility rules on LogEntryRecordPage flexipage to show the HTTP Response section if status, body, or header keys are not null. Also added new-ish Analytics standard tab to the LoggerConsole app.",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
             },
-            "default": false
+            "default": true
         },
         {
             "default": false,
@@ -81,10 +82,6 @@
         {
             "path": "./nebula-logger/recipes",
             "default": false
-        },
-        {
-            "path": "./nebula-logger/unsorted",
-            "default": true
         }
     ],
     "packageAliases": {
@@ -168,6 +165,7 @@
         "Nebula Logger - Core@4.12.5-bugfix-for-name-shadowing-issues-with-schema-namespace": "04t5Y000001Mk5PQAS",
         "Nebula Logger - Core@4.12.6-bugfix-to-automatically-truncate-logentryevent__e-fields": "04t5Y000001Mk5UQAS",
         "Nebula Logger - Core@4.12.7-bugfix-for-lwc-stack-trace-parsing": "04t5Y000001Mk6IQAS",
+        "Nebula Logger - Core@4.12.8-bugfix-for-http-response-page-section-visibility": "04t5Y000001Mk6cQAC",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
