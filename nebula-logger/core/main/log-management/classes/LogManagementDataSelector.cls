@@ -59,9 +59,27 @@ public without sharing virtual class LogManagementDataSelector {
         }
 
         return [
-            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexClass
             WHERE Name IN :apexClassNames
+            ORDER BY NamespacePrefix NULLS LAST
+        ];
+    }
+
+    /**
+     * @description Returns a list of `ApexTrigger` records
+     * @param  apexTriggerNames The names of the Apex triggers to query
+     * @return                `List<ApexTrigger>` containing any matching records
+     */
+    public virtual List<ApexTrigger> getApexTriggers(List<String> apexTriggerNames) {
+        if (LoggerParameter.QUERY_APEX_TRIGGER_DATA == false) {
+            return new List<ApexTrigger>();
+        }
+
+        return [
+            SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
+            FROM ApexTrigger
+            WHERE Name IN :apexTriggerNames
             ORDER BY NamespacePrefix NULLS LAST
         ];
     }
