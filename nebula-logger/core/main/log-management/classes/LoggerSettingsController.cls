@@ -84,7 +84,7 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static LoggerSettings__c createRecord() {
-        LoggerSettings__c defaultSettings = Logger.createSettings();
+        LoggerSettings__c defaultSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
         if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == false) {
             defaultSettings.IsApexSystemDebugLoggingEnabled__c = false;
             defaultSettings.IsJavaScriptConsoleLoggingEnabled__c = false;

@@ -50,9 +50,9 @@ public without sharing class LoggerScenarioRule {
             }
         }
 
-        if (System.Test.isRunningTest()) {
-            scenarioRules.clear();
-        }
+        // if (System.Test.isRunningTest()) {
+        //     scenarioRules.clear();
+        // }
 
         return scenarioRules;
     }

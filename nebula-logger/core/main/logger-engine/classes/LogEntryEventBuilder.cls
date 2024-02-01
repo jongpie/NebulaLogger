@@ -493,6 +493,10 @@ global with sharing class LogEntryEventBuilder {
      * @param  response The instance of `HttpResponse` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    global LogEntryEventBuilder setHttpResponseDetails(System.HttpResponse response, List<String> headerKeysToLog) {
+        return null;
+    }
+
     global LogEntryEventBuilder setHttpResponseDetails(System.HttpResponse response) {
         if (this.shouldSave() == false || response == null) {
             return this;
