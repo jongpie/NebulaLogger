@@ -8,7 +8,7 @@
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
     <label>DEPRECATED: Topics</label>
-    <length>131072</length>
+    <length>256</length>
     <securityClassification>Confidential</securityClassification>
     <type>LongTextArea</type>
     <visibleLines>8</visibleLines>

@@ -7,7 +7,7 @@
     <externalId>false</externalId>
     <inlineHelpText>Flow definition information, specified by the org’s admin.</inlineHelpText>
     <label>Flow Description</label>
-    <length>131072</length>
+    <length>5000</length>
     <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>

@@ -5,7 +5,7 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <label>Exception Message</label>
-    <length>131072</length>
+    <length>5000</length>
     <securityClassification>Confidential</securityClassification>
     <type>LongTextArea</type>
     <visibleLines>8</visibleLines>
