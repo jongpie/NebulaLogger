@@ -135,6 +135,17 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_query_apex_trigger_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_TRIGGER_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_query_auth_session_data() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(mockValue));
