@@ -1297,6 +1297,9 @@ private class LogEntryEventHandler_Tests {
                         EntryScenario__r.UniqueId__c,
                         EntryScenarioName__c,
                         EpochTimestamp__c,
+                        ExceptionLocation__c,
+                        ExceptionSourceApiName__c,
+                        ExceptionSourceType__c,
                         ExceptionStackTrace__c,
                         ExceptionType__c,
                         HttpRequestBody__c,
@@ -1349,8 +1352,10 @@ private class LogEntryEventHandler_Tests {
                         MessageTruncated__c,
                         Id,
                         Name,
-                        OriginType__c,
                         OriginLocation__c,
+                        OriginSourceApiName__c,
+                        OriginSourceType__c,
+                        OriginType__c,
                         RecordCollectionSize__c,
                         RecordCollectionType__c,
                         RecordId__c,
@@ -1507,6 +1512,9 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c, 'logEntry.DatabaseResultJson__c was not properly set');
         System.Assert.areEqual(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c, 'logEntry.DatabaseResultType__c was not properly set');
         System.Assert.areEqual(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c, 'logEntry.EpochTimestamp__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ExceptionLocation__c, logEntry.ExceptionLocation__c, 'logEntry.ExceptionLocation__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ExceptionSourceApiName__c, logEntry.ExceptionSourceApiName__c, 'logEntry.ExceptionSourceApiName__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ExceptionSourceType__c, logEntry.ExceptionSourceType__c, 'logEntry.ExceptionSourceType__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ExceptionStackTrace__c, logEntry.ExceptionStackTrace__c, 'logEntry.ExceptionStackTrace__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c, 'logEntry.ExceptionType__c was not properly set');
         System.Assert.areEqual(logEntryEvent.HttpRequestBody__c, logEntry.HttpRequestBody__c, 'logEntry.HttpRequestBody__c was not properly set');
@@ -1669,8 +1677,10 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logEntryEvent.Message__c, logEntry.Message__c, 'logEntry.Message__c was not properly set');
         System.Assert.areEqual(logEntryEvent.MessageTruncated__c, logEntry.MessageTruncated__c, 'logEntry.MessageTruncated__c was not properly set');
         System.Assert.areEqual(logEntry.Id, logEntry.Name, 'logEntry.Name was not properly set');
-        System.Assert.areEqual(logEntryEvent.OriginType__c, logEntry.OriginType__c, 'logEntry.OriginType__c was not properly set');
         System.Assert.areEqual(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c, 'logEntry.OriginLocation__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.OriginSourceApiName__c, logEntry.OriginSourceApiName__c, 'logEntry.OriginSourceApiName__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.OriginSourceType__c, logEntry.OriginSourceType__c, 'logEntry.OriginSourceType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.OriginType__c, logEntry.OriginType__c, 'logEntry.OriginType__c was not properly set');
         System.Assert.areEqual(
             logEntryEvent.RecordCollectionSize__c,
             logEntry.RecordCollectionSize__c,
