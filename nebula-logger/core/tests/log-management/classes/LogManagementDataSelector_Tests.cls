@@ -244,6 +244,20 @@ private class LogManagementDataSelector_Tests {
     }
 
     @IsTest
+    static void it_returns_log_entry_for_specified_log_entry_id() {
+        LoggerSObjectHandler.shouldExecute(false);
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert log;
+        LogEntry__c logEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id)).populateRequiredFields().getRecord();
+        LogEntry__c anotherLogEntry = logEntry.clone();
+        insert new List<LogEntry__c>{ logEntry, anotherLogEntry };
+
+        LogEntry__c returnedLogEntry = LogManagementDataSelector.getInstance().getLogEntryById(logEntry.Id);
+
+        System.Assert.areEqual(logEntry.Id, returnedLogEntry.Id);
+    }
+
+    @IsTest
     static void it_returns_log_entries_for_specified_log_id() {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();

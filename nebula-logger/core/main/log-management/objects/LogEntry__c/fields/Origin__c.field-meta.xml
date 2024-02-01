@@ -4,7 +4,8 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <formula>TEXT(OriginType__c) + IF(OriginLocation__c == null, &apos;&apos;, &apos;.&apos; + OriginLocation__c)</formula>
+    <formula
+    >TEXT(OriginType__c) + IF(OR(ISPICKVAL(OriginSourceType__c, &apos;&apos;), ISPICKVAL(OriginSourceType__c, &apos;ApexAnonymousBlock&apos;)), &apos;&apos;, &apos;.&apos; + TEXT(OriginSourceType__c)) + IF(OriginLocation__c == null, &apos;&apos;, &apos;.&apos; + OriginLocation__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Origin</label>
     <required>false</required>

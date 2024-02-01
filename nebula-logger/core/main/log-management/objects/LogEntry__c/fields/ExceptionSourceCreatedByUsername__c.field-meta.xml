@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Trigger__c</fullName>
+    <fullName>ExceptionSourceCreatedByUsername__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <formula>IF(
-    TriggerIsExecuting__c,
-    TEXT(TriggerSObjectType__c) + &apos;.&apos; + TEXT(TriggerOperationType__c),
-    null
-)</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Trigger Operation</label>
+    <label>Exception Source Created By</label>
+    <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>
