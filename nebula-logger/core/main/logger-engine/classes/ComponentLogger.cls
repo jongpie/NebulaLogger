@@ -90,6 +90,7 @@ public inherited sharing class ComponentLogger {
             return;
         }
 
+        // FIXME add logic to set new fields ExceptionLocation__c and ExceptionSourceType__c
         logEntryEventBuilder.getLogEntryEvent().ExceptionMessage__c = componentError.message;
         logEntryEventBuilder.getLogEntryEvent().ExceptionStackTrace__c = componentError.stack;
         logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = componentError.type;
@@ -97,8 +98,11 @@ public inherited sharing class ComponentLogger {
 
     @SuppressWarnings('PMD.AvoidDeeplyNestedIfStmts, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
     private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
-        String originLocation;
+        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+
         Boolean isAuraComponent = false;
+        Boolean isWebComponent = false;
+        String originLocation;
 
         if (String.isNotBlank(stackTraceString)) {
             String auraComponentContent = '/n/components/';
@@ -113,6 +117,7 @@ public inherited sharing class ComponentLogger {
                     isAuraComponent = true;
                     parentComponentFound = true;
                 } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent)) {
+                    isWebComponent = true;
                     parentComponentFound = true;
                 }
 
@@ -123,7 +128,12 @@ public inherited sharing class ComponentLogger {
 
             stackTraceString = String.join(stackTraceLines, '\n');
             if (String.isNotBlank(stackTraceString)) {
-                String componentContent = isAuraComponent ? auraComponentContent : lwcModuleContent;
+                String componentContent;
+                if (isAuraComponent) {
+                    componentContent = auraComponentContent;
+                } else if(isWebComponent) {
+                    componentContent = lwcModuleContent;
+                }
                 String componentName;
                 String componentFunction;
                 for (String currentStackTraceLine : stackTraceString.split('\n')) {
@@ -138,11 +148,24 @@ public inherited sharing class ComponentLogger {
                 originLocation = componentName + '.' + componentFunction;
             }
         }
+        // Older, custom convention used for a 'type', with values 'Aura' and 'LWC'
+        String componentType;
+        // New, standardized convention that uses metadata type names 'AuraDefinitionBundle' and 'LightningComponentBundle'
+        String originSourceType;
 
-        logEntryEventBuilder.getLogEntryEvent().ComponentType__c = isAuraComponent ? 'Aura' : 'LWC';
-        logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
-        logEntryEventBuilder.getLogEntryEvent().OriginLocation__c = originLocation;
-        logEntryEventBuilder.getLogEntryEvent().StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
+        if (isAuraComponent) {
+            componentType = 'Aura';
+            originSourceType = 'AuraDefinitionBundle';
+        } else if (isWebComponent) {
+            componentType = 'LWC';
+            originSourceType = 'LightningComponentBundle';
+        }
+
+        logEntryEvent.ComponentType__c = componentType;
+        logEntryEvent.OriginSourceType__c = originSourceType;
+        logEntryEvent.OriginLocation__c = originLocation;
+        logEntryEvent.OriginType__c = 'Component';
+        logEntryEvent.StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
     }
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {

@@ -184,6 +184,5 @@
         "Nebula Logger - Core Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
-    },
-    "target-dev-hub": "sf.nebula.logger.package.bot@jongpie.com"
+    }
 }

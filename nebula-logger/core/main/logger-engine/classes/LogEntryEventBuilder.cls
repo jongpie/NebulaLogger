@@ -75,7 +75,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
+     * @description `Deprecated` - Formally used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
      * @param  userSettings      The instance of `LoggerSettings__c` for the current to use to control any feature flags
      * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
      * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
@@ -83,6 +83,17 @@ global with sharing class LogEntryEventBuilder {
      */
     @SuppressWarnings('PMD.ExcessiveParameterList, PMD.NcssConstructorCount')
     public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
+        // TOODO eliminate this constructor
+        this(userSettings, entryLoggingLevel, shouldSave);
+    }
+
+    /**
+     * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
+     * @param  userSettings      The instance of `LoggerSettings__c` for the current to use to control any feature flags
+     * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
+     * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
+     */
+    public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave) {
         this.shouldSave = shouldSave;
         if (this.shouldSave() == false) {
             return;

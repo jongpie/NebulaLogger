@@ -93,13 +93,18 @@ public without sharing class LoggerMockDataStore {
         }
 
         public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents) {
-            return this.publishRecords(platformEvents, null);
+            return this.publishRecords(platformEvents, this.getDefaultDmlOptions());
         }
 
         public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents, Database.DmlOptions dmlOptions) {
             this.publishCount++;
             this.publishedPlatformEvents.addAll(platformEvents);
             this.lastUsedDmlOptions = dmlOptions;
+
+            if (dmlOptions?.AllowFieldTruncation == true) {
+                // System.Assert.fail('truncate!!! ' + JSON.serializePretty(platformEvents));
+                this.truncateStringFields(platformEvents);
+            }
 
             List<Database.SaveResult> mockSaveResults = new List<Database.SaveResult>();
             for (SObject platformEvent : platformEvents) {
