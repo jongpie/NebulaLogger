@@ -5,7 +5,7 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <label>Exception Stack Trace</label>
-    <length>5000</length>
+    <length>131072</length>
     <securityClassification>Confidential</securityClassification>
     <type>LongTextArea</type>
     <visibleLines>8</visibleLines>
