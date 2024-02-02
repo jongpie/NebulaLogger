@@ -8,7 +8,7 @@
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>Rest Request Body Masked</label>
+    <label>REST Request Body Masked</label>
     <securityClassification>Confidential</securityClassification>
     <type>Checkbox</type>
 </CustomField>

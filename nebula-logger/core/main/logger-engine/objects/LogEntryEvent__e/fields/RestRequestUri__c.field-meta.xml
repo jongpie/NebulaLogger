@@ -7,7 +7,7 @@
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>Rest Request URI</label>
+    <label>REST Request URI</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

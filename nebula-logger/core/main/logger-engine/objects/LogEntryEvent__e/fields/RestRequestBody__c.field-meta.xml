@@ -7,7 +7,7 @@
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>Rest Request Body</label>
+    <label>REST Request Body</label>
     <length>131072</length>
     <securityClassification>Confidential</securityClassification>
     <type>LongTextArea</type>

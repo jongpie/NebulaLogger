@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Store Http Response Header Values</label>
+    <label>Store REST Response Header Values</label>
     <protected>false</protected>
     <values>
         <field>Description__c</field>
