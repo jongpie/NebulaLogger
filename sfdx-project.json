@@ -166,6 +166,7 @@
         "Nebula Logger - Core@4.12.6-bugfix-to-automatically-truncate-logentryevent__e-fields": "04t5Y000001Mk5UQAS",
         "Nebula Logger - Core@4.12.7-bugfix-for-lwc-stack-trace-parsing": "04t5Y000001Mk6IQAS",
         "Nebula Logger - Core@4.12.8-bugfix-for-http-response-page-section-visibility": "04t5Y000001Mk6cQAC",
+        "Nebula Logger - Core@4.12.9-restrequest-and-restresponse-logging-support": "04t5Y000001Mk7BQAS",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
@@ -183,5 +184,6 @@
         "Nebula Logger - Core Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
-    }
+    },
+    "target-dev-hub": "sf.nebula.logger.package.bot@jongpie.com"
 }
