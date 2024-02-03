@@ -53,7 +53,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @param  apexClassNames The names of the Apex classes to query
      * @return                `List<ApexClass>` containing any matching records
      */
-    public virtual List<ApexClass> getApexClasses(List<String> apexClassNames) {
+    public virtual List<ApexClass> getApexClasses(Set<String> apexClassNames) {
         if (LoggerParameter.QUERY_APEX_CLASS_DATA == false) {
             return new List<ApexClass>();
         }
@@ -71,7 +71,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @param  apexTriggerNames The names of the Apex triggers to query
      * @return                `List<ApexTrigger>` containing any matching records
      */
-    public virtual List<ApexTrigger> getApexTriggers(List<String> apexTriggerNames) {
+    public virtual List<ApexTrigger> getApexTriggers(Set<String> apexTriggerNames) {
         if (LoggerParameter.QUERY_APEX_TRIGGER_DATA == false) {
             return new List<ApexTrigger>();
         }

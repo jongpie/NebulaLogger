@@ -780,7 +780,7 @@ private class LogEntryHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_apex_class_details_for_top_level_class() {
+    static void it_should_set_exception_apex_class_details_for_top_level_class() {
         // FIXME the implementation does not seem to properly handle classes with a namespace prefix
         // (including when both the managed & unlocked packages are installed in an org), so skip the tests for now,
         // but revisit this test + implementation
@@ -788,16 +788,23 @@ private class LogEntryHandler_Tests {
             return;
         }
 
-        String exampleTopLevelClassName = 'Logger';
-        String methodName = 'saveLog';
-        String exampleTopLevelClassMethodName = exampleTopLevelClassName + '. ' + methodName;
+        LoggerStackTrace stackTrace = new LoggerStackTrace();
         ApexClass apexClass = [
-            SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
+            SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
-            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :exampleTopLevelClassName
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.apexTopLevelClassName
         ];
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleTopLevelClassMethodName, OriginType__c = 'Apex');
+        LogEntry__c logEntry = new LogEntry__c(
+            ExceptionSourceApiName__c = stackTrace.apexTopLevelClassName,
+            ExceptionSourceType__c = 'ApexClass',
+            ExceptionStackTrace__c = String.join(
+                new List<String>{
+                    'Class.' + stackTrace.originLocation + ': line ' + stackTrace.apexCodeLineNumber + ', column 1',
+                    'AnonymousBlock: line 1, column 1'
+                }, '\n'),
+            Log__c = log.Id
+        );
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
@@ -810,29 +817,43 @@ private class LogEntryHandler_Tests {
         logEntry = [
             SELECT
                 Id,
-                ApexClassApiVersion__c,
-                ApexClassCreatedDate__c,
-                ApexClassId__c,
-                ApexClassLastModifiedDate__c,
-                ApexClassName__c,
-                ApexInnerClassName__c,
-                ApexMethodName__c,
-                OriginLocation__c
+                HasExceptionSourceSnippet__c,
+                ExceptionSourceApiVersion__c,
+                ExceptionSourceCreatedByUsername__c,
+                ExceptionSourceCreatedDate__c,
+                ExceptionSourceId__c,
+                ExceptionSourceLastModifiedByUsername__c,
+                ExceptionSourceLastModifiedDate__c,
+                ExceptionSourceSnippet__c
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        System.Assert.areEqual(exampleTopLevelClassMethodName, logEntry.OriginLocation__c);
-        System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
-        System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
-        System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
-        System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
-        System.Assert.areEqual(exampleTopLevelClassName, logEntry.ApexClassName__c);
-        System.Assert.isNull(logEntry.ApexInnerClassName__c);
-        System.Assert.areEqual(methodName, logEntry.ApexMethodName__c);
+        System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ExceptionSourceApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.ExceptionSourceCreatedByUsername__c);
+        System.Assert.areEqual(apexClass.CreatedDate, logEntry.ExceptionSourceCreatedDate__c);
+        System.Assert.areEqual(apexClass.Id, logEntry.ExceptionSourceId__c);
+        System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.ExceptionSourceLastModifiedByUsername__c);
+        System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ExceptionSourceLastModifiedDate__c);
+        System.Assert.isTrue(logEntry.HasExceptionSourceSnippet__c);
+        LogEntryHandler.ApexCodeSnippet expectedCodeSnippet = new LogEntryHandler.ApexCodeSnippet(apexClass, stackTrace);
+        System.Assert.areEqual(stackTrace.originSourceApiName, expectedCodeSnippet.sourceApiName);
+        System.Assert.areEqual(stackTrace.originSourceType, expectedCodeSnippet.sourceType);
+        System.Assert.areEqual(stackTrace.apexCodeLineNumber, expectedCodeSnippet.targetLineNumber);
+        /*
+            TODO determine best way(s) to test remaining code snippet properties:
+                [x] public String sourceApiName
+                [x] public String sourceType
+                [ ] public String code
+                [ ] public Integer startingLineNumber
+                [ ] public Integer endingLineNumber
+                [x] public Integer targetLineNumber
+                [ ] public Integer totalLinesOfCode
+        */
+        System.Assert.areEqual(JSON.serializePretty(expectedCodeSnippet), logEntry.ExceptionSourceSnippet__c);
     }
 
     @IsTest
-    static void it_should_set_apex_class_details_for_inner_class() {
+    static void it_should_set_origin_apex_class_details_for_top_level_class() {
         // FIXME the implementation does not seem to properly handle classes with a namespace prefix
         // (including when both the managed & unlocked packages are installed in an org), so skip the tests for now,
         // but revisit this test + implementation
@@ -840,17 +861,23 @@ private class LogEntryHandler_Tests {
             return;
         }
 
-        String exampleTopLevelClassName = 'Logger';
-        String exampleInnerClassName = 'QueueableSaver';
-        String methodName = 'execute';
-        String exampleInnerClassMethodName = exampleTopLevelClassName + '.' + exampleInnerClassName + '.' + methodName;
+        LoggerStackTrace stackTrace = new LoggerStackTrace();
         ApexClass apexClass = [
-            SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
+            SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
-            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :exampleTopLevelClassName
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.apexTopLevelClassName
         ];
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleInnerClassMethodName, OriginType__c = 'Apex');
+        LogEntry__c logEntry = new LogEntry__c(
+            Log__c = log.Id,
+            OriginSourceApiName__c = stackTrace.apexTopLevelClassName,
+            OriginSourceType__c = 'ApexClass',
+            StackTrace__c = String.join(
+                new List<String>{
+                    'Class.' + stackTrace.originLocation + ': line ' + stackTrace.apexCodeLineNumber + ', column 1',
+                    'AnonymousBlock: line 1, column 1'
+                }, '\n')
+        );
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
@@ -870,19 +897,150 @@ private class LogEntryHandler_Tests {
                 ApexClassName__c,
                 ApexInnerClassName__c,
                 ApexMethodName__c,
-                OriginLocation__c
+                HasStackTrace__c,
+                HasOriginSourceSnippet__c,
+                OriginSourceApiVersion__c,
+                OriginSourceCreatedByUsername__c,
+                OriginSourceCreatedDate__c,
+                OriginSourceId__c,
+                OriginSourceLastModifiedByUsername__c,
+                OriginSourceLastModifiedDate__c,
+                OriginSourceSnippet__c,
+                StackTrace__c
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        System.Assert.areEqual(exampleInnerClassMethodName, logEntry.OriginLocation__c);
+        // ApexClass fields
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
-        System.Assert.areEqual(exampleTopLevelClassName, logEntry.ApexClassName__c);
-        System.Assert.areEqual(exampleInnerClassName, logEntry.ApexInnerClassName__c);
-        System.Assert.areEqual(methodName, logEntry.ApexMethodName__c);
+        System.Assert.areEqual(stackTrace.apexTopLevelClassName, logEntry.ApexClassName__c);
+        System.Assert.isNull(logEntry.ApexInnerClassName__c);
+        System.Assert.areEqual(stackTrace.apexMethodName, logEntry.ApexMethodName__c);
+        // Origin source fields
+        System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.OriginSourceApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
+        System.Assert.areEqual(apexClass.CreatedDate, logEntry.OriginSourceCreatedDate__c);
+        System.Assert.areEqual(apexClass.Id, logEntry.OriginSourceId__c);
+        System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
+        System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
+        System.Assert.isTrue(logEntry.HasOriginSourceSnippet__c);
+        LogEntryHandler.ApexCodeSnippet expectedCodeSnippet = new LogEntryHandler.ApexCodeSnippet(apexClass, stackTrace);
+        System.Assert.areEqual(stackTrace.originSourceApiName, expectedCodeSnippet.sourceApiName);
+        System.Assert.areEqual(stackTrace.originSourceType, expectedCodeSnippet.sourceType);
+        System.Assert.areEqual(stackTrace.apexCodeLineNumber, expectedCodeSnippet.targetLineNumber);
+        /*
+            TODO determine best way(s) to test remaining code snippet properties:
+                [x] public String sourceApiName
+                [x] public String sourceType
+                [ ] public String code
+                [ ] public Integer startingLineNumber
+                [ ] public Integer endingLineNumber
+                [x] public Integer targetLineNumber
+                [ ] public Integer totalLinesOfCode
+        */
+        System.Assert.areEqual(JSON.serializePretty(expectedCodeSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.isTrue(logEntry.HasStackTrace__c);
+        // FIXME
+        // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);
     }
+
+    @IsTest
+    static void it_should_set_origin_apex_class_details_for_inner_class() {
+        // FIXME the implementation does not seem to properly handle classes with a namespace prefix
+        // (including when both the managed & unlocked packages are installed in an org), so skip the tests for now,
+        // but revisit this test + implementation
+        if (String.isNotBlank(Logger.getNamespacePrefix())) {
+            return;
+        }
+
+        LoggerStackTrace stackTrace = new SomeInnerClass().getLoggerStackTrace();
+        ApexClass apexClass = [
+            SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
+            FROM ApexClass
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.apexTopLevelClassName
+        ];
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(
+            Log__c = log.Id,
+            OriginSourceApiName__c = stackTrace.apexTopLevelClassName,
+            OriginSourceType__c = 'ApexClass',
+            StackTrace__c = String.join(
+                new List<String>{
+                    'Class.' + stackTrace.originLocation + ': line ' + stackTrace.apexCodeLineNumber + ', column 1',
+                    'AnonymousBlock: line 1, column 1'
+                }, '\n')
+        );
+        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+
+        LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        logEntry = [
+            SELECT
+                Id,
+                ApexClassApiVersion__c,
+                ApexClassCreatedDate__c,
+                ApexClassId__c,
+                ApexClassLastModifiedDate__c,
+                ApexClassName__c,
+                ApexInnerClassName__c,
+                ApexMethodName__c,
+                HasStackTrace__c,
+                HasOriginSourceSnippet__c,
+                OriginSourceApiVersion__c,
+                OriginSourceCreatedByUsername__c,
+                OriginSourceCreatedDate__c,
+                OriginSourceId__c,
+                OriginSourceLastModifiedByUsername__c,
+                OriginSourceLastModifiedDate__c,
+                OriginSourceSnippet__c,
+                StackTrace__c
+            FROM LogEntry__c
+            WHERE Id = :logEntry.Id
+        ];
+        // ApexClass fields
+        System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
+        System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
+        System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
+        System.Assert.areEqual(stackTrace.apexTopLevelClassName, logEntry.ApexClassName__c);
+        System.Assert.isNotNull(logEntry.ApexInnerClassName__c);
+        System.Assert.areEqual(stackTrace.apexInnerClassName, logEntry.ApexInnerClassName__c);
+        System.Assert.areEqual(stackTrace.apexMethodName, logEntry.ApexMethodName__c);
+        // Origin source fields
+        System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.OriginSourceApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
+        System.Assert.areEqual(apexClass.CreatedDate, logEntry.OriginSourceCreatedDate__c);
+        System.Assert.areEqual(apexClass.Id, logEntry.OriginSourceId__c);
+        System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
+        System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
+        System.Assert.isTrue(logEntry.HasOriginSourceSnippet__c);
+        LogEntryHandler.ApexCodeSnippet expectedCodeSnippet = new LogEntryHandler.ApexCodeSnippet(apexClass, stackTrace);
+        System.Assert.areEqual(stackTrace.originSourceApiName, expectedCodeSnippet.sourceApiName);
+        System.Assert.areEqual(stackTrace.originSourceType, expectedCodeSnippet.sourceType);
+        System.Assert.areEqual(stackTrace.apexCodeLineNumber, expectedCodeSnippet.targetLineNumber);
+        /*
+            TODO determine best way(s) to test remaining code snippet properties:
+                [x] public String sourceApiName
+                [x] public String sourceType
+                [ ] public String code
+                [ ] public Integer startingLineNumber
+                [ ] public Integer endingLineNumber
+                [x] public Integer targetLineNumber
+                [ ] public Integer totalLinesOfCode
+        */
+        System.Assert.areEqual(JSON.serializePretty(expectedCodeSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.isTrue(logEntry.HasStackTrace__c);
+        // FIXME
+        // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);
+    }
+
 
     @IsTest
     static void it_should_set_gracefully_skip_setting_flow_details_when_origin_location_is_not_valid_flow_api_name() {
@@ -944,13 +1102,20 @@ private class LogEntryHandler_Tests {
     private class MockLogManagementDataSelector extends LogManagementDataSelector {
         private Integer apexClassesQueryCount = 0;
 
-        public override List<ApexClass> getApexClasses(List<String> apexClassNames) {
+        public override List<ApexClass> getApexClasses(Set<String> apexClassNames) {
             this.apexClassesQueryCount++;
             return super.getApexClasses(apexClassNames);
         }
 
         public Integer getApexClassesQueryCount() {
             return apexClassesQueryCount;
+        }
+    }
+
+    // Helper class for testing stack trace parsing & ApexClass querying for an inner class
+    private class SomeInnerClass{
+        public LoggerStackTrace getLoggerStackTrace() {
+            return new LoggerStackTrace();
         }
     }
 }
