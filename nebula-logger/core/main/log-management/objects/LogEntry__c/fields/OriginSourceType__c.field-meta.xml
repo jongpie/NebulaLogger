@@ -29,9 +29,19 @@
                 <label>ApexTrigger</label>
             </value>
             <value>
+                <fullName>AuraDefinitionBundle</fullName>
+                <default>false</default>
+                <label>AuraDefinitionBundle</label>
+            </value>
+            <value>
                 <fullName>Flow</fullName>
                 <default>false</default>
                 <label>Flow</label>
+            </value>
+            <value>
+                <fullName>LightningComponentBundle</fullName>
+                <default>false</default>
+                <label>LightningComponentBundle</label>
             </value>
         </valueSetDefinition>
     </valueSet>

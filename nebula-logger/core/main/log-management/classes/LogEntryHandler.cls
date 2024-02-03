@@ -26,6 +26,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         this.logEntries = (List<LogEntry__c>) triggerNew;
 
         this.setApexClassFields();
+        this.setApexTriggerFields();
         this.setComponentFields();
         this.setFlowDefinitionFields();
         this.setFlowVersionFields();
@@ -44,16 +45,22 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private void setApexClassFields() {
-        List<String> apexClassNames = new List<String>();
-        List<LogEntry__c> apexLogEntries = new List<LogEntry__c>();
+        Set<String> apexClassNames = new Set<String>();
+        List<LogEntry__c> apexClassLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            if (logEntry.OriginType__c == 'Apex' && String.isNotBlank(logEntry.OriginLocation__c)) {
-                // OriginLocation__c contains the class name + method name. Examples:
-                // MyClass.someMethod
-                // MyClass.MyInnerClass.someMethod
-                String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
-                apexClassNames.add(apexClassName);
-                apexLogEntries.add(logEntry);
+            Boolean isApexClassLogEntry = false;
+            if (logEntry.OriginSourceType__c == 'ApexClass' && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
+                isApexClassLogEntry = true;
+                apexClassNames.add(logEntry.OriginSourceApiName__c);
+            }
+
+            if (logEntry.ExceptionSourceType__c == 'ApexClass' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
+                isApexClassLogEntry = true;
+                apexClassNames.add(logEntry.ExceptionSourceApiName__c);
+            }
+
+            if (isApexClassLogEntry) {
+                apexClassLogEntries.add(logEntry);
             }
         }
 
@@ -70,28 +77,62 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        for (LogEntry__c logEntry : apexLogEntries) {
-            String topLevelApexClassName = logEntry.OriginLocation__c?.substringBefore('.');
-            ApexClass topLevelApexClass = classNameToApexClass.get(topLevelApexClassName);
-            if (topLevelApexClass == null) {
-                continue;
+        for (LogEntry__c logEntry : apexClassLogEntries) {
+            ApexClass originApexClass = classNameToApexClass.get(logEntry.OriginSourceApiName__c);
+            if (originApexClass != null) {
+                new OriginApexMetadataFieldApplier().apply(logEntry, originApexClass);
             }
 
-            String methodName = logEntry.OriginLocation__c.substringAfterLast('.');
-            String innerApexClassName = logEntry.OriginLocation__c.substringAfter(topLevelApexClassName + '.').substringBeforeLast('.');
-            if (innerApexClassName == topLevelApexClassName || innerApexClassName == methodName) {
-                innerApexClassName = null;
-            } else if (innerApexClassName.startsWith(topLevelApexClassName + '.')) {
-                innerApexClassName = innerApexClassName.substringAfter(topLevelApexClassName + '.');
+            ApexClass exceptionApexClass = classNameToApexClass.get(logEntry.ExceptionSourceApiName__c);
+            if (exceptionApexClass != null) {
+                new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexClass);
+            }
+        }
+    }
+
+    private void setApexTriggerFields() {
+        Set<String> apexTriggerNames = new Set<String>();
+        List<LogEntry__c> apexTriggerLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            Boolean isApexTriggerLogEntry = false;
+            if (String.isNotBlank(logEntry.OriginSourceApiName__c)) {
+                isApexTriggerLogEntry = true;
+                apexTriggerNames.add(logEntry.OriginSourceApiName__c);
             }
 
-            logEntry.ApexClassApiVersion__c = 'v' + topLevelApexClass.ApiVersion;
-            logEntry.ApexClassCreatedDate__c = topLevelApexClass.CreatedDate;
-            logEntry.ApexClassId__c = topLevelApexClass.Id;
-            logEntry.ApexClassLastModifiedDate__c = topLevelApexClass.LastModifiedDate;
-            logEntry.ApexClassName__c = topLevelApexClassName;
-            logEntry.ApexInnerClassName__c = innerApexClassName;
-            logEntry.ApexMethodName__c = methodName;
+            if (logEntry.ExceptionSourceType__c == 'ApexTrigger' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
+                isApexTriggerLogEntry = true;
+                apexTriggerNames.add(logEntry.ExceptionSourceApiName__c);
+            }
+
+            if (isApexTriggerLogEntry) {
+                apexTriggerLogEntries.add(logEntry);
+            }
+        }
+
+        if (apexTriggerNames.isEmpty()) {
+            return;
+        }
+
+        Map<String, ApexTrigger> triggerNameToApexTrigger = new Map<String, ApexTrigger>();
+        for (ApexTrigger apexTrigger : LogManagementDataSelector.getInstance().getApexTriggers(apexTriggerNames)) {
+            triggerNameToApexTrigger.put(apexTrigger.Name, apexTrigger);
+        }
+
+        if (triggerNameToApexTrigger.isEmpty()) {
+            return;
+        }
+
+        for (LogEntry__c logEntry : apexTriggerLogEntries) {
+            ApexTrigger originApexTrigger = triggerNameToApexTrigger.get(logEntry.OriginSourceApiName__c);
+            if (originApexTrigger != null) {
+                new OriginApexMetadataFieldApplier().apply(logEntry, originApexTrigger);
+            }
+
+            ApexTrigger exceptionApexTrigger = triggerNameToApexTrigger.get(logEntry.ExceptionSourceApiName__c);
+            if (exceptionApexTrigger != null) {
+                new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexTrigger);
+            }
         }
     }
 
@@ -266,12 +307,14 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         // So, this code handles maintaining some checkbox fields via Apex instead
         for (LogEntry__c logEntry : this.logEntries) {
             logEntry.HasDatabaseResultJson__c = logEntry.DatabaseResultJson__c != null;
+            logEntry.HasExceptionSourceSnippet__c = logEntry.ExceptionSourceSnippet__c != null;
             logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
             logEntry.HasHttpRequestBody__c = logEntry.HttpRequestBody__c != null;
             logEntry.HasHttpResponseBody__c = logEntry.HttpResponseBody__c != null;
             logEntry.HasHttpResponseHeaderKeys__c = logEntry.HttpResponseHeaderKeys__c != null;
             logEntry.HasHttpResponseHeaders__c = logEntry.HttpResponseHeaders__c != null;
             logEntry.HasInlineTags__c = logEntry.Tags__c != null;
+            logEntry.HasOriginSourceSnippet__c = logEntry.OriginSourceSnippet__c != null;
             logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
             logEntry.HasRestRequestBody__c = logEntry.RestRequestBody__c != null;
             logEntry.HasRestRequestHeaderKeys__c = logEntry.RestRequestHeaderKeys__c != null;
@@ -360,5 +403,158 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
         return sobjectType;
+    }
+
+    // TODO consider making this a top-level, generically-named class (LoggerCodeSnippet?)
+    @SuppressWarnings('PMD.ApexDoc')
+    @TestVisible
+    private class ApexCodeSnippet {
+        public String sourceApiName { get; private set; }
+        public String sourceType { get; private set; }
+        public String code { get; private set; }
+        public Integer startingLineNumber { get; private set; }
+        public Integer endingLineNumber { get; private set; }
+        public Integer targetLineNumber { get; private set; }
+        public Integer totalLinesOfCode { get; private set; }
+
+        public ApexCodeSnippet(ApexClass apexClass, LoggerStackTrace stackTrace) {
+            this(apexClass.Body, stackTrace);
+        }
+
+        public ApexCodeSnippet(ApexTrigger apexTrigger, LoggerStackTrace stackTrace) {
+            this(apexTrigger.Body, stackTrace);
+        }
+
+        private ApexCodeSnippet(String codeBody, LoggerStackTrace stackTrace) {
+            if (String.isBlank(codeBody) || stackTrace?.apexCodeLineNumber == null) {
+                return;
+            }
+
+            List<String> allCodeLines = codeBody.split('\n');
+
+            this.sourceApiName = stackTrace.originSourceApiName;
+            this.sourceType = stackTrace.originSourceType;
+            this.targetLineNumber = stackTrace.apexCodeLineNumber;
+            this.totalLinesOfCode = allCodeLines.size();
+
+            this.calculateLineNumbers(this.totalLinesOfCode);
+            this.setCode(allCodeLines);
+        }
+
+        private void calculateLineNumbers(Integer numberOfCodeLines) {
+            // TODO consider making these values configurable with 2 new LoggerParameter__mdt records
+            final Integer targetLeadingLines = 8;
+            final Integer targetTrailingLines = 4;
+
+            this.startingLineNumber = this.targetLineNumber - targetLeadingLines;
+            if (this.startingLineNumber <= 0) {
+                this.startingLineNumber = 1;
+            }
+
+            this.endingLineNumber = this.targetLineNumber + targetTrailingLines;
+            if (this.endingLineNumber > numberOfCodeLines) {
+                this.endingLineNumber = numberOfCodeLines;
+            }
+        }
+
+        private void setCode(List<String> allCodeLines) {
+            List<String> snippetCodeLines = new List<String>();
+            for (Integer targetLineNumber = this.startingLineNumber; targetLineNumber <= this.endingLineNumber; targetLineNumber++) {
+                // Code lines start with 1, but indexes in arrays start with 0
+                Integer targetLineNumberIndex = targetLineNumber - 1;
+                snippetCodeLines.add(allCodeLines.get(targetLineNumberIndex));
+            }
+
+            this.code = String.join(snippetCodeLines, '\n');
+        }
+    }
+
+    // Helper classes that are used to apply field values for each entry's related ApexClass or ApexTrigger
+    @SuppressWarnings('PMD.ApexDoc')
+    private class ExceptionApexMetadataFieldApplier extends ApexMetadataFieldApplier {
+        public override void apply(LogEntry__c logEntry, Schema.ApexClass apexClass) {
+            if (apexClass == null) {
+                return;
+            }
+
+            logEntry.ExceptionSourceApiVersion__c = 'v' + apexClass.ApiVersion;
+            logEntry.ExceptionSourceCreatedByUsername__c = apexClass.CreatedBy.Username;
+            logEntry.ExceptionSourceCreatedDate__c = apexClass.CreatedDate;
+            logEntry.ExceptionSourceId__c = apexClass.Id;
+            logEntry.ExceptionSourceLastModifiedByUsername__c = apexClass.LastModifiedBy.Username;
+            logEntry.ExceptionSourceLastModifiedDate__c = apexClass.LastModifiedDate;
+
+            LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
+            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexClass, exceptionStackTrace));
+        }
+
+        public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
+            if (apexTrigger == null) {
+                return;
+            }
+
+            logEntry.ExceptionSourceApiVersion__c = 'v' + apexTrigger.ApiVersion;
+            logEntry.ExceptionSourceCreatedByUsername__c = apexTrigger.CreatedBy.Username;
+            logEntry.ExceptionSourceCreatedDate__c = apexTrigger.CreatedDate;
+            logEntry.ExceptionSourceId__c = apexTrigger.Id;
+            logEntry.ExceptionSourceLastModifiedByUsername__c = apexTrigger.LastModifiedBy.Username;
+            logEntry.ExceptionSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
+
+            LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
+            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexTrigger, exceptionStackTrace));
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    private class OriginApexMetadataFieldApplier extends ApexMetadataFieldApplier {
+        public override void apply(LogEntry__c logEntry, Schema.ApexClass apexClass) {
+            if (apexClass == null) {
+                return;
+            }
+
+            LoggerStackTrace originStackTrace = new LoggerStackTrace(logEntry.StackTrace__c);
+
+            // Older ApexClass-specific fields
+            logEntry.ApexClassApiVersion__c = 'v' + apexClass.ApiVersion;
+            logEntry.ApexClassCreatedDate__c = apexClass.CreatedDate;
+            logEntry.ApexClassId__c = apexClass.Id;
+            logEntry.ApexClassLastModifiedDate__c = apexClass.LastModifiedDate;
+            logEntry.ApexClassName__c = originStackTrace.apexTopLevelClassName;
+            logEntry.ApexInnerClassName__c = originStackTrace.apexInnerClassName;
+            logEntry.ApexMethodName__c = originStackTrace.apexMethodName;
+
+            // Newer, general-purpose 'origin source' fields
+            logEntry.OriginSourceApiVersion__c = 'v' + apexClass.ApiVersion;
+            logEntry.OriginSourceCreatedByUsername__c = apexClass.CreatedBy.Username;
+            logEntry.OriginSourceCreatedDate__c = apexClass.CreatedDate;
+            logEntry.OriginSourceId__c = apexClass.Id;
+            logEntry.OriginSourceLastModifiedByUsername__c = apexClass.LastModifiedBy.Username;
+            logEntry.OriginSourceLastModifiedDate__c = apexClass.LastModifiedDate;
+            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexClass, originStackTrace));
+        }
+
+        public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
+            if (apexTrigger == null) {
+                return;
+            }
+
+            LoggerStackTrace originStackTrace = new LoggerStackTrace(logEntry.StackTrace__c);
+
+            // Currently, there aren't any ApexTrigger-specific fields on LogEntry__c,
+            // so only set the newer, general-purpose 'origin source' fields
+            logEntry.OriginSourceApiVersion__c = 'v' + apexTrigger.ApiVersion;
+            logEntry.OriginSourceCreatedByUsername__c = apexTrigger.CreatedBy.Username;
+            logEntry.OriginSourceCreatedDate__c = apexTrigger.CreatedDate;
+            logEntry.OriginSourceId__c = apexTrigger.Id;
+            logEntry.OriginSourceLastModifiedByUsername__c = apexTrigger.LastModifiedBy.Username;
+            logEntry.OriginSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
+            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexTrigger, originStackTrace));
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    private abstract class ApexMetadataFieldApplier {
+        public abstract void apply(LogEntry__c logEntry, Schema.ApexClass topLevelApexClass);
+        public abstract void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger);
     }
 }

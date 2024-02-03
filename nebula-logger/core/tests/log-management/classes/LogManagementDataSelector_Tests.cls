@@ -34,7 +34,7 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_matching_apex_classes_for_specified_class_names() {
-        List<String> targetApexClassNames = new List<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
+        Set<String> targetApexClassNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
         List<ApexClass> expectedResults = [
             SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexClass
@@ -50,7 +50,7 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_does_not_query_apex_classes_when_disabled_via_logger_parameter() {
         // The class names used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
-        List<String> targetApexClassNames = new List<String>{ 'SomeClass', 'AnotherClass' };
+        Set<String> targetApexClassNames = new Set<String>{ 'SomeClass', 'AnotherClass' };
         Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
 
@@ -62,7 +62,7 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_matching_apex_triggers_for_specified_class_names() {
-        List<String> targetApexTriggerNames = new List<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
+        Set<String> targetApexTriggerNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
         List<ApexTrigger> expectedResults = [
             SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexTrigger
@@ -78,7 +78,7 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_does_not_query_apex_triggers_when_disabled_via_logger_parameter() {
         // The trigger names used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
-        List<String> targetApexTriggerNames = new List<String>{ 'SomeTrigger', 'AnotherTrigger' };
+        Set<String> targetApexTriggerNames = new Set<String>{ 'SomeTrigger', 'AnotherTrigger' };
         Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = String.valueOf(false)));
 

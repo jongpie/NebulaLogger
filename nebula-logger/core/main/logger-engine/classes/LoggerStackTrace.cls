@@ -131,7 +131,7 @@ public without sharing class LoggerStackTrace {
             // Example class (inner): Class.ExampleClassWithLogging.SomeInnerClass.doSomethingElse(): line 97, column 1
             // Example trigger: Trigger.SomeTrigger: line 4, column 1
             String apexCodeLineNumberString = firstStackTraceLine.substringAfter('line ').substringBefore(',');
-            if (String.isNotBlank(apexCodeLineNumberString) == true) {
+            if (String.isNotBlank(apexCodeLineNumberString)) {
                 this.apexCodeLineNumber = Integer.valueOf(apexCodeLineNumberString);
             }
 
@@ -161,9 +161,9 @@ public without sharing class LoggerStackTrace {
     private Boolean isValidStackTrace(String stackTraceString) {
         // Some lines, especially in the managed package, can result in '()' or '(Some_Namespace)'
         if (
-            String.isBlank(stackTraceString) == true ||
+            String.isBlank(stackTraceString) ||
             stackTraceString == '()' ||
-            System.Pattern.compile('^\\([0-9A-Za-z_]+\\)$').matcher(stackTraceString).matches() == true
+            System.Pattern.compile('^\\([0-9A-Za-z_]+\\)$').matcher(stackTraceString).matches()
         ) {
             return false;
         }

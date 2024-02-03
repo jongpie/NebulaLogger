@@ -70,7 +70,6 @@ private class LogFlowExecutionErrorEventHandler_Tests {
             entry.Message__c,
             'Log message should be formatted correctly'
         );
-        System.Assert.areEqual('Flow.' + flowExecutionErrorEvent.FlowApiName, entry.Origin__c, 'Origin__c should be set correctly');
         System.Assert.areEqual(flowExecutionErrorEvent.FlowApiName, entry.OriginLocation__c, 'OriginLocation__c should be set correctly');
         System.Assert.areEqual('Flow', entry.OriginType__c, 'OriginType__c should be set to Flow');
         System.Assert.areEqual(flowExecutionErrorEvent.EventDate, entry.Timestamp__c, 'Should take timestamp from flow error event');
