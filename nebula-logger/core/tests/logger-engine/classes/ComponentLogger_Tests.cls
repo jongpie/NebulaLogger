@@ -48,6 +48,7 @@ private class ComponentLogger_Tests {
 
     @IsTest
     static void it_should_save_component_log_entry_without_stack_trace() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         System.Assert.areEqual(0, Logger.saveLogCallCount);
@@ -61,7 +62,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
-        System.Assert.isNull(publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.isNull(publishedLogEntryEvent.OriginSourceMetadataType__c, 'Non-null value populated for OriginSourceMetadata__c: ' + JSON.serializePretty(publishedLogEntryEvent));
         System.Assert.isNull(publishedLogEntryEvent.StackTrace__c);
         System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
         System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
@@ -79,6 +80,7 @@ private class ComponentLogger_Tests {
 
     @IsTest
     static void it_should_save_component_log_entry_with_queueable_job() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
@@ -106,7 +108,7 @@ private class ComponentLogger_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
         System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
-        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceMetadataType__c);
         System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
         System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
         System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
@@ -123,6 +125,7 @@ private class ComponentLogger_Tests {
 
     @IsTest
     static void it_should_save_component_log_entry_with_aura_component_error() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String exceptionSourceApiName = 'c/someAuraComponent';
         String exceptionFunctionName = 'someAuraFunction';
@@ -144,15 +147,20 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
-        System.Assert.areEqual(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
         System.Assert.areEqual(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
-        // FIXME add logic to set new fields ExceptionLocation__c and ExceptionSourceType__c
-        // System.Assert.areEqual(exceptionSourceApiName + '.' + exceptionFunctionName, publishedLogEntryEvent.ExceptionLocation__c);
-        // System.Assert.areEqual('LightningComponentBundle', publishedLogEntryEvent.ExceptionSourceType__c);
+        LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(LoggerStackTrace.SourceLanguage.JavaScript, mockComponentError.stack);
+        System.Assert.areEqual(exceptionStackTrace.Location, publishedLogEntryEvent.ExceptionLocation__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.ActionName, publishedLogEntryEvent.ExceptionSourceActionName__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.ApiName, publishedLogEntryEvent.ExceptionSourceApiName__c);
+        // Ensure the metadata type is AuraDefinitionBundle since the error originated from an (fake) JavaScript file (not an Apex controller method)
+        System.Assert.areEqual(LoggerStackTrace.SourceMetadataType.AuraDefinitionBundle.name(), publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.MetadataType.name(), publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.areEqual(exceptionStackTrace.ParsedStackTraceString, publishedLogEntryEvent.ExceptionStackTrace__c);
     }
 
     @IsTest
     static void it_should_save_component_log_entry_with_web_component_error() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String exceptionSourceApiName = 'c/someWebComponent';
         String exceptionFunctionName = 'someFunction';
@@ -182,15 +190,21 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
         System.Assert.areEqual(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
-        System.Assert.areEqual(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
         System.Assert.areEqual(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
-        // FIXME add logic to set new fields ExceptionLocation__c and ExceptionSourceType__c
-        // System.Assert.areEqual(exceptionSourceApiName + '.' + exceptionFunctionName, publishedLogEntryEvent.ExceptionLocation__c);
-        // System.Assert.areEqual('LightningComponentBundle', publishedLogEntryEvent.ExceptionSourceType__c);
+        LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(LoggerStackTrace.SourceLanguage.JavaScript, mockComponentError.stack);
+        System.Assert.areEqual(exceptionStackTrace.Location, publishedLogEntryEvent.ExceptionLocation__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.ActionName, publishedLogEntryEvent.ExceptionSourceActionName__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.ApiName, publishedLogEntryEvent.ExceptionSourceApiName__c);
+        // Ensure the metadata type is LightningComponentBundle since the error originated from an (fake) JavaScript file (not an Apex controller method)
+        System.Assert.areEqual(LoggerStackTrace.SourceMetadataType.LightningComponentBundle.name(), publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.MetadataType.name(), publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.areEqual(exceptionStackTrace.ParsedStackTraceString, publishedLogEntryEvent.ExceptionStackTrace__c);
     }
 
     @IsTest
     static void it_should_save_component_log_entry_with_apex_controller_error() {
+        // Here, the test should NOT ignore the current class ComponentLogger_Tests, since it's
+        // generating a mock Apex exception to use for testing stack trace parsing
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         System.Exception mockApexException = new System.DmlException(
             'It is with much sadness that I must inform you that this DML statement was most unsuccessful'
@@ -221,12 +235,20 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
         System.Assert.areEqual(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
-        System.Assert.areEqual(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
         System.Assert.areEqual(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
+        LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(LoggerStackTrace.SourceLanguage.Apex, mockComponentError.stack);
+        System.Assert.areEqual(exceptionStackTrace.Location, publishedLogEntryEvent.ExceptionLocation__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.ActionName, publishedLogEntryEvent.ExceptionSourceActionName__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.ApiName, publishedLogEntryEvent.ExceptionSourceApiName__c);
+        // Ensure the metadata type is ApexClass since the error originated from an Apex class (not JavaScript)
+        System.Assert.areEqual(LoggerStackTrace.SourceMetadataType.ApexClass.name(), publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.areEqual(exceptionStackTrace.Source?.MetadataType.name(), publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.areEqual(exceptionStackTrace.ParsedStackTraceString, publishedLogEntryEvent.ExceptionStackTrace__c);
     }
 
     @IsTest
     static void it_should_set_logger_scenario() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
         ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
@@ -247,6 +269,7 @@ private class ComponentLogger_Tests {
 
     @IsTest
     static void it_should_parse_aura_component_stack_trace() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String expectedComponentType = 'Aura';
         String expectedComponentApiName = 'c/loggerAuraDemo';
@@ -273,7 +296,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
-        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceMetadataType__c);
         // TODO Move these asserts to LogEntryHandler_Tests
         // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
         // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
@@ -283,6 +306,7 @@ private class ComponentLogger_Tests {
 
     @IsTest
     static void it_should_parse_web_component_stack_trace_when_stack_trace_is_modern_format() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String expectedComponentType = 'LWC';
         String expectedComponentApiName = 'c/loggerLWCDemo';
@@ -309,7 +333,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
-        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceMetadataType__c);
         // TODO Move these asserts to LogEntryHandler_Tests
         // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
         // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
@@ -319,6 +343,7 @@ private class ComponentLogger_Tests {
 
     @IsTest
     static void it_should_parse_web_component_stack_trace_when_stack_trace_is_legacy_format() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String expectedComponentType = 'LWC';
         String expectedComponentApiName = 'c/loggerLWCDemo';
@@ -345,7 +370,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
-        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceMetadataType__c);
         // TODO Move these asserts to LogEntryHandler_Tests
         // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
         // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
@@ -377,12 +402,10 @@ private class ComponentLogger_Tests {
 
     private static String getMockAuraComponentStackTrace(String originComponentName, String originFunctionName) {
         // This is a copy of an actual stack trace generated from c/loggerAuraDemo in August 2021
-        String loggerComponentNamespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
-        String qualifiedLoggerComponentName = loggerComponentNamespace + '/logger.js';
-        List<String> auraStackTraceLines = new List<String>{ 'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':28:24' +
-            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':172:14',
-            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':349:44',
-            'info@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':253:21',
+        List<String> auraStackTraceLines = new List<String>{ 'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':28:24' +
+            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':172:14',
+            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':349:44',
+            'info@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':253:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'InteropComponent.prototype.$setupMethods$/</self[m]@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:45047:24',
@@ -417,13 +440,11 @@ private class ComponentLogger_Tests {
 
     private static String getMockLegacyWebComponentStackTrace(String originComponentName) {
         // This is a copy of an actual stack trace generated from c/loggerLWCDemo in August 2021
-        String loggerComponentNamespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
-        String qualifiedLoggerComponentName = loggerComponentNamespace + '/logger.js';
         List<String> lwcStackTraceLines = new List<String>{
-            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':28:24',
-            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':172:14',
-            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':349:44',
-            'error@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':233:21',
+            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':28:24',
+            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':172:14',
+            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':349:44',
+            'error@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':233:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'createFilteredMethodStateless/<.value<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:30288:47',
@@ -443,14 +464,12 @@ private class ComponentLogger_Tests {
 
     private static String getMockModernWebComponentStackTrace(String originComponentName, String originFunctionName) {
         // This is a partial copy of an actual stack trace generated from c/loggerLWCDemo in January 2024
-        String loggerComponentNamespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
-        String qualifiedLoggerComponentName = loggerComponentNamespace + '/logger.js';
         List<String> lwcStackTraceLines = new List<String>{
-            '@modules/' + qualifiedLoggerComponentName + ':33:22',
-            'LogEntryBuilder@modules/' + qualifiedLoggerComponentName + ':59:87',
-            'newLogEntry@modules/' + qualifiedLoggerComponentName + ':189:14',
-            '_newEntry@modules/' + qualifiedLoggerComponentName + ':397:44',
-            'error@modules/' + qualifiedLoggerComponentName + ':264:21',
+            '@modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':33:22',
+            'LogEntryBuilder@modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':59:87',
+            'newLogEntry@modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':189:14',
+            '_newEntry@modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':397:44',
+            'error@modules/' + ComponentLogger.LOGGER_COMPONENT_NAME + ':264:21',
             originFunctionName + '@modules/' + originComponentName + '.js:266:35',
             'createHooksCallback$LWS/<@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js line 35465 > eval:2583:24',
             'applyOrConstructTrapForTwoOrMoreArgs$LWS@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:32254:38',

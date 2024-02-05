@@ -5,9 +5,9 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <formula>IF(
-  ISPICKVAL(OriginSourceType__c, &apos;&apos;),
+  ISPICKVAL(OriginSourceMetadataType__c, &apos;&apos;),
   TEXT(OriginType__c),
-  TEXT(OriginSourceType__c)
+  TEXT(OriginSourceMetadataType__c)
 )
 +
 IF(

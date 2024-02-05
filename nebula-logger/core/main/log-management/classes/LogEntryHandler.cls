@@ -49,12 +49,12 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         List<LogEntry__c> apexClassLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
             Boolean isApexClassLogEntry = false;
-            if (logEntry.OriginSourceType__c == 'ApexClass' && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
+            if (logEntry.OriginSourceMetadataType__c == 'ApexClass' && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
                 isApexClassLogEntry = true;
                 apexClassNames.add(logEntry.OriginSourceApiName__c);
             }
 
-            if (logEntry.ExceptionSourceType__c == 'ApexClass' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
+            if (logEntry.ExceptionSourceMetadataType__c == 'ApexClass' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
                 isApexClassLogEntry = true;
                 apexClassNames.add(logEntry.ExceptionSourceApiName__c);
             }
@@ -100,7 +100,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 apexTriggerNames.add(logEntry.OriginSourceApiName__c);
             }
 
-            if (logEntry.ExceptionSourceType__c == 'ApexTrigger' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
+            if (logEntry.ExceptionSourceMetadataType__c == 'ApexTrigger' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
                 isApexTriggerLogEntry = true;
                 apexTriggerNames.add(logEntry.ExceptionSourceApiName__c);
             }
@@ -405,56 +405,62 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         return sobjectType;
     }
 
-    // TODO consider making this a top-level, generically-named class (LoggerCodeSnippet?)
+    // TODO consider making this a top-level, generically-named class (LoggerSourceMetadataSnippet?)
     @SuppressWarnings('PMD.ApexDoc')
     @TestVisible
-    private class ApexCodeSnippet {
-        public String sourceApiName { get; private set; }
-        public String sourceType { get; private set; }
-        public String code { get; private set; }
-        public Integer startingLineNumber { get; private set; }
-        public Integer endingLineNumber { get; private set; }
-        public Integer targetLineNumber { get; private set; }
-        public Integer totalLinesOfCode { get; private set; }
+    private class SourceMetadataSnippet {
+        // TODO decide if this is needed, it's duplicated from LoggerStackTrace.Language
+        // Ultimately, the frontend needs to know the language to display in PrismJS
+        public String Code { get; private set; }
+        public String ApiVersion { get; private set; }
+        public Integer TotalLinesOfCode { get; private set; }
+        public Integer StartingLineNumber { get; private set; }
+        public Integer TargetLineNumber { get; private set; }
+        public Integer EndingLineNumber { get; private set; }
 
-        public ApexCodeSnippet(ApexClass apexClass, LoggerStackTrace stackTrace) {
-            this(apexClass.Body, stackTrace);
+        public transient LoggerStackTrace StackTrace { get; private set; }
+        public LoggerStackTrace.SourceLanguage Language { get { return this.StackTrace?.Language; } }
+
+        public SourceMetadataSnippet(LoggerStackTrace stackTrace, Schema.ApexClass apexClass) {
+            this(stackTrace, apexClass.Body, apexClass.ApiVersion);
         }
 
-        public ApexCodeSnippet(ApexTrigger apexTrigger, LoggerStackTrace stackTrace) {
-            this(apexTrigger.Body, stackTrace);
+        public SourceMetadataSnippet(LoggerStackTrace stackTrace, Schema.ApexTrigger apexTrigger) {
+            this(stackTrace, apexTrigger.Body, apexTrigger.ApiVersion);
         }
 
-        private ApexCodeSnippet(String codeBody, LoggerStackTrace stackTrace) {
-            if (String.isBlank(codeBody) || stackTrace?.apexCodeLineNumber == null) {
-                return;
-            }
+        private SourceMetadataSnippet(LoggerStackTrace stackTrace, String sourceCode, Decimal sourceApiVersion) {
+            this.ApiVersion = 'v' + sourceApiVersion;
+            this.StackTrace = stackTrace;
 
-            List<String> allCodeLines = codeBody.split('\n');
-
-            this.sourceApiName = stackTrace.originSourceApiName;
-            this.sourceType = stackTrace.originSourceType;
-            this.targetLineNumber = stackTrace.apexCodeLineNumber;
-            this.totalLinesOfCode = allCodeLines.size();
-
-            this.calculateLineNumbers(this.totalLinesOfCode);
+            List<String> allCodeLines = sourceCode.split('\n');
+            this.setLineNumbers(stackTrace.Source.LineNumber, allCodeLines);
             this.setCode(allCodeLines);
         }
 
-        private void calculateLineNumbers(Integer numberOfCodeLines) {
+        private List<String> setLineNumbers(Integer targetLineNumber, List<String> allCodeLines) {
+            Integer numberOfCodeLines = allCodeLines.size();
+
             // TODO consider making these values configurable with 2 new LoggerParameter__mdt records
             final Integer targetLeadingLines = 8;
             final Integer targetTrailingLines = 4;
 
-            this.startingLineNumber = this.targetLineNumber - targetLeadingLines;
-            if (this.startingLineNumber <= 0) {
-                this.startingLineNumber = 1;
+            Integer calculcatedStartingLineNumber = targetLineNumber - targetLeadingLines;
+            if (calculcatedStartingLineNumber <= 0) {
+                calculcatedStartingLineNumber = 1;
             }
 
-            this.endingLineNumber = this.targetLineNumber + targetTrailingLines;
-            if (this.endingLineNumber > numberOfCodeLines) {
-                this.endingLineNumber = numberOfCodeLines;
+            Integer calculatedEndingLineNumber = targetLineNumber + targetTrailingLines;
+            if (calculatedEndingLineNumber > numberOfCodeLines) {
+                calculatedEndingLineNumber = numberOfCodeLines;
             }
+
+            this.TotalLinesOfCode = numberOfCodeLines;
+            this.StartingLineNumber = calculcatedStartingLineNumber;
+            this.TargetLineNumber = targetLineNumber;
+            this.EndingLineNumber = calculatedEndingLineNumber;
+
+            return allCodeLines;
         }
 
         private void setCode(List<String> allCodeLines) {
@@ -465,7 +471,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 snippetCodeLines.add(allCodeLines.get(targetLineNumberIndex));
             }
 
-            this.code = String.join(snippetCodeLines, '\n');
+            this.Code = String.join(snippetCodeLines, '\n');
         }
     }
 
@@ -485,7 +491,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ExceptionSourceLastModifiedDate__c = apexClass.LastModifiedDate;
 
             LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
-            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexClass, exceptionStackTrace));
+            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexClass));
         }
 
         public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
@@ -501,7 +507,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ExceptionSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
 
             LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
-            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexTrigger, exceptionStackTrace));
+            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexTrigger));
         }
     }
 
@@ -519,18 +525,22 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ApexClassCreatedDate__c = apexClass.CreatedDate;
             logEntry.ApexClassId__c = apexClass.Id;
             logEntry.ApexClassLastModifiedDate__c = apexClass.LastModifiedDate;
-            logEntry.ApexClassName__c = originStackTrace.apexTopLevelClassName;
-            logEntry.ApexInnerClassName__c = originStackTrace.apexInnerClassName;
-            logEntry.ApexMethodName__c = originStackTrace.apexMethodName;
+            if (originStackTrace.Source.MetadataType == LoggerStackTrace.SourceMetadataType.ApexClass) {
+                logEntry.ApexClassName__c = originStackTrace.Source.ApiName;
+                // TODO need to revisit how to best handle ApexInnerClassName__c
+                // logEntry.ApexInnerClassName__c = originStackTraceApexClass?.InnerClassName;
+                logEntry.ApexMethodName__c = originStackTrace.Source.ActionName;
+            }
 
             // Newer, general-purpose 'origin source' fields
+            logEntry.OriginSourceActionName__c = originStackTrace.Source.ActionName;
             logEntry.OriginSourceApiVersion__c = 'v' + apexClass.ApiVersion;
             logEntry.OriginSourceCreatedByUsername__c = apexClass.CreatedBy.Username;
             logEntry.OriginSourceCreatedDate__c = apexClass.CreatedDate;
             logEntry.OriginSourceId__c = apexClass.Id;
             logEntry.OriginSourceLastModifiedByUsername__c = apexClass.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexClass.LastModifiedDate;
-            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexClass, originStackTrace));
+            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexClass));
         }
 
         public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
@@ -548,7 +558,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.OriginSourceId__c = apexTrigger.Id;
             logEntry.OriginSourceLastModifiedByUsername__c = apexTrigger.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
-            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new ApexCodeSnippet(apexTrigger, originStackTrace));
+            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexTrigger));
         }
     }
 

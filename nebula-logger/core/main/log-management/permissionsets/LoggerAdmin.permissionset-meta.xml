@@ -280,6 +280,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.ExceptionSourceActionName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.ExceptionSourceApiName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -315,12 +320,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.ExceptionSourceSnippet__c</field>
+        <field>LogEntry__c.ExceptionSourceMetadataType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.ExceptionSourceType__c</field>
+        <field>LogEntry__c.ExceptionSourceSnippet__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -850,6 +855,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.OriginSourceActionName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.OriginSourceApiName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -885,12 +895,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.OriginSourceSnippet__c</field>
+        <field>LogEntry__c.OriginSourceMetadataType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.OriginSourceType__c</field>
+        <field>LogEntry__c.OriginSourceSnippet__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

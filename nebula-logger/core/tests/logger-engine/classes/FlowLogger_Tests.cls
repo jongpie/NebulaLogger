@@ -35,7 +35,7 @@ private class FlowLogger_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceMetadataType__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -68,7 +68,7 @@ private class FlowLogger_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceMetadataType__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -106,7 +106,7 @@ private class FlowLogger_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceMetadataType__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -148,7 +148,7 @@ private class FlowLogger_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceMetadataType__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -191,7 +191,7 @@ private class FlowLogger_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceType__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginSourceMetadataType__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
