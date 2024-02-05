@@ -5,7 +5,7 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <inlineHelpText>A JSON snippet of the Apex class or trigger code that threw the exception</inlineHelpText>
-    <label>Exception Source Code Snippet</label>
+    <label>Exception Source Snippet</label>
     <length>2000</length>
     <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>

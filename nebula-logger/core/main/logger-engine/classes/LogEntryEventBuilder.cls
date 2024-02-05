@@ -182,10 +182,11 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
 
         LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(apexException);
-        this.logEntryEvent.ExceptionLocation__c = exceptionStackTrace.originLocation;
-        this.logEntryEvent.ExceptionSourceApiName__c = exceptionStackTrace.originSourceApiName;
-        this.logEntryEvent.ExceptionSourceType__c = exceptionStackTrace.originSourceType;
-        this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace.parsedStackTraceString;
+        this.logEntryEvent.ExceptionLocation__c = exceptionStackTrace.Location;
+        this.logEntryEvent.ExceptionSourceActionName__c = exceptionStackTrace.Source?.ActionName;
+        this.logEntryEvent.ExceptionSourceApiName__c = exceptionStackTrace.Source?.ApiName;
+        this.logEntryEvent.ExceptionSourceMetadataType__c = exceptionStackTrace.Source?.MetadataType.name();
+        this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace.ParsedStackTraceString;
 
         return this;
     }
@@ -851,10 +852,11 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.OriginLocation__c = originStackTrace.originLocation;
-        this.logEntryEvent.OriginSourceApiName__c = originStackTrace.originSourceApiName;
-        this.logEntryEvent.OriginSourceType__c = originStackTrace.originSourceType;
-        this.logEntryEvent.StackTrace__c = originStackTrace.parsedStackTraceString;
+        this.logEntryEvent.OriginLocation__c = originStackTrace.Location;
+        this.logEntryEvent.OriginSourceActionName__c = originStackTrace.Source?.ActionName;
+        this.logEntryEvent.OriginSourceApiName__c = originStackTrace.Source?.ApiName;
+        this.logEntryEvent.OriginSourceMetadataType__c = originStackTrace.Source?.MetadataType.name();
+        this.logEntryEvent.StackTrace__c = originStackTrace.ParsedStackTraceString;
         return this;
     }
 

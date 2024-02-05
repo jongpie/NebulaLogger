@@ -1554,16 +1554,18 @@ private class LogEntryEventBuilder_Tests {
         LoggerStackTrace originStackTrace = new LoggerStackTrace(constructedClass.getStackTraceString());
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.FINE, true, new Set<String>());
         builder.getLogEntryEvent().OriginLocation__c = null;
+        builder.getLogEntryEvent().OriginSourceActionName__c = null;
         builder.getLogEntryEvent().OriginSourceApiName__c = null;
-        builder.getLogEntryEvent().OriginSourceType__c = null;
+        builder.getLogEntryEvent().OriginSourceMetadataType__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
 
         builder.parseStackTrace(constructedClass.getStackTraceString());
 
-        System.Assert.areEqual(originStackTrace.originLocation, builder.getLogEntryEvent().OriginLocation__c);
-        System.Assert.areEqual(originStackTrace.originSourceApiName, builder.getLogEntryEvent().OriginSourceApiName__c);
-        System.Assert.areEqual(originStackTrace.originSourceType, builder.getLogEntryEvent().OriginSourceType__c);
-        System.Assert.areEqual(originStackTrace.parsedStackTraceString, builder.getLogEntryEvent().StackTrace__c);
+        System.Assert.areEqual(originStackTrace.Location, builder.getLogEntryEvent().OriginLocation__c);
+        System.Assert.areEqual(originStackTrace.Source.ActionName, builder.getLogEntryEvent().OriginSourceActionName__c);
+        System.Assert.areEqual(originStackTrace.Source.ApiName, builder.getLogEntryEvent().OriginSourceApiName__c);
+        System.Assert.areEqual(originStackTrace.Source.MetadataType.name(), builder.getLogEntryEvent().OriginSourceMetadataType__c);
+        System.Assert.areEqual(originStackTrace.ParsedStackTraceString, builder.getLogEntryEvent().StackTrace__c);
     }
 
     @IsTest
@@ -1578,16 +1580,18 @@ private class LogEntryEventBuilder_Tests {
         LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(someException);
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.FINE, true, new Set<String>());
         builder.getLogEntryEvent().ExceptionLocation__c = null;
+        builder.getLogEntryEvent().ExceptionSourceActionName__c = null;
         builder.getLogEntryEvent().ExceptionSourceApiName__c = null;
-        builder.getLogEntryEvent().ExceptionSourceType__c = null;
+        builder.getLogEntryEvent().ExceptionSourceMetadataType__c = null;
         builder.getLogEntryEvent().ExceptionStackTrace__c = null;
 
         builder.setExceptionDetails(someException);
 
-        System.Assert.areEqual(exceptionStackTrace.originLocation, builder.getLogEntryEvent().ExceptionLocation__c);
-        System.Assert.areEqual(exceptionStackTrace.originSourceApiName, builder.getLogEntryEvent().ExceptionSourceApiName__c);
-        System.Assert.areEqual(exceptionStackTrace.originSourceType, builder.getLogEntryEvent().ExceptionSourceType__c);
-        System.Assert.areEqual(exceptionStackTrace.parsedStackTraceString, builder.getLogEntryEvent().ExceptionStackTrace__c);
+        System.Assert.areEqual(exceptionStackTrace.Location, builder.getLogEntryEvent().ExceptionLocation__c);
+        System.Assert.areEqual(exceptionStackTrace.Source.ActionName, builder.getLogEntryEvent().ExceptionSourceActionName__c);
+        System.Assert.areEqual(exceptionStackTrace.Source.ApiName, builder.getLogEntryEvent().ExceptionSourceApiName__c);
+        System.Assert.areEqual(exceptionStackTrace.Source.MetadataType.name(), builder.getLogEntryEvent().ExceptionSourceMetadataType__c);
+        System.Assert.areEqual(exceptionStackTrace.ParsedStackTraceString, builder.getLogEntryEvent().ExceptionStackTrace__c);
     }
 
     @IsTest

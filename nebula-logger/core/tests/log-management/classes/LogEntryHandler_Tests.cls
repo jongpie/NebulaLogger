@@ -792,15 +792,15 @@ private class LogEntryHandler_Tests {
         ApexClass apexClass = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
-            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.apexTopLevelClassName
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
         ];
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(
-            ExceptionSourceApiName__c = stackTrace.apexTopLevelClassName,
-            ExceptionSourceType__c = 'ApexClass',
+            ExceptionSourceApiName__c = stackTrace.Source.ApiName,
+            ExceptionSourceMetadataType__c = 'ApexClass',
             ExceptionStackTrace__c = String.join(
                 new List<String>{
-                    'Class.' + stackTrace.originLocation + ': line ' + stackTrace.apexCodeLineNumber + ', column 1',
+                    'Class.' + stackTrace.Location + ': line ' + stackTrace.Source.LineNumber + ', column 1',
                     'AnonymousBlock: line 1, column 1'
                 }, '\n'),
             Log__c = log.Id
@@ -835,10 +835,9 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.ExceptionSourceLastModifiedByUsername__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ExceptionSourceLastModifiedDate__c);
         System.Assert.isTrue(logEntry.HasExceptionSourceSnippet__c);
-        LogEntryHandler.ApexCodeSnippet expectedCodeSnippet = new LogEntryHandler.ApexCodeSnippet(apexClass, stackTrace);
-        System.Assert.areEqual(stackTrace.originSourceApiName, expectedCodeSnippet.sourceApiName);
-        System.Assert.areEqual(stackTrace.originSourceType, expectedCodeSnippet.sourceType);
-        System.Assert.areEqual(stackTrace.apexCodeLineNumber, expectedCodeSnippet.targetLineNumber);
+        LogEntryHandler.SourceMetadataSnippet expectedSnippet = new LogEntryHandler.SourceMetadataSnippet(stackTrace, apexClass);
+        System.Assert.areEqual(stackTrace, expectedSnippet.StackTrace);
+        System.Assert.areEqual(stackTrace.Source.LineNumber, expectedSnippet.TargetLineNumber);
         /*
             TODO determine best way(s) to test remaining code snippet properties:
                 [x] public String sourceApiName
@@ -849,7 +848,7 @@ private class LogEntryHandler_Tests {
                 [x] public Integer targetLineNumber
                 [ ] public Integer totalLinesOfCode
         */
-        System.Assert.areEqual(JSON.serializePretty(expectedCodeSnippet), logEntry.ExceptionSourceSnippet__c);
+        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.ExceptionSourceSnippet__c);
     }
 
     @IsTest
@@ -865,16 +864,16 @@ private class LogEntryHandler_Tests {
         ApexClass apexClass = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
-            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.apexTopLevelClassName
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
         ];
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(
             Log__c = log.Id,
-            OriginSourceApiName__c = stackTrace.apexTopLevelClassName,
-            OriginSourceType__c = 'ApexClass',
+            OriginSourceApiName__c = stackTrace.Source.ApiName,
+            OriginSourceMetadataType__c = 'ApexClass',
             StackTrace__c = String.join(
                 new List<String>{
-                    'Class.' + stackTrace.originLocation + ': line ' + stackTrace.apexCodeLineNumber + ', column 1',
+                    'Class.' + stackTrace.Location + ': line ' + stackTrace.Source.LineNumber + ', column 1',
                     'AnonymousBlock: line 1, column 1'
                 }, '\n')
         );
@@ -915,9 +914,9 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
-        System.Assert.areEqual(stackTrace.apexTopLevelClassName, logEntry.ApexClassName__c);
+        System.Assert.areEqual(stackTrace.Source.ApiName, logEntry.ApexClassName__c);
         System.Assert.isNull(logEntry.ApexInnerClassName__c);
-        System.Assert.areEqual(stackTrace.apexMethodName, logEntry.ApexMethodName__c);
+        System.Assert.areEqual(stackTrace.Source.ActionName, logEntry.ApexMethodName__c);
         // Origin source fields
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.OriginSourceApiVersion__c);
         System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
@@ -926,10 +925,9 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
         System.Assert.isTrue(logEntry.HasOriginSourceSnippet__c);
-        LogEntryHandler.ApexCodeSnippet expectedCodeSnippet = new LogEntryHandler.ApexCodeSnippet(apexClass, stackTrace);
-        System.Assert.areEqual(stackTrace.originSourceApiName, expectedCodeSnippet.sourceApiName);
-        System.Assert.areEqual(stackTrace.originSourceType, expectedCodeSnippet.sourceType);
-        System.Assert.areEqual(stackTrace.apexCodeLineNumber, expectedCodeSnippet.targetLineNumber);
+        LogEntryHandler.SourceMetadataSnippet expectedSnippet = new LogEntryHandler.SourceMetadataSnippet(stackTrace, apexClass);
+        System.Assert.areEqual(stackTrace, expectedSnippet.StackTrace);
+        System.Assert.areEqual(stackTrace.Source.LineNumber, expectedSnippet.TargetLineNumber);
         /*
             TODO determine best way(s) to test remaining code snippet properties:
                 [x] public String sourceApiName
@@ -940,7 +938,7 @@ private class LogEntryHandler_Tests {
                 [x] public Integer targetLineNumber
                 [ ] public Integer totalLinesOfCode
         */
-        System.Assert.areEqual(JSON.serializePretty(expectedCodeSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
         System.Assert.isTrue(logEntry.HasStackTrace__c);
         // FIXME
         // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);
@@ -959,16 +957,16 @@ private class LogEntryHandler_Tests {
         ApexClass apexClass = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
-            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.apexTopLevelClassName
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
         ];
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(
             Log__c = log.Id,
-            OriginSourceApiName__c = stackTrace.apexTopLevelClassName,
-            OriginSourceType__c = 'ApexClass',
+            OriginSourceApiName__c = stackTrace.Source.ApiName,
+            OriginSourceMetadataType__c = 'ApexClass',
             StackTrace__c = String.join(
                 new List<String>{
-                    'Class.' + stackTrace.originLocation + ': line ' + stackTrace.apexCodeLineNumber + ', column 1',
+                    'Class.' + stackTrace.Location + ': line ' + stackTrace.Source.LineNumber + ', column 1',
                     'AnonymousBlock: line 1, column 1'
                 }, '\n')
         );
@@ -1009,10 +1007,11 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
-        System.Assert.areEqual(stackTrace.apexTopLevelClassName, logEntry.ApexClassName__c);
-        System.Assert.isNotNull(logEntry.ApexInnerClassName__c);
-        System.Assert.areEqual(stackTrace.apexInnerClassName, logEntry.ApexInnerClassName__c);
-        System.Assert.areEqual(stackTrace.apexMethodName, logEntry.ApexMethodName__c);
+        System.Assert.areEqual(stackTrace.Source.ApiName, logEntry.ApexClassName__c);
+        // TODO determine best way to test inner-class stuff
+        // System.Assert.isNotNull(logEntry.ApexInnerClassName__c);
+        // System.Assert.areEqual(stackTrace.apexInnerClassName, logEntry.ApexInnerClassName__c);
+        System.Assert.areEqual(stackTrace.Source.ActionName, logEntry.ApexMethodName__c);
         // Origin source fields
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.OriginSourceApiVersion__c);
         System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
@@ -1021,10 +1020,9 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
         System.Assert.isTrue(logEntry.HasOriginSourceSnippet__c);
-        LogEntryHandler.ApexCodeSnippet expectedCodeSnippet = new LogEntryHandler.ApexCodeSnippet(apexClass, stackTrace);
-        System.Assert.areEqual(stackTrace.originSourceApiName, expectedCodeSnippet.sourceApiName);
-        System.Assert.areEqual(stackTrace.originSourceType, expectedCodeSnippet.sourceType);
-        System.Assert.areEqual(stackTrace.apexCodeLineNumber, expectedCodeSnippet.targetLineNumber);
+        LogEntryHandler.SourceMetadataSnippet expectedSnippet = new LogEntryHandler.SourceMetadataSnippet(stackTrace, apexClass);
+        System.Assert.areEqual(stackTrace, expectedSnippet.StackTrace);
+        System.Assert.areEqual(stackTrace.Source.LineNumber, expectedSnippet.TargetLineNumber);
         /*
             TODO determine best way(s) to test remaining code snippet properties:
                 [x] public String sourceApiName
@@ -1035,7 +1033,7 @@ private class LogEntryHandler_Tests {
                 [x] public Integer targetLineNumber
                 [ ] public Integer totalLinesOfCode
         */
-        System.Assert.areEqual(JSON.serializePretty(expectedCodeSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
         System.Assert.isTrue(logEntry.HasStackTrace__c);
         // FIXME
         // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);

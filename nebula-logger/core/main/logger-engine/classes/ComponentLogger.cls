@@ -11,6 +11,7 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity')
 public inherited sharing class ComponentLogger {
+    @TestVisible
     private static final String LOGGER_COMPONENT_NAME {
         get {
             if (LOGGER_COMPONENT_NAME == null) {
@@ -23,7 +24,8 @@ public inherited sharing class ComponentLogger {
     }
 
     static {
-        Logger.ignoreOrigin(ComponentLogger.class);
+        LoggerStackTrace.ignoreOrigin(ComponentLogger.class);
+        LoggerStackTrace.ignoreOrigin(LoggerStackTrace.SourceLanguage.JavaScript, LOGGER_COMPONENT_NAME);
     }
 
     /**
@@ -50,18 +52,19 @@ public inherited sharing class ComponentLogger {
                 Logger.setScenario(componentLogEntry.scenario);
                 System.LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
                 LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message).addTags(componentLogEntry.tags);
+                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
                 if (componentLogEntry.recordId != null) {
-                    logEntryEventBuilder.setRecord(componentLogEntry.recordId);
+                    logEntryEventBuilder.setRecord(componentLogEntry.recordId).getLogEntryEvent();
                 }
                 if (componentLogEntry.record != null) {
-                    logEntryEventBuilder.setRecord(componentLogEntry.record);
+                    logEntryEventBuilder.setRecord(componentLogEntry.record).getLogEntryEvent();
                 }
 
-                logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
-                setBrowserDetails(logEntryEventBuilder, componentLogEntry);
-                setComponentErrorDetails(logEntryEventBuilder, componentLogEntry.error);
-                setStackTraceDetails(logEntryEventBuilder, componentLogEntry.stack);
+                logEntryEvent.Timestamp__c = componentLogEntry.timestamp;
+                setBrowserDetails(logEntryEvent, componentLogEntry);
+                setComponentErrorDetails(logEntryEvent, componentLogEntry.error);
+                setOriginStackTraceDetails(logEntryEvent, componentLogEntry.stack);
             }
             if (String.isNotBlank(saveMethodName)) {
                 saveMethod = Logger.SaveMethod.valueOf(saveMethodName);
@@ -76,96 +79,71 @@ public inherited sharing class ComponentLogger {
         }
     }
 
-    private static void setBrowserDetails(LogEntryEventBuilder logEntryEventBuilder, ComponentLogEntry componentLogEntry) {
-        logEntryEventBuilder.getLogEntryEvent().BrowserFormFactor__c = componentLogEntry.browserFormFactor;
-        logEntryEventBuilder.getLogEntryEvent().BrowserLanguage__c = componentLogEntry.browserLanguage;
-        logEntryEventBuilder.getLogEntryEvent().BrowserScreenResolution__c = componentLogEntry.browserScreenResolution;
-        logEntryEventBuilder.getLogEntryEvent().BrowserUrl__c = componentLogEntry.browserUrl;
-        logEntryEventBuilder.getLogEntryEvent().BrowserUserAgent__c = componentLogEntry.browserUserAgent;
-        logEntryEventBuilder.getLogEntryEvent().BrowserWindowResolution__c = componentLogEntry.browserWindowResolution;
+    private static void setBrowserDetails(LogEntryEvent__e logEntryEvent, ComponentLogEntry componentLogEntry) {
+        logEntryEvent.BrowserFormFactor__c = componentLogEntry.browserFormFactor;
+        logEntryEvent.BrowserLanguage__c = componentLogEntry.browserLanguage;
+        logEntryEvent.BrowserScreenResolution__c = componentLogEntry.browserScreenResolution;
+        logEntryEvent.BrowserUrl__c = componentLogEntry.browserUrl;
+        logEntryEvent.BrowserUserAgent__c = componentLogEntry.browserUserAgent;
+        logEntryEvent.BrowserWindowResolution__c = componentLogEntry.browserWindowResolution;
     }
 
-    private static void setComponentErrorDetails(LogEntryEventBuilder logEntryEventBuilder, ComponentError componentError) {
+    private static void setComponentErrorDetails(LogEntryEvent__e logEntryEvent, ComponentError componentError) {
         if (componentError == null) {
             return;
         }
 
-        // FIXME add logic to set new fields ExceptionLocation__c and ExceptionSourceType__c
-        logEntryEventBuilder.getLogEntryEvent().ExceptionMessage__c = componentError.message;
-        logEntryEventBuilder.getLogEntryEvent().ExceptionStackTrace__c = componentError.stack;
-        logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = componentError.type;
+        logEntryEvent.ExceptionMessage__c = componentError.message;
+        logEntryEvent.ExceptionType__c = componentError.type;
+
+        LoggerStackTrace.SourceLanguage language = LoggerStackTrace.SourceLanguage.JavaScript;
+        if (componentError.type?.startsWith('System')) {
+            language = LoggerStackTrace.SourceLanguage.Apex;
+            // System.Assert.fail(JSON.serializePretty(componentError) + '\n');
+        }
+        LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(language, componentError.stack);
+        logEntryEvent.ExceptionLocation__c = exceptionStackTrace.Location;
+        logEntryEvent.ExceptionSourceActionName__c = exceptionStackTrace.Source?.ActionName;
+        logEntryEvent.ExceptionSourceApiName__c = exceptionStackTrace.Source?.ApiName;
+        logEntryEvent.ExceptionSourceMetadataType__c = exceptionStackTrace.Source?.MetadataType.name();
+        logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace.ParsedStackTraceString;
     }
 
     @SuppressWarnings('PMD.AvoidDeeplyNestedIfStmts, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
-    private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
-        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+    private static void setOriginStackTraceDetails(LogEntryEvent__e logEntryEvent, String stackTraceString) {
+        LoggerStackTrace originStackTrace = new LoggerStackTrace(LoggerStackTrace.SourceLanguage.JavaScript, stackTraceString);
 
-        Boolean isAuraComponent = false;
-        Boolean isWebComponent = false;
-        String originLocation;
-
-        if (String.isNotBlank(stackTraceString)) {
-            String auraComponentContent = '/n/components/';
-            String lwcModuleContent = 'modules/';
-            Boolean parentComponentFound = false;
-
-            List<String> stackTraceLines = new List<String>();
-            for (String currentStackTraceLine : stackTraceString.split('\n')) {
-                if (currentStackTraceLine.contains(LOGGER_COMPONENT_NAME)) {
-                    continue;
-                } else if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent)) {
-                    isAuraComponent = true;
-                    parentComponentFound = true;
-                } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent)) {
-                    isWebComponent = true;
-                    parentComponentFound = true;
-                }
-
-                if (parentComponentFound) {
-                    stackTraceLines.add(currentStackTraceLine);
-                }
-            }
-
-            stackTraceString = String.join(stackTraceLines, '\n');
-            if (String.isNotBlank(stackTraceString)) {
-                String componentContent;
-                if (isAuraComponent) {
-                    componentContent = auraComponentContent;
-                } else if(isWebComponent) {
-                    componentContent = lwcModuleContent;
-                }
-                String componentName;
-                String componentFunction;
-                for (String currentStackTraceLine : stackTraceString.split('\n')) {
-                    if (currentStackTraceLine.trim().startsWith('at eval')) {
-                        continue;
-                    }
-
-                    componentName = currentStackTraceLine.substringAfterLast(componentContent).substringBefore('.js');
-                    componentFunction = currentStackTraceLine.substringBefore('@');
-                    break;
-                }
-                originLocation = componentName + '.' + componentFunction;
-            }
-        }
         // Older, custom convention used for a 'type', with values 'Aura' and 'LWC'
         String componentType;
-        // New, standardized convention that uses metadata type names 'AuraDefinitionBundle' and 'LightningComponentBundle'
-        String originSourceType;
-
-        if (isAuraComponent) {
+        if (originStackTrace.Source?.MetadataType == LoggerStackTrace.SourceMetadataType.AuraDefinitionBundle) {
             componentType = 'Aura';
-            originSourceType = 'AuraDefinitionBundle';
-        } else if (isWebComponent) {
+        } else if (originStackTrace.Source?.MetadataType == LoggerStackTrace.SourceMetadataType.LightningComponentBundle) {
             componentType = 'LWC';
-            originSourceType = 'LightningComponentBundle';
         }
 
+        // Legacy fields (OriginType__c is considered legacy, even though it uses the 'Origin' prefix)
         logEntryEvent.ComponentType__c = componentType;
-        logEntryEvent.OriginSourceType__c = originSourceType;
-        logEntryEvent.OriginLocation__c = originLocation;
         logEntryEvent.OriginType__c = 'Component';
+
+        // New Origin fields
+        logEntryEvent.OriginLocation__c = originStackTrace.Location;
         logEntryEvent.StackTrace__c = stackTraceString;
+        if (originStackTrace.Source != null) {
+            logEntryEvent.OriginSourceActionName__c = originStackTrace.Source.ActionName;
+            logEntryEvent.OriginSourceMetadataType__c = originStackTrace.Source.MetadataType.name();
+            logEntryEvent.OriginSourceApiName__c = originStackTrace.Source.ApiName;
+        }
+    }
+
+    private static String truncateFieldValue(Schema.SObjectField field, String value) {
+        Integer fieldMaxLength = field.getDescribe().getLength();
+        if (String.isBlank(value)) {
+            return value;
+        } else if (value.length() <= fieldMaxLength) {
+            return value;
+        }
+
+        return value.left(fieldMaxLength);
     }
 
     /**
