@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <externalId>false</externalId>
-    <label>Origin Source Created By Username</label>
+    <label>Origin Source Created By</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

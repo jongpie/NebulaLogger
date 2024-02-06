@@ -79,14 +79,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
         for (LogEntry__c logEntry : apexClassLogEntries) {
             ApexClass originApexClass = classNameToApexClass.get(logEntry.OriginSourceApiName__c);
-            if (originApexClass != null) {
-                new OriginApexMetadataFieldApplier().apply(logEntry, originApexClass);
-            }
+            new OriginApexMetadataFieldApplier().apply(logEntry, originApexClass);
 
             ApexClass exceptionApexClass = classNameToApexClass.get(logEntry.ExceptionSourceApiName__c);
-            if (exceptionApexClass != null) {
-                new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexClass);
-            }
+            new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexClass);
         }
     }
 
@@ -125,14 +121,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
         for (LogEntry__c logEntry : apexTriggerLogEntries) {
             ApexTrigger originApexTrigger = triggerNameToApexTrigger.get(logEntry.OriginSourceApiName__c);
-            if (originApexTrigger != null) {
-                new OriginApexMetadataFieldApplier().apply(logEntry, originApexTrigger);
-            }
+            new OriginApexMetadataFieldApplier().apply(logEntry, originApexTrigger);
 
             ApexTrigger exceptionApexTrigger = triggerNameToApexTrigger.get(logEntry.ExceptionSourceApiName__c);
-            if (exceptionApexTrigger != null) {
-                new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexTrigger);
-            }
+            new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexTrigger);
         }
     }
 
@@ -477,6 +469,12 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
     // Helper classes that are used to apply field values for each entry's related ApexClass or ApexTrigger
     @SuppressWarnings('PMD.ApexDoc')
+    private abstract class ApexMetadataFieldApplier {
+        public abstract void apply(LogEntry__c logEntry, Schema.ApexClass topLevelApexClass);
+        public abstract void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger);
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
     private class ExceptionApexMetadataFieldApplier extends ApexMetadataFieldApplier {
         public override void apply(LogEntry__c logEntry, Schema.ApexClass apexClass) {
             if (apexClass == null) {
@@ -484,9 +482,11 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
 
             logEntry.ExceptionSourceApiVersion__c = 'v' + apexClass.ApiVersion;
+            logEntry.ExceptionSourceCreatedById__c = apexClass.CreatedById;
             logEntry.ExceptionSourceCreatedByUsername__c = apexClass.CreatedBy.Username;
             logEntry.ExceptionSourceCreatedDate__c = apexClass.CreatedDate;
             logEntry.ExceptionSourceId__c = apexClass.Id;
+            logEntry.ExceptionSourceLastModifiedById__c = apexClass.LastModifiedById;
             logEntry.ExceptionSourceLastModifiedByUsername__c = apexClass.LastModifiedBy.Username;
             logEntry.ExceptionSourceLastModifiedDate__c = apexClass.LastModifiedDate;
 
@@ -500,9 +500,11 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
 
             logEntry.ExceptionSourceApiVersion__c = 'v' + apexTrigger.ApiVersion;
+            logEntry.ExceptionSourceCreatedById__c = apexTrigger.CreatedById;
             logEntry.ExceptionSourceCreatedByUsername__c = apexTrigger.CreatedBy.Username;
             logEntry.ExceptionSourceCreatedDate__c = apexTrigger.CreatedDate;
             logEntry.ExceptionSourceId__c = apexTrigger.Id;
+            logEntry.ExceptionSourceLastModifiedById__c = apexTrigger.LastModifiedById;
             logEntry.ExceptionSourceLastModifiedByUsername__c = apexTrigger.LastModifiedBy.Username;
             logEntry.ExceptionSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
 
@@ -535,9 +537,11 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             // Newer, general-purpose 'origin source' fields
             logEntry.OriginSourceActionName__c = originStackTrace.Source.ActionName;
             logEntry.OriginSourceApiVersion__c = 'v' + apexClass.ApiVersion;
+            logEntry.OriginSourceCreatedById__c = apexClass.CreatedById;
             logEntry.OriginSourceCreatedByUsername__c = apexClass.CreatedBy.Username;
             logEntry.OriginSourceCreatedDate__c = apexClass.CreatedDate;
             logEntry.OriginSourceId__c = apexClass.Id;
+            logEntry.OriginSourceLastModifiedById__c = apexClass.LastModifiedById;
             logEntry.OriginSourceLastModifiedByUsername__c = apexClass.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexClass.LastModifiedDate;
             logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexClass));
@@ -553,18 +557,14 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             // Currently, there aren't any ApexTrigger-specific fields on LogEntry__c,
             // so only set the newer, general-purpose 'origin source' fields
             logEntry.OriginSourceApiVersion__c = 'v' + apexTrigger.ApiVersion;
+            logEntry.OriginSourceCreatedById__c = apexTrigger.CreatedById;
             logEntry.OriginSourceCreatedByUsername__c = apexTrigger.CreatedBy.Username;
             logEntry.OriginSourceCreatedDate__c = apexTrigger.CreatedDate;
             logEntry.OriginSourceId__c = apexTrigger.Id;
+            logEntry.OriginSourceLastModifiedById__c = apexTrigger.LastModifiedById;
             logEntry.OriginSourceLastModifiedByUsername__c = apexTrigger.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
             logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexTrigger));
         }
-    }
-
-    @SuppressWarnings('PMD.ApexDoc')
-    private abstract class ApexMetadataFieldApplier {
-        public abstract void apply(LogEntry__c logEntry, Schema.ApexClass topLevelApexClass);
-        public abstract void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger);
     }
 }
