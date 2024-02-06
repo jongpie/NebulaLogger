@@ -819,9 +819,11 @@ private class LogEntryHandler_Tests {
                 Id,
                 HasExceptionSourceSnippet__c,
                 ExceptionSourceApiVersion__c,
+                ExceptionSourceCreatedById__c,
                 ExceptionSourceCreatedByUsername__c,
                 ExceptionSourceCreatedDate__c,
                 ExceptionSourceId__c,
+                ExceptionSourceLastModifiedById__c,
                 ExceptionSourceLastModifiedByUsername__c,
                 ExceptionSourceLastModifiedDate__c,
                 ExceptionSourceSnippet__c
@@ -829,9 +831,11 @@ private class LogEntryHandler_Tests {
             WHERE Id = :logEntry.Id
         ];
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ExceptionSourceApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedById, logEntry.ExceptionSourceCreatedById__c);
         System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.ExceptionSourceCreatedByUsername__c);
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.ExceptionSourceCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.ExceptionSourceId__c);
+        System.Assert.areEqual(apexClass.LastModifiedById, logEntry.ExceptionSourceLastModifiedById__c);
         System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.ExceptionSourceLastModifiedByUsername__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ExceptionSourceLastModifiedDate__c);
         System.Assert.isTrue(logEntry.HasExceptionSourceSnippet__c);
@@ -899,9 +903,11 @@ private class LogEntryHandler_Tests {
                 HasStackTrace__c,
                 HasOriginSourceSnippet__c,
                 OriginSourceApiVersion__c,
+                OriginSourceCreatedById__c,
                 OriginSourceCreatedByUsername__c,
                 OriginSourceCreatedDate__c,
                 OriginSourceId__c,
+                OriginSourceLastModifiedById__c,
                 OriginSourceLastModifiedByUsername__c,
                 OriginSourceLastModifiedDate__c,
                 OriginSourceSnippet__c,
@@ -919,9 +925,11 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(stackTrace.Source.ActionName, logEntry.ApexMethodName__c);
         // Origin source fields
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.OriginSourceApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedById, logEntry.OriginSourceCreatedById__c);
         System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.OriginSourceCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.OriginSourceId__c);
+        System.Assert.areEqual(apexClass.LastModifiedById, logEntry.OriginSourceLastModifiedById__c);
         System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
         System.Assert.isTrue(logEntry.HasOriginSourceSnippet__c);
@@ -992,9 +1000,11 @@ private class LogEntryHandler_Tests {
                 HasStackTrace__c,
                 HasOriginSourceSnippet__c,
                 OriginSourceApiVersion__c,
+                OriginSourceCreatedById__c,
                 OriginSourceCreatedByUsername__c,
                 OriginSourceCreatedDate__c,
                 OriginSourceId__c,
+                OriginSourceLastModifiedById__c,
                 OriginSourceLastModifiedByUsername__c,
                 OriginSourceLastModifiedDate__c,
                 OriginSourceSnippet__c,
@@ -1014,9 +1024,11 @@ private class LogEntryHandler_Tests {
         System.Assert.areEqual(stackTrace.Source.ActionName, logEntry.ApexMethodName__c);
         // Origin source fields
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.OriginSourceApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedById, logEntry.OriginSourceCreatedById__c);
         System.Assert.areEqual(apexClass.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.OriginSourceCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.OriginSourceId__c);
+        System.Assert.areEqual(apexClass.LastModifiedById, logEntry.OriginSourceLastModifiedById__c);
         System.Assert.areEqual(apexClass.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
         System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
         System.Assert.isTrue(logEntry.HasOriginSourceSnippet__c);
@@ -1039,6 +1051,89 @@ private class LogEntryHandler_Tests {
         // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);
     }
 
+    @IsTest
+    static void it_should_set_origin_apex_trigger_details() {
+        // FIXME the implementation does not seem to properly handle triggers with a namespace prefix
+        // (including when both the managed & unlocked packages are installed in an org), so skip the tests for now,
+        // but revisit this test + implementation
+        if (String.isNotBlank(Logger.getNamespacePrefix())) {
+            return;
+        }
+
+        // None of Nebula Logger's triggers include any logging (or logic), so use a mock
+        // stack trace string so the code has an actual trigger to query
+        String mockTriggerStackTraceString = String.join(
+            new List<String>{
+                'Trigger.LogEntry: line 2, column 1',
+                'AnonymousBlock: line 1, column 1'
+            }, '\n');
+        LoggerStackTrace stackTrace = new LoggerStackTrace(mockTriggerStackTraceString);
+        ApexTrigger apexTrigger = [
+            SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
+            FROM ApexTrigger
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
+        ];
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(
+            Log__c = log.Id,
+            OriginSourceApiName__c = stackTrace.Source.ApiName,
+            OriginSourceMetadataType__c = 'ApexTrigger',
+            StackTrace__c = mockTriggerStackTraceString
+        );
+        LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+
+        LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        logEntry = [
+            SELECT
+                Id,
+                HasStackTrace__c,
+                HasOriginSourceSnippet__c,
+                OriginSourceApiVersion__c,
+                OriginSourceCreatedById__c,
+                OriginSourceCreatedByUsername__c,
+                OriginSourceCreatedDate__c,
+                OriginSourceId__c,
+                OriginSourceLastModifiedById__c,
+                OriginSourceLastModifiedByUsername__c,
+                OriginSourceLastModifiedDate__c,
+                OriginSourceSnippet__c,
+                StackTrace__c
+            FROM LogEntry__c
+            WHERE Id = :logEntry.Id
+        ];
+        System.Assert.areEqual('v' + apexTrigger.ApiVersion, logEntry.OriginSourceApiVersion__c);
+        System.Assert.areEqual(apexTrigger.CreatedById, logEntry.OriginSourceCreatedById__c);
+        System.Assert.areEqual(apexTrigger.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
+        System.Assert.areEqual(apexTrigger.CreatedDate, logEntry.OriginSourceCreatedDate__c);
+        System.Assert.areEqual(apexTrigger.Id, logEntry.OriginSourceId__c);
+        System.Assert.areEqual(apexTrigger.LastModifiedById, logEntry.OriginSourceLastModifiedById__c);
+        System.Assert.areEqual(apexTrigger.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
+        System.Assert.areEqual(apexTrigger.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
+        System.Assert.isTrue(logEntry.HasOriginSourceSnippet__c);
+        LogEntryHandler.SourceMetadataSnippet expectedSnippet = new LogEntryHandler.SourceMetadataSnippet(stackTrace, apexTrigger);
+        System.Assert.areEqual(stackTrace, expectedSnippet.StackTrace);
+        System.Assert.areEqual(stackTrace.Source.LineNumber, expectedSnippet.TargetLineNumber);
+        /*
+            TODO determine best way(s) to test remaining code snippet properties:
+                [x] public String sourceApiName
+                [x] public String sourceType
+                [ ] public String code
+                [ ] public Integer startingLineNumber
+                [ ] public Integer endingLineNumber
+                [x] public Integer targetLineNumber
+                [ ] public Integer totalLinesOfCode
+        */
+        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.isTrue(logEntry.HasStackTrace__c);
+        // FIXME
+        // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);
+    }
 
     @IsTest
     static void it_should_set_gracefully_skip_setting_flow_details_when_origin_location_is_not_valid_flow_api_name() {

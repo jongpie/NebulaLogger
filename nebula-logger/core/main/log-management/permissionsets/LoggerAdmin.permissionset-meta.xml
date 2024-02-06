@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <applicationVisibilities>
         <application>LoggerConsole</application>
@@ -295,6 +295,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.ExceptionSourceCreatedById__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ExceptionSourceCreatedByLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.ExceptionSourceCreatedByUsername__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -306,6 +316,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ExceptionSourceId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ExceptionSourceLastModifiedById__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ExceptionSourceLastModifiedByLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -870,6 +890,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.OriginSourceCreatedById__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.OriginSourceCreatedByLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.OriginSourceCreatedByUsername__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -881,6 +911,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.OriginSourceId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.OriginSourceLastModifiedById__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.OriginSourceLastModifiedByLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
