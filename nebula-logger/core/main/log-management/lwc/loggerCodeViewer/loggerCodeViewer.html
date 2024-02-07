@@ -1,0 +1,21 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+    <lightning-card class="slds-p-horizontal_xx-small">
+        <div class="slds-m-horizontal_medium slds-m-top_medium" slot="title">
+            <slot name="title"></slot>
+        </div>
+        <div class="slds-m-horizontal_medium slds-m-top_medium" slot="actions">
+            <slot name="actions"></slot>
+        </div>
+        <template if:false={isLoaded}>
+            <div class="slds-is-relative" style="min-height: 6em">
+                <lightning-spinner variant="inverse"></lightning-spinner>
+            </div>
+        </template>
+        <div class="prism-viewer line-numbers" lwc:dom="manual"></div>
+    </lightning-card>
+</template>

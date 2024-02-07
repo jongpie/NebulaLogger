@@ -1,0 +1,176 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+    <template if:true={hasLoaded}>
+        <c-logger-page-section title={sectionTitle}>
+            <span slot="content">
+                <lightning-layout multiple-rows vertical-align="start">
+                    <lightning-layout-item size="12">
+                        <c-logger-code-viewer
+                            code={sourceSnippet.Code}
+                            data-id="sourceSnippet"
+                            language={sourceSnippet.Language}
+                            starting-line-number={sourceSnippet.StartingLineNumber}
+                            target-line-number={sourceSnippet.TargetLineNumber}
+                        >
+                            <span slot="title">{sourceSnippet.Title}</span>
+                            <span slot="actions">
+                                <lightning-button-group>
+                                    <template if:true={showEinsteinInsights}>
+                                        <lightning-button
+                                            icon-name="utility:einstein"
+                                            label="Get Einstein Insights"
+                                            onclick={handleShowEinsteinInsightsModal}
+                                            variant="brand"
+                                        ></lightning-button>
+                                    </template>
+                                    <!-- <template if:true={hasFullSourceMetadata}>
+                                        <lightning-button
+                                            icon-name="utility:apex"
+                                            label="View Full Source"
+                                            onclick={handleShowFullSourceMetadataModal}
+                                            variant="neutral"
+                                        ></lightning-button>
+                                    </template> -->
+                                    <lightning-button
+                                        icon-name="utility:apex"
+                                        label="View Full Source"
+                                        onclick={handleShowFullSourceMetadataModal}
+                                        variant="inverse"
+                                    ></lightning-button>
+                                </lightning-button-group>
+                            </span>
+                        </c-logger-code-viewer>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </span>
+        </c-logger-page-section>
+    </template>
+
+    <!-- Modal Einstein Insights Viewer -->
+    <template if:true={showEinsteinInsightsModal}>
+        <section class="slds-modal slds-fade-in-open slds-modal_small" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
+            <div class="slds-modal__container" onkeydown={handleKeyDown}>
+                <!-- Modal header -->
+                <header class="slds-modal__header">
+                    <button
+                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close"
+                        onclick={handleHideEinsteinInsightsModal}
+                    >
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">
+                        <lightning-icon icon-name="utility:einstein" size="small"></lightning-icon>&nbsp;{modalEinsteinInsightsTitle}
+                    </h2>
+                </header>
+
+                <!-- Modal body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <section role="log" class="slds-chat">
+                        <ul class="slds-chat-list">
+                            <!-- <li class="slds-chat-listitem slds-chat-listitem_bookend">
+                                <div class="slds-chat-bookend">
+                                    <span class="slds-icon_container slds-icon-utility-chat slds-chat-icon">
+                                        <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
+                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chat"></use>
+                                        </svg>
+                                    </span>
+                                    <p>Chat started by <b>Einstein</b> • 4:58 PM</p>
+                                </div>
+                            </li> -->
+                            <li class="slds-chat-listitem slds-chat-listitem_outbound">
+                                <div class="slds-chat-message">
+                                    <div class="slds-chat-message__body">
+                                        <!-- <div class="slds-chat-message__text slds-chat-message__text_outbound-agent"> -->
+                                        <div class="slds-chat-message__text slds-chat-message__text_outbound">
+                                            <span>{einsteinInsight.prompt}</span>
+                                        </div>
+                                        <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Me • 4:57 PM</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="slds-chat-listitem slds-chat-listitem_inbound">
+                                <div class="slds-chat-message">
+                                    <span aria-hidden="true" class="slds-avatar slds-avatar_circle slds-chat-avatar">
+                                        <abbr class="slds-avatar__initials slds-avatar__initials_inverse" title="Einstein">
+                                            <lightning-icon icon-name="utility:einstein" size="small"></lightning-icon>
+                                        </abbr>
+                                    </span>
+                                    <div class="slds-chat-message__body">
+                                        <div class="slds-chat-message__text slds-chat-message__text_inbound">
+                                            <span>{einsteinInsight.response}</span>
+                                        </div>
+                                        <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Einstein • 4:59 PM</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+                </div>
+
+                <!-- Modal footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        class="slds-p-around_xx-small"
+                        data-id="close-btn"
+                        label="Close"
+                        onclick={handleHideEinsteinInsightsModal}
+                        title="Close"
+                    ></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" onkeydown={handleKeyDown}></div>
+    </template>
+
+    <!-- Modal Code Viewer -->
+    <template if:true={showFullSourceMetadataModal}>
+        <section class="slds-modal slds-fade-in-open slds-modal_large" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
+            <div class="slds-modal__container" onkeydown={handleKeyDown}>
+                <!-- Modal header -->
+                <header class="slds-modal__header">
+                    <button
+                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close"
+                        onclick={handleHideFullSourceMetadataModal}
+                    >
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">{modalSourceSnippetTitle}</h2>
+                </header>
+
+                <!-- Modal body -->
+                <template if:true={showModalWarning}>
+                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                        <span class="slds-assistive-text">warning</span>
+                        <lightning-icon class="slds-m-right_x-small" icon-name="utility:warning" size="x-small"></lightning-icon>
+                        <h2>This Apex class has been modified after this log entry was generated.</h2>
+                    </div>
+                </template>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-logger-code-viewer code={modalSourceSnippet.Code} language={modalSourceSnippet.Language}>
+                        <!-- starting-line-number={modalSourceSnippet.StartingLineNumber}
+                        target-line-number={modalSourceSnippet.TargetLineNumber} -->
+                        <span slot="title">{modalSourceSnippet.Title}</span>
+                    </c-logger-code-viewer>
+                </div>
+
+                <!-- Modal footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        class="slds-p-around_xx-small"
+                        data-id="close-btn"
+                        label="Close"
+                        onclick={handleHideFullSourceMetadataModal}
+                        title="Close"
+                    ></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" onkeydown={handleKeyDown}></div>
+    </template>
+</template>

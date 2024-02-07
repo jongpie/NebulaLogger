@@ -399,8 +399,9 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
     // TODO consider making this a top-level, generically-named class (LoggerSourceMetadataSnippet?)
     @SuppressWarnings('PMD.ApexDoc')
-    @TestVisible
-    private class SourceMetadataSnippet {
+    // @TestVisible
+    // private class SourceMetadataSnippet {
+    public class SourceMetadataSnippet {
         // TODO decide if this is needed, it's duplicated from LoggerStackTrace.Language
         // Ultimately, the frontend needs to know the language to display in PrismJS
         public String Code { get; private set; }

@@ -1,0 +1,6 @@
+{
+    "exceptionApexClassCode": "some exception code line\nanother code line",
+    "hasExceptionApexClassBeenModified": true,
+    "hasOriginApexClassBeenModified": true,
+    "originApexClassCode": "some origin code line\nanother code line"
+}

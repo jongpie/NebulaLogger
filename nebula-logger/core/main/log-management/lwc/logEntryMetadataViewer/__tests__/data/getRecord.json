@@ -1,0 +1,40 @@
+{
+    "apiName": "LogEntry__c",
+    "childRelationships": {},
+    "fields": {
+        "ApexClassName__c": {
+            "displayValue": null,
+            "value": "ExampleClassWithLogging"
+        },
+        "ExceptionApexClassName__c": {
+            "displayValue": null,
+            "value": "AnotherClassWithLogging"
+        },
+        "ExceptionSourceSnippet__c": {
+            "displayValue": null,
+            "value": "{\n  \"targetLineNumber\" : 21,\n  \"startingLineNumber\" : 13,\n  \"endingLineNumber\" : 25,\n  \"code\" : \"    /**\\n     * @description Example method for logging that saves log and writes a log entry.\\n     */\\n    public void throwSomeException() {\\n        Logger.info('running throwSomeException() method!');\\n\\n        Account problematicAccount = new Account();\\n        Logger.info('going to cause a DML exception here by inserting an account with no fields populated', problematicAccount);\\n        insert problematicAccount;\\n    }\\n\\n    /**\\n     * @description Example inner class.\"\n}"
+        },
+        "ExceptionType__c": {
+            "displayValue": "System.DmlException",
+            "value": "System.DmlException"
+        },
+        "MessageMasked__c": {
+            "displayValue": null,
+            "value": false
+        },
+        "MessageTruncated__c": {
+            "displayValue": null,
+            "value": false
+        },
+        "OriginSourceSnippet__c": {
+            "displayValue": null,
+            "value": "{\n  \"targetLineNumber\" : 24,\n  \"startingLineNumber\" : 16,\n  \"endingLineNumber\" : 28,\n  \"code\" : \"     */\\n    public void doSomething() {\\n        Logger.info('running doSomething() method!');\\n\\n        try {\\n            new ExampleInnerClass().doAnInnerSomething();\\n            new AnotherClassWithLogging().throwSomeException();\\n        } catch(Exception ex) {\\n            Logger.error('some error, oh no!', ex);\\n            Logger.saveLog();\\n            throw ex;\\n        } finally {\\n            Logger.saveLog();\"\n}"
+        }
+    },
+    "id": "a016s0000041VrKAAU",
+    "lastModifiedById": "0056s000005C0ttAAC",
+    "lastModifiedDate": "2023-07-09T02:11:37.000Z",
+    "recordTypeId": "012000000000000AAA",
+    "recordTypeInfo": null,
+    "systemModstamp": "2023-07-09T02:11:37.000Z"
+}
