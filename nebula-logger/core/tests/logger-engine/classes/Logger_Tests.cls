@@ -267,26 +267,17 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_generate_a_valid_uuid() {
-        Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
-
-        Logger.Uuid uuid = new Logger.Uuid();
-
-        System.Assert.areEqual(36, uuid.getValue().length());
-        Matcher matcher = pattern.matcher(uuid.getValue());
-        System.Assert.isTrue(matcher.matches(), 'Generated UUID=' + uuid.getValue());
-    }
-
-    @IsTest
-    static void it_should_return_uuid_transaction_id() {
-        Pattern pattern = System.Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
-
+    static void it_should_use_a_uuid_for_transaction_id() {
         String transactionId = Logger.getTransactionId();
 
-        System.Assert.isTrue(String.isNotBlank(transactionId));
-        System.Assert.areEqual(36, transactionId.length());
-        Matcher matcher = pattern.matcher(transactionId);
-        System.Assert.isTrue(matcher.matches(), 'Generated UUID=' + transactionId);
+        Boolean isValidUuid;
+        try {
+            System.UUID.fromString(transactionId);
+            isValidUuid = true;
+        } catch(Exception ex) {
+            isValidUuid = false;
+        }
+        System.Assert.isTrue(isValidUuid);
     }
 
     @IsTest

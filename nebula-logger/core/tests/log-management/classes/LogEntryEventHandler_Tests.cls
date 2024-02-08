@@ -1207,7 +1207,7 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(
             logEntryEvent,
             Schema.LogEntryEvent__e.EventUuid,
-            new Logger.Uuid().getValue()
+            System.UUID.randomUUID()
         );
 
         return logEntryEvent;
