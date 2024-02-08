@@ -94,7 +94,9 @@ private class LogManagementDataSelector_Tests {
     // }
 
     @IsTest
-    static void it_returns_cached_recent_log_with_api_release_details() {
+    static void it_returns_cached_recent_log_with_api_release_details_when_call_status_api_callout_is_enabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         Log__c olderLog = new Log__c(
@@ -113,7 +115,7 @@ private class LogManagementDataSelector_Tests {
         );
         insert new List<Log__c>{ olderLog, expectedLog };
         System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
-        System.Assert.areEqual(1, System.Limits.getQueries());
+        System.Assert.areEqual(1, System.Limits.getQueries(), 'Expected 1 query to be used during test setup');
 
         for (Integer i = 0; i < 3; i++) {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
@@ -127,8 +129,10 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_null_when_no_recent_log_with_api_release_details_is_found() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
+        System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
         System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
-        System.Assert.areEqual(1, System.Limits.getQueries());
+        System.Assert.areEqual(1, System.Limits.getQueries(), 'Expected 1 query to be used during test setup');
 
         for (Integer i = 0; i < 5; i++) {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
@@ -137,6 +141,31 @@ private class LogManagementDataSelector_Tests {
         }
 
         System.Assert.areEqual(2, System.Limits.getQueries());
+    }
+
+    @IsTest
+    static void it_returns_null_for_cached_recent_log_with_api_release_details_when_status_api_callout_is_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.CALL_STATUS_API);
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        Log__c logWithApiReleaseDetails = new Log__c(
+            ApiReleaseNumber__c = 'logWithApiReleaseDetails.ApiReleaseNumber__c',
+            ApiReleaseVersion__c = 'logWithApiReleaseDetails.ApiReleaseVersion__c',
+            OrganizationReleaseNumber__c = 'logWithApiReleaseDetails.OrganizationReleaseNumber__c',
+            OrganizationReleaseVersion__c = 'logWithApiReleaseDetails.OrganizationReleaseVersion__c',
+            TransactionId__c = '1234'
+        );
+        insert logWithApiReleaseDetails;
+        System.Assert.areEqual(1, System.Limits.getQueries(), 'Expected 1 query to be used during test setup');
+
+        for (Integer i = 0; i < 3; i++) {
+            Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
+
+            System.Assert.isNull(returnedLog);
+        }
+
+        System.Assert.areEqual(1, System.Limits.getQueries());
     }
 
     @IsTest
