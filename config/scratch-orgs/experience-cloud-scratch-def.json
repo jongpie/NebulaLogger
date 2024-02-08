@@ -1,6 +1,7 @@
 {
     "orgName": "Nebula Logger - Experience Cloud Scratch Org",
     "edition": "Enterprise",
+    "release": "preview",
     "hasSampleData": true,
     "country": "ES",
     "language": "es",
