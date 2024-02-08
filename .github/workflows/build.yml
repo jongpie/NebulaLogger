@@ -90,8 +90,9 @@ jobs:
             # - name: 'Verify docs are updated'
             #   run: npm run docs:verify
 
-            - name: 'Verify formatting with Prettier'
-              run: npm run prettier:verify
+            # FIXME uncomment this once npm dependencies have been fixed
+            # - name: 'Verify formatting with Prettier'
+            #   run: npm run prettier:verify
 
     lwc-tests:
         name: 'Run LWC Tests'
