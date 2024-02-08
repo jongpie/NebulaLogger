@@ -20,6 +20,7 @@ private class LogEntryHandler_Tests_Flow {
         logEntry = getLogEntry();
         System.Assert.isNull(logEntry.OriginLocation__c);
         System.Assert.areEqual('Flow', logEntry.OriginType__c);
+        System.Assert.isNull(logEntry.StackTrace__c, 'Currently, there\'s no way to get a stack trace in Flow, so always expect null 😥');
         System.Assert.isNull(logEntry.FlowActiveVersionId__c);
         System.Assert.isNull(logEntry.FlowDescription__c);
         System.Assert.isNull(logEntry.FlowDurableId__c);
@@ -34,6 +35,17 @@ private class LogEntryHandler_Tests_Flow {
         System.Assert.isNull(logEntry.FlowVersionApiVersionRuntime__c);
         System.Assert.isNull(logEntry.FlowVersionNumber__c);
         System.Assert.isNull(logEntry.FlowVersionRunInMode__c);
+        System.Assert.isFalse(logEntry.HasOriginSourceSnippet__c);
+        System.Assert.isFalse(logEntry.HasStackTrace__c);
+        System.Assert.isNull(logEntry.OriginSourceApiVersion__c);
+        System.Assert.isNull(logEntry.OriginSourceCreatedById__c);
+        System.Assert.isNull(logEntry.OriginSourceCreatedByUsername__c);
+        System.Assert.isNull(logEntry.OriginSourceCreatedDate__c);
+        System.Assert.isNull(logEntry.OriginSourceId__c);
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedById__c);
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedByUsername__c);
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedDate__c);
+        System.Assert.isNull(logEntry.OriginSourceSnippet__c);
     }
 
     @IsTest
@@ -50,6 +62,9 @@ private class LogEntryHandler_Tests_Flow {
         logEntry = getLogEntry();
         System.Assert.areEqual(EXAMPLE_FLOW_API_NAME, logEntry.OriginLocation__c);
         System.Assert.areEqual('Flow', logEntry.OriginType__c);
+        System.Assert.isNull(logEntry.StackTrace__c, 'Currently, there\'s no way to get a stack trace in Flow, so always expect null 😥');
+
+        // Older Flow-specific fields
         System.Assert.areEqual(flowDefinitionView.ActiveVersionId, logEntry.FlowActiveVersionId__c);
         System.Assert.areEqual(flowDefinitionView.Description, logEntry.FlowDescription__c);
         System.Assert.areEqual(flowDefinitionView.DurableId, logEntry.FlowDurableId__c);
@@ -68,6 +83,16 @@ private class LogEntryHandler_Tests_Flow {
         );
         System.Assert.areEqual(flowVersion.RunInMode, logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was incorrect.');
         System.Assert.areEqual(flowVersion.VersionNumber, logEntry.FlowVersionNumber__c, 'FlowVersionNumber was incorrect.');
+        // Newer, general-purpose 'origin source' fields
+        System.Assert.areEqual(flowDefinitionView.ActiveVersionId, logEntry.OriginSourceId__c);
+        System.Assert.areEqual('v' + flowVersion.ApiVersionRuntime + '.0', logEntry.OriginSourceApiVersion__c);
+        System.Assert.areEqual(flowDefinitionView.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
+        System.Assert.isNull(logEntry.OriginSourceCreatedById__c, 'Neither FlowDefinitionView nor FlowVersionView seem to be have "created by/date" fields, so always expect null 😥');
+        System.Assert.isNull(logEntry.OriginSourceCreatedByUsername__c, 'Neither FlowDefinitionView nor FlowVersionView seem to be have "created by/date" fields, so always expect null 😥');
+        System.Assert.isNull(logEntry.OriginSourceCreatedDate__c, 'Neither FlowDefinitionView nor FlowVersionView seem to be have "created by/date" fields, so always expect null 😥');
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedById__c, 'Neither FlowDefinitionView nor FlowVersionView seem to be have "last modified by" fields (only the person\'s name is stored?!), so always expect null 😥');
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedByUsername__c, 'Neither FlowDefinitionView nor FlowVersionView seem to be have "last modified by" fields (only the person\'s name is stored?!), so always expect null 😥');
+        System.Assert.isNull(logEntry.OriginSourceSnippet__c, 'There\'s currently not a way to generate a snippet for a Flow, so always expect null 😥');
     }
 
     private static LogEntry__c getLogEntry() {
@@ -87,10 +112,21 @@ private class LogEntryHandler_Tests_Flow {
                 FlowVersionApiVersionRuntime__c,
                 FlowVersionNumber__c,
                 FlowVersionRunInMode__c,
+                HasOriginSourceSnippet__c,
+                HasStackTrace__c,
                 OriginLocation__c,
-                OriginType__c
+                OriginSourceApiVersion__c,
+                OriginSourceCreatedById__c,
+                OriginSourceCreatedByUsername__c,
+                OriginSourceCreatedDate__c,
+                OriginSourceId__c,
+                OriginSourceLastModifiedById__c,
+                OriginSourceLastModifiedByUsername__c,
+                OriginSourceLastModifiedDate__c,
+                OriginSourceSnippet__c,
+                OriginType__c,
+                StackTrace__c
             FROM LogEntry__c
-            // WHERE OriginType__c = 'Flow'
             ORDER BY CreatedDate
             LIMIT 1
         ];

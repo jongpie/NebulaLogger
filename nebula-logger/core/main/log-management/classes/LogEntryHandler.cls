@@ -166,6 +166,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
+            // Older Flow-specific fields
             logEntry.FlowActiveVersionId__c = flowDefinition.ActiveVersionId;
             logEntry.FlowDescription__c = flowDefinition.Description;
             logEntry.FlowDurableId__c = flowDefinition.DurableId;
@@ -177,6 +178,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.FlowTriggerOrder__c = flowDefinition.TriggerOrder;
             logEntry.FlowTriggerSObjectType__c = flowDefinition.TriggerObjectOrEvent?.QualifiedApiName;
             logEntry.FlowTriggerType__c = flowDefinition.TriggerType;
+
+            // Newer, general-purpose 'origin source' fields
+            logEntry.OriginSourceId__c = flowDefinition.ActiveVersionId;
+            logEntry.OriginSourceLastModifiedDate__c = flowDefinition.LastModifiedDate;
         }
     }
 
@@ -212,9 +217,13 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
+            // Older Flow-specific fields
             logEntry.FlowVersionApiVersionRuntime__c = 'v' + flowVersionView.ApiVersionRuntime + '.0';
             logEntry.FlowVersionRunInMode__c = flowVersionView.RunInMode;
             logEntry.FlowVersionNumber__c = flowVersionView.VersionNumber;
+
+            // Newer, general-purpose 'origin source' fields
+            logEntry.OriginSourceApiVersion__c = 'v' + flowVersionView.ApiVersionRuntime + '.0';
         }
     }
 
