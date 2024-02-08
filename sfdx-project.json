@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.12.9.NEXT",
-            "versionName": "RestRequest and RestResponse Logging Support",
-            "versionDescription": "Added new methods setRestRequestDetails() and setRestResponseDetails() in LogEntryEventBuilder that store RestRequest & RestResponse data in new fields on LogEntryEvent__e and LogEntry__c",
+            "versionNumber": "4.13.0.NEXT",
+            "versionName": "Spring '24 Release",
+            "versionDescription": "Updated all metadata to API v60.0, fixed a bug with querying for recent Log__c records when the Status API integration is disabled, switched to new System.UUID class, commented-out a failing test due to ongoing platform issues with SOSL",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
