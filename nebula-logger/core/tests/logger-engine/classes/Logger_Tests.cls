@@ -274,7 +274,7 @@ private class Logger_Tests {
         try {
             System.UUID.fromString(transactionId);
             isValidUuid = true;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             isValidUuid = false;
         }
         System.Assert.isTrue(isValidUuid);

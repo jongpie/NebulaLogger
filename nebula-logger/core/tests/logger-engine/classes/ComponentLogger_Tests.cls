@@ -338,10 +338,19 @@ private class ComponentLogger_Tests {
         // This is a copy of an actual stack trace generated from c/loggerAuraDemo in August 2021
         String componentNamespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
         String qualifiedLoggerComponentName = componentNamespace + '/logger.js';
-        List<String> auraStackTraceLines = new List<String>{ 'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':28:24' +
-            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':172:14',
-            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':349:44',
-            'info@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':253:21',
+        List<String> auraStackTraceLines = new List<String>{
+            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':28:24' +
+            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':172:14',
+            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':349:44',
+            'info@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':253:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'InteropComponent.prototype.$setupMethods$/</self[m]@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:45047:24',
@@ -467,10 +476,18 @@ private class ComponentLogger_Tests {
         String componentNamespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
         String qualifiedLoggerComponentName = componentNamespace + '/logger.js';
         List<String> lwcStackTraceLines = new List<String>{
-            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':28:24',
-            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':172:14',
-            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':349:44',
-            'error@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + qualifiedLoggerComponentName + ':233:21',
+            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':28:24',
+            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':172:14',
+            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':349:44',
+            'error@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            qualifiedLoggerComponentName +
+            ':233:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'createFilteredMethodStateless/<.value<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:30288:47',
@@ -493,11 +510,21 @@ private class ComponentLogger_Tests {
         String componentNamespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
         String qualifiedLoggerComponentName = componentNamespace + '/logger.js';
         List<String> lwcStackTraceLines = new List<String>{
-            '@modules/' + qualifiedLoggerComponentName + ':33:22',
-            'LogEntryBuilder@modules/' + qualifiedLoggerComponentName + ':59:87',
-            'newLogEntry@modules/' + qualifiedLoggerComponentName + ':189:14',
-            '_newEntry@modules/' + qualifiedLoggerComponentName + ':397:44',
-            'error@modules/' + qualifiedLoggerComponentName + ':264:21',
+            '@modules/' +
+            qualifiedLoggerComponentName +
+            ':33:22',
+            'LogEntryBuilder@modules/' +
+            qualifiedLoggerComponentName +
+            ':59:87',
+            'newLogEntry@modules/' +
+            qualifiedLoggerComponentName +
+            ':189:14',
+            '_newEntry@modules/' +
+            qualifiedLoggerComponentName +
+            ':397:44',
+            'error@modules/' +
+            qualifiedLoggerComponentName +
+            ':264:21',
             'logErrorExample@modules/c/loggerLWCDemo.js:266:35',
             'createHooksCallback$LWS/<@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js line 35465 > eval:2583:24',
             'applyOrConstructTrapForTwoOrMoreArgs$LWS@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:32254:38',
