@@ -4,6 +4,7 @@
  ************************************************************************************************/
 
 import { LightningElement, api, wire } from 'lwc';
+import LightningAlert from 'lightning/alert';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getMetadata from '@salesforce/apex/LogEntryMetadataViewerController.getMetadata';
 import getEinsteinExceptionInsight from '@salesforce/apex/LogEntryMetadataViewerController.getEinsteinExceptionInsight';
@@ -63,9 +64,7 @@ export default class LogEntryMetadataViewer extends LightningElement {
     }
 
     get hasFullSourceMetadata() {
-        const welllllll = !!this._logEntryMetadata?.Code;
-        console.log('>>> welllllll', welllllll);
-        console.log('>>> this._logEntryMetadata', this._logEntryMetadata);
+        return !!this._logEntryMetadata?.Code;
     }
 
     connectedCallback() {
@@ -134,29 +133,36 @@ export default class LogEntryMetadataViewer extends LightningElement {
 
     handleShowEinsteinInsightsModal() {
         console.info('>>> running handleShowEinsteinInsightsModal');
+        this.showEinsteinInsightsModal = true;
         getEinsteinExceptionInsight({
             recordId: this.recordId
         })
             .then(result => {
                 console.log('>>>> getEinsteinExceptionInsight result', result);
-
-                this.einsteinInsight = result;
                 this.modalEinsteinInsightsTitle = 'Einstein Insights';
-                // alert('EIIIIIIINSTEIN result:\n\n' + JSON.stringify(result));
-                this.showEinsteinInsightsModal = true;
+                this.einsteinInsight = result;
             })
-            .catch(error => {
+            .catch(async error => {
+                this.einsteinInsight = undefined;
                 console.error('>>>> getEinsteinExceptionInsight error', error);
+                // TODO revisit/finalize error handling, and possible add
+                // a retry mechanism
+                await LightningAlert.open({
+                    label: 'Einstein Error',
+                    message: JSON.stringify(errror),
+                    theme: 'error'
+                });
             });
     }
 
     handleHideEinsteinInsightsModal() {
+        this.einsteinInsight = undefined;
+        this.modalEinsteinInsightsTitle = undefined;
         this.showEinsteinInsightsModal = false;
     }
 
     handleShowFullSourceMetadataModal() {
         console.info('>>> running handleShowFullSourceMetadataModal');
-        // this.modalSourceSnippet = undefined;
         this.showModalWarning = this._logEntryMetadata.HasCodeBeenModified;
         this.modalSourceSnippet = { ...this.sourceSnippet, Code: this._logEntryMetadata.Code };
         this.modalSourceSnippetTitle = 'Full Source: ' + this.modalSourceSnippet.Title;

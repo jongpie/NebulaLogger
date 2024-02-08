@@ -27,20 +27,14 @@
                                             variant="brand"
                                         ></lightning-button>
                                     </template>
-                                    <!-- <template if:true={hasFullSourceMetadata}>
+                                    <template if:true={hasFullSourceMetadata}>
                                         <lightning-button
                                             icon-name="utility:apex"
                                             label="View Full Source"
                                             onclick={handleShowFullSourceMetadataModal}
-                                            variant="neutral"
+                                            variant="inverse"
                                         ></lightning-button>
-                                    </template> -->
-                                    <lightning-button
-                                        icon-name="utility:apex"
-                                        label="View Full Source"
-                                        onclick={handleShowFullSourceMetadataModal}
-                                        variant="inverse"
-                                    ></lightning-button>
+                                    </template>
                                 </lightning-button-group>
                             </span>
                         </c-logger-code-viewer>
@@ -70,46 +64,56 @@
 
                 <!-- Modal body -->
                 <div class="slds-modal__content slds-p-around_medium">
-                    <section role="log" class="slds-chat">
-                        <ul class="slds-chat-list">
-                            <!-- <li class="slds-chat-listitem slds-chat-listitem_bookend">
-                                <div class="slds-chat-bookend">
-                                    <span class="slds-icon_container slds-icon-utility-chat slds-chat-icon">
-                                        <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
-                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chat"></use>
-                                        </svg>
-                                    </span>
-                                    <p>Chat started by <b>Einstein</b> • 4:58 PM</p>
-                                </div>
-                            </li> -->
-                            <li class="slds-chat-listitem slds-chat-listitem_outbound">
-                                <div class="slds-chat-message">
-                                    <div class="slds-chat-message__body">
-                                        <!-- <div class="slds-chat-message__text slds-chat-message__text_outbound-agent"> -->
-                                        <div class="slds-chat-message__text slds-chat-message__text_outbound">
-                                            <span>{einsteinInsight.prompt}</span>
-                                        </div>
-                                        <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Me • 4:57 PM</div>
+                    <template if:false={einsteinInsight}>
+                        <div class="slds-is-relative" style="min-height: 6em">
+                            <div class="slds-align_absolute-center" style="height: 5rem">
+                                <lightning-icon icon-name="utility:einstein" size="large"></lightning-icon>
+                            </div>
+                            <lightning-spinner size="large" variant="brand"></lightning-spinner>
+                        </div>
+                    </template>
+                    <template if:true={einsteinInsight}>
+                        <section role="log" class="slds-chat">
+                            <ul class="slds-chat-list">
+                                <!-- <li class="slds-chat-listitem slds-chat-listitem_bookend">
+                                    <div class="slds-chat-bookend">
+                                        <span class="slds-icon_container slds-icon-utility-chat slds-chat-icon">
+                                            <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chat"></use>
+                                            </svg>
+                                        </span>
+                                        <p>Chat started by <b>Einstein</b> • 4:58 PM</p>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="slds-chat-listitem slds-chat-listitem_inbound">
-                                <div class="slds-chat-message">
-                                    <span aria-hidden="true" class="slds-avatar slds-avatar_circle slds-chat-avatar">
-                                        <abbr class="slds-avatar__initials slds-avatar__initials_inverse" title="Einstein">
-                                            <lightning-icon icon-name="utility:einstein" size="small"></lightning-icon>
-                                        </abbr>
-                                    </span>
-                                    <div class="slds-chat-message__body">
-                                        <div class="slds-chat-message__text slds-chat-message__text_inbound">
-                                            <span>{einsteinInsight.response}</span>
+                                </li> -->
+                                <li class="slds-chat-listitem slds-chat-listitem_outbound">
+                                    <div class="slds-chat-message">
+                                        <div class="slds-chat-message__body">
+                                            <!-- <div class="slds-chat-message__text slds-chat-message__text_outbound-agent"> -->
+                                            <div class="slds-chat-message__text slds-chat-message__text_outbound">
+                                                <span>{einsteinInsight.prompt}</span>
+                                            </div>
+                                            <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Me • 4:57 PM</div>
                                         </div>
-                                        <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Einstein • 4:59 PM</div>
                                     </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </section>
+                                </li>
+                                <li class="slds-chat-listitem slds-chat-listitem_inbound">
+                                    <div class="slds-chat-message">
+                                        <span aria-hidden="true" class="slds-avatar slds-avatar_circle slds-chat-avatar">
+                                            <abbr class="slds-avatar__initials slds-avatar__initials_inverse" title="Einstein">
+                                                <lightning-icon icon-name="utility:einstein" size="small"></lightning-icon>
+                                            </abbr>
+                                        </span>
+                                        <div class="slds-chat-message__body">
+                                            <div class="slds-chat-message__text slds-chat-message__text_inbound">
+                                                <span>{einsteinInsight.response}</span>
+                                            </div>
+                                            <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Einstein • 4:59 PM</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </section>
+                    </template>
                 </div>
 
                 <!-- Modal footer -->

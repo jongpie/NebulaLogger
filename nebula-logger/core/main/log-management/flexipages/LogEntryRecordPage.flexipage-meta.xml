@@ -350,8 +350,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ExceptionSourceLastModifiedByUsername__c</fieldItem>
-                <identifier>RecordExceptionSourceLastModifiedByUsername_cField</identifier>
+                <fieldItem>Record.ExceptionSourceLastModifiedByLink__c</fieldItem>
+                <identifier>RecordExceptionSourceLastModifiedByLink_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
