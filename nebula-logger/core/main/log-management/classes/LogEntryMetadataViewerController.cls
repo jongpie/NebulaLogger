@@ -49,9 +49,147 @@ public without sharing class LogEntryMetadataViewerController {
         return metadata;
     }
 
+
+    // ConnectApi.EinsteinLlmGenerationsInput generationsInput = new ConnectApi.EinsteinLlmGenerationsInput();
+    // // generationsInput.promptTextorId = prompt;
+    // generationsInput.promptTextorId = promptWithInstructions;
+    // generationsInput.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
+    // generationsInput.additionalConfig.maxTokens = 1000;
+
+    public class AIPromptInputConfiguration {
+        // TODO
+        public Integer MaxTokens { get; set; }
+        public String Model { get; set; }
+    }
+
+    public class AIPromptInput {
+        public AIPromptInputConfiguration Configuration { get; set;}
+        public String Prompt { get; set; }
+    }
+
+    public class AIPromptOutput {
+        public AIPromptInput Input { get; set; }
+        public String Response { get; set; }
+    }
+
+
+
+    public abstract class AIChatService {
+        public abstract AIPromptOutput sendMessage(AIPromptInput input);
+    }
+
+
+    // ChatGPT-specific classes, used as Nebula Logger's default provider out-of-the-box
+    private class ChatGPTMessage {
+        public String role;
+        public String content;
+    }
+
+    private class ChatGPTRequest {
+        public String model;
+        public List<ChatGPTMessage> messages = new List<ChatGPTMessage>();
+    }
+
+    private class ChatGPTResponse {
+        public String id;
+        // public String object;
+        public String model;
+        public String system_fingerprint;
+        public List<ChatGPTMessage> choices = new List<ChatGPTMessage>();
+    }
+    /*
+    {
+        "id": "chatcmpl-123",
+        "object": "chat.completion",
+        "created": 1677652288,
+        "model": "gpt-3.5-turbo-0613",
+        "system_fingerprint": "fp_44709d6fcb",
+        "choices": [{
+            "index": 0,
+            "message": {
+            "role": "assistant",
+            "content": "\n\nHello there, how may I assist you today?",
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }],
+        "usage": {
+            "prompt_tokens": 9,
+            "completion_tokens": 12,
+            "total_tokens": 21
+        }
+    }
+
+    */
+
+    private class ChatGPTService extends AIChatService {
+        private String namedCredentialName;
+
+        public ChatGPTService(String namedCredentialName) {
+            this.namedCredentialName = namedCredentialName;
+        }
+
+        // Docs: https://platform.openai.com/docs/api-reference/chat
+        public override AIPromptOutput sendMessage(AIPromptInput input) {
+            AIPromptOutput output = new AIPromptOutput();
+            output.Input = input;
+
+            System.HttpRequest calloutRequest = new System.HttpRequest();
+            calloutRequest.setMethod('GET');
+            // TODO need to figure out what URL lives in named credential vs what gets appended here in code
+            calloutRequest.setEndpoint(this.namedCredentialName);
+            calloutRequest.setBody(JSON.serializePretty(input));
+
+            System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+
+            ChatGPTResponse chatGptResponse = (ChatGPTResponse) JSON.deserialize(calloutResponse.getBody(), ChatGPTResponse.class);
+
+            if (chatGptResponse.choices != null && chatGptResponse.choices.size() > 0){
+                output.Response = chatGptResponse.choices.get(0).content;
+            }
+            // TODO
+            /*
+                curl https://api.openai.com/v1/chat/completions \
+                            -H "Content-Type: application/json" \
+                            -H "Authorization: Bearer $OPENAI_API_KEY" \
+                            -d '{
+                                "model": "gpt-3.5-turbo",
+                                "messages": [
+                                {
+                                    "role": "system",
+                                    "content": "You are a helpful assistant."
+                                },
+                                {
+                                    "role": "user",
+                                    "content": "Hello!"
+                                }
+                                ]
+                            }'
+            */
+
+            return output;
+        }
+    }
+
+
+
+
+    public class AIServiceExceptionInsight {
+        @AuraEnabled
+        public String prompt;
+        @AuraEnabled
+        public String response;
+    }
+
+
     @AuraEnabled
-    public static EinsteinLogEntryInsight getEinsteinExceptionInsight(Id recordId) {
-        EinsteinLogEntryInsight insight = new EinsteinLogEntryInsight();
+    public static List<Object> getAIServiceProviders() {
+        return null;
+    }
+
+    @AuraEnabled
+    public static AIServiceExceptionInsight getEinsteinExceptionInsight(Id recordId, String aiServiceProviderName) {
+        AIServiceExceptionInsight insight = new AIServiceExceptionInsight();
         LogEntry__c logEntry  = LogManagementDataSelector.getInstance().getLogEntryById(recordId);
 
         if (logEntry.ExceptionType__c == null) {
@@ -104,30 +242,23 @@ public without sharing class LogEntryMetadataViewerController {
 
         System.debug('>>>> stack trace: ' + JSON.serializePretty(stackTrace));
 
-        ConnectApi.EinsteinLlmGenerationsInput generationsInput = new ConnectApi.EinsteinLlmGenerationsInput();
-        // generationsInput.promptTextorId = prompt;
-        generationsInput.promptTextorId = promptWithInstructions;
-        generationsInput.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
-        generationsInput.additionalConfig.maxTokens = 1000;
+        // ConnectApi.EinsteinLlmGenerationsInput generationsInput = new ConnectApi.EinsteinLlmGenerationsInput();
+        // // generationsInput.promptTextorId = prompt;
+        // generationsInput.promptTextorId = promptWithInstructions;
+        // generationsInput.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
+        // generationsInput.additionalConfig.maxTokens = 1000;
 
-        ConnectApi.EinsteinLLMGenerationsOutput generationsOutput = ConnectApi.EinsteinLLM.generateMessages(generationsInput);
+        // ConnectApi.EinsteinLLMGenerationsOutput generationsOutput = ConnectApi.EinsteinLLM.generateMessages(generationsInput);
 
-        System.debug('>>>> generationsOutput: ' + JSON.serializePretty(generationsOutput));
-        ConnectApi.EinsteinLLMGenerationItemOutput response = generationsOutput.generations[0];
-        System.debug('>>>> Response: ' + JSON.serializePretty(response));
+        // System.debug('>>>> generationsOutput: ' + JSON.serializePretty(generationsOutput));
+        // // ConnectApi.EinsteinLLMGenerationItemOutput response = generationsOutput.generations[0];
+        // System.debug('>>>> Response: ' + JSON.serializePretty(response));
 
 
         // Only show the user the prompt value, not promptWithInstructions
-        insight.prompt = prompt;
-        insight.response = generationsOutput.generations[0].text;
+        // insight.prompt = prompt;
+        // insight.response = generationsOutput.generations[0].text;
         return insight;
-    }
-
-    public class EinsteinLogEntryInsight {
-        @AuraEnabled
-        public String prompt;
-        @AuraEnabled
-        public String response;
     }
 
 

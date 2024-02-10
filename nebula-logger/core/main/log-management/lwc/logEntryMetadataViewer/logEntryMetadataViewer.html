@@ -21,8 +21,8 @@
                                 <lightning-button-group>
                                     <template if:true={showEinsteinInsights}>
                                         <lightning-button
-                                            icon-name="utility:einstein"
-                                            label="Get Einstein Insights"
+                                            icon-name="standard:bot"
+                                            label="Get Exception Insights"
                                             onclick={handleShowEinsteinInsightsModal}
                                             variant="brand"
                                         ></lightning-button>
@@ -46,7 +46,7 @@
 
     <!-- Modal Einstein Insights Viewer -->
     <template if:true={showEinsteinInsightsModal}>
-        <section class="slds-modal slds-fade-in-open slds-modal_small" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
+        <section class="slds-modal slds-fade-in-open slds-modal_large" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
             <div class="slds-modal__container" onkeydown={handleKeyDown}>
                 <!-- Modal header -->
                 <header class="slds-modal__header">
@@ -58,7 +58,7 @@
                         <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
                     </button>
                     <h2 class="slds-text-heading_medium slds-hyphenate">
-                        <lightning-icon icon-name="utility:einstein" size="small"></lightning-icon>&nbsp;{modalEinsteinInsightsTitle}
+                        <lightning-icon icon-name="standard:bot" size="small"></lightning-icon>&nbsp;{modalEinsteinInsightsTitle}
                     </h2>
                 </header>
 
@@ -67,15 +67,32 @@
                     <template if:false={einsteinInsight}>
                         <div class="slds-is-relative" style="min-height: 6em">
                             <div class="slds-align_absolute-center" style="height: 5rem">
-                                <lightning-icon icon-name="utility:einstein" size="large"></lightning-icon>
+                                <lightning-icon icon-name="standard:bot" size="large"></lightning-icon>
                             </div>
                             <lightning-spinner size="large" variant="brand"></lightning-spinner>
                         </div>
                     </template>
-                    <template if:true={einsteinInsight}>
-                        <section role="log" class="slds-chat">
-                            <ul class="slds-chat-list">
-                                <!-- <li class="slds-chat-listitem slds-chat-listitem_bookend">
+                    <lightning-layout>
+                        <lightning-layout-item size="5">
+                            <lightning-combobox
+                                name="progress"
+                                label="Status"
+                                value=""
+                                placeholder="Select Progress"
+                                options={aiProviders}
+                                onchange={handleChange}
+                                required
+                            ></lightning-combobox>
+
+                            <div class="slds-m-top_medium slds-m-left_x-small"><code>LoggerParameter__mdt</code> Record: CustomAIProviderChatGPT</div>
+                            <c-logger-code-viewer language="json" code={fakeSelectedProviderConfig}></c-logger-code-viewer>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item class="slds-p-left_medium" size="7">
+                            <template if:true={einsteinInsight}>
+                                <section role="log" class="slds-chat">
+                                    <ul class="slds-chat-list">
+                                        <!-- <li class="slds-chat-listitem slds-chat-listitem_bookend">
                                     <div class="slds-chat-bookend">
                                         <span class="slds-icon_container slds-icon-utility-chat slds-chat-icon">
                                             <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
@@ -85,39 +102,48 @@
                                         <p>Chat started by <b>Einstein</b> • 4:58 PM</p>
                                     </div>
                                 </li> -->
-                                <li class="slds-chat-listitem slds-chat-listitem_outbound">
-                                    <div class="slds-chat-message">
-                                        <div class="slds-chat-message__body">
-                                            <!-- <div class="slds-chat-message__text slds-chat-message__text_outbound-agent"> -->
-                                            <div class="slds-chat-message__text slds-chat-message__text_outbound">
-                                                <span>{einsteinInsight.prompt}</span>
+                                        <li class="slds-chat-listitem slds-chat-listitem_outbound">
+                                            <div class="slds-chat-message">
+                                                <div class="slds-chat-message__body">
+                                                    <!-- <div class="slds-chat-message__text slds-chat-message__text_outbound-agent"> -->
+                                                    <div class="slds-chat-message__text slds-chat-message__text_outbound">
+                                                        <span>{einsteinInsight.prompt}</span>
+                                                    </div>
+                                                    <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Me • 4:57 PM</div>
+                                                </div>
                                             </div>
-                                            <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Me • 4:57 PM</div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="slds-chat-listitem slds-chat-listitem_inbound">
-                                    <div class="slds-chat-message">
-                                        <span aria-hidden="true" class="slds-avatar slds-avatar_circle slds-chat-avatar">
-                                            <abbr class="slds-avatar__initials slds-avatar__initials_inverse" title="Einstein">
-                                                <lightning-icon icon-name="utility:einstein" size="small"></lightning-icon>
-                                            </abbr>
-                                        </span>
-                                        <div class="slds-chat-message__body">
-                                            <div class="slds-chat-message__text slds-chat-message__text_inbound">
-                                                <span>{einsteinInsight.response}</span>
+                                        </li>
+                                        <li class="slds-chat-listitem slds-chat-listitem_inbound">
+                                            <div class="slds-chat-message">
+                                                <span aria-hidden="true" class="slds-avatar slds-avatar_circle slds-chat-avatar">
+                                                    <abbr class="slds-avatar__initials slds-avatar__initials_inverse" title="Einstein">
+                                                        <lightning-icon icon-name="standard:bot" size="small"></lightning-icon>
+                                                    </abbr>
+                                                </span>
+                                                <div class="slds-chat-message__body">
+                                                    <div class="slds-chat-message__text slds-chat-message__text_inbound">
+                                                        <span>{einsteinInsight.response}</span>
+                                                    </div>
+                                                    <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Einstein • 4:59 PM</div>
+                                                </div>
                                             </div>
-                                            <div class="slds-chat-message__meta" aria-label="said Einstein at 4:59 PM">Einstein • 4:59 PM</div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </section>
-                    </template>
+                                        </li>
+                                    </ul>
+                                </section>
+                            </template>
+                        </lightning-layout-item>
+                    </lightning-layout>
                 </div>
 
                 <!-- Modal footer -->
                 <footer class="slds-modal__footer">
+                    <lightning-button
+                        class="slds-p-around_xx-small"
+                        label="Save Insights & Close"
+                        onclick={handleSaveInsights}
+                        title="Save Insights & Close"
+                        variant="brand"
+                    ></lightning-button>
                     <lightning-button
                         class="slds-p-around_xx-small"
                         data-id="close-btn"

@@ -37,6 +37,23 @@ export default class LogEntryMetadataViewer extends LightningElement {
     objectApiName = LOG_ENTRY_OBJECT;
     sourceSnippet;
 
+    get aiProviders() {
+        return [
+            { label: 'ChatGPT', value: 'ChatGPT' },
+            { label: 'Einstein', value: 'Einstein' }
+        ];
+    }
+
+    fakeSelectedProviderConfig = JSON.stringify(
+        {
+            ApexChatServiceClass: 'LoggerAIService.ChatGPTService',
+            MaxTokens: 500,
+            Model: '3.5-turbo-boost-wow-very-medium'
+        },
+        null,
+        4
+    );
+
     showEinsteinInsights = true;
     showEinsteinInsightsModal = false;
     modalEinsteinInsightsTitle;
@@ -139,7 +156,7 @@ export default class LogEntryMetadataViewer extends LightningElement {
         })
             .then(result => {
                 console.log('>>>> getEinsteinExceptionInsight result', result);
-                this.modalEinsteinInsightsTitle = 'Einstein Insights';
+                this.modalEinsteinInsightsTitle = 'Apex Exception Analysis';
                 this.einsteinInsight = result;
             })
             .catch(async error => {
