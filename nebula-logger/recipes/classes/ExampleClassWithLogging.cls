@@ -72,7 +72,6 @@ public with sharing class ExampleClassWithLogging {
         return stackTrace;
     }
 
-
     public Schema.Account insertAccount(String accountName) {
         Schema.Account a = new Schema.Account();
         // TODO don't forget to populate account name before deploying this code to prod!

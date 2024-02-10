@@ -15,12 +15,18 @@ public without sharing class LoggerStackTrace {
     private final static Set<String> IGNORED_JAVASCRIPT_ORIGINS = new Set<String>();
     private final static String NEW_LINE_DELIMITER = '\n';
 
-    public enum SourceLanguage { Apex, JavaScript }
+    public enum SourceLanguage {
+        Apex,
+        JavaScript
+    }
     public enum SourceMetadataType {
         // SourceLanguage == Apex
-        AnonymousBlock, ApexClass, ApexTrigger,
+        AnonymousBlock,
+        ApexClass,
+        ApexTrigger,
         // SourceLanguage == JavaScript
-        AuraDefinitionBundle, LightningComponentBundle
+        AuraDefinitionBundle,
+        LightningComponentBundle
     }
 
     public abstract class SourceMetadata {
@@ -30,7 +36,7 @@ public without sharing class LoggerStackTrace {
         public Integer LineNumber { get; private set; }
     }
 
-    public SourceLanguage Language { get; private set;}
+    public SourceLanguage Language { get; private set; }
     public String Location { get; private set; }
     public String ParsedStackTraceString { get; private set; }
     public SourceMetadata Source { get; private set; }
@@ -190,7 +196,7 @@ public without sharing class LoggerStackTrace {
                 String componentContent;
                 if (isAuraComponent) {
                     componentContent = auraComponentContent;
-                } else if(isWebComponent) {
+                } else if (isWebComponent) {
                     componentContent = lwcModuleContent;
                 }
                 for (String currentStackTraceLine : javaScriptStackTraceString.split('\n')) {
@@ -307,7 +313,6 @@ public without sharing class LoggerStackTrace {
                 } else if (language == SourceLanguage.JavaScript) {
                     // Example: '/lightning/n/modules/logger.js:253:21'
                     formattedOrigin = 'modules/' + ignoredOrigin.trim() + ':';
-
                 }
                 if (currentStackTraceLine.contains(formattedOrigin)) {
                     ignoreLine = true;

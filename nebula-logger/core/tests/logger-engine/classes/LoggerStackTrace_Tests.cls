@@ -265,15 +265,29 @@ private class LoggerStackTrace_Tests {
 
     private static String getMockAuraComponentStackTrace(String originComponentName, String originFunctionName, Integer expectedLineNumber) {
         // This is a modified partial-copy of an actual stack trace generated from c/loggerAuraDemo in August 2021
-        List<String> auraStackTraceLines = new List<String>{ 'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':28:24' +
-            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':172:14',
-            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':349:44',
-            'info@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':253:21',
+        List<String> auraStackTraceLines = new List<String>{
+            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':28:24' +
+            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':172:14',
+            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':349:44',
+            'info@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':253:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'InteropComponent.prototype.$setupMethods$/</self[m]@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:45047:24',
             'createFilteredMethod/<.value<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:30260:46',
-            originFunctionName + '@https://flow-ability-5496.lightning.force.com/lightning/n/components/' + originComponentName + '.js:' + expectedLineNumber + ':30',
+            originFunctionName +
+            '@https://flow-ability-5496.lightning.force.com/lightning/n/components/' +
+            originComponentName +
+            '.js:' +
+            expectedLineNumber +
+            ':30',
             'Action.prototype.$runDeprecated$@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:47648:36',
             'Action.prototype.$run$@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:47635:8',
             'handleClick@https://flow-ability-5496.lightning.force.com/components/lightning/button.js:23:20',
@@ -304,14 +318,27 @@ private class LoggerStackTrace_Tests {
     private static String getMockLegacyWebComponentStackTrace(String originComponentName, String originFunctionName, Integer expectedLineNumber) {
         // This is a modified partial-copy of an actual stack trace generated from c/loggerLWCDemo in August 2021
         List<String> lwcStackTraceLines = new List<String>{
-            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':28:24',
-            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':172:14',
-            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':349:44',
-            'error@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + MOCK_LOGGER_COMPONENT_NAME + ':233:21',
+            'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':28:24',
+            'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':172:14',
+            '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':349:44',
+            'error@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':233:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'createFilteredMethodStateless/<.value<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:30288:47',
-            originFunctionName + '@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' + originComponentName + '.js:' + expectedLineNumber + ':30',
+            originFunctionName +
+            '@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
+            originComponentName +
+            '.js:' +
+            expectedLineNumber +
+            ':30',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'invokeEventListener/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:9992:19',
             'runWithBoundaryProtection@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:10696:7',
@@ -328,12 +355,27 @@ private class LoggerStackTrace_Tests {
     private static String getMockModernWebComponentStackTrace(String originComponentName, String originFunctionName, Integer expectedLineNumber) {
         // This is a modified partial-copy of an actual stack trace generated from c/loggerLWCDemo in January 2024
         List<String> lwcStackTraceLines = new List<String>{
-            '@modules/' + MOCK_LOGGER_COMPONENT_NAME + ':33:22',
-            'LogEntryBuilder@modules/' + MOCK_LOGGER_COMPONENT_NAME + ':59:87',
-            'newLogEntry@modules/' + MOCK_LOGGER_COMPONENT_NAME + ':189:14',
-            '_newEntry@modules/' + MOCK_LOGGER_COMPONENT_NAME + ':397:44',
-            'error@modules/' + MOCK_LOGGER_COMPONENT_NAME + ':264:21',
-            originFunctionName + '@modules/' + originComponentName + '.js:' + expectedLineNumber + ':35',
+            '@modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':33:22',
+            'LogEntryBuilder@modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':59:87',
+            'newLogEntry@modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':189:14',
+            '_newEntry@modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':397:44',
+            'error@modules/' +
+            MOCK_LOGGER_COMPONENT_NAME +
+            ':264:21',
+            originFunctionName +
+            '@modules/' +
+            originComponentName +
+            '.js:' +
+            expectedLineNumber +
+            ':35',
             'createHooksCallback$LWS/<@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js line 35465 > eval:2583:24',
             'applyOrConstructTrapForTwoOrMoreArgs$LWS@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:32254:38',
             'callHook@https://static.lightning.force.com/cs220/auraFW/javascript/YWYyQV90T3g3VDhySzNWUm1kcF9WUVY4bi1LdGdMbklVbHlMdER1eVVlUGcyNDYuMTUuNS0zLjAuNA/aura_proddebug.js:10035:19',

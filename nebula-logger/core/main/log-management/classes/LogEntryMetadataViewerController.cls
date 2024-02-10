@@ -31,11 +31,15 @@ public without sharing class LogEntryMetadataViewerController {
         switch on sourceMetadata {
             when 'Exception' {
                 sourceApiName = (String) logEntry.ExceptionSourceApiName__c;
-                sourceMetadataType = String.isBlank(logEntry.ExceptionSourceMetadataType__c) ? null : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.ExceptionSourceMetadataType__c);
+                sourceMetadataType = String.isBlank(logEntry.ExceptionSourceMetadataType__c)
+                    ? null
+                    : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.ExceptionSourceMetadataType__c);
             }
             when 'Origin' {
                 sourceApiName = (String) logEntry.OriginSourceApiName__c;
-                sourceMetadataType = String.isBlank(logEntry.OriginSourceMetadataType__c) ? null : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.OriginSourceMetadataType__c);
+                sourceMetadataType = String.isBlank(logEntry.OriginSourceMetadataType__c)
+                    ? null
+                    : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.OriginSourceMetadataType__c);
             }
         }
 
@@ -49,7 +53,12 @@ public without sharing class LogEntryMetadataViewerController {
         return metadata;
     }
 
-    private static void querySourceMetadata(LogEntry__c logEntry, LogEntryMetadata logEntryMetadata, LoggerStackTrace.SourceMetadataType sourceMetadataType, String sourceApiName) {
+    private static void querySourceMetadata(
+        LogEntry__c logEntry,
+        LogEntryMetadata logEntryMetadata,
+        LoggerStackTrace.SourceMetadataType sourceMetadataType,
+        String sourceApiName
+    ) {
         Set<String> sourceApiNames = new Set<String>{ sourceApiName };
         List<SObject> metadataRecords;
         Schema.SObjectField codeBodyField;
@@ -81,8 +90,8 @@ public without sharing class LogEntryMetadataViewerController {
     @SuppressWarnings('PMD.ApexDoc')
     public class LogEntryMetadata {
         @AuraEnabled
-        public String Code {get; set;}
+        public String Code { get; set; }
         @AuraEnabled
-        public Boolean HasCodeBeenModified {get; set;}
+        public Boolean HasCodeBeenModified { get; set; }
     }
 }

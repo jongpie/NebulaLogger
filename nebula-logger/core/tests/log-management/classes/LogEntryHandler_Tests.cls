@@ -800,9 +800,15 @@ private class LogEntryHandler_Tests {
             ExceptionSourceMetadataType__c = 'ApexClass',
             ExceptionStackTrace__c = String.join(
                 new List<String>{
-                    'Class.' + stackTrace.Location + ': line ' + stackTrace.Source.LineNumber + ', column 1',
+                    'Class.' +
+                    stackTrace.Location +
+                    ': line ' +
+                    stackTrace.Source.LineNumber +
+                    ', column 1',
                     'AnonymousBlock: line 1, column 1'
-                }, '\n'),
+                },
+                '\n'
+            ),
             Log__c = log.Id
         );
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
@@ -877,9 +883,15 @@ private class LogEntryHandler_Tests {
             OriginSourceMetadataType__c = 'ApexClass',
             StackTrace__c = String.join(
                 new List<String>{
-                    'Class.' + stackTrace.Location + ': line ' + stackTrace.Source.LineNumber + ', column 1',
+                    'Class.' +
+                    stackTrace.Location +
+                    ': line ' +
+                    stackTrace.Source.LineNumber +
+                    ', column 1',
                     'AnonymousBlock: line 1, column 1'
-                }, '\n')
+                },
+                '\n'
+            )
         );
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
@@ -974,9 +986,15 @@ private class LogEntryHandler_Tests {
             OriginSourceMetadataType__c = 'ApexClass',
             StackTrace__c = String.join(
                 new List<String>{
-                    'Class.' + stackTrace.Location + ': line ' + stackTrace.Source.LineNumber + ', column 1',
+                    'Class.' +
+                    stackTrace.Location +
+                    ': line ' +
+                    stackTrace.Source.LineNumber +
+                    ', column 1',
                     'AnonymousBlock: line 1, column 1'
-                }, '\n')
+                },
+                '\n'
+            )
         );
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
@@ -1062,11 +1080,7 @@ private class LogEntryHandler_Tests {
 
         // None of Nebula Logger's triggers include any logging (or logic), so use a mock
         // stack trace string so the code has an actual trigger to query
-        String mockTriggerStackTraceString = String.join(
-            new List<String>{
-                'Trigger.LogEntry: line 2, column 1',
-                'AnonymousBlock: line 1, column 1'
-            }, '\n');
+        String mockTriggerStackTraceString = String.join(new List<String>{ 'Trigger.LogEntry: line 2, column 1', 'AnonymousBlock: line 1, column 1' }, '\n');
         LoggerStackTrace stackTrace = new LoggerStackTrace(mockTriggerStackTraceString);
         ApexTrigger apexTrigger = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
@@ -1207,7 +1221,6 @@ private class LogEntryHandler_Tests {
         System.Assert.isNull(logEntry.OriginSourceLastModifiedByUsername__c);
         System.Assert.isNull(logEntry.OriginSourceLastModifiedDate__c);
         System.Assert.isNull(logEntry.OriginSourceSnippet__c);
-
     }
 
     private static String getNamespacePrefix() {
@@ -1231,7 +1244,7 @@ private class LogEntryHandler_Tests {
     }
 
     // Helper class for testing stack trace parsing & ApexClass querying for an inner class
-    private class SomeInnerClass{
+    private class SomeInnerClass {
         public LoggerStackTrace getLoggerStackTrace() {
             return new LoggerStackTrace();
         }

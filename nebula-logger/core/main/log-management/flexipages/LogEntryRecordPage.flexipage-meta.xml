@@ -835,7 +835,8 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No Related Records Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
+                    <value
+                    >&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No Related Records Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
                 <identifier>flexipage_richText2</identifier>
@@ -954,7 +955,8 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No Database Results Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
+                    <value
+                    >&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No Database Results Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
                 <identifier>flexipage_richText3</identifier>
@@ -1164,7 +1166,8 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No HTTP Callout Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
+                    <value
+                    >&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No HTTP Callout Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
                 <identifier>flexipage_richText</identifier>
@@ -1467,7 +1470,8 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No Apex REST Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
+                    <value
+                    >&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No Apex REST Data Available for This Log Entry&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
                 <identifier>flexipage_richText5</identifier>

@@ -419,7 +419,11 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         public transient LoggerStackTrace StackTrace { get; private set; }
         // TODO decide if this is needed, it's duplicated from LoggerStackTrace.Language
         // But ultimately, the frontend needs to know the language to display in PrismJS
-        public LoggerStackTrace.SourceLanguage Language { get { return this.StackTrace?.Language; } }
+        public LoggerStackTrace.SourceLanguage Language {
+            get {
+                return this.StackTrace?.Language;
+            }
+        }
 
         public SourceMetadataSnippet(LoggerStackTrace stackTrace, Schema.ApexClass apexClass) {
             this(stackTrace, apexClass.Body, apexClass.ApiVersion);
