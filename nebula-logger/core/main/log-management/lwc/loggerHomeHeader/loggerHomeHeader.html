@@ -64,152 +64,152 @@
                 <!-- Modal body -->
                 <div class="slds-modal__content slds-p-around_medium">
                     <!-- Logger details section -->
-                    <div class="slds-section slds-is-open">
-                        <h3 class="slds-section__title slds-theme_shade">
-                            <span class="slds-truncate slds-p-horizontal_small" title="Nebula Logger">Nebula Logger</span>
-                        </h3>
-                        <lightning-layout class="slds-p-around_small">
-                            <lightning-layout-item size="12">
-                                <lightning-input
-                                    data-id="environment-loggerVersionNumber"
-                                    label="Version Number"
-                                    read-only
-                                    type="text"
-                                    value={environment.loggerVersionNumber}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-loggerNamespacePrefix"
-                                    label="Namespace Prefix"
-                                    read-only
-                                    type="text"
-                                    value={environment.loggerNamespacePrefix}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <template if:true={environment.loggerEnabledPlugins}>
+                    <c-logger-page-section>
+                        <span slot="title">Nebula Logger</span>
+                        <span slot="content">
+                            <lightning-layout class="slds-p-around_small">
+                                <lightning-layout-item size="12">
+                                    <lightning-input
+                                        data-id="environment-loggerVersionNumber"
+                                        label="Version Number"
+                                        read-only
+                                        type="text"
+                                        value={environment.loggerVersionNumber}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-loggerNamespacePrefix"
+                                        label="Namespace Prefix"
+                                        read-only
+                                        type="text"
+                                        value={environment.loggerNamespacePrefix}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <template if:true={environment.loggerEnabledPlugins}>
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <label class="slds-form-element__label" for="logger-enabled-plugins-output">Enabled Plugins</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-rich-text
+                                                    data-id="environment-loggerEnabledPlugins"
+                                                    id="logger-enabled-plugins-output"
+                                                    value={environment.loggerEnabledPlugins}
+                                                ></lightning-formatted-rich-text>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </span>
+                    </c-logger-page-section>
+
+                    <!-- Organization details section -->
+                    <c-logger-page-section>
+                        <span slot="title">Organization</span>
+                        <span slot="content">
+                            <lightning-layout class="slds-p-around_small">
+                                <lightning-layout-item size="12">
+                                    <lightning-input
+                                        data-id="environment-organizationId"
+                                        label="Organization ID"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationId}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationName"
+                                        label="Organization Name"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationName}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationType"
+                                        label="Type"
+                                        read-only
+                                        type="url"
+                                        value={environment.organizationType}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationInstanceName"
+                                        label="Instance Name"
+                                        read-only
+                                        type="url"
+                                        value={environment.organizationInstanceName}
+                                        variant="label-inline"
+                                    ></lightning-input>
                                     <div class="slds-form-element slds-form-element_horizontal">
-                                        <label class="slds-form-element__label" for="logger-enabled-plugins-output">Enabled Plugins</label>
+                                        <label class="slds-form-element__label" for="organization-instance-products-output">Instance Products</label>
                                         <div class="slds-form-element__control">
                                             <lightning-formatted-rich-text
-                                                data-id="environment-loggerEnabledPlugins"
-                                                id="logger-enabled-plugins-output"
-                                                value={environment.loggerEnabledPlugins}
+                                                data-id="environment-organizationInstanceProducts"
+                                                id="organization-instance-products-output"
+                                                value={environment.organizationInstanceProducts}
                                             ></lightning-formatted-rich-text>
                                         </div>
                                     </div>
-                                </template>
-                            </lightning-layout-item>
-                        </lightning-layout>
-                    </div>
-
-                    <!-- Organization details section -->
-                    <div class="slds-section slds-is-open">
-                        <h3 class="slds-section__title slds-theme_shade">
-                            <span class="slds-truncate slds-p-horizontal_small" title="Organization">Organization</span>
-                        </h3>
-                        <lightning-layout class="slds-p-around_small">
-                            <lightning-layout-item size="12">
-                                <lightning-input
-                                    data-id="environment-organizationId"
-                                    label="Organization ID"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationId}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationName"
-                                    label="Organization Name"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationName}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationType"
-                                    label="Type"
-                                    read-only
-                                    type="url"
-                                    value={environment.organizationType}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationInstanceName"
-                                    label="Instance Name"
-                                    read-only
-                                    type="url"
-                                    value={environment.organizationInstanceName}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <div class="slds-form-element slds-form-element_horizontal">
-                                    <label class="slds-form-element__label" for="organization-instance-products-output">Instance Products</label>
-                                    <div class="slds-form-element__control">
-                                        <lightning-formatted-rich-text
-                                            data-id="environment-organizationInstanceProducts"
-                                            id="organization-instance-products-output"
-                                            value={environment.organizationInstanceProducts}
-                                        ></lightning-formatted-rich-text>
-                                    </div>
-                                </div>
-                                <lightning-input
-                                    data-id="environment-organizationInstanceLocation"
-                                    label="Instance Location"
-                                    read-only
-                                    type="url"
-                                    value={environment.organizationInstanceLocation}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationApiVersion"
-                                    label="API Version"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationApiVersion}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationReleaseNumber"
-                                    label="Release Number"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationReleaseNumber}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationReleaseVersion"
-                                    label="Release Version"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationReleaseVersion}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationMaintenanceWindow"
-                                    label="Maintenance Window"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationMaintenanceWindow}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationCreatedByUsername"
-                                    label="Created By"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationCreatedByUsername}
-                                    variant="label-inline"
-                                ></lightning-input>
-                                <lightning-input
-                                    data-id="environment-organizationFormattedCreatedDate"
-                                    label="Created Date"
-                                    read-only
-                                    type="text"
-                                    value={environment.organizationFormattedCreatedDate}
-                                    variant="label-inline"
-                                ></lightning-input>
-                            </lightning-layout-item>
-                        </lightning-layout>
-                    </div>
+                                    <lightning-input
+                                        data-id="environment-organizationInstanceLocation"
+                                        label="Instance Location"
+                                        read-only
+                                        type="url"
+                                        value={environment.organizationInstanceLocation}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationApiVersion"
+                                        label="API Version"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationApiVersion}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationReleaseNumber"
+                                        label="Release Number"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationReleaseNumber}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationReleaseVersion"
+                                        label="Release Version"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationReleaseVersion}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationMaintenanceWindow"
+                                        label="Maintenance Window"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationMaintenanceWindow}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationCreatedByUsername"
+                                        label="Created By"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationCreatedByUsername}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                    <lightning-input
+                                        data-id="environment-organizationFormattedCreatedDate"
+                                        label="Created Date"
+                                        read-only
+                                        type="text"
+                                        value={environment.organizationFormattedCreatedDate}
+                                        variant="label-inline"
+                                    ></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </span>
+                    </c-logger-page-section>
                 </div>
 
                 <!-- Modal footer -->

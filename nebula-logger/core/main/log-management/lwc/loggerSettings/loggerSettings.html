@@ -54,279 +54,279 @@
                 <div class="slds-modal__content slds-p-around_medium">
                     <!-- Configurable page layout sections, managed in loggerSettingsPageLayout.js -->
                     <template for:each={layoutData.sections} for:item="section">
-                        <div key={section.key} class="slds-section slds-is-open">
-                            <h3 class="slds-section__title slds-theme_shade">
-                                <span class="slds-truncate slds-p-horizontal_small" title={section.label}>{section.label}</span>
-                            </h3>
-                            <lightning-layout>
-                                <template for:each={section.columns} for:item="column">
-                                    <lightning-layout-item key={column.key} size={column.size}>
-                                        <template for:each={column.fields} for:item="field">
-                                            <template if:true={field.useSetupOwnerInput}>
-                                                <lightning-combobox
-                                                    data-id={setupOwnerTypeField.apiName}
-                                                    key={field.localApiName}
-                                                    label={setupOwnerTypeField.label}
-                                                    onchange={handleSetupOwnerTypeFieldChange}
-                                                    options={loggerSettingsPicklistOptions.setupOwnerTypeOptions}
-                                                    read-only={isExistingRecord}
-                                                    required
-                                                    value={setupOwnerTypeField.value}
-                                                    variant="label-stacked"
-                                                ></lightning-combobox>
-                                                <template if:true={isExistingRecord}>
-                                                    <lightning-input
-                                                        data-id={setupOwnerNameField.apiName}
+                        <c-logger-page-section key={section.key}>
+                            <span slot="title">{section.label}</span>
+                            <span slot="content">
+                                <lightning-layout>
+                                    <template for:each={section.columns} for:item="column">
+                                        <lightning-layout-item key={column.key} size={column.size}>
+                                            <template for:each={column.fields} for:item="field">
+                                                <template if:true={field.useSetupOwnerInput}>
+                                                    <lightning-combobox
+                                                        data-id={setupOwnerTypeField.apiName}
                                                         key={field.localApiName}
-                                                        label={setupOwnerNameField.label}
-                                                        read-only
+                                                        label={setupOwnerTypeField.label}
+                                                        onchange={handleSetupOwnerTypeFieldChange}
+                                                        options={loggerSettingsPicklistOptions.setupOwnerTypeOptions}
+                                                        read-only={isExistingRecord}
                                                         required
-                                                        type="text"
-                                                        value={setupOwnerNameField.value}
+                                                        value={setupOwnerTypeField.value}
                                                         variant="label-stacked"
-                                                    ></lightning-input>
-                                                </template>
-                                                <template if:false={isExistingRecord}>
-                                                    <template if:true={isNewOrganizationRecord}>
+                                                    ></lightning-combobox>
+                                                    <template if:true={isExistingRecord}>
                                                         <lightning-input
-                                                            data-id="SetupOwnerName"
+                                                            data-id={setupOwnerNameField.apiName}
                                                             key={field.localApiName}
-                                                            label="Setup Owner"
+                                                            label={setupOwnerNameField.label}
                                                             read-only
                                                             required
                                                             type="text"
-                                                            value={organization.Name}
+                                                            value={setupOwnerNameField.value}
                                                             variant="label-stacked"
                                                         ></lightning-input>
                                                     </template>
-                                                    <template if:true={showSetupOwnerLookup}>
-                                                        <div
-                                                            class="slds-combobox_container"
-                                                            aria-expanded="true"
-                                                            aria-haspopup="listbox"
-                                                            key={field.localApiName}
-                                                            role="combobox"
-                                                        >
-                                                            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
-                                                                <!-- Search Input Box -->
-                                                                <template if:false={showPill}>
-                                                                    <lightning-input
-                                                                        autocomplete="off"
-                                                                        data-id="SetupOwnerRecordSearch"
-                                                                        label="Setup Owner"
-                                                                        onblur={handleRecordSearchBlur}
-                                                                        onchange={handleRecordSearch}
-                                                                        onclick={handleRecordSearch}
-                                                                        placeholder="Search"
-                                                                        required
-                                                                        type="search"
-                                                                        variant="label-stacked"
-                                                                    ></lightning-input>
-                                                                    <div if:true={showSpinner}>
-                                                                        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
-                                                                    </div>
-                                                                </template>
+                                                    <template if:false={isExistingRecord}>
+                                                        <template if:true={isNewOrganizationRecord}>
+                                                            <lightning-input
+                                                                data-id="SetupOwnerName"
+                                                                key={field.localApiName}
+                                                                label="Setup Owner"
+                                                                read-only
+                                                                required
+                                                                type="text"
+                                                                value={organization.Name}
+                                                                variant="label-stacked"
+                                                            ></lightning-input>
+                                                        </template>
+                                                        <template if:true={showSetupOwnerLookup}>
+                                                            <div
+                                                                class="slds-combobox_container"
+                                                                aria-expanded="true"
+                                                                aria-haspopup="listbox"
+                                                                key={field.localApiName}
+                                                                role="combobox"
+                                                            >
+                                                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                                    <!-- Search Input Box -->
+                                                                    <template if:false={showPill}>
+                                                                        <lightning-input
+                                                                            autocomplete="off"
+                                                                            data-id="SetupOwnerRecordSearch"
+                                                                            label="Setup Owner"
+                                                                            onblur={handleRecordSearchBlur}
+                                                                            onchange={handleRecordSearch}
+                                                                            onclick={handleRecordSearch}
+                                                                            placeholder="Search"
+                                                                            required
+                                                                            type="search"
+                                                                            variant="label-stacked"
+                                                                        ></lightning-input>
+                                                                        <div if:true={showSpinner}>
+                                                                            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                                                                        </div>
+                                                                    </template>
 
-                                                                <!-- Selected Value Pill -->
-                                                                <div if:true={showPill}>
-                                                                    <div class="slds-form-element">
-                                                                        <label class="slds-form-element__label"
-                                                                            ><abbr class="slds-required" title="required">*</abbr>Setup Owner</label
-                                                                        >
-                                                                        <div class="slds-form-element__control">
-                                                                            <lightning-pill
-                                                                                label={selectedSetupOwner.label}
-                                                                                name={selectedSetupOwner.recordId}
-                                                                                onremove={handleRemoveSetupOwner}
+                                                                    <!-- Selected Value Pill -->
+                                                                    <div if:true={showPill}>
+                                                                        <div class="slds-form-element">
+                                                                            <label class="slds-form-element__label"
+                                                                                ><abbr class="slds-required" title="required">*</abbr>Setup Owner</label
                                                                             >
-                                                                                <lightning-avatar
-                                                                                    src={selectedSetupOwner.image}
-                                                                                    fallback-icon-name={selectedSetupOwner.icon}
-                                                                                    size="x-small"
-                                                                                ></lightning-avatar>
-                                                                            </lightning-pill>
+                                                                            <div class="slds-form-element__control">
+                                                                                <lightning-pill
+                                                                                    label={selectedSetupOwner.label}
+                                                                                    name={selectedSetupOwner.recordId}
+                                                                                    onremove={handleRemoveSetupOwner}
+                                                                                >
+                                                                                    <lightning-avatar
+                                                                                        src={selectedSetupOwner.image}
+                                                                                        fallback-icon-name={selectedSetupOwner.icon}
+                                                                                        size="x-small"
+                                                                                    ></lightning-avatar>
+                                                                                </lightning-pill>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
 
-                                                                <!-- Dropdown List -->
-                                                                <template if:true={showDropdown}>
-                                                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid">
-                                                                        <ul class="slds-listbox slds-listbox_vertical" data-id="SetupOwnerSearchResults">
-                                                                            <template for:each={setupOwnerSearchResults} for:item="matchingRecord">
-                                                                                <li
-                                                                                    key={matchingRecord.recordId}
-                                                                                    data-key={matchingRecord.recordId}
-                                                                                    data-label={matchingRecord.label}
-                                                                                    class="slds-listbox__item"
-                                                                                    onclick={handleSearchResultSelection}
-                                                                                    onmousedown={handleSearchResultSelection}
-                                                                                >
-                                                                                    <div
-                                                                                        class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
-                                                                                        role="option"
+                                                                    <!-- Dropdown List -->
+                                                                    <template if:true={showDropdown}>
+                                                                        <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid">
+                                                                            <ul class="slds-listbox slds-listbox_vertical" data-id="SetupOwnerSearchResults">
+                                                                                <template for:each={setupOwnerSearchResults} for:item="matchingRecord">
+                                                                                    <li
+                                                                                        key={matchingRecord.recordId}
+                                                                                        data-key={matchingRecord.recordId}
+                                                                                        data-label={matchingRecord.label}
+                                                                                        class="slds-listbox__item"
+                                                                                        onclick={handleSearchResultSelection}
+                                                                                        onmousedown={handleSearchResultSelection}
                                                                                     >
-                                                                                        <template if:true={matchingRecord.image}>
-                                                                                            <span
-                                                                                                class="slds-media__figure slds-listbox__option-icon slds-avatar slds-avatar_profile-image-large"
-                                                                                            >
-                                                                                                <span class="slds-icon_container slds-icon-standard-user">
-                                                                                                    <img class="slds-icon" src={matchingRecord.image} />
+                                                                                        <div
+                                                                                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                                                            role="option"
+                                                                                        >
+                                                                                            <template if:true={matchingRecord.image}>
+                                                                                                <span
+                                                                                                    class="slds-media__figure slds-listbox__option-icon slds-avatar slds-avatar_profile-image-large"
+                                                                                                >
+                                                                                                    <span class="slds-icon_container slds-icon-standard-user">
+                                                                                                        <img class="slds-icon" src={matchingRecord.image} />
+                                                                                                    </span>
                                                                                                 </span>
-                                                                                            </span>
-                                                                                        </template>
-                                                                                        <template if:false={matchingRecord.image}>
-                                                                                            <lightning-icon
-                                                                                                class="slds-media__figure slds-listbox__option-icon"
-                                                                                                icon-name={matchingRecord.icon}
-                                                                                                alternative-text="icon"
-                                                                                                size="small"
-                                                                                            ></lightning-icon>
-                                                                                        </template>
+                                                                                            </template>
+                                                                                            <template if:false={matchingRecord.image}>
+                                                                                                <lightning-icon
+                                                                                                    class="slds-media__figure slds-listbox__option-icon"
+                                                                                                    icon-name={matchingRecord.icon}
+                                                                                                    alternative-text="icon"
+                                                                                                    size="small"
+                                                                                                ></lightning-icon>
+                                                                                            </template>
 
-                                                                                        <span class="slds-media__body">
-                                                                                            <span
-                                                                                                class="slds-listbox__option-text slds-listbox__option-text_entity"
-                                                                                                >{matchingRecord.label}</span
-                                                                                            >
-                                                                                            <span
-                                                                                                class="slds-listbox__option-meta slds-listbox__option-meta_entity"
-                                                                                                >{matchingRecord.secondaryLabel}</span
-                                                                                            >
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </li>
-                                                                            </template>
-                                                                        </ul>
-                                                                    </div>
-                                                                </template>
+                                                                                            <span class="slds-media__body">
+                                                                                                <span
+                                                                                                    class="slds-listbox__option-text slds-listbox__option-text_entity"
+                                                                                                    >{matchingRecord.label}</span
+                                                                                                >
+                                                                                                <span
+                                                                                                    class="slds-listbox__option-meta slds-listbox__option-meta_entity"
+                                                                                                    >{matchingRecord.secondaryLabel}</span
+                                                                                                >
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                </template>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        </template>
                                                     </template>
                                                 </template>
+                                                <template if:true={field.useComboboxInput}>
+                                                    <lightning-combobox
+                                                        data-id={field.localApiName}
+                                                        field-level-help={field.inlineHelpText}
+                                                        key={field.localApiName}
+                                                        label={field.label}
+                                                        onchange={handleFieldChange}
+                                                        options={field.picklistOptions}
+                                                        read-only={isReadOnlyMode}
+                                                        required={field.required}
+                                                        value={field.value}
+                                                        variant="label-stacked"
+                                                    ></lightning-combobox>
+                                                </template>
+                                                <!-- TODO handle read-only datetime fields for audit fields-->
+                                                <!-- <div key={field.apiName} class="slds-form-element">
+                                                    <label class="slds-form-element__label">{lastModifiedDateField.label}</label>
+                                                    <div class="slds-form-element__control">
+                                                        <lightning-formatted-date-time
+                                                            year="numeric"
+                                                            month="long"
+                                                            day="2-digit"
+                                                            hour="2-digit"
+                                                            minute="2-digit"
+                                                            value={lastModifiedDateField.value}
+                                                        ></lightning-formatted-date-time>
+                                                    </div>
+                                                </div> -->
+                                                <template if:true={field.useStandardInput}>
+                                                    <lightning-input
+                                                        checked={field.value}
+                                                        value={field.value}
+                                                        data-id={field.localApiName}
+                                                        field-level-help={field.inlineHelpText}
+                                                        key={field.key}
+                                                        label={field.label}
+                                                        onchange={handleFieldChange}
+                                                        read-only={isReadOnlyMode}
+                                                        type={field.type}
+                                                        variant="label-stacked"
+                                                    ></lightning-input>
+                                                </template>
                                             </template>
-                                            <template if:true={field.useComboboxInput}>
-                                                <lightning-combobox
-                                                    data-id={field.localApiName}
-                                                    field-level-help={field.inlineHelpText}
-                                                    key={field.localApiName}
-                                                    label={field.label}
-                                                    onchange={handleFieldChange}
-                                                    options={field.picklistOptions}
-                                                    read-only={isReadOnlyMode}
-                                                    required={field.required}
-                                                    value={field.value}
-                                                    variant="label-stacked"
-                                                ></lightning-combobox>
-                                            </template>
-                                            <!-- TODO handle read-only datetime fields for audit fields-->
-                                            <!-- <div key={field.apiName} class="slds-form-element">
-                                                <label class="slds-form-element__label">{lastModifiedDateField.label}</label>
-                                                <div class="slds-form-element__control">
-                                                    <lightning-formatted-date-time
-                                                        year="numeric"
-                                                        month="long"
-                                                        day="2-digit"
-                                                        hour="2-digit"
-                                                        minute="2-digit"
-                                                        value={lastModifiedDateField.value}
-                                                    ></lightning-formatted-date-time>
-                                                </div>
-                                            </div> -->
-                                            <template if:true={field.useStandardInput}>
-                                                <lightning-input
-                                                    checked={field.value}
-                                                    value={field.value}
-                                                    data-id={field.localApiName}
-                                                    field-level-help={field.inlineHelpText}
-                                                    key={field.key}
-                                                    label={field.label}
-                                                    onchange={handleFieldChange}
-                                                    read-only={isReadOnlyMode}
-                                                    type={field.type}
-                                                    variant="label-stacked"
-                                                ></lightning-input>
-                                            </template>
-                                        </template>
-                                    </lightning-layout-item>
-                                </template>
-                            </lightning-layout>
-                        </div>
+                                        </lightning-layout-item>
+                                    </template>
+                                </lightning-layout>
+                            </span>
+                        </c-logger-page-section>
                     </template>
 
                     <!-- Audit fields -->
                     <template if:true={isExistingRecord}>
-                        <div class="slds-section slds-is-open">
-                            <h3 class="slds-section__title slds-theme_shade">
-                                <span class="slds-truncate slds-p-horizontal_small" title="System Information">System Information</span>
-                            </h3>
-                            <lightning-layout>
-                                <lightning-layout-item size="6">
-                                    <lightning-input
-                                        data-id="CreatedByUsername"
-                                        field-level-help={createdByIdField.inlineHelpText}
-                                        label={createdByIdField.label}
-                                        onchange={handleFieldChange}
-                                        read-only
-                                        type="text"
-                                        value={createdByIdField.value}
-                                        variant="label-stacked"
-                                    ></lightning-input>
-                                    <div class="slds-form-element">
-                                        <label class="slds-form-element__label">{createdDateField.label}</label>
-                                        <div class="slds-form-element__control">
-                                            <lightning-formatted-date-time
-                                                year="numeric"
-                                                month="long"
-                                                day="2-digit"
-                                                hour="2-digit"
-                                                minute="2-digit"
-                                                value={createdDateField.value}
-                                            ></lightning-formatted-date-time>
+                        <c-logger-page-section>
+                            <span slot="title">System Information</span>
+                            <span slot="content">
+                                <lightning-layout>
+                                    <lightning-layout-item size="6">
+                                        <lightning-input
+                                            data-id="CreatedByUsername"
+                                            field-level-help={createdByIdField.inlineHelpText}
+                                            label={createdByIdField.label}
+                                            onchange={handleFieldChange}
+                                            read-only
+                                            type="text"
+                                            value={createdByIdField.value}
+                                            variant="label-stacked"
+                                        ></lightning-input>
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label">{createdDateField.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-date-time
+                                                    year="numeric"
+                                                    month="long"
+                                                    day="2-digit"
+                                                    hour="2-digit"
+                                                    minute="2-digit"
+                                                    value={createdDateField.value}
+                                                ></lightning-formatted-date-time>
+                                            </div>
                                         </div>
-                                    </div>
-                                </lightning-layout-item>
-                                <lightning-layout-item size="6">
-                                    <lightning-input
-                                        data-id="lastModifiedByIdField"
-                                        field-level-help={lastModifiedByIdField.inlineHelpText}
-                                        label={lastModifiedByIdField.label}
-                                        onchange={handleFieldChange}
-                                        read-only
-                                        type="text"
-                                        value={lastModifiedByIdField.value}
-                                        variant="label-stacked"
-                                    ></lightning-input>
-                                    <div class="slds-form-element">
-                                        <label class="slds-form-element__label">{lastModifiedDateField.label}</label>
-                                        <div class="slds-form-element__control">
-                                            <lightning-formatted-date-time
-                                                year="numeric"
-                                                month="long"
-                                                day="2-digit"
-                                                hour="2-digit"
-                                                minute="2-digit"
-                                                value={lastModifiedDateField.value}
-                                            ></lightning-formatted-date-time>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="6">
+                                        <lightning-input
+                                            data-id="lastModifiedByIdField"
+                                            field-level-help={lastModifiedByIdField.inlineHelpText}
+                                            label={lastModifiedByIdField.label}
+                                            onchange={handleFieldChange}
+                                            read-only
+                                            type="text"
+                                            value={lastModifiedByIdField.value}
+                                            variant="label-stacked"
+                                        ></lightning-input>
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label">{lastModifiedDateField.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-date-time
+                                                    year="numeric"
+                                                    month="long"
+                                                    day="2-digit"
+                                                    hour="2-digit"
+                                                    minute="2-digit"
+                                                    value={lastModifiedDateField.value}
+                                                ></lightning-formatted-date-time>
+                                            </div>
                                         </div>
-                                    </div>
-                                </lightning-layout-item>
-                            </lightning-layout>
-                        </div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </span>
+                        </c-logger-page-section>
                     </template>
                 </div>
 
                 <!-- Record modal footer -->
                 <footer class="slds-modal__footer" if:false={isReadOnlyMode}>
                     <lightning-button
-                        class="slds-p-around--xx-small"
+                        class="slds-p-around_xx-small"
                         data-id="cancel-btn"
                         label="Cancel"
                         onclick={closeRecordModal}
                         title="Cancel"
                     ></lightning-button>
                     <lightning-button
-                        class="slds-p-around--xx-small"
+                        class="slds-p-around_xx-small"
                         data-id="save-btn"
                         label="Save"
                         onclick={saveCurrentRecord}
@@ -359,9 +359,9 @@
 
                 <!-- Delete modal footer -->
                 <footer class="slds-modal__footer">
-                    <lightning-button class="slds-p-around--xx-small" label="Cancel" onclick={closeDeleteModal} title="Cancel"></lightning-button>
+                    <lightning-button class="slds-p-around_xx-small" label="Cancel" onclick={closeDeleteModal} title="Cancel"></lightning-button>
                     <lightning-button
-                        class="slds-p-around--xx-small"
+                        class="slds-p-around_xx-small"
                         data-id="delete-confirmation-btn"
                         label="Delete"
                         onclick={confirmDeleteCurrentRecord}
