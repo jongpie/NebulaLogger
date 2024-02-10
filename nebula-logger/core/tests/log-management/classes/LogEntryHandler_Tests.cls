@@ -1163,12 +1163,25 @@ private class LogEntryHandler_Tests {
                 FlowVersionRunInMode__c,
                 Id,
                 OriginLocation__c,
-                OriginType__c
+                OriginType__c,
+                HasStackTrace__c,
+                HasOriginSourceSnippet__c,
+                OriginSourceApiVersion__c,
+                OriginSourceCreatedById__c,
+                OriginSourceCreatedByUsername__c,
+                OriginSourceCreatedDate__c,
+                OriginSourceId__c,
+                OriginSourceLastModifiedById__c,
+                OriginSourceLastModifiedByUsername__c,
+                OriginSourceLastModifiedDate__c,
+                OriginSourceSnippet__c,
+                StackTrace__c
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
         System.Assert.areEqual(invalidOriginLocation, logEntry.OriginLocation__c);
         System.Assert.areEqual('Flow', logEntry.OriginType__c);
+        System.Assert.isNull(logEntry.StackTrace__c, 'Currently, there\'s no way to get a stack trace in Flow, so always expect null 😥');
         System.Assert.isNull(logEntry.FlowActiveVersionId__c);
         System.Assert.isNull(logEntry.FlowDescription__c);
         System.Assert.isNull(logEntry.FlowDurableId__c);
@@ -1183,6 +1196,18 @@ private class LogEntryHandler_Tests {
         System.Assert.isNull(logEntry.FlowVersionApiVersionRuntime__c);
         System.Assert.isNull(logEntry.FlowVersionNumber__c);
         System.Assert.isNull(logEntry.FlowVersionRunInMode__c);
+        System.Assert.isFalse(logEntry.HasStackTrace__c);
+        System.Assert.isFalse(logEntry.HasOriginSourceSnippet__c);
+        System.Assert.isNull(logEntry.OriginSourceApiVersion__c);
+        System.Assert.isNull(logEntry.OriginSourceCreatedById__c);
+        System.Assert.isNull(logEntry.OriginSourceCreatedByUsername__c);
+        System.Assert.isNull(logEntry.OriginSourceCreatedDate__c);
+        System.Assert.isNull(logEntry.OriginSourceId__c);
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedById__c);
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedByUsername__c);
+        System.Assert.isNull(logEntry.OriginSourceLastModifiedDate__c);
+        System.Assert.isNull(logEntry.OriginSourceSnippet__c);
+
     }
 
     private static String getNamespacePrefix() {
