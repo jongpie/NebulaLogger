@@ -14,12 +14,12 @@
             <lightning-tabset>
                 <lightning-tab data-id="json-content" label="Record JSON" value="json" onactive={handleTabActivated}>
                     <div class="content">
-                        <pre>{currentMode.data}</pre>
+                        <c-logger-code-viewer code={currentMode.data} language="json"></c-logger-code-viewer>
                     </div>
                 </lightning-tab>
                 <lightning-tab data-id="file-content" label="Log File" value="file" onactive={handleTabActivated}>
                     <div class="content">
-                        <pre>{currentMode.data}</pre>
+                        <c-logger-code-viewer code={currentMode.data} language="shell"></c-logger-code-viewer>
                     </div>
                 </lightning-tab>
             </lightning-tabset>
