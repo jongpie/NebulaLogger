@@ -265,7 +265,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 EventUuid__c = logEntryEvent.EventUuid,
                 ExceptionLocation__c = logEntryEvent.ExceptionLocation__c,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
-                ExceptionSourceActionName__c = logEntryEvent.ExceptionSourceApiName__c,
+                ExceptionSourceActionName__c = logEntryEvent.ExceptionSourceActionName__c,
                 ExceptionSourceApiName__c = logEntryEvent.ExceptionSourceApiName__c,
                 ExceptionSourceMetadataType__c = logEntryEvent.ExceptionSourceMetadataType__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
