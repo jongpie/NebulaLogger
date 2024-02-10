@@ -10,6 +10,7 @@
     <testClassName>LogBatchPurgeScheduler_Tests</testClassName>
     <testClassName>LogEntryEventBuilder_Tests</testClassName>
     <testClassName>LogEntryEventHandler_Tests</testClassName>
+    <testClassName>LogEntryMetadataViewerController_Tests</testClassName>
     <testClassName>LogEntryFieldSetPicklist_Tests</testClassName>
     <testClassName>LogEntryHandler_Tests</testClassName>
     <testClassName>LogEntryTagHandler_Tests</testClassName>
