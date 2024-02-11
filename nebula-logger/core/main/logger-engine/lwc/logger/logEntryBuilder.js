@@ -4,6 +4,8 @@
 //------------------------------------------------------------------------------------------------//
 import FORM_FACTOR from '@salesforce/client/formFactor';
 
+const CURRENT_VERSION_NUMBER = 'v4.13.0';
+
 // JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
 const ComponentLogEntry = class {
     browserFormFactor = null;
@@ -30,7 +32,6 @@ const ComponentLogEntry = class {
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LogEntryBuilder = class {
     #componentLogEntry;
-    #currentVersionNumber;
     #isConsoleLoggingEnabled;
 
     /**
@@ -39,10 +40,9 @@ const LogEntryBuilder = class {
      * @param  {String} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
      * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
      */
-    constructor(loggingLevel, isConsoleLoggingEnabled, currentVersionNumber) {
+    constructor(loggingLevel, isConsoleLoggingEnabled) {
         this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
         this.#isConsoleLoggingEnabled = isConsoleLoggingEnabled;
-        this.#currentVersionNumber = currentVersionNumber;
 
         this._setBrowserDetails();
     }
@@ -148,7 +148,7 @@ const LogEntryBuilder = class {
             return;
         }
 
-        const consoleMessagePrefix = `%c  Nebula Logger ${this.#currentVersionNumber}  `;
+        const consoleMessagePrefix = `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `;
         const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
         let consoleLoggingFunction;
         switch (this.#componentLogEntry.loggingLevel) {
@@ -171,6 +171,6 @@ const LogEntryBuilder = class {
     }
 };
 
-export function newLogEntry(loggingLevel, isConsoleLoggingEnabled, currentVersionNumber) {
-    return new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, currentVersionNumber);
+export function newLogEntry(loggingLevel, isConsoleLoggingEnabled) {
+    return new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled);
 }
