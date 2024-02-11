@@ -12,7 +12,7 @@ export default class Logger extends LightningElement {
     #loggerService;
 
     async connectedCallback() {
-        await createLoggerService(CURRENT_VERSION_NUMBER).then(result => (this.#loggerService = result));
+        this.#loggerService = await createLoggerService(CURRENT_VERSION_NUMBER);
     }
 
     /**
