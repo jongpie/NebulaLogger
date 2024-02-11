@@ -91,7 +91,10 @@ public inherited sharing class ComponentLogger {
         }
 
         logEntryEventBuilder.getLogEntryEvent().ExceptionMessage__c = componentError.message;
-        logEntryEventBuilder.getLogEntryEvent().ExceptionStackTrace__c = componentError.stack;
+        logEntryEventBuilder.getLogEntryEvent().ExceptionStackTrace__c = truncateFieldValue(
+            Schema.LogEntryEvent__e.ExceptionStackTrace__c,
+            componentError.stack
+        );
         logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = componentError.type;
     }
 
