@@ -6,10 +6,14 @@
 import { LightningElement, api } from 'lwc';
 import { createLoggerService } from './loggerService';
 
-const CURRENT_VERSION_NUMBER = 'v4.13.0';
+const CURRENT_VERSION_NUMBER = 'v4.12.9';
 
 export default class Logger extends LightningElement {
-    #loggerService = createLoggerService();
+    #loggerService;
+
+    async connectedCallback() {
+        await createLoggerService(CURRENT_VERSION_NUMBER).then(result => (this.#loggerService = result));
+    }
 
     /**
      * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
@@ -134,12 +138,8 @@ export default class Logger extends LightningElement {
 /**
  * @return {LoggerService} a LoggerService instance
  */
-const createLogger = function () {
-    const consoleMessagePrefix = '%c Nebula Logger ';
-    const consoleFormatting = 'background: #0c598d; color: #fff;';
-    /* eslint-disable no-console */
-    console.info(consoleMessagePrefix, consoleFormatting, 'Nebula Logger Version Number: ' + CURRENT_VERSION_NUMBER);
-    return createLoggerService();
+const createLogger = async function () {
+    return createLoggerService(CURRENT_VERSION_NUMBER);
 };
 
 export { createLogger };

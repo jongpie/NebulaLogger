@@ -7,34 +7,29 @@ import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
-const LOADING_ENUM = {
-    loading: 'loading',
-    enabled: 'enabled',
-    disabled: 'disabled'
-};
-
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LoggerService = class {
-    static settings = undefined;
+    static currentVersionNumber;
 
-    #isSavingLog = false;
     #componentLogEntries = [];
+    #settings;
     #scenario;
-    #loggingPromises = [];
+
+    constructor(currentVersionNumber) {
+        LoggerService.currentVersionNumber = currentVersionNumber;
+    }
+
+    async initializeUserSettings({ forceReload = false } = {}) {
+        return this._loadSettingsFromServer(forceReload);
+    }
 
     /**
      * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
      * @param {Object} parameters Object used to provide control over how user settings are retrieved. Currently, only the property `forceReload` is used.
      * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
-    getUserSettings({ forceReload = false } = {}) {
-        return this._loadSettingsFromServer(forceReload).then(existingSettings => {
-            return Object.freeze({
-                ...existingSettings,
-                supportedLoggingLevels: Object.freeze(existingSettings.supportedLoggingLevels),
-                userLoggingLevel: Object.freeze(existingSettings.userLoggingLevel)
-            });
-        });
+    getUserSettings() {
+        return this.#settings;
     }
 
     /**
@@ -45,11 +40,9 @@ const LoggerService = class {
      */
     setScenario(scenario) {
         this.#scenario = scenario;
-        return Promise.all(this.#loggingPromises).then(
-            this.#componentLogEntries.forEach(logEntry => {
-                logEntry.scenario = this.#scenario;
-            })
-        );
+        this.#componentLogEntries.forEach(logEntry => {
+            logEntry.scenario = this.#scenario;
+        });
     }
 
     /**
@@ -120,19 +113,15 @@ const LoggerService = class {
      * @return {Integer} The buffer's current size
      */
     getBufferSize() {
-        return this.#componentLogEntries.length + this.#loggingPromises.length;
+        return this.#componentLogEntries.length;
     }
 
     /**
      * @description Discards any entries that have been generated but not yet saved
      * @return {Promise<void>} A promise to clear the entries
      */
-    async flushBuffer() {
-        return Promise.all(this.#loggingPromises).then(() => {
-            this.#componentLogEntries = [];
-            this.#loggingPromises = [];
-            this.#isSavingLog = false;
-        });
+    flushBuffer() {
+        this.#componentLogEntries.length = 0;
     }
 
     /**
@@ -141,90 +130,74 @@ const LoggerService = class {
      * @param  {String} saveMethod The enum value of LoggerService.SaveMethod to use for this specific save action
      */
     async saveLog(saveMethodName) {
-        this.#isSavingLog = true;
-
-        const filteredLogEntries = this.#componentLogEntries.filter(
-            possibleLogEntry =>
-                (possibleLogEntry.loadingEnum === LOADING_ENUM.loading &&
-                    this._meetsUserLoggingLevel(possibleLogEntry.loggingLevel) === LOADING_ENUM.enabled) ||
-                possibleLogEntry.loadingEnum === LOADING_ENUM.enabled
-        );
-
-        if (filteredLogEntries.length > 0) {
-            let resolvedSaveMethodName;
-            if (!saveMethodName && LoggerService.settings && LoggerService.settings.defaultSaveMethodName) {
-                resolvedSaveMethodName = LoggerService.settings.defaultSaveMethodName;
-            } else {
-                resolvedSaveMethodName = saveMethodName;
-            }
-
-            return Promise.all(this.#loggingPromises)
-                .then(
-                    saveComponentLogEntries({
-                        componentLogEntries: filteredLogEntries,
-                        saveMethodName: resolvedSaveMethodName
-                    })
-                )
-                .then(this.flushBuffer())
-                .catch(error => {
-                    if (LoggerService.settings.isConsoleLoggingEnabled === true) {
-                        /* eslint-disable-next-line no-console */
-                        console.error(error);
-                        /* eslint-disable-next-line no-console */
-                        console.error(this.#componentLogEntries);
-                    }
-                });
+        if (this.#componentLogEntries.length === 0) {
+            return Promise.resolve();
         }
-        return Promise.resolve();
+        let resolvedSaveMethodName;
+        if (!saveMethodName && this.#settings && this.#settings.defaultSaveMethodName) {
+            resolvedSaveMethodName = this.#settings.defaultSaveMethodName;
+        } else {
+            resolvedSaveMethodName = saveMethodName;
+        }
+
+        return saveComponentLogEntries({
+            componentLogEntries: this.#componentLogEntries,
+            saveMethodName: resolvedSaveMethodName
+        })
+            .then(() => {
+                this.flushBuffer();
+                // TODO in a future release, return save results from Apex,
+                // including the transaction ID so it can be used as the parent ID
+                // on subsequent saveLog() calls
+                return Promise.resolve();
+            })
+            .catch(error => {
+                if (this.#settings.isConsoleLoggingEnabled === true) {
+                    /* eslint-disable-next-line no-console */
+                    console.error(error);
+                    /* eslint-disable-next-line no-console */
+                    console.error(this.#componentLogEntries);
+                }
+                return Promise.reject(error);
+            });
     }
 
-    _loadSettingsFromServer(forceReload) {
+    async _loadSettingsFromServer(forceReload) {
         // Loading only once
-        return LoggerService.settings === undefined || forceReload === true
-            ? getSettings()
-                  .then(settings => {
-                      LoggerService.settings = settings;
-                      return settings;
-                  })
-                  .catch(error => {
-                      /* eslint-disable-next-line no-console */
-                      console.error(error);
-                  })
-            : new Promise(resolve => {
-                  resolve(LoggerService.settings);
-              });
+        if (this.#settings !== undefined && forceReload !== true) {
+            return Promise.resolve(this.#settings);
+        }
+
+        return getSettings()
+            .then(settings => {
+                this.#settings = Object.freeze({
+                    ...settings,
+                    supportedLoggingLevels: Object.freeze(settings.supportedLoggingLevels),
+                    userLoggingLevel: Object.freeze(settings.userLoggingLevel)
+                });
+                return settings;
+            })
+            .catch(error => {
+                /* eslint-disable-next-line no-console */
+                console.error(error);
+                return Promise.reject(error);
+            });
     }
 
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
-        if (LoggerService.settings && LoggerService.settings.supportedLoggingLevels && LoggerService.settings.userLoggingLevel) {
-            const currentIsEnabled =
-                LoggerService.settings.isEnabled === true &&
-                LoggerService.settings.userLoggingLevel.ordinal <= LoggerService.settings?.supportedLoggingLevels[logEntryLoggingLevel];
-            return currentIsEnabled ? LOADING_ENUM.enabled : LOADING_ENUM.disabled;
-        }
-        return LOADING_ENUM.loading;
+        return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings?.supportedLoggingLevels[logEntryLoggingLevel];
     }
 
     _newEntry(loggingLevel, message) {
         // Builder is returned immediately but console log will be determined after loading settings from server
-        const logEntryBuilder = newLogEntry(loggingLevel, this._loadSettingsFromServer);
+        const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled, LoggerService.currentVersionNumber);
         logEntryBuilder.setMessage(message);
         if (this.#scenario) {
             logEntryBuilder.scenario = this.#scenario;
         }
-        const loggingPromise = this._loadSettingsFromServer().then(() => {
-            const isEnabledEnum = this._meetsUserLoggingLevel(loggingLevel);
-            if (isEnabledEnum === LOADING_ENUM.enabled || isEnabledEnum === LOADING_ENUM.loading) {
-                const componentLogEntry = logEntryBuilder.getComponentLogEntry();
-                componentLogEntry.loadingEnum = isEnabledEnum;
-                this.#componentLogEntries.push(componentLogEntry);
-            }
-            if (this.#isSavingLog) {
-                this.#isSavingLog = false;
-                this.saveLog();
-            }
-        });
-        this.#loggingPromises.push(loggingPromise);
+        if (this._meetsUserLoggingLevel(loggingLevel)) {
+            this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
+        }
 
         return logEntryBuilder;
     }
@@ -233,8 +206,15 @@ const LoggerService = class {
 /**
  * @return {LoggerService} a LoggerService instance
  */
-const createLoggerService = function () {
-    return new LoggerService();
+const createLoggerService = async function (currentVersionNumber) {
+    const service = new LoggerService(currentVersionNumber);
+    const loggerPromise = new Promise((resolve, reject) => {
+        return service
+            .initializeUserSettings()
+            .then(() => resolve(service))
+            .catch(reject);
+    });
+    return loggerPromise;
 };
 
 export { createLoggerService };

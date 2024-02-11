@@ -30,7 +30,8 @@ const ComponentLogEntry = class {
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LogEntryBuilder = class {
     #componentLogEntry;
-    #settingsPromise;
+    #currentVersionNumber;
+    #isConsoleLoggingEnabled;
 
     /**
      * @description Constructor used to generate each JavaScript-based log entry event
@@ -38,9 +39,10 @@ const LogEntryBuilder = class {
      * @param  {String} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
      * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
      */
-    constructor(loggingLevel, settingsPromise) {
+    constructor(loggingLevel, isConsoleLoggingEnabled, currentVersionNumber) {
         this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
-        this.#settingsPromise = settingsPromise;
+        this.#isConsoleLoggingEnabled = isConsoleLoggingEnabled;
+        this.#currentVersionNumber = currentVersionNumber;
 
         this._setBrowserDetails();
     }
@@ -82,6 +84,10 @@ const LogEntryBuilder = class {
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setError(error) {
+        if (!error) {
+            return this;
+        }
+
         this.#componentLogEntry.error = {};
         if (error.body) {
             this.#componentLogEntry.error.message = error.body.message;
@@ -138,42 +144,33 @@ const LogEntryBuilder = class {
 
     /* eslint-disable no-console */
     _logToConsole() {
-        this.#settingsPromise().then(setting => {
-            this.isConsoleLoggingEnabled = !!setting?.isConsoleLoggingEnabled;
+        if (!this.#isConsoleLoggingEnabled) {
+            return;
+        }
 
-            if (!this.isConsoleLoggingEnabled) {
-                return;
-            }
+        const consoleMessagePrefix = `%c  Nebula Logger ${this.#currentVersionNumber}  `;
+        const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
+        let consoleLoggingFunction;
+        switch (this.#componentLogEntry.loggingLevel) {
+            case 'ERROR':
+                consoleLoggingFunction = console.error;
+                break;
+            case 'WARN':
+                consoleLoggingFunction = console.warn;
+                break;
+            case 'INFO':
+                consoleLoggingFunction = console.info;
+                break;
+            default:
+                consoleLoggingFunction = console.debug;
+                break;
+        }
 
-            const consoleMessagePrefix = '%c Nebula Logger ';
-            const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
-            let consoleLoggingFunction;
-            switch (this.loggingLevel) {
-                case 'ERROR':
-                    consoleLoggingFunction = console.error;
-                    break;
-                case 'WARN':
-                    consoleLoggingFunction = console.warn;
-                    break;
-                case 'INFO':
-                    consoleLoggingFunction = console.info;
-                    break;
-                default:
-                    consoleLoggingFunction = console.debug;
-                    break;
-            }
-
-            consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, this.#componentLogEntry.message);
-            console.groupCollapsed(consoleMessagePrefix, consoleFormatting, 'Details for: ' + this.#componentLogEntry.message);
-            // The use of JSON.parse(JSON.stringify()) is intended to help ensure that the output is readable,
-            // including handling proxy objects. If any cyclic objects are used, this approach could fail
-            consoleLoggingFunction(JSON.parse(JSON.stringify(this)));
-            // console.trace();
-            console.groupEnd();
-        });
+        const qualifiedMessage = `${this.#componentLogEntry.loggingLevel}: ${this.#componentLogEntry.message}`;
+        consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, qualifiedMessage, this.#componentLogEntry);
     }
 };
 
-export function newLogEntry(loggingLevel, settingPromise) {
-    return new LogEntryBuilder(loggingLevel, settingPromise);
+export function newLogEntry(loggingLevel, isConsoleLoggingEnabled, currentVersionNumber) {
+    return new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, currentVersionNumber);
 }
