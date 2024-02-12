@@ -91,10 +91,7 @@ public inherited sharing class ComponentLogger {
         }
 
         logEntryEventBuilder.getLogEntryEvent().ExceptionMessage__c = componentError.message;
-        logEntryEventBuilder.getLogEntryEvent().ExceptionStackTrace__c = truncateFieldValue(
-            Schema.LogEntryEvent__e.ExceptionStackTrace__c,
-            componentError.stack
-        );
+        logEntryEventBuilder.getLogEntryEvent().ExceptionStackTrace__c = componentError.stack;
         logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = componentError.type;
     }
 
@@ -145,18 +142,7 @@ public inherited sharing class ComponentLogger {
         logEntryEventBuilder.getLogEntryEvent().ComponentType__c = isAuraComponent ? 'Aura' : 'LWC';
         logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
         logEntryEventBuilder.getLogEntryEvent().OriginLocation__c = originLocation;
-        logEntryEventBuilder.getLogEntryEvent().StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
-    }
-
-    private static String truncateFieldValue(Schema.SObjectField field, String value) {
-        Integer fieldMaxLength = field.getDescribe().getLength();
-        if (String.isBlank(value)) {
-            return value;
-        } else if (value.length() <= fieldMaxLength) {
-            return value;
-        }
-
-        return value.left(fieldMaxLength);
+        logEntryEventBuilder.getLogEntryEvent().StackTrace__c = stackTraceString;
     }
 
     /**

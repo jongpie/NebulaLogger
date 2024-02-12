@@ -184,6 +184,53 @@ private class ComponentLogger_Tests {
     }
 
     @IsTest
+    static void it_should_truncate_long_origin_stack_trace_when_publishing_to_the_event_bus() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String excessivelyLongString = getMockModernWebComponentStackTrace() + 'A'.repeat(Schema.LogEntryEvent__e.StackTrace__c.getDescribe().getLength() + 1);
+        System.Assert.isTrue(excessivelyLongString.length() > Schema.LogEntryEvent__e.StackTrace__c.getDescribe().getLength());
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+        componentLogEntry.stack = excessivelyLongString;
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(Schema.LogEntryEvent__e.StackTrace__c.getDescribe().getLength(), publishedLogEntryEvent.StackTrace__c.length());
+    }
+
+    @IsTest
+    static void it_should_truncate_long_exception_stack_trace_when_publishing_to_the_event_bus() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String excessivelyLongString = getMockModernWebComponentStackTrace() + 'A'.repeat(Schema.LogEntryEvent__e.StackTrace__c.getDescribe().getLength() + 1);
+        System.Assert.isTrue(excessivelyLongString.length() > Schema.LogEntryEvent__e.StackTrace__c.getDescribe().getLength());
+        ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
+        mockComponentError.message = 'some JavaScript error message';
+        mockComponentError.stack = excessivelyLongString;
+        mockComponentError.type = 'JavaScript.ReferenceError';
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+        componentLogEntry.error = mockComponentError;
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(
+            Schema.LogEntryEvent__e.ExceptionStackTrace__c.getDescribe().getLength(),
+            publishedLogEntryEvent.ExceptionStackTrace__c.length()
+        );
+    }
+
+    @IsTest
     static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();

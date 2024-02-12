@@ -83,7 +83,7 @@ function Update-Logger-Component {
     )
     $versionNumber = "v" + $versionNumber
     $loggerComponentContents = Get-Logger-Component
-    Write-Output "Bumping logger.js version number to: $versionNumber"
+    Write-Output "Bumping logEntryBuilder.js version number to: $versionNumber"
 
     $targetRegEx = "(.+CURRENT_VERSION_NUMBER = ')(.+)(';)"
     $replacementRegEx = '$1' + $versionNumber + '$3'
