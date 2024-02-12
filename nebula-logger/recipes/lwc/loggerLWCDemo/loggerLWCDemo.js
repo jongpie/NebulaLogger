@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /* eslint-disable no-console */
-import { LightningElement, wire } from 'lwc';
+import { api, LightningElement, wire } from 'lwc';
 import returnSomeString from '@salesforce/apex/LoggerLWCDemoController.returnSomeString';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
 import { createLogger } from 'c/logger';
@@ -13,18 +13,12 @@ export default class LoggerLWCDemo extends LightningElement {
     message = 'Hello, world!';
     scenario = 'Some demo scenario';
     tagsString = 'Tag-one, Another tag here';
-    logger = createLogger();
+    /* eslint-disable @lwc/lwc/no-api-reassignments */
+    @api
+    logger;
 
-    constructor() {
-        super();
-        console.log('>>> start of constructor()');
-        this.logger.info('>>> running constructor(), using createLogger()');
-        this.logger.info('>>> adding an extra log entry');
-        this.logger.saveLog();
-        console.log('>>> done with constructor()');
-    }
-
-    connectedCallback() {
+    async connectedCallback() {
+        this.logger = await createLogger();
         console.log('>>> start of connectedCallback()');
         try {
             this.logger.error('test error entry');
@@ -36,7 +30,7 @@ export default class LoggerLWCDemo extends LightningElement {
             this.logger.finest('test finest entry');
             throw new Error('A bad thing happened here');
         } catch (error) {
-            this.logger.error('>>> connectedCallback error: ' + JSON.stringify(error));
+            this.logger.error('>>> connectedCallback error: ' + error.message).setError(error);
             this.logger.saveLog().then(() => {
                 console.log('done with async save');
             });
@@ -53,20 +47,20 @@ export default class LoggerLWCDemo extends LightningElement {
 
     renderedCallback() {
         console.log('>>> start of renderedCallback()');
-        this.logger.info('>>> running renderedCallback(), using createLogger()');
-        this.logger.info('>>> adding an extra log entry');
-        this.logger.saveLog();
+        this.logger?.info('>>> running renderedCallback(), using createLogger()');
+        this.logger?.info('>>> adding an extra log entry');
+        this.logger?.saveLog();
         console.log('>>> done with renderedCallback()');
     }
 
     @wire(returnSomeString)
     wiredReturnSomeString({ error, data }) {
-        this.logger.info('>>> logging inside a wire function');
+        this.logger?.info('>>> logging inside a wire function');
         if (data) {
-            this.logger.info('>>> wire function return value: ' + data);
+            this.logger?.info('>>> wire function return value: ' + data);
         }
         if (error) {
-            this.logger.error('>>> wire function error: ' + JSON.stringify(error));
+            this.logger?.error('>>> wire function error: ' + JSON.stringify(error));
         }
     }
 

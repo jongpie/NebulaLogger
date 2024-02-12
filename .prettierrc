@@ -4,7 +4,12 @@
     "tabWidth": 4,
     "printWidth": 160,
     "arrowParens": "avoid",
+    "plugins": ["prettier-plugin-apex", "@prettier/plugin-xml"],
     "overrides": [
+        {
+            "files": "*.{cls, apex}",
+            "options": { "parser": "apex" }
+        },
         {
             "files": "**/lwc/**/*.html",
             "options": { "parser": "lwc" }

@@ -15,14 +15,14 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.12.9';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.13.0';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String ORGANIZATION_DOMAIN_URL = System.URL.getOrgDomainUrl()?.toExternalForm();
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
-    private static final String TRANSACTION_ID = new Uuid().getValue();
+    private static final String TRANSACTION_ID = System.UUID.randomUUID().toString();
     private static final Quiddity TRANSACTION_QUIDDITY = loadTransactionQuiddity();
 
     private static AsyncContext currentAsyncContext;
@@ -3590,119 +3590,6 @@ global with sharing class Logger {
         private RestSaveRequest(List<SObject> records, Boolean allOrNone) {
             this.allOrNone = allOrNone;
             this.records = records;
-        }
-    }
-
-    /******************************************************************************************
-     * This code is based on the Apex UUID project, released under the MIT License.            *
-     * See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. *
-     * @description private, inner class for UUID. See comment for more information.           *
-     ******************************************************************************************/
-    @TestVisible
-    private without sharing class Uuid {
-        private final String hexCharacters = '0123456789abcdef';
-        private final String hexPrefix = '0x';
-        private final List<String> hexCharacterList = hexCharacters.split('');
-        private final Integer uuidV4Length = 36;
-        private final String uuidV4Regex = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
-
-        private final String value;
-
-        /**
-         * @description Default constructor
-         */
-        public Uuid() {
-            this.value = this.generateValue();
-        }
-
-        /**
-         * @description Getter returning the uuid value
-         * @return A string containing the UUID value.
-         */
-        public String getValue() {
-            return this.value;
-        }
-
-        private String generateValue() {
-            String hexValue = EncodingUtil.convertToHex(Crypto.generateAesKey(128));
-
-            // Version Calculation: (i & 0x0f) | 0x40
-            // Version Format: Always begins with 4
-            String versionShiftedHexBits = this.getShiftedHexBits(
-                hexValue.substring(14, 16),
-                this.convertHexToInteger('0x0f'),
-                this.convertHexToInteger('0x40')
-            );
-
-            // Variant Calculation: (i & 0x3f) | 0x80
-            // Variant Format: Always begins with 8, 9, A or B
-            String variantShiftedHexBits = this.getShiftedHexBits(
-                hexValue.substring(18, 20),
-                this.convertHexToInteger('0x3f'),
-                this.convertHexToInteger('0x80')
-            );
-
-            String uuidValue =
-                hexValue.substring(0, 8) + // time-low
-                hexValue.substring(8, 12) + // time-mid
-                versionShiftedHexBits +
-                hexValue.substring(14, 16) + // time-high-and-version
-                variantShiftedHexBits +
-                hexValue.substring(18, 20) + // clock-seq-and-reserved + clock-seq-low
-                hexValue.substring(20); // node
-
-            return formatValue(uuidValue);
-        }
-
-        private String formatValue(String unformattedValue) {
-            // Remove any non-alphanumeric characters
-            unformattedValue = unformattedValue.replaceAll('[^a-zA-Z0-9]', '');
-
-            // UUID Pattern: 8-4-4-4-12
-            String formattedValue =
-                unformattedValue.substring(0, 8) +
-                '-' +
-                unformattedValue.substring(8, 12) +
-                '-' +
-                unformattedValue.substring(12, 16) +
-                '-' +
-                unformattedValue.substring(16, 20) +
-                '-' +
-                unformattedValue.substring(20);
-
-            return formattedValue.toLowerCase();
-        }
-
-        private String getShiftedHexBits(String hexSubstring, Integer lowerThreshold, Integer upperThreshold) {
-            Integer shiftedIntegerBits = (this.convertHexToInteger(hexSubstring) & lowerThreshold) | upperThreshold;
-            return this.convertIntegerToHex(shiftedIntegerBits);
-        }
-
-        private Integer convertHexToInteger(String hexValue) {
-            hexValue = hexValue.toLowerCase();
-
-            if (hexValue.startsWith(hexPrefix)) {
-                hexValue = hexValue.substringAfter(hexPrefix);
-            }
-
-            Integer integerValue = 0;
-            for (String hexCharacter : hexValue.split('')) {
-                Integer hexCharacterIndex = hexCharacters.indexOf(hexCharacter);
-
-                integerValue = hexCharacters.length() * integerValue + hexCharacterIndex;
-            }
-            return integerValue;
-        }
-
-        private String convertIntegerToHex(Integer integerValue) {
-            String hexValue = '';
-            while (integerValue > 0) {
-                Integer hexCharacterIndex = Math.mod(integerValue, hexCharacters.length());
-
-                hexValue = hexCharacterList[hexCharacterIndex] + hexValue;
-                integerValue = integerValue / hexCharacters.length();
-            }
-            return hexValue;
         }
     }
 }

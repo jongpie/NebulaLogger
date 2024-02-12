@@ -101,6 +101,7 @@ public without sharing class LoggerMockDataStore {
             this.publishedPlatformEvents.addAll(platformEvents);
             this.lastUsedDmlOptions = dmlOptions;
 
+            this.finalizeRecords(platformEvents, dmlOptions);
             List<Database.SaveResult> mockSaveResults = new List<Database.SaveResult>();
             for (SObject platformEvent : platformEvents) {
                 mockSaveResults.add(validateBeforeSave(platformEvent, false));

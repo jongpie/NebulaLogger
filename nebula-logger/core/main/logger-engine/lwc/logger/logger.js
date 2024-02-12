@@ -6,30 +6,30 @@
 import { LightningElement, api } from 'lwc';
 import { createLoggerService } from './loggerService';
 
-const CURRENT_VERSION_NUMBER = 'v4.12.9';
-
 export default class Logger extends LightningElement {
-    #loggerService = createLoggerService();
+    #loggerService;
+
+    async connectedCallback() {
+        this.#loggerService = await createLoggerService();
+    }
 
     /**
      * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
-     * @param {Object} parameters Object used to provide control over how user settings are retrieved. Currently, only the property `forceReload` is used.
-     * @return {Promise<ComponentLogger.ComponentLoggerSettings>} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
+     * @return {ComponentLogger.ComponentLoggerSettings} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
     @api
-    getUserSettings(parameters = { forceReload: false }) {
-        return this.#loggerService.getUserSettings(parameters);
+    getUserSettings() {
+        return this.#loggerService.getUserSettings();
     }
 
     /**
      * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  {String} scenario The name to use for the current transaction's scenario
-     * @return {Promise[]} A list of promises that be resolved before all scenarios are set
      */
     @api
     setScenario(scenario) {
-        return this.#loggerService.setScenario(scenario);
+        this.#loggerService.setScenario(scenario);
     }
 
     /**
@@ -113,11 +113,10 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Discards any entries that have been generated but not yet saved
-     * @return {Promise<void>} A promise to clear the entries
      */
     @api
     flushBuffer() {
-        return this.#loggerService.flushBuffer();
+        this.#loggerService.flushBuffer();
     }
 
     /**
@@ -126,20 +125,14 @@ export default class Logger extends LightningElement {
      * @param  {String} saveMethod The enum value of Logger.SaveMethod to use for this specific save action
      */
     @api
-    saveLog(saveMethodName) {
-        this.#loggerService.saveLog(saveMethodName);
+    async saveLog(saveMethodName) {
+        return this.#loggerService.saveLog(saveMethodName);
     }
 }
 
 /**
- * @return {LoggerService} a LoggerService instance
+ * @return {Promise<LoggerService>} a LoggerService instance
  */
-const createLogger = function () {
-    const consoleMessagePrefix = '%c Nebula Logger ';
-    const consoleFormatting = 'background: #0c598d; color: #fff;';
-    /* eslint-disable no-console */
-    console.info(consoleMessagePrefix, consoleFormatting, 'Nebula Logger Version Number: ' + CURRENT_VERSION_NUMBER);
-    return createLoggerService();
-};
+const createLogger = createLoggerService;
 
 export { createLogger };

@@ -1,10 +1,17 @@
+## Constants
+
+<dl>
+<dt><a href="#createLogger">createLogger</a> <code>Promise.&lt;LoggerService&gt;</code></dt>
+<dd></dd>
+</dl>
+
 ## Functions
 
 <dl>
-<dt><a href="#getUserSettings">getUserSettings(parameters)</a> <code>Promise.&lt;ComponentLogger.ComponentLoggerSettings&gt;</code></dt>
+<dt><a href="#getUserSettings">getUserSettings()</a> <code>ComponentLogger.ComponentLoggerSettings</code></dt>
 <dd><p>Returns <strong>read-only</strong> information about the current user&#39;s settings, stored in <code>LoggerSettings__c</code></p>
 </dd>
-<dt><a href="#setScenario">setScenario(scenario)</a> <code>Array.&lt;Promise&gt;</code></dt>
+<dt><a href="#setScenario">setScenario(scenario)</a></dt>
 <dd><p>Sets the scenario name for the current transaction - this is stored in <code>LogEntryEvent__e.Scenario__c</code>
              and <code>Log__c.Scenario__c</code>, and can be used to filter &amp; group logs</p>
 </dd>
@@ -32,39 +39,37 @@
 <dt><a href="#getBufferSize">getBufferSize()</a> <code>Integer</code></dt>
 <dd><p>Returns the number of entries that have been generated but not yet saved</p>
 </dd>
-<dt><a href="#flushBuffer">flushBuffer()</a> <code>Promise.&lt;void&gt;</code></dt>
+<dt><a href="#flushBuffer">flushBuffer()</a></dt>
 <dd><p>Discards any entries that have been generated but not yet saved</p>
 </dd>
 <dt><a href="#saveLog">saveLog(saveMethod)</a></dt>
 <dd><p>Saves any entries in Logger&#39;s buffer, using the specified save method for only this call
              All subsequent calls to saveLog() will use the transaction save method</p>
 </dd>
-<dt><a href="#createLogger">createLogger()</a> <code>LoggerService</code></dt>
-<dd></dd>
 </dl>
 
+<a name="createLogger"></a>
+
+## createLogger <code>Promise.&lt;LoggerService&gt;</code>
+
+**Kind**: global constant  
+**Returns**: <code>Promise.&lt;LoggerService&gt;</code> - a LoggerService instance  
 <a name="getUserSettings"></a>
 
-## getUserSettings(parameters) <code>Promise.&lt;ComponentLogger.ComponentLoggerSettings&gt;</code>
+## getUserSettings() <code>ComponentLogger.ComponentLoggerSettings</code>
 
 Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
 
 **Kind**: global function  
-**Returns**: <code>Promise.&lt;ComponentLogger.ComponentLoggerSettings&gt;</code> - The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
-
-| Param      | Type                | Description                                                                                                              |
-| ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| parameters | <code>Object</code> | Object used to provide control over how user settings are retrieved. Currently, only the property `forceReload` is used. |
-
+**Returns**: <code>ComponentLogger.ComponentLoggerSettings</code> - The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`  
 <a name="setScenario"></a>
 
-## setScenario(scenario) <code>Array.&lt;Promise&gt;</code>
+## setScenario(scenario)
 
 Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
 and `Log__c.Scenario__c`, and can be used to filter & group logs
 
-**Kind**: global function  
-**Returns**: <code>Array.&lt;Promise&gt;</code> - A list of promises that be resolved before all scenarios are set
+**Kind**: global function
 
 | Param    | Type                | Description                                            |
 | -------- | ------------------- | ------------------------------------------------------ |
@@ -171,12 +176,11 @@ Returns the number of entries that have been generated but not yet saved
 **Returns**: <code>Integer</code> - The buffer's current size  
 <a name="flushBuffer"></a>
 
-## flushBuffer() <code>Promise.&lt;void&gt;</code>
+## flushBuffer()
 
 Discards any entries that have been generated but not yet saved
 
 **Kind**: global function  
-**Returns**: <code>Promise.&lt;void&gt;</code> - A promise to clear the entries  
 <a name="saveLog"></a>
 
 ## saveLog(saveMethod)
@@ -189,10 +193,3 @@ All subsequent calls to saveLog() will use the transaction save method
 | Param      | Type                | Description                                                              |
 | ---------- | ------------------- | ------------------------------------------------------------------------ |
 | saveMethod | <code>String</code> | The enum value of Logger.SaveMethod to use for this specific save action |
-
-<a name="createLogger"></a>
-
-## createLogger() <code>LoggerService</code>
-
-**Kind**: global function  
-**Returns**: <code>LoggerService</code> - a LoggerService instance

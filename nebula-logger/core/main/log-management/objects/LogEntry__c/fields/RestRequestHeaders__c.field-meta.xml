@@ -5,7 +5,7 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <label>REST Request Headers</label>
-    <length>5000</Request>
+    <length>5000</length>
     <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>

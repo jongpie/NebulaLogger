@@ -1,7 +1,7 @@
 {
     "name": "Nebula Logger",
     "namespace": "",
-    "sourceApiVersion": "59.0",
+    "sourceApiVersion": "60.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "plugins": {
         "sfdx-plugin-prettier": {
@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.12.9.NEXT",
-            "versionName": "RestRequest and RestResponse Logging Support",
-            "versionDescription": "Added new methods setRestRequestDetails() and setRestResponseDetails() in LogEntryEventBuilder that store RestRequest & RestResponse data in new fields on LogEntryEvent__e and LogEntry__c",
+            "versionNumber": "4.13.0.NEXT",
+            "versionName": "Spring '24 Release",
+            "versionDescription": "Updated all metadata to API v60.0, fixed a bug with querying for recent Log__c records when the Status API integration is disabled, switched to new System.UUID class, commented-out a failing test due to ongoing platform issues with SOSL",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -167,6 +167,7 @@
         "Nebula Logger - Core@4.12.7-bugfix-for-lwc-stack-trace-parsing": "04t5Y000001Mk6IQAS",
         "Nebula Logger - Core@4.12.8-bugfix-for-http-response-page-section-visibility": "04t5Y000001Mk6cQAC",
         "Nebula Logger - Core@4.12.9-restrequest-and-restresponse-logging-support": "04t5Y000001Mk7BQAS",
+        "Nebula Logger - Core@4.13.0-spring-'24-release": "04t5Y000001Mk8dQAC",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

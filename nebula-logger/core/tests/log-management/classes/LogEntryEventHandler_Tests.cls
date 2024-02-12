@@ -1204,11 +1204,7 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
         logEntryEvent.UserLoggingLevel__c = System.LoggingLevel.INFO.name();
         logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
-        logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(
-            logEntryEvent,
-            Schema.LogEntryEvent__e.EventUuid,
-            new Logger.Uuid().getValue()
-        );
+        logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(logEntryEvent, Schema.LogEntryEvent__e.EventUuid, System.UUID.randomUUID());
 
         return logEntryEvent;
     }

@@ -91,6 +91,10 @@ public without sharing virtual class LogManagementDataSelector {
      * @return   The cached `Log__c` record, or `null` if no match is found
      */
     public virtual Log__c getCachedRecentLogWithApiReleaseDetails() {
+        if (LoggerParameter.CALL_STATUS_API == false) {
+            return null;
+        }
+
         String cacheKey = 'RecentLogWithApiReleaseDetails';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
             return (Log__c) LoggerCache.getOrganizationCache().get(cacheKey);

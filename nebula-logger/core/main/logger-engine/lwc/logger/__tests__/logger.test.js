@@ -23,16 +23,15 @@ jest.mock(
 );
 
 describe('logger lwc import tests', () => {
-    afterEach(() => {
-        createLogger().flushBuffer();
+    afterEach(async () => {
         jest.clearAllMocks();
     });
 
     it('returns user settings when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
 
-        const userSettings = await logger.getUserSettings();
+        const userSettings = logger.getUserSettings();
 
         expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
         expect(userSettings.isEnabled).toEqual(true);
@@ -40,9 +39,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('sets a log scenario on all entries when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-        await logger.getUserSettings();
+        const logger = await createLogger();
         const scenario = 'some scenario';
         const message = 'some message';
         const firstLogEntry = logger.finest(message).getComponentLogEntry();
@@ -61,8 +59,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('logs an ERROR entry when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const message = 'component log entry with loggingLevel ERROR';
 
         const logEntry = logger.error(message).getComponentLogEntry();
@@ -74,8 +72,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('logs a WARN entry when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const message = 'component log entry with loggingLevel WARN';
 
         const logEntry = logger.warn(message).getComponentLogEntry();
@@ -87,8 +85,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('logs an INFO entry when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const message = 'component log entry with loggingLevel INFO';
 
         const logEntry = logger.info(message).getComponentLogEntry();
@@ -100,8 +98,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('logs a DEBUG entry when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const message = 'component log entry with loggingLevel DEBUG';
 
         const logEntry = logger.debug(message).getComponentLogEntry();
@@ -113,8 +111,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('logs a FINE entry when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const message = 'component log entry with loggingLevel FINE';
 
         const logEntry = logger.fine(message).getComponentLogEntry();
@@ -126,8 +124,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('logs a FINER entry when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const message = 'component log entry with loggingLevel FINER';
 
         const logEntry = logger.finer(message).getComponentLogEntry();
@@ -139,8 +137,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('logs a FINEST entry when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const message = 'component log entry with loggingLevel FINEST';
 
         const logEntry = logger.finest(message).getComponentLogEntry();
@@ -152,8 +150,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('sets recordId when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         await logger.getUserSettings();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -166,8 +164,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('sets record when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         await logger.getUserSettings();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -180,8 +178,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('sets JavaScript error details when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         await logger.getUserSettings();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -199,8 +197,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('sets Apex error details when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.error).toBeFalsy();
@@ -224,8 +222,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('adds tags when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
@@ -237,8 +235,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('deduplicates tags when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
@@ -254,9 +252,9 @@ describe('logger lwc import tests', () => {
     });
 
     it('still works for ERROR logging level when disabled when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-        const settings = await logger.getUserSettings({ forceReload: true });
+        const logger = await createLogger();
+        const settings = logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
 
@@ -284,8 +282,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('still works for WARN logging level when disabled when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const logger = await createLogger();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -314,8 +312,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('still works for INFO logging level when disabled when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const logger = await createLogger();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -344,8 +342,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('still works for DEBUG logging level when disabled when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const logger = await createLogger();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -374,8 +372,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('still works for FINE logging level when disabled when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const logger = await createLogger();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -404,8 +402,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('still works for FINER logging level when disabled when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const logger = await createLogger();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -434,8 +432,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('still works for FINEST logging level when disabled when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
+        const logger = await createLogger();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -464,8 +462,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('flushes buffer when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         await logger.getUserSettings({ forceReload: true });
         const numberOfLogEntries = 3;
         for (let i = 0; i < numberOfLogEntries; i++) {
@@ -480,8 +478,8 @@ describe('logger lwc import tests', () => {
     });
 
     it('saves log entries and flushes buffer when using recommended import approach', async () => {
-        const logger = createLogger();
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = await createLogger();
         await logger.getUserSettings({ forceReload: true });
         logger.info('example INFO log entry');
         logger.debug('example DEBUG log entry');
@@ -496,18 +494,18 @@ describe('logger lwc import tests', () => {
 });
 
 describe('logger lwc legacy markup tests', () => {
-    afterEach(() => {
+    afterEach(async () => {
         while (document.body.firstChild) {
             document.body.removeChild(document.body.firstChild);
         }
-        createLogger().flushBuffer();
         jest.clearAllMocks();
     });
 
     it('returns user settings when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
 
         const userSettings = await logger.getUserSettings();
 
@@ -517,9 +515,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('sets a log scenario on all entries when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
         const message = 'some message';
         const firstLogEntry = await logger.finest(message).getComponentLogEntry();
         expect(firstLogEntry.scenario).toBeNull();
@@ -536,9 +535,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('logs an ERROR entry when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
 
         const message = 'component log entry with loggingLevel ERROR';
         const logEntry = await logger.error(message).getComponentLogEntry();
@@ -549,8 +549,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('logs a WARN entry when using deprecated markup approach', async () => {
-        const logger = createElement('c-logger', { is: Logger });
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+        await flushPromises();
 
         const message = 'component log entry with loggingLevel WARN';
         const logEntry = await logger.warn(message).getComponentLogEntry();
@@ -561,12 +563,13 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('logs an INFO entry when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
 
         const message = 'component log entry with loggingLevel INFO';
-        const logEntry = await logger.info(message).getComponentLogEntry();
+        const logEntry = logger.info(message).getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(1);
         expect(logEntry.loggingLevel).toEqual('INFO');
@@ -574,9 +577,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('logs a DEBUG entry when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
 
         const message = 'component log entry with loggingLevel DEBUG';
         const logEntry = await logger.debug(message).getComponentLogEntry();
@@ -587,9 +591,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('logs a FINE entry when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
 
         const message = 'component log entry with loggingLevel FINE';
         const logEntry = await logger.fine(message).getComponentLogEntry();
@@ -600,9 +605,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('logs a FINER entry when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
 
         const message = 'component log entry with loggingLevel FINER';
         const logEntry = await logger.finer(message).getComponentLogEntry();
@@ -613,9 +619,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('logs a FINEST entry when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
 
         const message = 'component log entry with loggingLevel FINEST';
         const logEntry = await logger.finest(message).getComponentLogEntry();
@@ -626,9 +633,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('sets recordId when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
         const logEntryBuilder = await logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
@@ -640,9 +648,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('sets record when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
         const logEntryBuilder = await logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.record).toBeFalsy();
@@ -654,9 +663,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('sets JavaScript error details when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
         const logEntryBuilder = await logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.error).toBeFalsy();
@@ -673,9 +683,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('sets Apex error details when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.error).toBeFalsy();
@@ -699,9 +710,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('adds tags when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
@@ -713,9 +725,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('deduplicates tags when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+        await flushPromises();
         const logEntryBuilder = logger.info('example log entry');
         const logEntry = logEntryBuilder.getComponentLogEntry();
         expect(logEntry.recordId).toBeFalsy();
@@ -734,6 +747,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -764,6 +778,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -794,6 +809,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -824,6 +840,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -854,6 +871,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -884,6 +902,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -917,9 +936,10 @@ describe('logger lwc legacy markup tests', () => {
     });
 
     it('still works for FINEST logging level when disabled when using deprecated markup approach', async () => {
+        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
-        getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: true });
+        await flushPromises();
         const settings = await logger.getUserSettings();
         expect(settings.isEnabled).toEqual(false);
         const error = new TypeError('oops');
@@ -951,6 +971,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(true);
         const numberOfLogEntries = 3;
@@ -970,6 +991,7 @@ describe('logger lwc legacy markup tests', () => {
         getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
+        await flushPromises();
         const settings = await logger.getUserSettings({ forceReload: true });
         expect(settings.isEnabled).toEqual(true);
         logger.info('example INFO log entry');
