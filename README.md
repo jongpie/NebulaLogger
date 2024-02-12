@@ -17,7 +17,7 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 
 ---
 
-## Managed Package - v4.12.0
+## Managed Package - v4.13.0
 
 [![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y000001Mk8YQAS)
 [![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y000001Mk8YQAS)
