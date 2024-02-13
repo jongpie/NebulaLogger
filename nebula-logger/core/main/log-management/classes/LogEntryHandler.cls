@@ -141,8 +141,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         List<String> flowApiNames = new List<String>();
         List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.OriginLocation__c)) {
-                flowApiNames.add(logEntry.OriginLocation__c);
+            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
+                flowApiNames.add(logEntry.OriginSourceApiName__c);
                 flowLogEntries.add(logEntry);
             }
         }
@@ -161,7 +161,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : flowLogEntries) {
-            FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginLocation__c);
+            FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginSourceApiName__c);
             if (flowDefinition == null) {
                 continue;
             }
@@ -189,8 +189,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         List<String> flowActiveVersionIds = new List<String>();
         List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.FlowActiveVersionId__c)) {
-                flowActiveVersionIds.add(logEntry.FlowActiveVersionId__c);
+            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.OriginSourceId__c)) {
+                flowActiveVersionIds.add(logEntry.OriginSourceId__c);
                 flowLogEntries.add(logEntry);
             }
         }

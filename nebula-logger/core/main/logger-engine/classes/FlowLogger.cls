@@ -13,9 +13,12 @@
  * @see LogEntryEventBuilder
  */
 public inherited sharing class FlowLogger {
+    @TestVisible
     private static final String FLOW_EXCEPTION_TYPE_NAME = 'Flow.FaultError';
     @TestVisible
     private static final String FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE = 'An unknown Flow exception has occurred';
+    @TestVisible
+    private static final String FLOW_SOURCE_METADATA_TYPE = 'Flow';
 
     static {
         Logger.ignoreOrigin(FlowLogger.class);
@@ -126,13 +129,21 @@ public inherited sharing class FlowLogger {
 
             this.logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
             this.logEntryEvent.OriginLocation__c = this.flowName;
-            this.logEntryEvent.OriginSourceMetadataType__c = 'Flow';
-            this.logEntryEvent.OriginType__c = 'Flow';
-            this.logEntryEvent.StackTrace__c = null;
+            this.logEntryEvent.OriginSourceActionName__c = null;
+            this.logEntryEvent.OriginSourceApiName__c = this.flowName;
+            this.logEntryEvent.OriginSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
+            this.logEntryEvent.OriginType__c = FLOW_SOURCE_METADATA_TYPE;
             this.logEntryEvent.Timestamp__c = this.timestamp;
+            // Flow does not have an equivalent to a stack trace, so always clear the fields
+            this.logEntryEvent.ExceptionStackTrace__c = null;
+            this.logEntryEvent.StackTrace__c = null;
 
-            if (String.isNotBlank(this.faultMessage)) {
-                this.logEntryEvent.ExceptionMessage__c = this.faultMessage;
+            Boolean hasFaultMessage = String.isNotBlank(this.faultMessage);
+            if (hasFaultMessage || this.shouldThrowFaultMessageException) {
+                this.logEntryEvent.ExceptionMessage__c = hasFaultMessage ? this.faultMessage : FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
+                this.logEntryEvent.ExceptionSourceActionName__c = null;
+                this.logEntryEvent.ExceptionSourceApiName__c = this.flowName;
+                this.logEntryEvent.ExceptionSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
                 this.logEntryEvent.ExceptionType__c = FLOW_EXCEPTION_TYPE_NAME;
             }
 

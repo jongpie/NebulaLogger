@@ -120,6 +120,138 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OriginSourceApiName__c</fieldItem>
+                <identifier>RecordOriginSourceApiName_cField2</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowLabel__c</fieldItem>
+                <identifier>RecordFlowLabel__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowProcessType__c</fieldItem>
+                <identifier>RecordFlowProcessType__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowTriggerType__c</fieldItem>
+                <identifier>RecordFlowTriggerType__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowTriggerSObjectType__c</fieldItem>
+                <identifier>RecordFlowTriggerSObjectType_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowTriggerOrder__c</fieldItem>
+                <identifier>RecordFlowTriggerOrder_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowRecordTriggerType__c</fieldItem>
+                <identifier>RecordFlowRecordTriggerType_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-17586de5-b418-46c3-8e43-07f6a5e7321a</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowVersionRunInMode__c</fieldItem>
+                <identifier>RecordFlowVersionRunInMode__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowVersionApiVersionRuntime__c</fieldItem>
+                <identifier>RecordFlowVersionApiVersionRuntime__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FlowVersionNumber__c</fieldItem>
+                <identifier>RecordFlowVersionNumber__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-f9b96f42-358a-4ffe-bc2c-a20f42bd59b8</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-17586de5-b418-46c3-8e43-07f6a5e7321a</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column8</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-f9b96f42-358a-4ffe-bc2c-a20f42bd59b8</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column9</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-5f20b7f6-e40f-49b2-905b-5e2ca6c609e9</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OriginSourceApiName__c</fieldItem>
                 <identifier>RecordOriginSourceApiName_cField</identifier>
             </fieldInstance>
         </itemInstances>
@@ -431,6 +563,31 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
+                    <value>Facet-5f20b7f6-e40f-49b2-905b-5e2ca6c609e9</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Flow Information</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection5</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.OriginType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Flow</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
                     <value>Facet-c174106c-7ba2-4781-a50f-001c5fa0c38a</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -444,9 +601,15 @@
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection15</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.OriginSourceApiName__c}</leftValue>
                         <operator>NE</operator>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.OriginType__c}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>Flow</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -509,6 +672,13 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection17</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasException__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-7beef2bc-28d3-490f-96b8-7a8f85424802</name>
@@ -1593,7 +1763,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>Limits</value>
+                    <value>Transaction Limits</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab1</identifier>
@@ -1898,128 +2068,6 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.FlowLabel__c</fieldItem>
-                <identifier>RecordFlowLabel__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowProcessType__c</fieldItem>
-                <identifier>RecordFlowProcessType__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowTriggerType__c</fieldItem>
-                <identifier>RecordFlowTriggerType__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowTriggerSObjectType__c</fieldItem>
-                <identifier>RecordFlowTriggerSObjectType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowTriggerOrder__c</fieldItem>
-                <identifier>RecordFlowTriggerOrder_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowRecordTriggerType__c</fieldItem>
-                <identifier>RecordFlowRecordTriggerType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-17586de5-b418-46c3-8e43-07f6a5e7321a</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowVersionRunInMode__c</fieldItem>
-                <identifier>RecordFlowVersionRunInMode__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowVersionApiVersionRuntime__c</fieldItem>
-                <identifier>RecordFlowVersionApiVersionRuntime__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.FlowVersionNumber__c</fieldItem>
-                <identifier>RecordFlowVersionNumber__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-f9b96f42-358a-4ffe-bc2c-a20f42bd59b8</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-17586de5-b418-46c3-8e43-07f6a5e7321a</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column8</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-f9b96f42-358a-4ffe-bc2c-a20f42bd59b8</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column9</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-5f20b7f6-e40f-49b2-905b-5e2ca6c609e9</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.ComponentType__c</fieldItem>
                 <identifier>RecordComponentType__cField</identifier>
             </fieldInstance>
@@ -2277,31 +2325,6 @@
                     <criteria>
                         <leftValue>{!Record.OriginSourceApiName__c}</leftValue>
                         <operator>EQUAL</operator>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-5f20b7f6-e40f-49b2-905b-5e2ca6c609e9</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Flow Information</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection5</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.OriginType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Flow</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
