@@ -463,16 +463,16 @@ private class ComponentLogger_Tests {
         List<String> auraStackTraceLines = new List<String>{
             'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':28:24' +
+            '.js:28:24' +
             'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':172:14',
+            '.js:172:14',
             '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':349:44',
+            '.js:349:44',
             'info@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':253:21',
+            '.js:253:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'InteropComponent.prototype.$setupMethods$/</self[m]@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:45047:24',
@@ -513,16 +513,16 @@ private class ComponentLogger_Tests {
         List<String> lwcStackTraceLines = new List<String>{
             'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':28:24',
+            '.js:28:24',
             'newLogEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':172:14',
+            '.js:172:14',
             '_newEntry@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':349:44',
+            '.js:349:44',
             'error@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':233:21',
+            '.js:233:21',
             'callHook@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:24774:35',
             'createMethodCaller/<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:7822:18',
             'createFilteredMethodStateless/<.value<@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:30288:47',
@@ -547,19 +547,19 @@ private class ComponentLogger_Tests {
         List<String> lwcStackTraceLines = new List<String>{
             '@modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':33:22',
+            '.js:33:22',
             'LogEntryBuilder@modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':59:87',
+            '.js:59:87',
             'newLogEntry@modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':189:14',
+            '.js:189:14',
             '_newEntry@modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':397:44',
+            '.js:397:44',
             'error@modules/' +
             ComponentLogger.LOGGER_COMPONENT_NAME +
-            ':264:21',
+            '.js:264:21',
             originFunctionName +
             '@modules/' +
             originComponentName +

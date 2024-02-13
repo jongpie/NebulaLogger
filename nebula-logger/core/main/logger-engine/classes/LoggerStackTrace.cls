@@ -172,11 +172,7 @@ public without sharing class LoggerStackTrace {
 
             List<String> stackTraceLines = new List<String>();
             for (String currentStackTraceLine : javaScriptStackTraceString.split('\n')) {
-                // TODO figure out how to ignore JavaScript origins
-                String LOGGER_COMPONENT_NAME = 'TODO';
-                if (currentStackTraceLine.contains(LOGGER_COMPONENT_NAME)) {
-                    continue;
-                } else if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent)) {
+                if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent)) {
                     isAuraComponent = true;
                     parentComponentFound = true;
                 } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent)) {
@@ -205,7 +201,7 @@ public without sharing class LoggerStackTrace {
                     }
 
                     // Example: 'someFunctionName@modules/c/someComponentName.js:266:35'
-                    componentFunction = currentStackTraceLine.substringBefore('@');
+                    componentFunction = currentStackTraceLine.substringBefore('@').removeEnd('/<');
                     String everythingAfterComponentContent = currentStackTraceLine.substringAfterLast(componentContent);
                     componentName = everythingAfterComponentContent.substringBefore('.js');
                     codeLineNumberString = everythingAfterComponentContent.substringAfter('.js:').substringBefore(':');
@@ -312,7 +308,7 @@ public without sharing class LoggerStackTrace {
                     formattedOrigin = '.' + ignoredOrigin.trim() + '.';
                 } else if (language == SourceLanguage.JavaScript) {
                     // Example: '/lightning/n/modules/logger.js:253:21'
-                    formattedOrigin = 'modules/' + ignoredOrigin.trim() + ':';
+                    formattedOrigin = 'modules/' + ignoredOrigin.trim() + '.js';
                 }
                 if (currentStackTraceLine.contains(formattedOrigin)) {
                     ignoreLine = true;

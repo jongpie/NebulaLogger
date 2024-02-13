@@ -16,7 +16,7 @@ public inherited sharing class ComponentLogger {
         get {
             if (LOGGER_COMPONENT_NAME == null) {
                 String namespace = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : 'c';
-                LOGGER_COMPONENT_NAME = '/' + namespace + '/logger.js';
+                LOGGER_COMPONENT_NAME = namespace + '/logger';
             }
             return LOGGER_COMPONENT_NAME;
         }

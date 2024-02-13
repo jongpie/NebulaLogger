@@ -129,7 +129,6 @@ public inherited sharing class FlowLogger {
 
             this.logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
             this.logEntryEvent.OriginLocation__c = this.flowName;
-            this.logEntryEvent.OriginSourceActionName__c = null;
             this.logEntryEvent.OriginSourceApiName__c = this.flowName;
             this.logEntryEvent.OriginSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
             this.logEntryEvent.OriginType__c = FLOW_SOURCE_METADATA_TYPE;
@@ -137,11 +136,20 @@ public inherited sharing class FlowLogger {
             // Flow does not have an equivalent to a stack trace, so always clear the fields
             this.logEntryEvent.ExceptionStackTrace__c = null;
             this.logEntryEvent.StackTrace__c = null;
+            // The Flow actions do not have an equivalent to a action name, so always clear the fields
+            // TODO revisit this - maybe the actions _should_ have a parameter to provide the name?
+            this.logEntryEvent.OriginSourceActionName__c = null;
+            this.logEntryEvent.ExceptionSourceActionName__c = null;
 
             Boolean hasFaultMessage = String.isNotBlank(this.faultMessage);
             if (hasFaultMessage || this.shouldThrowFaultMessageException) {
+                // For now, this code takes the approach of treating the Flow itself as the source of the exception.
+                // But, if the exception actually came from Apex (and is surfaced by Flow), it'd be more accurate to list
+                // the Apex class/trigger/whatever as the exception's "source" fields.
+                //
+                // TODO Need to revisit this to see if there is a way to determine this programatically, or if new
+                // Flow parameter(s) would be needed.
                 this.logEntryEvent.ExceptionMessage__c = hasFaultMessage ? this.faultMessage : FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
-                this.logEntryEvent.ExceptionSourceActionName__c = null;
                 this.logEntryEvent.ExceptionSourceApiName__c = this.flowName;
                 this.logEntryEvent.ExceptionSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
                 this.logEntryEvent.ExceptionType__c = FLOW_EXCEPTION_TYPE_NAME;
