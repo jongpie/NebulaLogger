@@ -4,6 +4,11 @@
  **********************************************************************************************-->
 
 <template>
+    <template if:false={hasLoaded}>
+        <div class="slds-is-relative" style="min-height: 6em">
+            <lightning-spinner variant="inverse"></lightning-spinner>
+        </div>
+    </template>
     <template if:true={hasLoaded}>
         <c-logger-page-section>
             <span slot="title">{sectionTitle}</span>
