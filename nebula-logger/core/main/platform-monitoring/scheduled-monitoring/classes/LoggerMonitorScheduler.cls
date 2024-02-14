@@ -71,7 +71,7 @@ global without sharing class LoggerMonitorScheduler implements System.Schedulabl
 
         protected System.HttpRequest createOrganizationHttpRequest(HttpVerb verb, String endpointUri) {
             String endpointTemplate = '{0}/services/data/v57.0{1}';
-            String endpoint = String.format(endpointTemplate, new List<String>{ URL.getSalesforceBaseUrl().toExternalForm(), endpointUri });
+            String endpoint = String.format(endpointTemplate, new List<String>{ System.URL.getOrgDomainUrl().toExternalForm(), endpointUri });
             System.HttpRequest request = new System.HttpRequest();
             request.setEndpoint(endpoint);
             request.setHeader('Authorization', 'OAuth ' + System.UserInfo.getSessionId());
