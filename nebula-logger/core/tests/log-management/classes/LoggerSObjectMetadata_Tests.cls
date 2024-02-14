@@ -16,6 +16,7 @@ private class LoggerSObjectMetadata_Tests {
     static void it_should_return_schema_for_specified_sobject_api_name() {
         Schema.SObjectType userSObjectType = Schema.User.SObjectType;
         String userSObjectApiName = userSObjectType.getDescribe().getName();
+        // TODO Add `Schema.` prefix if the string API name doesn't include `.` (unqualified)
         LoggerSObjectMetadata.SObjectSchema sobjectSchema = LoggerSObjectMetadata.getSchemaForName(userSObjectApiName);
         validateSObjectDetails(userSObjectType, sobjectSchema);
     }

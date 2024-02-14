@@ -76,7 +76,7 @@ global with sharing class LogEntryEventBuilder {
 
     private static final Schema.User CACHED_USER {
         get {
-            if(CACHED_USER == null) {
+            if (CACHED_USER == null) {
                 CACHED_USER = LoggerEngineDataSelector.getInstance().getCachedUser();
             }
             return CACHED_USER;

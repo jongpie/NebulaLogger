@@ -16,9 +16,9 @@ private class LoggerStackTrace_Tests {
     }
 
     @IsTest
-    static void it_should_set_details_for_parameterless_constructor() {
+    static void it_should_set_details_for_parameterless_constructor_for_top_level_class() {
         String topLevelClassName = LoggerStackTrace_Tests.class.getName();
-        String methodName = 'it_should_set_details_for_parameterless_constructor';
+        String methodName = 'it_should_set_details_for_parameterless_constructor_for_top_level_class';
         String expectedOriginLocation = topLevelClassName + '.' + methodName;
         Integer expectedSourceLineNumber = new System.DmlException().getLineNumber() + 2; // Expected value is the line number below where parameterlessStackTrace is initialized
 
@@ -26,9 +26,27 @@ private class LoggerStackTrace_Tests {
 
         System.Assert.areEqual(LoggerStackTrace.SourceLanguage.Apex, parameterlessStackTrace.Language);
         System.Assert.areEqual(topLevelClassName, parameterlessStackTrace.Source.ApiName);
-        System.Assert.areEqual(topLevelClassName, parameterlessStackTrace.Source.ApiName);
-        System.Assert.areEqual(expectedSourceLineNumber, parameterlessStackTrace.Source.LineNumber);
         System.Assert.areEqual(methodName, parameterlessStackTrace.Source.ActionName);
+        System.Assert.areEqual(expectedSourceLineNumber, parameterlessStackTrace.Source.LineNumber);
+        System.Assert.areEqual(expectedOriginLocation, parameterlessStackTrace.Location);
+        System.Assert.isTrue(parameterlessStackTrace.ParsedStackTraceString.startsWith('Class.' + expectedOriginLocation));
+        System.Assert.areEqual(LoggerStackTrace.SourceMetadataType.ApexClass, parameterlessStackTrace.Source.MetadataType);
+    }
+
+    @IsTest
+    static void it_should_set_details_for_parameterless_constructor_for_inner_class() {
+        String topLevelClassName = LoggerStackTrace_Tests.class.getName();
+        String unqualifiedInnerClassName = DebugStringExample.class.getName().substringAfter(topLevelClassName + '.');
+        String methodName = 'getStackTrace';
+        String expectedOriginLocation = topLevelClassName + '.' + unqualifiedInnerClassName + '.' + methodName;
+
+        LoggerStackTrace parameterlessStackTrace = new DebugStringExample().getStackTrace();
+
+        System.Assert.areEqual(LoggerStackTrace.SourceLanguage.Apex, parameterlessStackTrace.Language);
+        System.Assert.areEqual(topLevelClassName, parameterlessStackTrace.Source.ApiName);
+        System.Assert.areEqual(unqualifiedInnerClassName + '.' + methodName, parameterlessStackTrace.Source.ActionName);
+        // TODO need to revisit to see if there's a easy-to-maintain way to know the expected line number
+        // System.Assert.areEqual(expectedSourceLineNumber, parameterlessStackTrace.Source.LineNumber);
         System.Assert.areEqual(expectedOriginLocation, parameterlessStackTrace.Location);
         System.Assert.isTrue(parameterlessStackTrace.ParsedStackTraceString.startsWith('Class.' + expectedOriginLocation));
         System.Assert.areEqual(LoggerStackTrace.SourceMetadataType.ApexClass, parameterlessStackTrace.Source.MetadataType);
@@ -420,6 +438,7 @@ private class LoggerStackTrace_Tests {
     private class DebugStringExample {
         private System.Exception constructorStackTraceGenerator;
         private System.Exception methodStackTraceGenerator;
+        private LoggerStackTrace stackTrace;
 
         public DebugStringExample() {
             this.constructorStackTraceGenerator = new System.DmlException();
@@ -434,6 +453,13 @@ private class LoggerStackTrace_Tests {
                 this.methodStackTraceGenerator = new System.DmlException();
             }
             return this.methodStackTraceGenerator.getStackTraceString();
+        }
+
+        public LoggerStackTrace getStackTrace() {
+            if (this.stackTrace == null) {
+                this.stackTrace = new LoggerStackTrace();
+            }
+            return this.stackTrace;
         }
     }
 }

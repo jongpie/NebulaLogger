@@ -142,8 +142,10 @@ public without sharing class LoggerStackTrace {
         }
 
         // Example anonymous block: AnonymousBlock: line 9, column 1
-        // Example class (top-level): Class.ExampleClassWithLogging.throwSomeException: line 25, column 1
-        // Example class (inner): Class.ExampleClassWithLogging.SomeInnerClass.doSomethingElse(): line 97, column 1
+        // Example class (top-level), no namespace: Class.ExampleClassWithLogging.throwSomeException: line 25, column 1
+        // Example class (inner), no namespace: Class.ExampleClassWithLogging.SomeInnerClass.doSomethingElse(): line 97, column 1
+        // Example class (top-level), with namespace: Class.SomeNamespace.ExampleClassWithLogging.throwSomeException: line 25, column 1
+        // Example class (inner), with namespace: Class.SomeNamespace.ExampleClassWithLogging.SomeInnerClass.doSomethingElse(): line 97, column 1
         // Example trigger: Trigger.SomeTrigger: line 4, column 1
         if (cleanedLocation == 'AnonymousBlock') {
             // this.AnonymousBlock = this.generateAnonymousBlock(cleanedLocation);
@@ -249,13 +251,35 @@ public without sharing class LoggerStackTrace {
         return anonymousBlock;
     }
 
+    private static String getNamespacePrefix() {
+        String className = LoggerStackTrace.class.getName();
+        return className.contains('.') ? className.substringBefore('.') : '';
+    }
+
     private ApexClass generateApexClass(String cleanedLocation) {
         ApexClass apexClass = new ApexClass();
 
         List<String> locationPieces = cleanedLocation.split('\\.');
-        String apexTopLevelClassName = locationPieces.get(0);
-        String apexInnerClassName = locationPieces.size() == 3 ? locationPieces.get(1) : null;
+
+        // It's nearly impossible to distinguish between a namespaced class vs an inner-class
+        // Example: Nebula.Logger.saveLog() vs SomeClass.SomeInnerClass.someMethod().
+        // This can cause some issues for Nebula Logger's managed package, so compare
+        // to the namespace to determine if it's a namespaced class.
+        String apexTopLevelClassName;
+        if (locationPieces.get(0) == getNamespacePrefix()) {
+            apexTopLevelClassName = locationPieces.get(0) + '.' + locationPieces.get(1);
+        } else {
+            apexTopLevelClassName = locationPieces.get(0);
+        }
+
         String apexMethodName = locationPieces.size() >= 2 ? locationPieces.get(locationPieces.size() - 1) : null;
+        String apexInnerClassName;
+        if (String.isBlank(apexMethodName)) {
+            apexInnerClassName = cleanedLocation.substringAfter(apexTopLevelClassName + '.');
+        } else {
+            apexInnerClassName = cleanedLocation.substringAfter(apexTopLevelClassName + '.').substringBefore('.' + apexMethodName);
+            apexInnerClassName = apexInnerClassName == apexMethodName ? null : apexInnerClassName;
+        }
 
         // For inner class methods - 'like MyClass.SomeInnerClass.myMethod' - the top-level class is stored
         // as the API name, and the inner class name + method name (e.g., 'SomeInnerClass.myMethod') are stored
