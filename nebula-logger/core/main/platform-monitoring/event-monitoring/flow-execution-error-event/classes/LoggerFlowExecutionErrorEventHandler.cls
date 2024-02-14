@@ -53,8 +53,8 @@ public without sharing class LoggerFlowExecutionErrorEventHandler {
 
     @SuppressWarnings('PMD.ApexCrudViolation')
     private static void overrideUserInfo(Map<String, List<LogEntryEventBuilder>> usernameToBuilders) {
-        Map<String, User> usernameToUser = new Map<String, User>();
-        for (User user : [
+        Map<String, Schema.User> usernameToUser = new Map<String, Schema.User>();
+        for (Schema.User user : [
             SELECT
                 Id,
                 ProfileId,
@@ -74,7 +74,7 @@ public without sharing class LoggerFlowExecutionErrorEventHandler {
         }
         for (String username : usernameToBuilders.keySet()) {
             List<LogEntryEventBuilder> builders = usernameToBuilders.get(username);
-            User loggingUser = usernameToUser.get(username);
+            Schema.User loggingUser = usernameToUser.get(username);
             TimeZone tz = Timezone.getTimeZone(loggingUser.TimeZoneSidKey);
             for (LogEntryEventBuilder builder : builders) {
                 LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
