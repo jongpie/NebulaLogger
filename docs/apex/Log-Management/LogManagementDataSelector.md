@@ -31,7 +31,7 @@ List&lt;SObject&gt;
 
 `List&lt;SObject&gt;` containing any records in the specified `SObjectType`
 
-#### `getApexClasses(List<String> apexClassNames)` → `List<ApexClass>`
+#### `getApexClasses(Set<String> apexClassNames)` → `List<ApexClass>`
 
 Returns a list of `ApexClass` records
 
@@ -50,6 +50,26 @@ List&lt;ApexClass&gt;
 **Description**
 
 `List&lt;ApexClass&gt;` containing any matching records
+
+#### `getApexTriggers(Set<String> apexTriggerNames)` → `List<ApexTrigger>`
+
+Returns a list of `ApexTrigger` records
+
+##### Parameters
+
+| Param              | Description                             |
+| ------------------ | --------------------------------------- |
+| `apexTriggerNames` | The names of the Apex triggers to query |
+
+##### Return
+
+**Type**
+
+List&lt;ApexTrigger&gt;
+
+**Description**
+
+`List&lt;ApexTrigger&gt;` containing any matching records
 
 #### `getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds)` → `List<SObject>`
 
@@ -256,6 +276,26 @@ List&lt;LogEntry\_\_c&gt;
 **Description**
 
 The matching `List&lt;LogEntry__c&gt;` records
+
+#### `getLogEntryById(Id logEntryId)` → `LogEntry__c`
+
+Returns a `LogEntry__c` record
+
+##### Parameters
+
+| Param        | Description                                   |
+| ------------ | --------------------------------------------- |
+| `logEntryId` | The `ID` of the `LogEntry__c` record to query |
+
+##### Return
+
+**Type**
+
+LogEntry\_\_c
+
+**Description**
+
+The matching `LogEntry__c` record
 
 #### `getLoggerScenariosById(List<Id> logScenarioIds)` → `List<LoggerScenario__c>`
 

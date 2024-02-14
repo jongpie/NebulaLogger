@@ -5776,28 +5776,6 @@ List of records to save.
 
 ---
 
-##### Methods
-
-###### `Uuid()` → `public`
-
-Default constructor
-
-###### `getValue()` → `String`
-
-Getter returning the uuid value
-
-####### Return
-
-**Type**
-
-String
-
-**Description**
-
-A string containing the UUID value.
-
----
-
 #### Logger.StatusApiResponseProduct class
 
 ---

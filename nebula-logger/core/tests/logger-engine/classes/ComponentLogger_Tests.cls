@@ -132,7 +132,6 @@ private class ComponentLogger_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String exceptionSourceApiName = 'c/someAuraComponent';
         String exceptionFunctionName = 'someAuraFunction';
-        String exceptionSourceType = 'AuraDefinitionBundle';
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = 'some JavaScript error message';
         mockComponentError.stack = getMockAuraComponentStackTrace(exceptionSourceApiName, exceptionFunctionName);

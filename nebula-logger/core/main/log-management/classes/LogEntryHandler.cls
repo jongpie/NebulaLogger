@@ -141,7 +141,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         List<String> flowApiNames = new List<String>();
         List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
+            if (logEntry.OriginSourceMetadataType__c == 'Flow' && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
                 flowApiNames.add(logEntry.OriginSourceApiName__c);
                 flowLogEntries.add(logEntry);
             }
@@ -189,7 +189,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         List<String> flowActiveVersionIds = new List<String>();
         List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.OriginSourceId__c)) {
+            if (logEntry.OriginSourceMetadataType__c == 'Flow' && String.isNotBlank(logEntry.OriginSourceId__c)) {
                 flowActiveVersionIds.add(logEntry.OriginSourceId__c);
                 flowLogEntries.add(logEntry);
             }
@@ -407,7 +407,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     // TODO consider making this a top-level, generically-named class (LoggerSourceMetadataSnippet?)
-    @SuppressWarnings('PMD.ApexDoc')
+    @SuppressWarnings('PMD.ApexDoc, PMD.PropertyNamingConventions')
     public class SourceMetadataSnippet {
         public String Code { get; private set; }
         public String ApiVersion { get; private set; }

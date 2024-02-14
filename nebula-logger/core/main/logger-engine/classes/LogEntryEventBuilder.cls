@@ -93,6 +93,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
      * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
      */
+    @SuppressWarnings('PMD.NcssConstructorCount')
     public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave) {
         this.shouldSave = shouldSave;
         if (this.shouldSave() == false) {
@@ -753,6 +754,7 @@ global with sharing class LogEntryEventBuilder {
     @SuppressWarnings('PMD.NcssMethodCount')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (this.shouldSave() == false || LoggerParameter.ENABLE_STACK_TRACE_PARSING == false) {
+            return this;
         }
 
         return this.parseStackTrace(new LoggerStackTrace(stackTraceString));

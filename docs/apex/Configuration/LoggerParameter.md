@@ -50,6 +50,10 @@ The name of the Platform Cache partition to use for caching (when platform cache
 
 Controls if Nebula Logger queries `ApexClass` data. When set to `false`, any `ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default
 
+#### `QUERY_APEX_TRIGGER_DATA` → `Boolean`
+
+Controls if Nebula Logger queries `ApexTrigger` data. When set to `false`, any `ApexTrigger` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexTriggerData`, or `true` as the default
+
 #### `QUERY_AUTH_SESSION_DATA` → `Boolean`
 
 Controls if Nebula Logger queries `Schema.AuthSession` data. When set to `false`, any `Schema.AuthSession` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionData`, or `true` as the default

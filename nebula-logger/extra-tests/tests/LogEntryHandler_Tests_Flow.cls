@@ -13,13 +13,13 @@ private class LogEntryHandler_Tests_Flow {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = null, OriginType__c = 'Flow');
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceApiName__c = null, OriginSourceMetadataType__c = 'Flow');
 
         insert logEntry;
 
         logEntry = getLogEntry();
-        System.Assert.isNull(logEntry.OriginLocation__c);
-        System.Assert.areEqual('Flow', logEntry.OriginType__c);
+        System.Assert.isNull(logEntry.OriginSourceApiName__c);
+        System.Assert.areEqual('Flow', logEntry.OriginSourceMetadataType__c);
         System.Assert.isNull(logEntry.StackTrace__c, 'Currently, there\'s no way to get a stack trace in Flow, so always expect null 😥');
         System.Assert.isNull(logEntry.FlowActiveVersionId__c);
         System.Assert.isNull(logEntry.FlowDescription__c);
@@ -55,13 +55,13 @@ private class LogEntryHandler_Tests_Flow {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = flowDefinitionView.ApiName, OriginType__c = 'Flow');
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceApiName__c = flowDefinitionView.ApiName, OriginSourceMetadataType__c = 'Flow');
 
         insert logEntry;
 
         logEntry = getLogEntry();
-        System.Assert.areEqual(EXAMPLE_FLOW_API_NAME, logEntry.OriginLocation__c);
-        System.Assert.areEqual('Flow', logEntry.OriginType__c);
+        System.Assert.areEqual(EXAMPLE_FLOW_API_NAME, logEntry.OriginSourceApiName__c);
+        System.Assert.areEqual('Flow', logEntry.OriginSourceMetadataType__c);
         System.Assert.isNull(logEntry.StackTrace__c, 'Currently, there\'s no way to get a stack trace in Flow, so always expect null 😥');
 
         // Older Flow-specific fields
@@ -129,7 +129,7 @@ private class LogEntryHandler_Tests_Flow {
                 FlowVersionRunInMode__c,
                 HasOriginSourceSnippet__c,
                 HasStackTrace__c,
-                OriginLocation__c,
+                OriginSourceApiName__c,
                 OriginSourceApiVersion__c,
                 OriginSourceCreatedById__c,
                 OriginSourceCreatedByUsername__c,
@@ -138,8 +138,8 @@ private class LogEntryHandler_Tests_Flow {
                 OriginSourceLastModifiedById__c,
                 OriginSourceLastModifiedByUsername__c,
                 OriginSourceLastModifiedDate__c,
+                OriginSourceMetadataType__c,
                 OriginSourceSnippet__c,
-                OriginType__c,
                 StackTrace__c
             FROM LogEntry__c
             ORDER BY CreatedDate

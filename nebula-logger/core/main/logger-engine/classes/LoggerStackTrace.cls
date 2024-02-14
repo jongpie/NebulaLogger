@@ -9,16 +9,21 @@
  * @see Logger
  * @see LogEntryBuilder
  */
-@SuppresWarnings('PMD.PropertyNamingConventions')
+// TODO revisit these PMD rules & try to address as many as possible
+@SuppressWarnings(
+    'PMD.ApexDoc, PMD.AvoidDeeplyNestedIfStmts, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.NcssMethodCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+)
 public without sharing class LoggerStackTrace {
     private final static Set<String> IGNORED_APEX_ORIGINS = new Set<String>{ LoggerStackTrace.class.getName() };
     private final static Set<String> IGNORED_JAVASCRIPT_ORIGINS = new Set<String>();
     private final static String NEW_LINE_DELIMITER = '\n';
 
+    @SuppressWarnings('PMD.FieldNamingConventions')
     public enum SourceLanguage {
         Apex,
         JavaScript
     }
+    @SuppressWarnings('PMD.FieldNamingConventions')
     public enum SourceMetadataType {
         // SourceLanguage == Apex
         AnonymousBlock,
@@ -42,7 +47,7 @@ public without sharing class LoggerStackTrace {
     public SourceMetadata Source { get; private set; }
 
     /**
-     * @description Adds the specified Apex type to the list of ignored origin locations for the current transaction.
+     * @description Adds the specified Apex type to the the current transaction's list of ignored origin locations.
      *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
      *              the log entry's origin location
      * @param  apexType The Apex type of the class to ignore
@@ -51,6 +56,14 @@ public without sharing class LoggerStackTrace {
         ignoreOrigin(SourceLanguage.Apex, apexType.getName());
     }
 
+    /**
+     * @description Adds the specified string-based origin to the the current transaction's list of ignored origin locations
+     *              for the specified source language.
+     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
+     *              the log entry's origin location
+     * @param  language The source language (Apex or JavaScript)
+     * @param  origin   The string-based name of the Apex type or lightning component name to ignore
+     */
     public static void ignoreOrigin(SourceLanguage language, String origin) {
         switch on language {
             when Apex {
@@ -153,6 +166,7 @@ public without sharing class LoggerStackTrace {
         this.Location = cleanedLocation;
     }
 
+    // TODO revisit & see if this method can be simplified
     private void parseJavaScriptStackTrace(String javaScriptStackTraceString) {
         Boolean isAuraComponent = false;
         Boolean isWebComponent = false;

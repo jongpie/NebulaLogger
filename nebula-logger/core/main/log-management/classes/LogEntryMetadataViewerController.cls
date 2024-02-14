@@ -20,7 +20,7 @@ public without sharing class LogEntryMetadataViewerController {
     public static LogEntryMetadata getMetadata(Id recordId, String sourceMetadata) {
         LogEntryMetadata metadata = new LogEntryMetadata();
         if (Schema.ApexClass.SObjectType.getDescribe().isAccessible() == false || Schema.ApexTrigger.SObjectType.getDescribe().isAccessible() == false) {
-            System.debug('no query access! returning early');
+            // TODO decide if it makes more sense to return null
             return metadata;
         }
 
@@ -49,10 +49,10 @@ public without sharing class LogEntryMetadataViewerController {
 
         querySourceMetadata(logEntry, metadata, sourceMetadataType, sourceApiName);
 
-        System.debug('returning metadata\n' + JSON.serializePretty(metadata));
         return metadata;
     }
 
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     private static void querySourceMetadata(
         LogEntry__c logEntry,
         LogEntryMetadata logEntryMetadata,
@@ -87,7 +87,7 @@ public without sharing class LogEntryMetadataViewerController {
     }
 
     // TODO consider combining with LogEntryHandler.SourceMetadataSnippet (which could become a top-level class)
-    @SuppressWarnings('PMD.ApexDoc')
+    @SuppressWarnings('PMD.ApexDoc, PMD.PropertyNamingConventions')
     public class LogEntryMetadata {
         @AuraEnabled
         public String Code { get; set; }
