@@ -52,13 +52,28 @@ export default class LogEntryMetadataViewer extends LightningElement {
             return 'Exception Source Metadata';
         } else if (this.sourceMetadata === 'Origin') {
             return 'Origin Source Metadata';
-        } else {
-            return '';
         }
+        return '';
     }
 
     get hasFullSourceMetadata() {
         return !!this._logEntryMetadata?.Code;
+    }
+
+    get fullSourceModalNotificationClasses() {
+        const classNames = ['slds-notify', 'slds-notify_alert'];
+        classNames.push(this._logEntryMetadata?.HasCodeBeenModified ? 'slds-alert_warning' : 'slds-alert_offline');
+        return classNames.join(' ');
+    }
+
+    get fullSourceModalNotificationIcon() {
+        return this._logEntryMetadata?.HasCodeBeenModified ? 'utility:warning' : 'utility:success';
+    }
+
+    get fullSourceModalNotificationMessage() {
+        return this._logEntryMetadata?.HasCodeBeenModified
+            ? 'This Apex code has been modified since this log entry was generated.'
+            : 'This Apex code has not been modified since this log entry was generated.';
     }
 
     @wire(getMetadata, {

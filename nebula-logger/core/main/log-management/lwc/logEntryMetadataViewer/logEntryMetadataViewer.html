@@ -59,17 +59,13 @@
                 </header>
 
                 <!-- Modal body -->
-                <template if:true={showSourceMetadataModifiedWarning}>
-                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
-                        <span class="slds-assistive-text">warning</span>
-                        <lightning-icon class="slds-m-right_x-small" icon-name="utility:warning" size="x-small"></lightning-icon>
-                        <h2>This Apex class has been modified after this log entry was generated.</h2>
-                    </div>
-                </template>
+                <div class={fullSourceModalNotificationClasses} role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <lightning-icon class="slds-m-right_x-small" icon-name={fullSourceModalNotificationIcon} size="x-small" variant="inverse"></lightning-icon>
+                    <h2>{fullSourceModalNotificationMessage}</h2>
+                </div>
                 <div class="slds-modal__content slds-p-around_medium">
                     <c-logger-code-viewer code={fullSourceMetadata.Code} language={fullSourceMetadata.Language}>
-                        <!-- starting-line-number={fullSourceMetadata.StartingLineNumber}
-                        target-line-number={fullSourceMetadata.TargetLineNumber} -->
                         <span slot="title">{fullSourceMetadata.Title}</span>
                     </c-logger-code-viewer>
                 </div>

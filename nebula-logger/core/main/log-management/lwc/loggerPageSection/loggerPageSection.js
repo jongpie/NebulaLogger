@@ -3,7 +3,7 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
  ************************************************************************************************/
 
-import { LightningElement, api } from 'lwc';
+import { LightningElement } from 'lwc';
 
 export default class LoggerPageSection extends LightningElement {
     _showContent = true;
