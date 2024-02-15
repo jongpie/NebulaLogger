@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>IsSlackNotificationEnabled__c</fullName>
-    <defaultValue>false</defaultValue>
+    <fullName>LogEntryFilter__c</fullName>
     <externalId>false</externalId>
-    <label>Send Slack Notification</label>
+    <label>Log Entry Filter</label>
+    <length>32768</length>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
-    <type>Checkbox</type>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
 </CustomField>

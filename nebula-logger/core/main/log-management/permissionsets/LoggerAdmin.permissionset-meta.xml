@@ -1654,23 +1654,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.EmailAddressRecipient__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.EmailUserRecipient__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.IsEmailNotificationEnabled__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.IsMatchingEnabled__c</field>
+        <editable>false</editable>
+        <field>LoggerNotification__c.IsMatchingThresholdEnabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1679,43 +1664,33 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.IsSlackNotificationEnabled__c</field>
+        <editable>false</editable>
+        <field>LoggerNotification__c.LogEntryFilter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.MatchingCountThreshold__c</field>
+        <editable>false</editable>
+        <field>LoggerNotification__c.MatchingThresholdRecordCount__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.MatchingTimePeriodIncrement__c</field>
+        <editable>false</editable>
+        <field>LoggerNotification__c.MatchingThresholdSummary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.MatchingTimePeriodUnit__c</field>
+        <editable>false</editable>
+        <field>LoggerNotification__c.MatchingThresholdTimePeriodIncrement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LoggerNotification__c.MatchingThresholdTimePeriodUnit__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>LoggerNotification__c.OriginOrganizationId__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.SlackChannel__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.SlackNamedCredential__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.SourceSObjectFilter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

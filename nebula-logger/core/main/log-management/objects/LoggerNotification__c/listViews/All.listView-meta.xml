@@ -3,13 +3,6 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>OWNER.ALIAS</columns>
-    <columns>SourceSObjectType__c</columns>
-    <columns>SourceSObjectFilter__c</columns>
-    <columns>IsSlackNotificationEnabled__c</columns>
-    <columns>SlackChannel__c</columns>
-    <columns>IsEmailNotificationEnabled__c</columns>
-    <columns>EmailUserRecipient__c</columns>
-    <columns>EmailAddressRecipient__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

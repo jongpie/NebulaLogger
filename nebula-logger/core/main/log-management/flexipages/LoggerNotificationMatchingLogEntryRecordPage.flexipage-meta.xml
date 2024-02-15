@@ -83,8 +83,8 @@
     <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.LoggerNotification__r.SourceSObjectFilter__c</fieldItem>
-                <identifier>RecordLoggerNotification_rSourceSObjectFilter_cField</identifier>
+                <fieldItem>Record.LoggerNotification__r.LogEntryFilter__c</fieldItem>
+                <identifier>RecordLoggerNotification_rLogEntryFilter_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-13a48ab9-720f-4b34-8109-9b817369a8e6</name>

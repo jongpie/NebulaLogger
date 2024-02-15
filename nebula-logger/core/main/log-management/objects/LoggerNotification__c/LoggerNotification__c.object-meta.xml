@@ -171,9 +171,6 @@
         <excludedStandardButtons>Accept</excludedStandardButtons>
         <searchResultsAdditionalFields>OWNER.FIRST_NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.LAST_NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>SourceSObjectType__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>IsSlackNotificationEnabled__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>IsEmailNotificationEnabled__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
