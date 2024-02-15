@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllEmailNotifications</fullName>
+    <columns>NAME</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>SourceSObjectType__c</columns>
+    <columns>SourceSObjectFilter__c</columns>
+    <columns>EmailUserRecipient__c</columns>
+    <columns>EmailAddressRecipient__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>IsEmailNotificationEnabled__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>All Email Notifications</label>
+</ListView>

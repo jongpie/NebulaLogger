@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsOriginOrganizationIdValid__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASESAFEID(OriginOrganizationId__c) == CASESAFEID($Organization.Id)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText
+    >Indicates if the notification is valid for the current organization, based on the auto-populated field OriginOrganizationId__c. Notifications are valid if they have been created - or modified - in the current org. For partial &amp; full-copy sandboxes, notifications cloned from production (or another sandbox) are considered invalid until they have been modified in the current org.</inlineHelpText>
+    <label>Origin Organization ID Is Valid</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
