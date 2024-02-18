@@ -34,6 +34,12 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         this.setCheckboxFields();
     }
 
+    protected override void executeAfterInsert(List<SObject> triggerNew) {
+        this.logEntries = (List<LogEntry__c>) triggerNew;
+
+        LoggerNotificationService.getInstance().sendNotifications(this.logEntries);
+    }
+
     protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
         this.logEntries = (List<LogEntry__c>) triggerNewMap.values();
 

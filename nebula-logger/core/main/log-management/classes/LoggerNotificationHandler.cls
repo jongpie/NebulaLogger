@@ -32,29 +32,18 @@ public without sharing class LoggerNotificationHandler extends LoggerSObjectHand
     }
 
     private void validateFilters(List<LoggerNotification__c> loggerNotifications) {
-        // for (LoggerNotification__c loggerNotification : loggerNotifications) {
-        //     Schema.SObjectType sourceSObjectType = Schema.describeSObjects(new List<String>{ loggerNotification.SourceSObjectType__c }).get(0).getSObjectType();
-        //     if (new LoggerEvaluator().isValid(loggerNotification.SourceSObjectFilter__c, sourceSObjectType) == false) {
-        //         loggerNotification.addError(
-        //             'Invalid ' + LoggerNotification.SourceSObjectType__c + ' SOQL WHERE clause: ' + loggerNotification.SourceSObjectFilter__c
-        //         );
-        //     }
-        // }
+        for (LoggerNotification__c loggerNotification : loggerNotifications) {
+            LoggerNotificationService.validateFilterFormula(loggerNotification.LogEntryFilter__c);
+        }
     }
 
     private void validateFilters(List<LoggerNotification__c> loggerNotifications, Map<Id, LoggerNotification__c> loggerNotificationIdToOldLoggerNotification) {
-        // List<LoggerNotification__c> changedLoggerNotifications = new List<LoggerNotification__c>();
-        // for (LoggerNotification__c loggerNotification : loggerNotifications) {
-        //     LoggerNotification__c oldLoggerNotification = loggerNotificationIdToOldLoggerNotification.get(loggerNotification.Id);
-        //     if (
-        //         loggerNotification.SourceSObjectType__c != oldLoggerNotification.SourceSObjectType__c ||
-        //         loggerNotification.SourceSObjectFilter__c != oldLoggerNotification.SourceSObjectFilter__c
-        //     ) {
-        //         changedLoggerNotifications.add(loggerNotification);
-        //     }
-        // }
-
-        // this.validateFilters(changedLoggerNotifications);
+        for (LoggerNotification__c loggerNotification : loggerNotifications) {
+            LoggerNotification__c oldLoggerNotification = loggerNotificationIdToOldLoggerNotification.get(loggerNotification.Id);
+            if (loggerNotification.LogEntryFilter__c != oldLoggerNotification.LogEntryFilter__c) {
+                LoggerNotificationService.validateFilterFormula(loggerNotification.LogEntryFilter__c);
+            }
+        }
     }
 
     private void setOrganizationId(List<LoggerNotification__c> loggerNotifications) {

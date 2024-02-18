@@ -22,10 +22,24 @@ public without sharing class LoggerSlackBot {
     //      7. Concepts & implementations should align with the Apex Slack SDK (https://developer.salesforce.com/docs/platform/salesforce-slack-sdk/overview)
     //         It's won't be used until it's GA (currently still in beta), but using it is a long-term goal
 
+    private String channel;
+    private String endpoint;
+
+    public LoggerSlackBot sendToNamedCredential(String namedCredentialDeveloperName, String slackChannel) {
+        this.endpoint = namedCredentialDeveloperName + '/api/chat.postMessage' + slackChannel;
+        this.channel = slackChannel;
+        return this;
+    }
+
+    public LoggerSlackBot sendToWebhook(String webhookUrl) {
+        this.endpoint = webhookUrl;
+        return this;
+    }
+
     public System.HttpResponse chatPostMessage(SlackMessage slackMessage) {
         // TODO add check for transaction's callout limits, and re-queue if needed
         System.HttpRequest httpRequest = this.sendSlackHttpRequest('/api/chat.postMessage', slackMessage);
-        return new System.Http().send(HttpRequest);
+        return new System.Http().send(httpRequest);
     }
 
     private System.HttpRequest sendSlackHttpRequest(String endpoint, SlackMessage slackMessage) {

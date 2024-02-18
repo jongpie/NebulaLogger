@@ -4,7 +4,7 @@
     "hasSampleData": true,
     "country": "US",
     "language": "en_US",
-    "features": [],
+    "features": ["FormulaEvalInApex"],
     "settings": {
         "chatterSettings": {
             "enableChatter": false
