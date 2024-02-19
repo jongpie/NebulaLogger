@@ -113,6 +113,10 @@
         <name>LoggerSettings__c</name>
     </customSettingAccesses>
     <description>Provides access to manage all logs</description>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>LoggerOpenAI-OpenAI</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntryTag__c.LogEntryOrigin__c</field>
@@ -1663,6 +1667,15 @@
         <modifyAllRecords>true</modifyAllRecords>
         <object>LoggerTag__c</object>
         <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>UserExternalCredential</object>
+        <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <tabSettings>
         <tab>LogBatchPurge</tab>

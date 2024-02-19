@@ -2218,6 +2218,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>loggerLlmChat</componentName>
+                <identifier>c_loggerLlmChat</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>numberOfTopicsToDisplay</name>
                     <value>10</value>
