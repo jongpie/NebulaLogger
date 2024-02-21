@@ -15,10 +15,10 @@
         <value xsi:type="xsd:string">{
   &quot;DeveloperName&quot;: &quot;ChatGPT&quot;,
   &quot;IsEnabled&quot;: true,
-  &quot;Label&quot;: &quot;ChatGPT by OpenAI&quot;,
+  &quot;Label&quot;: &quot;OpenAI ChatGPT&quot;,
   &quot;Metadata&quot;: {
     &quot;ApexClassName&quot;: &quot;LoggerChatBotService.OpenAIChatGPTService&quot;,
-    &quot;NamedCredential&quot;: &quot;LoggerOpenAI&quot;
+    &quot;NamedCredentialDeveloperName&quot;: &quot;LoggerOpenAI&quot;
   },
   &quot;TermsOfUse&quot;: {
     &quot;Text&quot;: &quot;I understand that using this feature will transmit data about my org to OpenAI&apos;s ChatGPT service, including information about logging data &amp; snippets of Apex source code.&quot;

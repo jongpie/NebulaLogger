@@ -1,54 +1,10 @@
 public with sharing class LoggerChatBotService {
     private static final Map<String, ChatProvider> PROVIDER_NAME_TO_PROVIDER = loadEnabledChatProviders();
-    // TODO delete this constant
-    private static final String CHAT_GPT_NAMED_CREDENTIAL = 'LoggerOpenAI';
 
     // Public enum & classes used to abstract away each provider's implementation
     public enum ChatRoleType {
         BOT,
         USER
-    }
-
-    // Configuration details are stored as JSON in the field LoggerParameter__mdt.Value__c
-    public class ChatProviderConfiguration {
-        public Boolean IsEnabled = false;
-        public String Label { get; set; }
-        public String DeveloperName { get; set; }
-        public ChatProviderMetadata Metadata { get; set; }
-        public ChatProviderTermsOfUse TermsOfUse { get; set; }
-        public Map<String, String> DefaultParameters { get; set; }
-    }
-
-    public class ChatProviderMetadata {
-        public String ApexClassName { get; set; }
-        public String NamedCredential { get; set; }
-    }
-
-    public class ChatProviderTermsOfUse {
-        public String Text { get; set; }
-    }
-
-    public class ChatProviderModel {
-        public String Name { get; set; }
-    }
-
-    public class ChatMessage {
-        public Datetime CreatedDate { get; set; }
-        public String Role { get; set; }
-        public String Text { get; set; }
-
-        public ChatMessage(ChatRoleType roleType, String text) {
-            this.CreatedDate = System.now();
-            this.Role = roleType.name().toLowerCase();
-            this.Text = text;
-        }
-    }
-
-    public class ChatContent {
-        public String ChatId { get; set; }
-        public String ChatProvider { get; set; }
-        public List<ChatMessage> Messages = new List<ChatMessage>();
-        public String Model { get; set; }
     }
 
     public abstract class ChatProvider {
@@ -58,25 +14,94 @@ public with sharing class LoggerChatBotService {
             return this.configuration;
         }
 
-        private void setConfiguration(ChatProviderConfiguration configuration) {
-            this.configuration = configuration;
-        }
-
         public abstract List<ChatProviderModel> getModels();
-        public abstract ChatContent sendChat(ChatContent content);
+        public abstract ChatThread sendChat(ChatThread content);
 
         protected System.HttpRequest buildHttpRequest(String method, String endpoint, Object body) {
+            System.HttpRequest calloutRequest = this.buildHttpRequest(method, endpoint);
+            calloutRequest.setBody(JSON.serializePretty(body));
+            return calloutRequest;
+        }
+
+        protected System.HttpRequest buildHttpRequest(String method, String endpoint) {
             Integer thirtySecondsInMilliseconds = 30 * 1000;
 
             System.HttpRequest calloutRequest = new System.HttpRequest();
-            calloutRequest.setEndpoint('callout:' + this.getConfiguration().Metadata.NamedCredential + endpoint);
+            calloutRequest.setEndpoint('callout:' + this.getConfiguration().Metadata.NamedCredentialDeveloperName + endpoint);
             calloutRequest.setMethod(method);
             calloutRequest.setTimeout(thirtySecondsInMilliseconds);
-            if (body != null) {
-                calloutRequest.setBody(JSON.serializePretty(body));
-            }
 
             return calloutRequest;
+        }
+
+        private void setConfiguration(ChatProviderConfiguration configuration) {
+            this.configuration = configuration;
+        }
+    }
+
+    // Chat configuration classes - details for each provider are stored as JSON in the field LoggerParameter__mdt.Value__c
+    public class ChatProviderConfiguration {
+        @AuraEnabled
+        public String DeveloperName { get; set; }
+        @AuraEnabled
+        public Boolean IsEnabled = false;
+        @AuraEnabled
+        public String Label { get; set; }
+        @AuraEnabled
+        public ChatProviderMetadata Metadata { get; set; }
+        @AuraEnabled
+        public ChatProviderTermsOfUse TermsOfUse { get; set; }
+        @AuraEnabled
+        public Map<String, String> DefaultParameters { get; set; }
+    }
+
+    public class ChatProviderMetadata {
+        @AuraEnabled
+        public String ApexClassName { get; set; }
+        @AuraEnabled
+        public String NamedCredentialDeveloperName { get; set; }
+    }
+
+    public class ChatProviderTermsOfUse {
+        @AuraEnabled
+        public String Text { get; set; }
+    }
+
+    public class ChatProviderModel {
+        @AuraEnabled
+        public String Name { get; set; }
+    }
+
+    // Actual chat classes
+    public class ChatThread {
+        @AuraEnabled
+        public String ChatId { get; set; }
+        // TODO decide if this makes sense here - it was added as extra context for logging/JSON.serializePretty(chatThread)
+        // (it doesn't feel like it belongs here, yet Model is here... hmmm)
+        @AuraEnabled
+        public String ChatProviderDeveloperName { get; set; }
+        @AuraEnabled
+        public List<ChatMessage> Messages { get; set; }
+        @AuraEnabled
+        public String Model { get; set; }
+
+        public ChatThread() {
+            this.Messages = new List<ChatMessage>();
+        }
+    }
+
+    public class ChatMessage {
+        @AuraEnabled
+        public Datetime CreatedDate { get; set; }
+        @AuraEnabled
+        public String Role { get; set; }
+        @AuraEnabled
+        public String Text { get; set; }
+
+        public ChatMessage(ChatRoleType roleType, String text) {
+            this.CreatedDate = System.now();
+            this.Role = roleType.name().toLowerCase();
+            this.Text = text;
         }
     }
 
@@ -87,6 +112,7 @@ public with sharing class LoggerChatBotService {
 
     private static Map<String, ChatProvider> loadEnabledChatProviders() {
         Map<String, ChatProvider> providerNameToProvider = new Map<String, ChatProvider>();
+        // TODO revist if matchOnPrefix() is the best option, or a new field on LoggerParameter__mdt
         for (LoggerParameter__mdt loggerProviderParameter : LoggerParameter.matchOnPrefix('ChatProvider')) {
             ChatProviderConfiguration configuration = (ChatProviderConfiguration) JSON.deserialize(
                 loggerProviderParameter.Value__c,
@@ -106,64 +132,29 @@ public with sharing class LoggerChatBotService {
         return providerNameToProvider;
     }
 
-    // OpenAI ChatGPT-specific classes
-    // https://platform.openai.com/docs/quickstart?context=curl
-    // https://platform.openai.com/docs/api-reference
+    // ChatGPT models
+    private class OpenAIChatGPTModelsResponse {
+        public List<OpenAIChatGPTModel> data = new List<OpenAIChatGPTModel>();
+    }
 
-    /*
-        List Models GET Request - https://api.openai.com/v1/models
-        Response: TODO
-
-    /*
-        Chat POST Request - docs https://platform.openai.com/docs/api-reference/chat
-        {
-            "id": "chatcmpl-123",
-            "object": "chat.completion",
-            "created": 1677652288,
-            "model": "gpt-3.5-turbo-0613",
-            "system_fingerprint": "fp_44709d6fcb",
-            "choices": [{
-                "index": 0,
-                "message": {
-                "role": "assistant",
-                "content": "\n\nHello there, how may I assist you today?",
-                },
-                "logprobs": null,
-                "finish_reason": "stop"
-            }],
-            "usage": {
-                "prompt_tokens": 9,
-                "completion_tokens": 12,
-                "total_tokens": 21
-            }
-        }
-    */
     private class OpenAIChatGPTModel {
         public Long created;
         public String id;
         public String owned_by;
     }
 
-    private class OpenAIChatGPTModelsResponse {
-        public List<OpenAIChatGPTModel> data = new List<OpenAIChatGPTModel>();
-    }
-
+    // ChatGPT chat
     private class OpenAIChatGPTMessage {
         public String role;
         public String content;
     }
 
-    private class OpenAIChatGPTMessageChoice {
-        public Integer index;
-        public OpenAIChatGPTMessage message;
-    }
-
-    private class OpenAIChatGPTRequest {
+    private class OpenAIChatGPTChatRequest {
         public String model;
         public List<OpenAIChatGPTMessage> messages = new List<OpenAIChatGPTMessage>();
     }
 
-    private class OpenAIChatGPTResponse {
+    private class OpenAIChatGPTChatResponse {
         public String id;
         // public String object;
         public Long created;
@@ -172,9 +163,14 @@ public with sharing class LoggerChatBotService {
         public List<OpenAIChatGPTMessageChoice> choices = new List<OpenAIChatGPTMessageChoice>();
     }
 
+    private class OpenAIChatGPTMessageChoice {
+        public Integer index;
+        public OpenAIChatGPTMessage message;
+    }
+
     public class OpenAIChatGPTService extends ChatProvider {
         public override List<ChatProviderModel> getModels() {
-            System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models', null);
+            System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
             OpenAIChatGPTModelsResponse modelsResponse = (OpenAIChatGPTModelsResponse) JSON.deserialize(
                 calloutResponse.getBody(),
@@ -183,6 +179,10 @@ public with sharing class LoggerChatBotService {
 
             List<ChatProviderModel> convertedModels = new List<ChatProviderModel>();
             for (OpenAIChatGPTModel openAIModel : modelsResponse.data) {
+                if (openAIModel.id?.startsWith('gpt') == false) {
+                    continue;
+                }
+
                 ChatProviderModel convertedModel = new ChatProviderModel();
                 convertedModel.Name = openAIModel.id;
                 convertedModels.add(convertedModel);
@@ -194,32 +194,33 @@ public with sharing class LoggerChatBotService {
             return convertedModels;
         }
 
-        // Docs: https://platform.openai.com/docs/api-reference/chat
-        public override ChatContent sendChat(ChatContent content) {
-            OpenAIChatGPTRequest chatGPTRequest = new OpenAIChatGPTRequest();
-            chatGPTRequest.model = content.Model;
-            List<OpenAIChatGPTMessage> chatGptMessages = this.convertMessages(content.Messages);
-            chatGPTRequest.messages.addAll(chatGptMessages);
+        public override ChatThread sendChat(ChatThread chatThread) {
+            OpenAIChatGPTChatRequest chatGptChatRequest = new OpenAIChatGPTChatRequest();
+            chatGptChatRequest.model = chatThread.Model;
+            chatGptChatRequest.messages = this.convertMessages(chatThread.Messages);
 
-            System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/chat/completions', chatGPTRequest);
+            System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/chat/completions', chatGptChatRequest);
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
-            OpenAIChatGPTResponse chatGptResponse = (OpenAIChatGPTResponse) JSON.deserialize(calloutResponse.getBody(), OpenAIChatGPTResponse.class);
+            OpenAIChatGPTChatResponse chatGptResponse = (OpenAIChatGPTChatResponse) JSON.deserialize(
+                calloutResponse.getBody(),
+                OpenAIChatGPTChatResponse.class
+            );
 
-            content.ChatId = chatGptResponse.id;
-            content.ChatProvider = this.getConfiguration().DeveloperName;
+            chatThread.ChatId = chatGptResponse.id;
+            chatThread.ChatProviderDeveloperName = this.getConfiguration().DeveloperName;
             if (chatGptResponse.choices != null && chatGptResponse.choices.size() > 0) {
                 ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, chatGptResponse.choices.get(0).message.content);
-                // TODO this should work in Apex, but the conversion is always in 1970
+                // FIXME this should work in Apex, but the conversion is always in 1970
                 // Ex: 1708404603 results in 1970-01-20T18:33:24.735Z,
                 // but https://www.epochconverter.com/ correctly says it should be 2/20/2024 4:51:41 GMT
                 returnedBotChatMessage.CreatedDate = Datetime.newInstance(chatGptResponse.created);
-                content.Messages.add(returnedBotChatMessage);
+                chatThread.Messages.add(returnedBotChatMessage);
             }
 
-            Logger.debug(JSON.serializePretty(content)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+            Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
             Logger.saveLog();
 
-            return content;
+            return chatThread;
         }
 
         private List<OpenAIChatGPTMessage> convertMessages(List<ChatMessage> messages) {
