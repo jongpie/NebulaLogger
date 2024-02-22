@@ -21,7 +21,6 @@ public with sharing class LoggerChatBotService {
             System.HttpRequest calloutRequest = this.buildHttpRequest(method, endpoint);
             String jsonBody = JSON.serialize(body);
             calloutRequest.setBody(jsonBody);
-            // calloutRequest.setHeader('Content-length', String.valueOf(jsonBody.length()));
             return calloutRequest;
         }
 
@@ -49,11 +48,15 @@ public with sharing class LoggerChatBotService {
         @AuraEnabled
         public Boolean IsEnabled = false;
         @AuraEnabled
+        public Boolean IsLoggingEnabled = false;
+        @AuraEnabled
         public String Label { get; set; }
         @AuraEnabled
         public ChatProviderMetadata Metadata { get; set; }
         @AuraEnabled
         public ChatProviderTermsOfUse TermsOfUse { get; set; }
+
+        // TODO remove for the initial release? Or keep??
         @AuraEnabled
         public Map<String, String> DefaultParameters { get; set; }
     }
@@ -113,10 +116,11 @@ public with sharing class LoggerChatBotService {
         public String Text { get; set; }
 
         public ChatMessage() {
+            this.CreatedDate = System.now();
         }
 
         public ChatMessage(ChatRoleType roleType, String text) {
-            this.CreatedDate = System.now();
+            this();
             this.Role = roleType.name().toLowerCase();
             this.Text = text;
         }
@@ -162,8 +166,8 @@ public with sharing class LoggerChatBotService {
 
     // ChatGPT chat
     private class OpenAIChatGPTMessage {
-        public String role;
         public String content;
+        public String role;
     }
 
     private class OpenAIChatGPTChatRequest {
@@ -185,6 +189,7 @@ public with sharing class LoggerChatBotService {
         public OpenAIChatGPTMessage message;
     }
 
+    // TODO this may need to be promoted to global to work in the managed package
     public class OpenAIChatGPTService extends ChatProvider {
         public override List<ChatProviderModel> getModels() {
             System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
@@ -196,7 +201,8 @@ public with sharing class LoggerChatBotService {
 
             List<ChatProviderModel> convertedModels = new List<ChatProviderModel>();
             for (OpenAIChatGPTModel openAIModel : modelsResponse.data) {
-                if (openAIModel.id?.startsWith('gpt') == false) {
+                if (openAIModel.owned_by != 'openai') {
+                    // if (openAIModel.id?.startsWith('gpt') == false) {
                     continue;
                 }
 
@@ -206,8 +212,11 @@ public with sharing class LoggerChatBotService {
                 convertedModels.add(convertedModel);
             }
 
-            Logger.debug(JSON.serializePretty(convertedModels)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-            Logger.saveLog();
+            if (this.getConfiguration().IsLoggingEnabled) {
+                // TODO relate this to a parent log, but in the LoggerChatBotController
+                Logger.debug(JSON.serializePretty(convertedModels)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+                Logger.saveLog();
+            }
 
             return convertedModels;
         }
@@ -228,17 +237,19 @@ public with sharing class LoggerChatBotService {
             chatThread.ChatProviderDeveloperName = this.getConfiguration().DeveloperName;
             if (chatGptResponse.choices != null && chatGptResponse.choices.size() > 0) {
                 ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, chatGptResponse.choices.get(0).message.content);
-                // FIXME this should work in Apex, but the conversion is always in 1970
-                // Ex: 1708404603 results in 1970-01-20T18:33:24.735Z,
-                // but https://www.epochconverter.com/ correctly says it should be 2/20/2024 4:51:41 GMT
-                returnedBotChatMessage.CreatedDate = Datetime.newInstance(chatGptResponse.created);
+                Integer millisecondsInOneSecond = 1000;
+                returnedBotChatMessage.CreatedDate = Datetime.newInstance(chatGptResponse.created * millisecondsInOneSecond);
                 chatThread.Messages.add(returnedBotChatMessage);
             } else {
+                // TODO improve error handling
                 throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
             }
 
-            Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-            Logger.saveLog();
+            if (this.getConfiguration().IsLoggingEnabled) {
+                // TODO relate this to a parent log, but in the LoggerChatBotController
+                Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+                Logger.saveLog();
+            }
 
             return chatThread;
         }
@@ -265,19 +276,19 @@ public with sharing class LoggerChatBotService {
     // Google Gemini-specific classes
     // https://ai.google.dev/tutorials/rest_quickstart
 
+    // TODO this may need to be promoted to global to work in the managed package
     public class GoogleGeminiService extends ChatProvider {
         public override List<ChatProviderModel> getModels() {
-            // TODO delete! Move this to named credential
-            // String API_KEY = '{!$Credential.LoggerGoogleGemini.APIKey}';
             System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
-            // calloutRequest.setEndpoint('https://generativelanguage.googleapis.com/v1beta/models?key=' + API_KEY);
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
             GoogleGeminiModelsResponse modelsResponse = (GoogleGeminiModelsResponse) JSON.deserialize(
                 calloutResponse.getBody(),
                 GoogleGeminiModelsResponse.class
             );
-            Logger.debug('deserialized modelsResponse:\n' + JSON.serializePretty(modelsResponse));
-
+            if (this.getConfiguration().IsLoggingEnabled) {
+                // TODO relate this to a parent log, but in the LoggerChatBotController
+                Logger.debug('deserialized modelsResponse:\n' + JSON.serializePretty(modelsResponse));
+            }
             List<ChatProviderModel> convertedModels = new List<ChatProviderModel>();
             for (GoogleGeminiModel geminiModel : modelsResponse.models) {
                 if (new Set<String>(geminiModel.supportedGenerationMethods).contains('generateContent') == false) {
@@ -290,9 +301,15 @@ public with sharing class LoggerChatBotService {
                 convertedModels.add(convertedModel);
             }
 
-            // Logger.debug(JSON.serializePretty(convertedModels)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-            Logger.debug('got gemini models').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-            Logger.saveLog();
+            if (this.getConfiguration().IsLoggingEnabled) {
+                // TODO relate this to a parent log, but in the LoggerChatBotController
+                // Logger.debug(JSON.serializePretty(convertedModels)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+                if (this.getConfiguration().IsLoggingEnabled) {
+                    // TODO relate this to a parent log, but in the LoggerChatBotController
+                }
+                Logger.debug('got gemini models').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+                Logger.saveLog();
+            }
 
             return convertedModels;
         }
@@ -300,78 +317,35 @@ public with sharing class LoggerChatBotService {
         public override ChatThread sendChat(LoggerChatBotService.ChatThread chatThread) {
             GoogleGeminiChatRequest geminiChatRequest = new GoogleGeminiChatRequest();
             geminiChatRequest.contents = this.convertMessages(chatThread.Messages);
-            // geminiChatRequest.model = chatThread.Model;
-            // geminiChatRequest.messages = this.convertMessages(chatThread.Messages);
 
-            // TODO delete! Move this to named credential
-            // String API_KEY = '{!$Credential.LoggerGoogleGemini.APIKey}';
-            // /v1/models/gemini-pro:generateContent
-            // System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/models/gemini-pro:generateContent');
             System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/' + chatThread.Model + ':generateContent', geminiChatRequest);
-            // System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1beta/models/gemini-pro:generateContent');
-            // calloutRequest.setEndpoint('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY);
-
-            // TODO delete & FIXME
-            String testBody =
-                '{' +
-                '"contents": [' +
-                '{"role":"user",' +
-                '"parts":[{' +
-                '"text": "Write the first line of a story about a magic backpack."}]},' +
-                '{"role": "model",' +
-                '"parts":[{' +
-                '"text": "In the bustling city of Meadow brook, lived a young girl named Sophie. She was a bright and curious soul with an imaginative mind."}]},' +
-                '{"role": "user",' +
-                '"parts":[{' +
-                '"text": "Can you set it in a quiet village in 1600s France?"}]},' +
-                ']' +
-                '}';
-            // calloutRequest.setBody(testBody);
-            // calloutRequest.setBody(geminiChatRequest);
-
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
-            Logger.fine('got a gemini response').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-            Logger.saveLog();
+            if (this.getConfiguration().IsLoggingEnabled) {
+                // TODO relate this to a parent log, but in the LoggerChatBotController
+                Logger.debug('got a gemini response').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+                Logger.saveLog();
+            }
             GoogleGeminiChatResponse geminiChatResponse = (GoogleGeminiChatResponse) JSON.deserialize(
                 calloutResponse.getBody(),
                 GoogleGeminiChatResponse.class
             );
 
-            // chatThread.ChatId = chatGptResponse.id;
             chatThread.ChatProviderDeveloperName = this.getConfiguration().DeveloperName;
             if (geminiChatResponse?.candidates != null && geminiChatResponse.candidates.size() > 0) {
                 ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, geminiChatResponse.candidates.get(0).content.parts.get(0).text);
-                // FIXME this should work in Apex, but the conversion is always in 1970
-                // Ex: 1708404603 results in 1970-01-20T18:33:24.735Z,
-                // but https://www.epochconverter.com/ correctly says it should be 2/20/2024 4:51:41 GMT
-                // returnedBotChatMessage.CreatedDate = Datetime.newInstance(chatGptResponse.created);
                 chatThread.Messages.add(returnedBotChatMessage);
+            } else {
+                // TODO improve error handling
+                throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
             }
 
-            Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-            Logger.saveLog();
+            if (this.getConfiguration().IsLoggingEnabled) {
+                // TODO relate this to a parent log, but in the LoggerChatBotController
+                Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+                Logger.saveLog();
+            }
 
             return chatThread;
-
-            /*
-            curl https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$API_KEY \
-    -H 'Content-Type: application/json' \
-    -X POST \
-    -d '{
-      "contents": [
-        {"role":"user",
-         "parts":[{
-           "text": "Write the first line of a story about a magic backpack."}]},
-        {"role": "model",
-         "parts":[{
-           "text": "In the bustling city of Meadow brook, lived a young girl named Sophie. She was a bright and curious soul with an imaginative mind."}]},
-        {"role": "user",
-         "parts":[{
-           "text": "Can you set it in a quiet village in 1600s France?"}]},
-      ]
-    }' 2> /dev/null | grep "text"
-
-            */
         }
 
         private List<GoogleGeminiChatMessage> convertMessages(List<ChatMessage> messages) {
@@ -428,176 +402,4 @@ public with sharing class LoggerChatBotService {
     private class GoogleGeminiChatMessagePart {
         public String text;
     }
-
-    /*
-        List Models GET Request - https://generativelanguage.googleapis.com/v1beta/models?key=$API_KEY
-        Response:
-            {
-                "models": [
-                    {
-                    "name": "models/chat-bison-001",
-                    "version": "001",
-                    "displayName": "Chat Bison",
-                    "description": "Chat-optimized generative language model.",
-                    "inputTokenLimit": 4096,
-                    "outputTokenLimit": 1024,
-                    "supportedGenerationMethods": [
-                        "generateMessage",
-                        "countMessageTokens"
-                    ],
-                    "temperature": 0.25,
-                    "topP": 0.95,
-                    "topK": 40
-                    },
-                    {
-                    "name": "models/text-bison-001",
-                    "version": "001",
-                    "displayName": "Text Bison",
-                    "description": "Model targeted for text generation.",
-                    "inputTokenLimit": 8196,
-                    "outputTokenLimit": 1024,
-                    "supportedGenerationMethods": [
-                        "generateText",
-                        "countTextTokens",
-                        "createTunedTextModel"
-                    ],
-                    "temperature": 0.7,
-                    "topP": 0.95,
-                    "topK": 40
-                    },
-                    {
-                    "name": "models/embedding-gecko-001",
-                    "version": "001",
-                    "displayName": "Embedding Gecko",
-                    "description": "Obtain a distributed representation of a text.",
-                    "inputTokenLimit": 1024,
-                    "outputTokenLimit": 1,
-                    "supportedGenerationMethods": [
-                        "embedText",
-                        "countTextTokens"
-                    ]
-                    },
-                    {
-                    "name": "models/embedding-gecko-002",
-                    "version": "002",
-                    "displayName": "Embedding Gecko 002",
-                    "description": "Obtain a distributed representation of a text.",
-                    "inputTokenLimit": 2048,
-                    "outputTokenLimit": 1,
-                    "supportedGenerationMethods": [
-                        "embedText",
-                        "countTextTokens"
-                    ]
-                    },
-                    {
-                    "name": "models/gemini-pro",
-                    "version": "001",
-                    "displayName": "Gemini Pro",
-                    "description": "The best model for scaling across a wide range of tasks",
-                    "inputTokenLimit": 30720,
-                    "outputTokenLimit": 2048,
-                    "supportedGenerationMethods": [
-                        "generateContent",
-                        "countTokens"
-                    ],
-                    "temperature": 0.9,
-                    "topP": 1,
-                    "topK": 1
-                    },
-                    {
-                    "name": "models/gemini-pro-vision",
-                    "version": "001",
-                    "displayName": "Gemini Pro Vision",
-                    "description": "The best image understanding model to handle a broad range of applications",
-                    "inputTokenLimit": 12288,
-                    "outputTokenLimit": 4096,
-                    "supportedGenerationMethods": [
-                        "generateContent",
-                        "countTokens"
-                    ],
-                    "temperature": 0.4,
-                    "topP": 1,
-                    "topK": 32
-                    },
-                    {
-                    "name": "models/gemini-ultra",
-                    "version": "001",
-                    "displayName": "Gemini Ultra",
-                    "description": "The most capable model for highly complex tasks",
-                    "inputTokenLimit": 30720,
-                    "outputTokenLimit": 2048,
-                    "supportedGenerationMethods": [
-                        "generateContent",
-                        "countTokens"
-                    ],
-                    "temperature": 0.9,
-                    "topP": 1,
-                    "topK": 32
-                    },
-                    {
-                    "name": "models/embedding-001",
-                    "version": "001",
-                    "displayName": "Embedding 001",
-                    "description": "Obtain a distributed representation of a text.",
-                    "inputTokenLimit": 2048,
-                    "outputTokenLimit": 1,
-                    "supportedGenerationMethods": [
-                        "embedContent",
-                        "countTextTokens"
-                    ]
-                    },
-                    {
-                    "name": "models/aqa",
-                    "version": "001",
-                    "displayName": "Model that performs Attributed Question Answering.",
-                    "description": "Model trained to return answers to questions that are grounded in provided sources, along with estimating answerable probability.",
-                    "inputTokenLimit": 7168,
-                    "outputTokenLimit": 1024,
-                    "supportedGenerationMethods": [
-                        "generateAnswer"
-                    ],
-                    "temperature": 0.2,
-                    "topP": 1,
-                    "topK": 40
-                    }
-                ]
-            }
-    */
-
-    /*
-        Count Tokens POST Request - https://ai.google.dev/tutorials/rest_quickstart#count_tokens
-
-    */
-
-    /*
-        Chat POST Request - https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$API_KEY
-        {
-            "contents": [
-                {
-                "role": "user",
-                "parts": [
-                    {
-                    "text": "Write the first line of a story about a magic backpack."
-                    }
-                ]
-                },
-                {
-                "role": "model",
-                "parts": [
-                    {
-                    "text": "In the bustling city of Meadow brook, lived a young girl named Sophie. She was a bright and curious soul with an imaginative mind."
-                    }
-                ]
-                },
-                {
-                "role": "user",
-                "parts": [
-                    {
-                    "text": "Can you set it in a quiet village in 1600s France?"
-                    }
-                ]
-                }
-            ]
-        }
-    */
 }

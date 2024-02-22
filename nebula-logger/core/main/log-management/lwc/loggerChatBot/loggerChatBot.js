@@ -4,7 +4,7 @@ import getProviderModels from '@salesforce/apex/LoggerChatBotController.getProvi
 import sendChatThreadMessage from '@salesforce/apex/LoggerChatBotController.sendChatThreadMessage';
 import sendChat from '@salesforce/apex/LoggerChatBotController.sendChat';
 
-export default class LoggerLlmChat extends LightningElement {
+export default class LoggerChatBot extends LightningElement {
     hasAcceptedTermsOfUse = false;
     isLoading = false;
     selectedProvider;
