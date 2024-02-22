@@ -85,6 +85,8 @@ export default class LoggerChatBot extends LightningElement {
                 this.isLoading = false;
             })
             .catch(error => {
+                // TODO improve frontend error handling, including displaying errors to users,
+                // with lightning base components & slds chat classes
                 console.error('>>> error loading chat provider configurations', error);
                 alert('>>> error loading chat provider configurations');
             });
@@ -103,30 +105,18 @@ export default class LoggerChatBot extends LightningElement {
 
         this.isLoading = true;
         getProviderModels({ providerName: this.selectedProvider.DeveloperName })
-            .then(results => {
-                console.log('>>> ran getProviderModels()', results);
-                const providerModels = results;
-                // providerModels.sort((a, b) => {
-                //     console.log('>>> sorting provider models ', a, b);
-                //     const fa = a.Name.toLowerCase();
-                //     const fb = b.Name.toLowerCase();
-                //     if (fa < fb) {
-                //         return -1;
-                //     }
-                //     if (fa > fb) {
-                //         return 1;
-                //     }
-                //     return 0;
-                // });
+            .then(providerModels => {
+                console.log('>>> ran getProviderModels()', providerModels);
                 const providerModelOptions = [{ label: '--None--', value: '' }];
                 providerModels.forEach(providerModel => {
-                    const modelLabel = providerModel.Label ?? providerModel.Name;
-                    providerModelOptions.push({ label: modelLabel, value: providerModel.Name });
+                    const modelLabel = providerModel.Label ?? providerModel.DeveloperName;
+                    providerModelOptions.push({ label: modelLabel, value: providerModel.DeveloperName });
                 });
                 this.selectedProviderModelOptions = providerModelOptions;
                 this.isLoading = false;
             })
             .catch(error => {
+                // TODO improve frontend error handling, including displaying errors to users with lightning base components & slds chat classes
                 console.error('>>> error loading chat provider models', error);
                 alert('>>> error loading chat provider models');
                 this.isLoading = false;
@@ -192,6 +182,7 @@ export default class LoggerChatBot extends LightningElement {
                 }, 0);
             })
             .catch(error => {
+                // TODO improve frontend error handling, including displaying errors to users with lightning base components & slds chat classes
                 console.error('>>> error starting chat thread', error);
                 alert('>>> error starting chat thread');
                 this.isLoading = false;
@@ -304,6 +295,7 @@ export default class LoggerChatBot extends LightningElement {
                 }, 0);
             })
             .catch(error => {
+                // TODO improve frontend error handling, including displaying errors to users with lightning base components & slds chat classes
                 console.error('>>> error starting chat thread', error);
                 alert('>>> error starting chat thread');
                 this.isLoading = false;

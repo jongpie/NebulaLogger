@@ -75,10 +75,9 @@ public with sharing class LoggerChatBotService {
 
     public class ChatProviderModel {
         @AuraEnabled
-        public String Label { get; set; }
-        // TODO rename Name to DeveloperName (LWC needs to be updated too)
+        public String DeveloperName { get; set; }
         @AuraEnabled
-        public String Name { get; set; }
+        public String Label { get; set; }
     }
 
     // Actual chat classes
@@ -194,6 +193,8 @@ public with sharing class LoggerChatBotService {
         public override List<ChatProviderModel> getModels() {
             System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            // TODO add better error handling of JSON, as well as error-handling of errors
+            // returned by the HTTP callout
             OpenAIChatGPTModelsResponse modelsResponse = (OpenAIChatGPTModelsResponse) JSON.deserialize(
                 calloutResponse.getBody(),
                 OpenAIChatGPTModelsResponse.class
@@ -207,8 +208,8 @@ public with sharing class LoggerChatBotService {
                 }
 
                 ChatProviderModel convertedModel = new ChatProviderModel();
+                convertedModel.DeveloperName = openAIModel.id;
                 convertedModel.Label = openAIModel.id;
-                convertedModel.Name = openAIModel.id;
                 convertedModels.add(convertedModel);
             }
 
@@ -228,6 +229,8 @@ public with sharing class LoggerChatBotService {
 
             System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/chat/completions', chatGptChatRequest);
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            // TODO add better error handling of JSON, as well as error-handling of errors
+            // returned by the HTTP callout
             OpenAIChatGPTChatResponse chatGptResponse = (OpenAIChatGPTChatResponse) JSON.deserialize(
                 calloutResponse.getBody(),
                 OpenAIChatGPTChatResponse.class
@@ -241,7 +244,7 @@ public with sharing class LoggerChatBotService {
                 returnedBotChatMessage.CreatedDate = Datetime.newInstance(chatGptResponse.created * millisecondsInOneSecond);
                 chatThread.Messages.add(returnedBotChatMessage);
             } else {
-                // TODO improve error handling
+                // TODO improve backend error handling, probably
                 throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
             }
 
@@ -281,6 +284,8 @@ public with sharing class LoggerChatBotService {
         public override List<ChatProviderModel> getModels() {
             System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            // TODO add better error handling of JSON, as well as error-handling of errors
+            // returned by the HTTP callout
             GoogleGeminiModelsResponse modelsResponse = (GoogleGeminiModelsResponse) JSON.deserialize(
                 calloutResponse.getBody(),
                 GoogleGeminiModelsResponse.class
@@ -296,8 +301,8 @@ public with sharing class LoggerChatBotService {
                 }
 
                 ChatProviderModel convertedModel = new ChatProviderModel();
+                convertedModel.DeveloperName = geminiModel.name;
                 convertedModel.Label = geminiModel.displayName + ' (' + geminiModel.name.substringAfter('models/') + ')';
-                convertedModel.Name = geminiModel.name;
                 convertedModels.add(convertedModel);
             }
 
@@ -320,6 +325,8 @@ public with sharing class LoggerChatBotService {
 
             System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/' + chatThread.Model + ':generateContent', geminiChatRequest);
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            // TODO add better error handling of JSON, as well as error-handling of errors
+            // returned by the HTTP callout
             if (this.getConfiguration().IsLoggingEnabled) {
                 // TODO relate this to a parent log, but in the LoggerChatBotController
                 Logger.debug('got a gemini response').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
@@ -335,7 +342,7 @@ public with sharing class LoggerChatBotService {
                 ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, geminiChatResponse.candidates.get(0).content.parts.get(0).text);
                 chatThread.Messages.add(returnedBotChatMessage);
             } else {
-                // TODO improve error handling
+                // TODO improve backend error handling, probably
                 throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
             }
 
