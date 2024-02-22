@@ -120,7 +120,8 @@ export default class LoggerLlmChat extends LightningElement {
                 // });
                 const providerModelOptions = [{ label: '--None--', value: '' }];
                 providerModels.forEach(providerModel => {
-                    providerModelOptions.push({ label: providerModel.Name, value: providerModel.Name });
+                    const modelLabel = providerModel.Label ?? providerModel.Name;
+                    providerModelOptions.push({ label: modelLabel, value: providerModel.Name });
                 });
                 this.selectedProviderModelOptions = providerModelOptions;
                 this.isLoading = false;
@@ -256,8 +257,12 @@ export default class LoggerLlmChat extends LightningElement {
             providerDeveloperName: this.selectedProvider.DeveloperName,
             providerModelName: this.selectedProviderModel,
             userPrompt,
-            chatThreadJSON: JSON.stringify(clonedChatThread)
-            // chatThread: JSON.parse(JSON.stringify(clonedChatThread))
+            // chatThreadJSON: JSON.stringify(clonedChatThread)
+            // chatThreadJSON: JSON.stringify(this.chatThread)
+            // chatThread: JSON.parse(JSON.stringify(this.chatThread))
+            chatThread: this.chatThread
+
+            // chatThread: this.chatThread
         })
             .then(chatThread => {
                 console.log('>>> called sendChatThreadMessage', chatThread);

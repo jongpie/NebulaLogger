@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Chat Provider: OpenAI ChatGPT</label>
+    <label>Chat Provider: Google Gemini</label>
     <protected>false</protected>
     <values>
         <field>Description__c</field>
@@ -13,15 +13,15 @@
     <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">{
-  &quot;DeveloperName&quot;: &quot;ChatGPT&quot;,
+  &quot;DeveloperName&quot;: &quot;Gemini&quot;,
   &quot;IsEnabled&quot;: true,
-  &quot;Label&quot;: &quot;OpenAI ChatGPT&quot;,
+  &quot;Label&quot;: &quot;Google Gemini&quot;,
   &quot;Metadata&quot;: {
-    &quot;ApexClassName&quot;: &quot;LoggerChatBotService.OpenAIChatGPTService&quot;,
-    &quot;NamedCredentialDeveloperName&quot;: &quot;LoggerOpenAI&quot;
+    &quot;ApexClassName&quot;: &quot;LoggerChatBotService.GoogleGeminiService&quot;,
+    &quot;NamedCredentialDeveloperName&quot;: &quot;LoggerGoogleGemini&quot;
   },
   &quot;TermsOfUse&quot;: {
-    &quot;Text&quot;: &quot;I understand that using this feature will transmit data about my org to OpenAI&apos;s ChatGPT service, including information about logging data &amp; snippets of Apex source code.&quot;
+    &quot;Text&quot;: &quot;I understand that using this feature will transmit data about my org to Google&apos;s Gemini service, including information about logging data &amp; snippets of Apex source code.&quot;
   },
   &quot;DefaultParameters&quot;: {
     &quot;max_tokens&quot;: &quot;7&quot;,

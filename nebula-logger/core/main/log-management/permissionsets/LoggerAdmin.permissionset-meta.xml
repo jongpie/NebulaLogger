@@ -115,6 +115,10 @@
     <description>Provides access to manage all logs</description>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
+        <externalCredentialPrincipal>LoggerGoogleGemini-GoogleGemini</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
         <externalCredentialPrincipal>LoggerOpenAI-OpenAI</externalCredentialPrincipal>
     </externalCredentialPrincipalAccesses>
     <fieldPermissions>

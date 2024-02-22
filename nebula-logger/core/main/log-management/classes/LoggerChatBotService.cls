@@ -19,7 +19,9 @@ public with sharing class LoggerChatBotService {
 
         protected System.HttpRequest buildHttpRequest(String method, String endpoint, Object body) {
             System.HttpRequest calloutRequest = this.buildHttpRequest(method, endpoint);
-            calloutRequest.setBody(JSON.serializePretty(body));
+            String jsonBody = JSON.serialize(body);
+            calloutRequest.setBody(jsonBody);
+            // calloutRequest.setHeader('Content-length', String.valueOf(jsonBody.length()));
             return calloutRequest;
         }
 
@@ -28,6 +30,7 @@ public with sharing class LoggerChatBotService {
 
             System.HttpRequest calloutRequest = new System.HttpRequest();
             calloutRequest.setEndpoint('callout:' + this.getConfiguration().Metadata.NamedCredentialDeveloperName + endpoint);
+            calloutRequest.setHeader('Content-Type', 'application/json');
             calloutRequest.setMethod(method);
             calloutRequest.setTimeout(thirtySecondsInMilliseconds);
 
@@ -69,6 +72,9 @@ public with sharing class LoggerChatBotService {
 
     public class ChatProviderModel {
         @AuraEnabled
+        public String Label { get; set; }
+        // TODO rename Name to DeveloperName (LWC needs to be updated too)
+        @AuraEnabled
         public String Name { get; set; }
     }
 
@@ -81,7 +87,15 @@ public with sharing class LoggerChatBotService {
         @AuraEnabled
         public String ChatProviderDeveloperName { get; set; }
         @AuraEnabled
-        public List<ChatMessage> Messages { get; set; }
+        public List<ChatMessage> Messages {
+            get {
+                if (Messages == null) {
+                    Messages = new List<ChatMessage>();
+                }
+                return Messages;
+            }
+            set;
+        }
         @AuraEnabled
         public String Model { get; set; }
 
@@ -97,6 +111,9 @@ public with sharing class LoggerChatBotService {
         public String Role { get; set; }
         @AuraEnabled
         public String Text { get; set; }
+
+        public ChatMessage() {
+        }
 
         public ChatMessage(ChatRoleType roleType, String text) {
             this.CreatedDate = System.now();
@@ -184,6 +201,7 @@ public with sharing class LoggerChatBotService {
                 }
 
                 ChatProviderModel convertedModel = new ChatProviderModel();
+                convertedModel.Label = openAIModel.id;
                 convertedModel.Name = openAIModel.id;
                 convertedModels.add(convertedModel);
             }
@@ -215,6 +233,8 @@ public with sharing class LoggerChatBotService {
                 // but https://www.epochconverter.com/ correctly says it should be 2/20/2024 4:51:41 GMT
                 returnedBotChatMessage.CreatedDate = Datetime.newInstance(chatGptResponse.created);
                 chatThread.Messages.add(returnedBotChatMessage);
+            } else {
+                throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
             }
 
             Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
@@ -244,6 +264,170 @@ public with sharing class LoggerChatBotService {
 
     // Google Gemini-specific classes
     // https://ai.google.dev/tutorials/rest_quickstart
+
+    public class GoogleGeminiService extends ChatProvider {
+        public override List<ChatProviderModel> getModels() {
+            // TODO delete! Move this to named credential
+            // String API_KEY = '{!$Credential.LoggerGoogleGemini.APIKey}';
+            System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
+            // calloutRequest.setEndpoint('https://generativelanguage.googleapis.com/v1beta/models?key=' + API_KEY);
+            System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            GoogleGeminiModelsResponse modelsResponse = (GoogleGeminiModelsResponse) JSON.deserialize(
+                calloutResponse.getBody(),
+                GoogleGeminiModelsResponse.class
+            );
+            Logger.debug('deserialized modelsResponse:\n' + JSON.serializePretty(modelsResponse));
+
+            List<ChatProviderModel> convertedModels = new List<ChatProviderModel>();
+            for (GoogleGeminiModel geminiModel : modelsResponse.models) {
+                if (new Set<String>(geminiModel.supportedGenerationMethods).contains('generateContent') == false) {
+                    continue;
+                }
+
+                ChatProviderModel convertedModel = new ChatProviderModel();
+                convertedModel.Label = geminiModel.displayName + ' (' + geminiModel.name.substringAfter('models/') + ')';
+                convertedModel.Name = geminiModel.name;
+                convertedModels.add(convertedModel);
+            }
+
+            // Logger.debug(JSON.serializePretty(convertedModels)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+            Logger.debug('got gemini models').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+            Logger.saveLog();
+
+            return convertedModels;
+        }
+
+        public override ChatThread sendChat(LoggerChatBotService.ChatThread chatThread) {
+            GoogleGeminiChatRequest geminiChatRequest = new GoogleGeminiChatRequest();
+            geminiChatRequest.contents = this.convertMessages(chatThread.Messages);
+            // geminiChatRequest.model = chatThread.Model;
+            // geminiChatRequest.messages = this.convertMessages(chatThread.Messages);
+
+            // TODO delete! Move this to named credential
+            // String API_KEY = '{!$Credential.LoggerGoogleGemini.APIKey}';
+            // /v1/models/gemini-pro:generateContent
+            // System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/models/gemini-pro:generateContent');
+            System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/' + chatThread.Model + ':generateContent', geminiChatRequest);
+            // System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1beta/models/gemini-pro:generateContent');
+            // calloutRequest.setEndpoint('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY);
+
+            // TODO delete & FIXME
+            String testBody =
+                '{' +
+                '"contents": [' +
+                '{"role":"user",' +
+                '"parts":[{' +
+                '"text": "Write the first line of a story about a magic backpack."}]},' +
+                '{"role": "model",' +
+                '"parts":[{' +
+                '"text": "In the bustling city of Meadow brook, lived a young girl named Sophie. She was a bright and curious soul with an imaginative mind."}]},' +
+                '{"role": "user",' +
+                '"parts":[{' +
+                '"text": "Can you set it in a quiet village in 1600s France?"}]},' +
+                ']' +
+                '}';
+            // calloutRequest.setBody(testBody);
+            // calloutRequest.setBody(geminiChatRequest);
+
+            System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            Logger.fine('got a gemini response').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+            Logger.saveLog();
+            GoogleGeminiChatResponse geminiChatResponse = (GoogleGeminiChatResponse) JSON.deserialize(
+                calloutResponse.getBody(),
+                GoogleGeminiChatResponse.class
+            );
+
+            // chatThread.ChatId = chatGptResponse.id;
+            chatThread.ChatProviderDeveloperName = this.getConfiguration().DeveloperName;
+            if (geminiChatResponse?.candidates != null && geminiChatResponse.candidates.size() > 0) {
+                ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, geminiChatResponse.candidates.get(0).content.parts.get(0).text);
+                // FIXME this should work in Apex, but the conversion is always in 1970
+                // Ex: 1708404603 results in 1970-01-20T18:33:24.735Z,
+                // but https://www.epochconverter.com/ correctly says it should be 2/20/2024 4:51:41 GMT
+                // returnedBotChatMessage.CreatedDate = Datetime.newInstance(chatGptResponse.created);
+                chatThread.Messages.add(returnedBotChatMessage);
+            }
+
+            Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+            Logger.saveLog();
+
+            return chatThread;
+
+            /*
+            curl https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$API_KEY \
+    -H 'Content-Type: application/json' \
+    -X POST \
+    -d '{
+      "contents": [
+        {"role":"user",
+         "parts":[{
+           "text": "Write the first line of a story about a magic backpack."}]},
+        {"role": "model",
+         "parts":[{
+           "text": "In the bustling city of Meadow brook, lived a young girl named Sophie. She was a bright and curious soul with an imaginative mind."}]},
+        {"role": "user",
+         "parts":[{
+           "text": "Can you set it in a quiet village in 1600s France?"}]},
+      ]
+    }' 2> /dev/null | grep "text"
+
+            */
+        }
+
+        private List<GoogleGeminiChatMessage> convertMessages(List<ChatMessage> messages) {
+            List<GoogleGeminiChatMessage> convertedMessages = new List<GoogleGeminiChatMessage>();
+            for (ChatMessage message : messages) {
+                GoogleGeminiChatMessage convertedMessage = new GoogleGeminiChatMessage();
+                GoogleGeminiChatMessagePart convertedMessagePart = new GoogleGeminiChatMessagePart();
+                convertedMessagePart.text = message.Text;
+                convertedMessage.parts.add(convertedMessagePart);
+                switch on message.Role {
+                    when 'bot' {
+                        convertedMessage.role = 'model';
+                    }
+                    when 'user' {
+                        convertedMessage.role = 'user';
+                    }
+                }
+                convertedMessages.add(convertedMessage);
+            }
+            return convertedMessages;
+        }
+    }
+
+    // Gemini models
+    private class GoogleGeminiModelsResponse {
+        public List<GoogleGeminiModel> models = new List<GoogleGeminiModel>();
+    }
+
+    private class GoogleGeminiModel {
+        public String displayName;
+        public String name;
+        public List<String> supportedGenerationMethods;
+    }
+
+    // Gemini chat
+    private class GoogleGeminiChatRequest {
+        public List<GoogleGeminiChatMessage> contents = new List<GoogleGeminiChatMessage>();
+    }
+
+    private class GoogleGeminiChatResponse {
+        public List<GoogleGeminiChatResponseCandidate> candidates;
+    }
+
+    private class GoogleGeminiChatResponseCandidate {
+        public GoogleGeminiChatMessage content;
+        public String role;
+    }
+
+    private class GoogleGeminiChatMessage {
+        public List<GoogleGeminiChatMessagePart> parts = new List<GoogleGeminiChatMessagePart>();
+        public String role;
+    }
+
+    private class GoogleGeminiChatMessagePart {
+        public String text;
+    }
 
     /*
         List Models GET Request - https://generativelanguage.googleapis.com/v1beta/models?key=$API_KEY
@@ -384,19 +568,6 @@ public with sharing class LoggerChatBotService {
         Count Tokens POST Request - https://ai.google.dev/tutorials/rest_quickstart#count_tokens
 
     */
-
-    private class GeminiMessagePart {
-        public String text;
-    }
-
-    private class GeminiMessage {
-        public String role;
-        public List<GeminiMessagePart> parts;
-    }
-
-    private class GeminiMessageRequest {
-        public List<GeminiMessage> contents;
-    }
 
     /*
         Chat POST Request - https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$API_KEY
