@@ -15,30 +15,25 @@ public with sharing class LoggerChatBotController {
     @AuraEnabled(cacheable=true)
     public static List<LoggerChatBotService.ChatProviderModel> getProviderModels(String providerName) {
         try {
-            return LoggerChatBotService.getChatProviders().get(providerName).getModels();
+            return LoggerChatBotService.getChatProviders().get(providerName).getModels().values();
         } catch (Exception ex) {
             throw getAuraHandledException(ex);
         }
     }
 
     @AuraEnabled
-    public static LoggerChatBotService.ChatThread startChatThread(String providerDeveloperName, String providerModelName, String initialPrompt) {
-        Logger.debug('providerDeveloperName: ' + providerDeveloperName);
-        Logger.debug('providerModelName: ' + providerModelName);
-        Logger.debug('initialPrompt: ' + initialPrompt);
-        Logger.saveLog();
+    public static LoggerChatBotService.ChatThread startChatThread(Id recordId, String providerDeveloperName, String providerModelName, String userPrompt) {
         try {
             LoggerChatBotService.ChatThread chatThread = new LoggerChatBotService.ChatThread();
             chatThread.ChatProviderDeveloperName = providerDeveloperName;
             chatThread.Model = providerModelName;
 
-            LoggerChatBotService.ChatMessage userPromptMessage = new LoggerChatBotService.ChatMessage(LoggerChatBotService.ChatRoleType.USER, initialPrompt);
+            LoggerChatBotService.ChatMessage userPromptMessage = new LoggerChatBotService.ChatMessage(LoggerChatBotService.ChatRoleType.USER, userPrompt);
             chatThread.Messages.add(userPromptMessage);
 
             return LoggerChatBotService.getChatProviders().get(providerDeveloperName).sendChat(chatThread);
         } catch (Exception ex) {
-            // throw getAuraHandledException(ex);
-            throw ex;
+            throw getAuraHandledException(ex);
         }
     }
 
@@ -47,38 +42,36 @@ public with sharing class LoggerChatBotController {
         String providerDeveloperName,
         String providerModelName,
         String userPrompt,
-        String chatThreadJSON,
         LoggerChatBotService.ChatThread chatThread
     ) {
-        Logger.debug('providerDeveloperName: ' + providerDeveloperName);
-        Logger.debug('providerModelName: ' + providerModelName);
-        Logger.debug('userPrompt: ' + userPrompt);
-        Logger.debug('chatThreadJSON: ' + chatThreadJSON);
-        Logger.debug('chatThread: ' + chatThread);
-        Logger.saveLog();
         try {
-            if (chatThread == null && String.isNotBlank(chatThreadJSON)) {
-                chatThread = (LoggerChatBotService.ChatThread) JSON.deserialize(chatThreadJSON, LoggerChatBotService.ChatThread.class);
-            } else if (chatThread == null) {
-                chatThread = new LoggerChatBotService.ChatThread();
-                chatThread.ChatProviderDeveloperName = providerDeveloperName;
-                chatThread.Model = providerModelName;
-            }
-
             LoggerChatBotService.ChatMessage userPromptMessage = new LoggerChatBotService.ChatMessage(LoggerChatBotService.ChatRoleType.USER, userPrompt);
             chatThread.Messages.add(userPromptMessage);
 
             return LoggerChatBotService.getChatProviders().get(providerDeveloperName).sendChat(chatThread);
         } catch (Exception ex) {
-            // throw getAuraHandledException(ex);
-            throw ex;
+            throw getAuraHandledException(ex);
         }
     }
 
     @AuraEnabled
-    public static LoggerChatBotService.ChatThread sendChat(String providerName, LoggerChatBotService.ChatThread chatThread) {
+    public static void saveChatThread(Id recordId, LoggerChatBotService.ChatThread chatThread) {
         try {
-            return LoggerChatBotService.getChatProviders().get(providerName).sendChat(chatThread);
+            LoggerChatBotService.ChatProvider provider = LoggerChatBotService.getChatProviders().get(chatThread.ChatProviderDeveloperName);
+            if (provider.getConfiguration().ChatLog.IsEnabled == false) {
+                return;
+            }
+
+            Logger.setScenario(provider.getConfiguration().ChatLog.Scenario);
+
+            LogEntry__c logEntry = LogManagementDataSelector.getInstance().getLogEntryById(recordId);
+            Logger.setParentLogTransactionId(logEntry.Log__r.TransactionId__c);
+
+            LogMessage logMessage = new LogMessage('Finished rubber duck chat 🦆\n\n{0}', JSON.serializePretty(chatThread));
+            Logger.info(logMessage, recordId).addTags(provider.getConfiguration().ChatLog.Tags);
+            // TODO decide if this should save event bus w/ anonymous, or sync by current user, or configurable
+            // Logger.saveLog();
+            Logger.saveLog(Logger.SaveMethod.SYNCHRONOUS_DML);
         } catch (Exception ex) {
             throw getAuraHandledException(ex);
         }

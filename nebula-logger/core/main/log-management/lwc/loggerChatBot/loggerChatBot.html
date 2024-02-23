@@ -1,12 +1,5 @@
 <template>
-    <lightning-card title="AI Exception Insights">
-        <!-- <template if:true={selectedProvider}>
-            [selectedProvider.Name: {selectedProvider.Name}]<br />
-            [selectedProvider.Label: {selectedProvider.Label}]<br />
-            [selectedProvider.ApexClassName: {selectedProvider.ApexClassName}]<br />
-            [selectedProvider.NamedCredential: {selectedProvider.NamedCredential}]<br />
-            [selectedProviderModel: {selectedProviderModel}] <br />
-        </template> -->
+    <lightning-card title="🦆 Nebula Rubber Duck 🦆">
         <template if:true={isLoading}>
             <lightning-spinner size="large" variant="brand"></lightning-spinner>
         </template>
@@ -15,9 +8,9 @@
                 <lightning-button-group>
                     <lightning-button
                         icon-name="utility:end_chat"
-                        label="End Chat"
+                        label={endChatLabel}
                         onclick={handleEndChat}
-                        title="End Chat"
+                        title={endChatLabel}
                         variant="destructive"
                     ></lightning-button>
                     <lightning-button icon-name="utility:expand" label="Expand" onclick={handleShowModal} title="Expand" variant="brand"></lightning-button>
@@ -165,15 +158,16 @@
                 <!-- Modal body -->
                 <div class="slds-modal__content slds-p-around_medium">
                     <template if:true={isLoading}>
-                        <div class="slds-is-relative" style="min-height: 6em">
+                        <lightning-spinner size="large" variant="brand"></lightning-spinner>
+                        <!-- <div class="slds-is-relative" style="min-height: 6em">
                             <div class="slds-align_absolute-center" style="height: 5rem">
                                 <lightning-icon icon-name="standard:bot" size="large"></lightning-icon>
                             </div>
                             <lightning-spinner size="large" variant="brand"></lightning-spinner>
-                        </div>
+                        </div> -->
                     </template>
                     <lightning-layout-item size="12">
-                        <section role="log" class="slds-chat" data-id="chat-thread" style="height: 400px; overflow-y: scroll">
+                        <section role="log" class="slds-chat" data-id="chat-thread" style="height: 440px; overflow-y: scroll">
                             <ul class="slds-chat-list">
                                 <li class="slds-chat-listitem slds-chat-listitem_bookend">
                                     <div class="slds-chat-bookend">

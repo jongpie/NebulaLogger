@@ -11,7 +11,6 @@
         <value xsi:type="xsd:string">{
   &quot;DeveloperName&quot;: &quot;Gemini&quot;,
   &quot;IsEnabled&quot;: true,
-  &quot;IsLoggingEnabled&quot;: true,
   &quot;Label&quot;: &quot;Google Gemini&quot;,
   &quot;Metadata&quot;: {
     &quot;ApexClassName&quot;: &quot;LoggerChatBotService.GoogleGeminiService&quot;,
@@ -20,9 +19,10 @@
   &quot;TermsOfUse&quot;: {
     &quot;Text&quot;: &quot;I understand that using this feature will transmit data about my org to Google&apos;s Gemini service, including information about logging data &amp; snippets of Apex source code.&quot;
   },
-  &quot;DefaultParameters&quot;: {
-    &quot;max_tokens&quot;: &quot;7&quot;,
-    &quot;temparture&quot;: &quot;2&quot;
+  &quot;ChatLog&quot; : {
+    &quot;IsEnabled&quot; : true,
+    &quot;Scenario&quot; : &quot;Nebula Logger Chat Bot&quot;,
+    &quot;Tags&quot; : [&quot;Google Gemini&quot;]
   }
 }</value>
     </values>

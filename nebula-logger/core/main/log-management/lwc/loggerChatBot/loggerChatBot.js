@@ -1,10 +1,15 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
+import LightningAlert from 'lightning/alert';
 import getChatProviderConfigurations from '@salesforce/apex/LoggerChatBotController.getChatProviderConfigurations';
 import getProviderModels from '@salesforce/apex/LoggerChatBotController.getProviderModels';
+import startChatThread from '@salesforce/apex/LoggerChatBotController.startChatThread';
 import sendChatThreadMessage from '@salesforce/apex/LoggerChatBotController.sendChatThreadMessage';
-import sendChat from '@salesforce/apex/LoggerChatBotController.sendChat';
+import saveChatThread from '@salesforce/apex/LoggerChatBotController.saveChatThread';
 
 export default class LoggerChatBot extends LightningElement {
+    @api
+    recordId;
+
     hasAcceptedTermsOfUse = false;
     isLoading = false;
     selectedProvider;
@@ -31,8 +36,12 @@ export default class LoggerChatBot extends LightningElement {
         return !this.currentUserMessage?.trim();
     }
 
-    connectedCallback() {
-        console.info('>>> starting connectedCallback()');
+    get endChatLabel() {
+        return this.selectedProvider?.ChatLog?.IsEnabled ? 'Save & End Chat' : 'End Chat';
+    }
+
+    async connectedCallback() {
+        console.info('>>> starting connectedCallback(), this.recordId: ' + this.recordId);
         this.isLoading = true;
         getChatProviderConfigurations()
             .then(results => {
@@ -57,21 +66,6 @@ export default class LoggerChatBot extends LightningElement {
                 const providerSupportedModelOptions = {};
 
                 providerConfigurations.forEach(providerConfiguration => {
-                    console.info('>>> processing a provider configuration ', providerConfiguration);
-                    // console.info('>>> processing a provider details ', result.Provider);
-                    // console.info('>>> processing a provider supported models ', result.SupportedModels);
-                    // console.info('>>> processing a provider Value__c ', result.Value__c);
-                    // const teeeeemp = result.Value__c;
-                    // console.info('>>> teeeeemp ', teeeeemp);
-                    // console.info('>>> processing a provider paaaarse Value__c ', JSON.parse(result.Value__c));
-                    // // TODO handle namespacing
-                    // const providerConfiguration = JSON.parse(result.Value__c);
-                    // providerSupportedModelOptions[result.DeveloperName] = [{ label: '--None--', value: '' }];
-                    // result.SupportedModels.forEach(supportedModel => {
-                    //     console.info('>>> converted supportedModel', supportedModel);
-                    //     providerSupportedModelOptions[result.DeveloperName].push({ label: supportedModel, value: supportedModel });
-                    // });
-                    console.log('>>> created providerSupportedModelOptions', providerSupportedModelOptions);
                     providersPicklistOptions.push({
                         label: providerConfiguration.Label,
                         value: providerConfiguration.DeveloperName
@@ -80,24 +74,23 @@ export default class LoggerChatBot extends LightningElement {
                 });
                 this.aiProviderOptions = providersPicklistOptions;
                 this.aiProviderSupportedModelOptions = providerSupportedModelOptions;
-                console.info('>>> loaded provider option', this.aiProviderOptions);
-                console.info('>>> loaded provider supported models options', this.aiProviderSupportedModelOptions);
                 this.isLoading = false;
             })
-            .catch(error => {
-                // TODO improve frontend error handling, including displaying errors to users,
-                // with lightning base components & slds chat classes
+            .catch(async error => {
+                await LightningAlert.open({
+                    label: 'Error!',
+                    message: `Error loading chat provider configurations: ${JSON.stringify(error)}`,
+                    theme: 'error'
+                });
                 console.error('>>> error loading chat provider configurations', error);
-                alert('>>> error loading chat provider configurations');
             });
     }
 
-    handleProviderChange(event) {
+    async handleProviderChange(event) {
         console.info('>>> running handleProviderChange, event', event);
         const providerName = event.detail.value;
         this.selectedProviderModel = undefined;
         this.selectedProvider = providerName ? this.aiProviders[event.detail.value] : undefined;
-        // this.selectedProviderModelOptions = providerName ? this.aiProviderSupportedModelOptions[this.selectedProvider.DeveloperName] : undefined;
         console.log('>>> this.selectedProvider', this.selectedProvider);
         if (!this.selectedProvider) {
             return;
@@ -115,10 +108,13 @@ export default class LoggerChatBot extends LightningElement {
                 this.selectedProviderModelOptions = providerModelOptions;
                 this.isLoading = false;
             })
-            .catch(error => {
-                // TODO improve frontend error handling, including displaying errors to users with lightning base components & slds chat classes
+            .catch(async error => {
+                await LightningAlert.open({
+                    label: 'Error!',
+                    message: `Error loading chat provider models: ${JSON.stringify(error)}`,
+                    theme: 'error'
+                });
                 console.error('>>> error loading chat provider models', error);
-                alert('>>> error loading chat provider models');
                 this.isLoading = false;
             });
     }
@@ -133,13 +129,13 @@ export default class LoggerChatBot extends LightningElement {
         this.hasAcceptedTermsOfUse = event.detail.checked;
     }
 
-    handleStartChat() {
+    async handleStartChat() {
         this.isLoading = true;
         this.chatStartMessage = `Chat started with ${this.selectedProvider.Label}`;
         // startChat(String providerName, String providerModelName, String initialPrompt) {
         const userPrompt = 'How to I write Apex??';
         // console.log('>>> Well, who is this.selectedProvider?!', this.selectedProvider);
-        sendChatThreadMessage({ providerDeveloperName: this.selectedProvider.DeveloperName, providerModelName: this.selectedProviderModel, userPrompt })
+        startChatThread({ providerDeveloperName: this.selectedProvider.DeveloperName, providerModelName: this.selectedProviderModel, userPrompt })
             .then(chatThread => {
                 console.log('>>> called sendChatThreadMessage', chatThread);
                 this.chatThread = chatThread;
@@ -150,25 +146,27 @@ export default class LoggerChatBot extends LightningElement {
                 const convertedMessages = [];
                 let chatMessageCounter = 0;
                 chatThread.Messages.forEach(chatMessage => {
-                    const liClass =
-                        chatMessage.Role.toLowerCase() === 'user'
-                            ? 'slds-chat-listitem slds-chat-listitem_outbound'
-                            : 'slds-chat-listitem slds-chat-listitem_inbound';
-                    const contentClass =
-                        chatMessage.Role.toLowerCase() === 'user'
-                            ? 'slds-chat-message__text slds-chat-message__text_outbound'
-                            : 'slds-chat-message__text slds-chat-message__text_inbound';
+                    let liClass;
+                    let contentClass;
+                    let sentBySummary;
+                    if (chatMessage.Role.toLowerCase() === 'user') {
+                        liClass = 'slds-chat-listitem slds-chat-listitem_outbound';
+                        contentClass = 'slds-chat-message__text slds-chat-message__text_outbound';
+                        sentBySummary = `Me • ${chatMessage.CreatedDate}`;
+                    } else {
+                        liClass = 'slds-chat-listitem slds-chat-listitem_inbound';
+                        contentClass = 'slds-chat-message__text slds-chat-message__text_inbound';
+                        sentBySummary = `${this.selectedProviderModel} • ${chatMessage.CreatedDate}`;
+                    }
+
                     convertedMessages.push({
                         id: 'message-' + chatMessageCounter++,
                         classes: {
-                            // li: 'slds-chat-listitem slds-chat-listitem_outbound',
                             li: liClass,
-                            // content: 'slds-chat-message__text slds-chat-message__text_outbound'
                             content: contentClass
                         },
                         content: chatMessage.Text,
-                        // sentBySummary: 'Me • 5:01 PM',
-                        sentBySummary: 'TODO'
+                        sentBySummary
                     });
                 });
 
@@ -181,85 +179,37 @@ export default class LoggerChatBot extends LightningElement {
                     chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
                 }, 0);
             })
-            .catch(error => {
-                // TODO improve frontend error handling, including displaying errors to users with lightning base components & slds chat classes
+            .catch(async error => {
+                await LightningAlert.open({
+                    label: 'Error!',
+                    message: `Error starting chat thread: ${JSON.stringify(error)}`,
+                    theme: 'error'
+                });
                 console.error('>>> error starting chat thread', error);
-                alert('>>> error starting chat thread');
                 this.isLoading = false;
             });
-
-        // this.messages = [
-        //     {
-        //         id: 'some-value-1',
-        //         classes: {
-        //             li: 'slds-chat-listitem slds-chat-listitem_outbound',
-        //             content: 'slds-chat-message__text slds-chat-message__text_outbound'
-        //         },
-        //         content: 'some user prompt',
-        //         sentBySummary: 'Me • 5:01 PM',
-        //         role: 'user'
-        //     },
-        //     {
-        //         id: 'some-value-2',
-        //         classes: {
-        //             li: 'slds-chat-listitem slds-chat-listitem_inbound',
-        //             content: 'slds-chat-message__text slds-chat-message__text_inbound'
-        //         },
-        //         content: 'some LLM AI GPT response',
-        //         sentBySummary: `${this.selectedProvider.DeveloperName} • 5:01 PM`,
-        //         role: 'bot'
-        //     }
-        // ];
     }
 
     handleUserMessageChange(event) {
         this.currentUserMessage = event.detail.value?.trim();
-        // Disable the button if the user has not entered a value (or they've cleared the value)
-        // this.isSendMessageButtonDisabled = !event.detail.value?.trim();
-    }
-
-    handleEndChat() {
-        this.hasAcceptedTermsOfUse = false;
-        this.showChat = false;
-        this.selectedProvider = undefined;
-        this.selectedProviderModelOptions = undefined;
-        this.selectedProviderModel = undefined;
     }
 
     handleSendMessage() {
         this.isLoading = true;
-        // const userMessageText = this.template.querySelector('[data-id="message-input"]').value;
         const userPrompt = this.currentUserMessage;
         this.template.querySelector('[data-id="message-input"]').value = undefined;
         this.currentUserMessage = undefined;
         const messageInputs = this.template.querySelectorAll('[data-id="message-input"]');
         messageInputs.forEach(messageInput => (messageInput.value = undefined));
-        // this.isSendMessageButtonDisabled = true;
-
-        console.info('>>> chatThread: this.chatThread', this.chatThread);
-        console.info('>>> chatThread: this.chatThread.Messages', this.chatThread.Messages);
-
-        const clonedChatThread = { ...this.chatThread };
-        clonedChatThread.Messages = [...this.chatThread.Messages];
-        console.info('>>> clonedChatThread:', clonedChatThread);
-        console.info('>>> JSON.stringify(clonedChatThread):', JSON.stringify(clonedChatThread));
 
         sendChatThreadMessage({
             providerDeveloperName: this.selectedProvider.DeveloperName,
             providerModelName: this.selectedProviderModel,
             userPrompt,
-            // chatThreadJSON: JSON.stringify(clonedChatThread)
-            // chatThreadJSON: JSON.stringify(this.chatThread)
-            // chatThread: JSON.parse(JSON.stringify(this.chatThread))
             chatThread: this.chatThread
-
-            // chatThread: this.chatThread
         })
             .then(chatThread => {
                 console.log('>>> called sendChatThreadMessage', chatThread);
-                // chatThread.Messages.push(userPromptMessage);
-                // TODO process each message & add corresponding CSS classes, etc.
-                // this.messages = chatThread.Messages;
                 const convertedMessages = [];
                 let chatMessageCounter = 0;
                 chatThread.Messages.forEach(chatMessage => {
@@ -294,39 +244,15 @@ export default class LoggerChatBot extends LightningElement {
                     chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
                 }, 0);
             })
-            .catch(error => {
-                // TODO improve frontend error handling, including displaying errors to users with lightning base components & slds chat classes
+            .catch(async error => {
+                await LightningAlert.open({
+                    label: 'Error!',
+                    message: `Error starting chat thread: ${JSON.stringify(error)}`,
+                    theme: 'error'
+                });
                 console.error('>>> error starting chat thread', error);
-                alert('>>> error starting chat thread');
                 this.isLoading = false;
             });
-        // const updatedMessages = [...this.messages];
-        // updatedMessages.push(
-        //     {
-        //         id: 'some-value-3',
-        //         classes: {
-        //             li: 'slds-chat-listitem slds-chat-listitem_outbound',
-        //             content: 'slds-chat-message__text slds-chat-message__text_outbound'
-        //         },
-        //         content: userMessageText,
-        //         sentBySummary: 'Me • 4:57 PM',
-        //         role: 'user'
-        //     },
-        //     {
-        //         id: 'some-value-4',
-        //         classes: {
-        //             li: 'slds-chat-listitem slds-chat-listitem_inbound',
-        //             content: 'slds-chat-message__text slds-chat-message__text_inbound'
-        //         },
-        //         content: 'yet another LLM AI GPT response',
-        //         sentBySummary: `${this.selectedProvider.DeveloperName} • 4:57 PM`,
-        //         role: 'bot'
-        //     }
-        // );
-        // this.messages = updatedMessages;
-        // console.info('>>> updated messages!', updatedMessages, this.messages);
-
-        // this.isLoading = false;
 
         // Set timeout (or similar approach) is needed because the updated messages
         // need to re-render in the component before the scrollHeight is recalculated
@@ -334,6 +260,28 @@ export default class LoggerChatBot extends LightningElement {
             const chatThreads = this.template.querySelectorAll('[data-id="chat-thread"]');
             chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
         }, 0);
+    }
+
+    handleEndChat() {
+        this.isLoading = true;
+        saveChatThread({ recordId: this.recordId, chatThread: this.chatThread })
+            .then(() => {
+                this.hasAcceptedTermsOfUse = false;
+                this.showChat = false;
+                this.selectedProvider = undefined;
+                this.selectedProviderModelOptions = undefined;
+                this.selectedProviderModel = undefined;
+                this.isLoading = false;
+            })
+            .catch(async error => {
+                await LightningAlert.open({
+                    label: 'Error!',
+                    message: `Error starting chat thread: ${JSON.stringify(error)}`,
+                    theme: 'error'
+                });
+                console.error('>>> error starting chat thread', error);
+                this.isLoading = false;
+            });
     }
 
     handleShowModal() {
