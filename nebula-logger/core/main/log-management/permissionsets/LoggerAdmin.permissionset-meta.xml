@@ -1552,8 +1552,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Log__c.TransactionScenarioText__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TransactionScenario__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
