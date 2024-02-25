@@ -204,42 +204,77 @@ public with sharing class LoggerChatBotService {
         return providerNameToProvider;
     }
 
-    // ChatGPT models
-    @TestVisible
-    private class OpenAIChatGPTModelsResponse {
-        public List<OpenAIChatGPTModel> data = new List<OpenAIChatGPTModel>();
-    }
+    // Google Gemini-specific classes
+    // https://ai.google.dev/tutorials/rest_quickstart
 
-    @TestVisible
-    private class OpenAIChatGPTModel {
-        public Long created;
-        public String id;
-        public String owned_by;
-    }
+    // TODO this may need to be promoted to global to work in the managed package
+    public class GoogleGeminiService extends ChatProvider {
+        public override Map<String, ChatProviderModel> getModels() {
+            System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
+            System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            // TODO add better error handling of JSON, as well as error-handling of errors
+            // returned by the HTTP callout
+            GoogleGeminiModelsResponse modelsResponse = (GoogleGeminiModelsResponse) this.sendHttpRequest(calloutRequest, GoogleGeminiModelsResponse.class);
+            Map<String, ChatProviderModel> convertedModels = new Map<String, ChatProviderModel>();
+            for (GoogleGeminiModel geminiModel : modelsResponse.models) {
+                if (new Set<String>(geminiModel.supportedGenerationMethods).contains('generateContent') == false) {
+                    continue;
+                }
 
-    // ChatGPT chat
-    private class OpenAIChatGPTMessage {
-        public String content;
-        public String role;
-    }
+                String cleanedModelDeveloperName = geminiModel.name.startsWith('models/') ? geminiModel.name.substringAfter('models/') : geminiModel.name;
+                ChatProviderModel convertedModel = new ChatProviderModel();
+                convertedModel.DeveloperName = geminiModel.name;
+                convertedModel.Label = geminiModel.displayName + ' (' + geminiModel.name.substringAfter('models/') + ')';
+                convertedModels.put(geminiModel.name, convertedModel);
+            }
 
-    private class OpenAIChatGPTChatRequest {
-        public String model;
-        public List<OpenAIChatGPTMessage> messages = new List<OpenAIChatGPTMessage>();
-    }
+            return convertedModels;
+        }
 
-    private class OpenAIChatGPTChatResponse {
-        public String id;
-        // public String object;
-        public Long created;
-        public String model;
-        // public String system_fingerprint;
-        public List<OpenAIChatGPTMessageChoice> choices = new List<OpenAIChatGPTMessageChoice>();
-    }
+        public override ChatThread sendChat(LoggerChatBotService.ChatThread chatThread) {
+            GoogleGeminiChatRequest geminiChatRequest = new GoogleGeminiChatRequest();
+            geminiChatRequest.contents = this.convertMessages(chatThread.Messages);
 
-    private class OpenAIChatGPTMessageChoice {
-        public Integer index;
-        public OpenAIChatGPTMessage message;
+            System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/' + chatThread.Model + ':generateContent', geminiChatRequest);
+            // TODO add better error handling of JSON, as well as error-handling of errors
+            // returned by the HTTP callout
+            GoogleGeminiChatResponse geminiChatResponse = (GoogleGeminiChatResponse) this.sendHttpRequest(calloutRequest, GoogleGeminiChatResponse.class);
+            if (geminiChatResponse?.candidates != null && geminiChatResponse.candidates.size() > 0) {
+                ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, geminiChatResponse.candidates.get(0).content.parts.get(0).text);
+                chatThread.Messages.add(returnedBotChatMessage);
+            } else {
+                // TODO improve backend error handling, probably
+                // throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
+            }
+
+            if (this.getConfiguration().ChatLog.IsEnabled) {
+                // TODO relate this to a parent log, but in the LoggerChatBotController
+                // Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+                // Logger.saveLog();
+            }
+
+            return chatThread;
+        }
+
+        private List<GoogleGeminiChatMessage> convertMessages(List<ChatMessage> messages) {
+            List<GoogleGeminiChatMessage> convertedMessages = new List<GoogleGeminiChatMessage>();
+            for (ChatMessage message : messages) {
+                GoogleGeminiChatMessage convertedMessage = new GoogleGeminiChatMessage();
+                GoogleGeminiChatMessagePart convertedMessagePart = new GoogleGeminiChatMessagePart();
+                convertedMessagePart.text = message.Text;
+                convertedMessage.parts.add(convertedMessagePart);
+                switch on message.Role {
+                    when 'bot' {
+                        convertedMessage.role = 'model';
+                    }
+                    when 'user' {
+                        convertedMessage.role = 'user';
+                    }
+                }
+                convertedMessages.add(convertedMessage);
+            }
+            return convertedMessages;
+        }
     }
 
     // TODO this may need to be promoted to global to work in the managed package
@@ -314,80 +349,8 @@ public with sharing class LoggerChatBotService {
         }
     }
 
-    // Google Gemini-specific classes
-    // https://ai.google.dev/tutorials/rest_quickstart
-
-    // TODO this may need to be promoted to global to work in the managed package
-    public class GoogleGeminiService extends ChatProvider {
-        public override Map<String, ChatProviderModel> getModels() {
-            System.HttpRequest calloutRequest = this.buildHttpRequest('GET', '/v1/models');
-            System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
-            // TODO add better error handling of JSON, as well as error-handling of errors
-            // returned by the HTTP callout
-            GoogleGeminiModelsResponse modelsResponse = (GoogleGeminiModelsResponse) this.sendHttpRequest(calloutRequest, GoogleGeminiModelsResponse.class);
-            Map<String, ChatProviderModel> convertedModels = new Map<String, ChatProviderModel>();
-            for (GoogleGeminiModel geminiModel : modelsResponse.models) {
-                if (new Set<String>(geminiModel.supportedGenerationMethods).contains('generateContent') == false) {
-                    continue;
-                }
-
-                String cleanedModelDeveloperName = geminiModel.name.startsWith('models/') ? geminiModel.name.substringAfter('models/') : geminiModel.name;
-                ChatProviderModel convertedModel = new ChatProviderModel();
-                convertedModel.DeveloperName = geminiModel.name;
-                convertedModel.Label = geminiModel.displayName + ' (' + geminiModel.name.substringAfter('models/') + ')';
-                convertedModels.put(geminiModel.name, convertedModel);
-            }
-
-            return convertedModels;
-        }
-
-        public override ChatThread sendChat(LoggerChatBotService.ChatThread chatThread) {
-            GoogleGeminiChatRequest geminiChatRequest = new GoogleGeminiChatRequest();
-            geminiChatRequest.contents = this.convertMessages(chatThread.Messages);
-
-            System.HttpRequest calloutRequest = this.buildHttpRequest('POST', '/v1/' + chatThread.Model + ':generateContent', geminiChatRequest);
-            // TODO add better error handling of JSON, as well as error-handling of errors
-            // returned by the HTTP callout
-            GoogleGeminiChatResponse geminiChatResponse = (GoogleGeminiChatResponse) this.sendHttpRequest(calloutRequest, GoogleGeminiChatResponse.class);
-            if (geminiChatResponse?.candidates != null && geminiChatResponse.candidates.size() > 0) {
-                ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, geminiChatResponse.candidates.get(0).content.parts.get(0).text);
-                chatThread.Messages.add(returnedBotChatMessage);
-            } else {
-                // TODO improve backend error handling, probably
-                // throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
-            }
-
-            if (this.getConfiguration().ChatLog.IsEnabled) {
-                // TODO relate this to a parent log, but in the LoggerChatBotController
-                // Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-                // Logger.saveLog();
-            }
-
-            return chatThread;
-        }
-
-        private List<GoogleGeminiChatMessage> convertMessages(List<ChatMessage> messages) {
-            List<GoogleGeminiChatMessage> convertedMessages = new List<GoogleGeminiChatMessage>();
-            for (ChatMessage message : messages) {
-                GoogleGeminiChatMessage convertedMessage = new GoogleGeminiChatMessage();
-                GoogleGeminiChatMessagePart convertedMessagePart = new GoogleGeminiChatMessagePart();
-                convertedMessagePart.text = message.Text;
-                convertedMessage.parts.add(convertedMessagePart);
-                switch on message.Role {
-                    when 'bot' {
-                        convertedMessage.role = 'model';
-                    }
-                    when 'user' {
-                        convertedMessage.role = 'user';
-                    }
-                }
-                convertedMessages.add(convertedMessage);
-            }
-            return convertedMessages;
-        }
-    }
-
-    // Gemini models
+    // Start of Google Gemini DTOs
+    // Google Gemini models
     @TestVisible
     private class GoogleGeminiModelsResponse {
         public List<GoogleGeminiModel> models = new List<GoogleGeminiModel>();
@@ -400,7 +363,7 @@ public with sharing class LoggerChatBotService {
         public List<String> supportedGenerationMethods = new List<String>();
     }
 
-    // Gemini chat
+    // Google Gemini chat
     private class GoogleGeminiChatRequest {
         public List<GoogleGeminiChatMessage> contents = new List<GoogleGeminiChatMessage>();
     }
@@ -421,5 +384,42 @@ public with sharing class LoggerChatBotService {
 
     private class GoogleGeminiChatMessagePart {
         public String text;
+    }
+
+    // Start of OpenAI ChatGPT DTOs
+    // OpenAI ChatGPT models
+    @TestVisible
+    private class OpenAIChatGPTModelsResponse {
+        public List<OpenAIChatGPTModel> data = new List<OpenAIChatGPTModel>();
+    }
+
+    @TestVisible
+    private class OpenAIChatGPTModel {
+        public Long created;
+        public String id;
+        public String owned_by;
+    }
+
+    // OpenAI ChatGPT chat
+    private class OpenAIChatGPTMessage {
+        public String content;
+        public String role;
+    }
+
+    private class OpenAIChatGPTChatRequest {
+        public String model;
+        public List<OpenAIChatGPTMessage> messages = new List<OpenAIChatGPTMessage>();
+    }
+
+    private class OpenAIChatGPTChatResponse {
+        public String id;
+        public Long created;
+        public String model;
+        public List<OpenAIChatGPTMessageChoice> choices = new List<OpenAIChatGPTMessageChoice>();
+    }
+
+    private class OpenAIChatGPTMessageChoice {
+        public Integer index;
+        public OpenAIChatGPTMessage message;
     }
 }
