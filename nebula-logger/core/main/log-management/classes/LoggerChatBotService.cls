@@ -29,7 +29,6 @@ public with sharing class LoggerChatBotService {
 
             System.HttpRequest calloutRequest = new System.HttpRequest();
             calloutRequest.setEndpoint('callout:' + this.getConfiguration().Metadata.NamedCredentialDeveloperName + endpoint);
-            calloutRequest.setHeader('Content-Type', 'application/json');
             calloutRequest.setMethod(method);
             calloutRequest.setTimeout(thirtySecondsInMilliseconds);
 
@@ -206,10 +205,12 @@ public with sharing class LoggerChatBotService {
     }
 
     // ChatGPT models
+    @TestVisible
     private class OpenAIChatGPTModelsResponse {
         public List<OpenAIChatGPTModel> data = new List<OpenAIChatGPTModel>();
     }
 
+    @TestVisible
     private class OpenAIChatGPTModel {
         public Long created;
         public String id;
@@ -330,6 +331,7 @@ public with sharing class LoggerChatBotService {
                     continue;
                 }
 
+                String cleanedModelDeveloperName = geminiModel.name.startsWith('models/') ? geminiModel.name.substringAfter('models/') : geminiModel.name;
                 ChatProviderModel convertedModel = new ChatProviderModel();
                 convertedModel.DeveloperName = geminiModel.name;
                 convertedModel.Label = geminiModel.displayName + ' (' + geminiModel.name.substringAfter('models/') + ')';
@@ -386,14 +388,16 @@ public with sharing class LoggerChatBotService {
     }
 
     // Gemini models
+    @TestVisible
     private class GoogleGeminiModelsResponse {
         public List<GoogleGeminiModel> models = new List<GoogleGeminiModel>();
     }
 
+    @TestVisible
     private class GoogleGeminiModel {
         public String displayName;
         public String name;
-        public List<String> supportedGenerationMethods;
+        public List<String> supportedGenerationMethods = new List<String>();
     }
 
     // Gemini chat
