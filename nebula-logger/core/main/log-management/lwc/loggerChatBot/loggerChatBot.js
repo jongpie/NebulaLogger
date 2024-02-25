@@ -1,7 +1,7 @@
 import { LightningElement, api, track } from 'lwc';
 import LightningAlert from 'lightning/alert';
 import getChatProviderConfigurations from '@salesforce/apex/LoggerChatBotController.getChatProviderConfigurations';
-import getProviderModels from '@salesforce/apex/LoggerChatBotController.getProviderModels';
+import getChatProviderModels from '@salesforce/apex/LoggerChatBotController.getChatProviderModels';
 import startChatThread from '@salesforce/apex/LoggerChatBotController.startChatThread';
 import sendChatThreadMessage from '@salesforce/apex/LoggerChatBotController.sendChatThreadMessage';
 import saveChatThread from '@salesforce/apex/LoggerChatBotController.saveChatThread';
@@ -17,7 +17,7 @@ export default class LoggerChatBot extends LightningElement {
     selectedProviderModel;
     showChat = false;
     showModal = false;
-    title = 'Logger AI Chat';
+    title = '🦆 Rubber Duck Debugger Chat Bot-o-matic 5000-beta DRAFT 🦆';
 
     aiProviderOptions;
     aiProviderSupportedModelOptions;
@@ -34,10 +34,6 @@ export default class LoggerChatBot extends LightningElement {
 
     get isSendMessageButtonDisabled() {
         return !this.currentUserMessage?.trim();
-    }
-
-    get endChatLabel() {
-        return this.selectedProvider?.ChatLog?.IsEnabled ? 'Save & End Chat' : 'End Chat';
     }
 
     async connectedCallback() {
@@ -97,9 +93,9 @@ export default class LoggerChatBot extends LightningElement {
         }
 
         this.isLoading = true;
-        getProviderModels({ providerName: this.selectedProvider.DeveloperName })
+        getChatProviderModels({ providerName: this.selectedProvider.DeveloperName })
             .then(providerModels => {
-                console.log('>>> ran getProviderModels()', providerModels);
+                console.log('>>> ran getChatProviderModels()', providerModels);
                 const providerModelOptions = [{ label: '--None--', value: '' }];
                 providerModels.forEach(providerModel => {
                     const modelLabel = providerModel.Label ?? providerModel.DeveloperName;
@@ -132,42 +128,16 @@ export default class LoggerChatBot extends LightningElement {
     async handleStartChat() {
         this.isLoading = true;
         this.chatStartMessage = `Chat started with ${this.selectedProvider.Label}`;
-        // startChat(String providerName, String providerModelName, String initialPrompt) {
-        const userPrompt = 'How to I write Apex??';
+        const userPrompt = 'How do I write Apex??';
         // console.log('>>> Well, who is this.selectedProvider?!', this.selectedProvider);
         startChatThread({ providerDeveloperName: this.selectedProvider.DeveloperName, providerModelName: this.selectedProviderModel, userPrompt })
             .then(chatThread => {
                 console.log('>>> called sendChatThreadMessage', chatThread);
                 this.chatThread = chatThread;
-                console.log('>>> called this.chatThread', this.chatThread);
-                // chatThread.Messages.push(userPromptMessage);
-                // TODO process each message & add corresponding CSS classes, etc.
-                // this.messages = chatThread.Messages;
-                const convertedMessages = [];
-                let chatMessageCounter = 0;
-                chatThread.Messages.forEach(chatMessage => {
-                    let liClass;
-                    let contentClass;
-                    let sentBySummary;
-                    if (chatMessage.Role.toLowerCase() === 'user') {
-                        liClass = 'slds-chat-listitem slds-chat-listitem_outbound';
-                        contentClass = 'slds-chat-message__text slds-chat-message__text_outbound';
-                        sentBySummary = `Me • ${chatMessage.CreatedDate}`;
-                    } else {
-                        liClass = 'slds-chat-listitem slds-chat-listitem_inbound';
-                        contentClass = 'slds-chat-message__text slds-chat-message__text_inbound';
-                        sentBySummary = `${this.selectedProviderModel} • ${chatMessage.CreatedDate}`;
-                    }
 
-                    convertedMessages.push({
-                        id: 'message-' + chatMessageCounter++,
-                        classes: {
-                            li: liClass,
-                            content: contentClass
-                        },
-                        content: chatMessage.Text,
-                        sentBySummary
-                    });
+                const convertedMessages = [];
+                chatThread.Messages.forEach(chatMessage => {
+                    convertedMessages.push(this._convertChatMessageForMarkup(chatMessage));
                 });
 
                 this.messages = convertedMessages;
@@ -203,36 +173,17 @@ export default class LoggerChatBot extends LightningElement {
         messageInputs.forEach(messageInput => (messageInput.value = undefined));
 
         sendChatThreadMessage({
-            providerDeveloperName: this.selectedProvider.DeveloperName,
-            providerModelName: this.selectedProviderModel,
+            // providerDeveloperName: this.selectedProvider.DeveloperName,
+            // providerModelName: this.selectedProviderModel,
             userPrompt,
             chatThread: this.chatThread
         })
             .then(chatThread => {
                 console.log('>>> called sendChatThreadMessage', chatThread);
                 const convertedMessages = [];
-                let chatMessageCounter = 0;
                 chatThread.Messages.forEach(chatMessage => {
-                    const liClass =
-                        chatMessage.Role.toLowerCase() === 'user'
-                            ? 'slds-chat-listitem slds-chat-listitem_outbound'
-                            : 'slds-chat-listitem slds-chat-listitem_inbound';
-                    const contentClass =
-                        chatMessage.Role.toLowerCase() === 'user'
-                            ? 'slds-chat-message__text slds-chat-message__text_outbound'
-                            : 'slds-chat-message__text slds-chat-message__text_inbound';
-                    convertedMessages.push({
-                        id: 'message-' + chatMessageCounter++,
-                        classes: {
-                            // li: 'slds-chat-listitem slds-chat-listitem_outbound',
-                            li: liClass,
-                            // content: 'slds-chat-message__text slds-chat-message__text_outbound'
-                            content: contentClass
-                        },
-                        content: chatMessage.Text,
-                        // sentBySummary: 'Me • 5:01 PM',
-                        sentBySummary: 'TODO'
-                    });
+                    console.log('>>> converting message', chatMessage);
+                    convertedMessages.push(this._convertChatMessageForMarkup(chatMessage));
                 });
 
                 this.messages = convertedMessages;
@@ -262,15 +213,11 @@ export default class LoggerChatBot extends LightningElement {
         }, 0);
     }
 
-    handleEndChat() {
+    handleSaveChat() {
         this.isLoading = true;
         saveChatThread({ recordId: this.recordId, chatThread: this.chatThread })
             .then(() => {
-                this.hasAcceptedTermsOfUse = false;
-                this.showChat = false;
-                this.selectedProvider = undefined;
-                this.selectedProviderModelOptions = undefined;
-                this.selectedProviderModel = undefined;
+                this.handleEndChat();
                 this.isLoading = false;
             })
             .catch(async error => {
@@ -282,6 +229,14 @@ export default class LoggerChatBot extends LightningElement {
                 console.error('>>> error starting chat thread', error);
                 this.isLoading = false;
             });
+    }
+
+    handleEndChat() {
+        this.hasAcceptedTermsOfUse = false;
+        this.showChat = false;
+        this.selectedProvider = undefined;
+        this.selectedProviderModelOptions = undefined;
+        this.selectedProviderModel = undefined;
     }
 
     handleShowModal() {
@@ -306,5 +261,32 @@ export default class LoggerChatBot extends LightningElement {
         if (event.code === 'Escape') {
             this.handleHideModal();
         }
+    }
+
+    _convertChatMessageForMarkup(serviceChatMessage) {
+        let liClass;
+        let contentClass;
+        let sentBySummary;
+        if (serviceChatMessage.Role.toLowerCase() === 'user') {
+            liClass = 'slds-chat-listitem slds-chat-listitem_outbound';
+            contentClass = 'slds-chat-message__text slds-chat-message__text_outbound';
+            sentBySummary = `Me • ${serviceChatMessage.CreatedDate}`;
+        } else {
+            liClass = 'slds-chat-listitem slds-chat-listitem_inbound';
+            contentClass = 'slds-chat-message__text slds-chat-message__text_inbound';
+            sentBySummary = `${this.selectedProviderModel} • ${serviceChatMessage.CreatedDate}`;
+        }
+
+        convertedMessage = {
+            // id: 'message-' + chatMessageCounter++,
+            classes: {
+                li: liClass,
+                content: contentClass
+            },
+            content: serviceChatMessage.Text,
+            sentBySummary
+        };
+
+        return convertedMessage;
     }
 }

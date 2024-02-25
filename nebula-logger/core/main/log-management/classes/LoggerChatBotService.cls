@@ -38,6 +38,7 @@ public with sharing class LoggerChatBotService {
 
         protected Object sendHttpRequest(System.HttpRequest calloutRequest, System.Type returnType) {
             System.HttpResponse calloutResponse = new System.Http().send(calloutRequest);
+            Logger.fine('Sent chat to chat provider').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
             return JSON.deserialize(calloutResponse.getBody(), returnType);
         }
 
@@ -118,22 +119,29 @@ public with sharing class LoggerChatBotService {
 
     public class ChatProviderConnection {
         @AuraEnabled
-        public String ChatProviderDeveloperName { get; set; }
+        public ChatProviderConfiguration Configuration { get; set; }
         @AuraEnabled
-        public String ChatProviderModelDeveloperName { get; set; }
-        // TODO revisit
-        // @AuraEnabled
-        // public ChatProviderConfiguration Configuration { get; set; }
+        public String SelectedProviderModelName { get; set; }
     }
 
     // Actual chat classes
     public class ChatThread {
         @AuraEnabled
         public String ChatId { get; set; }
+
         // TODO decide if this makes sense here - it was added as extra context for logging/JSON.serializePretty(chatThread)
         // (it doesn't feel like it belongs here, yet Model is here... hmmm)
         @AuraEnabled
         public String ChatProviderDeveloperName { get; set; }
+
+        @AuraEnabled
+        public ChatProviderConnection Connection { get; set; }
+
+        // TODO revisit - should this be a string, or an object?
+        // Which class handles sending it to each LLM?
+        @AuraEnabled
+        public String GroundingText { get; set; }
+
         // TODO revisit
         // @AuraEnabled
         // public ChatProviderConnection Connection { get; set; }
@@ -254,12 +262,6 @@ public with sharing class LoggerChatBotService {
                 convertedModels.put(openAIModel.id, convertedModel);
             }
 
-            if (this.getConfiguration().ChatLog.IsEnabled) {
-                // TODO relate this to a parent log, but in the LoggerChatBotController
-                Logger.debug(JSON.serializePretty(convertedModels)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-                Logger.saveLog();
-            }
-
             return convertedModels;
         }
 
@@ -274,6 +276,7 @@ public with sharing class LoggerChatBotService {
             // returned by the HTTP callout
             OpenAIChatGPTChatResponse chatGptResponse = (OpenAIChatGPTChatResponse) this.sendHttpRequest(calloutRequest, OpenAIChatGPTChatResponse.class);
             chatThread.ChatId = chatGptResponse.id;
+            // TODO make sure this handle elsewhere, using chatThread.Connection
             chatThread.ChatProviderDeveloperName = this.getConfiguration().DeveloperName;
             if (chatGptResponse.choices != null && chatGptResponse.choices.size() > 0) {
                 ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, chatGptResponse.choices.get(0).message.content);
@@ -285,11 +288,8 @@ public with sharing class LoggerChatBotService {
                 throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
             }
 
-            if (this.getConfiguration().ChatLog.IsEnabled) {
-                // TODO relate this to a parent log, but in the LoggerChatBotController
-                Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-                Logger.saveLog();
-            }
+            Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
+            Logger.saveLog();
 
             return chatThread;
         }
@@ -324,10 +324,6 @@ public with sharing class LoggerChatBotService {
             // TODO add better error handling of JSON, as well as error-handling of errors
             // returned by the HTTP callout
             GoogleGeminiModelsResponse modelsResponse = (GoogleGeminiModelsResponse) this.sendHttpRequest(calloutRequest, GoogleGeminiModelsResponse.class);
-            if (this.getConfiguration().ChatLog.IsEnabled) {
-                // TODO relate this to a parent log, but in the LoggerChatBotController
-                Logger.debug('deserialized modelsResponse:\n' + JSON.serializePretty(modelsResponse));
-            }
             Map<String, ChatProviderModel> convertedModels = new Map<String, ChatProviderModel>();
             for (GoogleGeminiModel geminiModel : modelsResponse.models) {
                 if (new Set<String>(geminiModel.supportedGenerationMethods).contains('generateContent') == false) {
@@ -338,16 +334,6 @@ public with sharing class LoggerChatBotService {
                 convertedModel.DeveloperName = geminiModel.name;
                 convertedModel.Label = geminiModel.displayName + ' (' + geminiModel.name.substringAfter('models/') + ')';
                 convertedModels.put(geminiModel.name, convertedModel);
-            }
-
-            if (this.getConfiguration().ChatLog.IsEnabled) {
-                // TODO relate this to a parent log, but in the LoggerChatBotController
-                // Logger.debug(JSON.serializePretty(convertedModels)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-                if (this.getConfiguration().ChatLog.IsEnabled) {
-                    // TODO relate this to a parent log, but in the LoggerChatBotController
-                }
-                Logger.debug('got gemini models').setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-                Logger.saveLog();
             }
 
             return convertedModels;

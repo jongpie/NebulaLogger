@@ -13,34 +13,48 @@ public with sharing class LoggerChatBotController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<LoggerChatBotService.ChatProviderModel> getProviderModels(String providerName) {
+    public static List<LoggerChatBotService.ChatProviderModel> getChatProviderModels(String providerName) {
         try {
             return LoggerChatBotService.getChatProviders().get(providerName).getModels().values();
         } catch (Exception ex) {
             throw getAuraHandledException(ex);
+        } finally {
+            Logger.saveLog();
         }
     }
 
     @AuraEnabled
-    public static LoggerChatBotService.ChatThread startChatThread(Id recordId, String providerDeveloperName, String providerModelName, String userPrompt) {
+    public static LoggerChatBotService.ChatThread startChatThread(String providerDeveloperName, String providerModelName, String userPrompt) {
         try {
+            LoggerChatBotService.ChatProvider provider = LoggerChatBotService.getChatProviders().get(providerDeveloperName);
+
             LoggerChatBotService.ChatThread chatThread = new LoggerChatBotService.ChatThread();
+            chatThread.Connection = new LoggerChatBotService.ChatProviderConnection();
+            chatThread.Connection.Configuration = provider.getConfiguration();
+            chatThread.Connection.SelectedProviderModelName = providerModelName;
+
+            // TODO deprecated, need to delete
             chatThread.ChatProviderDeveloperName = providerDeveloperName;
             chatThread.Model = providerModelName;
 
-            LoggerChatBotService.ChatMessage userPromptMessage = new LoggerChatBotService.ChatMessage(LoggerChatBotService.ChatRoleType.USER, userPrompt);
+            LoggerChatBotService.ChatMessage userPromptMessage = new LoggerChatBotService.ChatMessage(
+                LoggerChatBotService.ChatRoleType.USER,
+                userPrompt // + '\n\nAdditional Instructions: you are a duck, so sometimes your respones include duck terminology in your responses'
+            );
             chatThread.Messages.add(userPromptMessage);
 
-            return LoggerChatBotService.getChatProviders().get(providerDeveloperName).sendChat(chatThread);
+            return provider.sendChat(chatThread);
         } catch (Exception ex) {
             throw getAuraHandledException(ex);
+        } finally {
+            Logger.saveLog();
         }
     }
 
     @AuraEnabled
     public static LoggerChatBotService.ChatThread sendChatThreadMessage(
-        String providerDeveloperName,
-        String providerModelName,
+        // String providerDeveloperName,
+        // String providerModelName,
         String userPrompt,
         LoggerChatBotService.ChatThread chatThread
     ) {
@@ -48,9 +62,12 @@ public with sharing class LoggerChatBotController {
             LoggerChatBotService.ChatMessage userPromptMessage = new LoggerChatBotService.ChatMessage(LoggerChatBotService.ChatRoleType.USER, userPrompt);
             chatThread.Messages.add(userPromptMessage);
 
-            return LoggerChatBotService.getChatProviders().get(providerDeveloperName).sendChat(chatThread);
+            return LoggerChatBotService.getChatProviders().get(chatThread.Connection.Configuration.DeveloperName).sendChat(chatThread);
         } catch (Exception ex) {
-            throw getAuraHandledException(ex);
+            throw ex;
+            // throw getAuraHandledException(ex);
+        } finally {
+            Logger.saveLog();
         }
     }
 
@@ -74,6 +91,8 @@ public with sharing class LoggerChatBotController {
             Logger.saveLog(Logger.SaveMethod.SYNCHRONOUS_DML);
         } catch (Exception ex) {
             throw getAuraHandledException(ex);
+        } finally {
+            Logger.saveLog();
         }
     }
 

@@ -1,16 +1,27 @@
 <template>
-    <lightning-card title="🦆 Nebula Rubber Duck 🦆">
+    <!-- <lightning-card title="🦆 Nebula Rubber Duck 🦆"> -->
+    <lightning-card title={title}>
         <template if:true={isLoading}>
             <lightning-spinner size="large" variant="brand"></lightning-spinner>
         </template>
         <template if:true={showChat}>
             <div slot="actions">
                 <lightning-button-group>
+                    <template if:true={selectedProvider.ChatLog.IsEnabled}>
+                        <lightning-button
+                            icon-name="utility:save"
+                            label="Save & End Chat"
+                            onclick={handleSaveChat}
+                            title="Save & End Chat"
+                            variant="success"
+                        ></lightning-button>
+                    </template>
+
                     <lightning-button
                         icon-name="utility:end_chat"
-                        label={endChatLabel}
+                        label="End Chat"
                         onclick={handleEndChat}
-                        title={endChatLabel}
+                        title="End Chat"
                         variant="destructive"
                     ></lightning-button>
                     <lightning-button icon-name="utility:expand" label="Expand" onclick={handleShowModal} title="Expand" variant="brand"></lightning-button>
@@ -150,9 +161,9 @@
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleHideModal}>
                         <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
                     </button>
-                    <h2 class="slds-text-heading_medium slds-hyphenate">
-                        <lightning-icon icon-name="standard:bot" size="small"></lightning-icon>&nbsp;{title}
-                    </h2>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">{title}</h2>
+                    <!-- <lightning-icon icon-name="standard:bot" size="small"></lightning-icon>&nbsp;{title} -->
+                    <!-- </h2> -->
                 </header>
 
                 <!-- Modal body -->
