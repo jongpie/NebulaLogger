@@ -12,7 +12,7 @@ private class LoggerChatBotService_Tests {
         mockConfiguration.DeveloperName = 'SomeName';
         mockConfiguration.IsEnabled = true;
         mockConfiguration.Metadata.ApexClassName = LoggerChatBotService.GoogleGeminiService.class.getName();
-        mockConfiguration.Metadata.NamedCredentialDeveloperName = 'SomeNamedCredentail';
+        mockConfiguration.Metadata.NamedCredentialDeveloperName = 'SomeNamedCredential';
         LoggerParameter__mdt mockConfigurationParameter = new LoggerParameter__mdt(
             DeveloperName = 'ChatProvider_Some_Value_After_The_Prefix',
             Value__c = JSON.serialize(mockConfiguration)
@@ -38,6 +38,7 @@ private class LoggerChatBotService_Tests {
             .get(mockConfiguration.DeveloperName)
             .getModels();
 
+        System.Assert.areEqual('GET', mockHttpCallout.request.getMethod());
         System.Assert.areEqual('callout:' + mockConfiguration.Metadata.NamedCredentialDeveloperName + '/v1/models', mockHttpCallout.request.getEndpoint());
         System.Assert.areEqual(System.JSON.serialize(mockGeminiModelsResponse), mockHttpCallout.response.getBody());
         System.Assert.areEqual(1, returnedModels.size());
@@ -52,7 +53,63 @@ private class LoggerChatBotService_Tests {
 
     @IsTest
     static void it_sends_google_gemini_chat_thread() {
-        System.Assert.fail('TODO!');
+        LoggerChatBotService.ChatProviderConfiguration mockConfiguration = new LoggerChatBotService.ChatProviderConfiguration();
+        mockConfiguration.DeveloperName = 'SomeName';
+        mockConfiguration.IsEnabled = true;
+        mockConfiguration.Metadata.ApexClassName = LoggerChatBotService.GoogleGeminiService.class.getName();
+        mockConfiguration.Metadata.NamedCredentialDeveloperName = 'SomeNamedCredential';
+        LoggerParameter__mdt mockConfigurationParameter = new LoggerParameter__mdt(
+            DeveloperName = 'ChatProvider_Some_Value_After_The_Prefix',
+            Value__c = JSON.serialize(mockConfiguration)
+        );
+        LoggerParameter.setMock(mockConfigurationParameter);
+        LoggerChatBotService.GoogleGeminiChatMessagePart mockGeminiUserChatMessagePart = new LoggerChatBotService.GoogleGeminiChatMessagePart();
+        mockGeminiUserChatMessagePart.text = 'Hello, world!';
+        LoggerChatBotService.GoogleGeminiChatMessage mockGeminiUserChatMessage = new LoggerChatBotService.GoogleGeminiChatMessage();
+        mockGeminiUserChatMessage.parts.add(mockGeminiUserChatMessagePart);
+        LoggerChatBotService.GoogleGeminiChatResponseCandidate mockGeminiUserChatResponseCandidate = new LoggerChatBotService.GoogleGeminiChatResponseCandidate();
+        mockGeminiUserChatResponseCandidate.content = mockGeminiUserChatMessage;
+        mockGeminiUserChatResponseCandidate.role = 'user';
+        LoggerChatBotService.GoogleGeminiChatMessagePart mockGeminiBotChatMessagePart = new LoggerChatBotService.GoogleGeminiChatMessagePart();
+        mockGeminiBotChatMessagePart.text = 'As an AI model, I can say some stuff and sometimes it is correct.';
+        LoggerChatBotService.GoogleGeminiChatMessage mockGeminiBotChatMessage = new LoggerChatBotService.GoogleGeminiChatMessage();
+        mockGeminiBotChatMessage.parts.add(mockGeminiBotChatMessagePart);
+        LoggerChatBotService.GoogleGeminiChatResponseCandidate mockGeminiBotChatResponseCandidate = new LoggerChatBotService.GoogleGeminiChatResponseCandidate();
+        mockGeminiBotChatResponseCandidate.content = mockGeminiBotChatMessage;
+        mockGeminiBotChatResponseCandidate.role = 'model';
+        LoggerChatBotService.GoogleGeminiChatResponse mockGeminiChatResponse = new LoggerChatBotService.GoogleGeminiChatResponse();
+        mockGeminiChatResponse.candidates.add(mockGeminiUserChatResponseCandidate);
+        mockGeminiChatResponse.candidates.add(mockGeminiBotChatResponseCandidate);
+        LoggerMockDataCreator.MockHttpCallout mockHttpCallout = LoggerMockDataCreator.createHttpCallout()
+            .setStatusCode(200)
+            .setResponseBody(System.JSON.serialize(mockGeminiChatResponse));
+        System.Test.setMock(System.HttpCalloutMock.class, mockHttpCallout);
+        LoggerChatBotService.ChatMessage mockUserChatMessage = new LoggerChatBotService.ChatMessage(
+            LoggerChatBotService.ChatRoleType.USER,
+            mockGeminiUserChatMessagePart.text
+        );
+        LoggerChatBotService.ChatThread chatThread = new LoggerChatBotService.ChatThread();
+        chatThread.ChatProviderDeveloperName = mockConfiguration.DeveloperName;
+        chatThread.Model = 'models/some-model-name';
+        chatThread.Messages.add(mockUserChatMessage);
+
+        LoggerChatBotService.getChatProviders().get(mockConfiguration.DeveloperName).sendChat(chatThread);
+
+        System.Assert.areEqual('POST', mockHttpCallout.request.getMethod());
+        System.Assert.areEqual(
+            'callout:' + mockConfiguration.Metadata.NamedCredentialDeveloperName + '/v1/' + chatThread.Model + ':generateContent',
+            mockHttpCallout.request.getEndpoint()
+        );
+        LoggerChatBotService.ChatMessage mockBotChatMessage = new LoggerChatBotService.ChatMessage(
+            LoggerChatBotService.ChatRoleType.BOT,
+            mockGeminiBotChatMessagePart.text
+        );
+        System.Assert.areEqual(2, chatThread.Messages.size());
+        // The timestamps for Gemini are set by Apex, not Gemini's response, so don't bother trying to compare them (or the entire objects)
+        System.Assert.areEqual(mockUserChatMessage.Role, chatThread.Messages.get(0).Role);
+        System.Assert.areEqual(mockUserChatMessage.Text, chatThread.Messages.get(0).Text);
+        System.Assert.areEqual(mockBotChatMessage.Role, chatThread.Messages.get(1).Role);
+        System.Assert.areEqual(mockBotChatMessage.Text, chatThread.Messages.get(1).Text);
     }
 
     @IsTest
@@ -61,7 +118,7 @@ private class LoggerChatBotService_Tests {
         mockConfiguration.DeveloperName = 'SomeName';
         mockConfiguration.IsEnabled = true;
         mockConfiguration.Metadata.ApexClassName = LoggerChatBotService.OpenAIChatGPTService.class.getName();
-        mockConfiguration.Metadata.NamedCredentialDeveloperName = 'SomeNamedCredentail';
+        mockConfiguration.Metadata.NamedCredentialDeveloperName = 'SomeNamedCredential';
         LoggerParameter__mdt mockConfigurationParameter = new LoggerParameter__mdt(
             DeveloperName = 'ChatProvider_Some_Value_After_The_Prefix',
             Value__c = JSON.serialize(mockConfiguration)
@@ -85,6 +142,7 @@ private class LoggerChatBotService_Tests {
             .get(mockConfiguration.DeveloperName)
             .getModels();
 
+        System.Assert.areEqual('GET', mockHttpCallout.request.getMethod());
         System.Assert.areEqual('callout:' + mockConfiguration.Metadata.NamedCredentialDeveloperName + '/v1/models', mockHttpCallout.request.getEndpoint());
         System.Assert.areEqual(System.JSON.serialize(mockChatGPTModelsResponse), mockHttpCallout.response.getBody());
         System.Assert.areEqual(1, returnedModels.size());
@@ -99,6 +157,58 @@ private class LoggerChatBotService_Tests {
 
     @IsTest
     static void it_sends_open_ai_chat_gpt_chat_thread() {
-        System.Assert.fail('TODO!');
+        LoggerChatBotService.ChatProviderConfiguration mockConfiguration = new LoggerChatBotService.ChatProviderConfiguration();
+        mockConfiguration.DeveloperName = 'SomeName';
+        mockConfiguration.IsEnabled = true;
+        mockConfiguration.Metadata.ApexClassName = LoggerChatBotService.OpenAIChatGPTService.class.getName();
+        mockConfiguration.Metadata.NamedCredentialDeveloperName = 'SomeNamedCredential';
+        LoggerParameter__mdt mockConfigurationParameter = new LoggerParameter__mdt(
+            DeveloperName = 'ChatProvider_Some_Value_After_The_Prefix',
+            Value__c = JSON.serialize(mockConfiguration)
+        );
+        LoggerParameter.setMock(mockConfigurationParameter);
+        LoggerChatBotService.OpenAIChatGPTMessage mockChatGPTUserChatMessage = new LoggerChatBotService.OpenAIChatGPTMessage();
+        mockChatGPTUserChatMessage.content = 'Hello, world!';
+        LoggerChatBotService.OpenAIChatGPTMessageChoice mockChatGPTUserChatMessageChoice = new LoggerChatBotService.OpenAIChatGPTMessageChoice();
+        mockChatGPTUserChatMessageChoice.message = mockChatGPTUserChatMessage;
+        LoggerChatBotService.OpenAIChatGPTMessage mockChatGPTBotChatMessage = new LoggerChatBotService.OpenAIChatGPTMessage();
+        mockChatGPTBotChatMessage.content = 'As an AI model, I can say some stuff and sometimes it is correct.';
+        LoggerChatBotService.OpenAIChatGPTMessageChoice mockChatGPTBotChatMessageChoice = new LoggerChatBotService.OpenAIChatGPTMessageChoice();
+        mockChatGPTUserChatMessageChoice.message = mockChatGPTBotChatMessage;
+        LoggerChatBotService.OpenAIChatGPTChatResponse mockChatGPTChatResponse = new LoggerChatBotService.OpenAIChatGPTChatResponse();
+        mockChatGPTChatResponse.created = System.now().getTime() / 1000;
+        mockChatGPTChatResponse.choices.add(mockChatGPTUserChatMessageChoice);
+        mockChatGPTChatResponse.choices.add(mockChatGPTBotChatMessageChoice);
+        LoggerMockDataCreator.MockHttpCallout mockHttpCallout = LoggerMockDataCreator.createHttpCallout()
+            .setStatusCode(200)
+            .setResponseBody(System.JSON.serialize(mockChatGPTChatResponse));
+        System.Test.setMock(System.HttpCalloutMock.class, mockHttpCallout);
+        LoggerChatBotService.ChatMessage mockUserChatMessage = new LoggerChatBotService.ChatMessage(
+            LoggerChatBotService.ChatRoleType.USER,
+            mockChatGPTUserChatMessage.content
+        );
+        LoggerChatBotService.ChatThread chatThread = new LoggerChatBotService.ChatThread();
+        chatThread.ChatProviderDeveloperName = mockConfiguration.DeveloperName;
+        chatThread.Model = 'gpt-some-model-name';
+        chatThread.Messages.add(mockUserChatMessage);
+
+        LoggerChatBotService.getChatProviders().get(mockConfiguration.DeveloperName).sendChat(chatThread);
+
+        System.Assert.areEqual('POST', mockHttpCallout.request.getMethod());
+        System.Assert.areEqual(
+            'callout:' + mockConfiguration.Metadata.NamedCredentialDeveloperName + '/v1/chat/completions',
+            mockHttpCallout.request.getEndpoint()
+        );
+        LoggerChatBotService.ChatMessage mockBotChatMessage = new LoggerChatBotService.ChatMessage(
+            LoggerChatBotService.ChatRoleType.BOT,
+            mockChatGPTBotChatMessage.content
+        );
+        System.Assert.areEqual(2, chatThread.Messages.size());
+        System.Assert.areEqual(mockUserChatMessage.CreatedDate, chatThread.Messages.get(0).CreatedDate);
+        System.Assert.areEqual(mockUserChatMessage.Role, chatThread.Messages.get(0).Role);
+        System.Assert.areEqual(mockUserChatMessage.Text, chatThread.Messages.get(0).Text);
+        System.Assert.areEqual(Datetime.newInstance(mockChatGPTChatResponse.created * 1000), chatThread.Messages.get(1).CreatedDate);
+        System.Assert.areEqual(mockBotChatMessage.Role, chatThread.Messages.get(1).Role);
+        System.Assert.areEqual(mockBotChatMessage.Text, chatThread.Messages.get(1).Text);
     }
 }

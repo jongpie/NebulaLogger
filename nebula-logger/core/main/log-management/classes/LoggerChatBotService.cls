@@ -15,7 +15,7 @@ public with sharing class LoggerChatBotService {
         }
 
         public abstract Map<String, ChatProviderModel> getModels();
-        public abstract ChatThread sendChat(ChatThread content);
+        public abstract ChatThread sendChat(ChatThread chatThread);
 
         protected System.HttpRequest buildHttpRequest(String method, String endpoint, Object body) {
             System.HttpRequest calloutRequest = this.buildHttpRequest(method, endpoint);
@@ -231,7 +231,7 @@ public with sharing class LoggerChatBotService {
             return convertedModels;
         }
 
-        public override ChatThread sendChat(LoggerChatBotService.ChatThread chatThread) {
+        public override ChatThread sendChat(ChatThread chatThread) {
             GoogleGeminiChatRequest geminiChatRequest = new GoogleGeminiChatRequest();
             geminiChatRequest.contents = this.convertMessages(chatThread.Messages);
 
@@ -240,17 +240,15 @@ public with sharing class LoggerChatBotService {
             // returned by the HTTP callout
             GoogleGeminiChatResponse geminiChatResponse = (GoogleGeminiChatResponse) this.sendHttpRequest(calloutRequest, GoogleGeminiChatResponse.class);
             if (geminiChatResponse?.candidates != null && geminiChatResponse.candidates.size() > 0) {
-                ChatMessage returnedBotChatMessage = new ChatMessage(ChatRoleType.BOT, geminiChatResponse.candidates.get(0).content.parts.get(0).text);
+                Integer lastMessageIndex = geminiChatResponse.candidates.size() - 1;
+                ChatMessage returnedBotChatMessage = new ChatMessage(
+                    ChatRoleType.BOT,
+                    geminiChatResponse.candidates.get(lastMessageIndex).content.parts.get(0).text
+                );
                 chatThread.Messages.add(returnedBotChatMessage);
             } else {
                 // TODO improve backend error handling, probably
                 // throw new System.CalloutException('I dunno, something broke, probably.\n' + calloutResponse.getBody());
-            }
-
-            if (this.getConfiguration().ChatLog.IsEnabled) {
-                // TODO relate this to a parent log, but in the LoggerChatBotController
-                // Logger.debug(JSON.serializePretty(chatThread)).setHttpRequestDetails(calloutRequest).setHttpResponseDetails(calloutResponse);
-                // Logger.saveLog();
             }
 
             return chatThread;
@@ -364,24 +362,29 @@ public with sharing class LoggerChatBotService {
     }
 
     // Google Gemini chat
+    @TestVisible
     private class GoogleGeminiChatRequest {
         public List<GoogleGeminiChatMessage> contents = new List<GoogleGeminiChatMessage>();
     }
 
+    @TestVisible
     private class GoogleGeminiChatResponse {
-        public List<GoogleGeminiChatResponseCandidate> candidates;
+        public List<GoogleGeminiChatResponseCandidate> candidates = new List<GoogleGeminiChatResponseCandidate>();
     }
 
+    @TestVisible
     private class GoogleGeminiChatResponseCandidate {
         public GoogleGeminiChatMessage content;
         public String role;
     }
 
+    @TestVisible
     private class GoogleGeminiChatMessage {
         public List<GoogleGeminiChatMessagePart> parts = new List<GoogleGeminiChatMessagePart>();
         public String role;
     }
 
+    @TestVisible
     private class GoogleGeminiChatMessagePart {
         public String text;
     }
@@ -401,16 +404,19 @@ public with sharing class LoggerChatBotService {
     }
 
     // OpenAI ChatGPT chat
+    @TestVisible
     private class OpenAIChatGPTMessage {
         public String content;
         public String role;
     }
 
+    @TestVisible
     private class OpenAIChatGPTChatRequest {
         public String model;
         public List<OpenAIChatGPTMessage> messages = new List<OpenAIChatGPTMessage>();
     }
 
+    @TestVisible
     private class OpenAIChatGPTChatResponse {
         public String id;
         public Long created;
@@ -418,6 +424,7 @@ public with sharing class LoggerChatBotService {
         public List<OpenAIChatGPTMessageChoice> choices = new List<OpenAIChatGPTMessageChoice>();
     }
 
+    @TestVisible
     private class OpenAIChatGPTMessageChoice {
         public Integer index;
         public OpenAIChatGPTMessage message;
