@@ -52,12 +52,7 @@ public with sharing class LoggerChatBotController {
     }
 
     @AuraEnabled
-    public static LoggerChatBotService.ChatThread sendChatThreadMessage(
-        // String providerDeveloperName,
-        // String providerModelName,
-        String userPrompt,
-        LoggerChatBotService.ChatThread chatThread
-    ) {
+    public static LoggerChatBotService.ChatThread sendChatThreadMessage(String userPrompt, LoggerChatBotService.ChatThread chatThread) {
         try {
             LoggerChatBotService.ChatMessage userPromptMessage = new LoggerChatBotService.ChatMessage(LoggerChatBotService.ChatRoleType.USER, userPrompt);
             chatThread.Messages.add(userPromptMessage);
