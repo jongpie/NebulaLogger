@@ -26,8 +26,6 @@ export default class LoggerChatBot extends LightningElement {
     @track
     messages;
 
-    // isSendMessageButtonDisabled = true;
-
     get isStartChatButtonDisabled() {
         return !this.selectedProvider || !this.selectedProviderModel || !this.hasAcceptedTermsOfUse;
     }
@@ -143,11 +141,7 @@ export default class LoggerChatBot extends LightningElement {
                 this.messages = convertedMessages;
                 this.showChat = true;
                 this.isLoading = false;
-
-                setTimeout(() => {
-                    const chatThreads = this.template.querySelectorAll('[data-id="chat-thread"]');
-                    chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
-                }, 0);
+                this._scrollToBottomOfChatThreadContainers();
             })
             .catch(async error => {
                 await LightningAlert.open({
@@ -189,11 +183,7 @@ export default class LoggerChatBot extends LightningElement {
                 this.messages = convertedMessages;
                 this.showChat = true;
                 this.isLoading = false;
-
-                setTimeout(() => {
-                    const chatThreads = this.template.querySelectorAll('[data-id="chat-thread"]');
-                    chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
-                }, 0);
+                this._scrollToBottomOfChatThreadContainers();
             })
             .catch(async error => {
                 await LightningAlert.open({
@@ -204,13 +194,6 @@ export default class LoggerChatBot extends LightningElement {
                 console.error('>>> error starting chat thread', error);
                 this.isLoading = false;
             });
-
-        // Set timeout (or similar approach) is needed because the updated messages
-        // need to re-render in the component before the scrollHeight is recalculated
-        setTimeout(() => {
-            const chatThreads = this.template.querySelectorAll('[data-id="chat-thread"]');
-            chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
-        }, 0);
     }
 
     handleSaveChat() {
@@ -244,10 +227,7 @@ export default class LoggerChatBot extends LightningElement {
         const messageInputs = this.template.querySelectorAll('[data-id="message-input"]');
         messageInputs.forEach(messageInput => (messageInput.value = undefined));
         this.showModal = true;
-        setTimeout(() => {
-            const chatThreads = this.template.querySelectorAll('[data-id="chat-thread"]');
-            chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
-        }, 0);
+        this._scrollToBottomOfChatThreadContainers();
     }
 
     handleHideModal() {
@@ -277,7 +257,7 @@ export default class LoggerChatBot extends LightningElement {
             sentBySummary = `${this.selectedProviderModel} • ${serviceChatMessage.CreatedDate}`;
         }
 
-        convertedMessage = {
+        const convertedMessage = {
             // id: 'message-' + chatMessageCounter++,
             classes: {
                 li: liClass,
@@ -288,5 +268,15 @@ export default class LoggerChatBot extends LightningElement {
         };
 
         return convertedMessage;
+    }
+
+    _scrollToBottomOfChatThreadContainers() {
+        // Set timeout (or similar approach) is needed because the updated messages
+        // need to re-render in the component before the scrollHeight is recalculated
+        /* eslint-disable @lwc/lwc/no-async-operation */
+        setTimeout(() => {
+            const chatThreads = this.template.querySelectorAll('[data-id="chat-thread"]');
+            chatThreads.forEach(chatThread => (chatThread.scrollTop = chatThread.scrollHeight));
+        }, 0);
     }
 }

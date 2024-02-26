@@ -1,5 +1,4 @@
 <template>
-    <!-- <lightning-card title="🦆 Nebula Rubber Duck 🦆"> -->
     <lightning-card title={title}>
         <template if:true={isLoading}>
             <lightning-spinner size="large" variant="brand"></lightning-spinner>
@@ -16,7 +15,6 @@
                             variant="success"
                         ></lightning-button>
                     </template>
-
                     <lightning-button
                         icon-name="utility:end_chat"
                         label="End Chat"
@@ -69,16 +67,6 @@
                                 ></lightning-input>
                             </div>
                         </div>
-
-                        <!-- <lightning-input
-                            label={selectedProvider.TermsOfUse}
-                            message-toggle-active="I accept the terms of use"
-                            message-toggle-inactive="I do not accept the terms of use"
-                            required
-                            type="toggle"
-                            variant="label-stacked"
-                        ></lightning-input> -->
-                        <!-- <lightning-input label={selectedProvider.TermsOfUse} required type="checkbox-button"></lightning-input> -->
                     </lightning-layout-item>
                 </template>
                 <lightning-layout-item class="slds-m-top_large" size="12">
@@ -109,7 +97,6 @@
                                 <li key={message.id} class={message.classes.li}>
                                     <div class="slds-chat-message">
                                         <div class="slds-chat-message__body">
-                                            <!-- <div class="slds-chat-message__text slds-chat-message__text_outbound-agent"> -->
                                             <div class={message.classes.content}>
                                                 <span>{message.content}</span>
                                             </div>
@@ -162,20 +149,12 @@
                         <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
                     </button>
                     <h2 class="slds-text-heading_medium slds-hyphenate">{title}</h2>
-                    <!-- <lightning-icon icon-name="standard:bot" size="small"></lightning-icon>&nbsp;{title} -->
-                    <!-- </h2> -->
                 </header>
 
                 <!-- Modal body -->
                 <div class="slds-modal__content slds-p-around_medium">
                     <template if:true={isLoading}>
                         <lightning-spinner size="large" variant="brand"></lightning-spinner>
-                        <!-- <div class="slds-is-relative" style="min-height: 6em">
-                            <div class="slds-align_absolute-center" style="height: 5rem">
-                                <lightning-icon icon-name="standard:bot" size="large"></lightning-icon>
-                            </div>
-                            <lightning-spinner size="large" variant="brand"></lightning-spinner>
-                        </div> -->
                     </template>
                     <lightning-layout-item size="12">
                         <section role="log" class="slds-chat" data-id="chat-thread" style="height: 440px; overflow-y: scroll">
@@ -193,7 +172,6 @@
                                     <li key={message.id} class={message.classes.li}>
                                         <div class="slds-chat-message">
                                             <div class="slds-chat-message__body">
-                                                <!-- <div class="slds-chat-message__text slds-chat-message__text_outbound-agent"> -->
                                                 <div class={message.classes.content}>
                                                     <span>{message.content}</span>
                                                 </div>

@@ -119,7 +119,7 @@
     </externalCredentialPrincipalAccesses>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
-        <externalCredentialPrincipal>LoggerOpenAI-OpenAI</externalCredentialPrincipal>
+        <externalCredentialPrincipal>LoggerOpenAIChatGPT-OpenAI</externalCredentialPrincipal>
     </externalCredentialPrincipalAccesses>
     <fieldPermissions>
         <editable>false</editable>

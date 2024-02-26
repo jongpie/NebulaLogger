@@ -1,10 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
     <label>Chat Provider: OpenAI ChatGPT</label>
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:nil="true" />
     </values>
     <values>
         <field>Value__c</field>
@@ -14,7 +18,7 @@
   &quot;Label&quot;: &quot;OpenAI ChatGPT&quot;,
   &quot;Metadata&quot;: {
     &quot;ApexClassName&quot;: &quot;LoggerChatBotService.OpenAIChatGPTService&quot;,
-    &quot;NamedCredentialDeveloperName&quot;: &quot;LoggerOpenAI&quot;
+    &quot;NamedCredentialDeveloperName&quot;: &quot;LoggerOpenAIChatGPT&quot;
   },
   &quot;TermsOfUse&quot;: {
     &quot;Text&quot;: &quot;I understand that using this feature will transmit data about my org to OpenAI&apos;s ChatGPT service, including information about logging data &amp; snippets of Apex source code.&quot;

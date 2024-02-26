@@ -115,6 +115,34 @@ After installing Nebula Logger in your org, there are a few additional configura
 
 ---
 
+## Setting up OpenAI ChatGPT
+
+Under `Setup --> Named Credentials --> External Credentials`, using the external credential `LoggerOpenAIChatGPT`:
+
+-   Create 2 'Authentication Parameters'
+    -   `APIKey` - created at https://platform.openai.com/api-keys
+    -   `Org` - retrieved from https://platform.openai.com/account/organization
+-   Create 3 'Custom Headers'
+    -   'Authorization' - `{!'Bearer ' & $Credential.LoggerOpenAIChatGPT.APIKey}`
+    -   'OpenAI-Organization' - `{!$Credential.LoggerOpenAIChatGPT.Org}`
+    -   'Content-Type' - `application/json`
+
+![OpenAI ChatGPT: External Credential](./images/openai-chatgpt-external-credential.png)
+
+![OpenAI ChatGPT: External Credential Principal Parameters](./images/openai-chatgpt-external-credential-principal-parameters.png)
+
+Now back under `Setup --> Named Credentials`, using the named credential `LoggerOpenAIChatGPT`:
+
+-   Set these properties
+    -   'URL' - set to `https://api.openai.com`
+    -   'Enable for Callouts' - set to `true`/checked
+    -   'External Credential' - set to 'Logger: OpenAI ChatGPT' (the external credential from the previous section)
+    -   'Allow Formulas in HTTP Header' - set to `true`/checked
+
+![OpenAI ChatGPT: Named Credential](./images/openai-chatgpt-named-credential.png)
+
+---
+
 ### Logger for Apex: Quick Start
 
 For Apex developers, the `Logger` class has several methods that can be used to add entries with different logging levels. Each logging level's method has several overloads to support multiple parameters.
