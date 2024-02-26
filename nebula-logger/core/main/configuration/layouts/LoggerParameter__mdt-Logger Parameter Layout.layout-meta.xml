@@ -30,7 +30,7 @@
                 <field>Value__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>Description__c</field>
             </layoutItems>
         </layoutColumns>

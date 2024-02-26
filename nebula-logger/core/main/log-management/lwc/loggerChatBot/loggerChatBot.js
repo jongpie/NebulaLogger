@@ -247,14 +247,15 @@ export default class LoggerChatBot extends LightningElement {
         let liClass;
         let contentClass;
         let sentBySummary;
+        const userLocaleCreatedDate = !serviceChatMessage.CreatedDate ? '' : new Date(serviceChatMessage.CreatedDate).toLocaleString();
         if (serviceChatMessage.Role.toLowerCase() === 'user') {
             liClass = 'slds-chat-listitem slds-chat-listitem_outbound';
             contentClass = 'slds-chat-message__text slds-chat-message__text_outbound';
-            sentBySummary = `Me • ${serviceChatMessage.CreatedDate}`;
+            sentBySummary = `Me • ${userLocaleCreatedDate}`;
         } else {
             liClass = 'slds-chat-listitem slds-chat-listitem_inbound';
             contentClass = 'slds-chat-message__text slds-chat-message__text_inbound';
-            sentBySummary = `${this.selectedProviderModel} • ${serviceChatMessage.CreatedDate}`;
+            sentBySummary = `${this.selectedProviderModel} • ${userLocaleCreatedDate}`;
         }
 
         const convertedMessage = {
