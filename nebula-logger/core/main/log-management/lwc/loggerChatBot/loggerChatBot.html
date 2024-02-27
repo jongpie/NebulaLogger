@@ -1,44 +1,17 @@
 <template>
-    <div class="slds-section slds-is-open">
-        <h3 class="slds-section__title slds-theme_shade">
-            <span class="slds-truncate slds-p-horizontal_small" title={title}>{title}</span>
-        </h3>
-        <div class="slds-section__content">
-            <!-- <lightning-card title={title}> -->
-            <lightning-card>
+    <lightning-card>
+        <div class="slds-section slds-is-open slds-m-horizontal_medium">
+            <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small" title={title}>{title}</span>
+            </h3>
+            <div class="slds-section__content">
                 <template if:true={isLoading}>
                     <lightning-spinner size="large" variant="brand"></lightning-spinner>
                 </template>
-                <div slot="actions">
-                    <lightning-button-group>
-                        <template if:true={showChat}>
-                            <template if:true={selectedProvider.ChatLog.IsEnabled}>
-                                <lightning-button
-                                    icon-name="utility:save"
-                                    label="Save & End Chat"
-                                    onclick={handleSaveChat}
-                                    title="Save & End Chat"
-                                    variant="success"
-                                ></lightning-button>
-                            </template>
-                            <lightning-button
-                                icon-name="utility:end_chat"
-                                label="End Chat"
-                                onclick={handleEndChat}
-                                title="End Chat"
-                                variant="destructive"
-                            ></lightning-button>
-                            <lightning-button
-                                icon-name="utility:expand"
-                                label="Expand"
-                                onclick={handleShowModal}
-                                title="Expand"
-                                variant="brand"
-                            ></lightning-button>
-                        </template>
-                        <lightning-button icon-name="utility:help" label="What's This?"></lightning-button>
-                        <!-- <template if:true={showChat}>
-                            <lightning-button-menu alternative-text="More Options" variant="border-filled">
+                <lightning-card>
+                    <div slot="actions">
+                        <lightning-button-group>
+                            <template if:true={showChat}>
                                 <template if:true={selectedProvider.ChatLog.IsEnabled}>
                                     <lightning-button
                                         icon-name="utility:save"
@@ -55,10 +28,18 @@
                                     title="End Chat"
                                     variant="destructive"
                                 ></lightning-button>
-                            </lightning-button-menu>
-                        </template> -->
-                    </lightning-button-group>
-                </div>
+                                <lightning-button
+                                    icon-name="utility:expand"
+                                    label="Expand"
+                                    onclick={handleShowModal}
+                                    title="Expand"
+                                    variant="brand"
+                                ></lightning-button>
+                            </template>
+                            <lightning-button icon-name="utility:help" label="What's This?"></lightning-button>
+                        </lightning-button-group>
+                    </div>
+                </lightning-card>
                 <lightning-layout class="slds-m-around_medium slds-p-around_medium" multiple-rows>
                     <template if:false={showChat}>
                         <template if:true={aiProviderOptions}>
@@ -87,6 +68,17 @@
                         </template>
                         <template if:true={selectedProviderModel}>
                             <lightning-layout-item size="12">
+                                <lightning-combobox
+                                    label="Chat Type"
+                                    onchange={handleUserPromptChange}
+                                    options={userPromptOptions}
+                                    required
+                                    value={selectedUserPromptType}
+                                ></lightning-combobox>
+                            </lightning-layout-item>
+                        </template>
+                        <template if:true={selectedUserPromptType}>
+                            <lightning-layout-item size="12">
                                 <div class="slds-form slds-form_stacked">
                                     <div class="slds-form-element">
                                         <label class="slds-form-element__label slds-m-vertical_medium" for="toggle">{selectedProvider.TermsOfUse.Text}</label>
@@ -109,7 +101,7 @@
                                 disabled={isStartChatButtonDisabled}
                                 onclick={handleStartChat}
                             >
-                                Get AI Exception Insights
+                                Start Chat
                             </button>
                         </lightning-layout-item>
                     </template>
@@ -172,9 +164,9 @@
                         </lightning-layout-item>
                     </template>
                 </lightning-layout>
-            </lightning-card>
+            </div>
         </div>
-    </div>
+    </lightning-card>
     <template if:true={showModal}>
         <section class="slds-modal slds-fade-in-open slds-modal_small" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
             <div class="slds-modal__container" onkeydown={handleKeyDown}>

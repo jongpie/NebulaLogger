@@ -25,19 +25,28 @@ private class LoggerChatBotController_Tests {
     static void it_should_start_chat_thread() {
         String providerDeveloperName = 'mockProviderDeveloperName';
         String providerModelName = 'mockProviderModelName';
-        String userPrompt = 'mockUserPrompt';
+        LogEntry__c logEntry = null; // TODO;
+        String userPromptType = 'mockUserPromptType';
         setupMockChatProviderConfiguration(providerDeveloperName);
         LoggerChatBotService.ChatProviderModel mockProviderModel = new LoggerChatBotService.ChatProviderModel();
         mockProviderModels.add(mockProviderModel);
 
-        LoggerChatBotService.ChatThread returnedChatThread = LoggerChatBotController.startChatThread(providerDeveloperName, providerModelName, userPrompt);
+        LoggerChatBotService.ChatThread returnedChatThread = LoggerChatBotController.startChatThread(
+            providerDeveloperName,
+            providerModelName,
+            logEntry.Id,
+            userPromptType
+        );
 
         System.Assert.areEqual(mockChatId, returnedChatThread.ChatId);
         System.Assert.areEqual(providerDeveloperName, returnedChatThread.ChatProviderDeveloperName);
         System.Assert.areEqual(providerModelName, returnedChatThread.Model);
         System.Assert.areEqual(2, returnedChatThread.Messages.size());
         System.Assert.areEqual(LoggerChatBotService.ChatRoleType.USER.name().toLowerCase(), returnedChatThread.Messages.get(0).Role);
-        System.Assert.areEqual(userPrompt, returnedChatThread.Messages.get(0).Text);
+        System.Assert.areEqual(
+            'TODO! This used to be `userPrompt`, but that no longer exists, it is now `userPromptType`.',
+            returnedChatThread.Messages.get(0).Text
+        );
         System.Assert.areEqual(LoggerChatBotService.ChatRoleType.BOT.name().toLowerCase(), returnedChatThread.Messages.get(1).Role);
         System.Assert.areEqual(mockBotResponse, returnedChatThread.Messages.get(1).Text);
     }

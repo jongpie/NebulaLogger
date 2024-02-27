@@ -2218,8 +2218,15 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>loggerLlmChat</componentName>
-                <identifier>c_loggerLlmChat</identifier>
+                <componentName>loggerChatBot</componentName>
+                <identifier>c_loggerChatBot</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasException__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>

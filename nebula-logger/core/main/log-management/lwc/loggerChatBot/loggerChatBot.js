@@ -15,9 +15,10 @@ export default class LoggerChatBot extends LightningElement {
     selectedProvider;
     selectedProviderModelOptions;
     selectedProviderModel;
+    selectedUserPromptType;
     showChat = false;
     showModal = false;
-    title = '🦆 Rubber Duck Debugger Chat Bot-o-matic 5000-beta DRAFT 🦆';
+    title = '🦆 Rubber Duck Debugger Chat Bot-o-matic 5000 🦆';
 
     aiProviderOptions;
     aiProviderSupportedModelOptions;
@@ -26,8 +27,26 @@ export default class LoggerChatBot extends LightningElement {
     @track
     messages;
 
+    get userPromptOptions() {
+        return [
+            { label: '--None--', value: '' },
+            { label: 'Help me troubleshoot this exception', value: 'exception_insights' }
+        ];
+    }
+
+    _userPrompts = {
+        exception_insights: {
+            label: 'Help me troubleshoot this exception'
+        }
+    };
+
+    handleUserPromptChange(event) {
+        this.selectedUserPromptType = event.detail.value;
+        console.info('>>> this.selectedUserPromptType', this.selectedUserPromptType);
+    }
+
     get isStartChatButtonDisabled() {
-        return !this.selectedProvider || !this.selectedProviderModel || !this.hasAcceptedTermsOfUse;
+        return !this.selectedProvider || !this.selectedProviderModel || !this.selectedUserPromptType || !this.hasAcceptedTermsOfUse;
     }
 
     get isSendMessageButtonDisabled() {
@@ -84,6 +103,7 @@ export default class LoggerChatBot extends LightningElement {
         console.info('>>> running handleProviderChange, event', event);
         const providerName = event.detail.value;
         this.selectedProviderModel = undefined;
+        this.selectedUserPromptType = undefined;
         this.selectedProvider = providerName ? this.aiProviders[event.detail.value] : undefined;
         console.log('>>> this.selectedProvider', this.selectedProvider);
         if (!this.selectedProvider) {
@@ -126,9 +146,15 @@ export default class LoggerChatBot extends LightningElement {
     async handleStartChat() {
         this.isLoading = true;
         this.chatStartMessage = `Chat started with ${this.selectedProvider.Label}`;
-        const userPrompt = 'How do I write Apex??';
+        // const userPrompt = 'How do I write Apex??';
         // console.log('>>> Well, who is this.selectedProvider?!', this.selectedProvider);
-        startChatThread({ providerDeveloperName: this.selectedProvider.DeveloperName, providerModelName: this.selectedProviderModel, userPrompt })
+        console.log('>>> about to call sendChatThread', this.selectedUserPromptType);
+        startChatThread({
+            providerDeveloperName: this.selectedProvider.DeveloperName,
+            providerModelName: this.selectedProviderModel,
+            recordId: this.recordId,
+            userPromptType: this.selectedUserPromptType
+        })
             .then(chatThread => {
                 console.log('>>> called sendChatThreadMessage', chatThread);
                 this.chatThread = chatThread;
@@ -141,7 +167,6 @@ export default class LoggerChatBot extends LightningElement {
                 this.messages = convertedMessages;
                 this.showChat = true;
                 this.isLoading = false;
-                this._scrollToBottomOfChatThreadContainers();
             })
             .catch(async error => {
                 await LightningAlert.open({
@@ -233,6 +258,7 @@ export default class LoggerChatBot extends LightningElement {
         this.selectedProvider = undefined;
         this.selectedProviderModelOptions = undefined;
         this.selectedProviderModel = undefined;
+        this.selectedUserPromptType = undefined;
     }
 
     handleShowModal() {
