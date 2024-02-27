@@ -1,145 +1,180 @@
 <template>
-    <lightning-card title={title}>
-        <template if:true={isLoading}>
-            <lightning-spinner size="large" variant="brand"></lightning-spinner>
-        </template>
-        <template if:true={showChat}>
-            <div slot="actions">
-                <lightning-button-group>
-                    <template if:true={selectedProvider.ChatLog.IsEnabled}>
-                        <lightning-button
-                            icon-name="utility:save"
-                            label="Save & End Chat"
-                            onclick={handleSaveChat}
-                            title="Save & End Chat"
-                            variant="success"
-                        ></lightning-button>
-                    </template>
-                    <lightning-button
-                        icon-name="utility:end_chat"
-                        label="End Chat"
-                        onclick={handleEndChat}
-                        title="End Chat"
-                        variant="destructive"
-                    ></lightning-button>
-                    <lightning-button icon-name="utility:expand" label="Expand" onclick={handleShowModal} title="Expand" variant="brand"></lightning-button>
-                </lightning-button-group>
-            </div>
-        </template>
-        <lightning-layout class="slds-m-around_medium slds-p-around_medium" multiple-rows>
-            <template if:false={showChat}>
-                <template if:true={aiProviderOptions}>
-                    <lightning-layout-item size="12">
-                        <lightning-combobox
-                            label="AI Chat Provider"
-                            onchange={handleProviderChange}
-                            options={aiProviderOptions}
-                            placeholder="Select Provider"
-                            required
-                        ></lightning-combobox>
-                    </lightning-layout-item>
+    <div class="slds-section slds-is-open">
+        <h3 class="slds-section__title slds-theme_shade">
+            <span class="slds-truncate slds-p-horizontal_small" title={title}>{title}</span>
+        </h3>
+        <div class="slds-section__content">
+            <!-- <lightning-card title={title}> -->
+            <lightning-card>
+                <template if:true={isLoading}>
+                    <lightning-spinner size="large" variant="brand"></lightning-spinner>
                 </template>
-                <template if:true={selectedProviderModelOptions}>
-                    <lightning-layout-item size="12">
-                        <lightning-combobox
-                            label="AI Chat Provider Model"
-                            name="progress"
-                            onchange={handleProviderModelChange}
-                            options={selectedProviderModelOptions}
-                            placeholder="Select Model"
-                            required
-                            value=""
-                        ></lightning-combobox>
-                    </lightning-layout-item>
-                </template>
-                <template if:true={selectedProviderModel}>
-                    <lightning-layout-item size="12">
-                        <div class="slds-form slds-form_stacked">
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label slds-m-vertical_medium" for="toggle">{selectedProvider.TermsOfUse.Text}</label>
-                                <lightning-input
-                                    message-toggle-active="I accept the terms of use"
-                                    message-toggle-inactive="I do not accept the terms of use"
-                                    onchange={handleAcceptTermsOfUse}
-                                    required
-                                    type="toggle"
-                                    variant="label-stacked"
-                                ></lightning-input>
-                            </div>
-                        </div>
-                    </lightning-layout-item>
-                </template>
-                <lightning-layout-item class="slds-m-top_large" size="12">
-                    <button
-                        type="submit"
-                        class="slds-button slds-button_brand slds-button_stretch"
-                        disabled={isStartChatButtonDisabled}
-                        onclick={handleStartChat}
-                    >
-                        Get AI Exception Insights
-                    </button>
-                </lightning-layout-item>
-            </template>
-            <template if:true={showChat}>
-                <lightning-layout-item size="12">
-                    <section role="log" class="slds-chat" data-id="chat-thread" style="height: 400px; overflow-y: scroll">
-                        <ul class="slds-chat-list">
-                            <li class="slds-chat-listitem slds-chat-listitem_bookend">
-                                <div class="slds-chat-bookend">
-                                    <span class="slds-icon_container slds-icon-utility-chat slds-chat-icon">
-                                        <lightning-icon icon-name="utility:chat" size="x-small"></lightning-icon>
-                                    </span>
-                                    <p>{chatStartMessage}</p>
-                                </div>
-                            </li>
-
-                            <template for:each={messages} for:item="message">
-                                <li key={message.id} class={message.classes.li}>
-                                    <div class="slds-chat-message">
-                                        <div class="slds-chat-message__body">
-                                            <div class={message.classes.content}>
-                                                <span>{message.content}</span>
-                                            </div>
-                                            <div class="slds-chat-message__meta">{message.sentBySummary}</div>
-                                        </div>
-                                    </div>
-                                </li>
+                <div slot="actions">
+                    <lightning-button-group>
+                        <template if:true={showChat}>
+                            <template if:true={selectedProvider.ChatLog.IsEnabled}>
+                                <lightning-button
+                                    icon-name="utility:save"
+                                    label="Save & End Chat"
+                                    onclick={handleSaveChat}
+                                    title="Save & End Chat"
+                                    variant="success"
+                                ></lightning-button>
                             </template>
-                        </ul>
-                    </section>
-                </lightning-layout-item>
-                <lightning-layout-item size="12">
-                    <div style="display: flex; flex: 1">
-                        <lightning-textarea
-                            class="new-message-body"
-                            data-id="message-input"
-                            onchange={handleUserMessageChange}
-                            placeholder="Ask a question..."
-                            style="resize: none; width: 100%"
-                        >
-                        </lightning-textarea>
-                    </div>
-                </lightning-layout-item>
-                <lightning-layout-item size="12">
-                    <button
-                        class="slds-button slds-button_brand slds-button_stretch slds-m-top_x-small"
-                        data-id="send-message-button"
-                        disabled={isSendMessageButtonDisabled}
-                        onclick={handleSendMessage}
-                        type="submit"
-                    >
-                        <lightning-icon
-                            class="slds-button__icon slds-button__icon_left"
-                            icon-name="utility:send"
-                            size="x-small"
-                            variant="inverse"
-                        ></lightning-icon>
-                        Send Message
-                    </button>
-                </lightning-layout-item>
-            </template>
-        </lightning-layout>
-    </lightning-card>
+                            <lightning-button
+                                icon-name="utility:end_chat"
+                                label="End Chat"
+                                onclick={handleEndChat}
+                                title="End Chat"
+                                variant="destructive"
+                            ></lightning-button>
+                            <lightning-button
+                                icon-name="utility:expand"
+                                label="Expand"
+                                onclick={handleShowModal}
+                                title="Expand"
+                                variant="brand"
+                            ></lightning-button>
+                        </template>
+                        <lightning-button icon-name="utility:help" label="What's This?"></lightning-button>
+                        <!-- <template if:true={showChat}>
+                            <lightning-button-menu alternative-text="More Options" variant="border-filled">
+                                <template if:true={selectedProvider.ChatLog.IsEnabled}>
+                                    <lightning-button
+                                        icon-name="utility:save"
+                                        label="Save & End Chat"
+                                        onclick={handleSaveChat}
+                                        title="Save & End Chat"
+                                        variant="success"
+                                    ></lightning-button>
+                                </template>
+                                <lightning-button
+                                    icon-name="utility:end_chat"
+                                    label="End Chat"
+                                    onclick={handleEndChat}
+                                    title="End Chat"
+                                    variant="destructive"
+                                ></lightning-button>
+                            </lightning-button-menu>
+                        </template> -->
+                    </lightning-button-group>
+                </div>
+                <lightning-layout class="slds-m-around_medium slds-p-around_medium" multiple-rows>
+                    <template if:false={showChat}>
+                        <template if:true={aiProviderOptions}>
+                            <lightning-layout-item size="12">
+                                <lightning-combobox
+                                    label="AI Chat Provider"
+                                    onchange={handleProviderChange}
+                                    options={aiProviderOptions}
+                                    placeholder="Select Provider"
+                                    required
+                                ></lightning-combobox>
+                            </lightning-layout-item>
+                        </template>
+                        <template if:true={selectedProviderModelOptions}>
+                            <lightning-layout-item size="12">
+                                <lightning-combobox
+                                    label="AI Chat Provider Model"
+                                    name="progress"
+                                    onchange={handleProviderModelChange}
+                                    options={selectedProviderModelOptions}
+                                    placeholder="Select Model"
+                                    required
+                                    value=""
+                                ></lightning-combobox>
+                            </lightning-layout-item>
+                        </template>
+                        <template if:true={selectedProviderModel}>
+                            <lightning-layout-item size="12">
+                                <div class="slds-form slds-form_stacked">
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label slds-m-vertical_medium" for="toggle">{selectedProvider.TermsOfUse.Text}</label>
+                                        <lightning-input
+                                            message-toggle-active="I accept the terms of use"
+                                            message-toggle-inactive="I do not accept the terms of use"
+                                            onchange={handleAcceptTermsOfUse}
+                                            required
+                                            type="toggle"
+                                            variant="label-stacked"
+                                        ></lightning-input>
+                                    </div>
+                                </div>
+                            </lightning-layout-item>
+                        </template>
+                        <lightning-layout-item class="slds-m-top_large" size="12">
+                            <button
+                                type="submit"
+                                class="slds-button slds-button_brand slds-button_stretch"
+                                disabled={isStartChatButtonDisabled}
+                                onclick={handleStartChat}
+                            >
+                                Get AI Exception Insights
+                            </button>
+                        </lightning-layout-item>
+                    </template>
+                    <template if:true={showChat}>
+                        <lightning-layout-item size="12">
+                            <section role="log" class="slds-chat" data-id="chat-thread" style="height: 400px; overflow-y: scroll">
+                                <ul class="slds-chat-list">
+                                    <li class="slds-chat-listitem slds-chat-listitem_bookend">
+                                        <div class="slds-chat-bookend">
+                                            <span class="slds-icon_container slds-icon-utility-chat slds-chat-icon">
+                                                <lightning-icon icon-name="utility:chat" size="x-small"></lightning-icon>
+                                            </span>
+                                            <p>{chatStartMessage}</p>
+                                        </div>
+                                    </li>
+
+                                    <template for:each={messages} for:item="message">
+                                        <li key={message.id} class={message.classes.li}>
+                                            <div class="slds-chat-message">
+                                                <div class="slds-chat-message__body">
+                                                    <div class={message.classes.content}>
+                                                        <span>{message.content}</span>
+                                                    </div>
+                                                    <div class="slds-chat-message__meta">{message.sentBySummary}</div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </section>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12">
+                            <div style="display: flex; flex: 1">
+                                <lightning-textarea
+                                    class="new-message-body"
+                                    data-id="message-input"
+                                    onchange={handleUserMessageChange}
+                                    placeholder="Ask a question..."
+                                    style="resize: none; width: 100%"
+                                >
+                                </lightning-textarea>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12">
+                            <button
+                                class="slds-button slds-button_brand slds-button_stretch slds-m-top_x-small"
+                                data-id="send-message-button"
+                                disabled={isSendMessageButtonDisabled}
+                                onclick={handleSendMessage}
+                                type="submit"
+                            >
+                                <lightning-icon
+                                    class="slds-button__icon slds-button__icon_left"
+                                    icon-name="utility:send"
+                                    size="x-small"
+                                    variant="inverse"
+                                ></lightning-icon>
+                                Send Message
+                            </button>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </lightning-card>
+        </div>
+    </div>
     <template if:true={showModal}>
         <section class="slds-modal slds-fade-in-open slds-modal_small" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
             <div class="slds-modal__container" onkeydown={handleKeyDown}>
@@ -157,7 +192,7 @@
                         <lightning-spinner size="large" variant="brand"></lightning-spinner>
                     </template>
                     <lightning-layout-item size="12">
-                        <section role="log" class="slds-chat" data-id="chat-thread" style="height: 440px; overflow-y: scroll">
+                        <section role="log" class="slds-chat" data-id="chat-thread" style="height: 450px; overflow-y: scroll">
                             <ul class="slds-chat-list">
                                 <li class="slds-chat-listitem slds-chat-listitem_bookend">
                                     <div class="slds-chat-bookend">

@@ -158,10 +158,23 @@ export default class LoggerChatBot extends LightningElement {
         this.currentUserMessage = event.detail.value?.trim();
     }
 
+    _addUserMessage(userPrompt) {
+        // Create a UI version of the prompt message to display prior to actually
+        // sending to the LLM, so the user knows what is being sent
+        const serviceUserChatMessage = {
+            CreatedDate: new Date(),
+            Role: 'user',
+            Text: userPrompt
+        };
+        this.messages.push(this._convertChatMessageForMarkup(serviceUserChatMessage));
+    }
+
     handleSendMessage() {
         this.isLoading = true;
         const userPrompt = this.currentUserMessage;
         this.template.querySelector('[data-id="message-input"]').value = undefined;
+        this._addUserMessage(userPrompt);
+        this.showChat = true;
         this.currentUserMessage = undefined;
         const messageInputs = this.template.querySelectorAll('[data-id="message-input"]');
         messageInputs.forEach(messageInput => (messageInput.value = undefined));
@@ -181,7 +194,7 @@ export default class LoggerChatBot extends LightningElement {
                 });
 
                 this.messages = convertedMessages;
-                this.showChat = true;
+                // this.showChat = true;
                 this.isLoading = false;
                 this._scrollToBottomOfChatThreadContainers();
             })
