@@ -719,7 +719,11 @@ Prism.languages.sql = {
                         e.onclick = function () {
                             var e = P + '.' + i;
                             (r = !1),
-                                (location.hash = e),
+                                /*
+                                    Commented out for Nebula Logger - this frequently causes JS errors in LWC about location not being defined,
+                                    and everything still seems to function correctly without it ¯\_(ツ)_/¯
+                                */
+                                // (location.hash = e),
                                 setTimeout(function () {
                                     r = !0;
                                 }, 1);
@@ -774,10 +778,14 @@ Prism.languages.sql = {
         return !!(e && /pre/i.test(e.nodeName) && (e.hasAttribute('data-line') || (e.id && Prism.util.isActive(e, i))));
     }
     function c() {
-        var e = location.hash.slice(1);
-        s('.temporary.line-highlight').forEach(function (e) {
-            e.parentNode.removeChild(e);
-        });
+        /*
+            Commented out for Nebula Logger - this frequently causes JS errors in LWC about location not being defined,
+            and everything still seems to function correctly without it ¯\_(ツ)_/¯
+         */
+        // var e = location.hash.slice(1);
+        // s('.temporary.line-highlight').forEach(function (e) {
+        //     e.parentNode.removeChild(e);
+        // });
         var t = (e.match(/\.([\d,-]+)$/) || [, ''])[1];
         if (t && !document.getElementById(e)) {
             var i = e.slice(0, e.lastIndexOf('.')),
