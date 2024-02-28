@@ -786,15 +786,15 @@ Prism.languages.sql = {
         // s('.temporary.line-highlight').forEach(function (e) {
         //     e.parentNode.removeChild(e);
         // });
-        var t = (e.match(/\.([\d,-]+)$/) || [, ''])[1];
-        if (t && !document.getElementById(e)) {
-            var i = e.slice(0, e.lastIndexOf('.')),
-                n = document.getElementById(i);
-            n &&
-                (n.hasAttribute('data-line') || n.setAttribute('data-line', ''),
-                Prism.plugins.lineHighlight.highlightLines(n, t, 'temporary ')(),
-                r && document.querySelector('.temporary.line-highlight').scrollIntoView());
-        }
+        // var t = (e.match(/\.([\d,-]+)$/) || [, ''])[1];
+        // if (t && !document.getElementById(e)) {
+        //     var i = e.slice(0, e.lastIndexOf('.')),
+        //         n = document.getElementById(i);
+        //     n &&
+        //         (n.hasAttribute('data-line') || n.setAttribute('data-line', ''),
+        //         Prism.plugins.lineHighlight.highlightLines(n, t, 'temporary ')(),
+        //         r && document.querySelector('.temporary.line-highlight').scrollIntoView());
+        // }
     }
 })();
 !(function () {

@@ -10,6 +10,9 @@
         </div>
     </template>
     <template if:true={hasLoaded}>
+        <template if:false={sourceSnippet}>No source snippet available</template>
+    </template>
+    <template if:true={sourceSnippet}>
         <c-logger-page-section>
             <span slot="title">{sectionTitle}</span>
             <span slot="content">
