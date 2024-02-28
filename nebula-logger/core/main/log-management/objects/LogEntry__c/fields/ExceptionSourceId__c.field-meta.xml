@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>true</externalId>
-    <inlineHelpText>The ID of the Apex class or Apex trigger that generated the exception</inlineHelpText>
+    <inlineHelpText>The ID of the source metadata that generated the exception</inlineHelpText>
     <label>Exception Source ID</label>
     <length>18</length>
     <required>false</required>

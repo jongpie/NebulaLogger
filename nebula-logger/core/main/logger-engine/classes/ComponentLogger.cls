@@ -97,12 +97,8 @@ public inherited sharing class ComponentLogger {
         logEntryEvent.ExceptionType__c = componentError.type;
 
         LoggerStackTrace.SourceLanguage language = LoggerStackTrace.SourceLanguage.JavaScript;
-        // Each of the built-in exceptions use the fully-qualified name (e.g., System.DmlException)
-        // FIXME this probably doesn't work with custom exception classes - additional changes
-        // might be needed in logger LWC to fully handle that.
-        // TODO consider changing the prefix of all exception types (stored in LogEntry__c.ExceptionType__c)
-        // to use 'Apex' instead of 'System' (or in addition to System? Apex.System.DmlException?)
-        if (componentError.type?.startsWith('System')) {
+        // All exception classes in Apex must end in 'Exception'
+        if (componentError.type?.endsWith('Exception')) {
             language = LoggerStackTrace.SourceLanguage.Apex;
         }
         LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(language, componentError.stack);

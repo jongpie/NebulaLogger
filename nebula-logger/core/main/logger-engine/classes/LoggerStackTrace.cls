@@ -14,9 +14,19 @@
     'PMD.ApexDoc, PMD.AvoidDeeplyNestedIfStmts, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.NcssMethodCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 public without sharing class LoggerStackTrace {
-    private final static Set<String> IGNORED_APEX_ORIGINS = new Set<String>{ LoggerStackTrace.class.getName() };
-    private final static Set<String> IGNORED_JAVASCRIPT_ORIGINS = new Set<String>();
-    private final static String NEW_LINE_DELIMITER = '\n';
+    private static final Set<String> IGNORED_APEX_ORIGINS = new Set<String>{ LoggerStackTrace.class.getName() };
+    private static final Set<String> IGNORED_JAVASCRIPT_ORIGINS = new Set<String>();
+    private static final String NEW_LINE_DELIMITER = '\n';
+
+    private static final System.Pattern INVALID_NAMESPACED_STACK_TRACE_PATTERN {
+        get {
+            if (INVALID_NAMESPACED_STACK_TRACE_PATTERN == null) {
+                INVALID_NAMESPACED_STACK_TRACE_PATTERN = System.Pattern.compile('^\\([0-9A-Za-z_]+\\)$');
+            }
+            return INVALID_NAMESPACED_STACK_TRACE_PATTERN;
+        }
+        set;
+    }
 
     @SuppressWarnings('PMD.FieldNamingConventions')
     public enum SourceLanguage {
@@ -304,11 +314,7 @@ public without sharing class LoggerStackTrace {
 
     private static Boolean isValidStackTrace(String stackTraceString) {
         // Some lines, especially in the managed package, can result in '()' or '(Some_Namespace)'
-        if (
-            String.isBlank(stackTraceString) ||
-            stackTraceString == '()' ||
-            System.Pattern.compile('^\\([0-9A-Za-z_]+\\)$').matcher(stackTraceString).matches()
-        ) {
+        if (String.isBlank(stackTraceString) || stackTraceString == '()' || INVALID_NAMESPACED_STACK_TRACE_PATTERN.matcher(stackTraceString).matches()) {
             return false;
         }
 

@@ -45,22 +45,18 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private void setApexClassFields() {
+        String apexClassSObjectTypeName = Schema.ApexClass.SObjectType.getDescribe().getName();
         Set<String> apexClassNames = new Set<String>();
-        List<LogEntry__c> apexClassLogEntries = new List<LogEntry__c>();
+        Set<LogEntry__c> apexClassLogEntries = new Set<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            Boolean isApexClassLogEntry = false;
-            if (logEntry.OriginSourceMetadataType__c == 'ApexClass' && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
-                isApexClassLogEntry = true;
+            if (logEntry.OriginSourceMetadataType__c == apexClassSObjectTypeName && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
+                apexClassLogEntries.add(logEntry);
                 apexClassNames.add(logEntry.OriginSourceApiName__c);
             }
 
-            if (logEntry.ExceptionSourceMetadataType__c == 'ApexClass' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
-                isApexClassLogEntry = true;
-                apexClassNames.add(logEntry.ExceptionSourceApiName__c);
-            }
-
-            if (isApexClassLogEntry) {
+            if (logEntry.ExceptionSourceMetadataType__c == apexClassSObjectTypeName && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
                 apexClassLogEntries.add(logEntry);
+                apexClassNames.add(logEntry.ExceptionSourceApiName__c);
             }
         }
 
@@ -87,22 +83,18 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private void setApexTriggerFields() {
+        String apexTriggerSObjectTypeName = Schema.ApexTrigger.SObjectType.getDescribe().getName();
         Set<String> apexTriggerNames = new Set<String>();
-        List<LogEntry__c> apexTriggerLogEntries = new List<LogEntry__c>();
+        Set<LogEntry__c> apexTriggerLogEntries = new Set<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
-            Boolean isApexTriggerLogEntry = false;
-            if (String.isNotBlank(logEntry.OriginSourceApiName__c)) {
-                isApexTriggerLogEntry = true;
+            if (logEntry.OriginSourceMetadataType__c == apexTriggerSObjectTypeName && String.isNotBlank(logEntry.OriginSourceApiName__c)) {
+                apexTriggerLogEntries.add(logEntry);
                 apexTriggerNames.add(logEntry.OriginSourceApiName__c);
             }
 
-            if (logEntry.ExceptionSourceMetadataType__c == 'ApexTrigger' && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
-                isApexTriggerLogEntry = true;
-                apexTriggerNames.add(logEntry.ExceptionSourceApiName__c);
-            }
-
-            if (isApexTriggerLogEntry) {
+            if (logEntry.ExceptionSourceMetadataType__c == apexTriggerSObjectTypeName && String.isNotBlank(logEntry.ExceptionSourceApiName__c)) {
                 apexTriggerLogEntries.add(logEntry);
+                apexTriggerNames.add(logEntry.ExceptionSourceApiName__c);
             }
         }
 

@@ -235,7 +235,7 @@ private class LogManagementDataSelector_Tests {
     static void it_returns_log_for_specified_log_id() {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        Log__c anotherLog = (Log__c) log.clone();
+        Log__c anotherLog = log.clone();
         insert new List<Log__c>{ log, anotherLog };
 
         Log__c returnedLog = LogManagementDataSelector.getInstance().getLogById(log.Id);

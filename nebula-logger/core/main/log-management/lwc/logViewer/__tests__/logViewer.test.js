@@ -17,10 +17,8 @@ jest.mock(
                 });
             },
             loadStyle() {
-                return new Promise((resolve, _) => {
-                    // No-op for now
-                    resolve();
-                });
+                // No-op for now
+                return Promise.resolve();
             }
         };
     },

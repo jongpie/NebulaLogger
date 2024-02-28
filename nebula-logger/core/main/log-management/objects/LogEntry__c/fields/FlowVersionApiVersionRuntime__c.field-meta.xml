@@ -20,12 +20,12 @@
             <value>
                 <fullName>v60.0</fullName>
                 <default>false</default>
-                <label>60.0 - Spring &apos;24 Release</label>
+                <label>v61.0 - Summer &apos;24 Release</label>
             </value>
             <value>
-                <fullName>v59.0</fullName>
+                <fullName>v60.0</fullName>
                 <default>false</default>
-                <label>v59.0 - Winter &apos;24 Release</label>
+                <label>v60.0 - Spring &apos;24 Release</label>
             </value>
         </valueSetDefinition>
     </valueSet>

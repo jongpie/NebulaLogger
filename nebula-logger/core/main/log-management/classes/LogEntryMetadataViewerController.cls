@@ -30,13 +30,13 @@ public without sharing class LogEntryMetadataViewerController {
         LoggerStackTrace.SourceMetadataType sourceMetadataType;
         switch on sourceMetadata {
             when 'Exception' {
-                sourceApiName = (String) logEntry.ExceptionSourceApiName__c;
+                sourceApiName = logEntry.ExceptionSourceApiName__c;
                 sourceMetadataType = String.isBlank(logEntry.ExceptionSourceMetadataType__c)
                     ? null
                     : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.ExceptionSourceMetadataType__c);
             }
             when 'Origin' {
-                sourceApiName = (String) logEntry.OriginSourceApiName__c;
+                sourceApiName = logEntry.OriginSourceApiName__c;
                 sourceMetadataType = String.isBlank(logEntry.OriginSourceMetadataType__c)
                     ? null
                     : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.OriginSourceMetadataType__c);
