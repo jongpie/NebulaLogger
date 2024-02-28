@@ -17,7 +17,7 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>v60.0</fullName>
+                <fullName>v61.0</fullName>
                 <default>false</default>
                 <label>v61.0 - Summer &apos;24 Release</label>
             </value>
