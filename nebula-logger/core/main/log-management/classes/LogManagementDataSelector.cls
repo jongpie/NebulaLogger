@@ -53,15 +53,33 @@ public without sharing virtual class LogManagementDataSelector {
      * @param  apexClassNames The names of the Apex classes to query
      * @return                `List<ApexClass>` containing any matching records
      */
-    public virtual List<ApexClass> getApexClasses(List<String> apexClassNames) {
+    public virtual List<ApexClass> getApexClasses(Set<String> apexClassNames) {
         if (LoggerParameter.QUERY_APEX_CLASS_DATA == false) {
             return new List<ApexClass>();
         }
 
         return [
-            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexClass
             WHERE Name IN :apexClassNames
+            ORDER BY NamespacePrefix NULLS LAST
+        ];
+    }
+
+    /**
+     * @description Returns a list of `ApexTrigger` records
+     * @param  apexTriggerNames The names of the Apex triggers to query
+     * @return                `List<ApexTrigger>` containing any matching records
+     */
+    public virtual List<ApexTrigger> getApexTriggers(Set<String> apexTriggerNames) {
+        if (LoggerParameter.QUERY_APEX_TRIGGER_DATA == false) {
+            return new List<ApexTrigger>();
+        }
+
+        return [
+            SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
+            FROM ApexTrigger
+            WHERE Name IN :apexTriggerNames
             ORDER BY NamespacePrefix NULLS LAST
         ];
     }
@@ -200,6 +218,21 @@ public without sharing virtual class LogManagementDataSelector {
 
         String query = String.format(queryTemplate, textReplacements);
         return (Log__c) Database.query(String.escapeSingleQuotes(query));
+    }
+
+    /**
+     * @description Returns a `LogEntry__c` record
+     * @param  logEntryId The `ID` of the `LogEntry__c` record to query
+     * @return            The matching `LogEntry__c` record
+     */
+    public virtual LogEntry__c getLogEntryById(Id logEntryId) {
+        String queryTemplate = 'SELECT {0} FROM {1} WHERE Id = :logEntryId';
+
+        List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+        List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ','), Schema.LogEntry__c.SObjectType.getDescribe().getName() };
+
+        String query = String.format(queryTemplate, textReplacements);
+        return (LogEntry__c) Database.query(String.escapeSingleQuotes(query));
     }
 
     /**

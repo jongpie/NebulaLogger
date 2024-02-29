@@ -332,7 +332,11 @@ public without sharing class LoggerDataStore {
         }
 
         protected void finalizeRecords(List<SObject> platformEvents, Database.DmlOptions dmlOptions) {
-            if (dmlOptions?.AllowFieldTruncation == true) {
+            if (dmlOptions == null) {
+                dmlOptions = DEFAULT_PLATFORM_EVENT_DML_OPTIONS;
+            }
+
+            if (dmlOptions.AllowFieldTruncation == true) {
                 this.truncateStringFields(platformEvents);
             }
         }

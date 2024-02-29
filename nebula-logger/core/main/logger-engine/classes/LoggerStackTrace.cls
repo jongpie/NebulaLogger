@@ -1,0 +1,410 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Logger Engine
+ * @description Class used for tracking & parsing stack traces
+ * @see Logger
+ * @see LogEntryBuilder
+ */
+// TODO revisit these PMD rules & try to address as many as possible
+@SuppressWarnings(
+    'PMD.ApexDoc, PMD.AvoidDeeplyNestedIfStmts, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.NcssMethodCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+)
+public without sharing class LoggerStackTrace {
+    private static final Set<String> IGNORED_APEX_ORIGINS = new Set<String>{ LoggerStackTrace.class.getName() };
+    private static final Set<String> IGNORED_JAVASCRIPT_ORIGINS = new Set<String>();
+    private static final String NEW_LINE_DELIMITER = '\n';
+
+    private static final System.Pattern INVALID_NAMESPACED_STACK_TRACE_PATTERN {
+        get {
+            if (INVALID_NAMESPACED_STACK_TRACE_PATTERN == null) {
+                INVALID_NAMESPACED_STACK_TRACE_PATTERN = System.Pattern.compile('^\\([0-9A-Za-z_]+\\)$');
+            }
+            return INVALID_NAMESPACED_STACK_TRACE_PATTERN;
+        }
+        set;
+    }
+
+    @SuppressWarnings('PMD.FieldNamingConventions')
+    public enum SourceLanguage {
+        Apex,
+        JavaScript
+    }
+    @SuppressWarnings('PMD.FieldNamingConventions')
+    public enum SourceMetadataType {
+        // SourceLanguage == Apex
+        AnonymousBlock,
+        ApexClass,
+        ApexTrigger,
+        // SourceLanguage == JavaScript
+        AuraDefinitionBundle,
+        LightningComponentBundle
+    }
+
+    public abstract class SourceMetadata {
+        public SourceMetadataType MetadataType { get; private set; }
+        public String ApiName { get; private set; }
+        public String ActionName { get; private set; }
+        public Integer LineNumber { get; private set; }
+    }
+
+    public SourceLanguage Language { get; private set; }
+    public String Location { get; private set; }
+    public String ParsedStackTraceString { get; private set; }
+    public SourceMetadata Source { get; private set; }
+
+    /**
+     * @description Adds the specified Apex type to the the current transaction's list of ignored origin locations.
+     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
+     *              the log entry's origin location
+     * @param  apexType The Apex type of the class to ignore
+     */
+    public static void ignoreOrigin(System.Type apexType) {
+        ignoreOrigin(SourceLanguage.Apex, apexType.getName());
+    }
+
+    /**
+     * @description Adds the specified string-based origin to the the current transaction's list of ignored origin locations
+     *              for the specified source language.
+     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
+     *              the log entry's origin location
+     * @param  language The source language (Apex or JavaScript)
+     * @param  origin   The string-based name of the Apex type or lightning component name to ignore
+     */
+    public static void ignoreOrigin(SourceLanguage language, String origin) {
+        switch on language {
+            when Apex {
+                IGNORED_APEX_ORIGINS.add(origin);
+            }
+            when JavaScript {
+                IGNORED_JAVASCRIPT_ORIGINS.add(origin);
+            }
+        }
+    }
+
+    /**
+     * @description Adds the specified Apex types to the list of ignored origin locations for the current transaction.
+     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
+     *              the log entry's origin location
+     * @param  apexTypes A `Set` containing the Apex types of the classes to ignore
+     */
+    public static void ignoreOrigins(Set<System.Type> apexTypes) {
+        for (System.Type apexType : apexTypes) {
+            ignoreOrigin(apexType);
+        }
+    }
+
+    /**
+     * @description Constructor that automatically generates & parses stack trace information
+     *              based on the calling code
+     */
+    public LoggerStackTrace() {
+        this(new System.DmlException());
+    }
+
+    /**
+     * @description Constructor that parses stack trace information from the provided `Exception`
+     * @param  apexException An instance of any `Exception` class
+     */
+    public LoggerStackTrace(Exception apexException) {
+        this(apexException?.getStackTraceString());
+    }
+
+    /**
+     * @description Constructor that parses stack trace information from the provided `String`
+     * @param  apexStackTraceString The original stack trace value generated by the platform
+     */
+    public LoggerStackTrace(String apexStackTraceString) {
+        this(SourceLanguage.Apex, apexStackTraceString);
+    }
+
+    public LoggerStackTrace(SourceLanguage language, String sourceStackTraceString) {
+        this.Language = language;
+        switch on language {
+            when Apex {
+                this.parseApexStackTrace(sourceStackTraceString);
+            }
+            when JavaScript {
+                this.parseJavaScriptStackTrace(sourceStackTraceString);
+            }
+        }
+    }
+
+    private void parseApexStackTrace(String apexStackTraceString) {
+        if (isValidStackTrace(apexStackTraceString) == false) {
+            return;
+        }
+
+        // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
+        List<String> cleansedStackTraceLines = getCleansedStackTraceLines(SourceLanguage.Apex, apexStackTraceString);
+        this.ParsedStackTraceString = String.join(cleansedStackTraceLines, NEW_LINE_DELIMITER);
+        if (isValidStackTrace(this.ParsedStackTraceString) == false) {
+            return;
+        }
+
+        String firstStackTraceLine = cleansedStackTraceLines.get(0);
+        String cleanedLocation = firstStackTraceLine;
+        if (cleanedLocation.contains(':')) {
+            cleanedLocation = cleanedLocation.substringBefore(':');
+        }
+
+        // Example anonymous block: AnonymousBlock: line 9, column 1
+        // Example class (top-level), no namespace: Class.ExampleClassWithLogging.throwSomeException: line 25, column 1
+        // Example class (inner), no namespace: Class.ExampleClassWithLogging.SomeInnerClass.doSomethingElse(): line 97, column 1
+        // Example class (top-level), with namespace: Class.SomeNamespace.ExampleClassWithLogging.throwSomeException: line 25, column 1
+        // Example class (inner), with namespace: Class.SomeNamespace.ExampleClassWithLogging.SomeInnerClass.doSomethingElse(): line 97, column 1
+        // Example trigger: Trigger.SomeTrigger: line 4, column 1
+        if (cleanedLocation == 'AnonymousBlock') {
+            // this.AnonymousBlock = this.generateAnonymousBlock(cleanedLocation);
+            this.Source = this.generateAnonymousBlock(cleanedLocation);
+        } else if (cleanedLocation.startsWith('Class.')) {
+            cleanedLocation = cleanedLocation.substringAfter('Class.');
+            // this.ApexClass = this.generateApexClass(cleanedLocation);
+            this.Source = this.generateApexClass(cleanedLocation);
+        } else if (cleanedLocation.startsWith('Trigger.')) {
+            cleanedLocation = cleanedLocation.substringAfter('Trigger.');
+            // this.ApexTrigger = this.generateApexTrigger(cleanedLocation);
+            this.Source = this.generateApexTrigger(cleanedLocation);
+        }
+
+        String apexCodeLineNumberString = firstStackTraceLine.substringAfter('line ').substringBefore(',');
+        if (String.isNotBlank(apexCodeLineNumberString)) {
+            this.Source.LineNumber = Integer.valueOf(apexCodeLineNumberString);
+        }
+
+        this.Location = cleanedLocation;
+    }
+
+    // TODO revisit & see if this method can be simplified
+    private void parseJavaScriptStackTrace(String javaScriptStackTraceString) {
+        Boolean isAuraComponent = false;
+        Boolean isWebComponent = false;
+        String componentName;
+        String componentFunction;
+        String componentStackTraceLocation;
+        String codeLineNumberString;
+
+        // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
+        List<String> cleansedStackTraceLines = getCleansedStackTraceLines(SourceLanguage.JavaScript, javaScriptStackTraceString);
+        javaScriptStackTraceString = String.join(cleansedStackTraceLines, NEW_LINE_DELIMITER);
+
+        if (String.isNotBlank(javaScriptStackTraceString)) {
+            String auraComponentContent = '/n/components/';
+            String lwcModuleContent = 'modules/';
+            Boolean parentComponentFound = false;
+
+            List<String> stackTraceLines = new List<String>();
+            for (String currentStackTraceLine : javaScriptStackTraceString.split('\n')) {
+                if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent)) {
+                    isAuraComponent = true;
+                    parentComponentFound = true;
+                } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent)) {
+                    isWebComponent = true;
+                    parentComponentFound = true;
+                }
+
+                if (parentComponentFound == false) {
+                    continue;
+                }
+
+                stackTraceLines.add(currentStackTraceLine);
+            }
+
+            javaScriptStackTraceString = String.join(stackTraceLines, '\n');
+            if (String.isNotBlank(javaScriptStackTraceString)) {
+                String componentContent;
+                if (isAuraComponent) {
+                    componentContent = auraComponentContent;
+                } else if (isWebComponent) {
+                    componentContent = lwcModuleContent;
+                }
+                for (String currentStackTraceLine : javaScriptStackTraceString.split('\n')) {
+                    if (currentStackTraceLine.trim().startsWith('at eval')) {
+                        continue;
+                    }
+
+                    // Example: 'someFunctionName@modules/c/someComponentName.js:266:35'
+                    componentFunction = currentStackTraceLine.substringBefore('@').removeEnd('/<');
+                    String everythingAfterComponentContent = currentStackTraceLine.substringAfterLast(componentContent);
+                    componentName = everythingAfterComponentContent.substringBefore('.js');
+                    codeLineNumberString = everythingAfterComponentContent.substringAfter('.js:').substringBefore(':');
+                    break;
+                }
+                componentStackTraceLocation = componentName + '.' + componentFunction;
+            }
+        }
+
+        this.Location = componentStackTraceLocation;
+        this.ParsedStackTraceString = javaScriptStackTraceString;
+
+        if (isAuraComponent) {
+            this.Source = new AuraDefinitionBundle();
+        } else if (isWebComponent) {
+            this.Source = new LightningComponentBundle();
+        }
+
+        if (this.Source != null) {
+            this.Source.ApiName = componentName;
+            this.Source.ActionName = componentFunction;
+
+            if (String.isNotBlank(codeLineNumberString)) {
+                this.Source.LineNumber = Integer.valueOf(codeLineNumberString);
+            }
+        }
+    }
+
+    private AnonymousBlock generateAnonymousBlock(String cleanedLocation) {
+        AnonymousBlock anonymousBlock = new AnonymousBlock();
+        return anonymousBlock;
+    }
+
+    private static String getNamespacePrefix() {
+        String className = LoggerStackTrace.class.getName();
+        return className.contains('.') ? className.substringBefore('.') : '';
+    }
+
+    private ApexClass generateApexClass(String cleanedLocation) {
+        ApexClass apexClass = new ApexClass();
+
+        List<String> locationPieces = cleanedLocation.split('\\.');
+
+        // It's nearly impossible to distinguish between a namespaced class vs an inner-class
+        // Example: Nebula.Logger.saveLog() vs SomeClass.SomeInnerClass.someMethod().
+        // This can cause some issues for Nebula Logger's managed package, so compare
+        // to the namespace to determine if it's a namespaced class.
+        String apexTopLevelClassName;
+        if (locationPieces.get(0) == getNamespacePrefix()) {
+            apexTopLevelClassName = locationPieces.get(0) + '.' + locationPieces.get(1);
+        } else {
+            apexTopLevelClassName = locationPieces.get(0);
+        }
+
+        String apexMethodName = locationPieces.size() >= 2 ? locationPieces.get(locationPieces.size() - 1) : null;
+        String apexInnerClassName;
+        if (String.isBlank(apexMethodName)) {
+            apexInnerClassName = cleanedLocation.substringAfter(apexTopLevelClassName + '.');
+        } else {
+            apexInnerClassName = cleanedLocation.substringAfter(apexTopLevelClassName + '.').substringBefore('.' + apexMethodName);
+            apexInnerClassName = apexInnerClassName == apexMethodName ? null : apexInnerClassName;
+        }
+
+        // For inner class methods - 'like MyClass.SomeInnerClass.myMethod' - the top-level class is stored
+        // as the API name, and the inner class name + method name (e.g., 'SomeInnerClass.myMethod') are stored
+        // as the action name
+        String qualifiedMethodName = '';
+        if (apexInnerClassName != null) {
+            qualifiedMethodName = apexInnerClassName + '.';
+        }
+        qualifiedMethodName += apexMethodName;
+
+        apexClass.ApiName = apexTopLevelClassName;
+        apexClass.ActionName = qualifiedMethodName;
+
+        return apexClass;
+    }
+
+    private ApexTrigger generateApexTrigger(String cleanedLocation) {
+        ApexTrigger apexTrigger = new ApexTrigger();
+        apexTrigger.ApiName = cleanedLocation;
+        return apexTrigger;
+    }
+
+    private static Boolean isValidStackTrace(String stackTraceString) {
+        // Some lines, especially in the managed package, can result in '()' or '(Some_Namespace)'
+        if (String.isBlank(stackTraceString) || stackTraceString == '()' || INVALID_NAMESPACED_STACK_TRACE_PATTERN.matcher(stackTraceString).matches()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static List<String> getCleansedStackTraceLines(SourceLanguage language, String stackTraceString) {
+        List<String> stackTraceLines = new List<String>();
+        if (String.isBlank(stackTraceString)) {
+            return stackTraceLines;
+        }
+
+        String previousStackTraceLine;
+        for (String currentStackTraceLine : stackTraceString.split(NEW_LINE_DELIMITER)) {
+            // Duplicate lines are sometimes introduced, so skip the current line if it's the same as the previous line
+            if (currentStackTraceLine == previousStackTraceLine) {
+                continue;
+            }
+
+            Set<String> languageIgnoredOrigins;
+            switch on language {
+                when Apex {
+                    languageIgnoredOrigins = IGNORED_APEX_ORIGINS;
+                }
+                when JavaScript {
+                    languageIgnoredOrigins = IGNORED_JAVASCRIPT_ORIGINS;
+                }
+            }
+            // Don't include the logging system's classes in the stack trace
+            Boolean ignoreLine = false;
+            for (String ignoredOrigin : languageIgnoredOrigins) {
+                String formattedOrigin;
+                if (language == SourceLanguage.Apex) {
+                    // Example: 'Class.Logger.info: line 56, column 1'
+                    formattedOrigin = '.' + ignoredOrigin.trim() + '.';
+                } else if (language == SourceLanguage.JavaScript) {
+                    // Example: '/lightning/n/modules/logger.js:253:21'
+                    formattedOrigin = 'modules/' + ignoredOrigin.trim() + '.js';
+                }
+                if (currentStackTraceLine.contains(formattedOrigin)) {
+                    ignoreLine = true;
+                    continue;
+                }
+            }
+            // Some lines, especially in the managed package, can result in '()' or '(Nebula)'
+            // TODO consider removing this check - there may be some value in seeing a managed package's activity in the stack
+            if (isValidStackTrace(currentStackTraceLine) == false) {
+                ignoreLine = true;
+            }
+
+            if (ignoreLine == false) {
+                previousStackTraceLine = currentStackTraceLine;
+                stackTraceLines.add(currentStackTraceLine);
+            }
+        }
+
+        return stackTraceLines;
+    }
+
+    // Private classes that extend SourceMetadata - only the SourceMetadata class should be exposed publicly (at least for now)
+
+    // Apex metadata DTOs
+    private class AnonymousBlock extends SourceMetadata {
+        public AnonymousBlock() {
+            this.MetadataType = SourceMetadataType.AnonymousBlock;
+        }
+    }
+
+    private class ApexClass extends SourceMetadata {
+        public ApexClass() {
+            this.MetadataType = SourceMetadataType.ApexClass;
+        }
+    }
+
+    private class ApexTrigger extends SourceMetadata {
+        public ApexTrigger() {
+            this.MetadataType = SourceMetadataType.ApexTrigger;
+        }
+    }
+
+    // JavaScript metadata DTOs
+    private class AuraDefinitionBundle extends SourceMetadata {
+        public AuraDefinitionBundle() {
+            this.MetadataType = SourceMetadataType.AuraDefinitionBundle;
+        }
+    }
+
+    private class LightningComponentBundle extends SourceMetadata {
+        public LightningComponentBundle() {
+            this.MetadataType = SourceMetadataType.LightningComponentBundle;
+        }
+    }
+}

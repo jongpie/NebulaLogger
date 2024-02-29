@@ -1,10 +1,14 @@
-Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
+
+LoggerStackTrace.ignoreOrigins(new Set<System.Type>{ Logger.class, LogEntryEventBuilder.class, LogMessage.class});
+// Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
+
+// Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
 // Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_IMMEDIATE';
 // Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_QUEUEABLE';
 // Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
 // Logger.getUserSettings().DefaultPlatformEventStorageLocation__c = 'BIG_OBJECT';
 // Logger.getUserSettings().DefaultPlatformEventStorageLocation__c = 'CUSTOM_OBJECTS';
-upsert Logger.getUserSettings();
+// upsert Logger.getUserSettings();
 
 Logger.setScenario('an example transaction scenario name');
 Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
@@ -13,7 +17,8 @@ Logger.getUserSettings().IsDataMaskingEnabled__c = true;
 Schema.User currentUser = [SELECT Id, Name, Username, Profile.Name FROM User WHERE Id = :System.UserInfo.getUserId()];
 currentUser.AboutMe = 'I hope you dont leak my social, which is 400-11-9999, btw.';
 
-// new ExampleClassWithLogging().doSomething();
+new ExampleClassWithLogging().doSomething();
+new ExampleClassWithLogging().insertAccount('some account name');
 
 // Logger.error('Example ERROR entry', new DmlException('fake DML exception')).addTag('some important tag');
 Logger.error('Here is my fake Visa credit card 4000-1111-2222-0004, please don\'t steal it').addTag('data masking rule').addTag('credit card masking');
@@ -45,4 +50,4 @@ Logger.info('logging an HTTP response').setHttpResponseDetails(response);
 
 Logger.saveLog();
 
-throw new System.DmlException('aahhhhh!');
+// throw new System.DmlException('aahhhhh!');

@@ -30,10 +30,19 @@ global with sharing class LogEntryEventBuilder {
     @TestVisible
     private String debugMessage = '';
     private Boolean detailsAreSet = false;
-    private Set<String> ignoredApexClasses = new Set<String>();
     private Boolean shouldSave;
     private Set<String> tags = new Set<String>();
     private Boolean tagDetailsAreSet = true;
+
+    private static final LoggerSObjectProxy.AuthSession CACHED_AUTH_SESSION_PROXY {
+        get {
+            if (CACHED_AUTH_SESSION_PROXY == null) {
+                CACHED_AUTH_SESSION_PROXY = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+            }
+            return CACHED_AUTH_SESSION_PROXY;
+        }
+        set;
+    }
 
     private static final Map<String, LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
         get {
@@ -41,6 +50,36 @@ global with sharing class LogEntryEventBuilder {
                 CACHED_DATA_MASK_RULES = loadDataMaskRules();
             }
             return CACHED_DATA_MASK_RULES;
+        }
+        set;
+    }
+
+    private static final LoggerSObjectProxy.Network CACHED_NETWORK_PROXY {
+        get {
+            if (CACHED_NETWORK_PROXY == null) {
+                CACHED_NETWORK_PROXY = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(networkId);
+            }
+            return CACHED_NETWORK_PROXY;
+        }
+        set;
+    }
+
+    private static final Schema.Organization CACHED_ORGANIZATION {
+        get {
+            if (CACHED_ORGANIZATION == null) {
+                CACHED_ORGANIZATION = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+            }
+            return CACHED_ORGANIZATION;
+        }
+        set;
+    }
+
+    private static final Schema.User CACHED_USER {
+        get {
+            if (CACHED_USER == null) {
+                CACHED_USER = LoggerEngineDataSelector.getInstance().getCachedUser();
+            }
+            return CACHED_USER;
         }
         set;
     }
@@ -76,7 +115,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
+     * @description `Deprecated` - Formally used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
      * @param  userSettings      The instance of `LoggerSettings__c` for the current to use to control any feature flags
      * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
      * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
@@ -84,6 +123,18 @@ global with sharing class LogEntryEventBuilder {
      */
     @SuppressWarnings('PMD.ExcessiveParameterList, PMD.NcssConstructorCount')
     public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
+        // TOODO eliminate this constructor
+        this(userSettings, entryLoggingLevel, shouldSave);
+    }
+
+    /**
+     * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
+     * @param  userSettings      The instance of `LoggerSettings__c` for the current to use to control any feature flags
+     * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
+     * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
+     */
+    @SuppressWarnings('PMD.NcssConstructorCount')
+    public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave) {
         this.shouldSave = shouldSave;
         if (this.shouldSave() == false) {
             return;
@@ -92,9 +143,6 @@ global with sharing class LogEntryEventBuilder {
         this.userSettings = userSettings;
         this.organizationEnvironmentType = getOrganizationEnvironmentType(userSettings);
         this.entryLoggingLevel = entryLoggingLevel;
-        if (ignoredOrigins != null) {
-            this.ignoredApexClasses.addAll(ignoredOrigins);
-        }
 
         Datetime timestamp = System.now();
         this.logEntryEvent = new LogEntryEvent__e(
@@ -174,10 +222,12 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.ExceptionMessage__c = apexException.getMessage();
         this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
 
-        // Stack traces are not returned for managed packages
-        if (isValidStackTrace(apexException.getStackTraceString())) {
-            this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
-        }
+        LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(apexException);
+        this.logEntryEvent.ExceptionLocation__c = exceptionStackTrace.Location;
+        this.logEntryEvent.ExceptionSourceActionName__c = exceptionStackTrace.Source?.ActionName;
+        this.logEntryEvent.ExceptionSourceApiName__c = exceptionStackTrace.Source?.ApiName;
+        this.logEntryEvent.ExceptionSourceMetadataType__c = exceptionStackTrace.Source?.MetadataType.name();
+        this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace.ParsedStackTraceString;
 
         return this;
     }
@@ -743,53 +793,11 @@ global with sharing class LogEntryEventBuilder {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
-        if (LoggerParameter.ENABLE_STACK_TRACE_PARSING == false || this.shouldSave() == false || isValidStackTrace(stackTraceString) == false) {
+        if (this.shouldSave() == false || LoggerParameter.ENABLE_STACK_TRACE_PARSING == false) {
             return this;
         }
 
-        List<String> stackTraceLines = new List<String>();
-        String previousStackTraceLine;
-        for (String currentStackTraceLine : stackTraceString.split(NEW_LINE_DELIMITER)) {
-            // Duplicate lines are sometimes introduced, so skip the current line if it's the same as the previous line
-            if (currentStackTraceLine == previousStackTraceLine) {
-                continue;
-            }
-
-            // Don't include the logging system's classes in the stack trace
-            Boolean ignoreLine = false;
-            for (String ignoredApexClass : this.ignoredApexClasses) {
-                if (currentStackTraceLine.contains('.' + ignoredApexClass.trim() + '.')) {
-                    ignoreLine = true;
-                    continue;
-                }
-            }
-            // Some lines, especially in the managed package, can result in '()' or '(Nebula)'
-            if (isValidStackTrace(currentStackTraceLine) == false) {
-                ignoreLine = true;
-            }
-
-            if (ignoreLine == false) {
-                previousStackTraceLine = currentStackTraceLine;
-                stackTraceLines.add(currentStackTraceLine);
-            }
-        }
-
-        // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
-        stackTraceString = String.join(stackTraceLines, NEW_LINE_DELIMITER);
-        if (isValidStackTrace(stackTraceString)) {
-            String originLocation = stackTraceLines.get(0);
-            if (originLocation.contains(':')) {
-                originLocation = originLocation.substringBefore(':');
-            }
-            if (originLocation.startsWith('Class.')) {
-                originLocation = originLocation.substringAfter('Class.');
-            }
-
-            this.logEntryEvent.OriginLocation__c = originLocation;
-            this.logEntryEvent.StackTrace__c = stackTraceString;
-        }
-
-        return this;
+        return this.parseStackTrace(new LoggerStackTrace(stackTraceString));
     }
 
     /**
@@ -874,12 +882,24 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void parseStackTrace() {
-        if (LoggerParameter.ENABLE_STACK_TRACE_PARSING == false) {
+        if (this.shouldSave() == false || LoggerParameter.ENABLE_STACK_TRACE_PARSING == false) {
             return;
         }
 
-        System.DmlException stackTraceException = new System.DmlException();
-        this.parseStackTrace(stackTraceException.getStackTraceString());
+        this.parseStackTrace(new LoggerStackTrace());
+    }
+
+    private LogEntryEventBuilder parseStackTrace(LoggerStackTrace originStackTrace) {
+        if (this.shouldSave() == false || LoggerParameter.ENABLE_STACK_TRACE_PARSING == false) {
+            return this;
+        }
+
+        this.logEntryEvent.OriginLocation__c = originStackTrace.Location;
+        this.logEntryEvent.OriginSourceActionName__c = originStackTrace.Source?.ActionName;
+        this.logEntryEvent.OriginSourceApiName__c = originStackTrace.Source?.ApiName;
+        this.logEntryEvent.OriginSourceMetadataType__c = originStackTrace.Source?.MetadataType.name();
+        this.logEntryEvent.StackTrace__c = originStackTrace.ParsedStackTraceString;
+        return this;
     }
 
     private void setTagsDetails() {
@@ -920,24 +940,23 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        LoggerSObjectProxy.AuthSession cachedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
-        if (cachedAuthSessionProxy == null) {
+        if (CACHED_AUTH_SESSION_PROXY == null) {
             return;
         }
 
-        logEntryEvent.LoginApplication__c = cachedAuthSessionProxy.LoginHistory.Application;
-        logEntryEvent.LoginBrowser__c = cachedAuthSessionProxy.LoginHistory.Browser;
-        logEntryEvent.LoginHistoryId__c = cachedAuthSessionProxy.LoginHistoryId;
-        logEntryEvent.LoginPlatform__c = cachedAuthSessionProxy.LoginHistory.Platform;
-        logEntryEvent.LoginType__c = cachedAuthSessionProxy.LoginType;
-        logEntryEvent.LogoutUrl__c = cachedAuthSessionProxy.LogoutUrl;
-        logEntryEvent.SessionId__c = cachedAuthSessionProxy.Id;
-        logEntryEvent.SessionSecurityLevel__c = cachedAuthSessionProxy.SessionSecurityLevel;
-        logEntryEvent.SessionType__c = cachedAuthSessionProxy.SessionType;
-        logEntryEvent.SourceIp__c = cachedAuthSessionProxy.SourceIp;
+        logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.Application;
+        logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.Browser;
+        logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION_PROXY.LoginHistoryId;
+        logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.Platform;
+        logEntryEvent.LoginType__c = CACHED_AUTH_SESSION_PROXY.LoginType;
+        logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION_PROXY.LogoutUrl;
+        logEntryEvent.SessionId__c = CACHED_AUTH_SESSION_PROXY.Id;
+        logEntryEvent.SessionSecurityLevel__c = CACHED_AUTH_SESSION_PROXY.SessionSecurityLevel;
+        logEntryEvent.SessionType__c = CACHED_AUTH_SESSION_PROXY.SessionType;
+        logEntryEvent.SourceIp__c = CACHED_AUTH_SESSION_PROXY.SourceIp;
 
-        if (cachedAuthSessionProxy.LoginHistory.UserId != CURRENT_USER.Id) {
-            logEntryEvent.ImpersonatedById__c = cachedAuthSessionProxy.LoginHistory.UserId;
+        if (CACHED_AUTH_SESSION_PROXY.LoginHistory.UserId != CURRENT_USER.Id) {
+            logEntryEvent.ImpersonatedById__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.UserId;
         }
     }
 
@@ -947,16 +966,15 @@ global with sharing class LogEntryEventBuilder {
         }
 
         logEntryEvent.NetworkId__c = networkId;
-        LoggerSObjectProxy.Network cachedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(networkId);
-        if (cachedNetworkProxy == null) {
+        if (CACHED_NETWORK_PROXY == null) {
             return;
         }
 
-        logEntryEvent.NetworkLoginUrl__c = System.Network.getLoginUrl(cachedNetworkProxy.Id);
-        logEntryEvent.NetworkLogoutUrl__c = System.Network.getLogoutUrl(cachedNetworkProxy.Id);
-        logEntryEvent.NetworkName__c = cachedNetworkProxy.Name;
-        logEntryEvent.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(cachedNetworkProxy.Id);
-        logEntryEvent.NetworkUrlPathPrefix__c = cachedNetworkProxy.UrlPathPrefix;
+        logEntryEvent.NetworkLoginUrl__c = System.Network.getLoginUrl(CACHED_NETWORK_PROXY.Id);
+        logEntryEvent.NetworkLogoutUrl__c = System.Network.getLogoutUrl(CACHED_NETWORK_PROXY.Id);
+        logEntryEvent.NetworkName__c = CACHED_NETWORK_PROXY.Name;
+        logEntryEvent.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(CACHED_NETWORK_PROXY.Id);
+        logEntryEvent.NetworkUrlPathPrefix__c = CACHED_NETWORK_PROXY.UrlPathPrefix;
     }
 
     private static void setQueriedOrganizationDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
@@ -964,17 +982,16 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        if (cachedOrganization == null) {
+        if (CACHED_ORGANIZATION == null) {
             return;
         }
 
         logEntryEvent.OrganizationEnvironmentType__c = getOrganizationEnvironmentType(userSettings);
-        logEntryEvent.OrganizationId__c = cachedOrganization?.Id;
-        logEntryEvent.OrganizationInstanceName__c = cachedOrganization?.InstanceName;
-        logEntryEvent.OrganizationName__c = cachedOrganization?.Name;
-        logEntryEvent.OrganizationNamespacePrefix__c = cachedOrganization?.NamespacePrefix;
-        logEntryEvent.OrganizationType__c = cachedOrganization?.OrganizationType;
+        logEntryEvent.OrganizationId__c = CACHED_ORGANIZATION?.Id;
+        logEntryEvent.OrganizationInstanceName__c = CACHED_ORGANIZATION?.InstanceName;
+        logEntryEvent.OrganizationName__c = CACHED_ORGANIZATION?.Name;
+        logEntryEvent.OrganizationNamespacePrefix__c = CACHED_ORGANIZATION?.NamespacePrefix;
+        logEntryEvent.OrganizationType__c = CACHED_ORGANIZATION?.OrganizationType;
     }
 
     private static void setQueriedUserDetails(LogEntryEvent__e logEntryEvent, LoggerSettings__c userSettings) {
@@ -982,17 +999,16 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        Schema.User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
-        if (cachedUser == null) {
+        if (CACHED_USER == null) {
             return;
         }
 
-        logEntryEvent.LoggedByUsername__c = cachedUser.Username;
-        logEntryEvent.ProfileName__c = cachedUser.Profile.Name;
-        logEntryEvent.UserLicenseDefinitionKey__c = cachedUser.Profile.UserLicense.LicenseDefinitionKey;
-        logEntryEvent.UserLicenseId__c = cachedUser.Profile.UserLicenseId;
-        logEntryEvent.UserLicenseName__c = cachedUser.Profile.UserLicense.Name;
-        logEntryEvent.UserRoleName__c = cachedUser.UserRole?.Name;
+        logEntryEvent.LoggedByUsername__c = CACHED_USER.Username;
+        logEntryEvent.ProfileName__c = CACHED_USER.Profile.Name;
+        logEntryEvent.UserLicenseDefinitionKey__c = CACHED_USER.Profile.UserLicense.LicenseDefinitionKey;
+        logEntryEvent.UserLicenseId__c = CACHED_USER.Profile.UserLicenseId;
+        logEntryEvent.UserLicenseName__c = CACHED_USER.Profile.UserLicense.Name;
+        logEntryEvent.UserRoleName__c = CACHED_USER.UserRole?.Name;
     }
 
     private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {

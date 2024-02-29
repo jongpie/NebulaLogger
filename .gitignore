@@ -17,3 +17,4 @@ yarn.lock
 # Files to exclude
 *.log
 **/lwc/jsconfig.json
+.config

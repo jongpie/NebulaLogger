@@ -10,7 +10,7 @@
     null
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Trigger</label>
+    <label>Trigger Operation</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
     <trackTrending>false</trackTrending>

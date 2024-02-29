@@ -54,6 +54,10 @@ Abstract class used by trigger handlers for shared logic
 
 Proxy class used as a middle layer between some problematic SObject Types and the rest of Nebula Logger&apos;s codebase. Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another, such as not being mockable or creatable, or not existing in all orgs.
 
+### [LoggerStackTrace](Logger-Engine/LoggerStackTrace)
+
+Class used for tracking &amp; parsing stack traces
+
 ## Log Management
 
 ### [LogBatchPurgeController](Log-Management/LogBatchPurgeController)
@@ -83,6 +87,10 @@ Dynamically returns `LogEntry__c` field sets in App Builder when configuring the
 ### [LogEntryHandler](Log-Management/LogEntryHandler)
 
 Manages setting fields on `LogEntry__c` before insert &amp; before update
+
+### [LogEntryMetadataViewerController](Log-Management/LogEntryMetadataViewerController)
+
+Controller class for the LWC `logEntryMetadataViewer`
 
 ### [LogEntryTagHandler](Log-Management/LogEntryTagHandler)
 

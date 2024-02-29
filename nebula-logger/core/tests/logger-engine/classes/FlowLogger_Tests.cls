@@ -33,9 +33,19 @@ private class FlowLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceActionName__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceApiName__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionStackTrace__c, 'Flow does not have a stack trace, so expect null');
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionType__c);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginSourceApiName__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginSourceMetadataType__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginType__c);
+        System.Assert.isNull(publishedLogEntryEvent.StackTrace__c, 'Flow does not have a stack trace, so expect null');
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
@@ -65,9 +75,19 @@ private class FlowLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceActionName__c, 'Flow logging does not have an action name, so expect null');
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceApiName__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionStackTrace__c, 'Flow does not have a stack trace, so expect null');
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionType__c);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginSourceApiName__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginSourceMetadataType__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginType__c);
+        System.Assert.isNull(publishedLogEntryEvent.StackTrace__c, 'Flow does not have a stack trace, so expect null');
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
@@ -102,9 +122,19 @@ private class FlowLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceActionName__c, 'Flow logging does not have an action name, so expect null');
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceApiName__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionStackTrace__c, 'Flow does not have a stack trace, so expect null');
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionType__c);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginSourceApiName__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginSourceMetadataType__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginType__c);
+        System.Assert.isNull(publishedLogEntryEvent.StackTrace__c, 'Flow does not have a stack trace, so expect null');
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
@@ -143,9 +173,19 @@ private class FlowLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(flowEntry.faultMessage, publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceActionName__c, 'Flow logging does not have an action name, so expect null');
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.ExceptionSourceApiName__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionStackTrace__c, 'Flow does not have a stack trace, so expect null');
+        System.Assert.areEqual(FlowLogger.FLOW_EXCEPTION_TYPE_NAME, publishedLogEntryEvent.ExceptionType__c);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginSourceApiName__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginSourceMetadataType__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginType__c);
+        System.Assert.isNull(publishedLogEntryEvent.StackTrace__c, 'Flow does not have a stack trace, so expect null');
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
@@ -185,9 +225,19 @@ private class FlowLogger_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(FlowLogger.FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE, publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionSourceActionName__c, 'Flow logging does not have an action name, so expect null');
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.ExceptionSourceApiName__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.ExceptionSourceMetadataType__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionStackTrace__c, 'Flow does not have a stack trace, so expect null');
+        System.Assert.areEqual(FlowLogger.FLOW_EXCEPTION_TYPE_NAME, publishedLogEntryEvent.ExceptionType__c);
         System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual(flowEntry.flowName, publishedLogEntryEvent.OriginSourceApiName__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginSourceMetadataType__c);
+        System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginType__c);
+        System.Assert.isNull(publishedLogEntryEvent.StackTrace__c, 'Flow does not have a stack trace, so expect null');
         System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 }

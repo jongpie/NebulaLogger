@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OriginSourceMetadataType__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <externalId>false</externalId>
+    <label>Origin Source Metadata Type</label>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>AnonymousBlock</fullName>
+                <default>false</default>
+                <label>AnonymousBlock</label>
+            </value>
+            <value>
+                <fullName>ApexClass</fullName>
+                <default>false</default>
+                <label>ApexClass</label>
+            </value>
+            <value>
+                <fullName>ApexTrigger</fullName>
+                <default>false</default>
+                <label>ApexTrigger</label>
+            </value>
+            <value>
+                <fullName>AuraDefinitionBundle</fullName>
+                <default>false</default>
+                <label>AuraDefinitionBundle</label>
+            </value>
+            <value>
+                <fullName>Flow</fullName>
+                <default>false</default>
+                <label>Flow</label>
+            </value>
+            <value>
+                <fullName>LightningComponentBundle</fullName>
+                <default>false</default>
+                <label>LightningComponentBundle</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

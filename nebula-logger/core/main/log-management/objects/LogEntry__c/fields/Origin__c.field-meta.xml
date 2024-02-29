@@ -4,7 +4,20 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <formula>TEXT(OriginType__c) + IF(OriginLocation__c == null, &apos;&apos;, &apos;.&apos; + OriginLocation__c)</formula>
+    <formula>IF(
+  ISPICKVAL(OriginSourceMetadataType__c, &apos;&apos;),
+  TEXT(OriginType__c),
+  TEXT(OriginSourceMetadataType__c)
+)
++
+IF(
+  OR (
+    OriginLocation__c == null,
+    OriginLocation__c == &apos;AnonymousBlock&apos;
+  ),
+  &apos;&apos;,
+  &apos;.&apos; + OriginLocation__c
+)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Origin</label>
     <required>false</required>

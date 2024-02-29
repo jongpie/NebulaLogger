@@ -738,7 +738,7 @@ public class LoggerMockDataCreator {
         }
 
         private String getStringValue(Schema.DescribeFieldResult fieldDescribe) {
-            String stringValue = 'Test string for ' + fieldDescribe.getType();
+            String stringValue = fieldDescribe.getName() + ' Test STRING';
             Integer maxLength = fieldDescribe.getLength();
 
             return stringValue.left(maxLength).trim();

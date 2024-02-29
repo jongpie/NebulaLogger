@@ -7,6 +7,24 @@ const MOCK_GET_LOG = require('./data/LogViewerController.getLog.json');
 document.execCommand = jest.fn();
 
 jest.mock(
+    'lightning/platformResourceLoader',
+    () => {
+        return {
+            loadScript() {
+                return new Promise((resolve, _) => {
+                    global.Prism = require('../../../staticresources/LoggerResources/prism.js');
+                    resolve();
+                });
+            },
+            loadStyle() {
+                // No-op for now
+                return Promise.resolve();
+            }
+        };
+    },
+    { virtual: true }
+);
+jest.mock(
     '@salesforce/apex/LogViewerController.getLog',
     () => {
         const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
@@ -62,7 +80,7 @@ describe('Logger JSON Viewer lwc tests', () => {
         expect(tab.value).toEqual('json');
         tab.dispatchEvent(new CustomEvent('active'));
         await Promise.resolve('resolves dispatchEvent() for tab');
-        const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('pre').textContent);
+        const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('c-logger-code-viewer').code);
         const reconstructedLog = { ...MOCK_GET_LOG.log };
         reconstructedLog[MOCK_GET_LOG.logEntriesRelationshipName] = [...MOCK_GET_LOG.logEntries];
         expect(clipboardContent).toEqual(reconstructedLog);
@@ -92,7 +110,7 @@ describe('Logger JSON Viewer lwc tests', () => {
 
             expectedContentLines.push(columns.join('\n'));
         });
-        const clipboardContent = logViewer.shadowRoot.querySelector('pre').textContent;
+        const clipboardContent = logViewer.shadowRoot.querySelector('c-logger-code-viewer').code;
         expect(clipboardContent).toEqual(expectedContentLines.join('\n\n' + '-'.repeat(36) + '\n\n'));
         expect(document.execCommand).toHaveBeenCalledWith('copy');
     });

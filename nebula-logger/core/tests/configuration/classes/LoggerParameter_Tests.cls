@@ -69,6 +69,17 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_enable_stack_trace_parsing() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = JSON.serialize(false));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.ENABLE_STACK_TRACE_PARSING;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_enable_system_messages() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(mockValue));
@@ -130,6 +141,17 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
+
+        System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_apex_trigger_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_TRIGGER_DATA;
 
         System.Assert.areEqual(mockValue, returnedValue);
     }

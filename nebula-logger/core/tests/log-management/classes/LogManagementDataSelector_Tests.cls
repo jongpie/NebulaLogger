@@ -34,9 +34,9 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_matching_apex_classes_for_specified_class_names() {
-        List<String> targetApexClassNames = new List<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
+        Set<String> targetApexClassNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
         List<ApexClass> expectedResults = [
-            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexClass
             WHERE Name IN :targetApexClassNames
             ORDER BY NamespacePrefix NULLS LAST
@@ -50,11 +50,39 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_does_not_query_apex_classes_when_disabled_via_logger_parameter() {
         // The class names used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
-        List<String> targetApexClassNames = new List<String>{ 'SomeClass', 'AnotherClass' };
+        Set<String> targetApexClassNames = new Set<String>{ 'SomeClass', 'AnotherClass' };
         Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
 
         List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
+
+        System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
+        System.Assert.areEqual(0, returnedResults.size());
+    }
+
+    @IsTest
+    static void it_returns_matching_apex_triggers_for_specified_class_names() {
+        Set<String> targetApexTriggerNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
+        List<ApexTrigger> expectedResults = [
+            SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
+            FROM ApexTrigger
+            WHERE Name IN :targetApexTriggerNames
+            ORDER BY NamespacePrefix NULLS LAST
+        ];
+
+        List<ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
+
+        System.Assert.areEqual(expectedResults, returnedResults);
+    }
+
+    @IsTest
+    static void it_does_not_query_apex_triggers_when_disabled_via_logger_parameter() {
+        // The trigger names used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
+        Set<String> targetApexTriggerNames = new Set<String>{ 'SomeTrigger', 'AnotherTrigger' };
+        Integer originalQueryCount = System.Limits.getQueries();
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = String.valueOf(false)));
+
+        List<ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
 
         System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
         System.Assert.areEqual(0, returnedResults.size());
@@ -207,12 +235,26 @@ private class LogManagementDataSelector_Tests {
     static void it_returns_log_for_specified_log_id() {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        Log__c anotherLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        Log__c anotherLog = log.clone();
         insert new List<Log__c>{ log, anotherLog };
 
         Log__c returnedLog = LogManagementDataSelector.getInstance().getLogById(log.Id);
 
         System.Assert.areEqual(log.Id, returnedLog.Id);
+    }
+
+    @IsTest
+    static void it_returns_log_entry_for_specified_log_entry_id() {
+        LoggerSObjectHandler.shouldExecute(false);
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert log;
+        LogEntry__c logEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id)).populateRequiredFields().getRecord();
+        LogEntry__c anotherLogEntry = logEntry.clone();
+        insert new List<LogEntry__c>{ logEntry, anotherLogEntry };
+
+        LogEntry__c returnedLogEntry = LogManagementDataSelector.getInstance().getLogEntryById(logEntry.Id);
+
+        System.Assert.areEqual(logEntry.Id, returnedLogEntry.Id);
     }
 
     @IsTest

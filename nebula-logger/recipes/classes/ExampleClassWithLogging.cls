@@ -1,43 +1,22 @@
-/**
- * @description An example Apex class for utilizing Nebula Logger.
- */
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.ApexDoc')
 public with sharing class ExampleClassWithLogging {
-    /**
-     * @description Default constructor, logs initial message but does not save said log.
-     */
-    public ExampleClassWithLogging() {
-        LogMessage logMessage = new LogMessage('new instance of {0} initialized', ExampleClassWithLogging.class.getName());
-        Logger.info(logMessage);
-    }
-
-    /**
-     * @description Example method for logging that saves log and writes a log entry.
-     */
     public void doSomething() {
-        Logger.info('running doSomething() method!');
+        Logger.finest('Starting the doSomething() method!');
 
-        new ExampleInnerClass().doAnInnerSomething();
-
-        Logger.saveLog();
+        try {
+            insertContact('Some Contact Name');
+        } catch (Exception ex) {
+            Logger.error('An unexpected exception occurred', ex);
+            Logger.saveLog();
+            throw ex;
+        }
     }
 
-    /**
-     * @description Example inner class.
-     */
-    public class ExampleInnerClass {
-        /**
-         * @description Example constructor
-         */
-        ExampleInnerClass() {
-            LogMessage logMessage = new LogMessage('new instance of {0} initialized', ExampleInnerClass.class.getName());
-            Logger.info(logMessage);
-        }
-
-        /**
-         * @description example method in inner class.
-         */
-        public void doAnInnerSomething() {
-            Logger.info('running doAnInnerSomething() method!');
-        }
+    public Schema.Contact insertContact(String contactName) {
+        Schema.Contact contact = new Schema.Contact();
+        // TODO don't forget to populate the record's required fields
+        // before deploying this code to prod!
+        insert contact;
+        return contact;
     }
 }

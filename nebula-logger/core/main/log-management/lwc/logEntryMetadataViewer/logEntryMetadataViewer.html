@@ -1,0 +1,90 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+    <template if:false={hasLoaded}>
+        <div class="slds-is-relative" style="min-height: 6em">
+            <lightning-spinner variant="inverse"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={hasLoaded}>
+        <template if:false={sourceSnippet}>No source snippet available</template>
+    </template>
+    <template if:true={sourceSnippet}>
+        <c-logger-page-section>
+            <span slot="title">{sectionTitle}</span>
+            <span slot="content">
+                <lightning-layout multiple-rows vertical-align="start">
+                    <lightning-layout-item size="12">
+                        <c-logger-code-viewer
+                            code={sourceSnippet.Code}
+                            data-id="sourceSnippet"
+                            language={sourceSnippet.Language}
+                            starting-line-number={sourceSnippet.StartingLineNumber}
+                            target-line-number={sourceSnippet.TargetLineNumber}
+                        >
+                            <span slot="title">{sourceSnippet.Title}</span>
+                            <span slot="actions">
+                                <lightning-button-group>
+                                    <template if:true={hasFullSourceMetadata}>
+                                        <lightning-button
+                                            icon-name="utility:apex"
+                                            label="View Full Source"
+                                            onclick={handleShowFullSourceMetadataModal}
+                                            variant="inverse"
+                                        ></lightning-button>
+                                    </template>
+                                </lightning-button-group>
+                            </span>
+                        </c-logger-code-viewer>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </span>
+        </c-logger-page-section>
+    </template>
+
+    <!-- Full Source Metadata Modal Code Viewer -->
+    <template if:true={showFullSourceMetadataModal}>
+        <section class="slds-modal slds-fade-in-open slds-modal_large" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
+            <div class="slds-modal__container" onkeydown={handleKeyDown}>
+                <!-- Modal header -->
+                <header class="slds-modal__header">
+                    <button
+                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close"
+                        onclick={handleHideFullSourceMetadataModal}
+                    >
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">{fullSourceMetadataTitle}</h2>
+                </header>
+
+                <!-- Modal body -->
+                <div class={fullSourceModalNotificationClasses} role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <lightning-icon class="slds-m-right_x-small" icon-name={fullSourceModalNotificationIcon} size="x-small" variant="inverse"></lightning-icon>
+                    <h2>{fullSourceModalNotificationMessage}</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-logger-code-viewer code={fullSourceMetadata.Code} language={fullSourceMetadata.Language}>
+                        <span slot="title">{fullSourceMetadata.Title}</span>
+                    </c-logger-code-viewer>
+                </div>
+
+                <!-- Modal footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        class="slds-p-around_xx-small"
+                        data-id="close-btn"
+                        label="Close"
+                        onclick={handleHideFullSourceMetadataModal}
+                        title="Close"
+                    ></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" onkeydown={handleKeyDown}></div>
+    </template>
+</template>
