@@ -221,4 +221,111 @@ global without sharing class LoggerNotificationService {
 
         return slackMessage;
     }
+
+    public static void validateFilterString(String filterString) {
+        System.Assert.fail('TODO');
+    }
+
+    public class Filter {
+        public String sobjectTypeName;
+        public String conditionsLogic;
+        public List<FilterCondition> conditions = new List<FilterCondition>();
+    }
+
+    public class FilterCondition {
+        public String sobjectTypeName;
+        public String fieldPathName;
+        public String operator;
+        public Object fieldValue;
+
+        public transient FieldPath fieldPath {
+            get {
+                if (fieldPath == null && String.isNotBlank(this.fieldPathName)) {
+                    Schema.SObjectType sobjectType = Schema.describeSObjects(new List<String>{ this.sobjectTypeName }).get(0).getSObjectType();
+                    this.fieldPath = new FieldPath(sobjectType, this.fieldPathName);
+                }
+                return fieldPath;
+            }
+            private set;
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    public class FieldPath {
+        private List<Schema.SObjectField> fieldChain;
+        private Schema.DescribeFieldResult fieldDescribe;
+        private String fieldPath;
+        private Schema.SObjectType sobjectType;
+
+        public FieldPath(Schema.SObjectType sobjectType, String fieldPath) {
+            this.fieldChain = this.getFieldChain(sobjectType, fieldPath);
+            this.fieldPath = fieldPath;
+
+            this.fieldDescribe = this.getLastFieldDescribe();
+        }
+
+        public Schema.SObjectField getField() {
+            return this.fieldChain[this.fieldChain.size() - 1];
+        }
+
+        public Object getValue(SObject record) {
+            Schema.SObjectType parentSObjectType = this.sobjectType;
+            SObject parentRecord = record;
+
+            for (Schema.SObjectField field : this.fieldChain) {
+                Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+                if (fieldDescribe.getSoapType() != Schema.SoapType.Id) {
+                    return parentRecord.get(fieldDescribe.getName());
+                } else {
+                    parentSObjectType = fieldDescribe.getReferenceTo().get(0);
+
+                    SObject newParentRecord = parentRecord.getSObject(field);
+                    if (newParentRecord == null) {
+                        return null;
+                    } else {
+                        parentRecord = newParentRecord;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private List<Schema.SObjectField> getFieldChain(Schema.SObjectType sobjectType, String fieldPath) {
+            Schema.SObjectType currentSObjectType = sobjectType;
+
+            List<Schema.SObjectField> fields = new List<Schema.SObjectField>();
+            List<String> fieldPathPieces = fieldPath.split('\\.');
+            Integer lastFieldIndex = fieldPathPieces.size() <= 1 ? 0 : fieldPathPieces.size() - 1;
+
+            for (Integer i = 0; i < fieldPathPieces.size(); i++) {
+                String fieldPathPiece = fieldPathPieces[i];
+
+                String fieldApiName;
+                if (i == lastFieldIndex) {
+                    fieldApiName = fieldPathPiece;
+                } else if (fieldPathPiece.endsWith('__r')) {
+                    fieldApiName = fieldPathPiece.replace('__r', '__c');
+                } else {
+                    fieldApiName = fieldPathPiece + 'Id';
+                }
+
+                Schema.SObjectField field = currentSObjectType.getDescribe().fields.getMap().get(fieldApiName);
+
+                // TODO add support for polymorphic fields
+                if (i < lastFieldIndex) {
+                    currentSObjectType = field.getDescribe().getReferenceTo().get(0);
+                }
+
+                fields.add(field);
+            }
+
+            return fields;
+        }
+
+        private Schema.DescribeFieldResult getLastFieldDescribe() {
+            Integer lastFieldIndex = this.fieldChain.size() - 1;
+            return this.fieldChain[lastFieldIndex].getDescribe();
+        }
+    }
 }
