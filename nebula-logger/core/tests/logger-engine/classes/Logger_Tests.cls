@@ -326,6 +326,25 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_require_scenario_when_parameter_enabled() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = String.valueOf(true));
+        LoggerParameter.setMock(mockParameter);
+        System.Assert.isTrue(LoggerParameter.REQUIRE_SCENARIO_USAGE);
+        String nullScenario = null;
+
+        Logger.setScenario(nullScenario);
+        Exception thrownException;
+        try {
+            Logger.info('Some message');
+        } catch (Exception ex) {
+            thrownException = ex;
+        }
+
+        System.Assert.isNotNull(thrownException, 'An exception should have been thrown due to a null scenario');
+        System.Assert.isInstanceOfType(thrownException, Logger.LoggerException.class);
+    }
+
+    @IsTest
     static void it_should_use_the_first_specified_scenario_as_transaction_scenario_when_parameter_is_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));

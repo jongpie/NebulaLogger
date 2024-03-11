@@ -335,6 +335,19 @@ public class LoggerParameter {
         private set;
     }
 
+    public static final Boolean REQUIRE_SCENARIO_USAGE {
+        get {
+            if (REQUIRE_SCENARIO_USAGE == null) {
+                // Most features in Nebula Logger are enabled (true) by default,
+                // but this one is intentionally set to false by default - not
+                // all orgs want or need to use scenario-based logging
+                REQUIRE_SCENARIO_USAGE = getBoolean('RequireScenarioUsage', false);
+            }
+            return REQUIRE_SCENARIO_USAGE;
+        }
+        private set;
+    }
+
     /**
      * @description Indicates if Nebula Logger will send an error email notification if any internal exceptions occur.
      *              Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default

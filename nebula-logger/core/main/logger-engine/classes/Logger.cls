@@ -18,6 +18,7 @@ global with sharing class Logger {
     private static final String CURRENT_VERSION_NUMBER = 'v4.13.2';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
+    private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
     private static final String ORGANIZATION_DOMAIN_URL = System.URL.getOrgDomainUrl()?.toExternalForm();
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
@@ -3351,6 +3352,10 @@ global with sharing class Logger {
     private static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave);
         if (logEntryEventBuilder.shouldSave()) {
+            if (LoggerParameter.REQUIRE_SCENARIO_USAGE && String.isBlank(currentEntryScenario)) {
+                throw new LoggerException(MISSING_SCENARIO_ERROR_MESSAGE);
+            }
+
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
             logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
             logEntryEvent.EntryScenario__c = currentEntryScenario;
@@ -3491,6 +3496,10 @@ global with sharing class Logger {
             Logger.setAsyncContext(queueableContext);
             LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents, PLATFORM_EVENT_DML_OPTIONS);
         }
+    }
+
+    // Inner class used for any exceptions specific to Nebula Logger functionality
+    public class LoggerException extends Exception {
     }
 
     // Inner class used for deserializing data from the status API
