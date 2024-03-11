@@ -295,6 +295,24 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_store_organization_limits_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_organization_limits_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_store_rest_request_header_values() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = JSON.serialize(mockValue));

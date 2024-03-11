@@ -8,6 +8,16 @@ Manages setting fields on `Log__c` before insert &amp; before update
 
 ---
 
+### Properties
+
+#### `Max` → `Integer`
+
+#### `Name` → `String`
+
+#### `Used` → `Integer`
+
+---
+
 ### Methods
 
 #### `getSObjectType()` → `Schema.SObjectType`

@@ -169,6 +169,55 @@ private class LogHandler_Tests {
     }
 
     @IsTest
+    static void it_should_set_organization_limits_when_enabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(true)));
+        setupConfigurations();
+        Log__c log = new Log__c(TransactionId__c = '1234');
+
+        LoggerDataStore.getDatabase().insertRecord(log);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        log = [SELECT Id, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        List<LogHandler.OrganizationLimit> expectedOrganizationLimits = new List<LogHandler.OrganizationLimit>();
+        List<String> sortedSystemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
+        sortedSystemOrgLimitNames.sort();
+        for (String systemOrgLimitName : sortedSystemOrgLimitNames) {
+            System.OrgLimit systemOrgLimit = System.OrgLimits.getMap().get(systemOrgLimitName);
+            LogHandler.OrganizationLimit organizationLimit = new LogHandler.OrganizationLimit();
+            organizationLimit.Name = systemOrgLimit.getName();
+            organizationLimit.Used = systemOrgLimit.getValue();
+            organizationLimit.Max = systemOrgLimit.getLimit();
+            expectedOrganizationLimits.add(organizationLimit);
+        }
+        System.Assert.areEqual(
+            JSON.serializePretty(expectedOrganizationLimits),
+            log.OrganizationLimits__c,
+            'The expected:\n' + JSON.serializePretty(expectedOrganizationLimits) + 'received:\n' + log.OrganizationLimits__c
+        );
+    }
+
+    @IsTest
+    static void it_should_not_set_organization_limits_when_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(false)));
+        setupConfigurations();
+        Log__c log = new Log__c(TransactionId__c = '1234');
+
+        LoggerDataStore.getDatabase().insertRecord(log);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        log = [SELECT Id, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isNull(log.OrganizationLimits__c, 'Expected null, received value: ' + log.OrganizationLimits__c);
+    }
+
+    @IsTest
     static void it_should_set_owner_when_default_configured_with_user_id() {
         setupConfigurations();
         Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
