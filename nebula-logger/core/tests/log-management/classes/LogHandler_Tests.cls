@@ -181,7 +181,8 @@ private class LogHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
-        log = [SELECT Id, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isTrue(log.HasOrganizationLimits__c);
         List<LogHandler.OrganizationLimit> expectedOrganizationLimits = new List<LogHandler.OrganizationLimit>();
         List<String> sortedSystemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
         sortedSystemOrgLimitNames.sort();
@@ -213,7 +214,8 @@ private class LogHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
-        log = [SELECT Id, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isFalse(log.HasOrganizationLimits__c);
         System.Assert.isNull(log.OrganizationLimits__c, 'Expected null, received value: ' + log.OrganizationLimits__c);
     }
 

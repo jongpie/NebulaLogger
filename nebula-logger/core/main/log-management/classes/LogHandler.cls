@@ -47,6 +47,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.setParentLog();
         // The log retention date field should support being manually changed, so only auto-set it on insert
         this.setLogRetentionDetails();
+        this.setCheckboxFields();
     }
 
     protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -57,6 +58,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.setClosedStatusFields();
         // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
         this.setPriority();
+        this.setCheckboxFields();
     }
 
     protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
@@ -215,6 +217,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             } else if (log.TotalWARNLogEntries__c != oldLog.TotalWARNLogEntries__c && log.TotalWARNLogEntries__c > 0) {
                 log.Priority__c = secondPriority;
             }
+        }
+    }
+
+    private void setCheckboxFields() {
+        for (Log__c log : this.logs) {
+            log.HasOrganizationLimits__c = log.OrganizationLimits__c != null;
         }
     }
 
