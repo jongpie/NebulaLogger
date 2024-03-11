@@ -47,13 +47,24 @@ public without sharing class LogEntryMetadataViewerController {
             return metadata;
         }
 
-        querySourceMetadata(logEntry, metadata, sourceMetadataType, sourceApiName);
+        querySourceMetadataViaSoql(logEntry, metadata, sourceMetadataType, sourceApiName);
 
         return metadata;
     }
 
+    private static void getSourceMetadata(String sourceMetadataType, String sourceApiName) {
+        switch on sourceMetadataType {
+            when 'ApexClass', 'ApexTrigger' {
+                // querySourceMetadataViaSoql
+            }
+            when 'AuraBundleDefinition', 'LightningComponentBundle', 'Flow' {
+                // retrieveSourceMetadataViaToolingApi();
+            }
+        }
+    }
+
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    private static void querySourceMetadata(
+    private static void querySourceMetadataViaSoql(
         LogEntry__c logEntry,
         LogEntryMetadata logEntryMetadata,
         LoggerStackTrace.SourceMetadataType sourceMetadataType,
@@ -86,6 +97,28 @@ public without sharing class LogEntryMetadataViewerController {
         logEntryMetadata.Code = (String) metadataRecord.get(codeBodyField);
     }
 
+    public static void retrieveSourceMetadataViaToolingApi() {
+        // String sessionJson = System.Page.LoggerSessionId.getContent().toString();
+        // Map<String, Object> sessionInfo = (Map<String, Object>) JSON.deserializeUntyped(sessionJson);
+        // System.debug('sessionInfo: ' + sessionInfo);
+        // String sessionId = (String) sessionInfo.get('sessionId');
+        String sessionId = System.Page.LoggerSessionId.getContent().toString().trim();
+        System.HttpRequest request = new System.HttpRequest();
+        request.setMethod('GET');
+        request.setHeader('Authorization', 'Bearer ' + sessionId);
+        request.setHeader('Content-Type', 'application/json');
+        String flowName = 'Account_Flow_Logger_Example';
+        String flowEndpoint =
+            '/services/data/v60.0/tooling/query/?q=SELECT+LastModifiedDate,Metadata+FROM+Flow+WHERE+Definition.DeveloperName=\'' +
+            flowName +
+            '\'';
+        // String flowEndpoint = '/services/data/v60.0/tooling/query/?q=SELECT+Metadata+FROM+FlowDefinition+WHERE+DeveloperName=\'' + flowName + '\'';
+        // String flowEndpoint = '/services/data/v60.0/tooling/query/?q=SELECT+Metadata+FROM+Flow+LIMIT+1';
+        request.setEndpoint(System.URL.getOrgDomainUrl().toExternalForm() + flowEndpoint);
+
+        System.HttpResponse response = new System.Http().send(request);
+    }
+
     // TODO consider combining with LogEntryHandler.SourceMetadataSnippet (which could become a top-level class)
     @SuppressWarnings('PMD.ApexDoc, PMD.PropertyNamingConventions')
     public class LogEntryMetadata {
@@ -93,5 +126,21 @@ public without sharing class LogEntryMetadataViewerController {
         public String Code { get; set; }
         @AuraEnabled
         public Boolean HasCodeBeenModified { get; set; }
+    }
+
+    // Inspired by https://developer.salesforce.com/docs/atlas.en-us.api_tooling.meta/api_tooling/tooling_api_objects_lightningcomponentbundle.htm
+    public class SourceMetadata {
+        public String ApiName { get; set; }
+        public Boolean HasMetadataBeenModified { get; set; }
+        public Datetime LastModifiedDate { get; set; }
+        public List<SourceMetadataResource> Resources { get; set; }
+    }
+
+    // Inspired by https://developer.salesforce.com/docs/atlas.en-us.api_tooling.meta/api_tooling/tooling_api_objects_lightningcomponentresource.htm
+    public class SourceMetadataResource {
+        public String FileName { get; set; }
+        // public String FilePath { get; set; }
+        public String Format { get; set; }
+        public String Source { get; set; }
     }
 }
