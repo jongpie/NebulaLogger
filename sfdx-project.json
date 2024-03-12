@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.1.NEXT",
-            "versionName": "Apex Observability",
-            "versionDescription": "Observability enhancements for Apex classes & triggers - code snippets are now automatically tracked for origin & exception source metadata, and displayed on LogEntry__c using PrismJS",
+            "versionNumber": "4.13.2.NEXT",
+            "versionName": "Capture Organization Limits Usage",
+            "versionDescription": "Added the ability to capture & view organization limits on Log__c with new LWC logOrganizationLimits, as well as the ability to toggle capturing of transaction limits with a new LoggerParameter__mdt record",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
