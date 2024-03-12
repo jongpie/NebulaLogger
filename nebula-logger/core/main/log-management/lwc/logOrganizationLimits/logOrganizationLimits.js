@@ -6,6 +6,7 @@ export default class LogOrganizationLimits extends LightningElement {
     @api
     recordId;
 
+    isLoaded = false;
     isValidOrganizationLimitsJson;
     organizationLimitsLeft = [];
     organizationLimitsRight = [];
@@ -14,7 +15,7 @@ export default class LogOrganizationLimits extends LightningElement {
         recordId: '$recordId',
         fields: [ORGANIZATION_LIMITS_FIELD]
     })
-    async wiredGetLogEntry({ data }) {
+    async wiredGetLog({ data }) {
         if (data) {
             const organizationLimitsJson = getFieldValue(data, ORGANIZATION_LIMITS_FIELD);
             this._processOrganizationLimits(organizationLimitsJson);
@@ -22,13 +23,19 @@ export default class LogOrganizationLimits extends LightningElement {
     }
 
     _processOrganizationLimits(organizationLimitsJson) {
+        if (!organizationLimitsJson) {
+            this.isValidOrganizationLimitsJson = false;
+            this.isLoaded = true;
+            return;
+        }
+
         let limits;
         try {
             limits = JSON.parse(organizationLimitsJson);
-            this.isValidOrganizationLimitsJson = true;
         } catch (error) {
-            this.isValidOrganizationLimitsJson = false;
             this.organizationLimitsJson = organizationLimitsJson;
+            this.isValidOrganizationLimitsJson = false;
+            this.isLoaded = true;
             return;
         }
 
@@ -53,5 +60,7 @@ export default class LogOrganizationLimits extends LightningElement {
         const halfLimitsLength = Math.ceil(limits.length / 2);
         this.organizationLimitsLeft = limits.slice(0, halfLimitsLength);
         this.organizationLimitsRight = limits.slice(halfLimitsLength);
+        this.isValidOrganizationLimitsJson = true;
+        this.isLoaded = true;
     }
 }

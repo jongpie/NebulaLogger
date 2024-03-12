@@ -194,11 +194,7 @@ private class LogHandler_Tests {
             organizationLimit.Max = systemOrgLimit.getLimit();
             expectedOrganizationLimits.add(organizationLimit);
         }
-        System.Assert.areEqual(
-            JSON.serializePretty(expectedOrganizationLimits),
-            log.OrganizationLimits__c,
-            'The expected:\n' + JSON.serializePretty(expectedOrganizationLimits) + 'received:\n' + log.OrganizationLimits__c
-        );
+        System.Assert.areEqual(JSON.serializePretty(expectedOrganizationLimits), log.OrganizationLimits__c);
     }
 
     @IsTest

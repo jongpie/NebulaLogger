@@ -36,9 +36,10 @@ describe('c-log-organization-limits', () => {
             is: LogOrganizationLimits
         });
         document.body.appendChild(element);
-        const nullOrganizationLimitsJson = null;
+        const mockGetRecordWithoutLimitsJson = { ...mockGetRecord };
+        mockGetRecordWithoutLimitsJson.fields.OrganizationLimits__c.value = null;
 
-        getRecord.emit(nullOrganizationLimitsJson);
+        getRecord.emit(mockGetRecordWithoutLimitsJson);
         await Promise.resolve('resolves getRecord()');
 
         const warningNotifyElements = element.shadowRoot.querySelectorAll('.slds-alert_warning');
@@ -58,9 +59,10 @@ describe('c-log-organization-limits', () => {
             is: LogOrganizationLimits
         });
         document.body.appendChild(element);
-        const invalidOrganizationLimitsJson = '༼ つ ◕_◕ ༽つ This is not valid JSON!!!';
+        const mockGetRecordWithInvalidLimitsJson = { ...mockGetRecord };
+        mockGetRecordWithInvalidLimitsJson.fields.OrganizationLimits__c.value = '༼ つ ◕_◕ ༽つ This is not valid JSON!!!';
 
-        getRecord.emit(invalidOrganizationLimitsJson);
+        getRecord.emit(mockGetRecordWithInvalidLimitsJson);
         await Promise.resolve('resolves getRecord()');
 
         const warningNotifyElements = element.shadowRoot.querySelectorAll('.slds-alert_warning');
@@ -72,6 +74,6 @@ describe('c-log-organization-limits', () => {
         expect(layoutItems.length).toBe(1);
         const staticFormElements = element.shadowRoot.querySelectorAll('.slds-form-element__static');
         expect(staticFormElements.length).toBe(1);
-        expect(staticFormElements[0].innerHTML).toBe(invalidOrganizationLimitsJson);
+        expect(staticFormElements[0].innerHTML).toBe(mockGetRecordWithInvalidLimitsJson.fields.OrganizationLimits__c.value);
     });
 });
