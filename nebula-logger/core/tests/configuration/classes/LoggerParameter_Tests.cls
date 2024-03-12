@@ -295,6 +295,33 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_use_true_as_default_constant_value_for_store_organization_limits_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = null));
+
+        Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_organization_limits_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_organization_limits_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_store_rest_request_header_values() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = JSON.serialize(mockValue));
@@ -314,6 +341,33 @@ private class LoggerParameter_Tests {
         Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;
 
         System.Assert.areEqual(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_use_true_as_default_constant_value_for_store_transaction_limits_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = null));
+
+        Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_transaction_limits_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_transaction_limits_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest

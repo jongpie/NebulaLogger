@@ -7,9 +7,19 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
-@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions')
 public without sharing class LogHandler extends LoggerSObjectHandler {
     private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_TO_STATUS = new Map<String, LogStatus__mdt>();
+
+    private static final List<OrganizationLimit> ORGANIZATION_LIMITS {
+        get {
+            if (ORGANIZATION_LIMITS == null) {
+                ORGANIZATION_LIMITS = loadOrganizationLimits();
+            }
+            return ORGANIZATION_LIMITS;
+        }
+        set;
+    }
 
     @TestVisible
     private List<Log__c> logs;
@@ -31,11 +41,13 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
         this.setHasCommentsField();
         this.setClosedStatusFields();
+        this.setOrganizationLimits();
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
         this.setOwnerId();
         this.setParentLog();
         // The log retention date field should support being manually changed, so only auto-set it on insert
         this.setLogRetentionDetails();
+        this.setCheckboxFields();
     }
 
     protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -46,6 +58,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.setClosedStatusFields();
         // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
         this.setPriority();
+        this.setCheckboxFields();
     }
 
     protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
@@ -79,6 +92,16 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
                 log.ClosedBy__c = log.ClosedBy__c == null ? System.UserInfo.getUserId() : log.ClosedBy__c;
                 log.ClosedDate__c = log.ClosedDate__c == null ? System.now() : log.ClosedDate__c;
             }
+        }
+    }
+
+    private void setOrganizationLimits() {
+        if (LoggerParameter.STORE_ORGANIZATION_LIMITS == false) {
+            return;
+        }
+
+        for (Log__c log : this.logs) {
+            log.OrganizationLimits__c = JSON.serializePretty(ORGANIZATION_LIMITS);
         }
     }
 
@@ -197,6 +220,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
     }
 
+    private void setCheckboxFields() {
+        for (Log__c log : this.logs) {
+            log.HasOrganizationLimits__c = log.OrganizationLimits__c != null;
+        }
+    }
+
     private void updateUnlinkedChildLogs() {
         Map<String, Log__c> transactionIdToPossibleParentLog = new Map<String, Log__c>();
         for (Log__c log : this.logs) {
@@ -262,6 +291,23 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return logStatusNameToStatus;
     }
 
+    private static List<OrganizationLimit> loadOrganizationLimits() {
+        List<OrganizationLimit> organizationLimits = new List<OrganizationLimit>();
+
+        List<String> systemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
+        systemOrgLimitNames.sort();
+        for (String systemOrgLimitName : systemOrgLimitNames) {
+            System.OrgLimit systemOrgLimit = System.OrgLimits.getMap().get(systemOrgLimitName);
+            OrganizationLimit organizationLimit = new OrganizationLimit();
+            organizationLimit.Name = systemOrgLimit.getName();
+            organizationLimit.Used = systemOrgLimit.getValue();
+            organizationLimit.Max = systemOrgLimit.getLimit();
+            organizationLimits.add(organizationLimit);
+        }
+
+        return organizationLimits;
+    }
+
     private static Map<Id, LoggerScenario__c> queryLoggerScenarios(List<Log__c> logs) {
         List<Id> loggerScenarioIds = new List<Id>();
         for (Log__c log : logs) {
@@ -302,5 +348,13 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static void setMockLogStatus(LogStatus__mdt logStatus) {
         MOCK_LOG_STATUS_TO_STATUS.put(logStatus.MasterLabel, logStatus);
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    @TestVisible
+    private class OrganizationLimit {
+        public String Name { get; set; }
+        public Integer Used { get; set; }
+        public Integer Max { get; set; }
     }
 }

@@ -169,6 +169,64 @@ private class LogHandler_Tests {
     }
 
     @IsTest
+    static void it_should_set_organization_limits_when_enabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(true)));
+        setupConfigurations();
+        Log__c log = new Log__c(TransactionId__c = '1234');
+
+        LoggerDataStore.getDatabase().insertRecord(log);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isTrue(log.HasOrganizationLimits__c);
+        Map<String, LogHandler.OrganizationLimit> limitNameToExpectedOrganizationLimits = new Map<String, LogHandler.OrganizationLimit>();
+        List<String> sortedSystemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
+        sortedSystemOrgLimitNames.sort();
+        for (String systemOrgLimitName : sortedSystemOrgLimitNames) {
+            System.OrgLimit systemOrgLimit = System.OrgLimits.getMap().get(systemOrgLimitName);
+            LogHandler.OrganizationLimit organizationLimit = new LogHandler.OrganizationLimit();
+            organizationLimit.Name = systemOrgLimit.getName();
+            organizationLimit.Used = systemOrgLimit.getValue();
+            organizationLimit.Max = systemOrgLimit.getLimit();
+            limitNameToExpectedOrganizationLimits.put(organizationLimit.Name, organizationLimit);
+        }
+        List<LogHandler.OrganizationLimit> returnedOrganizationLimits = (List<LogHandler.OrganizationLimit>) JSON.deserialize(
+            log.OrganizationLimits__c,
+            List<LogHandler.OrganizationLimit>.class
+        );
+        System.Assert.areEqual(limitNameToExpectedOrganizationLimits.size(), returnedOrganizationLimits.size());
+        for (LogHandler.OrganizationLimit returnedOrganizationLimit : returnedOrganizationLimits) {
+            LogHandler.OrganizationLimit expectedOrganizationLimit = limitNameToExpectedOrganizationLimits.get(returnedOrganizationLimit.Name);
+            // Some limits are recalculated, even during a single transaction,
+            // so ensure that the expected limit's Used value is at least higher than the returned limit's Used value
+            System.Assert.isTrue(expectedOrganizationLimit.Used >= returnedOrganizationLimit.Used);
+            System.Assert.areEqual(expectedOrganizationLimit.Max, returnedOrganizationLimit.Max);
+        }
+    }
+
+    @IsTest
+    static void it_should_not_set_organization_limits_when_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(false)));
+        setupConfigurations();
+        Log__c log = new Log__c(TransactionId__c = '1234');
+
+        LoggerDataStore.getDatabase().insertRecord(log);
+
+        System.Assert.areEqual(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+        System.Assert.isFalse(log.HasOrganizationLimits__c);
+        System.Assert.isNull(log.OrganizationLimits__c, 'Expected null, received value: ' + log.OrganizationLimits__c);
+    }
+
+    @IsTest
     static void it_should_set_owner_when_default_configured_with_user_id() {
         setupConfigurations();
         Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());

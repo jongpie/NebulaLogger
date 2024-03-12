@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.1.NEXT",
-            "versionName": "Apex Observability",
-            "versionDescription": "Observability enhancements for Apex classes & triggers - code snippets are now automatically tracked for origin & exception source metadata, and displayed on LogEntry__c using PrismJS",
+            "versionNumber": "4.13.2.NEXT",
+            "versionName": "Capture Organization Limits Usage",
+            "versionDescription": "Added the ability to capture & view organization limits on Log__c with new LWC logOrganizationLimits, as well as the ability to toggle capturing of transaction limits with a new LoggerParameter__mdt record",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -169,6 +169,7 @@
         "Nebula Logger - Core@4.12.9-restrequest-and-restresponse-logging-support": "04t5Y000001Mk7BQAS",
         "Nebula Logger - Core@4.13.0-spring-'24-release": "04t5Y000001Mk8dQAC",
         "Nebula Logger - Core@4.13.1-apex-observability": "04t5Y000001MkE3QAK",
+        "Nebula Logger - Core@4.13.2-capture-organization-limits-usage": "04t5Y000001MkEmQAK",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
