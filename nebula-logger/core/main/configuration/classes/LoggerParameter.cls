@@ -411,6 +411,10 @@ public class LoggerParameter {
         private set;
     }
 
+    /**
+     * @description Indicates if Nebula Logger will store the transaction limits on `LogEntry__c`, retrieved from the class `System.Limits`.
+     *              Controlled by the custom metadata record `LoggerParameter.StoreTransactionLimits`, or `true` as the default.
+     */
     public static final Boolean STORE_TRANSACTION_LIMITS {
         get {
             if (STORE_TRANSACTION_LIMITS == null) {

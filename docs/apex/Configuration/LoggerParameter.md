@@ -114,6 +114,10 @@ Indicates if Nebula Logger will store the header values when logging an instance
 
 Indicates if Nebula Logger will store the header values when logging an instance of `System.RestResponse`. Controlled by the custom metadata record `LoggerParameter.StoreRestResponseHeaderValues`, or `true` as the default. Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of `System.RestResponse` that is logged - this parameter only controls if the header values are stored.
 
+#### `STORE_TRANSACTION_LIMITS` → `Boolean`
+
+Indicates if Nebula Logger will store the transaction limits on `LogEntry__c`, retrieved from the class `System.Limits`. Controlled by the custom metadata record `LoggerParameter.StoreTransactionLimits`, or `true` as the default.
+
 #### `SYSTEM_DEBUG_MESSAGE_FORMAT` → `String`
 
 The merge-field syntax to use when calling System.debug(). Controlled by the custom metadata record `LoggerParameter.SystebugMessageFormat`, or `{OriginLocation__c}\n{Message__c}` as the default

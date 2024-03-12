@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
-@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.PropertyNamingConventions')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions')
 public without sharing class LogHandler extends LoggerSObjectHandler {
     private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_TO_STATUS = new Map<String, LogStatus__mdt>();
 
