@@ -183,7 +183,7 @@ private class LogHandler_Tests {
         );
         log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.isTrue(log.HasOrganizationLimits__c);
-        List<LogHandler.OrganizationLimit> expectedOrganizationLimits = new List<LogHandler.OrganizationLimit>();
+        Map<String, LogHandler.OrganizationLimit> limitNameToExpectedOrganizationLimits = new Map<String, LogHandler.OrganizationLimit>();
         List<String> sortedSystemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
         sortedSystemOrgLimitNames.sort();
         for (String systemOrgLimitName : sortedSystemOrgLimitNames) {
@@ -192,9 +192,20 @@ private class LogHandler_Tests {
             organizationLimit.Name = systemOrgLimit.getName();
             organizationLimit.Used = systemOrgLimit.getValue();
             organizationLimit.Max = systemOrgLimit.getLimit();
-            expectedOrganizationLimits.add(organizationLimit);
+            limitNameToExpectedOrganizationLimits.put(organizationLimit.Name, organizationLimit);
         }
-        System.Assert.areEqual(JSON.serializePretty(expectedOrganizationLimits), log.OrganizationLimits__c);
+        List<LogHandler.OrganizationLimit> returnedOrganizationLimits = (List<LogHandler.OrganizationLimit>) JSON.deserialize(
+            log.OrganizationLimits__c,
+            List<LogHandler.OrganizationLimit>.class
+        );
+        System.Assert.areEqual(limitNameToExpectedOrganizationLimits.size(), returnedOrganizationLimits.size());
+        for (LogHandler.OrganizationLimit returnedOrganizationLimit : returnedOrganizationLimits) {
+            LogHandler.OrganizationLimit expectedOrganizationLimit = limitNameToExpectedOrganizationLimits.get(returnedOrganizationLimit.Name);
+            // Some limits are recalculated, even during a single transaction,
+            // so ensure that the expected limit's Used value is at least higher than the returned limit's Used value
+            System.Assert.isTrue(expectedOrganizationLimit.Used >= returnedOrganizationLimit.Used);
+            System.Assert.areEqual(expectedOrganizationLimit.Max, returnedOrganizationLimit.Max);
+        }
     }
 
     @IsTest
