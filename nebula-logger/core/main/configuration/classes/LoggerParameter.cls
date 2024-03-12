@@ -411,6 +411,16 @@ public class LoggerParameter {
         private set;
     }
 
+    public static final Boolean STORE_TRANSACTION_LIMITS {
+        get {
+            if (STORE_TRANSACTION_LIMITS == null) {
+                STORE_TRANSACTION_LIMITS = getBoolean('StoreTransactionLimits', true);
+            }
+            return STORE_TRANSACTION_LIMITS;
+        }
+        private set;
+    }
+
     /**
      * @description The merge-field syntax to use when calling System.debug().
      *              Controlled by the custom metadata record `LoggerParameter.SystemDebugMessageFormat`, or `{OriginLocation__c}\n{Message__c}` as the default

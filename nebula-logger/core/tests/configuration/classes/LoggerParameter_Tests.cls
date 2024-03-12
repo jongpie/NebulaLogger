@@ -335,6 +335,24 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_store_transaction_limits_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_transaction_limits_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_system_debug_message_format() {
         // The constant LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT is unique - its value should always be
         // loaded from LoggerParameter__mdt, even in a test context so that orgs can control the output of debug

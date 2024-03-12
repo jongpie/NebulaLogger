@@ -73,6 +73,95 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_transaction_limits_fields_when_enabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(true)));
+        System.Assert.isTrue(LoggerParameter.STORE_TRANSACTION_LIMITS);
+        // Capture these limits first, before creating an instance of LogEntryEventBuilder - the builder runs several queries internally,
+        // so capturing afterwards leads to inaccurate numbers
+        Integer expectedQueryCount = System.Limits.getQueries();
+        Integer expectedQueryLocatorRows = System.Limits.getQueryLocatorRows();
+        Integer expectedQueryRows = System.Limits.getQueryRows();
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
+
+        System.Assert.areEqual(System.Limits.getAggregateQueries(), logEntryEvent.LimitsAggregateQueriesUsed__c);
+        System.Assert.areEqual(System.Limits.getAsyncCalls(), logEntryEvent.LimitsAsyncCallsUsed__c);
+        System.Assert.areEqual(System.Limits.getCallouts(), logEntryEvent.LimitsCalloutsUsed__c);
+        // For some limits, it's impossible to have an accurate expected value, so just validate that it's not null
+        System.Assert.isNotNull(logEntryEvent.LimitsCpuTimeUsed__c);
+        System.Assert.areEqual(System.Limits.getDmlRows(), logEntryEvent.LimitsDmlRowsUsed__c);
+        System.Assert.areEqual(System.Limits.getDmlStatements(), logEntryEvent.LimitsDmlStatementsUsed__c);
+        System.Assert.areEqual(System.Limits.getEmailInvocations(), logEntryEvent.LimitsEmailInvocationsUsed__c);
+        System.Assert.areEqual(System.Limits.getFutureCalls(), logEntryEvent.LimitsFutureCallsUsed__c);
+        // For some limits, it's impossible to have an accurate expected value, so just validate that it's not null
+        System.Assert.isNotNull(logEntryEvent.LimitsHeapSizeUsed__c);
+        System.Assert.areEqual(System.Limits.getMobilePushApexCalls(), logEntryEvent.LimitsMobilePushApexCallsUsed__c);
+        System.Assert.areEqual(System.Limits.getQueueableJobs(), logEntryEvent.LimitsQueueableJobsUsed__c);
+        System.Assert.areEqual(System.Limits.getPublishImmediateDML(), logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c);
+        System.Assert.areEqual(expectedQueryCount, logEntryEvent.LimitsSoqlQueriesUsed__c);
+        System.Assert.areEqual(expectedQueryLocatorRows, logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c);
+        System.Assert.areEqual(expectedQueryRows, logEntryEvent.LimitsSoqlQueryRowsUsed__c);
+        System.Assert.areEqual(System.Limits.getSoslQueries(), logEntryEvent.LimitsSoslSearchesUsed__c);
+        System.Assert.areEqual(System.Limits.getLimitAggregateQueries(), logEntryEvent.LimitsAggregateQueriesMax__c);
+        System.Assert.areEqual(System.Limits.getLimitAsyncCalls(), logEntryEvent.LimitsAsyncCallsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitCallouts(), logEntryEvent.LimitsCalloutsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitCpuTime(), logEntryEvent.LimitsCpuTimeMax__c);
+        System.Assert.areEqual(System.Limits.getLimitDmlRows(), logEntryEvent.LimitsDmlRowsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitDmlStatements(), logEntryEvent.LimitsDmlStatementsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitEmailInvocations(), logEntryEvent.LimitsEmailInvocationsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitFutureCalls(), logEntryEvent.LimitsFutureCallsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitHeapSize(), logEntryEvent.LimitsHeapSizeMax__c);
+        System.Assert.areEqual(System.Limits.getLimitMobilePushApexCalls(), logEntryEvent.LimitsMobilePushApexCallsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitPublishImmediateDML(), logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitQueueableJobs(), logEntryEvent.LimitsQueueableJobsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitQueries(), logEntryEvent.LimitsSoqlQueriesMax__c);
+        System.Assert.areEqual(System.Limits.getLimitQueryLocatorRows(), logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitQueryRows(), logEntryEvent.LimitsSoqlQueryRowsMax__c);
+        System.Assert.areEqual(System.Limits.getLimitSoslQueries(), logEntryEvent.LimitsSoslSearchesMax__c);
+    }
+
+    @IsTest
+    static void it_should_not_set_transaction_limits_fields_when_disabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(false)));
+        System.Assert.isFalse(LoggerParameter.STORE_TRANSACTION_LIMITS);
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
+
+        System.Assert.isNull(logEntryEvent.LimitsAggregateQueriesUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsAsyncCallsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsCalloutsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsCpuTimeUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsDmlRowsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsDmlStatementsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsEmailInvocationsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsFutureCallsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsHeapSizeUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsMobilePushApexCallsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsQueueableJobsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoqlQueriesUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoqlQueryRowsUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoslSearchesUsed__c);
+        System.Assert.isNull(logEntryEvent.LimitsAggregateQueriesMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsAsyncCallsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsCalloutsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsCpuTimeMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsDmlRowsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsDmlStatementsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsEmailInvocationsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsFutureCallsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsHeapSizeMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsMobilePushApexCallsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsQueueableJobsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoqlQueriesMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoqlQueryRowsMax__c);
+        System.Assert.isNull(logEntryEvent.LimitsSoslSearchesMax__c);
+    }
+
+    @IsTest
     static void it_should_not_run_authSession_query_when_disabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(false)));
         System.Assert.isFalse(LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
