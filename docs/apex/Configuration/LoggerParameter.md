@@ -94,6 +94,10 @@ Controls if Nebula Logger queries `Schema.User` data. When set to `false`, any `
 
 Indicates if Nebula Logger queries `Schema.User` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Schema.User` fields on `LogEntryEvent__e` that rely on querying will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryUserDataSynchronously`, or `true` as the default
 
+#### `REQUIRE_SCENARIO_USAGE` → `Boolean`
+
+Indicates if Nebula Logger will enforce scenario-based logging to be used. When set to `false`, specifying a scenario is completely optional. When set to `true`, a scenario is required to be set before any logging can occur. If a logging method is called &amp;amp; the current scenario is null/blank, then Nebula Logger will throw a runtime exception. Controlled by the custom metadata record `LoggerParameter.RequireScenarioUsage`, or `false` as the default
+
 #### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
 
 Indicates if Nebula Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default

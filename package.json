@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.13.2",
+    "version": "4.13.3",
     "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -33,7 +33,7 @@
     },
     "scripts": {
         "apex:tail:log": "sf apex tail log --color",
-        "apex:tail:log:file": "sf apex tail log | tee sf_tail.log",
+        "apex:tail:log:file": "sh scripts/build/tail-log-to-file.sh",
         "devhub:details": "pwsh ./scripts/build/get-devhub-org-details.ps1",
         "devhub:limits": "pwsh ./scripts/build/get-devhub-org-limits.ps1",
         "devhub:open": "pwsh ./scripts/build/open-devhub-org.ps1",

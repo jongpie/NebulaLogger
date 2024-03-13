@@ -273,6 +273,33 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_use_false_as_default_constant_value_for_require_scenario_usage_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = null));
+
+        Boolean returnedValue = LoggerParameter.REQUIRE_SCENARIO_USAGE;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_require_scenario_usage_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.REQUIRE_SCENARIO_USAGE;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_require_scenario_usage_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.REQUIRE_SCENARIO_USAGE;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_send_error_email_notifications() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(mockValue));
