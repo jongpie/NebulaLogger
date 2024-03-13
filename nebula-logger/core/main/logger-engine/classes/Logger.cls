@@ -3499,6 +3499,7 @@ global with sharing class Logger {
     }
 
     // Inner class used for any exceptions specific to Nebula Logger functionality
+    @SuppressWarnings('PMD.ApexDoc')
     public class LoggerException extends Exception {
     }
 

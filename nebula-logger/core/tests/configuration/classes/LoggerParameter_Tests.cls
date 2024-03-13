@@ -273,7 +273,7 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_use_true_as_default_constant_value_for_require_scenario_usage_when_null() {
+    static void it_should_use_false_as_default_constant_value_for_require_scenario_usage_when_null() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.REQUIRE_SCENARIO_USAGE;

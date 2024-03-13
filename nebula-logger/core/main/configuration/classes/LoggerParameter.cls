@@ -335,6 +335,13 @@ public class LoggerParameter {
         private set;
     }
 
+    /**
+     * @description Indicates if Nebula Logger will enforce scenario-based logging to be used.
+     *              When set to `false`, specifying a scenario is completely optional.
+     *              When set to `true`, a scenario is required to be set before any logging can occur.
+     *              If a logging method is called &amp; the current scenario is null/blank, then Nebula Logger will throw a runtime exception.
+     *              Controlled by the custom metadata record `LoggerParameter.RequireScenarioUsage`, or `false` as the default
+     */
     public static final Boolean REQUIRE_SCENARIO_USAGE {
         get {
             if (REQUIRE_SCENARIO_USAGE == null) {

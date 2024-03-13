@@ -5730,6 +5730,10 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 ### Inner Classes
 
+#### Logger.LoggerException class
+
+---
+
 #### Logger.QueueableSaver class
 
 Inner class for publishing log entries via the Queueable interface.
