@@ -7,6 +7,10 @@
     <label>Log Entry Event Stream Display Fields</label>
     <protected>false</protected>
     <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">Contains the fields to be displayed in the Tabular view of the Log Entry Event Stream Tab under the Logger Console.</value>
     </values>

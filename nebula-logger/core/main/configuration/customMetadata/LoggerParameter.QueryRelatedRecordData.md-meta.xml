@@ -7,6 +7,10 @@
     <label>Query Related Record Data</label>
     <protected>false</protected>
     <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
