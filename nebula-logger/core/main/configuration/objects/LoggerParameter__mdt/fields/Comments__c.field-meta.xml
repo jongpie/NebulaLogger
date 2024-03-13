@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText
-    >A place to store any notes about how this LoggerParameter__mdt has been customized in the current org. This is purely for documentation purposes.</inlineHelpText>
+    >A place to store any comments or notes about customizations that have been made to this LoggerParameter__mdt in the current org. This is purely for documentation purposes.</inlineHelpText>
     <label>Comments</label>
     <length>4000</length>
     <type>LongTextArea</type>
