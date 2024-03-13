@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.3.NEXT",
-            "versionName": "Optionally Enforce Scenario Usage",
-            "versionDescription": "Added the ability to require scenario-based logging, using a new LoggerParameter__mdt record 'RequireScenarioUsage'",
+            "versionNumber": "4.13.4.NEXT",
+            "versionName": "Logger Parameter Comments",
+            "versionDescription": "Added new field LoggerParameter__mdt.Comments__c to provide a place to add comments & notes about customizations made to LoggerParameter__mdt records",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
