@@ -167,8 +167,8 @@
     </nameField>
     <pluralLabel>Logger Notifications</pluralLabel>
     <searchLayouts>
-        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <searchResultsAdditionalFields>OWNER.FIRST_NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.LAST_NAME</searchResultsAdditionalFields>
     </searchLayouts>
