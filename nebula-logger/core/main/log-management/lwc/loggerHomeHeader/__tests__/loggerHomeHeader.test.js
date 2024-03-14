@@ -59,6 +59,8 @@ describe('c-logger-home-header', () => {
         expect(environmentDetailsButton.label).toBe('View Environment Details');
         const releaseNotesButton = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
         expect(releaseNotesButton.label).toBe(`View ${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber} Release Notes`);
+        const docsButton = element.shadowRoot.querySelector('lightning-button[data-id="docs-button"]');
+        expect(docsButton.label).toBe(`View ${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber} Docs`);
     });
 
     it('displays environment details modal when "View Environment Details" button is clicked', async () => {
@@ -120,7 +122,7 @@ describe('c-logger-home-header', () => {
         expect(modalElement).toBeFalsy();
     });
 
-    it('hides the "View Release Notes" button when version number is not available', async () => {
+    it('hides the "View Release Notes" and "Docs" buttons when version number is not available', async () => {
         const element = createElement('c-logger-home-header', {
             is: LoggerHomeHeader
         });
@@ -130,8 +132,10 @@ describe('c-logger-home-header', () => {
         const navigationHandler = jest.fn();
         element.addEventListener('navigate', navigationHandler);
 
-        const button = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
-        expect(button).toBeFalsy();
+        const releaseNotesButton = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
+        expect(releaseNotesButton).toBeFalsy();
+        const docsButton = element.shadowRoot.querySelector('lightning-button[data-id="docs-button"]');
+        expect(docsButton).toBeFalsy();
     });
 
     it('displays github release notes url when "View Release Notes" button is clicked', async () => {
@@ -153,5 +157,26 @@ describe('c-logger-home-header', () => {
         expect(navigateArgument).toBeTruthy();
         expect(navigateArgument.type).toBe('standard__webPage');
         expect(navigateArgument.attributes.url).toBe(`https://github.com/jongpie/NebulaLogger/releases/tag/${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber}`);
+    });
+
+    it('displays readthedocs.org url when "View Docs" button is clicked', async () => {
+        const element = createElement('c-logger-home-header', {
+            is: LoggerHomeHeader
+        });
+        document.body.appendChild(element);
+        getEnvironmentDetails.emit(MOCK_ENVIRONMENT_DETAILS);
+        await Promise.resolve('Resolve getEnvironmentDetails()');
+        const navigationHandler = jest.fn();
+        element.addEventListener('navigate', navigationHandler);
+
+        const button = element.shadowRoot.querySelector('lightning-button[data-id="docs-button"]');
+        const navigateEvt = new CustomEvent('click');
+        button.dispatchEvent(navigateEvt);
+
+        expect(navigationHandler).toHaveBeenCalledTimes(1);
+        const navigateArgument = navigationHandler.mock.calls[0][0].detail.pageReference;
+        expect(navigateArgument).toBeTruthy();
+        expect(navigateArgument.type).toBe('standard__webPage');
+        expect(navigateArgument.attributes.url).toBe(`https://nebulalogger.readthedocs.io/en/${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber}`);
     });
 });
