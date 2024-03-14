@@ -7,10 +7,15 @@
     <label>Use Platform Cache</label>
     <protected>false</protected>
     <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
         >When set to &apos;true&apos; (default), Nebula Logger will used Platform Cache to cache organization and session data in the cache partition LoggerCache.
+
 When set to &apos;false&apos;, any cached data is only cached within a single transaction.</value>
     </values>
     <values>

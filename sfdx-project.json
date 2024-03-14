@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.3.NEXT",
-            "versionName": "Optionally Enforce Scenario Usage",
-            "versionDescription": "Added the ability to require scenario-based logging, using a new LoggerParameter__mdt record 'RequireScenarioUsage'",
+            "versionNumber": "4.13.4.NEXT",
+            "versionName": "Logger Parameter Comments",
+            "versionDescription": "Added new field LoggerParameter__mdt.Comments__c to provide a place to add comments & notes about customizations made to LoggerParameter__mdt records",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -171,6 +171,7 @@
         "Nebula Logger - Core@4.13.1-apex-observability": "04t5Y000001MkE3QAK",
         "Nebula Logger - Core@4.13.2-capture-organization-limits-usage": "04t5Y000001MkEmQAK",
         "Nebula Logger - Core@4.13.3-optionally-enforce-scenario-usage": "04t5Y000001MkEwQAK",
+        "Nebula Logger - Core@4.13.4-logger-parameter-comments": "04t5Y000001MkFBQA0",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

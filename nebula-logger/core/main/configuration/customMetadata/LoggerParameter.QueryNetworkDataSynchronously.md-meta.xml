@@ -7,6 +7,10 @@
     <label>Query Network Data Synchronously</label>
     <protected>false</protected>
     <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">Note: this parameter only applies to orgs that are using Experience Cloud (Communities).
 
