@@ -3355,19 +3355,7 @@ global with sharing class Logger {
             if (LoggerParameter.REQUIRE_SCENARIO_USAGE && String.isBlank(currentEntryScenario)) {
                 throw new LoggerException(MISSING_SCENARIO_ERROR_MESSAGE);
             }
-
-            LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-            logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
-            logEntryEvent.EntryScenario__c = currentEntryScenario;
-            logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
-            logEntryEvent.OrganizationApiVersion__c = getOrganizationApiVersion();
-            logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
-            logEntryEvent.RequestId__c = REQUEST_ID;
-            logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
-            logEntryEvent.TransactionEntryNumber__c = currentTransactionEntryNumber++;
-            logEntryEvent.TransactionId__c = getTransactionId();
-            logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
-            logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
+            logEntryEventBuilder.setLoggerDetails(currentEntryScenario, ORGANIZATION_DOMAIN_URL, REQUEST_ID, currentTransactionEntryNumber++, userLoggingLevel);
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 

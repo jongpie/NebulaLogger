@@ -354,9 +354,8 @@ public without sharing class LoggerDataStore {
 
             Map<String, Integer> stringFieldNameToMaxLength = this.getStringFieldNameToMaxLength(sobjectType);
             for (SObject platformEvent : platformEvents) {
-                Map<String, Object> populatedFieldsAsMap = platformEvent.getPopulatedFieldsAsMap();
                 for (String stringFieldName : stringFieldNameToMaxLength.keySet()) {
-                    String stringValue = (String) populatedFieldsAsMap.get(stringFieldName);
+                    String stringValue = (String) platformEvent.get(stringFieldName);
 
                     if (stringValue == null) {
                         continue;
@@ -365,7 +364,9 @@ public without sharing class LoggerDataStore {
                     Integer fieldMaxLength = stringFieldNameToMaxLength.get(stringFieldName);
                     // String.abbreviate() will throw a StringException if the target length is less than 4
                     String truncatedStringValue = fieldMaxLength < 4 ? stringValue.left(fieldMaxLength) : stringValue.abbreviate(fieldMaxLength);
-                    platformEvent.put(stringFieldName, truncatedStringValue);
+                    if (truncatedStringValue != stringValue) {
+                        platformEvent.put(stringFieldName, truncatedStringValue);
+                    }
                 }
             }
         }
@@ -374,9 +375,25 @@ public without sharing class LoggerDataStore {
             Map<String, Integer> stringFieldNameToMaxLength = this.sobjectTypeToStringFieldNameToMaxLength.get(sobjectType);
             if (stringFieldNameToMaxLength == null) {
                 stringFieldNameToMaxLength = new Map<String, Integer>();
-                for (Schema.SObjectField field : sobjectType.getDescribe().fields.getMap().values()) {
-                    Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-                    if (fieldDescribe.getSoapType() == Schema.SoapType.STRING && fieldDescribe.isCreateable()) {
+                List<Schema.SObjectField> variableLengthTextFields = new List<Schema.SObjectField>{
+                    Schema.LogEntryEvent__e.DatabaseResultJson__c,
+                    Schema.LogEntryEvent__e.ExceptionMessage__c,
+                    Schema.LogEntryEvent__e.ExceptionStackTrace__c,
+                    Schema.LogEntryEvent__e.HttpRequestBody__c,
+                    Schema.LogEntryEvent__e.HttpResponseBody__c,
+                    Schema.LogEntryEvent__e.HttpResponseHeaders__c,
+                    Schema.LogEntryEvent__e.Message__c,
+                    Schema.LogEntryEvent__e.RecordJson__c,
+                    Schema.LogEntryEvent__e.RestRequestBody__c,
+                    Schema.LogEntryEvent__e.RestRequestHeaders__c,
+                    Schema.LogEntryEvent__e.RestResponseBody__c,
+                    Schema.LogEntryEvent__e.RestResponseHeaders__c,
+                    Schema.LogEntryEvent__e.StackTrace__c,
+                    Schema.LogEntryEvent__e.Tags__c
+                };
+                for (Schema.SObjectField fieldToken : variableLengthTextFields) {
+                    Schema.DescribeFieldResult fieldDescribe = fieldToken.getDescribe();
+                    if (fieldDescribe.isCreateable()) {
                         stringFieldNameToMaxLength.put(fieldDescribe.getName(), fieldDescribe.getLength());
                     }
                 }
