@@ -27,7 +27,6 @@ global with sharing class Logger {
 
     private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
-    private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
     private static String lastSaveMethodNameUsed;
     private static List<String> orderedScenarios = new List<String>();
@@ -37,6 +36,23 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static String transactionScenario;
     private static LoggerSettings__c userSettings;
+
+    private static final LogEntryEventBuilder.LoggingContext LOGGING_CONTEXT {
+        get {
+            if (LOGGING_CONTEXT == null) {
+                LOGGING_CONTEXT = new LogEntryEventBuilder.LoggingContext(
+                    getVersionNumber(),
+                    getOrganizationApiVersion(),
+                    ORGANIZATION_DOMAIN_URL,
+                    REQUEST_ID,
+                    getCurrentQuiddity(),
+                    getTransactionId()
+                );
+            }
+            return LOGGING_CONTEXT;
+        }
+        set;
+    }
 
     private static final String ORGANIZATION_API_VERSION {
         get {
@@ -3197,8 +3213,9 @@ global with sharing class Logger {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
             if (logEntryEventBuilder.shouldSave()) {
-                finalizeEntry(logEntryEventBuilder);
-                logEntryEvents.add(logEntryEventBuilder.getLogEntryEvent());
+                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+                finalizeEntry(logEntryEvent);
+                logEntryEvents.add(logEntryEvent);
             }
         }
 
@@ -3355,15 +3372,17 @@ global with sharing class Logger {
             if (LoggerParameter.REQUIRE_SCENARIO_USAGE && String.isBlank(currentEntryScenario)) {
                 throw new LoggerException(MISSING_SCENARIO_ERROR_MESSAGE);
             }
-            logEntryEventBuilder.setLoggerDetails(currentEntryScenario, ORGANIZATION_DOMAIN_URL, REQUEST_ID, currentTransactionEntryNumber++, userLoggingLevel);
+            LOGGING_CONTEXT.currentEntryScenario = currentEntryScenario;
+            LOGGING_CONTEXT.entryNumber++;
+            LOGGING_CONTEXT.userLoggingLevel = userLoggingLevel;
+            logEntryEventBuilder.setLoggingContext(LOGGING_CONTEXT);
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
         return logEntryEventBuilder;
     }
 
-    private static void finalizeEntry(LogEntryEventBuilder logEntryEventBuilder) {
-        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+    private static void finalizeEntry(LogEntryEvent__e logEntryEvent) {
         logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
         logEntryEvent.TransactionScenario__c = transactionScenario;
 

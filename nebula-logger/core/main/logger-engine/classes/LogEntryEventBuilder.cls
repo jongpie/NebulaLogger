@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-    'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
@@ -130,7 +130,6 @@ global with sharing class LogEntryEventBuilder {
             this.logEntryEvent = getLogEntryEventTemplate(entryLoggingLevel);
             this.parseStackTrace(new LoggerStackTrace());
         }
-
     }
 
     /**
@@ -768,21 +767,21 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     * @param loggingContext Variables specific to the current Logger state
      * Sets information only available from the `Logger` class.
      */
-    @SuppressWarnings('PMD.ExcessiveParameterList')
-    public void setLoggerDetails(String currentEntryScenario, String orgDomainUrl, String requestId, Integer entryNumber, System.LoggingLevel userLoggingLevel) {
-        this.logEntryEvent.ApiVersion__c = Logger.getOrganizationApiVersion();
-        this.logEntryEvent.EntryScenario__c = currentEntryScenario;
-        this.logEntryEvent.LoggerVersionNumber__c = Logger.getVersionNumber();
-        this.logEntryEvent.OrganizationApiVersion__c = this.logEntryEvent.ApiVersion__c;
-        this.logEntryEvent.OrganizationDomainUrl__c = orgDomainUrl;
-        this.logEntryEvent.RequestId__c = requestId;
-        this.logEntryEvent.SystemMode__c = Logger.getCurrentQuiddity()?.name();
-        this.logEntryEvent.TransactionEntryNumber__c = entryNumber;
-        this.logEntryEvent.TransactionId__c = Logger.getTransactionId();
-        this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
-        this.logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
+    public void setLoggingContext(LoggingContext loggingContext) {
+        this.logEntryEvent.ApiVersion__c = loggingContext.organizationApiVersion;
+        this.logEntryEvent.EntryScenario__c = loggingContext.currentEntryScenario;
+        this.logEntryEvent.LoggerVersionNumber__c = loggingContext.loggerVersionNumber;
+        this.logEntryEvent.OrganizationApiVersion__c = loggingContext.organizationApiVersion;
+        this.logEntryEvent.OrganizationDomainUrl__c = loggingContext.organizationDomainUrl;
+        this.logEntryEvent.RequestId__c = loggingContext.requestId;
+        this.logEntryEvent.SystemMode__c = loggingContext.systemMode?.name();
+        this.logEntryEvent.TransactionEntryNumber__c = loggingContext.entryNumber;
+        this.logEntryEvent.TransactionId__c = loggingContext.transactionId;
+        this.logEntryEvent.UserLoggingLevel__c = loggingContext.userLoggingLevel.name();
+        this.logEntryEvent.UserLoggingLevelOrdinal__c = loggingContext.userLoggingLevel.ordinal();
     }
 
     /**
@@ -892,23 +891,22 @@ global with sharing class LogEntryEventBuilder {
         );
 
         if (LoggerParameter.STORE_TRANSACTION_LIMITS) {
-            TransactionLimits currentLimits = CACHED_TRANSACTION_LIMITS;
-            logEntryEventTemplate.LimitsAggregateQueriesMax__c = currentLimits.limitsAggregateQueriesMax;
-            logEntryEventTemplate.LimitsAsyncCallsMax__c = currentLimits.limitsAsyncCallsMax;
-            logEntryEventTemplate.LimitsCalloutsMax__c = currentLimits.limitsCalloutsMax;
-            logEntryEventTemplate.LimitsCpuTimeMax__c = currentLimits.limitsCpuTimeMax;
-            logEntryEventTemplate.LimitsDmlRowsMax__c = currentLimits.limitsDmlRowsMax;
-            logEntryEventTemplate.LimitsDmlStatementsMax__c = currentLimits.limitsDmlStatementsMax;
-            logEntryEventTemplate.LimitsEmailInvocationsMax__c = currentLimits.limitsEmailInvocationsMax;
-            logEntryEventTemplate.LimitsFutureCallsMax__c = currentLimits.limitsFutureCallsMax;
-            logEntryEventTemplate.LimitsHeapSizeMax__c = currentLimits.limitsHeapSizeMax;
-            logEntryEventTemplate.LimitsMobilePushApexCallsMax__c = currentLimits.limitsMobilePushApexCallsMax;
-            logEntryEventTemplate.LimitsPublishImmediateDmlStatementsMax__c = currentLimits.limitsPublishImmediateDmlStatementsMax;
-            logEntryEventTemplate.LimitsQueueableJobsMax__c = currentLimits.limitsQueueableJobsMax;
-            logEntryEventTemplate.LimitsSoqlQueriesMax__c = currentLimits.limitsSoqlQueriesMax;
-            logEntryEventTemplate.LimitsSoqlQueryLocatorRowsMax__c = currentLimits.limitsSoqlQueryLocatorRowsMax;
-            logEntryEventTemplate.LimitsSoqlQueryRowsMax__c = currentLimits.limitsSoqlQueryRowsMax;
-            logEntryEventTemplate.LimitsSoslSearchesMax__c = currentLimits.limitsSoslSearchesMax;
+            logEntryEventTemplate.LimitsAggregateQueriesMax__c = CACHED_TRANSACTION_LIMITS.aggregateQueriesMax;
+            logEntryEventTemplate.LimitsAsyncCallsMax__c = CACHED_TRANSACTION_LIMITS.asyncCallsMax;
+            logEntryEventTemplate.LimitsCalloutsMax__c = CACHED_TRANSACTION_LIMITS.calloutsMax;
+            logEntryEventTemplate.LimitsCpuTimeMax__c = CACHED_TRANSACTION_LIMITS.cpuTimeMax;
+            logEntryEventTemplate.LimitsDmlRowsMax__c = CACHED_TRANSACTION_LIMITS.dmlRowsMax;
+            logEntryEventTemplate.LimitsDmlStatementsMax__c = CACHED_TRANSACTION_LIMITS.dmlStatementsMax;
+            logEntryEventTemplate.LimitsEmailInvocationsMax__c = CACHED_TRANSACTION_LIMITS.emailInvocationsMax;
+            logEntryEventTemplate.LimitsFutureCallsMax__c = CACHED_TRANSACTION_LIMITS.futureCallsMax;
+            logEntryEventTemplate.LimitsHeapSizeMax__c = CACHED_TRANSACTION_LIMITS.heapSizeMax;
+            logEntryEventTemplate.LimitsMobilePushApexCallsMax__c = CACHED_TRANSACTION_LIMITS.mobilePushApexCallsMax;
+            logEntryEventTemplate.LimitsPublishImmediateDmlStatementsMax__c = CACHED_TRANSACTION_LIMITS.publishImmediateDmlStatementsMax;
+            logEntryEventTemplate.LimitsQueueableJobsMax__c = CACHED_TRANSACTION_LIMITS.queueableJobsMax;
+            logEntryEventTemplate.LimitsSoqlQueriesMax__c = CACHED_TRANSACTION_LIMITS.soqlQueriesMax;
+            logEntryEventTemplate.LimitsSoqlQueryLocatorRowsMax__c = CACHED_TRANSACTION_LIMITS.soqlQueryLocatorRowsMax;
+            logEntryEventTemplate.LimitsSoqlQueryRowsMax__c = CACHED_TRANSACTION_LIMITS.soqlQueryRowsMax;
+            logEntryEventTemplate.LimitsSoslSearchesMax__c = CACHED_TRANSACTION_LIMITS.soslSearchesMax;
 
             logEntryEventTemplate.LimitsAggregateQueriesUsed__c = System.Limits.getAggregateQueries();
             logEntryEventTemplate.LimitsAsyncCallsUsed__c = System.Limits.getAsyncCalls();
@@ -1225,22 +1223,46 @@ global with sharing class LogEntryEventBuilder {
         return value?.left(fieldMaxLength);
     }
 
+    @SuppressWarnings('PMD.ApexDoc')
+    public class LoggingContext {
+        public String currentEntryScenario;
+        public String loggerVersionNumber;
+        public String organizationApiVersion;
+        public String organizationDomainUrl;
+        public String requestId;
+        public Integer entryNumber = 0;
+        public System.Quiddity systemMode;
+        public String transactionId;
+        public System.LoggingLevel userLoggingLevel;
+
+        @SuppressWarnings('PMD.ExcessiveParameterList')
+        public LoggingContext(String loggerVersionNumber, String organizationApiVersion, String organizationDomainUrl, String requestId, System.Quiddity systemMode, String transactionId) {
+            this.loggerVersionNumber = loggerVersionNumber;
+            this.organizationApiVersion = organizationApiVersion;
+            this.organizationDomainUrl = organizationDomainUrl;
+            this.requestId = requestId;
+            this.systemMode = systemMode;
+            this.transactionId = transactionId;
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc, PMD.TooManyFields')
     private class TransactionLimits {
-        public final Integer limitsAggregateQueriesMax = System.Limits.getLimitAggregateQueries();
-        public final Integer limitsAsyncCallsMax = System.Limits.getLimitAsyncCalls();
-        public final Integer limitsCalloutsMax = System.Limits.getLimitCallouts();
-        public final Integer limitsCpuTimeMax = System.Limits.getLimitCpuTime();
-        public final Integer limitsDmlRowsMax = System.Limits.getLimitDmlRows();
-        public final Integer limitsDmlStatementsMax = System.Limits.getLimitDmlStatements();
-        public final Integer limitsEmailInvocationsMax = System.Limits.getLimitEmailInvocations();
-        public final Integer limitsFutureCallsMax = System.Limits.getLimitFutureCalls();
-        public final Integer limitsHeapSizeMax = System.Limits.getLimitHeapSize();
-        public final Integer limitsMobilePushApexCallsMax = System.Limits.getLimitMobilePushApexCalls();
-        public final Integer limitsPublishImmediateDmlStatementsMax = System.Limits.getLimitPublishImmediateDML();
-        public final Integer limitsQueueableJobsMax = System.Limits.getLimitQueueableJobs();
-        public final Integer limitsSoqlQueriesMax = System.Limits.getLimitQueries();
-        public final Integer limitsSoqlQueryLocatorRowsMax = System.Limits.getLimitQueryLocatorRows();
-        public final Integer limitsSoqlQueryRowsMax = System.Limits.getLimitQueryRows();
-        public final Integer limitsSoslSearchesMax = System.Limits.getLimitSoslQueries();
+        public final Integer aggregateQueriesMax = System.Limits.getLimitAggregateQueries();
+        public final Integer asyncCallsMax = System.Limits.getLimitAsyncCalls();
+        public final Integer calloutsMax = System.Limits.getLimitCallouts();
+        public final Integer cpuTimeMax = System.Limits.getLimitCpuTime();
+        public final Integer dmlRowsMax = System.Limits.getLimitDmlRows();
+        public final Integer dmlStatementsMax = System.Limits.getLimitDmlStatements();
+        public final Integer emailInvocationsMax = System.Limits.getLimitEmailInvocations();
+        public final Integer futureCallsMax = System.Limits.getLimitFutureCalls();
+        public final Integer heapSizeMax = System.Limits.getLimitHeapSize();
+        public final Integer mobilePushApexCallsMax = System.Limits.getLimitMobilePushApexCalls();
+        public final Integer publishImmediateDmlStatementsMax = System.Limits.getLimitPublishImmediateDML();
+        public final Integer queueableJobsMax = System.Limits.getLimitQueueableJobs();
+        public final Integer soqlQueriesMax = System.Limits.getLimitQueries();
+        public final Integer soqlQueryLocatorRowsMax = System.Limits.getLimitQueryLocatorRows();
+        public final Integer soqlQueryRowsMax = System.Limits.getLimitQueryRows();
+        public final Integer soslSearchesMax = System.Limits.getLimitSoslQueries();
     }
 }
