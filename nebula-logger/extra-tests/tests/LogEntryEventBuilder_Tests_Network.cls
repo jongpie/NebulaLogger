@@ -24,7 +24,7 @@ private class LogEntryEventBuilder_Tests_Network {
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
-            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).getLogEntryEvent();
+            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
         }
 
         System.Assert.areEqual(networkRecord.get('Id'), logEntryEvent.NetworkId__c);
@@ -51,7 +51,7 @@ private class LogEntryEventBuilder_Tests_Network {
 
         LogEntryEvent__e logEntryEvent;
         System.runAs(experienceSiteUser) {
-            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).getLogEntryEvent();
+            logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
         }
 
         System.Assert.isNull(logEntryEvent.NetworkName__c);

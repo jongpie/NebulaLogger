@@ -344,6 +344,7 @@ public without sharing class LoggerStackTrace {
                 }
             }
             // Don't include the logging system's classes in the stack trace
+            Boolean ignoreLine = false;
             for (String ignoredOrigin : languageIgnoredOrigins) {
                 String formattedOrigin;
                 if (language == SourceLanguage.Apex) {
@@ -354,12 +355,17 @@ public without sharing class LoggerStackTrace {
                     formattedOrigin = 'modules/' + ignoredOrigin.trim() + '.js';
                 }
                 if (currentStackTraceLine.contains(formattedOrigin)) {
+                    ignoreLine = true;
                     continue;
                 }
             }
             // Some lines, especially in the managed package, can result in '()' or '(Nebula)'
             // TODO consider removing this check - there may be some value in seeing a managed package's activity in the stack
-            if (isValidStackTrace(currentStackTraceLine)) {
+            if (isValidStackTrace(currentStackTraceLine) == false) {
+                ignoreLine = true;
+            }
+
+            if (ignoreLine == false) {
                 previousStackTraceLine = currentStackTraceLine;
                 stackTraceLines.add(currentStackTraceLine);
             }
