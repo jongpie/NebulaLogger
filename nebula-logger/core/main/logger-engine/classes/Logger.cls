@@ -3305,7 +3305,7 @@ global with sharing class Logger {
             return null;
         }
 
-        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization(true);
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
         System.HttpRequest request = new System.HttpRequest();

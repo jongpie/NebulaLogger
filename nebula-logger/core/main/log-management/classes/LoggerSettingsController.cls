@@ -85,7 +85,7 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled(cacheable=true)
     public static LoggerSettings__c createRecord() {
         LoggerSettings__c defaultSettings = Logger.createSettings();
-        if (LoggerEngineDataSelector.getInstance().getCachedOrganization()?.IsSandbox == false) {
+        if (LoggerEngineDataSelector.getInstance().getCachedOrganization(true).IsSandbox == false) {
             defaultSettings.IsApexSystemDebugLoggingEnabled__c = false;
             defaultSettings.IsJavaScriptConsoleLoggingEnabled__c = false;
             defaultSettings.LoggingLevel__c = System.LoggingLevel.INFO.name();
@@ -130,7 +130,7 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static Schema.Organization getOrganization() {
-        return LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        return LoggerEngineDataSelector.getInstance().getCachedOrganization(true);
     }
 
     /**

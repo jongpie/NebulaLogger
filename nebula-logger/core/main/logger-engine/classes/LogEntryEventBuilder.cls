@@ -66,7 +66,7 @@ global with sharing class LogEntryEventBuilder {
 
     private static final Schema.Organization CACHED_ORGANIZATION {
         get {
-            if (CACHED_ORGANIZATION == null) {
+            if (CACHED_ORGANIZATION == null && LoggerParameter.QUERY_ORGANIZATION_DATA) {
                 CACHED_ORGANIZATION = LoggerEngineDataSelector.getInstance().getCachedOrganization();
             }
             return CACHED_ORGANIZATION;
@@ -1000,9 +1000,10 @@ global with sharing class LogEntryEventBuilder {
             return cachedOrganizationEnvironmentType;
         }
 
-        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_ORGANIZATION_DATA == false) {
             return '';
         }
+
 
         Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String cachedOrganizationEnvironmentType;
