@@ -604,6 +604,40 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description Sets a field values on the builder's `LogEntryEvent__e` record
+     * @param  field      The `Schema.SObjectField` token of the field to populate
+     *                    on the builder's `LogEntryEvent__e` record
+     * @param  fieldValue The `Object` value to populate in the provided field
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setField(Schema.SObjectField field, Object fieldValue) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        this.logEntryEvent.put(field, fieldValue);
+        return this;
+    }
+
+    /**
+     * @description Sets multiple field values on the builder's `LogEntryEvent__e` record
+     * @param  fieldToValue An instance of `Map<Schema.SObjectField, Object>` containing the
+     *                      the fields & values to populate the builder's `LogEntryEvent__e` record
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setFields(Map<Schema.SObjectField, Object> fieldToValue) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        for (Schema.SObjectField field : fieldToValue.keySet()) {
+            this.logEntryEvent.put(field, fieldToValue.get(field));
+        }
+
+        return this;
+    }
+
+    /**
      * @description Appends the tag to the existing list of tags
      * @param tag The string to use as a tag for the current entry
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
