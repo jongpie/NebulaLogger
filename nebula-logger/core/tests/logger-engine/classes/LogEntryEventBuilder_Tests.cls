@@ -1794,6 +1794,39 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_single_field_with_specified_value() {
+        Schema.SObjectField field = Schema.LogEntryEvent__e.OrganizationId__c;
+        String fieldValue = 'Some_value';
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+        // Wipe out any pre-populated field value to avoid a false-positive on the asserts below
+        builder.getLogEntryEvent().put(field, null);
+
+        builder.setField(field, fieldValue);
+
+        System.Assert.areEqual(fieldValue, builder.getLogEntryEvent().get(field));
+    }
+
+    @IsTest
+    static void it_should_set_map_of_fields_with_specified_values() {
+        Map<Schema.SObjectField, Object> fieldToValue = new Map<Schema.SObjectField, Object>{
+            Schema.LogEntryEvent__e.OrganizationId__c => 'Some_value',
+            Schema.LogEntryEvent__e.ProfileId__c => 'Some Profile Name'
+        };
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+        // Wipe out any pre-populated fields values to avoid a false-positive on the asserts below
+        for (Schema.SObjectField field : fieldToValue.keySet()) {
+            builder.getLogEntryEvent().put(field, null);
+        }
+
+        builder.setFields(fieldToValue);
+
+        for (Schema.SObjectField field : fieldToValue.keySet()) {
+            Object fieldValue = fieldToValue.get(field);
+            System.Assert.areEqual(fieldValue, builder.getLogEntryEvent().get(field));
+        }
+    }
+
+    @IsTest
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
