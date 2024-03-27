@@ -484,6 +484,67 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_use_field_mappings_on_logger_scenario_and_log_and_log_entry_when_mappings_have_been_configured() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        // These mock LoggerFieldMapping__mdt records are perhaps not the best example to use, since they are using
+        // existing fields that are intended to be auto-set by Nebula Logger.
+        // But, it demonstrates that the field mapping functionality is working, without adding extra fields for test purposes.
+        LoggerFieldMapper.setMock(
+            new LoggerFieldMapping__mdt(
+                DeveloperName = 'LoggerScenarioFieldMapping',
+                IsEnabled__c = true,
+                SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
+                SourceField__c = Schema.LogEntryEvent__e.Message__c.getDescribe().getName(),
+                TargetSObjectType__c = Schema.LoggerScenario__c.SObjectType.getDescribe().getName(),
+                TargetField__c = Schema.LoggerScenario__c.Name.getDescribe().getName()
+            )
+        );
+        LoggerFieldMapper.setMock(
+            new LoggerFieldMapping__mdt(
+                DeveloperName = 'LogFieldMapping',
+                IsEnabled__c = true,
+                SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
+                SourceField__c = Schema.LogEntryEvent__e.OrganizationId__c.getDescribe().getName(),
+                TargetSObjectType__c = Schema.Log__c.SObjectType.getDescribe().getName(),
+                TargetField__c = Schema.Log__c.OrganizationReleaseVersion__c.getDescribe().getName()
+            )
+        );
+        LoggerFieldMapper.setMock(
+            new LoggerFieldMapping__mdt(
+                DeveloperName = 'LogEntryFieldMapping',
+                IsEnabled__c = true,
+                SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
+                SourceField__c = Schema.LogEntryEvent__e.ProfileName__c.getDescribe().getName(),
+                TargetSObjectType__c = Schema.LogEntry__c.SObjectType.getDescribe().getName(),
+                TargetField__c = Schema.LogEntry__c.HttpResponseBody__c.getDescribe().getName()
+            )
+        );
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.Message__c = 'Some value to map to LoggerScenario__c.Name';
+        logEntryEvent.OrganizationId__c = 'Some value to map to Log__c.OrganizationReleaseVersion__c';
+        logEntryEvent.ProfileName__c = 'Some value to map to LogEntry__c.HttpResponseBody__c';
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        LoggerScenario__c loggerScenario = [SELECT Id, Name FROM LoggerScenario__c];
+        Log__c log = getLog();
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+        System.Assert.areEqual(logEntryEvent.Message__c, loggerScenario.Name);
+        System.Assert.areEqual(logEntryEvent.OrganizationId__c, log.OrganizationReleaseVersion__c);
+        System.Assert.areEqual(logEntryEvent.ProfileName__c, logEntry.HttpResponseBody__c);
+    }
+
+    @IsTest
     static void it_should_set_logging_user_as_log_owner_when_anonymous_mode_is_disabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
