@@ -132,13 +132,17 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @return   The cached `Schema.Organization` record
      */
     public virtual Schema.Organization getCachedOrganization() {
+        return this.getCachedOrganization(true);
+    }
+
+    public virtual Schema.Organization getCachedOrganization(Boolean ignoreLoggerParameter) {
         String cacheKey = 'Organization';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
             return (Schema.Organization) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
         Schema.Organization organization;
-        if (LoggerParameter.QUERY_ORGANIZATION_DATA) {
+        if (ignoreLoggerParameter || LoggerParameter.QUERY_ORGANIZATION_DATA) {
             organization = [
                 SELECT
                     Id,

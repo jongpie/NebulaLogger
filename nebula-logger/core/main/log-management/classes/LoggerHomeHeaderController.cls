@@ -14,19 +14,19 @@ public without sharing class LoggerHomeHeaderController {
      */
     @AuraEnabled(cacheable=true)
     public static Environment getEnvironmentDetails() {
-        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization(true);
 
         Environment environment = new Environment();
         environment.loggerNamespacePrefix = String.isNotBlank(Logger.getNamespacePrefix()) ? Logger.getNamespacePrefix() : '(none)';
         environment.loggerVersionNumber = Logger.getVersionNumber();
         environment.organizationApiVersion = Logger.getOrganizationApiVersion();
-        environment.organizationCreatedByUsername = organization.CreatedBy.Username;
+        environment.organizationCreatedByUsername = organization?.CreatedBy?.Username;
         environment.organizationDomainUrl = System.URL.getOrgDomainUrl()?.toExternalForm();
-        environment.organizationFormattedCreatedDate = organization.CreatedDate.format();
+        environment.organizationFormattedCreatedDate = organization?.CreatedDate?.format();
         environment.organizationId = System.UserInfo.getOrganizationId();
-        environment.organizationInstanceName = organization.InstanceName;
+        environment.organizationInstanceName = organization?.InstanceName;
         environment.organizationName = System.UserInfo.getOrganizationName();
-        environment.organizationType = organization.OrganizationType;
+        environment.organizationType = organization?.OrganizationType;
 
         setPluginDetails(environment);
         setStatusApiResponseDetails(environment);

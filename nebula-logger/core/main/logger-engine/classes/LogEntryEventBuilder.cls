@@ -66,7 +66,7 @@ global with sharing class LogEntryEventBuilder {
 
     private static final Schema.Organization CACHED_ORGANIZATION {
         get {
-            if (CACHED_ORGANIZATION == null) {
+            if (CACHED_ORGANIZATION == null && LoggerParameter.QUERY_ORGANIZATION_DATA) {
                 CACHED_ORGANIZATION = LoggerEngineDataSelector.getInstance().getCachedOrganization();
             }
             return CACHED_ORGANIZATION;
@@ -620,7 +620,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        String truncatedRequestBody = truncateFieldValue(Schema.LogEntryEvent__e..HttpRequestBody__c, request.getBody());
+        String truncatedRequestBody = truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestBody__c, request.getBody());
         String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
         Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
 
@@ -642,7 +642,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        String truncatedResponseBody = truncateFieldValue(Schema.LogEntryEvent__e..HttpRequestBody__c, response.getBody());
+        String truncatedResponseBody = truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestBody__c, response.getBody());
         String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
         Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
 
@@ -674,7 +674,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         String stringifiedRequestBody = request.requestBody?.toString();
-        String truncatedRequestBody = truncateFieldValue(Schema.LogEntryEvent__e..RestRequestBody__c, stringifiedRequestBody);
+        String truncatedRequestBody = truncateFieldValue(Schema.LogEntryEvent__e.RestRequestBody__c, stringifiedRequestBody);
         String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
         Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
 
@@ -1085,10 +1085,11 @@ global with sharing class LogEntryEventBuilder {
             return cachedOrganizationEnvironmentType;
         }
 
-        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
+        if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_ORGANIZATION_DATA == false) {
             return '';
         }
 
+        
         Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String cachedOrganizationEnvironmentType;
         if (cachedOrganization == null) {

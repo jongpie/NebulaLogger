@@ -169,9 +169,10 @@ public without sharing class LoggerEmailSender {
 
     private static String buildSubject(List<String> errorMessages) {
         String emailSubjectTemplate = 'Nebula Logger - Error Notification - {0} ({1})';
+        Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization(true);
         List<Object> emailSubjectInputs = new List<Object>{
-            LoggerEngineDataSelector.getInstance().getCachedOrganization().Name,
-            LoggerEngineDataSelector.getInstance().getCachedOrganization().Id
+            organization.Name,
+            organization.Id
         };
         return String.format(emailSubjectTemplate, emailSubjectInputs);
     }

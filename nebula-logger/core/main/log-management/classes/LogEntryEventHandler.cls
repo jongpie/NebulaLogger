@@ -656,7 +656,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static void setQueriedOrganizationDetails(List<Log__c> logs) {
-        if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY) {
+        if (LoggerParameter.QUERY_ORGANIZATION_DATA || LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY) {
             return;
         }
 
