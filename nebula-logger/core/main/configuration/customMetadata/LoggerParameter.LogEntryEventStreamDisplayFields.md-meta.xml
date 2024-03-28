@@ -7,6 +7,10 @@
     <label>Log Entry Event Stream Display Fields</label>
     <protected>false</protected>
     <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Log Entry Event Stream</value>
+    </values>
+    <values>
         <field>Comments__c</field>
         <value xsi:nil="true" />
     </values>

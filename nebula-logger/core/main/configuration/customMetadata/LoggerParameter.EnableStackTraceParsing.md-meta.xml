@@ -7,6 +7,10 @@
     <label>Enable Stack Trace Parsing</label>
     <protected>false</protected>
     <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Stack Trace Parsing</value>
+    </values>
+    <values>
         <field>Comments__c</field>
         <value xsi:nil="true" />
     </values>

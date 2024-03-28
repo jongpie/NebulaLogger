@@ -7,6 +7,10 @@
     <label>Store REST Request Header Values</label>
     <protected>false</protected>
     <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Data Capturing</value>
+    </values>
+    <values>
         <field>Comments__c</field>
         <value xsi:nil="true" />
     </values>
