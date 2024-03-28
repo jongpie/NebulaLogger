@@ -1230,19 +1230,6 @@ private class LogEntryHandler_Tests {
         return namespacePrefix;
     }
 
-    private class MockLogManagementDataSelector extends LogManagementDataSelector {
-        private Integer apexClassesQueryCount = 0;
-
-        public override List<ApexClass> getApexClasses(Set<String> apexClassNames) {
-            this.apexClassesQueryCount++;
-            return super.getApexClasses(apexClassNames);
-        }
-
-        public Integer getApexClassesQueryCount() {
-            return apexClassesQueryCount;
-        }
-    }
-
     // Helper class for testing stack trace parsing & ApexClass querying for an inner class
     private class SomeInnerClass {
         public LoggerStackTrace getLoggerStackTrace() {

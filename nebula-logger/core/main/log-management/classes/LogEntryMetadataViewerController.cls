@@ -19,7 +19,7 @@ public without sharing class LogEntryMetadataViewerController {
     @AuraEnabled(cacheable=true)
     public static LogEntryMetadata getMetadata(Id recordId, String sourceMetadata) {
         LogEntryMetadata metadata = new LogEntryMetadata();
-        if (Schema.ApexClass.SObjectType.getDescribe().isAccessible() == false || Schema.ApexTrigger.SObjectType.getDescribe().isAccessible() == false) {
+        if (canViewLogEntryMetadata() == false) {
             // TODO decide if it makes more sense to return null
             return metadata;
         }
@@ -50,6 +50,11 @@ public without sharing class LogEntryMetadataViewerController {
         querySourceMetadata(logEntry, metadata, sourceMetadataType, sourceApiName);
 
         return metadata;
+    }
+
+    @TestVisible
+    private static Boolean canViewLogEntryMetadata() {
+        return Schema.ApexClass.SObjectType.getDescribe().isAccessible() || System.FeatureManagement.checkPermission('CanViewLogEntryMetadata');
     }
 
     @SuppressWarnings('PMD.ExcessiveParameterList')
