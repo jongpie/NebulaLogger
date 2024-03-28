@@ -685,6 +685,19 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     * @param timestamp Datetime instance to set timestamp fields on this.logEntryEvent
+     */
+    public void setTimestamp(Datetime timestamp) {
+        // Salesforce does not provide precise datetimes in Apex triggers for platform events
+        // Set the string value of timestamp to a second field as a workaround
+        // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
+        this.logEntryEvent.EpochTimestamp__c = timestamp.getTime();
+        this.logEntryEvent.Timestamp__c = timestamp;
+        this.logEntryEvent.TimestampString__c = '' + this.logEntryEvent.EpochTimestamp__c;
+    }
+
+    /**
      * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
      * @return The `LogEntryEvent__e` record
      */
@@ -712,13 +725,6 @@ global with sharing class LogEntryEventBuilder {
         if (this.tagDetailsAreSet == false) {
             this.setTagsDetails();
             this.tagDetailsAreSet = true;
-        }
-
-        // Salesforce does not provide precise datetimes in Apex triggers for platform events
-        // Set the string value of timestamp to a second field as a workaround
-        // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
-        if (this.logEntryEvent.Timestamp__c != null && this.logEntryEvent.TimestampString__c == null) {
-            this.logEntryEvent.TimestampString__c = String.valueOf(this.logEntryEvent.Timestamp__c.getTime());
         }
 
         return this.logEntryEvent;
@@ -795,13 +801,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static LogEntryEvent__e getLogEntryEventTemplate(System.LoggingLevel entryLoggingLevel) {
-        Datetime timestamp = System.now();
         LogEntryEvent__e logEntryEventTemplate = new LogEntryEvent__e(
-            EpochTimestamp__c = timestamp.getTime(),
             LoggingLevel__c = entryLoggingLevel.name(),
             LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
             OriginType__c = 'Apex',
-            Timestamp__c = timestamp,
             TriggerIsExecuting__c = Trigger.isExecuting,
             TriggerOperationType__c = Trigger.operationType?.name(),
             TriggerSObjectType__c = Trigger.new?.getSObjectType().getDescribe().getName()

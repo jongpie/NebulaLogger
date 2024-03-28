@@ -61,7 +61,7 @@ public inherited sharing class ComponentLogger {
                     logEntryEventBuilder.setRecord(componentLogEntry.record).getLogEntryEvent();
                 }
 
-                logEntryEvent.Timestamp__c = componentLogEntry.timestamp;
+                logEntryEventBuilder.setTimestamp(componentLogEntry.timestamp);
                 setBrowserDetails(logEntryEvent, componentLogEntry);
                 setComponentErrorDetails(logEntryEvent, componentLogEntry.error);
                 setOriginStackTraceDetails(logEntryEvent, componentLogEntry.stack);
