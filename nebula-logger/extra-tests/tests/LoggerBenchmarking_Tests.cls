@@ -21,7 +21,7 @@ private class LoggerBenchmarking_Tests {
         TRANSACTION_LIMIT_PARAM.Value__c = JSON.serialize(false);
         ORG_LIMIT_PARAM.Value__c = TRANSACTION_LIMIT_PARAM.Value__c;
 
-        logForEntries(1200); // an amount this high will probably occasionally fail, this was coming in around ~17 seconds
+        logForEntries(800);
 
         System.Assert.isTrue(true, 'Made it here without an uncatchable System.LimitException being thrown');
     }

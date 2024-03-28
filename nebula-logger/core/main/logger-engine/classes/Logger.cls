@@ -43,8 +43,7 @@ global with sharing class Logger {
                 CLASSES_TO_IGNORE = new List<String>{
                     'Class.' + Logger.class.getName(),
                     'Class.' + LogEntryEventBuilder.class.getName(),
-                    'Class.' + LogMessage.class.getName(),
-                    'Class.' + LoggerStackTrace.class.getName()
+                    'Class.' + LogMessage.class.getName()
                 };
             }
             return CLASSES_TO_IGNORE;

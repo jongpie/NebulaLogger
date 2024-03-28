@@ -14,7 +14,7 @@
     'PMD.ApexDoc, PMD.AvoidDeeplyNestedIfStmts, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.NcssMethodCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 public without sharing class LoggerStackTrace {
-    private static final Set<String> IGNORED_APEX_ORIGINS = new Set<String>();
+    private static final Set<String> IGNORED_APEX_ORIGINS = new Set<String>{ LoggerStackTrace.class.getName() };
     private static final Set<String> IGNORED_JAVASCRIPT_ORIGINS = new Set<String>();
     private static final String NEW_LINE_DELIMITER = '\n';
 
