@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings(
-    'PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount'
+    'PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount'
 )
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests {

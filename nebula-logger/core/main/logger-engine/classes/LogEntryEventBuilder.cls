@@ -475,7 +475,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e..HttpRequestBody__c, request.getBody());
+        String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestBody__c, request.getBody());
         String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
         Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
 
@@ -833,6 +833,9 @@ global with sharing class LogEntryEventBuilder {
             logEntryEventTemplate.LimitsDmlStatementsUsed__c = System.Limits.getDmlStatements();
             logEntryEventTemplate.LimitsEmailInvocationsUsed__c = System.Limits.getEmailInvocations();
             logEntryEventTemplate.LimitsFutureCallsUsed__c = System.Limits.getFutureCalls();
+            // TODO System.Limits.getHeapSize() accounts for 95% of ALL of the time spent calculating limits
+            // (and is actually quite slow) so in the future we may gate this one field getting stamped behind
+            // another Logger Parameter record
             logEntryEventTemplate.LimitsHeapSizeUsed__c = System.Limits.getHeapSize();
             logEntryEventTemplate.LimitsMobilePushApexCallsUsed__c = System.Limits.getMobilePushApexCalls();
             logEntryEventTemplate.LimitsQueueableJobsUsed__c = System.Limits.getQueueableJobs();

@@ -10,7 +10,7 @@
  * @see LogMessage
  */
 @SuppressWarnings(
-    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex

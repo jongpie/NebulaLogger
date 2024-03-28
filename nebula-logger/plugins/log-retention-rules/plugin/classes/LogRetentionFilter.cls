@@ -11,6 +11,7 @@
  *              the value of `Log__c.LogRetentionDate__c` for any records that match the filters.
  * @see LogRententionRulesPlugin
  */
+@SuppressWarnings('PMD.CognitiveComplexity')
 public without sharing class LogRetentionFilter {
     private final SObject record;
     private final LogRetentionRule__mdt rule;

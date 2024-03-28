@@ -8,7 +8,7 @@
  * @description Provides a centralized way to load parameters for SObject handlers & plugins,
  *              and casts the parameters to common data types
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
     // During tests, always load this CMDT record
     // so that tests use the same format when calling System.debug()

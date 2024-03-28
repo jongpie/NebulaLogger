@@ -12,7 +12,7 @@
  * @see LoggerMockDataCreator
  * @see LoggerTestConfigurator
  */
-@SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
+@SuppressWarnings('PMD.ApexDoc, PMD.CognitiveComplexity, PMD.EmptyStatementBlock')
 @IsTest
 public without sharing class LoggerMockDataStore {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_ALL_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
