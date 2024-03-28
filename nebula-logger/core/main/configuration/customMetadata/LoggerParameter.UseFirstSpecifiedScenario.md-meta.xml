@@ -7,6 +7,10 @@
     <label>Use First Specified Scenario</label>
     <protected>false</protected>
     <values>
+        <field>Category__c</field>
+        <value xsi:type="xsd:string">Scenario-Based Logging</value>
+    </values>
+    <values>
         <field>Comments__c</field>
         <value xsi:nil="true" />
     </values>
