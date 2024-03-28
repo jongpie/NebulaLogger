@@ -3371,7 +3371,9 @@ global with sharing class Logger {
     private static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave)
             // Don't include the logging system's classes in the stack trace
-            .parseStackTrace(new DmlException().getStackTraceString().replaceAll('(' + String.join(CLASSES_TO_IGNORE, '|') + ')\\..+?column 1', '').trim());
+            .parseStackTrace(
+                new System.DmlException().getStackTraceString().replaceAll('(' + String.join(CLASSES_TO_IGNORE, '|') + ')\\..+?column 1', '').trim()
+            );
         if (logEntryEventBuilder.shouldSave()) {
             if (LoggerParameter.REQUIRE_SCENARIO_USAGE && String.isBlank(currentEntryScenario)) {
                 throw new LoggerException(MISSING_SCENARIO_ERROR_MESSAGE);
