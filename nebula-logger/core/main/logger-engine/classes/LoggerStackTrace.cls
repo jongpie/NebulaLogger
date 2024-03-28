@@ -14,7 +14,7 @@
     'PMD.ApexDoc, PMD.AvoidDeeplyNestedIfStmts, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.NcssMethodCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 public without sharing class LoggerStackTrace {
-    private static final Set<String> IGNORED_APEX_ORIGINS = new Set<String>{ LoggerStackTrace.class.getName() };
+    private static final Set<String> IGNORED_APEX_ORIGINS = new Set<String>();
     private static final Set<String> IGNORED_JAVASCRIPT_ORIGINS = new Set<String>();
     private static final String NEW_LINE_DELIMITER = '\n';
 
@@ -82,18 +82,6 @@ public without sharing class LoggerStackTrace {
             when JavaScript {
                 IGNORED_JAVASCRIPT_ORIGINS.add(origin);
             }
-        }
-    }
-
-    /**
-     * @description Adds the specified Apex types to the list of ignored origin locations for the current transaction.
-     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
-     *              the log entry's origin location
-     * @param  apexTypes A `Set` containing the Apex types of the classes to ignore
-     */
-    public static void ignoreOrigins(Set<System.Type> apexTypes) {
-        for (System.Type apexType : apexTypes) {
-            ignoreOrigin(apexType);
         }
     }
 
@@ -343,7 +331,6 @@ public without sharing class LoggerStackTrace {
                     languageIgnoredOrigins = IGNORED_JAVASCRIPT_ORIGINS;
                 }
             }
-            // Don't include the logging system's classes in the stack trace
             Boolean ignoreLine = false;
             for (String ignoredOrigin : languageIgnoredOrigins) {
                 String formattedOrigin;

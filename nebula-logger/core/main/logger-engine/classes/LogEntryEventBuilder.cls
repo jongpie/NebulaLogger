@@ -128,7 +128,6 @@ global with sharing class LogEntryEventBuilder {
             this.entryLoggingLevel = entryLoggingLevel;
 
             this.logEntryEvent = getLogEntryEventTemplate(entryLoggingLevel);
-            this.parseStackTrace(new LoggerStackTrace());
         }
     }
 

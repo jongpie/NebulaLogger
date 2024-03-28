@@ -1,5 +1,3 @@
-
-LoggerStackTrace.ignoreOrigins(new Set<System.Type>{ Logger.class, LogEntryEventBuilder.class, LogMessage.class});
 // Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
 
 // Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
@@ -51,3 +49,4 @@ Logger.info('logging an HTTP response').setHttpResponseDetails(response);
 Logger.saveLog();
 
 // throw new System.DmlException('aahhhhh!');
+

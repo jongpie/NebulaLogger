@@ -37,6 +37,21 @@ global with sharing class Logger {
     private static String transactionScenario;
     private static LoggerSettings__c userSettings;
 
+    private static final List<String> CLASSES_TO_IGNORE {
+        get {
+            if (CLASSES_TO_IGNORE == null) {
+                CLASSES_TO_IGNORE = new List<String>{
+                    'Class.' + Logger.class.getName(),
+                    'Class.' + LogEntryEventBuilder.class.getName(),
+                    'Class.' + LogMessage.class.getName(),
+                    'Class.' + LoggerStackTrace.class.getName()
+                };
+            }
+            return CLASSES_TO_IGNORE;
+        }
+        set;
+    }
+
     private static final LogEntryEventBuilder.LoggingContext LOGGING_CONTEXT {
         get {
             if (LOGGING_CONTEXT == null) {
@@ -115,7 +130,6 @@ global with sharing class Logger {
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Organization API Version: ' + getOrganizationApiVersion());
-        initializeIgnoredApexClasses();
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -3356,7 +3370,9 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, Boolean shouldSave) {
-        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave);
+        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave)
+            // Don't include the logging system's classes in the stack trace
+            .parseStackTrace(new DmlException().getStackTraceString().replaceAll('(' + String.join(CLASSES_TO_IGNORE, '|') + ')\\..+?column 1', '').trim());
         if (logEntryEventBuilder.shouldSave()) {
             if (LoggerParameter.REQUIRE_SCENARIO_USAGE && String.isBlank(currentEntryScenario)) {
                 throw new LoggerException(MISSING_SCENARIO_ERROR_MESSAGE);
@@ -3381,10 +3397,6 @@ global with sharing class Logger {
             logEntryEvent.AsyncContextTriggerId__c = currentAsyncContext.triggerId;
             logEntryEvent.AsyncContextType__c = currentAsyncContext.type;
         }
-    }
-
-    private static void initializeIgnoredApexClasses() {
-        LoggerStackTrace.ignoreOrigins(new Set<System.Type>{ Logger.class, LogEntryEventBuilder.class, LogMessage.class });
     }
 
     private static Boolean hasValidStartAndEndTimes(LoggerSettings__c settings) {
