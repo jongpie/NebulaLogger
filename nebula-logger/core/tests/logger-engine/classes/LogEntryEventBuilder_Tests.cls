@@ -73,7 +73,9 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_set_transaction_limits_fields_when_enabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreApexHeapSizeLimit', Value__c = JSON.serialize(true)));
         System.Assert.isTrue(LoggerParameter.STORE_TRANSACTION_LIMITS);
+        System.Assert.isTrue(LoggerParameter.STORE_HEAP_SIZE_LIMITS);
         // Capture these limits first, before creating an instance of LogEntryEventBuilder - the builder runs several queries internally,
         // so capturing afterwards leads to inaccurate numbers
         Integer expectedQueryCount = System.Limits.getQueries();
@@ -116,6 +118,17 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.areEqual(System.Limits.getLimitQueryLocatorRows(), logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c);
         System.Assert.areEqual(System.Limits.getLimitQueryRows(), logEntryEvent.LimitsSoqlQueryRowsMax__c);
         System.Assert.areEqual(System.Limits.getLimitSoslQueries(), logEntryEvent.LimitsSoslSearchesMax__c);
+    }
+
+    @IsTest
+    static void it_should_not_set_transaction_heap_limits_fields_when_disabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreApexHeapSizeLimit', Value__c = JSON.serialize(false)));
+        System.Assert.isTrue(LoggerParameter.STORE_TRANSACTION_LIMITS);
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
+
+        System.Assert.isNull(logEntryEvent.LimitsHeapSizeUsed__c);
     }
 
     @IsTest

@@ -837,10 +837,6 @@ global with sharing class LogEntryEventBuilder {
             logEntryEventTemplate.LimitsDmlStatementsUsed__c = System.Limits.getDmlStatements();
             logEntryEventTemplate.LimitsEmailInvocationsUsed__c = System.Limits.getEmailInvocations();
             logEntryEventTemplate.LimitsFutureCallsUsed__c = System.Limits.getFutureCalls();
-            // TODO System.Limits.getHeapSize() accounts for 95% of ALL of the time spent calculating limits
-            // (and is actually quite slow) so in the future we may gate this one field getting stamped behind
-            // another Logger Parameter record
-            logEntryEventTemplate.LimitsHeapSizeUsed__c = System.Limits.getHeapSize();
             logEntryEventTemplate.LimitsMobilePushApexCallsUsed__c = System.Limits.getMobilePushApexCalls();
             logEntryEventTemplate.LimitsQueueableJobsUsed__c = System.Limits.getQueueableJobs();
             logEntryEventTemplate.LimitsPublishImmediateDmlStatementsUsed__c = System.Limits.getPublishImmediateDML();
@@ -848,6 +844,11 @@ global with sharing class LogEntryEventBuilder {
             logEntryEventTemplate.LimitsSoqlQueryLocatorRowsUsed__c = System.Limits.getQueryLocatorRows();
             logEntryEventTemplate.LimitsSoqlQueryRowsUsed__c = System.Limits.getQueryRows();
             logEntryEventTemplate.LimitsSoslSearchesUsed__c = System.Limits.getSoslQueries();
+
+            // this is the most CPU-intensive Limits call BY FAR, so we gate it behind its own LoggerParameter record
+            if (LoggerParameter.STORE_HEAP_SIZE_LIMITS) {
+                logEntryEventTemplate.LimitsHeapSizeUsed__c = System.Limits.getHeapSize();
+            }
         }
 
         return logEntryEventTemplate;
