@@ -1804,7 +1804,9 @@ private class LogEntryEventBuilder_Tests {
         }
 
         public LogEntryEventBuilder myMethod(LoggerSettings__c userSettings) {
-            return new LogEntryEventBuilder(userSettings, System.LoggingLevel.DEBUG, true).setMessage(loggingString);
+            return new LogEntryEventBuilder(userSettings, System.LoggingLevel.DEBUG, true)
+                .parseStackTrace(new System.DmlException().getStackTraceString())
+                .setMessage(loggingString);
         }
     }
 
