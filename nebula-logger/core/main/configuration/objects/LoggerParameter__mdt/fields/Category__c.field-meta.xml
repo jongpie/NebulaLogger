@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Category</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Custom Plugin Parameter</fullName>
+                <default>false</default>
+                <label>Custom Plugin Parameter</label>
+            </value>
+            <value>
+                <fullName>Custom Purge Action</fullName>
+                <default>false</default>
+                <label>Custom Purge Action</label>
+            </value>
+            <value>
+                <fullName>Custom Save Method</fullName>
+                <default>false</default>
+                <label>Custom Save Method</label>
+            </value>
+            <value>
+                <fullName>Custom Storage Location</fullName>
+                <default>false</default>
+                <label>Custom Storage Location</label>
+            </value>
+            <value>
+                <fullName>Data Capturing</fullName>
+                <default>false</default>
+                <label>Data Capturing</label>
+            </value>
+            <value>
+                <fullName>Data Querying</fullName>
+                <default>false</default>
+                <label>Data Querying</label>
+            </value>
+            <value>
+                <fullName>Debugging</fullName>
+                <default>false</default>
+                <label>Debugging</label>
+            </value>
+            <value>
+                <fullName>Error Handling</fullName>
+                <default>false</default>
+                <label>Error Handling</label>
+            </value>
+            <value>
+                <fullName>Log Entry Event Stream</fullName>
+                <default>false</default>
+                <label>Log Entry Event Stream</label>
+            </value>
+            <value>
+                <fullName>Platform Cache</fullName>
+                <default>false</default>
+                <label>Platform Cache</label>
+            </value>
+            <value>
+                <fullName>Related Log Entries</fullName>
+                <default>false</default>
+                <label>Related Log Entries</label>
+            </value>
+            <value>
+                <fullName>Scenario-Based Logging</fullName>
+                <default>false</default>
+                <label>Scenario-Based Logging</label>
+            </value>
+            <value>
+                <fullName>Stack Trace Parsing</fullName>
+                <default>false</default>
+                <label>Stack Trace Parsing</label>
+            </value>
+            <value>
+                <fullName>Status API</fullName>
+                <default>false</default>
+                <label>Status API</label>
+            </value>
+            <value>
+                <fullName>Tagging</fullName>
+                <default>false</default>
+                <label>Tagging</label>
+            </value>
+            <value>
+                <fullName>Plugin Parameter</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Plugin Parameter</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
