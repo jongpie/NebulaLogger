@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>All</fullName>
+    <fullName>ErrorHandling</fullName>
     <columns>MasterLabel</columns>
-    <columns>DeveloperName</columns>
     <columns>Value__c</columns>
-    <columns>Category__c</columns>
     <columns>Description__c</columns>
     <columns>Comments__c</columns>
-    <columns>IsProtected</columns>
     <filterScope>Everything</filterScope>
-    <label>All</label>
+    <filters>
+        <field>Category__c</field>
+        <operation>equals</operation>
+        <value>Error Handling</value>
+    </filters>
+    <label>Error Handling</label>
 </ListView>
