@@ -108,6 +108,10 @@
         <enabled>true</enabled>
         <name>CanModifyLoggerSettings</name>
     </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>CanViewLogEntryMetadata</name>
+    </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
         <name>LoggerSettings__c</name>
