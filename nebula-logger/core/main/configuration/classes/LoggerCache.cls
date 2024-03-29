@@ -7,7 +7,7 @@
  * @group Configuration
  * @description Class used to cache query results returned by the selector classes
  */
-@SuppressWarnings('PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerCache {
     private static final String DEFAULT_PARTITION_NAME = 'LoggerCache';
     private static final Boolean PLATFORM_CACHE_IS_IMMUTABLE = false;

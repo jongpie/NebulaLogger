@@ -10,12 +10,12 @@
  * @see LogMessage
  */
 @SuppressWarnings(
-    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.13.4';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.13.5';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -27,7 +27,6 @@ global with sharing class Logger {
 
     private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
-    private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
     private static String lastSaveMethodNameUsed;
     private static List<String> orderedScenarios = new List<String>();
@@ -37,6 +36,37 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static String transactionScenario;
     private static LoggerSettings__c userSettings;
+
+    private static final List<String> CLASSES_TO_IGNORE {
+        get {
+            if (CLASSES_TO_IGNORE == null) {
+                CLASSES_TO_IGNORE = new List<String>{
+                    'Class.' + Logger.class.getName(),
+                    'Class.' + LogEntryEventBuilder.class.getName(),
+                    'Class.' + LogMessage.class.getName()
+                };
+            }
+            return CLASSES_TO_IGNORE;
+        }
+        set;
+    }
+
+    private static final LogEntryEventBuilder.LoggingContext LOGGING_CONTEXT {
+        get {
+            if (LOGGING_CONTEXT == null) {
+                LOGGING_CONTEXT = new LogEntryEventBuilder.LoggingContext(
+                    getVersionNumber(),
+                    getOrganizationApiVersion(),
+                    ORGANIZATION_DOMAIN_URL,
+                    REQUEST_ID,
+                    getCurrentQuiddity(),
+                    getTransactionId()
+                );
+            }
+            return LOGGING_CONTEXT;
+        }
+        set;
+    }
 
     private static final String ORGANIZATION_API_VERSION {
         get {
@@ -50,17 +80,6 @@ global with sharing class Logger {
                 ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
             }
             return ORGANIZATION_API_VERSION;
-        }
-        set;
-    }
-
-    private static final Database.DmlOptions PLATFORM_EVENT_DML_OPTIONS {
-        get {
-            if (PLATFORM_EVENT_DML_OPTIONS == null) {
-                PLATFORM_EVENT_DML_OPTIONS = new Database.DmlOptions();
-                PLATFORM_EVENT_DML_OPTIONS.AllowFieldTruncation = true;
-            }
-            return PLATFORM_EVENT_DML_OPTIONS;
         }
         set;
     }
@@ -110,7 +129,6 @@ global with sharing class Logger {
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Version Number: ' + getVersionNumber());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Transaction ID: ' + getTransactionId());
         System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Organization API Version: ' + getOrganizationApiVersion());
-        initializeIgnoredApexClasses();
         setScenario(getUserSettings().DefaultScenario__c);
     }
 
@@ -3197,8 +3215,9 @@ global with sharing class Logger {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
             if (logEntryEventBuilder.shouldSave()) {
-                finalizeEntry(logEntryEventBuilder);
-                logEntryEvents.add(logEntryEventBuilder.getLogEntryEvent());
+                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+                finalizeEntry(logEntryEvent);
+                logEntryEvents.add(logEntryEvent);
             }
         }
 
@@ -3222,7 +3241,7 @@ global with sharing class Logger {
 
         switch on getSaveMethod(saveMethodName) {
             when EVENT_BUS {
-                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents, PLATFORM_EVENT_DML_OPTIONS);
+                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents);
                 LoggerEmailSender.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
             when QUEUEABLE {
@@ -3350,32 +3369,26 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, Boolean shouldSave) {
-        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave);
+        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave)
+            // Don't include the logging system's classes in the stack trace
+            .parseStackTrace(
+                new System.DmlException().getStackTraceString().replaceAll('(' + String.join(CLASSES_TO_IGNORE, '|') + ')\\..+?column 1', '').trim()
+            );
         if (logEntryEventBuilder.shouldSave()) {
             if (LoggerParameter.REQUIRE_SCENARIO_USAGE && String.isBlank(currentEntryScenario)) {
                 throw new LoggerException(MISSING_SCENARIO_ERROR_MESSAGE);
             }
-
-            LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-            logEntryEvent.ApiVersion__c = getOrganizationApiVersion();
-            logEntryEvent.EntryScenario__c = currentEntryScenario;
-            logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
-            logEntryEvent.OrganizationApiVersion__c = getOrganizationApiVersion();
-            logEntryEvent.OrganizationDomainUrl__c = ORGANIZATION_DOMAIN_URL;
-            logEntryEvent.RequestId__c = REQUEST_ID;
-            logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
-            logEntryEvent.TransactionEntryNumber__c = currentTransactionEntryNumber++;
-            logEntryEvent.TransactionId__c = getTransactionId();
-            logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
-            logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
+            LOGGING_CONTEXT.currentEntryScenario = currentEntryScenario;
+            LOGGING_CONTEXT.entryNumber++;
+            LOGGING_CONTEXT.userLoggingLevel = userLoggingLevel;
+            logEntryEventBuilder.setLoggingContext(LOGGING_CONTEXT);
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
         return logEntryEventBuilder;
     }
 
-    private static void finalizeEntry(LogEntryEventBuilder logEntryEventBuilder) {
-        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+    private static void finalizeEntry(LogEntryEvent__e logEntryEvent) {
         logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
         logEntryEvent.TransactionScenario__c = transactionScenario;
 
@@ -3385,10 +3398,6 @@ global with sharing class Logger {
             logEntryEvent.AsyncContextTriggerId__c = currentAsyncContext.triggerId;
             logEntryEvent.AsyncContextType__c = currentAsyncContext.type;
         }
-    }
-
-    private static void initializeIgnoredApexClasses() {
-        LoggerStackTrace.ignoreOrigins(new Set<System.Type>{ Logger.class, LogEntryEventBuilder.class, LogMessage.class });
     }
 
     private static Boolean hasValidStartAndEndTimes(LoggerSettings__c settings) {
@@ -3494,7 +3503,7 @@ global with sharing class Logger {
          */
         global void execute(System.QueueableContext queueableContext) {
             Logger.setAsyncContext(queueableContext);
-            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents, PLATFORM_EVENT_DML_OPTIONS);
+            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
         }
     }
 

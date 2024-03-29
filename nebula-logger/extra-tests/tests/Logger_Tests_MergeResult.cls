@@ -17,7 +17,7 @@ private class Logger_Tests_MergeResult {
     }
 
     static List<Database.MergeResult> getMergeResultList() {
-        return new List<Database.MergeResult>{ LoggerMockDataCreator.createDatabaseMergeResult(true) };
+        return new List<Database.MergeResult>{ LoggerMockDataCreator.createDatabaseMergeResult(true), LoggerMockDataCreator.createDatabaseMergeResult(true) };
     }
 
     @IsTest

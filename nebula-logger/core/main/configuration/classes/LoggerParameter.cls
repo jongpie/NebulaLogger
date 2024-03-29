@@ -8,7 +8,7 @@
  * @description Provides a centralized way to load parameters for SObject handlers & plugins,
  *              and casts the parameters to common data types
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
     // During tests, always load this CMDT record
     // so that tests use the same format when calling System.debug()
@@ -365,6 +365,21 @@ public class LoggerParameter {
                 SEND_ERROR_EMAIL_NOTIFICATIONS = getBoolean('SendErrorEmailNotifications', true);
             }
             return SEND_ERROR_EMAIL_NOTIFICATIONS;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger will store the transaction heap limits on `LogEntry__c`, retrieved from the class `System.Limits`.
+     *              Controlled by the custom metadata record `LoggerParameter.StoreApexHeapSizeLimit`, or `true` as the default.
+     *              Relies on `LoggerParameter.StoreTransactionLimits` to be true, as well.
+     */
+    public static final Boolean STORE_HEAP_SIZE_LIMIT {
+        get {
+            if (STORE_HEAP_SIZE_LIMIT == null) {
+                STORE_HEAP_SIZE_LIMIT = getBoolean('StoreHeapSizeLimit', true);
+            }
+            return STORE_HEAP_SIZE_LIMIT;
         }
         private set;
     }

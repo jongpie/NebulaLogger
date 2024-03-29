@@ -61,7 +61,7 @@ public inherited sharing class ComponentLogger {
                     logEntryEventBuilder.setRecord(componentLogEntry.record).getLogEntryEvent();
                 }
 
-                logEntryEvent.Timestamp__c = componentLogEntry.timestamp;
+                logEntryEventBuilder.setTimestamp(componentLogEntry.timestamp);
                 setBrowserDetails(logEntryEvent, componentLogEntry);
                 setComponentErrorDetails(logEntryEvent, componentLogEntry.error);
                 setOriginStackTraceDetails(logEntryEvent, componentLogEntry.stack);
@@ -106,7 +106,10 @@ public inherited sharing class ComponentLogger {
         logEntryEvent.ExceptionSourceActionName__c = exceptionStackTrace.Source?.ActionName;
         logEntryEvent.ExceptionSourceApiName__c = exceptionStackTrace.Source?.ApiName;
         logEntryEvent.ExceptionSourceMetadataType__c = exceptionStackTrace.Source?.MetadataType.name();
-        logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace.ParsedStackTraceString;
+        logEntryEvent.ExceptionStackTrace__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.ExceptionStackTrace__c,
+            exceptionStackTrace.ParsedStackTraceString
+        );
     }
 
     @SuppressWarnings('PMD.AvoidDeeplyNestedIfStmts, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
@@ -127,23 +130,12 @@ public inherited sharing class ComponentLogger {
 
         // New Origin fields
         logEntryEvent.OriginLocation__c = originStackTrace.Location;
-        logEntryEvent.StackTrace__c = stackTraceString;
+        logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
         if (originStackTrace.Source != null) {
             logEntryEvent.OriginSourceActionName__c = originStackTrace.Source.ActionName;
             logEntryEvent.OriginSourceMetadataType__c = originStackTrace.Source.MetadataType.name();
             logEntryEvent.OriginSourceApiName__c = originStackTrace.Source.ApiName;
         }
-    }
-
-    private static String truncateFieldValue(Schema.SObjectField field, String value) {
-        Integer fieldMaxLength = field.getDescribe().getLength();
-        if (String.isBlank(value)) {
-            return value;
-        } else if (value.length() <= fieldMaxLength) {
-            return value;
-        }
-
-        return value.left(fieldMaxLength);
     }
 
     /**

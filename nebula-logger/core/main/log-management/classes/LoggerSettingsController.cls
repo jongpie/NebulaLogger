@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
     @TestVisible
     private static final String CUSTOM_SAVE_METHOD_PREFIX = 'CustomSaveMethod';

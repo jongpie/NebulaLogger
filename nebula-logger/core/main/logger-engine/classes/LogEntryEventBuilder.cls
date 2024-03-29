@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-    'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
@@ -74,22 +74,22 @@ global with sharing class LogEntryEventBuilder {
         set;
     }
 
+    private static final TransactionLimits CACHED_TRANSACTION_LIMITS {
+        get {
+            if (CACHED_TRANSACTION_LIMITS == null) {
+                CACHED_TRANSACTION_LIMITS = new TransactionLimits();
+            }
+            return CACHED_TRANSACTION_LIMITS;
+        }
+        set;
+    }
+
     private static final Schema.User CACHED_USER {
         get {
             if (CACHED_USER == null) {
                 CACHED_USER = LoggerEngineDataSelector.getInstance().getCachedUser();
             }
             return CACHED_USER;
-        }
-        set;
-    }
-
-    private static final LogEntryEvent__e LOG_ENTRY_EVENT_TEMPLATE {
-        get {
-            if (LOG_ENTRY_EVENT_TEMPLATE == null) {
-                LOG_ENTRY_EVENT_TEMPLATE = getLogEntryEventTemplate();
-            }
-            return LOG_ENTRY_EVENT_TEMPLATE.clone();
         }
         set;
     }
@@ -115,19 +115,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description `Deprecated` - Formally used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
-     * @param  userSettings      The instance of `LoggerSettings__c` for the current to use to control any feature flags
-     * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
-     * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
-     * @param  ignoredOrigins    A `Set<String>` of the names of any Apex classes that should be ignored when parsing the entry's origin
-     */
-    @SuppressWarnings('PMD.ExcessiveParameterList, PMD.NcssConstructorCount')
-    public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
-        // TOODO eliminate this constructor
-        this(userSettings, entryLoggingLevel, shouldSave);
-    }
-
-    /**
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
      * @param  userSettings      The instance of `LoggerSettings__c` for the current to use to control any feature flags
      * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
@@ -136,45 +123,13 @@ global with sharing class LogEntryEventBuilder {
     @SuppressWarnings('PMD.NcssConstructorCount')
     public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave) {
         this.shouldSave = shouldSave;
-        if (this.shouldSave() == false) {
-            return;
+        if (this.shouldSave()) {
+            this.userSettings = userSettings;
+            this.entryLoggingLevel = entryLoggingLevel;
+
+            this.logEntryEvent = getLogEntryEventTemplate(entryLoggingLevel);
+            this.setTimestamp(System.now());
         }
-
-        this.userSettings = userSettings;
-        this.entryLoggingLevel = entryLoggingLevel;
-
-        Datetime timestamp = System.now();
-        this.logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = timestamp.getTime(),
-            LoggingLevel__c = entryLoggingLevel.name(),
-            LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
-            OriginType__c = 'Apex',
-            Timestamp__c = timestamp,
-            TriggerIsExecuting__c = Trigger.isExecuting,
-            TriggerOperationType__c = Trigger.operationType?.name(),
-            TriggerSObjectType__c = Trigger.new?.getSObjectType().getDescribe().getName()
-        );
-
-        if (LoggerParameter.STORE_TRANSACTION_LIMITS) {
-            this.logEntryEvent.LimitsAggregateQueriesUsed__c = System.Limits.getAggregateQueries();
-            this.logEntryEvent.LimitsAsyncCallsUsed__c = System.Limits.getAsyncCalls();
-            this.logEntryEvent.LimitsCalloutsUsed__c = System.Limits.getCallouts();
-            this.logEntryEvent.LimitsCpuTimeUsed__c = System.Limits.getCpuTime();
-            this.logEntryEvent.LimitsDmlRowsUsed__c = System.Limits.getDmlRows();
-            this.logEntryEvent.LimitsDmlStatementsUsed__c = System.Limits.getDmlStatements();
-            this.logEntryEvent.LimitsEmailInvocationsUsed__c = System.Limits.getEmailInvocations();
-            this.logEntryEvent.LimitsFutureCallsUsed__c = System.Limits.getFutureCalls();
-            this.logEntryEvent.LimitsHeapSizeUsed__c = System.Limits.getHeapSize();
-            this.logEntryEvent.LimitsMobilePushApexCallsUsed__c = System.Limits.getMobilePushApexCalls();
-            this.logEntryEvent.LimitsQueueableJobsUsed__c = System.Limits.getQueueableJobs();
-            this.logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c = System.Limits.getPublishImmediateDML();
-            this.logEntryEvent.LimitsSoqlQueriesUsed__c = System.Limits.getQueries();
-            this.logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c = System.Limits.getQueryLocatorRows();
-            this.logEntryEvent.LimitsSoqlQueryRowsUsed__c = System.Limits.getQueryRows();
-            this.logEntryEvent.LimitsSoslSearchesUsed__c = System.Limits.getSoslQueries();
-        }
-
-        this.parseStackTrace();
     }
 
     /**
@@ -198,7 +153,7 @@ global with sharing class LogEntryEventBuilder {
     global LogEntryEventBuilder setMessage(String message) {
         // To help with debugging unit tests, always run System.debug statement in a test context
         if ((this.shouldSave() || System.Test.isRunningTest()) && this.logEntryEvent != null) {
-            String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
+            String truncatedMessage = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
             Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
             String cleanedMessage = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedMessage);
             Boolean messageMasked = cleanedMessage != truncatedMessage;
@@ -221,7 +176,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.ExceptionMessage__c = apexException.getMessage();
+        this.logEntryEvent.ExceptionMessage__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.ExceptionMessage__c, apexException.getMessage());
         this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
 
         LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(apexException);
@@ -229,7 +184,10 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.ExceptionSourceActionName__c = exceptionStackTrace.Source?.ActionName;
         this.logEntryEvent.ExceptionSourceApiName__c = exceptionStackTrace.Source?.ApiName;
         this.logEntryEvent.ExceptionSourceMetadataType__c = exceptionStackTrace.Source?.MetadataType.name();
-        this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace.ParsedStackTraceString;
+        this.logEntryEvent.ExceptionStackTrace__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.ExceptionStackTrace__c,
+            exceptionStackTrace.ParsedStackTraceString
+        );
 
         return this;
     }
@@ -243,16 +201,11 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.LeadConvertResult leadConvertResult) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(leadConvertResult);
-        this.logEntryEvent.DatabaseResultType__c = Database.LeadConvertResult.class.getName();
-
-        return this.setRecordId(leadConvertResult?.getLeadId());
+        return this.setDatabaseDetails(
+            new List<Database.LeadConvertResult>{ leadConvertResult },
+            Database.LeadConvertResult.class,
+            leadConvertResult?.getLeadId()
+        );
     }
 
     /**
@@ -261,16 +214,7 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = leadConvertResults.size();
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(leadConvertResults);
-        this.logEntryEvent.DatabaseResultType__c = Database.LeadConvertResult.class.getName();
-
-        return this;
+        return this.setDatabaseDetails(leadConvertResults, Database.LeadConvertResult.class, null);
     }
 
     /**
@@ -279,16 +223,7 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
-        this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
-
-        return this.setRecordId(deleteResult?.getId());
+        return this.setDatabaseDetails(new List<Database.DeleteResult>{ deleteResult }, Database.DeleteResult.class, deleteResult?.getId());
     }
 
     /**
@@ -297,16 +232,7 @@ global with sharing class LogEntryEventBuilder {
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
-        this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
-
-        return this.setRecordId(mergeResult?.getId());
+        return this.setDatabaseDetails(new List<Database.MergeResult>{ mergeResult }, Database.MergeResult.class, mergeResult?.getId());
     }
 
     /**
@@ -315,16 +241,7 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
-        this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
-
-        return this.setRecordId(saveResult?.getId());
+        return this.setDatabaseDetails(new List<Database.SaveResult>{ saveResult }, Database.SaveResult.class, saveResult?.getId());
     }
 
     /**
@@ -333,19 +250,12 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
-        if (this.shouldSave() == false) {
-            return this;
+        this.setDatabaseDetails(new List<Database.UpsertResult>{ upsertResult }, Database.UpsertResult.class, upsertResult?.getId());
+        if (upsertResult != null) {
+            String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
+            this.logEntryEvent.DatabaseResultType__c += '.' + subtype;
         }
-
-        // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
-        String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
-        this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
-
-        return this.setRecordId(upsertResult?.getId());
+        return this;
     }
 
     /**
@@ -354,16 +264,7 @@ global with sharing class LogEntryEventBuilder {
      * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
-        this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
-
-        return this.setRecordId(undeleteResult?.getId());
+        return this.setDatabaseDetails(new List<Database.UndeleteResult>{ undeleteResult }, Database.UndeleteResult.class, undeleteResult?.getId());
     }
 
     /**
@@ -372,16 +273,7 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = deleteResults?.size();
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResults);
-        this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
-
-        return this;
+        return this.setDatabaseDetails(deleteResults, Database.DeleteResult.class, null);
     }
 
     /**
@@ -390,16 +282,7 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.MergeResult> mergeResults) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = mergeResults?.size();
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResults);
-        this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
-
-        return this;
+        return this.setDatabaseDetails(mergeResults, Database.MergeResult.class, null);
     }
 
     /**
@@ -408,16 +291,7 @@ global with sharing class LogEntryEventBuilder {
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.SaveResult> saveResults) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = saveResults?.size();
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResults);
-        this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
-
-        return this;
+        return this.setDatabaseDetails(saveResults, Database.SaveResult.class, null);
     }
 
     /**
@@ -426,16 +300,7 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.UpsertResult> upsertResults) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = upsertResults?.size();
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResults);
-        this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName();
-
-        return this;
+        return this.setDatabaseDetails(upsertResults, Database.UpsertResult.class, null);
     }
 
     /**
@@ -444,16 +309,7 @@ global with sharing class LogEntryEventBuilder {
      * @return                 The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.UndeleteResult> undeleteResults) {
-        if (this.shouldSave() == false) {
-            return this;
-        }
-
-        this.logEntryEvent.DatabaseResultCollectionSize__c = undeleteResults?.size();
-        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResults);
-        this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
-
-        return this;
+        return this.setDatabaseDetails(undeleteResults, Database.UndeleteResult.class, null);
     }
 
     /**
@@ -514,7 +370,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordCollectionSize__c = 1;
         this.logEntryEvent.RecordCollectionType__c = 'Single';
 
-        String truncatedRecordJson = truncateFieldValue(
+        String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
             Schema.LogEntryEvent__e.RecordJson__c,
             getJson(record, this.userSettings.IsRecordFieldStrippingEnabled__c)
         );
@@ -551,7 +407,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordCollectionType__c = 'List';
 
         Schema.SObjectType sobjectType = records?.getSObjectType();
-        String truncatedRecordJson = truncateFieldValue(
+        String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
             Schema.LogEntryEvent__e.RecordJson__c,
             getJson(records, this.userSettings.IsRecordFieldStrippingEnabled__c)
         );
@@ -588,7 +444,7 @@ global with sharing class LogEntryEventBuilder {
 
         List<SObject> recordsList = recordIdToRecord?.values();
         Schema.SObjectType sobjectType = recordIdToRecord?.size() > 0 ? recordsList.get(0)?.getSObjectType() : null;
-        String truncatedRecordJson = truncateFieldValue(
+        String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
             Schema.LogEntryEvent__e.RecordJson__c,
             getJson(recordIdToRecord, this.userSettings.IsRecordFieldStrippingEnabled__c)
         );
@@ -620,7 +476,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        String truncatedRequestBody = truncateFieldValue(Schema.LogEntryEvent__e..HttpRequestBody__c, request.getBody());
+        String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestBody__c, request.getBody());
         String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
         Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
 
@@ -642,7 +498,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        String truncatedResponseBody = truncateFieldValue(Schema.LogEntryEvent__e..HttpRequestBody__c, response.getBody());
+        String truncatedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseBody__c, response.getBody());
         String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
         Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
 
@@ -657,7 +513,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.HttpResponseBody__c = cleanedResponseBody;
         this.logEntryEvent.HttpResponseBodyMasked__c = responseBodyMasked;
         this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), NEW_LINE_DELIMITER);
-        this.logEntryEvent.HttpResponseHeaders__c = formattedHeadersString;
+        this.logEntryEvent.HttpResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseHeaders__c, formattedHeadersString);
         this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
         this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
         return this;
@@ -674,7 +530,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         String stringifiedRequestBody = request.requestBody?.toString();
-        String truncatedRequestBody = truncateFieldValue(Schema.LogEntryEvent__e..RestRequestBody__c, stringifiedRequestBody);
+        String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestBody__c, stringifiedRequestBody);
         String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
         Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
 
@@ -702,7 +558,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RestRequestBody__c = cleanedRequestBody;
         this.logEntryEvent.RestRequestBodyMasked__c = requestBodyMasked;
         this.logEntryEvent.RestRequestHeaderKeys__c = formattedHeaderKeysString;
-        this.logEntryEvent.RestRequestHeaders__c = formattedHeadersString;
+        this.logEntryEvent.RestRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestHeaders__c, formattedHeadersString);
         this.logEntryEvent.RestRequestMethod__c = request.httpMethod;
         this.logEntryEvent.RestRequestParameters__c = formattedParametersString;
         this.logEntryEvent.RestRequestRemoteAddress__c = request.remoteAddress;
@@ -722,7 +578,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         String stringifiedResponseBody = response.responseBody?.toString();
-        String truncatedResponseBody = truncateFieldValue(Schema.LogEntryEvent__e.RestResponseBody__c, stringifiedResponseBody);
+        String truncatedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestResponseBody__c, stringifiedResponseBody);
         String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
         Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
 
@@ -742,7 +598,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RestResponseBody__c = cleanedResponseBody;
         this.logEntryEvent.RestResponseBodyMasked__c = responseBodyMasked;
         this.logEntryEvent.RestResponseHeaderKeys__c = formattedHeaderKeysString;
-        this.logEntryEvent.RestResponseHeaders__c = formattedHeadersString;
+        this.logEntryEvent.RestResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestResponseHeaders__c, formattedHeadersString);
         this.logEntryEvent.RestResponseStatusCode__c = response.statusCode;
         return this;
     }
@@ -811,6 +667,38 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     * @param loggingContext Variables specific to the current Logger state
+     * Sets information only available from the `Logger` class.
+     */
+    public void setLoggingContext(LoggingContext loggingContext) {
+        this.logEntryEvent.ApiVersion__c = loggingContext.organizationApiVersion;
+        this.logEntryEvent.EntryScenario__c = loggingContext.currentEntryScenario;
+        this.logEntryEvent.LoggerVersionNumber__c = loggingContext.loggerVersionNumber;
+        this.logEntryEvent.OrganizationApiVersion__c = loggingContext.organizationApiVersion;
+        this.logEntryEvent.OrganizationDomainUrl__c = loggingContext.organizationDomainUrl;
+        this.logEntryEvent.RequestId__c = loggingContext.requestId;
+        this.logEntryEvent.SystemMode__c = loggingContext.systemMode?.name();
+        this.logEntryEvent.TransactionEntryNumber__c = loggingContext.entryNumber;
+        this.logEntryEvent.TransactionId__c = loggingContext.transactionId;
+        this.logEntryEvent.UserLoggingLevel__c = loggingContext.userLoggingLevel.name();
+        this.logEntryEvent.UserLoggingLevelOrdinal__c = loggingContext.userLoggingLevel.ordinal();
+    }
+
+    /**
+     * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
+     * @param timestamp Datetime instance to set timestamp fields on this.logEntryEvent
+     */
+    public void setTimestamp(Datetime timestamp) {
+        // Salesforce does not provide precise datetimes in Apex triggers for platform events
+        // Set the string value of timestamp to a second field as a workaround
+        // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
+        this.logEntryEvent.EpochTimestamp__c = timestamp.getTime();
+        this.logEntryEvent.Timestamp__c = timestamp;
+        this.logEntryEvent.TimestampString__c = '' + this.logEntryEvent.EpochTimestamp__c;
+    }
+
+    /**
      * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
      * @return The `LogEntryEvent__e` record
      */
@@ -821,9 +709,6 @@ global with sharing class LogEntryEventBuilder {
 
         // Lazy-loading of some details to help minimize Apex heap size usage until needed
         if (this.detailsAreSet == false) {
-            for (String fieldName : LOG_ENTRY_EVENT_TEMPLATE.getPopulatedFieldsAsMap().keySet()) {
-                this.logEntryEvent.put(fieldName, LOG_ENTRY_EVENT_TEMPLATE.get(fieldName));
-            }
             if (this.userSettings.IsAnonymousModeEnabled__c == false) {
                 setUserInfoDetails(this.logEntryEvent);
                 setQueriedAuthSessionDetails(this.logEntryEvent, this.userSettings);
@@ -841,13 +726,6 @@ global with sharing class LogEntryEventBuilder {
         if (this.tagDetailsAreSet == false) {
             this.setTagsDetails();
             this.tagDetailsAreSet = true;
-        }
-
-        // Salesforce does not provide precise datetimes in Apex triggers for platform events
-        // Set the string value of timestamp to a second field as a workaround
-        // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
-        if (this.logEntryEvent.Timestamp__c != null) {
-            this.logEntryEvent.TimestampString__c = String.valueOf(this.logEntryEvent.Timestamp__c.getTime());
         }
 
         return this.logEntryEvent;
@@ -883,14 +761,6 @@ global with sharing class LogEntryEventBuilder {
         System.debug(this.entryLoggingLevel, this.debugMessage);
     }
 
-    private void parseStackTrace() {
-        if (this.shouldSave() == false || LoggerParameter.ENABLE_STACK_TRACE_PARSING == false) {
-            return;
-        }
-
-        this.parseStackTrace(new LoggerStackTrace());
-    }
-
     private LogEntryEventBuilder parseStackTrace(LoggerStackTrace originStackTrace) {
         if (this.shouldSave() == false || LoggerParameter.ENABLE_STACK_TRACE_PARSING == false) {
             return this;
@@ -900,8 +770,22 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.OriginSourceActionName__c = originStackTrace.Source?.ActionName;
         this.logEntryEvent.OriginSourceApiName__c = originStackTrace.Source?.ApiName;
         this.logEntryEvent.OriginSourceMetadataType__c = originStackTrace.Source?.MetadataType.name();
-        this.logEntryEvent.StackTrace__c = originStackTrace.ParsedStackTraceString;
+        this.logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, originStackTrace.ParsedStackTraceString);
         return this;
+    }
+
+    private LogEntryEventBuilder setDatabaseDetails(List<Object> databaseResults, System.Type resultType, Id possibleRecordId) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionSize__c = databaseResults.size();
+        this.logEntryEvent.DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? 'Single' : 'List';
+        String serializedResult = JSON.serializePretty(this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults);
+        this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
+        this.logEntryEvent.DatabaseResultType__c = resultType.getName();
+
+        return this.setRecordId(possibleRecordId);
     }
 
     private void setTagsDetails() {
@@ -911,29 +795,60 @@ global with sharing class LogEntryEventBuilder {
 
         List<String> sortedTags = new List<String>(this.tags);
         sortedTags.sort();
-        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(sortedTags, NEW_LINE_DELIMITER));
+        this.logEntryEvent.Tags__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.Tags__c,
+            String.escapeSingleQuotes(String.join(sortedTags, NEW_LINE_DELIMITER))
+        );
     }
 
-    private static LogEntryEvent__e getLogEntryEventTemplate() {
-        LogEntryEvent__e logEntryEventTemplate = new LogEntryEvent__e();
+    private static LogEntryEvent__e getLogEntryEventTemplate(System.LoggingLevel entryLoggingLevel) {
+        LogEntryEvent__e logEntryEventTemplate = new LogEntryEvent__e(
+            LoggingLevel__c = entryLoggingLevel.name(),
+            LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
+            OriginType__c = 'Apex',
+            TriggerIsExecuting__c = Trigger.isExecuting,
+            TriggerOperationType__c = Trigger.operationType?.name(),
+            TriggerSObjectType__c = Trigger.new?.getSObjectType().getDescribe().getName()
+        );
 
         if (LoggerParameter.STORE_TRANSACTION_LIMITS) {
-            logEntryEventTemplate.LimitsAggregateQueriesMax__c = System.Limits.getLimitAggregateQueries();
-            logEntryEventTemplate.LimitsAsyncCallsMax__c = System.Limits.getLimitAsyncCalls();
-            logEntryEventTemplate.LimitsCalloutsMax__c = System.Limits.getLimitCallouts();
-            logEntryEventTemplate.LimitsCpuTimeMax__c = System.Limits.getLimitCpuTime();
-            logEntryEventTemplate.LimitsDmlRowsMax__c = System.Limits.getLimitDmlRows();
-            logEntryEventTemplate.LimitsDmlStatementsMax__c = System.Limits.getLimitDmlStatements();
-            logEntryEventTemplate.LimitsEmailInvocationsMax__c = System.Limits.getLimitEmailInvocations();
-            logEntryEventTemplate.LimitsFutureCallsMax__c = System.Limits.getLimitFutureCalls();
-            logEntryEventTemplate.LimitsHeapSizeMax__c = System.Limits.getLimitHeapSize();
-            logEntryEventTemplate.LimitsMobilePushApexCallsMax__c = System.Limits.getLimitMobilePushApexCalls();
-            logEntryEventTemplate.LimitsPublishImmediateDmlStatementsMax__c = System.Limits.getLimitPublishImmediateDML();
-            logEntryEventTemplate.LimitsQueueableJobsMax__c = System.Limits.getLimitQueueableJobs();
-            logEntryEventTemplate.LimitsSoqlQueriesMax__c = System.Limits.getLimitQueries();
-            logEntryEventTemplate.LimitsSoqlQueryLocatorRowsMax__c = System.Limits.getLimitQueryLocatorRows();
-            logEntryEventTemplate.LimitsSoqlQueryRowsMax__c = System.Limits.getLimitQueryRows();
-            logEntryEventTemplate.LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries();
+            logEntryEventTemplate.LimitsAggregateQueriesMax__c = CACHED_TRANSACTION_LIMITS.aggregateQueriesMax;
+            logEntryEventTemplate.LimitsAsyncCallsMax__c = CACHED_TRANSACTION_LIMITS.asyncCallsMax;
+            logEntryEventTemplate.LimitsCalloutsMax__c = CACHED_TRANSACTION_LIMITS.calloutsMax;
+            logEntryEventTemplate.LimitsCpuTimeMax__c = CACHED_TRANSACTION_LIMITS.cpuTimeMax;
+            logEntryEventTemplate.LimitsDmlRowsMax__c = CACHED_TRANSACTION_LIMITS.dmlRowsMax;
+            logEntryEventTemplate.LimitsDmlStatementsMax__c = CACHED_TRANSACTION_LIMITS.dmlStatementsMax;
+            logEntryEventTemplate.LimitsEmailInvocationsMax__c = CACHED_TRANSACTION_LIMITS.emailInvocationsMax;
+            logEntryEventTemplate.LimitsFutureCallsMax__c = CACHED_TRANSACTION_LIMITS.futureCallsMax;
+            logEntryEventTemplate.LimitsHeapSizeMax__c = CACHED_TRANSACTION_LIMITS.heapSizeMax;
+            logEntryEventTemplate.LimitsMobilePushApexCallsMax__c = CACHED_TRANSACTION_LIMITS.mobilePushApexCallsMax;
+            logEntryEventTemplate.LimitsPublishImmediateDmlStatementsMax__c = CACHED_TRANSACTION_LIMITS.publishImmediateDmlStatementsMax;
+            logEntryEventTemplate.LimitsQueueableJobsMax__c = CACHED_TRANSACTION_LIMITS.queueableJobsMax;
+            logEntryEventTemplate.LimitsSoqlQueriesMax__c = CACHED_TRANSACTION_LIMITS.soqlQueriesMax;
+            logEntryEventTemplate.LimitsSoqlQueryLocatorRowsMax__c = CACHED_TRANSACTION_LIMITS.soqlQueryLocatorRowsMax;
+            logEntryEventTemplate.LimitsSoqlQueryRowsMax__c = CACHED_TRANSACTION_LIMITS.soqlQueryRowsMax;
+            logEntryEventTemplate.LimitsSoslSearchesMax__c = CACHED_TRANSACTION_LIMITS.soslSearchesMax;
+
+            logEntryEventTemplate.LimitsAggregateQueriesUsed__c = System.Limits.getAggregateQueries();
+            logEntryEventTemplate.LimitsAsyncCallsUsed__c = System.Limits.getAsyncCalls();
+            logEntryEventTemplate.LimitsCalloutsUsed__c = System.Limits.getCallouts();
+            logEntryEventTemplate.LimitsCpuTimeUsed__c = System.Limits.getCpuTime();
+            logEntryEventTemplate.LimitsDmlRowsUsed__c = System.Limits.getDmlRows();
+            logEntryEventTemplate.LimitsDmlStatementsUsed__c = System.Limits.getDmlStatements();
+            logEntryEventTemplate.LimitsEmailInvocationsUsed__c = System.Limits.getEmailInvocations();
+            logEntryEventTemplate.LimitsFutureCallsUsed__c = System.Limits.getFutureCalls();
+            logEntryEventTemplate.LimitsMobilePushApexCallsUsed__c = System.Limits.getMobilePushApexCalls();
+            logEntryEventTemplate.LimitsQueueableJobsUsed__c = System.Limits.getQueueableJobs();
+            logEntryEventTemplate.LimitsPublishImmediateDmlStatementsUsed__c = System.Limits.getPublishImmediateDML();
+            logEntryEventTemplate.LimitsSoqlQueriesUsed__c = System.Limits.getQueries();
+            logEntryEventTemplate.LimitsSoqlQueryLocatorRowsUsed__c = System.Limits.getQueryLocatorRows();
+            logEntryEventTemplate.LimitsSoqlQueryRowsUsed__c = System.Limits.getQueryRows();
+            logEntryEventTemplate.LimitsSoslSearchesUsed__c = System.Limits.getSoslQueries();
+
+            // this is the most CPU-intensive Limits call BY FAR, so we gate it behind its own LoggerParameter record
+            if (LoggerParameter.STORE_HEAP_SIZE_LIMIT) {
+                logEntryEventTemplate.LimitsHeapSizeUsed__c = System.Limits.getHeapSize();
+            }
         }
 
         return logEntryEventTemplate;
@@ -1228,8 +1143,53 @@ global with sharing class LogEntryEventBuilder {
         return securityDecision.getRecords();
     }
 
-    private static String truncateFieldValue(Schema.SObjectField field, String value) {
-        Integer fieldMaxLength = field.getDescribe().getLength();
-        return value?.left(fieldMaxLength);
+    @SuppressWarnings('PMD.ApexDoc')
+    public class LoggingContext {
+        public String currentEntryScenario;
+        public String loggerVersionNumber;
+        public String organizationApiVersion;
+        public String organizationDomainUrl;
+        public String requestId;
+        public Integer entryNumber = 0;
+        public System.Quiddity systemMode;
+        public String transactionId;
+        public System.LoggingLevel userLoggingLevel;
+
+        @SuppressWarnings('PMD.ExcessiveParameterList')
+        public LoggingContext(
+            String loggerVersionNumber,
+            String organizationApiVersion,
+            String organizationDomainUrl,
+            String requestId,
+            System.Quiddity systemMode,
+            String transactionId
+        ) {
+            this.loggerVersionNumber = loggerVersionNumber;
+            this.organizationApiVersion = organizationApiVersion;
+            this.organizationDomainUrl = organizationDomainUrl;
+            this.requestId = requestId;
+            this.systemMode = systemMode;
+            this.transactionId = transactionId;
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc, PMD.TooManyFields')
+    private class TransactionLimits {
+        public final Integer aggregateQueriesMax = System.Limits.getLimitAggregateQueries();
+        public final Integer asyncCallsMax = System.Limits.getLimitAsyncCalls();
+        public final Integer calloutsMax = System.Limits.getLimitCallouts();
+        public final Integer cpuTimeMax = System.Limits.getLimitCpuTime();
+        public final Integer dmlRowsMax = System.Limits.getLimitDmlRows();
+        public final Integer dmlStatementsMax = System.Limits.getLimitDmlStatements();
+        public final Integer emailInvocationsMax = System.Limits.getLimitEmailInvocations();
+        public final Integer futureCallsMax = System.Limits.getLimitFutureCalls();
+        public final Integer heapSizeMax = System.Limits.getLimitHeapSize();
+        public final Integer mobilePushApexCallsMax = System.Limits.getLimitMobilePushApexCalls();
+        public final Integer publishImmediateDmlStatementsMax = System.Limits.getLimitPublishImmediateDML();
+        public final Integer queueableJobsMax = System.Limits.getLimitQueueableJobs();
+        public final Integer soqlQueriesMax = System.Limits.getLimitQueries();
+        public final Integer soqlQueryLocatorRowsMax = System.Limits.getLimitQueryLocatorRows();
+        public final Integer soqlQueryRowsMax = System.Limits.getLimitQueryRows();
+        public final Integer soslSearchesMax = System.Limits.getLimitSoslQueries();
     }
 }

@@ -86,18 +86,6 @@ public without sharing class LoggerStackTrace {
     }
 
     /**
-     * @description Adds the specified Apex types to the list of ignored origin locations for the current transaction.
-     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
-     *              the log entry's origin location
-     * @param  apexTypes A `Set` containing the Apex types of the classes to ignore
-     */
-    public static void ignoreOrigins(Set<System.Type> apexTypes) {
-        for (System.Type apexType : apexTypes) {
-            ignoreOrigin(apexType);
-        }
-    }
-
-    /**
      * @description Constructor that automatically generates & parses stack trace information
      *              based on the calling code
      */
@@ -343,7 +331,6 @@ public without sharing class LoggerStackTrace {
                     languageIgnoredOrigins = IGNORED_JAVASCRIPT_ORIGINS;
                 }
             }
-            // Don't include the logging system's classes in the stack trace
             Boolean ignoreLine = false;
             for (String ignoredOrigin : languageIgnoredOrigins) {
                 String formattedOrigin;

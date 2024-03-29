@@ -33,7 +33,7 @@ private class LogEntryEventBuilder_Tests_Security {
 
             LoggerSettings__c userSettings = getUserSettings();
             userSettings.IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrand);
+            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockAccountBrand);
         }
 
         System.Assert.areNotEqual(
@@ -80,7 +80,7 @@ private class LogEntryEventBuilder_Tests_Security {
 
             LoggerSettings__c userSettings = getUserSettings();
             userSettings.IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrands);
+            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockAccountBrands);
         }
 
         System.Assert.areNotEqual(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
@@ -126,7 +126,7 @@ private class LogEntryEventBuilder_Tests_Security {
 
             LoggerSettings__c userSettings = getUserSettings();
             userSettings.IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockIdToAccountBrand);
+            builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockIdToAccountBrand);
         }
 
         System.Assert.areEqual(JSON.serializePretty(mockIdStringToStrippedAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');

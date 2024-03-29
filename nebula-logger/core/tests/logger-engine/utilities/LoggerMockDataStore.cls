@@ -12,7 +12,7 @@
  * @see LoggerMockDataCreator
  * @see LoggerTestConfigurator
  */
-@SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
+@SuppressWarnings('PMD.ApexDoc, PMD.CognitiveComplexity, PMD.EmptyStatementBlock')
 @IsTest
 public without sharing class LoggerMockDataStore {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_ALL_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
@@ -67,17 +67,12 @@ public without sharing class LoggerMockDataStore {
     }
 
     public class MockEventBus extends LoggerDataStore.EventBus {
-        private Database.DmlOptions lastUsedDmlOptions;
         private List<SObject> publishedPlatformEvents;
         private Integer publishCount;
 
         private MockEventBus() {
             this.publishedPlatformEvents = new List<SObject>();
             this.publishCount = 0;
-        }
-
-        public Database.DmlOptions getLastUsedDmlOptions() {
-            return this.lastUsedDmlOptions;
         }
 
         public Integer getPublishCallCount() {
@@ -93,15 +88,9 @@ public without sharing class LoggerMockDataStore {
         }
 
         public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents) {
-            return this.publishRecords(platformEvents, null);
-        }
-
-        public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents, Database.DmlOptions dmlOptions) {
             this.publishCount++;
             this.publishedPlatformEvents.addAll(platformEvents);
-            this.lastUsedDmlOptions = dmlOptions;
 
-            this.finalizeRecords(platformEvents, dmlOptions);
             List<Database.SaveResult> mockSaveResults = new List<Database.SaveResult>();
             for (SObject platformEvent : platformEvents) {
                 mockSaveResults.add(validateBeforeSave(platformEvent, false));

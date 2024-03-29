@@ -525,69 +525,6 @@ private class LoggerDataStore_Tests {
         }
     }
 
-    @IsTest
-    static void it_should_automatically_truncate_platform_event_string_fields_when_dml_options_not_provided() {
-        List<LogEntryEvent__e> logEntryEventsToPublish = new List<LogEntryEvent__e>();
-        String originalValue = 'a'.repeat(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength() + 1);
-        String expectedTruncatedValue = originalValue.abbreviate(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength());
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
-        logEntryEvent.TransactionId__c = originalValue;
-        logEntryEventsToPublish.add(logEntryEvent);
-        System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
-
-        List<Database.SaveResult> results = LoggerDataStore.getEventBus().publishRecords(logEntryEventsToPublish);
-
-        System.Assert.areEqual(logEntryEventsToPublish.size(), results.size());
-        System.Assert.isTrue(results.get(0).isSuccess());
-        System.Assert.areEqual(1, System.Limits.getPublishImmediateDml(), results.toString());
-        System.Assert.areNotEqual(originalValue, logEntryEvent.TransactionId__c);
-        System.Assert.areEqual(expectedTruncatedValue, logEntryEvent.TransactionId__c);
-    }
-
-    @IsTest
-    static void it_should_automatically_truncate_platform_event_string_fields_when_allow_truncation_dml_option_is_true() {
-        List<LogEntryEvent__e> logEntryEventsToPublish = new List<LogEntryEvent__e>();
-        String originalValue = 'a'.repeat(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength() + 1);
-        String expectedTruncatedValue = originalValue.abbreviate(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength());
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
-        logEntryEvent.TransactionId__c = originalValue;
-        logEntryEventsToPublish.add(logEntryEvent);
-        System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
-
-        Database.DmlOptions truncationDmlOptions = new Database.DmlOptions();
-        truncationDmlOptions.AllowFieldTruncation = true;
-        List<Database.SaveResult> results = LoggerDataStore.getEventBus().publishRecords(logEntryEventsToPublish, truncationDmlOptions);
-
-        System.Assert.areEqual(logEntryEventsToPublish.size(), results.size());
-        System.Assert.isTrue(results.get(0).isSuccess());
-        System.Assert.areEqual(1, System.Limits.getPublishImmediateDml(), results.toString());
-        System.Assert.areNotEqual(originalValue, logEntryEvent.TransactionId__c);
-        System.Assert.areEqual(expectedTruncatedValue, logEntryEvent.TransactionId__c);
-    }
-
-    @IsTest
-    static void it_should_not_automatically_truncate_platform_event_string_fields_when_allow_truncation_dml_option_is_false() {
-        List<LogEntryEvent__e> logEntryEventsToPublish = new List<LogEntryEvent__e>();
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
-        logEntryEvent.TransactionId__c = 'a'.repeat(Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getLength() + 1);
-        logEntryEventsToPublish.add(logEntryEvent);
-        System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
-
-        Database.DmlOptions truncationDmlOptions = new Database.DmlOptions();
-        truncationDmlOptions.AllowFieldTruncation = false;
-        List<Database.SaveResult> results = LoggerDataStore.getEventBus().publishRecords(logEntryEventsToPublish, truncationDmlOptions);
-
-        System.Assert.areEqual(logEntryEventsToPublish.size(), results.size());
-        System.Assert.isFalse(results.get(0).isSuccess());
-        System.Assert.areEqual(System.StatusCode.STRING_TOO_LONG, results.get(0).getErrors().get(0).getStatusCode());
-    }
-
     // Queueable tests
     @IsTest
     static void it_should_enqueue_job() {

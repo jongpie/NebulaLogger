@@ -8,7 +8,7 @@
  * @description Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
  * @see LogBatchPurgeScheduler
  */
-@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList')
+@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
     private static final Integer DEFAULT_BATCH_SIZE = 2000;
     private static final Date LOG_RETENTION_END_DATE = System.today();
