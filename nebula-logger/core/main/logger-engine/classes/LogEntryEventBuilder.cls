@@ -846,7 +846,7 @@ global with sharing class LogEntryEventBuilder {
             logEntryEventTemplate.LimitsSoslSearchesUsed__c = System.Limits.getSoslQueries();
 
             // this is the most CPU-intensive Limits call BY FAR, so we gate it behind its own LoggerParameter record
-            if (LoggerParameter.STORE_HEAP_SIZE_LIMITS) {
+            if (LoggerParameter.STORE_HEAP_SIZE_LIMIT) {
                 logEntryEventTemplate.LimitsHeapSizeUsed__c = System.Limits.getHeapSize();
             }
         }

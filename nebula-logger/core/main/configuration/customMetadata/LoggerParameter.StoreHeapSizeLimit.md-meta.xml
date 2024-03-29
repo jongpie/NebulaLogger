@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Store Apex Heap Size Limits</label>
+    <label>Store Heap Size Limit</label>
     <protected>false</protected>
     <values>
         <field>Comments__c</field>

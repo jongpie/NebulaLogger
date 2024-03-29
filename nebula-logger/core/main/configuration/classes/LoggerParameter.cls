@@ -374,12 +374,12 @@ public class LoggerParameter {
      *              Controlled by the custom metadata record `LoggerParameter.StoreApexHeapSizeLimit`, or `true` as the default.
      *              Relies on `LoggerParameter.StoreTransactionLimits` to be true, as well.
      */
-    public static final Boolean STORE_HEAP_SIZE_LIMITS {
+    public static final Boolean STORE_HEAP_SIZE_LIMIT {
         get {
-            if (STORE_HEAP_SIZE_LIMITS == null) {
-                STORE_HEAP_SIZE_LIMITS = getBoolean('StoreApexHeapSizeLimit', true);
+            if (STORE_HEAP_SIZE_LIMIT == null) {
+                STORE_HEAP_SIZE_LIMIT = getBoolean('StoreHeapSizeLimit', true);
             }
-            return STORE_HEAP_SIZE_LIMITS;
+            return STORE_HEAP_SIZE_LIMIT;
         }
         private set;
     }
