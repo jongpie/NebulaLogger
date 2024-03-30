@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.5.NEXT",
-            "versionName": "Performance improvements",
-            "versionDescription": "Added LoggerBenchmarking_Tests and optimized Logger performance when creating large numbers of log entries",
+            "versionNumber": "4.13.6.NEXT",
+            "versionName": "View Log Entry Metadata Custom Permission",
+            "versionDescription": "Added new custom permission CanViewLogEntryMetadata so that users without query access to ApexClass and ApexTrigger can still see the source code in the LWC logEntryMetadataViewer",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
