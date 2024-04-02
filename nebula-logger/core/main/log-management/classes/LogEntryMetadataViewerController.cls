@@ -15,12 +15,10 @@ public without sharing class LogEntryMetadataViewerController {
      * @param       sourceMetadata Either the value `Origin` or `Exception`
      * @return      An instance of `LogEntryMetadataViewerController.LogEntryMetadata`
      */
-    // @AuraEnabled
     @AuraEnabled(cacheable=true)
     public static LogEntryMetadata getMetadata(Id recordId, String sourceMetadata) {
         LogEntryMetadata metadata = new LogEntryMetadata();
-        if (Schema.ApexClass.SObjectType.getDescribe().isAccessible() == false || Schema.ApexTrigger.SObjectType.getDescribe().isAccessible() == false) {
-            // TODO decide if it makes more sense to return null
+        if (canViewLogEntryMetadata() == false) {
             return metadata;
         }
 
@@ -31,25 +29,27 @@ public without sharing class LogEntryMetadataViewerController {
         switch on sourceMetadata {
             when 'Exception' {
                 sourceApiName = logEntry.ExceptionSourceApiName__c;
-                sourceMetadataType = String.isBlank(logEntry.ExceptionSourceMetadataType__c)
-                    ? null
-                    : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.ExceptionSourceMetadataType__c);
+                sourceMetadataType = getSourceMetadataType(logEntry.ExceptionSourceMetadataType__c);
             }
             when 'Origin' {
                 sourceApiName = logEntry.OriginSourceApiName__c;
-                sourceMetadataType = String.isBlank(logEntry.OriginSourceMetadataType__c)
-                    ? null
-                    : LoggerStackTrace.SourceMetadataType.valueOf(logEntry.OriginSourceMetadataType__c);
+                sourceMetadataType = getSourceMetadataType(logEntry.OriginSourceMetadataType__c);
             }
         }
 
-        if (sourceMetadataType == null || String.isBlank(sourceApiName)) {
-            return metadata;
+        if (String.isNotBlank(sourceApiName) && sourceMetadataType != null) {
+            querySourceMetadata(logEntry, metadata, sourceMetadataType, sourceApiName);
         }
 
-        querySourceMetadata(logEntry, metadata, sourceMetadataType, sourceApiName);
-
         return metadata;
+    }
+
+    private static Boolean canViewLogEntryMetadata() {
+        return Schema.ApexClass.SObjectType.getDescribe().isAccessible() || System.FeatureManagement.checkPermission('CanViewLogEntryMetadata');
+    }
+
+    private static LoggerStackTrace.SourceMetadataType getSourceMetadataType(String sourceMetadata) {
+        return String.isBlank(sourceMetadata) ? null : LoggerStackTrace.SourceMetadataType.valueOf(sourceMetadata);
     }
 
     @SuppressWarnings('PMD.ExcessiveParameterList')
@@ -76,14 +76,12 @@ public without sharing class LogEntryMetadataViewerController {
             }
         }
 
-        if (codeBodyField == null || metadataRecords == null || metadataRecords.isEmpty()) {
-            return;
+        if (codeBodyField != null && metadataRecords != null && metadataRecords.isEmpty() == false) {
+            SObject metadataRecord = metadataRecords.get(0);
+
+            logEntryMetadata.HasCodeBeenModified = ((Datetime) metadataRecord.get(lastModifiedDateField)) > logEntry.Timestamp__c;
+            logEntryMetadata.Code = (String) metadataRecord.get(codeBodyField);
         }
-
-        SObject metadataRecord = metadataRecords.get(0);
-
-        logEntryMetadata.HasCodeBeenModified = ((Datetime) metadataRecord.get(lastModifiedDateField)) > logEntry.Timestamp__c;
-        logEntryMetadata.Code = (String) metadataRecord.get(codeBodyField);
     }
 
     // TODO consider combining with LogEntryHandler.SourceMetadataSnippet (which could become a top-level class)
