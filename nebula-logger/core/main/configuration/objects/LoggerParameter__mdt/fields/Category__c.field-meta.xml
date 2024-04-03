@@ -11,34 +11,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Custom Plugin Parameter</fullName>
-                <default>false</default>
-                <label>Custom Plugin Parameter</label>
-            </value>
-            <value>
-                <fullName>Custom Purge Action</fullName>
-                <default>false</default>
-                <label>Custom Purge Action</label>
-            </value>
-            <value>
-                <fullName>Custom Save Method</fullName>
-                <default>false</default>
-                <label>Custom Save Method</label>
-            </value>
-            <value>
-                <fullName>Custom Storage Location</fullName>
-                <default>false</default>
-                <label>Custom Storage Location</label>
-            </value>
-            <value>
                 <fullName>Data Capturing</fullName>
                 <default>false</default>
                 <label>Data Capturing</label>
-            </value>
-            <value>
-                <fullName>Data Querying</fullName>
-                <default>false</default>
-                <label>Data Querying</label>
             </value>
             <value>
                 <fullName>Debugging</fullName>
@@ -51,9 +26,9 @@
                 <label>Error Handling</label>
             </value>
             <value>
-                <fullName>Log Entry Event Stream</fullName>
+                <fullName>Log Entry Event Stream Component</fullName>
                 <default>false</default>
-                <label>Log Entry Event Stream</label>
+                <label>Log Entry Event Stream Component</label>
             </value>
             <value>
                 <fullName>Platform Cache</fullName>
@@ -61,24 +36,19 @@
                 <label>Platform Cache</label>
             </value>
             <value>
-                <fullName>Related Log Entries</fullName>
+                <fullName>Plugin</fullName>
                 <default>false</default>
-                <label>Related Log Entries</label>
+                <label>Plugin</label>
+            </value>
+            <value>
+                <fullName>Related Log Entries Component</fullName>
+                <default>false</default>
+                <label>Related Log Entries Component</label>
             </value>
             <value>
                 <fullName>Scenario-Based Logging</fullName>
                 <default>false</default>
                 <label>Scenario-Based Logging</label>
-            </value>
-            <value>
-                <fullName>Stack Trace Parsing</fullName>
-                <default>false</default>
-                <label>Stack Trace Parsing</label>
-            </value>
-            <value>
-                <fullName>Status API</fullName>
-                <default>false</default>
-                <label>Status API</label>
             </value>
             <value>
                 <fullName>Tagging</fullName>

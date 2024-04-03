@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>StatusApi</fullName>
+    <fullName>RelatedLogEntriesComponent</fullName>
     <columns>MasterLabel</columns>
     <columns>Value__c</columns>
     <columns>Description__c</columns>
@@ -9,7 +9,7 @@
     <filters>
         <field>Category__c</field>
         <operation>equals</operation>
-        <value>Status API</value>
+        <value>Related Log Entries Component</value>
     </filters>
-    <label>Status API</label>
+    <label>Related Log Entries Component</label>
 </ListView>

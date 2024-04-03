@@ -8,7 +8,7 @@
     <protected>false</protected>
     <values>
         <field>Category__c</field>
-        <value xsi:type="xsd:string">Log Entry Event Stream</value>
+        <value xsi:type="xsd:string">Log Entry Event Stream Component</value>
     </values>
     <values>
         <field>Comments__c</field>

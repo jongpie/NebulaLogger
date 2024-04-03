@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LogEntryEventStream</fullName>
+    <fullName>LogEntryEventStreamComponent</fullName>
     <columns>MasterLabel</columns>
     <columns>Value__c</columns>
     <columns>Description__c</columns>
@@ -9,7 +9,7 @@
     <filters>
         <field>Category__c</field>
         <operation>equals</operation>
-        <value>Log Entry Event Stream</value>
+        <value>Log Entry Event Stream Component</value>
     </filters>
-    <label>Log Entry Event Stream</label>
+    <label>Log Entry Event Stream Component</label>
 </ListView>

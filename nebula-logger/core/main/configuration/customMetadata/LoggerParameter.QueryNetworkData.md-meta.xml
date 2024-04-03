@@ -8,7 +8,7 @@
     <protected>false</protected>
     <values>
         <field>Category__c</field>
-        <value xsi:type="xsd:string">Data Querying</value>
+        <value xsi:type="xsd:string">Data Capturing</value>
     </values>
     <values>
         <field>Comments__c</field>
