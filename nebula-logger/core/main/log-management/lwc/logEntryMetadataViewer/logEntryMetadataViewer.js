@@ -5,6 +5,7 @@
 
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import canViewLogEntryMetadata from '@salesforce/apex/LogEntryMetadataViewerController.canViewLogEntryMetadata';
 import getMetadata from '@salesforce/apex/LogEntryMetadataViewerController.getMetadata';
 
 import LOG_ENTRY_OBJECT from '@salesforce/schema/LogEntry__c';
@@ -33,6 +34,7 @@ export default class LogEntryMetadataViewer extends LightningElement {
     @api sourceMetadata;
 
     objectApiName = LOG_ENTRY_OBJECT;
+    hasLoaded = false;
     sourceSnippet;
 
     showFullSourceMetadataModal = false;
@@ -43,9 +45,9 @@ export default class LogEntryMetadataViewer extends LightningElement {
     _logEntry;
     _logEntryMetadata;
 
-    get hasLoaded() {
-        return !!this._logEntry && !!this._logEntryMetadata;
-    }
+    // get hasLoaded() {
+    //     return !!this._logEntry && !!this._logEntryMetadata;
+    // }
 
     get sectionTitle() {
         if (this.sourceMetadata === 'Exception') {
@@ -76,17 +78,23 @@ export default class LogEntryMetadataViewer extends LightningElement {
             : 'This Apex code has not been modified since this log entry was generated.';
     }
 
-    @wire(getMetadata, {
-        recordId: '$recordId',
-        sourceMetadata: '$sourceMetadata'
-    })
-    wiredGetLogEntryMetadata({ error, data }) {
-        if (data) {
-            this._logEntryMetadata = data;
-        } else if (error) {
-            this._logEntryMetadata = undefined;
-        }
-    }
+    // async connectedCallback() {
+    //     console.log('>>> about to call canViewLogEntryMetadata()');
+    //     const res = await canViewLogEntryMetadata();
+    //     console.log('>>> canViewLogEntryMetadata result', res);
+    //     // const res = await canUserModifyLoggerSettings();
+    //     // console.log('>>> canUserModifyLoggerSettings result', res);
+    // }
+
+    // async renderedCallback() {
+    //     if (!this.recordId || !this.sourceMetadata) {
+    //         return;
+    //     }
+
+    //     console.log('>>> got a record id and source metadata, going to call method testing');
+    //     const res = await getMetadata({ recordId: this.recordId, sourceMetadata: this.sourceMetadata });
+    //     console.log('>>> getMetadata res', res);
+    // }
 
     @wire(getRecord, {
         recordId: '$recordId',
@@ -110,6 +118,14 @@ export default class LogEntryMetadataViewer extends LightningElement {
             const sourceApiVersion = getFieldValue(this._logEntry, sourceApiVersionField);
             const sourceName = `${sourceApiName}.${sourceExtension} - ${sourceApiVersion}`;
             this.sourceSnippet = { ...JSON.parse(sourceSnippetJson), ...{ Title: sourceName } };
+
+            console.log('>>> about to load metadata');
+            this.hasLoaded = true;
+            this._logEntryMetadata = await getMetadata({
+                recordId: this.recordId,
+                sourceMetadata: this.sourceMetadata
+            });
+            console.log('>>> loaded metadata, maybe', this._logEntryMetadata);
         }
     }
 

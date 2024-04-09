@@ -44,7 +44,8 @@ public without sharing class LogEntryMetadataViewerController {
         return metadata;
     }
 
-    private static Boolean canViewLogEntryMetadata() {
+    @AuraEnabled(cacheable=true)
+    public static Boolean canViewLogEntryMetadata() {
         return Schema.ApexClass.SObjectType.getDescribe().isAccessible() || System.FeatureManagement.checkPermission('CanViewLogEntryMetadata');
     }
 
