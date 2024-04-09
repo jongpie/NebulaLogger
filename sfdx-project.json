@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.12.NEXT",
-            "versionName": "Added Refresh Button on relatedLogEntries LWC",
-            "versionDescription": "Added refresh button & lightning-spinner on relatedLogEntries LWC",
+            "versionNumber": "4.13.13.NEXT",
+            "versionName": "Custom Field Mappings Support",
+            "versionDescription": "Added the ability to set & map custom fields, using a new CMDT LoggerFieldMapping__mdt and new instance methods LogEntryEventBuilder.setField() & setFields()",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
