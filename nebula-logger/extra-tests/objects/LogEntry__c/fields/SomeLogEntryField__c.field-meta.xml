@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SomeLogEntryField__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII;GDPR;CCPA</complianceGroup>
+    <externalId>false</externalId>
+    <label>Some Log Entry Field</label>
+    <length>255</length>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
