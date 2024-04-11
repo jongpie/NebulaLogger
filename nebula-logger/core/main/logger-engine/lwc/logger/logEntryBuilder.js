@@ -79,6 +79,16 @@ const LogEntryBuilder = class {
     }
 
     /**
+     * @description Sets the log entry event's scenario field
+     * @param  {String} scenario The string to use to set the entry's scenario field
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
+     */
+    setScenario(scenario) {
+        this.#componentLogEntry.scenario = scenario;
+        return this;
+    }
+
+    /**
      * @description Sets the log entry event's exception fields
      * @param {Error} error The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods

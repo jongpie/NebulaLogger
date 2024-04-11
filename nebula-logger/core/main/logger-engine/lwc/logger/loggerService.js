@@ -117,7 +117,7 @@ const LoggerService = class {
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         logEntryBuilder.setMessage(message);
         if (this.#scenario) {
-            logEntryBuilder.scenario = this.#scenario;
+            logEntryBuilder.setScenario(this.#scenario);
         }
         if (this._meetsUserLoggingLevel(loggingLevel)) {
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
