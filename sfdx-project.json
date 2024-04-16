@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.6.NEXT",
-            "versionName": "View Log Entry Metadata Custom Permission",
-            "versionDescription": "Added new custom permission CanViewLogEntryMetadata so that users without query access to ApexClass and ApexTrigger can still see the source code in the LWC logEntryMetadataViewer",
+            "versionNumber": "4.13.7.NEXT",
+            "versionName": "Fixed function setScenario() in logger LWC",
+            "versionDescription": "Fixed an issue in the logger LWC's function setScenario() where the value was sometimes (often?) incorrectly set to null",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
