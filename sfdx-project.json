@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.7.NEXT",
-            "versionName": "Fixed function setScenario() in logger LWC",
-            "versionDescription": "Fixed an issue in the logger LWC's function setScenario() where the value was sometimes (often?) incorrectly set to null",
+            "versionNumber": "4.13.8.NEXT",
+            "versionName": "logEntryMetadataViewer LWC Bugfixes",
+            "versionDescription": "Fixed some additional issues in the logEntryMetadataViewer LWC that prevented the 'view full source' btn from showing up for non-admins",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
