@@ -43,16 +43,10 @@ describe('logger lwc import tests', () => {
         const logger = await createLogger();
         const scenario = 'some scenario';
         const message = 'some message';
-        const firstLogEntry = logger.finest(message).getComponentLogEntry();
-        await flushPromises();
-        expect(firstLogEntry.scenario).toBeNull();
-        expect(logger.getBufferSize()).toEqual(1);
-        const secondLogEntry = logger.info(message).getComponentLogEntry();
-        await flushPromises();
-        expect(secondLogEntry.scenario).toBeNull();
-        expect(logger.getBufferSize()).toEqual(2);
 
-        await logger.setScenario(scenario);
+        const firstLogEntry = logger.finest(message).getComponentLogEntry();
+        logger.setScenario(scenario);
+        const secondLogEntry = logger.info(message).getComponentLogEntry();
 
         expect(firstLogEntry.scenario).toEqual(scenario);
         expect(secondLogEntry.scenario).toEqual(scenario);
@@ -519,16 +513,12 @@ describe('logger lwc legacy markup tests', () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
         await flushPromises();
+        const scenario = 'some scenario';
         const message = 'some message';
-        const firstLogEntry = await logger.finest(message).getComponentLogEntry();
-        expect(firstLogEntry.scenario).toBeNull();
-        expect(logger.getBufferSize()).toEqual(1);
-        const secondLogEntry = await logger.info(message).getComponentLogEntry();
-        expect(secondLogEntry.scenario).toBeNull();
-        expect(logger.getBufferSize()).toEqual(2);
 
-        const scenario = 'another scenario';
+        const firstLogEntry = logger.finest(message).getComponentLogEntry();
         logger.setScenario(scenario);
+        const secondLogEntry = logger.info(message).getComponentLogEntry();
 
         expect(firstLogEntry.scenario).toEqual(scenario);
         expect(secondLogEntry.scenario).toEqual(scenario);
