@@ -1,14 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LoggingLevelWithImage__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <formula>CASE(
     TEXT(LoggingLevel__c),
     &apos;ERROR&apos;, &apos;⛔&apos;,
     &apos;WARN&apos;, &apos;⚠️&apos;,
-    &apos;INFO&apos;, &apos;✅&apos;,
+    &apos;DEBUG&apos;, &apos;🐞&apos;,
+    &apos;INFO&apos;, &apos;ℹ️&apos;,
+    &apos;FINE&apos;, &apos;👍&apos;,
+    &apos;FINER&apos;, &apos;👌&apos;,
+    &apos;FINEST&apos;, &apos;🌟&apos;,
     &apos;⚙️&apos;
 )
 + &apos; &apos; + TEXT(LoggingLevel__c)</formula>
