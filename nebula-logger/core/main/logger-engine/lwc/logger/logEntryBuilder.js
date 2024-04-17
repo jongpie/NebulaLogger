@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 import FORM_FACTOR from '@salesforce/client/formFactor';
 
-const CURRENT_VERSION_NUMBER = 'v4.13.6';
+const CURRENT_VERSION_NUMBER = 'v4.13.7';
 
 // JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
 const ComponentLogEntry = class {
@@ -75,6 +75,16 @@ const LogEntryBuilder = class {
      */
     setRecord(record) {
         this.#componentLogEntry.record = record;
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's scenario field
+     * @param  {String} scenario The string to use to set the entry's scenario field
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
+     */
+    setScenario(scenario) {
+        this.#componentLogEntry.scenario = scenario;
         return this;
     }
 

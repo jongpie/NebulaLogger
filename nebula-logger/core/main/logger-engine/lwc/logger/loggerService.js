@@ -113,12 +113,9 @@ const LoggerService = class {
     }
 
     _newEntry(loggingLevel, message) {
-        // Builder is returned immediately but console log will be determined after loading settings from server
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         logEntryBuilder.setMessage(message);
-        if (this.#scenario) {
-            logEntryBuilder.scenario = this.#scenario;
-        }
+        logEntryBuilder.setScenario(this.#scenario);
         if (this._meetsUserLoggingLevel(loggingLevel)) {
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
         }
