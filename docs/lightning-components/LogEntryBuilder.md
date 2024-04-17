@@ -9,6 +9,7 @@
     -   [.setMessage(message)](#LogEntryBuilder+setMessage) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.setScenario(scenario)](#LogEntryBuilder+setScenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
@@ -64,6 +65,19 @@ Sets the log entry event's record fields
 | Param  | Type                | Description                                                                                           |
 | ------ | ------------------- | ----------------------------------------------------------------------------------------------------- |
 | record | <code>Object</code> | The `SObject` record related to the entry. The JSON of the record is automatically added to the entry |
+
+<a name="LogEntryBuilder+setScenario"></a>
+
+### logEntryBuilder.setScenario(scenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+
+Sets the log entry event's scenario field
+
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+
+| Param    | Type                | Description                                         |
+| -------- | ------------------- | --------------------------------------------------- |
+| scenario | <code>String</code> | The string to use to set the entry's scenario field |
 
 <a name="LogEntryBuilder+setError"></a>
 
