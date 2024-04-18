@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.8.NEXT",
-            "versionName": "logEntryMetadataViewer LWC Bugfixes",
-            "versionDescription": "Fixed some additional issues in the logEntryMetadataViewer LWC that prevented the 'view full source' btn from showing up for non-admins",
+            "versionNumber": "4.13.9.NEXT",
+            "versionName": "Updated Logging Level Emojis",
+            "versionDescription": "Updated the formula field LogEntry__c.LoggingLevelWithImage__c to use different emojis for every logging level to make it easier to visually distinguish between them",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -176,6 +176,7 @@
         "Nebula Logger - Core@4.13.6-view-log-entry-metadata-custom-permission": "04t5Y000001MkGxQAK",
         "Nebula Logger - Core@4.13.7-fixed-function-setscenario()-in-logger-lwc": "04t5Y000001MkHRQA0",
         "Nebula Logger - Core@4.13.8-logentrymetadataviewer-lwc-bugfixes": "04t5Y000001MkHbQAK",
+        "Nebula Logger - Core@4.13.9-updated-logging-level-emojis": "04t5Y000001MkHqQAK",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

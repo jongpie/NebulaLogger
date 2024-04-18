@@ -8,7 +8,11 @@
     TEXT(LoggingLevel__c),
     &apos;ERROR&apos;, &apos;⛔&apos;,
     &apos;WARN&apos;, &apos;⚠️&apos;,
-    &apos;INFO&apos;, &apos;✅&apos;,
+    &apos;INFO&apos;, &apos;ℹ️&apos;,
+    &apos;DEBUG&apos;, &apos;🐞&apos;,
+    &apos;FINE&apos;, &apos;👍&apos;,
+    &apos;FINER&apos;, &apos;👌&apos;,
+    &apos;FINEST&apos;, &apos;🌟&apos;,
     &apos;⚙️&apos;
 )
 + &apos; &apos; + TEXT(LoggingLevel__c)</formula>
