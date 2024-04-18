@@ -33,6 +33,7 @@ export default class LogEntryMetadataViewer extends LightningElement {
     @api sourceMetadata;
 
     objectApiName = LOG_ENTRY_OBJECT;
+    hasLoaded = false;
     sourceSnippet;
 
     showFullSourceMetadataModal = false;
@@ -42,10 +43,6 @@ export default class LogEntryMetadataViewer extends LightningElement {
 
     _logEntry;
     _logEntryMetadata;
-
-    get hasLoaded() {
-        return !!this._logEntry && !!this._logEntryMetadata;
-    }
 
     get sectionTitle() {
         if (this.sourceMetadata === 'Exception') {
@@ -76,18 +73,6 @@ export default class LogEntryMetadataViewer extends LightningElement {
             : 'This Apex code has not been modified since this log entry was generated.';
     }
 
-    @wire(getMetadata, {
-        recordId: '$recordId',
-        sourceMetadata: '$sourceMetadata'
-    })
-    wiredGetLogEntryMetadata({ error, data }) {
-        if (data) {
-            this._logEntryMetadata = data;
-        } else if (error) {
-            this._logEntryMetadata = undefined;
-        }
-    }
-
     @wire(getRecord, {
         recordId: '$recordId',
         fields: LOG_ENTRY_FIELDS
@@ -110,6 +95,12 @@ export default class LogEntryMetadataViewer extends LightningElement {
             const sourceApiVersion = getFieldValue(this._logEntry, sourceApiVersionField);
             const sourceName = `${sourceApiName}.${sourceExtension} - ${sourceApiVersion}`;
             this.sourceSnippet = { ...JSON.parse(sourceSnippetJson), ...{ Title: sourceName } };
+
+            this.hasLoaded = true;
+            this._logEntryMetadata = await getMetadata({
+                recordId: this.recordId,
+                sourceMetadata: this.sourceMetadata
+            });
         }
     }
 
