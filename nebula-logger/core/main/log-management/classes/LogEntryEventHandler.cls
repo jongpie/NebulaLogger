@@ -614,6 +614,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             log.LoginPlatform__c = matchingAuthSessionProxy.LoginHistory.Platform;
             log.LoginType__c = matchingAuthSessionProxy.LoginType;
             log.LogoutUrl__c = matchingAuthSessionProxy.LogoutUrl;
+            log.ParentSessionId__c = matchingAuthSessionProxy.ParentId;
             log.SessionId__c = matchingAuthSessionProxy.Id;
             log.SessionSecurityLevel__c = matchingAuthSessionProxy.SessionSecurityLevel;
             log.SessionType__c = matchingAuthSessionProxy.SessionType;

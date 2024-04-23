@@ -1858,6 +1858,10 @@ private class LogEntryEventBuilder_Tests {
         private Integer cachedUserQueryCount = 0;
         private LoggerSObjectProxy.AuthSession mockAuthSessionProxy;
 
+        public Integer getCachedAuthSessionQueryCount() {
+            return cachedAuthSessionQueryCount;
+        }
+
         public override LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
             this.cachedAuthSessionQueryCount++;
             if (this.mockAuthSessionProxy != null) {
@@ -1868,10 +1872,6 @@ private class LogEntryEventBuilder_Tests {
 
         public void setCachedAuthSessionProxy(LoggerSObjectProxy.AuthSession mockAuthSessionProxy) {
             this.mockAuthSessionProxy = mockAuthSessionProxy;
-        }
-
-        public Integer getCachedAuthSessionQueryCount() {
-            return cachedAuthSessionQueryCount;
         }
 
         public override Schema.Organization getCachedOrganization() {
