@@ -182,6 +182,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 OrganizationType__c = logEntryEvent.OrganizationType__c,
                 OwnerId = this.determineLogOwnerId(logEntryEvent),
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
+                ParentSessionId__c = logEntryEvent.ParentSessionId__c,
                 ProfileId__c = logEntryEvent.ProfileId__c,
                 ProfileName__c = logEntryEvent.ProfileName__c,
                 RequestId__c = logEntryEvent.RequestId__c,

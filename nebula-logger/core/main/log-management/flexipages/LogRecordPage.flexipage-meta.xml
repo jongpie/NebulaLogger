@@ -622,6 +622,22 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.ParentSessionId__c</fieldItem>
+                <identifier>RecordParentSessionId_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ParentSessionId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.SessionId__c</fieldItem>
                 <identifier>RecordSessionId__cField</identifier>
             </fieldInstance>

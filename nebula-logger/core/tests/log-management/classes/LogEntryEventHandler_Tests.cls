@@ -581,6 +581,7 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.LoginPlatform__c = null;
         logEntryEvent.LoginType__c = null;
         logEntryEvent.LogoutUrl__c = null;
+        logEntryEvent.ParentSessionId__c = null;
         logEntryEvent.SessionId__c = null;
         logEntryEvent.SessionSecurityLevel__c = null;
         logEntryEvent.SessionType__c = null;
@@ -602,6 +603,7 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(expectedAuthSessionProxy?.LoginType, log.LoginType__c);
         System.Assert.areEqual(expectedAuthSessionProxy?.LogoutUrl, log.LogoutUrl__c);
         System.Assert.areEqual(expectedAuthSessionProxy?.Id, log.SessionId__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.ParentId, log.ParentSessionId__c);
         System.Assert.areEqual(expectedAuthSessionProxy?.SessionSecurityLevel, log.SessionSecurityLevel__c);
         System.Assert.areEqual(expectedAuthSessionProxy?.SessionType, log.SessionType__c);
         System.Assert.areEqual(expectedAuthSessionProxy?.SourceIp, log.SourceIp__c);
@@ -1253,6 +1255,7 @@ private class LogEntryEventHandler_Tests {
                 OrganizationType__c,
                 OwnerId,
                 ParentLogTransactionId__c,
+                ParentSessionId__c,
                 ProfileId__c,
                 ProfileName__c,
                 RequestId__c,
@@ -1425,10 +1428,10 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
         System.Assert.areEqual(logEntryEvent.OrganizationApiVersion__c, log.OrganizationApiVersion__c, 'log.OrganizationApiVersion__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ParentSessionId__c, log.ParentSessionId__c, 'log.ParentSessionId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
         System.Assert.areEqual(logEntryEvent.RequestId__c, log.RequestId__c, 'log.RequestId__c was not properly set');
-        System.Assert.areEqual(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');
         System.Assert.areEqual(logEntryEvent.SessionType__c, log.SessionType__c, 'log.SessionType__c was not properly set');

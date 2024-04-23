@@ -22,6 +22,7 @@ public without sharing class LoggerSObjectProxy {
         public Id LoginHistoryId;
         public LoginHistory LoginHistory;
         public String LogoutUrl;
+        public Id ParentId;
         public String SessionSecurityLevel;
         public String SessionType;
         public String SourceIp;
@@ -35,6 +36,7 @@ public without sharing class LoggerSObjectProxy {
                 this.LoginHistoryId = authSessionRecord.LoginHistoryId;
                 this.LoginType = authSessionRecord.LoginType;
                 this.LogoutUrl = authSessionRecord.LogoutUrl;
+                this.ParentId = authSessionRecord.ParentId;
                 this.SessionSecurityLevel = authSessionRecord.SessionSecurityLevel;
                 this.SessionType = authSessionRecord.SessionType;
                 this.SourceIp = authSessionRecord.SourceIp;
