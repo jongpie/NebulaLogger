@@ -27,11 +27,12 @@ private class LoggerEngineDataSelector_Tests {
                 LoginHistory.Browser,
                 LoginHistory.Platform,
                 LogoutUrl,
+                ParentId,
                 SessionSecurityLevel,
                 SessionType,
                 SourceIp
             FROM AuthSession
-            WHERE UsersId = :System.UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
+            WHERE UsersId = :System.UserInfo.getUserId() AND IsCurrent = TRUE
         ];
         LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
         System.Assert.areEqual(1, System.Limits.getQueries());
