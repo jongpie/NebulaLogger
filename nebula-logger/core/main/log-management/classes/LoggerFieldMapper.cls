@@ -5,7 +5,8 @@
 
 /**
  * @group Log Management
- * @description Maps fields values from custom fields on `LogEntryEvent__e` equivalent fields on `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
+ * @description Maps fields values from custom fields on `LogEntryEvent__e`
+ *              to equivalent fields on `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
  */
 public without sharing class LoggerFieldMapper {
     // TODO this is a goofy data structure, revisit how CMDT records are tracked/cached to see if there's a simpler & cleaner approach
@@ -17,6 +18,7 @@ public without sharing class LoggerFieldMapper {
      * @param  sourceRecord The source `SObject` record containing the data to copy
      * @param  targetRecord The target `SObject` record that should have fields & field values appended
      */
+    @SuppressWarnings('PMD.CyclomaticComplexity')
     public static void mapFieldValues(SObject sourceRecord, SObject targetRecord) {
         if (sourceRecord == null || targetRecord == null) {
             return;
@@ -30,8 +32,38 @@ public without sharing class LoggerFieldMapper {
             return;
         }
 
-        for (LoggerFieldMapping__mdt fieldMapping : targetSObjectTypeToFieldMappings.get(targetRecord.getSObjectType())) {
-            targetRecord.put(fieldMapping.TargetField__c, sourceRecord.get(fieldMapping.SourceField__c));
+        Schema.SObjectType targetSObjectType = targetRecord.getSObjectType();
+        List<LoggerFieldMapping__mdt> fieldMappings = targetSObjectTypeToFieldMappings.get(targetSObjectType);
+
+        if (fieldMappings == null) {
+            return;
+        }
+
+        // TODO consider caching the SObjectField instances and/or DescribeFieldResult instances
+        Map<String, Schema.SObjectField> targetFieldNameToField = targetRecord.getSObjectType().getDescribe().fields.getMap();
+
+        List<LoggerFieldMapping__mdt> incompatibleFieldMappings = new List<LoggerFieldMapping__mdt>();
+        for (LoggerFieldMapping__mdt fieldMapping : fieldMappings) {
+            try {
+                Schema.SObjectField targetField = targetFieldNameToField.get(fieldMapping.TargetField__c);
+                Object sourceRecordFieldValue = sourceRecord.get(fieldMapping.SourceField__c);
+                // TODO consider caching the SObjectField instances and/or DescribeFieldResult instances
+                if (targetField.getDescribe().getSoapType() == Schema.SoapType.STRING) {
+                    sourceRecordFieldValue = LoggerDataStore.truncateFieldValue(targetField, (String) sourceRecordFieldValue);
+                }
+                targetRecord.put(fieldMapping.TargetField__c, sourceRecordFieldValue);
+            } catch (System.Exception ex) {
+                incompatibleFieldMappings.add(fieldMapping);
+            }
+        }
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES && incompatibleFieldMappings.isEmpty() == false) {
+            LogMessage logMessage = new LogMessage(
+                'Unable to map {0} custom fields on {1} record. Target SObject record:\n\n{2}',
+                incompatibleFieldMappings.size(),
+                targetRecord.getSObjectType(),
+                JSON.serializePretty(targetRecord)
+            );
+            Logger.finest(logMessage, incompatibleFieldMappings);
         }
     }
 
