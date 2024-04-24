@@ -615,8 +615,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.put(field, fieldValue);
-        return this;
+        return this.setFields(new Map<Schema.SObjectField, Object>{ field => fieldValue });
     }
 
     /**
@@ -625,13 +624,24 @@ global with sharing class LogEntryEventBuilder {
      *                      the fields & values to populate the builder's `LogEntryEvent__e` record
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     global LogEntryEventBuilder setFields(Map<Schema.SObjectField, Object> fieldToValue) {
-        if (this.shouldSave() == false) {
+        if (this.shouldSave() == false || fieldToValue == null) {
             return this;
         }
 
         for (Schema.SObjectField field : fieldToValue.keySet()) {
-            this.logEntryEvent.put(field, fieldToValue.get(field));
+            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+            Object value = fieldToValue.get(field);
+            if (fieldDescribe.getSoapType() == Schema.SoapType.STRING) {
+                value = LoggerDataStore.truncateFieldValue(field, (String) value);
+            }
+            try {
+                this.logEntryEvent.put(field, value);
+            } catch (System.Exception ex) {
+                LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
+                System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
+            }
         }
 
         return this;
