@@ -664,6 +664,7 @@ private class LogEntryEventHandler_Tests {
         List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
         Schema.User expectedUser = LoggerEngineDataSelector.getInstance().getUsers(userIds).get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
+        System.Assert.areEqual(expectedUser.FederationIdentifier, log.LoggedByFederationIdentifier__c);
         System.Assert.areEqual(expectedUser.Username, log.LoggedByUsername__c);
         System.Assert.areEqual(expectedUser.Profile.Name, log.ProfileName__c);
         System.Assert.areEqual(expectedUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);
@@ -1249,6 +1250,7 @@ private class LogEntryEventHandler_Tests {
                 Id,
                 Locale__c,
                 LoggedBy__c,
+                LoggedByFederationIdentifier__c,
                 LoggedByUsername__c,
                 LoggerVersionNumber__c,
                 LoginApplication__c,
@@ -1434,6 +1436,7 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logEntryEvent.AsyncContextTriggerId__c, log.AsyncContextTriggerId__c, 'log.AsyncContextTriggerId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.AsyncContextType__c, log.AsyncContextType__c, 'log.AsyncContextTriggerId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoggedByFederationIdentifier__c, log.LoggedByFederationIdentifier__c, 'log.LoggedByFederationIdentifier__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');

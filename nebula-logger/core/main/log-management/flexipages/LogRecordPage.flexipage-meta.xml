@@ -392,6 +392,23 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LoggedByFederationIdentifier__c</fieldItem>
+                <identifier>RecordLoggedByFederationIdentifier_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasLoggedByFederationIdentifier__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ImpersonatedByUsernameLink__c</fieldItem>

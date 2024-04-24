@@ -222,6 +222,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private void setCheckboxFields() {
         for (Log__c log : this.logs) {
+            log.HasLoggedByFederationIdentifier__c = log.LoggedByFederationIdentifier__c != null;
             log.HasOrganizationLimits__c = log.OrganizationLimits__c != null;
         }
     }

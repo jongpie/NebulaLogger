@@ -923,6 +923,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
+        logEntryEvent.LoggedByFederationIdentifier__c = CACHED_USER.FederationIdentifier;
         logEntryEvent.LoggedByUsername__c = CACHED_USER.Username;
         logEntryEvent.ProfileName__c = CACHED_USER.Profile.Name;
         logEntryEvent.UserLicenseDefinitionKey__c = CACHED_USER.Profile.UserLicense.LicenseDefinitionKey;
