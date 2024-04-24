@@ -19,6 +19,7 @@
     <testClassName>LoggerDataStore_Tests</testClassName>
     <testClassName>LoggerEmailSender_Tests</testClassName>
     <testClassName>LoggerEngineDataSelector_Tests</testClassName>
+    <testClassName>LoggerFieldMapper_Tests</testClassName>
     <testClassName>LoggerHomeHeaderController_Tests</testClassName>
     <testClassName>LoggerParameter_Tests</testClassName>
     <testClassName>LoggerPlugin_Tests</testClassName>
