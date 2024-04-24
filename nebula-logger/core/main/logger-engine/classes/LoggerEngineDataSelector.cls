@@ -50,12 +50,14 @@ public without sharing virtual class LoggerEngineDataSelector {
                 LoginHistory.Platform,
                 LoginHistory.UserId,
                 LogoutUrl,
+                ParentId,
                 SessionSecurityLevel,
                 SessionType,
                 SourceIp,
                 UsersId
             FROM AuthSession
-            WHERE UsersId IN :userIds AND IsCurrent = TRUE AND ParentId = NULL
+            WHERE UsersId IN :userIds AND IsCurrent = TRUE
+            ORDER BY ParentId NULLS FIRST
         ]) {
             LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSession);
             userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);

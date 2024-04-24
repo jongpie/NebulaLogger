@@ -869,6 +869,7 @@ global with sharing class LogEntryEventBuilder {
         logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.Platform;
         logEntryEvent.LoginType__c = CACHED_AUTH_SESSION_PROXY.LoginType;
         logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION_PROXY.LogoutUrl;
+        logEntryEvent.ParentSessionId__c = CACHED_AUTH_SESSION_PROXY.ParentId;
         logEntryEvent.SessionId__c = CACHED_AUTH_SESSION_PROXY.Id;
         logEntryEvent.SessionSecurityLevel__c = CACHED_AUTH_SESSION_PROXY.SessionSecurityLevel;
         logEntryEvent.SessionType__c = CACHED_AUTH_SESSION_PROXY.SessionType;

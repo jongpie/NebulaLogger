@@ -581,30 +581,49 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.LoginPlatform__c = null;
         logEntryEvent.LoginType__c = null;
         logEntryEvent.LogoutUrl__c = null;
+        logEntryEvent.ParentSessionId__c = null;
         logEntryEvent.SessionId__c = null;
         logEntryEvent.SessionSecurityLevel__c = null;
         logEntryEvent.SessionType__c = null;
         logEntryEvent.SourceIp__c = null;
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(false)));
+        System.Assert.isFalse(LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory(null);
+        mockLoginHistoryProxy.Application = 'Application';
+        mockLoginHistoryProxy.Browser = 'Browser';
+        mockLoginHistoryProxy.Platform = 'Platform';
+        mockLoginHistoryProxy.UserId = System.UserInfo.getUserId();
+        LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession(null);
+        mockAuthSessionProxy.Id = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);
+        mockAuthSessionProxy.LoginHistory = mockLoginHistoryProxy;
+        mockAuthSessionProxy.LoginHistoryId = LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType);
+        mockAuthSessionProxy.LoginType = 'LoginType';
+        mockAuthSessionProxy.LogoutUrl = 'LogoutUrl';
+        mockAuthSessionProxy.ParentId = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);
+        mockAuthSessionProxy.SessionSecurityLevel = 'SessionSecurityLevel';
+        mockAuthSessionProxy.SessionType = 'SessionType';
+        mockAuthSessionProxy.SourceIp = 'SourceIp';
+        mockAuthSessionProxy.UsersId = System.UserInfo.getUserId();
+        mockSelector.setCachedAuthSessionProxy(mockAuthSessionProxy);
+        System.Assert.areEqual(0, mockSelector.getCachedAuthSessionQueryCount());
 
         LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
-        LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = LoggerEngineDataSelector.getInstance()
-            .getAuthSessionProxies(userIds)
-            .get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
-        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistory.Application, log.LoginApplication__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistory.Browser, log.LoginBrowser__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistoryId, log.LoginHistoryId__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistory.Platform, log.LoginPlatform__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.LoginType, log.LoginType__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.LogoutUrl, log.LogoutUrl__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.Id, log.SessionId__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.SessionSecurityLevel, log.SessionSecurityLevel__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.SessionType, log.SessionType__c);
-        System.Assert.areEqual(expectedAuthSessionProxy?.SourceIp, log.SourceIp__c);
+        System.Assert.areEqual(mockAuthSessionProxy.Id, log.SessionId__c);
+        System.Assert.areEqual(mockAuthSessionProxy.LoginHistory.Application, log.LoginApplication__c);
+        System.Assert.areEqual(mockAuthSessionProxy.LoginHistory.Browser, log.LoginBrowser__c);
+        System.Assert.areEqual(mockAuthSessionProxy.LoginHistory.Platform, log.LoginPlatform__c);
+        System.Assert.areEqual(mockAuthSessionProxy.LoginHistoryId, log.LoginHistoryId__c);
+        System.Assert.areEqual(mockAuthSessionProxy.LoginType, log.LoginType__c);
+        System.Assert.areEqual(mockAuthSessionProxy.LogoutUrl, log.LogoutUrl__c);
+        System.Assert.areEqual(mockAuthSessionProxy.ParentId, log.ParentSessionId__c);
+        System.Assert.areEqual(mockAuthSessionProxy.SessionSecurityLevel, log.SessionSecurityLevel__c);
+        System.Assert.areEqual(mockAuthSessionProxy.SessionType, log.SessionType__c);
+        System.Assert.areEqual(mockAuthSessionProxy.SourceIp, log.SourceIp__c);
     }
 
     @IsTest
@@ -1253,6 +1272,7 @@ private class LogEntryEventHandler_Tests {
                 OrganizationType__c,
                 OwnerId,
                 ParentLogTransactionId__c,
+                ParentSessionId__c,
                 ProfileId__c,
                 ProfileName__c,
                 RequestId__c,
@@ -1425,10 +1445,10 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
         System.Assert.areEqual(logEntryEvent.OrganizationApiVersion__c, log.OrganizationApiVersion__c, 'log.OrganizationApiVersion__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ParentSessionId__c, log.ParentSessionId__c, 'log.ParentSessionId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
         System.Assert.areEqual(logEntryEvent.RequestId__c, log.RequestId__c, 'log.RequestId__c was not properly set');
-        System.Assert.areEqual(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');
         System.Assert.areEqual(logEntryEvent.SessionType__c, log.SessionType__c, 'log.SessionType__c was not properly set');
@@ -1789,5 +1809,26 @@ private class LogEntryEventHandler_Tests {
             'logEntry.TriggerOperationType__c was not properly set'
         );
         System.Assert.areEqual(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c, 'logEntry.TriggerSObjectType__c was not properly set');
+    }
+
+    private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
+        private Integer authSessionProxiesQueryCount = 0;
+        private LoggerSObjectProxy.AuthSession mockAuthSessionProxy;
+
+        public Integer getCachedAuthSessionQueryCount() {
+            return authSessionProxiesQueryCount;
+        }
+
+        public override Map<Id, LoggerSObjectProxy.AuthSession> getAuthSessionProxies(List<Id> userIds) {
+            this.authSessionProxiesQueryCount++;
+            if (this.mockAuthSessionProxy != null) {
+                return new Map<Id, LoggerSObjectProxy.AuthSession>{ mockAuthSessionProxy.UsersId => mockAuthSessionProxy };
+            }
+            return super.getAuthSessionProxies(userIds);
+        }
+
+        public void setCachedAuthSessionProxy(LoggerSObjectProxy.AuthSession mockAuthSessionProxy) {
+            this.mockAuthSessionProxy = mockAuthSessionProxy;
+        }
     }
 }

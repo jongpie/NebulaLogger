@@ -20,6 +20,7 @@ private class LoggerSObjectProxy_Tests {
                 LoginHistoryId,
                 LoginType,
                 LogoutUrl,
+                ParentId,
                 SessionSecurityLevel,
                 SessionType,
                 SourceIp,
@@ -37,13 +38,14 @@ private class LoggerSObjectProxy_Tests {
         LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSessionRecord);
 
         System.Assert.areEqual(authSessionRecord.Id, authSessionProxy.Id);
-        System.Assert.areEqual(authSessionRecord.LoginType, authSessionProxy.LoginType);
-        System.Assert.areEqual(authSessionRecord.LoginHistoryId, authSessionProxy.LoginHistoryId);
         System.Assert.areEqual(authSessionRecord.LoginHistory.Application, authSessionProxy.LoginHistory.Application);
         System.Assert.areEqual(authSessionRecord.LoginHistory.Browser, authSessionProxy.LoginHistory.Browser);
         System.Assert.areEqual(authSessionRecord.LoginHistory.Platform, authSessionProxy.LoginHistory.Platform);
         System.Assert.areEqual(authSessionRecord.LoginHistory.UserId, authSessionProxy.LoginHistory.UserId);
+        System.Assert.areEqual(authSessionRecord.LoginHistoryId, authSessionProxy.LoginHistoryId);
+        System.Assert.areEqual(authSessionRecord.LoginType, authSessionProxy.LoginType);
         System.Assert.areEqual(authSessionRecord.LogoutUrl, authSessionProxy.LogoutUrl);
+        System.Assert.areEqual(authSessionRecord.ParentId, authSessionProxy.ParentId);
         System.Assert.areEqual(authSessionRecord.SessionSecurityLevel, authSessionProxy.SessionSecurityLevel);
         System.Assert.areEqual(authSessionRecord.SessionType, authSessionProxy.SessionType);
         System.Assert.areEqual(authSessionRecord.SourceIp, authSessionProxy.SourceIp);

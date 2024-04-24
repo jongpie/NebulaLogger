@@ -929,6 +929,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.ParentSessionId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.ProfileId__c</field>
         <readable>true</readable>
     </fieldPermissions>

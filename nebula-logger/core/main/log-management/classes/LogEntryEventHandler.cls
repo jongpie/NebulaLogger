@@ -182,6 +182,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 OrganizationType__c = logEntryEvent.OrganizationType__c,
                 OwnerId = this.determineLogOwnerId(logEntryEvent),
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
+                ParentSessionId__c = logEntryEvent.ParentSessionId__c,
                 ProfileId__c = logEntryEvent.ProfileId__c,
                 ProfileName__c = logEntryEvent.ProfileName__c,
                 RequestId__c = logEntryEvent.RequestId__c,
@@ -613,6 +614,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             log.LoginPlatform__c = matchingAuthSessionProxy.LoginHistory.Platform;
             log.LoginType__c = matchingAuthSessionProxy.LoginType;
             log.LogoutUrl__c = matchingAuthSessionProxy.LogoutUrl;
+            log.ParentSessionId__c = matchingAuthSessionProxy.ParentId;
             log.SessionId__c = matchingAuthSessionProxy.Id;
             log.SessionSecurityLevel__c = matchingAuthSessionProxy.SessionSecurityLevel;
             log.SessionType__c = matchingAuthSessionProxy.SessionType;
