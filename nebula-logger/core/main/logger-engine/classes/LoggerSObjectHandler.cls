@@ -12,6 +12,7 @@ public without sharing abstract class LoggerSObjectHandler {
     private static final String FLOW_PLUGIN_CONFIGURATION_INPUT_NAME = 'pluginConfiguration';
     private static final String FLOW_PLUGIN_INPUT_NAME = 'pluginInput';
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
+    @TestVisible
     private static final Map<Schema.SObjectType, LoggerSObjectHandler__mdt> SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS = queryHandlerConfigurations();
 
     private static Boolean isEnabled = true;
@@ -248,10 +249,6 @@ public without sharing abstract class LoggerSObjectHandler {
             handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectType__r.QualifiedApiName;
             Schema.SObjectType sobjectType = prepHandlerType(handlerConfiguration);
             sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
-        }
-
-        if (System.Test.isRunningTest()) {
-            sobjectTypeToHandlerConfiguration.clear();
         }
 
         return sobjectTypeToHandlerConfiguration;
