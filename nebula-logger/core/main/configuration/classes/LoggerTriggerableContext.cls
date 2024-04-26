@@ -30,6 +30,26 @@ public without sharing class LoggerTriggerableContext {
         this(sobjectType, triggerOperationType, triggerNew, null, null);
     }
 
+    public LoggerTriggerableContext() {
+        if (Trigger.isExecuting == false) {
+            return;
+        }
+
+        this.triggerOperationType = Trigger.operationType;
+        this.triggerNew = Trigger.new;
+        this.triggerNewMap = Trigger.newMap;
+        this.triggerOldMap = Trigger.oldMap;
+
+        switch on Trigger.operationType {
+            when BEFORE_INSERT, AFTER_INSERT, BEFORE_UPDATE, AFTER_UPDATE, AFTER_UNDELETE {
+                this.sobjectType = Trigger.new.getSObjectType();
+            }
+            when BEFORE_DELETE, AFTER_DELETE {
+                this.sobjectType = Trigger.old.getSObjectType();
+            }
+        }
+    }
+
     public LoggerTriggerableContext(
         Schema.SObjectType sobjectType,
         TriggerOperation triggerOperationType,

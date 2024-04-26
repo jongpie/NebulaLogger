@@ -3232,7 +3232,7 @@ global with sharing class Logger {
             TriggerOperation.BEFORE_INSERT,
             logEntryEvents
         );
-        LoggerSObjectHandler.getHandler(Schema.LogEntryEvent__e.SObjectType)?.overrideTriggerableContext(logEntryEventsBeforeContext).execute();
+        LoggerSObjectHandler.execute(logEntryEventsBeforeContext);
 
         // Now that the plugins have run, double check to make sure that saving should still happen
         if (getBufferSize() == 0) {
@@ -3262,7 +3262,7 @@ global with sharing class Logger {
                     TriggerOperation.AFTER_INSERT,
                     logEntryEvents
                 );
-                LoggerSObjectHandler.getHandler(Schema.LogEntryEvent__e.SObjectType)?.overrideTriggerableContext(logEntryEventsAfterContext).execute();
+                LoggerSObjectHandler.execute(logEntryEventsAfterContext);
             }
         }
 
@@ -3490,7 +3490,7 @@ global with sharing class Logger {
     /**
      * @description Inner class for publishing log entries via the Queueable interface.
      */
-    global class QueueableSaver implements Queueable {
+    global class QueueableSaver implements System.Queueable {
         private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
         private QueueableSaver(List<LogEntryEvent__e> logEntryEvents) {

@@ -116,12 +116,12 @@ public without sharing class LoggerMockDataStore {
         }
 
         public void deliver(LoggerSObjectHandler sobjectHandlerInstance) {
-            LoggerTriggerableContext platformEventsTriggerContext = new LoggerTriggerableContext(
+            LoggerTriggerableContext platformEventsTriggerableContext = new LoggerTriggerableContext(
                 sobjectHandlerInstance.getSObjectType(),
                 TriggerOperation.AFTER_INSERT,
                 this.publishedPlatformEvents
             );
-            sobjectHandlerInstance?.overrideTriggerableContext(platformEventsTriggerContext).execute();
+            sobjectHandlerInstance?.overrideTriggerableContext(platformEventsTriggerableContext).execute();
             this.publishedPlatformEvents.clear();
         }
     }
