@@ -1436,7 +1436,11 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(logEntryEvent.AsyncContextTriggerId__c, log.AsyncContextTriggerId__c, 'log.AsyncContextTriggerId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.AsyncContextType__c, log.AsyncContextType__c, 'log.AsyncContextTriggerId__c was not properly set');
         System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
-        System.Assert.areEqual(logEntryEvent.LoggedByFederationIdentifier__c, log.LoggedByFederationIdentifier__c, 'log.LoggedByFederationIdentifier__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.LoggedByFederationIdentifier__c,
+            log.LoggedByFederationIdentifier__c,
+            'log.LoggedByFederationIdentifier__c was not properly set'
+        );
         System.Assert.areEqual(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
         System.Assert.areEqual(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');

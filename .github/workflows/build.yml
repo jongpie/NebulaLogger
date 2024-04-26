@@ -183,7 +183,7 @@ jobs:
               run: npm run test:apex:nocoverage -- --synchronous
 
             - name: 'Delete Base Scratch Org'
-              run: npm run org:delete:noprompt
+              run: npx sf org delete scratch --no-prompt
               if: ${{ always() }}
 
     experience-cloud-scratch-org-tests:
@@ -254,7 +254,7 @@ jobs:
                   flags: Apex
 
             - name: 'Delete Experience Cloud Scratch Org'
-              run: npm run org:delete:noprompt
+              run: npx sf org delete scratch --no-prompt
               if: ${{ always() }}
 
     create-managed-package-beta:
