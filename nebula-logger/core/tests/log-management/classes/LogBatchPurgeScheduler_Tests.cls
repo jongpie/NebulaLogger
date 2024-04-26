@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LogBatchPurgeScheduler_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @IsTest
     static void it_implements_system_schedulable_interface() {
         Object scheduler = new LogBatchPurgeScheduler();

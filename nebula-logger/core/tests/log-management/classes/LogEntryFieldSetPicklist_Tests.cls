@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LogEntryFieldSetPicklist_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @IsTest
     static void it_should_return_null_for_default_value_when_empty_value_is_configured() {
         String emptyFieldSetName = '';

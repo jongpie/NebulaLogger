@@ -9,6 +9,7 @@
  *              within Nebula Logger
  */
 public without sharing class LoggerScenarioRule {
+    @TestVisible
     private static final Map<String, LoggerScenarioRule__mdt> SCENARIO_NAME_TO_SCENARIO_RULE = loadLogScenarioRules();
 
     /**
@@ -48,10 +49,6 @@ public without sharing class LoggerScenarioRule {
             if (isValid(scenarioRule)) {
                 scenarioRules.put(scenarioRule.Scenario__c, scenarioRule);
             }
-        }
-
-        if (System.Test.isRunningTest()) {
-            scenarioRules.clear();
         }
 
         return scenarioRules;

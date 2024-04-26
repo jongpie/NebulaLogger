@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerBatchableContext_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @IsTest
     static void it_constructs_instance_when_both_parameters_provided() {
         Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();

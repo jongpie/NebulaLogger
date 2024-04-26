@@ -9,6 +9,7 @@
  *              based on configurations stored in the custom metadata type `LoggerPlugin__mdt`
  */
 public without sharing class LoggerPlugin {
+    @TestVisible
     private static final Map<String, LoggerPlugin__mdt> DEVELOPER_NAME_TO_RECORD = loadEnabledRecords();
 
     /**
@@ -108,9 +109,6 @@ public without sharing class LoggerPlugin {
             if (pluginConfiguration.IsEnabled__c) {
                 pluginDeveloperNameToConfiguration.put(pluginConfiguration.DeveloperName, pluginConfiguration);
             }
-        }
-        if (System.Test.isRunningTest()) {
-            pluginDeveloperNameToConfiguration.clear();
         }
         return pluginDeveloperNameToConfiguration;
     }

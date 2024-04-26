@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogEntryEventStreamController_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @IsTest
     static void it_should_return_is_enabled_parameter() {
         Boolean mockValue = false;

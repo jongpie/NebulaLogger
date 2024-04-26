@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LogEntryTagHandler_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @TestSetup
     static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);

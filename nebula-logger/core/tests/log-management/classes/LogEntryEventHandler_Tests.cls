@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
 @IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @IsTest
     static void it_should_return_the_logEntryEvent_sobjectType() {
         System.Assert.areEqual(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());

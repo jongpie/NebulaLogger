@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerEmailSender_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     private static final Boolean IS_EMAIL_DELIVERABILITY_ENABLED {
         get {
             if (IS_EMAIL_DELIVERABILITY_ENABLED == null) {

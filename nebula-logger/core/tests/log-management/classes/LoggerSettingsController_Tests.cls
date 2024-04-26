@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LoggerSettingsController_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @IsTest
     static void it_should_return_loggingLevel_picklist_options() {
         Integer expectedLoggingLevelSize = System.LoggingLevel.values().size() - 1; // LoggingLEVEL.NONE and System.LoggingLevel.INTERNAL are ignored, '--NONE--' is automatically included

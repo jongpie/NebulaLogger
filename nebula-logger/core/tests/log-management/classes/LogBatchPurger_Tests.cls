@@ -15,6 +15,10 @@ private class LogBatchPurger_Tests {
     private static LoggerBatchableContext batchInput;
     private static List<SObject> pluginRecords;
 
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @TestSetup
     static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);

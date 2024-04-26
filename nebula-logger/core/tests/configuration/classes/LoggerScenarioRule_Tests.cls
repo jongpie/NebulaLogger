@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerScenarioRule_Tests {
+    static {
+        LoggerScenarioRule.SCENARIO_NAME_TO_SCENARIO_RULE.clear();
+    }
+
     @IsTest
     static void it_should_throw_exception_when_mock_record_scenario_is_null() {
         LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(Scenario__c = null);

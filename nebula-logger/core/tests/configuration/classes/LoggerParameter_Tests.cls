@@ -6,6 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
+    static {
+        LoggerParameter.cacheParameterValues = false;
+        LoggerParameter.DEVELOPER_NAME_TO_RECORD.clear();
+    }
+
     private static Schema.User getUserRecord() {
         return new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     }
@@ -37,13 +42,15 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_call_status_api() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+        Map<Boolean, Boolean> inputValueToOutputValue = new Map<Boolean, Boolean>{ null => false, true => true, false => false };
+        for (Boolean inputValue : inputValueToOutputValue.keySet()) {
+            LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(inputValue)));
 
-        Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
+            Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+            Boolean expectedValue = inputValueToOutputValue.get(inputValue);
+            System.Assert.areEqual(expectedValue, returnedValue);
+        }
     }
 
     @IsTest
@@ -59,13 +66,15 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_enable_log_entry_event_stream() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+        Map<Boolean, Boolean> inputValueToOutputValue = new Map<Boolean, Boolean>{ null => true, true => true, false => false };
+        for (Boolean inputValue : inputValueToOutputValue.keySet()) {
+            LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(inputValue)));
 
-        Boolean returnedValue = LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
+            Boolean returnedValue = LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+            Boolean expectedValue = inputValueToOutputValue.get(inputValue);
+            System.Assert.areEqual(expectedValue, returnedValue);
+        }
     }
 
     @IsTest
@@ -273,7 +282,7 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_use_false_as_default_constant_value_for_require_scenario_usage_when_null() {
+    static void it_should_return_false_as_default_constant_value_for_require_scenario_usage_when_null() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.REQUIRE_SCENARIO_USAGE;
@@ -311,6 +320,33 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_true_as_default_constant_value_for_store_heap_size_limit_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHeapSizeLimit', Value__c = null));
+
+        Boolean returnedValue = LoggerParameter.STORE_HEAP_SIZE_LIMIT;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_heap_size_limit_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHeapSizeLimit', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_HEAP_SIZE_LIMIT;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_heap_size_limit_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHeapSizeLimit', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_HEAP_SIZE_LIMIT;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_store_http_response_header_values() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = JSON.serialize(mockValue));
@@ -322,7 +358,7 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_use_true_as_default_constant_value_for_store_organization_limits_when_null() {
+    static void it_should_return_true_as_default_constant_value_for_store_organization_limits_when_null() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
@@ -371,7 +407,7 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_use_true_as_default_constant_value_for_store_transaction_limits_when_null() {
+    static void it_should_return_true_as_default_constant_value_for_store_transaction_limits_when_null() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
@@ -399,14 +435,12 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_system_debug_message_format() {
-        // The constant LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT is unique - its value should always be
-        // loaded from LoggerParameter__mdt, even in a test context so that orgs can control the output of debug
-        // messages within their own test classes. All other constants use mock configurations
-        String configuredValue = LoggerParameter__mdt.getInstance('SystemDebugMessageFormat').Value__c;
+        String mockFormat = '{EpochTimestamp__c} - 🤷‍♀️{ProfileId__c}🤷 - {Message__c}';
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SystemDebugMessageFormat', Value__c = mockFormat));
 
         String returnedValue = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT;
 
-        System.Assert.areEqual(configuredValue, returnedValue);
+        System.Assert.areEqual(mockFormat, returnedValue);
     }
 
     @IsTest

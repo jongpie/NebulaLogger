@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerHomeHeaderController_Tests {
+    static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
+    }
+
     @IsTest
     public static void it_returns_environment_details_when_status_api_callout_is_enabled() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));

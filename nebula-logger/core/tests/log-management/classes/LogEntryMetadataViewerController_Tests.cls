@@ -6,6 +6,7 @@ private class LogEntryMetadataViewerController_Tests {
     private static final String SOURCE_METADATA_ORIGIN = 'Origin';
 
     static {
+        LoggerTestConfigurator.clearCustomMetadataTypeRecords();
         LogManagementDataSelector.setMock(MOCK_SELECTOR);
     }
 

@@ -8,6 +8,10 @@
 private class LoggerPlugin_Tests {
     private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
+    static {
+        LoggerPlugin.DEVELOPER_NAME_TO_RECORD.clear();
+    }
+
     @IsTest
     static void it_should_returned_all_enabled_plugin_configurations() {
         LoggerPlugin__mdt firstMockPluginConfiguration = createMockPluginConfiguration('Some_Mock_Plugin_Configuration');

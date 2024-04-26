@@ -47,6 +47,26 @@ public without sharing class LoggerTestConfigurator {
         assignPermissionSet(userId, PERMISSION_SETS_BY_NAME.get('LoggerLogCreator'));
     }
 
+    public static void clearCustomMetadataTypeRecords() {
+        // Configuration objects:
+        // ❌ LogEntryDataMaskRule__mdt
+        // ❌ LogEntryTagRule__mdt
+        // ❌ LoggerParameter__mdt
+        // ❌ LoggerPlugin__mdt
+        // ✅ LoggerScenarioRule__mdt
+        // 🤷 LoggerSettings__c
+        // ❌ LoggerSObjectHandler__mdt
+        // ❌ LogStatus__mdt
+
+
+        // Don't use the org's actual custom metadata records when running tests
+        // LoggerFieldMapper.SOURCE_SOBJECT_TYPE_TO_TARGET_FIELD_MAPPINGS.clear();
+        LoggerParameter.DEVELOPER_NAME_TO_RECORD.clear();
+        LoggerPlugin.DEVELOPER_NAME_TO_RECORD.clear();
+        LoggerScenarioRule.SCENARIO_NAME_TO_SCENARIO_RULE.clear();
+
+    }
+
     /**
      * @description Returns an instance of `LoggerSObjectHandler__mdt` that has been built & configured for the specified `SObjectType`
      * @param  sobjectType The instance `SObjectType` to check for a configured instance of `LoggerSObjectHandler`
