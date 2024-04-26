@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.10.NEXT",
-            "versionName": "AuthSession Bugfix for LWC Logging",
-            "versionDescription": "Updated AuthSession query to not filter 'ParentId = null', added new ParentSessionId__c fields on LogEntryEvent__e and Log__c to capture parent session ID",
+            "versionNumber": "4.13.11.NEXT",
+            "versionName": "Track User Federation Identitifier",
+            "versionDescription": "Added new fields LoggedByFederationIdentifier__c on LogEntryEvent__e and Log__c to track the value of Schema.User.FederationIdentifier for the logging user",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
