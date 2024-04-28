@@ -64,11 +64,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.LoggedByFederationIdentifier__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntryTag__c.LoggedByUsernameLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
