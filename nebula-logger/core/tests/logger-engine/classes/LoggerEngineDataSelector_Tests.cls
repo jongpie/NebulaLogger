@@ -152,7 +152,15 @@ private class LoggerEngineDataSelector_Tests {
     @IsTest
     static void it_returns_cached_user() {
         Schema.User expectedUser = [
-            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+            SELECT
+                FederationIdentifier,
+                Id,
+                Profile.Name,
+                Profile.UserLicenseId,
+                Profile.UserLicense.LicenseDefinitionKey,
+                Profile.UserLicense.Name,
+                Username,
+                UserRole.Name
             FROM User
             WHERE Id = :System.UserInfo.getUserId()
         ];

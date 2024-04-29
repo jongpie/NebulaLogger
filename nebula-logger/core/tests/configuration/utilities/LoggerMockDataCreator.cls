@@ -303,16 +303,18 @@ public class LoggerMockDataCreator {
      * @return   The generated `Schema.User` record - it is not automatically inserted into the database.
      */
     public static Schema.User createUser(Id profileId) {
+        String uniqueString = Logger.getTransactionId() + (userMockUsernameCount++) + '@test.com';
         return new Schema.User(
             Alias = 'user_xyz',
             Email = 'user_xyz@test.com.net.org',
             EmailEncodingKey = 'ISO-8859-1',
+            FederationIdentifier = uniqueString + '.sso',
             LanguageLocaleKey = 'en_US',
             LastName = 'Test Userson',
             LocaleSidKey = 'en_US',
             ProfileId = profileId,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = Logger.getTransactionId() + (userMockUsernameCount++) + '@test.com'
+            Username = uniqueString
         );
     }
 
@@ -361,7 +363,15 @@ public class LoggerMockDataCreator {
      */
     public static Schema.User getUser(Id userId) {
         return [
-            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+            SELECT
+                FederationIdentifier,
+                Id,
+                Profile.Name,
+                Profile.UserLicenseId,
+                Profile.UserLicense.LicenseDefinitionKey,
+                Profile.UserLicense.Name,
+                Username,
+                UserRole.Name
             FROM User
             WHERE Id = :userId
         ];

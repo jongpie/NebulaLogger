@@ -155,6 +155,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
                 Locale__c = logEntryEvent.Locale__c,
                 LoggedBy__c = logEntryEvent.LoggedById__c,
+                LoggedByFederationIdentifier__c = logEntryEvent.LoggedByFederationIdentifier__c,
                 LoggedByUsername__c = logEntryEvent.LoggedByUsername__c,
                 LoggerVersionNumber__c = logEntryEvent.LoggerVersionNumber__c,
                 LoginApplication__c = logEntryEvent.LoginApplication__c,
@@ -695,6 +696,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             Schema.User matchingUser = userIdToUser.get(log.LoggedBy__c);
+            log.LoggedByFederationIdentifier__c = matchingUser.FederationIdentifier;
             log.LoggedByUsername__c = matchingUser.Username;
             log.ProfileName__c = matchingUser.Profile.Name;
             log.UserLicenseDefinitionKey__c = matchingUser.Profile.UserLicense.LicenseDefinitionKey;

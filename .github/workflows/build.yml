@@ -45,11 +45,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -99,11 +99,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -131,11 +131,11 @@ jobs:
         environment: 'Base Scratch Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -183,7 +183,7 @@ jobs:
               run: npm run test:apex:nocoverage -- --synchronous
 
             - name: 'Delete Base Scratch Org'
-              run: npm run org:delete:noprompt
+              run: npx sf org delete scratch --no-prompt
               if: ${{ always() }}
 
     experience-cloud-scratch-org-tests:
@@ -193,11 +193,11 @@ jobs:
         environment: 'Experience Cloud Scratch Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -254,7 +254,7 @@ jobs:
                   flags: Apex
 
             - name: 'Delete Experience Cloud Scratch Org'
-              run: npm run org:delete:noprompt
+              run: npx sf org delete scratch --no-prompt
               if: ${{ always() }}
 
     create-managed-package-beta:
@@ -265,13 +265,13 @@ jobs:
         environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -306,13 +306,13 @@ jobs:
         environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -377,11 +377,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}

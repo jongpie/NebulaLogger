@@ -241,7 +241,15 @@ public without sharing virtual class LoggerEngineDataSelector {
 
         return new Map<Id, Schema.User>(
             [
-                SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+                SELECT
+                    FederationIdentifier,
+                    Id,
+                    Profile.Name,
+                    Profile.UserLicenseId,
+                    Profile.UserLicense.LicenseDefinitionKey,
+                    Profile.UserLicense.Name,
+                    Username,
+                    UserRole.Name
                 FROM User
                 WHERE Id IN :userIds
             ]

@@ -7,7 +7,7 @@
     "plugins": ["prettier-plugin-apex", "@prettier/plugin-xml"],
     "overrides": [
         {
-            "files": "*.{cls, apex}",
+            "files": "*.{apex,cls,trigger}",
             "options": { "parser": "apex" }
         },
         {
@@ -15,12 +15,8 @@
             "options": { "parser": "lwc" }
         },
         {
-            "files": "*.{cmp,page,component}",
+            "files": "*.{cmp,page}",
             "options": { "parser": "html" }
-        },
-        {
-            "files": "*.{md}",
-            "options": { "parser": "markdown" }
         }
     ]
 }
