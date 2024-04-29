@@ -211,7 +211,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @param  networkIds The list of `Schema.Network` IDs to query
      * @return            The instance of `Map<Id, SObject>` containing any matching `Schema.Network` records
      */
-    public Map<Id, LoggerSObjectProxy.Network> getNetworkProxies(List<Id> networkIds) {
+    public virtual Map<Id, LoggerSObjectProxy.Network> getNetworkProxies(List<Id> networkIds) {
         // TODO add caching in a future release
         if (LoggerParameter.QUERY_NETWORK_DATA == false) {
             return null;
@@ -234,7 +234,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @param  userIds The list of `Schema.User` IDs to query
      * @return         The instance of `Map<Id, Schema.User>` containing any matching `Schema.User` records
      */
-    public Map<Id, Schema.User> getUsers(List<Id> userIds) {
+    public virtual Map<Id, Schema.User> getUsers(List<Id> userIds) {
         if (LoggerParameter.QUERY_USER_DATA == false) {
             return new Map<Id, Schema.User>();
         }

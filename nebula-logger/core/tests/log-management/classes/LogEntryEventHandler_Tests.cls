@@ -655,8 +655,15 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Schema.User mockLoggingUser = new Schema.User(FederationIdentifier = 'fake-fed-ID', Id = LoggerMockDataCreator.createId(Schema.User.SObjectType), Username = 'fake-username');
+        Schema.User mockImpersonatingUser = new Schema.User(FederationIdentifier = 'some-other-fed-ID', Id = LoggerMockDataCreator.createId(Schema.User.SObjectType), Username = 'someOtherUsername');
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.ImpersonatedById__c = mockImpersonatingUser.Id;
+        logEntryEvent.LoggedById__c = System.UserInfo.getUserId();
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(false)));
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        mockSelector.setUsers(new List<Schema.User>{mockLoggingUser, mockImpersonatingUser});
 
         LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -671,6 +678,8 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(expectedUser.Profile.UserLicenseId, log.UserLicenseId__c);
         System.Assert.areEqual(expectedUser.Profile.UserLicense.Name, log.UserLicenseName__c);
         System.Assert.areEqual(expectedUser.UserRole?.Name, log.UserRoleName__c);
+        System.Assert.areEqual(mockImpersonatingUser.FederationIdentifier, log.ImpersonatedByFederationIdentifier__c);
+        System.Assert.areEqual(mockImpersonatingUser.Username, log.ImpersonatedByUsername__c);
     }
 
     // TODO - testing topics is tricky. Within the unlocked package, we can test it,
@@ -1248,6 +1257,9 @@ private class LogEntryEventHandler_Tests {
                 AsyncContextTriggerId__c,
                 AsyncContextType__c,
                 Id,
+                ImpersonatedBy__c,
+                ImpersonatedByFederationIdentifier__c,
+                ImpersonatedByUsername__c,
                 Locale__c,
                 LoggedBy__c,
                 LoggedByFederationIdentifier__c,
@@ -1821,6 +1833,7 @@ private class LogEntryEventHandler_Tests {
     private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
         private Integer authSessionProxiesQueryCount = 0;
         private LoggerSObjectProxy.AuthSession mockAuthSessionProxy;
+        private Map<Id, Schema.User> mockUserIdToUser;
 
         public Integer getCachedAuthSessionQueryCount() {
             return authSessionProxiesQueryCount;
@@ -1836,6 +1849,17 @@ private class LogEntryEventHandler_Tests {
 
         public void setCachedAuthSessionProxy(LoggerSObjectProxy.AuthSession mockAuthSessionProxy) {
             this.mockAuthSessionProxy = mockAuthSessionProxy;
+        }
+
+        public override Map<Id, Schema.User> getUsers(List<Id> userIds) {
+            if (mockUserIdToUser != null) {
+                return mockUserIdToUser;
+            }
+            return super.getUsers(userIds);
+        }
+
+        public void setUsers(List<Schema.User> users) {
+            this.mockUserIdToUser = new Map<Id, Schema.User>(users);
         }
     }
 }

@@ -687,22 +687,29 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             if (log.LoggedBy__c != null) {
                 userIds.add(log.LoggedBy__c);
             }
+            if (log.ImpersonatedBy__c != null) {
+                userIds.add(log.ImpersonatedBy__c);
+            }
         }
 
         Map<Id, Schema.User> userIdToUser = LoggerEngineDataSelector.getInstance().getUsers(userIds);
         for (Log__c log : logs) {
-            if (log.LoggedBy__c == null) {
-                continue;
+            if (log.LoggedBy__c != null) {
+                Schema.User matchingLoggingUser = userIdToUser.get(log.LoggedBy__c);
+                log.LoggedByFederationIdentifier__c = matchingLoggingUser?.FederationIdentifier;
+                log.LoggedByUsername__c = matchingLoggingUser?.Username;
+                log.ProfileName__c = matchingLoggingUser?.Profile.Name;
+                log.UserLicenseDefinitionKey__c = matchingLoggingUser?.Profile.UserLicense.LicenseDefinitionKey;
+                log.UserLicenseId__c = matchingLoggingUser?.Profile.UserLicenseId;
+                log.UserLicenseName__c = matchingLoggingUser?.Profile.UserLicense.Name;
+                log.UserRoleName__c = matchingLoggingUser?.UserRole?.Name;
             }
 
-            Schema.User matchingUser = userIdToUser.get(log.LoggedBy__c);
-            log.LoggedByFederationIdentifier__c = matchingUser.FederationIdentifier;
-            log.LoggedByUsername__c = matchingUser.Username;
-            log.ProfileName__c = matchingUser.Profile.Name;
-            log.UserLicenseDefinitionKey__c = matchingUser.Profile.UserLicense.LicenseDefinitionKey;
-            log.UserLicenseId__c = matchingUser.Profile.UserLicenseId;
-            log.UserLicenseName__c = matchingUser.Profile.UserLicense.Name;
-            log.UserRoleName__c = matchingUser.UserRole?.Name;
+            if (log.ImpersonatedBy__c != null) {
+                // Schema.User matchingImpersonatingUser = userIdToUser.get(log.ImpersonatedBy__c);
+                // log.ImpersonatedByFederationIdentifier__c = matchingImpersonatingUser?.FederationIdentifier;
+                // log.ImpersonatedByUsername__c = matchingImpersonatingUser?.Username;
+            }
         }
     }
 
