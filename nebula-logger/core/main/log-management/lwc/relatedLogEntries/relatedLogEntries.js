@@ -4,6 +4,8 @@
  ************************************************************************************************/
 
 import { LightningElement, api, track, wire } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
+
 import getQueryResult from '@salesforce/apex/RelatedLogEntriesController.getQueryResult';
 export default class RelatedLogEntries extends LightningElement {
     /* eslint-disable @lwc/lwc/no-api-reassignments */
@@ -13,10 +15,12 @@ export default class RelatedLogEntries extends LightningElement {
     @api sortDirection = '';
     @api rowLimit;
     @api search = '';
+    @api queryResult;
 
     @track showComponent = false;
     @track title;
-    @api queryResult;
+    @track wiredResult;
+    @track isLoading = true;
 
     @api
     handleSort(event) {
@@ -26,6 +30,7 @@ export default class RelatedLogEntries extends LightningElement {
 
     @api
     handleSearchChange(event) {
+        this.isLoading = true;
         this.search = event.target.value;
     }
 
@@ -38,6 +43,7 @@ export default class RelatedLogEntries extends LightningElement {
         search: '$search'
     })
     wiredLogEntries(result) {
+        this.wiredResult = result;
         if (result.data) {
             let queryResult = this.processResult(result.data);
             this.queryResult = queryResult;
@@ -49,6 +55,13 @@ export default class RelatedLogEntries extends LightningElement {
             /* eslint-disable-next-line no-console */
             console.log(result.error);
         }
+        this.isLoading = false;
+    }
+
+    async refresh() {
+        this.isLoading = true;
+        await refreshApex(this.wiredResult);
+        this.isLoading = false;
     }
 
     // Parse the Apex results & add any UI-specific attributes based on field metadata
