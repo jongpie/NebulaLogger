@@ -7,7 +7,6 @@
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
     static {
-        LoggerParameter.cacheParameterValues = false;
         LoggerParameter.DEVELOPER_NAME_TO_RECORD.clear();
     }
 
@@ -41,16 +40,30 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_call_status_api() {
-        Map<Boolean, Boolean> inputValueToOutputValue = new Map<Boolean, Boolean>{ null => false, true => true, false => false };
-        for (Boolean inputValue : inputValueToOutputValue.keySet()) {
-            LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(inputValue)));
+    static void it_should_return_false_as_default_constant_value_for_call_status_api_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = null));
 
-            Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
+        Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
 
-            Boolean expectedValue = inputValueToOutputValue.get(inputValue);
-            System.Assert.areEqual(expectedValue, returnedValue);
-        }
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_call_status_api_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_call_status_api_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
+
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest
@@ -65,71 +78,165 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_enable_log_entry_event_stream() {
-        Map<Boolean, Boolean> inputValueToOutputValue = new Map<Boolean, Boolean>{ null => true, true => true, false => false };
-        for (Boolean inputValue : inputValueToOutputValue.keySet()) {
-            LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(inputValue)));
+    static void it_should_return_true_as_default_constant_value_for_enable_log_entry_event_stream_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = null));
 
-            Boolean returnedValue = LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
+        Boolean returnedValue = LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
 
-            Boolean expectedValue = inputValueToOutputValue.get(inputValue);
-            System.Assert.areEqual(expectedValue, returnedValue);
-        }
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_enable_stack_trace_parsing() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = JSON.serialize(false));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_enable_log_entry_event_stream_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_enable_log_entry_event_stream_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_enable_stack_trace_parsing_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.ENABLE_STACK_TRACE_PARSING;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_enable_system_messages() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_enable_stack_trace_parsing_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_STACK_TRACE_PARSING;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_enable_stack_trace_parsing_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_STACK_TRACE_PARSING;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_false_as_default_constant_value_for_enable_system_messages_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_enable_tagging() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_enable_system_messages_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_enable_system_messages_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_enable_tagging_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_normalize_scenario_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_enable_tagging_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_enable_tagging_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_normalize_scenario_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.NORMALIZE_SCENARIO_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_normalize_tag_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_normalize_scenario_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_SCENARIO_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_normalize_scenario_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_SCENARIO_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_normalize_tag_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.NORMALIZE_TAG_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_normalize_tag_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_TAG_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_normalize_tag_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.NORMALIZE_TAG_DATA;
+
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest
@@ -144,141 +251,327 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_apex_class_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_true_as_default_constant_value_for_query_apex_class_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_apex_trigger_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_apex_class_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_apex_class_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_apex_trigger_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_APEX_TRIGGER_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_auth_session_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_apex_trigger_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_TRIGGER_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_apex_trigger_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_TRIGGER_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_auth_session_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_auth_session_data_synchronously() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
-            DeveloperName = 'QueryAuthSessionDataSynchronously',
-            Value__c = JSON.serialize(mockValue)
-        );
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_auth_session_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_auth_session_data_synchronously_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_flow_definition_view_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_auth_session_data_synchronously_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data_synchronously_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_flow_definition_view_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_network_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_flow_definition_view_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_flow_definition_view_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_network_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_network_data_synchronously() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_network_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_network_data_synchronously_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_organization_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_network_data_synchronously_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data_synchronously_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_organization_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_organization_data_synchronously() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
-            DeveloperName = 'QueryOrganizationDataSynchronously',
-            Value__c = JSON.serialize(mockValue)
-        );
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_organization_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_organization_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_organization_data_synchronously_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_related_record_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_organization_data_synchronously_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_organization_data_synchronously_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_related_record_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_user_data() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_related_record_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_related_record_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_user_data_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_query_user_data_synchronously() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_query_user_data_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_query_user_data_synchronously_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data_synchronously_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data_synchronously_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
+
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest
@@ -309,14 +602,30 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_send_error_email_notifications() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_true_as_default_constant_value_for_send_error_email_notifications_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_send_error_email_notifications_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_send_error_email_notifications_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
+
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest
@@ -347,14 +656,30 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_store_http_response_header_values() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_true_as_default_constant_value_for_store_http_response_header_values_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_http_response_header_values_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_http_response_header_values_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES;
+
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest
@@ -385,25 +710,57 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_store_rest_request_header_values() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_true_as_default_constant_value_for_store_rest_request_header_values_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_store_rest_response_header_values() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_store_rest_request_header_values_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_rest_request_header_values_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_store_rest_response_header_values_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_rest_response_header_values_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_store_rest_response_header_values_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;
+
+        System.Assert.isFalse(returnedValue);
     }
 
     @IsTest
@@ -444,26 +801,243 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_use_platform_cache() {
-        Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_true_as_default_constant_value_for_use_first_scenario_for_transaction_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = null));
 
-        Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
+        Boolean returnedValue = LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isTrue(returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_use_topics_for_tags() {
-        Boolean mockValue = true;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(mockValue));
-        LoggerParameter.setMock(mockParameter);
+    static void it_should_return_constant_value_for_use_first_scenario_for_transaction_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_use_first_scenario_for_transaction_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_true_as_default_constant_value_for_use_platform_cache_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = null));
+
+        Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_use_platform_cache_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_use_platform_cache_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_false_as_default_constant_value_for_use_topics_for_tags_when_null() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = null));
 
         Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
 
-        System.Assert.areEqual(mockValue, returnedValue);
+        System.Assert.isFalse(returnedValue);
     }
+
+    @IsTest
+    static void it_should_return_constant_value_for_use_topics_for_tags_when_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(true)));
+
+        Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
+
+        System.Assert.isTrue(returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_use_topics_for_tags_when_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(false)));
+
+        Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
+
+        System.Assert.isFalse(returnedValue);
+    }
+
+    // Old stuff, mostly
+    // @IsTest
+    // static void it_should_return_constant_value_for_send_error_email_notifications() {
+    //     Boolean mockValue = false;
+    //     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(mockValue));
+    //     LoggerParameter.setMock(mockParameter);
+
+    //     Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
+
+    //     System.Assert.areEqual(mockValue, returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_true_as_default_constant_value_for_store_heap_size_limit_when_null() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHeapSizeLimit', Value__c = null));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_HEAP_SIZE_LIMIT;
+
+    //     System.Assert.isTrue(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_heap_size_limit_when_true() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHeapSizeLimit', Value__c = JSON.serialize(true)));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_HEAP_SIZE_LIMIT;
+
+    //     System.Assert.isTrue(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_heap_size_limit_when_false() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreHeapSizeLimit', Value__c = JSON.serialize(false)));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_HEAP_SIZE_LIMIT;
+
+    //     System.Assert.isFalse(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_http_response_header_values() {
+    //     Boolean mockValue = false;
+    //     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = JSON.serialize(mockValue));
+    //     LoggerParameter.setMock(mockParameter);
+
+    //     Boolean returnedValue = LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES;
+
+    //     System.Assert.areEqual(mockValue, returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_true_as_default_constant_value_for_store_organization_limits_when_null() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = null));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+    //     System.Assert.isTrue(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_organization_limits_when_true() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(true)));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+    //     System.Assert.isTrue(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_organization_limits_when_false() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(false)));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
+
+    //     System.Assert.isFalse(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_rest_request_header_values() {
+    //     Boolean mockValue = false;
+    //     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = JSON.serialize(mockValue));
+    //     LoggerParameter.setMock(mockParameter);
+
+    //     Boolean returnedValue = LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES;
+
+    //     System.Assert.areEqual(mockValue, returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_rest_response_header_values() {
+    //     Boolean mockValue = false;
+    //     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = JSON.serialize(mockValue));
+    //     LoggerParameter.setMock(mockParameter);
+
+    //     Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;
+
+    //     System.Assert.areEqual(mockValue, returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_true_as_default_constant_value_for_store_transaction_limits_when_null() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = null));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+    //     System.Assert.isTrue(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_transaction_limits_when_true() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(true)));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+    //     System.Assert.isTrue(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_store_transaction_limits_when_false() {
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(false)));
+
+    //     Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
+
+    //     System.Assert.isFalse(returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_system_debug_message_format() {
+    //     String mockFormat = '{EpochTimestamp__c} - 🤷‍♀️{ProfileId__c}🤷 - {Message__c}';
+    //     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SystemDebugMessageFormat', Value__c = mockFormat));
+
+    //     String returnedValue = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT;
+
+    //     System.Assert.areEqual(mockFormat, returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_use_platform_cache() {
+    //     Boolean mockValue = false;
+    //     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(mockValue));
+    //     LoggerParameter.setMock(mockParameter);
+
+    //     Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
+
+    //     System.Assert.areEqual(mockValue, returnedValue);
+    // }
+
+    // @IsTest
+    // static void it_should_return_constant_value_for_use_topics_for_tags() {
+    //     Boolean mockValue = true;
+    //     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(mockValue));
+    //     LoggerParameter.setMock(mockParameter);
+
+    //     Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
+
+    //     System.Assert.areEqual(mockValue, returnedValue);
+    // }
 
     @IsTest
     static void it_should_return_boolean_parameter() {

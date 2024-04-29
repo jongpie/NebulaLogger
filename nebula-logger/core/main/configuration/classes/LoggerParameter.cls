@@ -10,9 +10,6 @@
  */
 @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
-    @TestVisible
-    private static Boolean cacheParameterValues = true;
-
     /**
      * @description Indicates if Nebula Logger will make an async callout to `https://api.status.salesforce.com`
      *              to get additional details about the current org, which is then stored on the Log__c record.
@@ -20,7 +17,7 @@ public class LoggerParameter {
      */
     public static final Boolean CALL_STATUS_API {
         get {
-            if (CALL_STATUS_API == null || cacheParameterValues == false) {
+            if (CALL_STATUS_API == null) {
                 CALL_STATUS_API = getBoolean('CallStatusApi', false);
             }
             return CALL_STATUS_API;
