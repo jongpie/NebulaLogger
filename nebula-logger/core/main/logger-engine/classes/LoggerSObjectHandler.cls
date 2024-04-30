@@ -17,6 +17,27 @@ public without sharing abstract class LoggerSObjectHandler {
     private static final String FLOW_PLUGIN_CONFIGURATION_INPUT_NAME = 'pluginConfiguration';
     private static final String FLOW_PLUGIN_INPUT_NAME = 'pluginInput';
 
+    /**
+     * @description Returns an instance of `LoggerSObjectHandler` that has been built & configured for the specified `SObjectType`
+     * @param  sobjectType The instance `SObjectType` to check for a configured instance of `LoggerSObjectHandler`
+     * @return             The Apex class that extends `LoggerSObjectHandler` and has been configured for the specified `SObjectType`
+     */
+    public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType) {
+        return getHandler(sobjectType, null);
+    }
+
+    /**
+     * @description Returns an instance of `LoggerSObjectHandler` that has been built & configured for the specified `SObjectType`
+     * @param  sobjectType           The instance `SObjectType` to check for a configured instance of `LoggerSObjectHandler`
+     * @param  defaultImplementation A default implementation of `LoggerSObjectHandler` that should be used, if a configuration cannot be found `LoggerSObjectHandler__mdt`
+     * @return                       The Apex class that extends `LoggerSObjectHandler` and has been configured for the specified `SObjectType`
+     */
+    public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType, LoggerSObjectHandler defaultImplementation) {
+        String handlerApexClassName = getHandlerConfiguration(sobjectType)?.SObjectHandlerApexClass__c;
+        // TODO need to handle namespace prefix for Apex classes
+        return handlerApexClassName == null ? defaultImplementation : (LoggerSObjectHandler) System.Type.forName(handlerApexClassName)?.newInstance();
+    }
+
     public static void execute() {
         execute(new LoggerTriggerableContext());
     }
@@ -26,7 +47,11 @@ public without sharing abstract class LoggerSObjectHandler {
             return;
         }
 
-        LoggerSObjectHandler__mdt handlerConfiguration = SOBJECT_TYPE_TO_HANDLER_CONFIGURATION.get(triggerableContext.sobjectType);
+        LoggerSObjectHandler__mdt handlerConfiguration = getHandlerConfiguration(triggerableContext.sobjectType);
+        if (handlerConfiguration == null) {
+            return;
+        }
+
         String handlerApexClassName = handlerConfiguration?.SObjectHandlerApexClass__c;
         // TODO need to handle namespace prefix for Apex classes
         if (String.isNotBlank(handlerApexClassName)) {
@@ -160,6 +185,11 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     // Static helper methods
+    @TestVisible
+    private static LoggerSObjectHandler__mdt getHandlerConfiguration(Schema.SObjectType sobjectType) {
+        return SOBJECT_TYPE_TO_HANDLER_CONFIGURATION.get(sobjectType);
+    }
+
     @TestVisible
     private static void setMock(LoggerSObjectHandler__mdt handlerConfiguration) {
         Schema.SObjectType sobjectType = getHandlerSObjectType(handlerConfiguration);
