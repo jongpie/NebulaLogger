@@ -168,79 +168,54 @@ public without sharing class LoggerStackTrace {
 
     // TODO revisit & see if this method can be simplified
     private void parseJavaScriptStackTrace(String javaScriptStackTraceString) {
-        Boolean isAuraComponent = false;
-        Boolean isWebComponent = false;
-        String componentName;
-        String componentFunction;
+        if(String.isBlank(javaScriptStackTraceString)) {
+            return;
+        }
+
         String componentStackTraceLocation;
         String codeLineNumberString;
 
         // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
         List<String> cleansedStackTraceLines = getCleansedStackTraceLines(SourceLanguage.JavaScript, javaScriptStackTraceString);
         javaScriptStackTraceString = String.join(cleansedStackTraceLines, NEW_LINE_DELIMITER);
-
-        if (String.isNotBlank(javaScriptStackTraceString)) {
-            String auraComponentContent = '/n/components/';
-            String lwcModuleContent = 'modules/';
-            Boolean parentComponentFound = false;
-
-            List<String> stackTraceLines = new List<String>();
-            for (String currentStackTraceLine : javaScriptStackTraceString.split('\n')) {
-                if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent)) {
-                    isAuraComponent = true;
-                    parentComponentFound = true;
-                } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent)) {
-                    isWebComponent = true;
-                    parentComponentFound = true;
-                }
-
-                if (parentComponentFound == false) {
-                    continue;
-                }
-
-                stackTraceLines.add(currentStackTraceLine);
-            }
-
-            javaScriptStackTraceString = String.join(stackTraceLines, '\n');
-            if (String.isNotBlank(javaScriptStackTraceString)) {
-                String componentContent;
-                if (isAuraComponent) {
-                    componentContent = auraComponentContent;
-                } else if (isWebComponent) {
-                    componentContent = lwcModuleContent;
-                }
-                for (String currentStackTraceLine : javaScriptStackTraceString.split('\n')) {
-                    if (currentStackTraceLine.trim().startsWith('at eval')) {
-                        continue;
-                    }
-
-                    // Example: 'someFunctionName@modules/c/someComponentName.js:266:35'
-                    componentFunction = currentStackTraceLine.substringBefore('@').removeEnd('/<');
-                    String everythingAfterComponentContent = currentStackTraceLine.substringAfterLast(componentContent);
-                    componentName = everythingAfterComponentContent.substringBefore('.js');
-                    codeLineNumberString = everythingAfterComponentContent.substringAfter('.js:').substringBefore(':');
-                    break;
-                }
-                componentStackTraceLocation = componentName + '.' + componentFunction;
-            }
-        }
-
+        
         this.Location = componentStackTraceLocation;
         this.ParsedStackTraceString = javaScriptStackTraceString;
 
-        if (isAuraComponent) {
+        List<String> stackTraceLines = javaScriptStackTraceString.split(NEW_LINE_DELIMITER);
+        String componentLine = stackTraceLines[0];
+        
+        String auraComponentContent = '/components/';
+        String lwcModuleContent = 'modules/';
+
+        Boolean isAuraComponent = (componentLine.contains(auraComponentContent));
+        Boolean isWebComponent = (componentLine.contains(lwcModuleContent));
+
+        if(!isAuraComponent && !isWebComponent) {
+            return;
+        }
+
+        String componentFunction;
+        String componentContent;
+        if(isAuraComponent) {
+            componentFunction = componentLine.substringBefore(' (').substringAfter('at ');
+            componentContent = auraComponentContent;
             this.Source = new AuraDefinitionBundle();
-        } else if (isWebComponent) {
+        } else if(isWebComponent) {
+            componentFunction = componentLine.substringBefore(' (').substringAfter('Proxy.');
+            componentContent = lwcModuleContent;
             this.Source = new LightningComponentBundle();
         }
 
-        if (this.Source != null) {
-            this.Source.ApiName = componentName;
-            this.Source.ActionName = componentFunction;
-
-            if (String.isNotBlank(codeLineNumberString)) {
-                this.Source.LineNumber = Integer.valueOf(codeLineNumberString);
-            }
+        String everythingAfterComponentContent = componentLine.substringAfterLast(componentContent);
+        String componentName = everythingAfterComponentContent.substringBefore('.js');
+        codeLineNumberString = everythingAfterComponentContent.substringAfter('.js:').substringBefore(':');
+        componentStackTraceLocation = componentName + '.' + componentFunction;
+        
+        this.Source.ApiName = componentName.substringAfter('/');
+        this.Source.ActionName = componentFunction;
+        if (String.isNotBlank(codeLineNumberString)) {
+            this.Source.LineNumber = Integer.valueOf(codeLineNumberString);
         }
     }
 

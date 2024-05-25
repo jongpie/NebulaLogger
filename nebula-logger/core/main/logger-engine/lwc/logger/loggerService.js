@@ -7,11 +7,29 @@ import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
+const COMPONENT_TYPES = {
+    LWC: 'LWC',
+    AURA: 'AURA'
+}
+
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LoggerService = class {
     #componentLogEntries = [];
     #settings;
     #scenario;
+    #componentType;
+
+    setComponentType(componentType) {
+        componentType = componentType.toUpperCase();
+        if(!Object.keys(COMPONENT_TYPES).includes(componentType)) {
+            throw new Error(`Invalid component type: ${componentType}, expected one of: ${Object.keys(COMPONENT_TYPES).join(', ')}`);
+        }
+        this.#componentType = componentType;
+    }
+
+    getLogEntries() {
+        return this.#componentLogEntries;
+    }
 
     getUserSettings() {
         return this.#settings;
@@ -75,6 +93,19 @@ const LoggerService = class {
 
         try {
             const logEntriesToSave = [...this.#componentLogEntries];
+
+            // need to remove the correct number of lines from the stack added by the logger
+            const stackSizeByType = {
+                [COMPONENT_TYPES.LWC]: 10,
+                [COMPONENT_TYPES.AURA]: 6,
+            }
+            const stackSize = stackSizeByType[this.#componentType];
+            logEntriesToSave.forEach(logEntry => {
+                logEntry.stack = logEntry.stack.split('\n')
+                    .slice(stackSize)
+                    .join('\n');
+            });
+
             // this is an attempt to only flush the buffer for log entries that we are sending to Apex
             // rather than any that could be added if the saveLog call isn't awaited properly
             this.flushBuffer();
@@ -126,8 +157,9 @@ const LoggerService = class {
 
 const createLoggerService = async function () {
     const service = new LoggerService();
+    service.setComponentType(COMPONENT_TYPES.LWC);
     await service._loadSettingsFromServer();
     return service;
 };
 
-export { createLoggerService };
+export { createLoggerService, COMPONENT_TYPES };
