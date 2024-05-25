@@ -7,7 +7,6 @@
     </types>
     <types>
         <name>ApexClass</name>
-        <members>ComponentLogger</members>
         <members>LoggerStackTrace</members>
     </types>
     <version>60.0</version>
