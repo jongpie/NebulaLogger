@@ -147,10 +147,8 @@ export const LogEntryBuilder = class {
      * @description Sets the log entry event's stack trace
      * @param {String} stack 
      */
-    setComponentLogEntryStack(stack) {
-        if(stack) {
-            this.#componentLogEntry.stack = stack;
-        }
+    setStack(stack) {
+        this.#componentLogEntry.stack = stack;
     }
 
     _setBrowserDetails() {

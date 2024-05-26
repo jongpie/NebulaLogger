@@ -35,45 +35,31 @@ export const LoggerService = class {
     }
 
     error(stack, message) {
-        const logEntry = this._newEntry('ERROR', message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
+        return this._newEntry('ERROR', message, stack);
     }
 
     warn(stack, message) {
-        const logEntry = this._newEntry('WARN', message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
+        return this._newEntry('WARN', message, stack);
     }
 
     info(stack, message) {
-        const logEntry = this._newEntry('INFO', message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
+        return this._newEntry('INFO', message, stack);
     }
 
     debug(stack, message) {
-        const logEntry = this._newEntry('DEBUG', message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
+        return this._newEntry('DEBUG', message, stack);
     }
 
     fine(stack, message) {
-        const logEntry = this._newEntry('FINE', message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
+        return this._newEntry('FINE', message, stack);
     }
 
     finer(stack, message) {
-        const logEntry = this._newEntry('FINER', message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
+        return this._newEntry('FINER', message, stack);
     }
 
     finest(stack, message) {
-        const logEntry = this._newEntry('FINEST', message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
+        return this._newEntry('FINEST', message, stack);
     }
 
     getBufferSize() {
@@ -156,13 +142,14 @@ export const LoggerService = class {
         return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings?.supportedLoggingLevels[logEntryLoggingLevel];
     }
 
-    _newEntry(loggingLevel, message) {
+    _newEntry(loggingLevel, message, stack) {
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         logEntryBuilder.setMessage(message);
         logEntryBuilder.setScenario(this.#scenario);
         if (this._meetsUserLoggingLevel(loggingLevel)) {
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
         }
+        logEntryBuilder.setStack(stack);
         return logEntryBuilder;
     }
 };

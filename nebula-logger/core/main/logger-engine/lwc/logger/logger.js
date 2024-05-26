@@ -8,7 +8,7 @@ import { createLoggerService, LoggerService } from './loggerService';
 
 export default class Logger extends LightningElement {
     #loggerService;
-    
+
     connectedCallback() {
         this.#loggerService = new LoggerService();
     }
