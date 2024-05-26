@@ -76,13 +76,6 @@ export const LoggerService = class {
      * on subsequent saveLog() calls
      */
     async saveLog(saveMethodName) {
-        if (this.#componentLogEntries.length === 0) {
-            return;
-        }
-        if (!saveMethodName && this.#settings?.defaultSaveMethodName) {
-            saveMethodName = this.#settings.defaultSaveMethodName;
-        }
-
         // some JIT logic here to load settings if they haven't been loaded yet
         if(!this.#isSettingsLoaded) {
             // may not be loaded if you trigger the log before the promise resolves
@@ -91,10 +84,14 @@ export const LoggerService = class {
             this.#componentLogEntries = this.#componentLogEntries.filter(
                 logEntry => this._meetsUserLoggingLevel(logEntry.loggingLevel)
             );
-            if(this.#componentLogEntries.length === 0) {
-                return;
-            }
-        } 
+        }
+        
+        if (this.#componentLogEntries.length === 0) {
+            return;
+        }
+        if (!saveMethodName && this.#settings?.defaultSaveMethodName) {
+            saveMethodName = this.#settings.defaultSaveMethodName;
+        }
 
         try {
             const logEntriesToSave = [...this.#componentLogEntries];
