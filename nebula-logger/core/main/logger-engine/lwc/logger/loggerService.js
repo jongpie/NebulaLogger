@@ -7,25 +7,11 @@ import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
-const COMPONENT_TYPES = {
-    LWC: 'LWC',
-    AURA: 'AURA'
-}
-
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LoggerService = class {
     #componentLogEntries = [];
     #settings;
     #scenario;
-    #componentType;
-
-    setComponentType(componentType) {
-        componentType = componentType.toUpperCase();
-        if(!Object.keys(COMPONENT_TYPES).includes(componentType)) {
-            throw new Error(`Invalid component type: ${componentType}, expected one of: ${Object.keys(COMPONENT_TYPES).join(', ')}`);
-        }
-        this.#componentType = componentType;
-    }
 
     getLogEntries() {
         return this.#componentLogEntries;
@@ -145,9 +131,8 @@ const LoggerService = class {
 
 const createLoggerService = async function () {
     const service = new LoggerService();
-    service.setComponentType(COMPONENT_TYPES.LWC);
     await service._loadSettingsFromServer();
     return service;
 };
 
-export { createLoggerService, COMPONENT_TYPES };
+export { createLoggerService };

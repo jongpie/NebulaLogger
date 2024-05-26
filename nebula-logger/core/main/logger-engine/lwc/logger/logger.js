@@ -9,9 +9,9 @@ import { createLoggerService, COMPONENT_TYPES } from './loggerService';
 export default class Logger extends LightningElement {
     #loggerService;
 
+    @api componentType;
     async connectedCallback() {
         this.#loggerService = await createLoggerService();
-        this.#loggerService.setComponentType(COMPONENT_TYPES.LWC);
     }
 
     /**
@@ -145,12 +145,10 @@ export default class Logger extends LightningElement {
 
     /**
      * 
-     * @param {String} componentType `Aura|LWC` 
-     * @returns LoggerService
+     * @returns Logger
      */
     @api
-    createLogger(componentType) {
-        this.#loggerService.setComponentType(componentType);
+    createLogger() {
         return this;
     }
 }
