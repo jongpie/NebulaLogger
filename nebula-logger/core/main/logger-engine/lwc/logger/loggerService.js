@@ -8,10 +8,16 @@ import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
-const LoggerService = class {
+export const LoggerService = class {
     #componentLogEntries = [];
     #settings;
     #scenario;
+    #settingsPromise = null;
+    #isSettingsLoaded = false;
+
+    constructor() {
+        this.#settingsPromise = this._loadSettingsFromServer();
+    }
 
     getLogEntries() {
         return this.#componentLogEntries;
@@ -28,32 +34,46 @@ const LoggerService = class {
         });
     }
 
-    error(message) {
-        return this._newEntry('ERROR', message);
+    error(stack, message) {
+        const logEntry = this._newEntry('ERROR', message);
+        logEntry.setComponentLogEntryStack(stack);
+        return logEntry;
     }
 
-    warn(message) {
-        return this._newEntry('WARN', message);
+    warn(stack, message) {
+        const logEntry = this._newEntry('WARN', message);
+        logEntry.setComponentLogEntryStack(stack);
+        return logEntry;
     }
 
-    info(message) {
-        return this._newEntry('INFO', message);
+    info(stack, message) {
+        const logEntry = this._newEntry('INFO', message);
+        logEntry.setComponentLogEntryStack(stack);
+        return logEntry;
     }
 
-    debug(message) {
-        return this._newEntry('DEBUG', message);
+    debug(stack, message) {
+        const logEntry = this._newEntry('DEBUG', message);
+        logEntry.setComponentLogEntryStack(stack);
+        return logEntry;
     }
 
-    fine(message) {
-        return this._newEntry('FINE', message);
+    fine(stack, message) {
+        const logEntry = this._newEntry('FINE', message);
+        logEntry.setComponentLogEntryStack(stack);
+        return logEntry;
     }
 
-    finer(message) {
-        return this._newEntry('FINER', message);
+    finer(stack, message) {
+        const logEntry = this._newEntry('FINER', message);
+        logEntry.setComponentLogEntryStack(stack);
+        return logEntry;
     }
 
-    finest(message) {
-        return this._newEntry('FINEST', message);
+    finest(stack, message) {
+        const logEntry = this._newEntry('FINEST', message);
+        logEntry.setComponentLogEntryStack(stack);
+        return logEntry;
     }
 
     getBufferSize() {
@@ -76,6 +96,20 @@ const LoggerService = class {
         if (!saveMethodName && this.#settings?.defaultSaveMethodName) {
             saveMethodName = this.#settings.defaultSaveMethodName;
         }
+
+        // some JIT logic here to load settings if they haven't been loaded yet
+        if(!this.#isSettingsLoaded) {
+            try {
+                // may not be loaded if you trigger the log before connectedCallback finishes 
+                // in the parent component
+                await this.#settingsPromise;
+            } catch(err) {
+                throw err;
+            }
+            this.#componentLogEntries = this.#componentLogEntries.filter(
+                logEntry => this._meetsUserLoggingLevel(logEntry.loggingLevel)
+            );
+        } 
 
         try {
             const logEntriesToSave = [...this.#componentLogEntries];
@@ -106,6 +140,7 @@ const LoggerService = class {
                 supportedLoggingLevels: Object.freeze(settings.supportedLoggingLevels),
                 userLoggingLevel: Object.freeze(settings.userLoggingLevel)
             });
+            this.#isSettingsLoaded = true;
         } catch (error) {
             /* eslint-disable-next-line no-console */
             console.error(error);
@@ -114,6 +149,11 @@ const LoggerService = class {
     }
 
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
+        // return true until settings are loaded
+        if(!this.#isSettingsLoaded) {
+            return true;
+        }
+
         return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings?.supportedLoggingLevels[logEntryLoggingLevel];
     }
 
@@ -121,11 +161,9 @@ const LoggerService = class {
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         logEntryBuilder.setMessage(message);
         logEntryBuilder.setScenario(this.#scenario);
-        logEntryBuilder.setComponentLogEntryStack(new Error().stack);
         if (this._meetsUserLoggingLevel(loggingLevel)) {
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
         }
-
         return logEntryBuilder;
     }
 };

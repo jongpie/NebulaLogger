@@ -191,7 +191,7 @@ public without sharing class LoggerStackTrace {
         String auraComponentContent = 'components/';
         String lwcModuleContent = 'modules/';
 
-        // third line in the stack trace will either contain "eval at <anonymous>" for LWCs
+        // second line in the stack trace will either contain "eval at <anonymous>" for LWCs
         // or "components/" for Aura components
         Boolean isWebComponent = (stackTraceLines[auraLineNumber].contains('eval at <anonymous>'));
         Boolean isAuraComponent = (stackTraceLines[auraLineNumber].contains(auraComponentContent));
@@ -207,11 +207,16 @@ public without sharing class LoggerStackTrace {
             return;
         }
 
-        for(Integer i = auraLineNumber; i < stackTraceLines.size(); i++) {
-            if(stackTraceLines[i].contains(componentContent)) {
-                componentLine = stackTraceLines[i];
+        for(String stackTraceLine : stackTraceLines) {
+            if(stackTraceLine.contains(componentContent)) {
+                componentLine = stackTraceLine;
                 break;
             }
+        }
+
+        // safeguard so this won't fail if the component isn't found
+        if(componentLine == null) {
+            return;
         }
 
         String componentFunction;

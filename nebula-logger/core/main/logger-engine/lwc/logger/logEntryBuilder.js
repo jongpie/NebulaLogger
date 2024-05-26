@@ -30,7 +30,7 @@ const ComponentLogEntry = class {
 };
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
-const LogEntryBuilder = class {
+export const LogEntryBuilder = class {
     #componentLogEntry;
     #isConsoleLoggingEnabled;
 
