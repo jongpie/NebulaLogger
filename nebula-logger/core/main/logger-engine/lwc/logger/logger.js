@@ -9,7 +9,6 @@ import { createLoggerService, COMPONENT_TYPES } from './loggerService';
 export default class Logger extends LightningElement {
     #loggerService;
 
-    @api componentType;
     async connectedCallback() {
         this.#loggerService = await createLoggerService();
     }
