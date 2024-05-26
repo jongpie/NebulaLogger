@@ -33,26 +33,13 @@ export default class Logger extends LightningElement {
     }
 
     /**
-     * 
-     * @param {String} message log message
-     * @param {String} level function name to call on loggerService 
-     * @returns {LogEntry}
-     */
-    _log(message, level) {
-        const stack = new Error().stack;
-        const logEntry = this.#loggerService[level](message);
-        logEntry.setComponentLogEntryStack(stack);
-        return logEntry;
-    }
-
-    /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
      * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     error(message) {
-        return this._log(message, 'error');
+        return this.#loggerService.error(message);
     }
 
     /**
@@ -62,7 +49,7 @@ export default class Logger extends LightningElement {
      */
     @api
     warn(message) {
-        return this._log(message, 'warn');
+        return this.#loggerService.warn(message);
     }
 
     /**
@@ -72,7 +59,7 @@ export default class Logger extends LightningElement {
      */
     @api
     info(message) {
-        return this._log(message, 'info');
+        return this.#loggerService.info(message);
     }
 
     /**
@@ -82,7 +69,7 @@ export default class Logger extends LightningElement {
      */
     @api
     debug(message) {
-        return this._log(message, 'debug');
+        return this.#loggerService.debug(message);
     }
 
     /**
@@ -92,7 +79,7 @@ export default class Logger extends LightningElement {
      */
     @api
     fine(message) {
-        return this._log(message, 'fine');
+        return this.#loggerService.fine(message);
     }
 
     /**
@@ -102,7 +89,7 @@ export default class Logger extends LightningElement {
      */
     @api
     finer(message) {
-        return this._log(message, 'finer');
+        return this.#loggerService.finer(message);
     }
 
     /**
@@ -112,7 +99,7 @@ export default class Logger extends LightningElement {
      */
     @api
     finest(message) {
-        return this._log(message, 'finest');
+        return this.#loggerService.finest(message);
     }
 
     /**
