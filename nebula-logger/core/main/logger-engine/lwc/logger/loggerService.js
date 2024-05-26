@@ -139,10 +139,10 @@ export const LoggerService = class {
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         logEntryBuilder.setMessage(message);
         logEntryBuilder.setScenario(this.#scenario);
+        logEntryBuilder.setStack(stack);
         if (this._meetsUserLoggingLevel(loggingLevel)) {
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
         }
-        logEntryBuilder.setStack(stack);
         return logEntryBuilder;
     }
 };
