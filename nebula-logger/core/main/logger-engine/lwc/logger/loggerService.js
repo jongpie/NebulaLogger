@@ -99,8 +99,8 @@ export const LoggerService = class {
 
         // some JIT logic here to load settings if they haven't been loaded yet
         if(!this.#isSettingsLoaded) {
-            // may not be loaded if you trigger the log before connectedCallback finishes 
-            // in the parent component, may throw an error if settings can't be loaded
+            // may not be loaded if you trigger the log before the promise resolves
+            // may throw an error if settings can't be loaded
             await this.#settingsPromise;
             this.#componentLogEntries = this.#componentLogEntries.filter(
                 logEntry => this._meetsUserLoggingLevel(logEntry.loggingLevel)
