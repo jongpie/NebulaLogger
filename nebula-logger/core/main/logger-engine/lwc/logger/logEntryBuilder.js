@@ -143,6 +143,17 @@ const LogEntryBuilder = class {
         return this.#componentLogEntry;
     }
 
+    /**
+     * @description Sets the log entry event's stack trace
+     * @param {String} stack 
+     */
+    setComponentLogEntryStack(stack) {
+        console.log(stack);
+        if(stack) {
+            this.#componentLogEntry.stack = stack;
+        }
+    }
+
     _setBrowserDetails() {
         this.#componentLogEntry.browserFormFactor = FORM_FACTOR;
         this.#componentLogEntry.browserLanguage = window.navigator.language;

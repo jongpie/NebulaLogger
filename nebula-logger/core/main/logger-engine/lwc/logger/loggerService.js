@@ -13,6 +13,10 @@ const LoggerService = class {
     #settings;
     #scenario;
 
+    getLogEntries() {
+        return this.#componentLogEntries;
+    }
+
     getUserSettings() {
         return this.#settings;
     }
@@ -75,6 +79,7 @@ const LoggerService = class {
 
         try {
             const logEntriesToSave = [...this.#componentLogEntries];
+
             // this is an attempt to only flush the buffer for log entries that we are sending to Apex
             // rather than any that could be added if the saveLog call isn't awaited properly
             this.flushBuffer();
