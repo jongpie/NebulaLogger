@@ -128,6 +128,16 @@ export default class Logger extends LightningElement {
     async saveLog(saveMethodName) {
         return this.#loggerService.saveLog(saveMethodName);
     }
+
+    /**
+     * @description When importing from an Aura component, it can't see the other createLogger that's exported
+     *             from the same module, so this method is a workaround to allow Aura to access a Logger instance
+     * @returns {Logger}
+     */
+    @api
+    createLogger() {
+        return this;
+    }
 }
 
 /**
