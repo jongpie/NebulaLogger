@@ -144,7 +144,7 @@ export default class Logger extends LightningElement {
 
     /**
      * 
-     * @returns Logger
+     * @returns {Logger}
      */
     @api
     createLogger() {
