@@ -30,7 +30,7 @@ const ComponentLogEntry = class {
 };
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
-const LogEntryBuilder = class {
+export const LogEntryBuilder = class {
     #componentLogEntry;
     #isConsoleLoggingEnabled;
 
@@ -141,6 +141,14 @@ const LogEntryBuilder = class {
      */
     getComponentLogEntry() {
         return this.#componentLogEntry;
+    }
+
+    /**
+     * @description Sets the log entry event's stack trace
+     * @param {String} stack 
+     */
+    setStack(stack) {
+        this.#componentLogEntry.stack = stack;
     }
 
     _setBrowserDetails() {

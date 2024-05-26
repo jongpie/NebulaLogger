@@ -8,10 +8,16 @@ import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
-const LoggerService = class {
+export const LoggerService = class {
     #componentLogEntries = [];
     #settings;
     #scenario;
+    #settingsPromise = null;
+    #isSettingsLoaded = false;
+
+    constructor() {
+        this.#settingsPromise = this._loadSettingsFromServer();
+    }
 
     getUserSettings() {
         return this.#settings;
@@ -24,32 +30,32 @@ const LoggerService = class {
         });
     }
 
-    error(message) {
-        return this._newEntry('ERROR', message);
+    error(stack, message) {
+        return this._newEntry('ERROR', message, stack);
     }
 
-    warn(message) {
-        return this._newEntry('WARN', message);
+    warn(stack, message) {
+        return this._newEntry('WARN', message, stack);
     }
 
-    info(message) {
-        return this._newEntry('INFO', message);
+    info(stack, message) {
+        return this._newEntry('INFO', message, stack);
     }
 
-    debug(message) {
-        return this._newEntry('DEBUG', message);
+    debug(stack, message) {
+        return this._newEntry('DEBUG', message, stack);
     }
 
-    fine(message) {
-        return this._newEntry('FINE', message);
+    fine(stack, message) {
+        return this._newEntry('FINE', message, stack);
     }
 
-    finer(message) {
-        return this._newEntry('FINER', message);
+    finer(stack, message) {
+        return this._newEntry('FINER', message, stack);
     }
 
-    finest(message) {
-        return this._newEntry('FINEST', message);
+    finest(stack, message) {
+        return this._newEntry('FINEST', message, stack);
     }
 
     getBufferSize() {
@@ -66,6 +72,16 @@ const LoggerService = class {
      * on subsequent saveLog() calls
      */
     async saveLog(saveMethodName) {
+        // some JIT logic here to load settings if they haven't been loaded yet
+        if(!this.#isSettingsLoaded) {
+            // may not be loaded if you trigger the log before the promise resolves
+            // may throw an error if settings can't be loaded
+            await this.#settingsPromise;
+            this.#componentLogEntries = this.#componentLogEntries.filter(
+                logEntry => this._meetsUserLoggingLevel(logEntry.loggingLevel)
+            );
+        }
+
         if (this.#componentLogEntries.length === 0) {
             return;
         }
@@ -75,6 +91,7 @@ const LoggerService = class {
 
         try {
             const logEntriesToSave = [...this.#componentLogEntries];
+
             // this is an attempt to only flush the buffer for log entries that we are sending to Apex
             // rather than any that could be added if the saveLog call isn't awaited properly
             this.flushBuffer();
@@ -101,6 +118,7 @@ const LoggerService = class {
                 supportedLoggingLevels: Object.freeze(settings.supportedLoggingLevels),
                 userLoggingLevel: Object.freeze(settings.userLoggingLevel)
             });
+            this.#isSettingsLoaded = true;
         } catch (error) {
             /* eslint-disable-next-line no-console */
             console.error(error);
@@ -109,24 +127,28 @@ const LoggerService = class {
     }
 
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
+        // return true until settings are loaded
+        if(!this.#isSettingsLoaded) {
+            return true;
+        }
+
         return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings?.supportedLoggingLevels[logEntryLoggingLevel];
     }
 
-    _newEntry(loggingLevel, message) {
+    _newEntry(loggingLevel, message, stack) {
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         logEntryBuilder.setMessage(message);
         logEntryBuilder.setScenario(this.#scenario);
+        logEntryBuilder.setStack(stack);
         if (this._meetsUserLoggingLevel(loggingLevel)) {
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
         }
-
         return logEntryBuilder;
     }
 };
 
-const createLoggerService = async function () {
+const createLoggerService = function () {
     const service = new LoggerService();
-    await service._loadSettingsFromServer();
     return service;
 };
 

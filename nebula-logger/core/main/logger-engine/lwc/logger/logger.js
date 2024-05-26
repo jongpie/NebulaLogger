@@ -4,13 +4,13 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, api } from 'lwc';
-import { createLoggerService } from './loggerService';
+import { createLoggerService, LoggerService } from './loggerService';
 
 export default class Logger extends LightningElement {
     #loggerService;
 
-    async connectedCallback() {
-        this.#loggerService = await createLoggerService();
+    connectedCallback() {
+        this.#loggerService = new LoggerService();
     }
 
     /**
@@ -39,7 +39,7 @@ export default class Logger extends LightningElement {
      */
     @api
     error(message) {
-        return this.#loggerService.error(message);
+        return this.#loggerService.error(new Error().stack, message);
     }
 
     /**
@@ -49,7 +49,7 @@ export default class Logger extends LightningElement {
      */
     @api
     warn(message) {
-        return this.#loggerService.warn(message);
+        return this.#loggerService.warn(new Error().stack, message);
     }
 
     /**
@@ -59,7 +59,7 @@ export default class Logger extends LightningElement {
      */
     @api
     info(message) {
-        return this.#loggerService.info(message);
+        return this.#loggerService.info(new Error().stack, message);
     }
 
     /**
@@ -69,7 +69,7 @@ export default class Logger extends LightningElement {
      */
     @api
     debug(message) {
-        return this.#loggerService.debug(message);
+        return this.#loggerService.debug(new Error().stack, message);
     }
 
     /**
@@ -79,7 +79,7 @@ export default class Logger extends LightningElement {
      */
     @api
     fine(message) {
-        return this.#loggerService.fine(message);
+        return this.#loggerService.fine(new Error().stack, message);
     }
 
     /**
@@ -89,7 +89,7 @@ export default class Logger extends LightningElement {
      */
     @api
     finer(message) {
-        return this.#loggerService.finer(message);
+        return this.#loggerService.finer(new Error().stack, message);
     }
 
     /**
@@ -99,7 +99,7 @@ export default class Logger extends LightningElement {
      */
     @api
     finest(message) {
-        return this.#loggerService.finest(message);
+        return this.#loggerService.finest(new Error().stack, message);
     }
 
     /**
@@ -128,10 +128,20 @@ export default class Logger extends LightningElement {
     async saveLog(saveMethodName) {
         return this.#loggerService.saveLog(saveMethodName);
     }
+
+    /**
+     * @description When importing from an Aura component, it can't see the other createLogger that's exported
+     *             from the same module, so this method is a workaround to allow Aura to access a Logger instance
+     * @returns {Logger}
+     */
+    @api
+    createLogger() {
+        return this;
+    }
 }
 
 /**
- * @return {Promise<LoggerService>} a LoggerService instance
+ * @return {LoggerService} a LoggerService instance
  */
 const createLogger = createLoggerService;
 
