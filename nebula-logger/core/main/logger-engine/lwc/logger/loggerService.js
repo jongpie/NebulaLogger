@@ -19,10 +19,6 @@ export const LoggerService = class {
         this.#settingsPromise = this._loadSettingsFromServer();
     }
 
-    getLogEntries() {
-        return this.#componentLogEntries;
-    }
-
     getUserSettings() {
         return this.#settings;
     }
@@ -85,7 +81,7 @@ export const LoggerService = class {
                 logEntry => this._meetsUserLoggingLevel(logEntry.loggingLevel)
             );
         }
-        
+
         if (this.#componentLogEntries.length === 0) {
             return;
         }
