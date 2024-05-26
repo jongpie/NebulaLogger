@@ -168,9 +168,8 @@ export const LoggerService = class {
     }
 };
 
-const createLoggerService = async function () {
+const createLoggerService = function () {
     const service = new LoggerService();
-    await service._loadSettingsFromServer();
     return service;
 };
 
