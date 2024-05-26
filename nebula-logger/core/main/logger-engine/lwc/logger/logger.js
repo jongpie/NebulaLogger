@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, api } from 'lwc';
-import { createLoggerService, COMPONENT_TYPES } from './loggerService';
+import { createLoggerService } from './loggerService';
 
 export default class Logger extends LightningElement {
     #loggerService;
