@@ -105,6 +105,9 @@ export const LoggerService = class {
             this.#componentLogEntries = this.#componentLogEntries.filter(
                 logEntry => this._meetsUserLoggingLevel(logEntry.loggingLevel)
             );
+            if(this.#componentLogEntries.length === 0) {
+                return;
+            }
         } 
 
         try {
