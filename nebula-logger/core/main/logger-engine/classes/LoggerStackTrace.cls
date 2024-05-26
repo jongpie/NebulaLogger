@@ -183,28 +183,42 @@ public without sharing class LoggerStackTrace {
         this.ParsedStackTraceString = javaScriptStackTraceString;
 
         List<String> stackTraceLines = javaScriptStackTraceString.split(NEW_LINE_DELIMITER);
-        String componentLine = stackTraceLines[0];
+
+        Integer auraLineNumber = 1;
+
+        String componentLine;
         
-        String auraComponentContent = '/components/';
+        String auraComponentContent = 'components/';
         String lwcModuleContent = 'modules/';
 
-        Boolean isAuraComponent = (componentLine.contains(auraComponentContent));
-        Boolean isWebComponent = (componentLine.contains(lwcModuleContent));
+        // third line in the stack trace will either contain "eval at <anonymous>" for LWCs
+        // or "components/" for Aura components
+        Boolean isWebComponent = (stackTraceLines[auraLineNumber].contains('eval at <anonymous>'));
+        Boolean isAuraComponent = (stackTraceLines[auraLineNumber].contains(auraComponentContent));
+        String componentContent;
 
-        if(!isAuraComponent && !isWebComponent) {
+        if(isAuraComponent) {
+            this.Source = new AuraDefinitionBundle();
+            componentContent = auraComponentContent;
+        } else if(isWebComponent) {
+            this.Source = new LightningComponentBundle();
+            componentContent = lwcModuleContent;
+        } else {
             return;
         }
 
+        for(Integer i = auraLineNumber; i < stackTraceLines.size(); i++) {
+            if(stackTraceLines[i].contains(componentContent)) {
+                componentLine = stackTraceLines[i];
+                break;
+            }
+        }
+
         String componentFunction;
-        String componentContent;
         if(isAuraComponent) {
             componentFunction = componentLine.substringBefore(' (').substringAfter('at ');
-            componentContent = auraComponentContent;
-            this.Source = new AuraDefinitionBundle();
         } else if(isWebComponent) {
             componentFunction = componentLine.substringBefore(' (').substringAfter('Proxy.');
-            componentContent = lwcModuleContent;
-            this.Source = new LightningComponentBundle();
         }
 
         String everythingAfterComponentContent = componentLine.substringAfterLast(componentContent);

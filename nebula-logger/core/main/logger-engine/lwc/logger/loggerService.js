@@ -94,18 +94,6 @@ const LoggerService = class {
         try {
             const logEntriesToSave = [...this.#componentLogEntries];
 
-            // need to remove the correct number of lines from the stack added by the logger
-            const stackSizeByType = {
-                [COMPONENT_TYPES.LWC]: 10,
-                [COMPONENT_TYPES.AURA]: 6,
-            }
-            const stackSize = stackSizeByType[this.#componentType];
-            logEntriesToSave.forEach(logEntry => {
-                logEntry.stack = logEntry.stack.split('\n')
-                    .slice(stackSize)
-                    .join('\n');
-            });
-
             // this is an attempt to only flush the buffer for log entries that we are sending to Apex
             // rather than any that could be added if the saveLog call isn't awaited properly
             this.flushBuffer();

@@ -148,6 +148,7 @@ const LogEntryBuilder = class {
      * @param {String} stack 
      */
     setComponentLogEntryStack(stack) {
+        console.log(stack);
         if(stack) {
             this.#componentLogEntry.stack = stack;
         }

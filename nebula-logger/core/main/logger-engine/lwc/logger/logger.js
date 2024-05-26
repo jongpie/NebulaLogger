@@ -151,7 +151,7 @@ export default class Logger extends LightningElement {
     @api
     createLogger(componentType) {
         this.#loggerService.setComponentType(componentType);
-        return this.#loggerService;
+        return this;
     }
 }
 
