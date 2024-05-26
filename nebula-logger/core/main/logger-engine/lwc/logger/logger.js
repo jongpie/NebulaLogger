@@ -141,7 +141,7 @@ export default class Logger extends LightningElement {
 }
 
 /**
- * @return {Promise<LoggerService>} a LoggerService instance
+ * @return {LoggerService} a LoggerService instance
  */
 const createLogger = createLoggerService;
 
