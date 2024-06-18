@@ -87,7 +87,7 @@
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>60.0</apiVersion>
+    <apiVersion>61.0</apiVersion>
     <description>A screen Flow used to help test the Apex class LogEntryHandler</description>
     <interviewLabel>LogEntryHandler Screen Tests for Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LogEntryHandler Screen Tests for Flow</label>
