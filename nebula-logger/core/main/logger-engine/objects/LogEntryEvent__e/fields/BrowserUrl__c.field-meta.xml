@@ -8,8 +8,8 @@
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
     <label>Browser URL</label>
-    <length>2000</length>
-    <securityClassification>Confidential</securityClassification>
-    <type>LongTextArea</type>
-    <visibleLines>8</visibleLines>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>

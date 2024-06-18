@@ -5,10 +5,8 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <label>Browser URL</label>
-    <length>2000</length>
-    <securityClassification>Confidential</securityClassification>
+    <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
-    <type>LongTextArea</type>
-    <visibleLines>10</visibleLines>
+    <type>Url</type>
 </CustomField>
