@@ -50,7 +50,7 @@
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>60.0</apiVersion>
+    <apiVersion>61.0</apiVersion>
     <interviewLabel>Account_Record_Launched_Flow_Example {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Account: Record Launched Flow Example</label>
     <processMetadataValues>
