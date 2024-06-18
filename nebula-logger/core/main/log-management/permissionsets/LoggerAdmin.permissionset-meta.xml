@@ -183,6 +183,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.BrowserAddress__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.BrowserFormFactor__c</field>
         <readable>true</readable>
     </fieldPermissions>

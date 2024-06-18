@@ -8,9 +8,11 @@ const CURRENT_VERSION_NUMBER = 'v4.13.14';
 
 // JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
 const ComponentLogEntry = class {
+    browserAddress = null;
     browserFormFactor = null;
     browserLanguage = null;
     browserScreenResolution = null;
+    // TODO Deprecated, remove in a future release
     browserUrl = null;
     browserUserAgent = null;
     browserWindowResolution = null;
@@ -144,10 +146,12 @@ const LogEntryBuilder = class {
     }
 
     _setBrowserDetails() {
+        this.#componentLogEntry.browserAddress = window.location.href;
         this.#componentLogEntry.browserFormFactor = FORM_FACTOR;
         this.#componentLogEntry.browserLanguage = window.navigator.language;
         this.#componentLogEntry.browserScreenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
-        this.#componentLogEntry.browserUrl = window.location.href;
+        // TODO Deprecated, remove in a future release
+        this.#componentLogEntry.browserUrl = this.#componentLogEntry.browserAddress;
         this.#componentLogEntry.browserUserAgent = window.navigator.userAgent;
         this.#componentLogEntry.browserWindowResolution = window.innerWidth + ' x ' + window.innerHeight;
     }

@@ -255,9 +255,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             LogEntry__c logEntry = new LogEntry__c(
+                BrowserAddress__c = logEntryEvent.BrowserAddress__c,
                 BrowserFormFactor__c = logEntryEvent.BrowserFormFactor__c,
                 BrowserLanguage__c = logEntryEvent.BrowserLanguage__c,
                 BrowserScreenResolution__c = logEntryEvent.BrowserScreenResolution__c,
+                // TODO BrowserUrl__c is deprecated (replaced by BrowserAddress__c), but keep setting BrowserUrl__c for now so people have time to migrate to referencing BrowserAddress__c
                 BrowserUrl__c = logEntryEvent.BrowserUrl__c,
                 BrowserUserAgent__c = logEntryEvent.BrowserUserAgent__c,
                 BrowserWindowResolution__c = logEntryEvent.BrowserWindowResolution__c,
