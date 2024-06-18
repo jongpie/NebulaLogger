@@ -51,7 +51,10 @@ public inherited sharing class ComponentLogger {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 Logger.setScenario(componentLogEntry.scenario);
                 System.LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
-                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message).addTags(componentLogEntry.tags);
+                Map<Schema.SObjectField, Object> customFieldToFieldValue = getCustomFieldToFieldValue(componentLogEntry.fieldNameToFieldValue);
+                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message)
+                    // .setFields(customFieldToFieldValue)
+                    .addTags(componentLogEntry.tags);
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
                 if (componentLogEntry.recordId != null) {
@@ -77,6 +80,23 @@ public inherited sharing class ComponentLogger {
             auraException.setMessage(errorMessage);
             throw auraException;
         }
+    }
+
+    private static Map<Schema.SObjectField, Object> getCustomFieldToFieldValue(Map<String, Object> fieldNameToFieldValue) {
+        Map<Schema.SObjectField, Object> fieldToFieldValue = new Map<Schema.SObjectField, Object>();
+
+        if (fieldNameToFieldValue == null || fieldNameToFieldValue.isEmpty()) {
+            return fieldToFieldValue;
+        }
+
+        Map<String, Schema.SObjectField> fieldNameToField = Schema.LogEntryEvent__e.SObjectType.getDescribe().fields.getMap();
+        for (String fieldName : fieldNameToFieldValue.keySet()) {
+            Schema.SObjectField field = fieldNameToField.get(fieldName);
+            if (field != null) {
+                fieldToFieldValue.put(field, fieldNameToFieldValue.get(fieldName));
+            }
+        }
+        return fieldToFieldValue;
     }
 
     private static void setBrowserDetails(LogEntryEvent__e logEntryEvent, ComponentLogEntry componentLogEntry) {
@@ -312,6 +332,12 @@ public inherited sharing class ComponentLogger {
          */
         @AuraEnabled
         public List<String> tags { get; set; }
+
+        /**
+         * @description (Optional) A map containing key-value pairs of fields to set on `LogEntryEvent__e`
+         */
+        @AuraEnabled
+        public Map<String, Object> fieldNameToFieldValue { get; set; }
     }
 
     /**

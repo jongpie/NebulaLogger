@@ -82,6 +82,42 @@ private class ComponentLogger_Tests {
     }
 
     @IsTest
+    static void it_should_save_component_log_entry_with_custom_fields() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+        componentLogEntry.fieldNameToFieldValue.put(Schema.LogEntryEvent__e.OrganizationId__c.getDescribe().getName(), 'some value');
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
+        System.Assert.isNull(
+            publishedLogEntryEvent.OriginSourceMetadataType__c,
+            'Non-null value populated for OriginSourceMetadata__c: ' + JSON.serializePretty(publishedLogEntryEvent)
+        );
+        System.Assert.isNull(publishedLogEntryEvent.StackTrace__c);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
+        System.Assert.areEqual(JSON.serializePretty(componentLogEntry.record), publishedLogEntryEvent.RecordJson__c);
+        System.Assert.areEqual(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+    }
+
+    @IsTest
     static void it_should_save_component_log_entry_with_queueable_job() {
         LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
