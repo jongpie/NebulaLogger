@@ -80,12 +80,21 @@ public inherited sharing class ComponentLogger {
     }
 
     private static void setBrowserDetails(LogEntryEvent__e logEntryEvent, ComponentLogEntry componentLogEntry) {
-        logEntryEvent.BrowserFormFactor__c = componentLogEntry.browserFormFactor;
-        logEntryEvent.BrowserLanguage__c = componentLogEntry.browserLanguage;
-        logEntryEvent.BrowserScreenResolution__c = componentLogEntry.browserScreenResolution;
-        logEntryEvent.BrowserUrl__c = componentLogEntry.browserUrl;
-        logEntryEvent.BrowserUserAgent__c = componentLogEntry.browserUserAgent;
-        logEntryEvent.BrowserWindowResolution__c = componentLogEntry.browserWindowResolution;
+        logEntryEvent.BrowserFormFactor__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.BrowserFormFactor__c,
+            componentLogEntry.browserFormFactor
+        );
+        logEntryEvent.BrowserLanguage__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserLanguage__c, componentLogEntry.browserLanguage);
+        logEntryEvent.BrowserScreenResolution__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.BrowserScreenResolution__c,
+            componentLogEntry.browserScreenResolution
+        );
+        logEntryEvent.BrowserUrl__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUrl__c, componentLogEntry.browserUrl);
+        logEntryEvent.BrowserUserAgent__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUserAgent__c, componentLogEntry.browserUserAgent);
+        logEntryEvent.BrowserWindowResolution__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.BrowserWindowResolution__c,
+            componentLogEntry.browserWindowResolution
+        );
     }
 
     private static void setComponentErrorDetails(LogEntryEvent__e logEntryEvent, ComponentError componentError) {
