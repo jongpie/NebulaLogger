@@ -15,6 +15,7 @@ const ComponentLogEntry = class {
     browserUserAgent = null;
     browserWindowResolution = null;
     error = null;
+    fieldNameToFieldValue = {};
     loggingLevel = null;
     message = null;
     record = null;
@@ -109,6 +110,22 @@ const LogEntryBuilder = class {
             this.#componentLogEntry.error.type = 'JavaScript.' + error.name;
         }
         return this;
+    }
+
+    setField(fieldName, fieldValue) {
+        const fieldNameToFieldValue = {};
+        fieldNameToFieldValue[fieldName] = fieldValue;
+        return this.setFields({fieldName, fieldValue});
+    }
+
+    setFields(fieldNameToFieldValue) {
+        if (!fieldNameToFieldValue) {
+            return;
+        }
+
+        Object.keys(fieldNameToFieldValue).forEach(fieldName => {
+            this.#componentLogEntry.fieldNameToFieldValue[fieldName] = fieldNameToFieldValue[fieldName];
+        });
     }
 
     /**
