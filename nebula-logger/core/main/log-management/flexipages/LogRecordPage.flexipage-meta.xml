@@ -1214,37 +1214,8 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value
-                    >&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;No Organization Limits Data Available for This Log&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;a href=&quot;https://ideas.salesforce.com/s/idea/a0B8W00000H6VzyUAF/allow-conditional-tabs-for-lightning-app-builder-tab-component&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;Upvote this Idea&lt;/a&gt; to make this experience better&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-                <identifier>flexipage_richText</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasOrganizationLimits__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>false</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentName>logOrganizationLimits</componentName>
                 <identifier>c_logOrganizationLimits</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasOrganizationLimits__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-fb2a30be-0705-474f-aaae-25d2ed03d33c</name>
@@ -1355,6 +1326,13 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasOrganizationLimits__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
