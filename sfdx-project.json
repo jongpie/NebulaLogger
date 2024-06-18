@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.11.NEXT",
-            "versionName": "Track User Federation Identifier",
-            "versionDescription": "Added new fields LoggedByFederationIdentifier__c on LogEntryEvent__e and Log__c to track the value of Schema.User.FederationIdentifier for the logging user",
+            "versionNumber": "4.14.0.NEXT",
+            "versionName": "Summer '24 Release",
+            "versionDescription": "Updated all metadata to API v61.0, added component visibility rules to flexipage tabs, converted BrowserUrl__c fields to long textarea",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
