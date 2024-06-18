@@ -95,7 +95,7 @@ public with sharing class LogEntryArchiveController {
         Boolean matchesSearchTerm =
             String.isBlank(messageSearchTerm) ||
             messageValue.containsIgnoreCase(messageSearchTerm) ||
-            Pattern.matches(messageSearchTerm, messageValue);
+            System.Pattern.matches(messageSearchTerm, messageValue);
 
         return matchesLoggingLevelOrdinal && matchesSearchTerm;
     }

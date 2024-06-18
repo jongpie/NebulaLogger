@@ -556,7 +556,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ruleCriteriaMet = logEntryFieldValue == ruleComparisonValue;
             }
             when 'MATCHES_REGEX' {
-                ruleCriteriaMet = Pattern.compile(ruleComparisonValue).matcher(logEntryFieldValue).matches();
+                ruleCriteriaMet = System.Pattern.compile(ruleComparisonValue).matcher(logEntryFieldValue).matches();
             }
             when 'STARTS_WITH' {
                 ruleCriteriaMet = logEntryFieldValue.startsWith(ruleComparisonValue);
