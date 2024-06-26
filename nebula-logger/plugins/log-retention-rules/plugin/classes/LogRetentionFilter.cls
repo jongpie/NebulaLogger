@@ -199,7 +199,7 @@ public without sharing class LogRetentionFilter {
         }
 
         private Boolean matchesRegEx() {
-            Pattern pattern = Pattern.compile(this.filterCondition.Value__c);
+            System.Pattern pattern = System.Pattern.compile(this.filterCondition.Value__c);
             return pattern.matcher(String.valueOf(this.getFieldValue())).matches();
         }
 

@@ -1,7 +1,7 @@
 {
     "name": "Nebula Logger",
     "namespace": "",
-    "sourceApiVersion": "60.0",
+    "sourceApiVersion": "61.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "plugins": {
         "sfdx-plugin-prettier": {
@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.11.NEXT",
-            "versionName": "Track User Federation Identifier",
-            "versionDescription": "Added new fields LoggedByFederationIdentifier__c on LogEntryEvent__e and Log__c to track the value of Schema.User.FederationIdentifier for the logging user",
+            "versionNumber": "4.14.0.NEXT",
+            "versionName": "Summer '24 Release",
+            "versionDescription": "Updated all metadata to API v61.0, added component visibility rules to flexipage tabs, converted BrowserUrl__c fields to long textarea",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -179,6 +179,7 @@
         "Nebula Logger - Core@4.13.9-updated-logging-level-emojis": "04t5Y000001MkHqQAK",
         "Nebula Logger - Core@4.13.10-authsession-bugfix-for-lwc-logging": "04t5Y0000027L04QAE",
         "Nebula Logger - Core@4.13.11-track-user-federation-identifier": "04t5Y0000027L98QAE",
+        "Nebula Logger - Core@4.14.0-summer-'24-release": "04t5Y0000015o8XQAQ",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

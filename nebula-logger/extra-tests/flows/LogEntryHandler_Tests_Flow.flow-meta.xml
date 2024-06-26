@@ -50,7 +50,7 @@
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>60.0</apiVersion>
+    <apiVersion>61.0</apiVersion>
     <description>An auto-launched Flow used to help test the Apex class LogEntryHandler</description>
     <interviewLabel>LogEntryHandler_Tests_Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LogEntryHandler Tests for Flow</label>

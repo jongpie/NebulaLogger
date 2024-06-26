@@ -65,7 +65,7 @@ public with sharing class ExampleClassWithComplexLogging {
             .setRestRequestDetails(serviceRequest)
             .setRestResponseDetails(serviceResponse)
             .setRecord(users)
-            .setDatabaseResult(Database.update(users, false))
+            .setDatabaseResult(System.Database.update(users, false))
             .setExceptionDetails(new System.IllegalArgumentException('derp'));
 
         Logger.saveLog();

@@ -180,7 +180,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             '\nAND MaxLogEntryLoggingLevelOrdinal__c >= :loggingLevelOrdinal' +
             '\nAND SendSlackNotification__c = TRUE' +
             '\nAND SlackNotificationDate__c = NULL';
-        this.logs = (List<Log__c>) Database.query(query);
+        this.logs = (List<Log__c>) System.Database.query(query);
     }
 
     private System.HttpRequest createSlackHttpRequest() {

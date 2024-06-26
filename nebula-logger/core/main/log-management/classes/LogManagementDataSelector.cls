@@ -32,7 +32,7 @@ public without sharing virtual class LogManagementDataSelector {
      */
     public virtual List<SObject> getAll(Schema.SObjectType sobjectType, Set<String> fieldNames) {
         String query = String.format('SELECT {0} FROM {1}', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
-        return Database.query(String.escapeSingleQuotes(query));
+        return System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -45,7 +45,7 @@ public without sharing virtual class LogManagementDataSelector {
      */
     public virtual List<SObject> getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds) {
         String query = String.format('SELECT {0} FROM {1} WHERE Id IN :recordIds', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
-        return Database.query(String.escapeSingleQuotes(query));
+        return System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -217,7 +217,7 @@ public without sharing virtual class LogManagementDataSelector {
         List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), Schema.Log__c.SObjectType.getDescribe().getName() };
 
         String query = String.format(queryTemplate, textReplacements);
-        return (Log__c) Database.query(String.escapeSingleQuotes(query));
+        return (Log__c) System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -232,7 +232,7 @@ public without sharing virtual class LogManagementDataSelector {
         List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ','), Schema.LogEntry__c.SObjectType.getDescribe().getName() };
 
         String query = String.format(queryTemplate, textReplacements);
-        return (LogEntry__c) Database.query(String.escapeSingleQuotes(query));
+        return (LogEntry__c) System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -252,7 +252,7 @@ public without sharing virtual class LogManagementDataSelector {
         };
 
         String query = String.format(queryTemplate, textReplacements);
-        return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(query));
+        return (List<LogEntry__c>) System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -342,7 +342,7 @@ public without sharing virtual class LogManagementDataSelector {
         String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
         logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
 
-        return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(logEntryQuery));
+        return (List<LogEntry__c>) System.Database.query(String.escapeSingleQuotes(logEntryQuery));
     }
 
     /**

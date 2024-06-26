@@ -304,6 +304,52 @@ private class ComponentLogger_Tests {
     }
 
     @IsTest
+    static void it_should_truncate_long_browser_fields_when_publishing_to_the_event_bus() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+        componentLogEntry.browserFormFactor = 'A'.repeat(Schema.LogEntryEvent__e.BrowserFormFactor__c.getDescribe().getLength() + 1);
+        componentLogEntry.browserLanguage = 'B'.repeat(Schema.LogEntryEvent__e.BrowserLanguage__c.getDescribe().getLength() + 1);
+        componentLogEntry.browserScreenResolution = 'C'.repeat(Schema.LogEntryEvent__e.BrowserScreenResolution__c.getDescribe().getLength() + 1);
+        componentLogEntry.browserUrl = 'D'.repeat(Schema.LogEntryEvent__e.BrowserUrl__c.getDescribe().getLength() + 1);
+        componentLogEntry.browserUserAgent = 'E'.repeat(Schema.LogEntryEvent__e.BrowserUserAgent__c.getDescribe().getLength() + 1);
+        componentLogEntry.browserWindowResolution = 'F'.repeat(Schema.LogEntryEvent__e.BrowserWindowResolution__c.getDescribe().getLength() + 1);
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(
+            componentLogEntry.browserFormFactor.left(Schema.LogEntryEvent__e.BrowserFormFactor__c.getDescribe().getLength()),
+            publishedLogEntryEvent.BrowserFormFactor__c
+        );
+        System.Assert.areEqual(
+            componentLogEntry.browserLanguage.left(Schema.LogEntryEvent__e.BrowserLanguage__c.getDescribe().getLength()),
+            publishedLogEntryEvent.BrowserLanguage__c
+        );
+        System.Assert.areEqual(
+            componentLogEntry.browserScreenResolution.left(Schema.LogEntryEvent__e.BrowserScreenResolution__c.getDescribe().getLength()),
+            publishedLogEntryEvent.BrowserScreenResolution__c
+        );
+        System.Assert.areEqual(
+            componentLogEntry.browserUrl.left(Schema.LogEntryEvent__e.BrowserUrl__c.getDescribe().getLength()),
+            publishedLogEntryEvent.BrowserUrl__c
+        );
+        System.Assert.areEqual(
+            componentLogEntry.browserUserAgent.left(Schema.LogEntryEvent__e.BrowserUserAgent__c.getDescribe().getLength()),
+            publishedLogEntryEvent.BrowserUserAgent__c
+        );
+        System.Assert.areEqual(
+            componentLogEntry.browserWindowResolution.left(Schema.LogEntryEvent__e.BrowserWindowResolution__c.getDescribe().getLength()),
+            publishedLogEntryEvent.BrowserWindowResolution__c
+        );
+    }
+
+    @IsTest
     static void it_should_set_logger_scenario() {
         LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());

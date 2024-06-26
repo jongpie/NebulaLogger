@@ -36,7 +36,7 @@ private class LogEntryArchivePlugin_Tests {
         Log__c log = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
         System.Test.startTest();
 
-        Database.executeBatch(batchPurger);
+        System.Database.executeBatch(batchPurger);
 
         System.Test.stopTest();
         System.Assert.areEqual(log.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
@@ -68,7 +68,7 @@ private class LogEntryArchivePlugin_Tests {
         );
         System.Test.startTest();
 
-        Database.executeBatch(batchPurger);
+        System.Database.executeBatch(batchPurger);
 
         System.Test.stopTest();
         System.Assert.areEqual(
@@ -100,7 +100,7 @@ private class LogEntryArchivePlugin_Tests {
         insert logEntryTags;
         System.Test.startTest();
 
-        Database.executeBatch(batchPurger);
+        System.Database.executeBatch(batchPurger);
 
         System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Test.stopTest();

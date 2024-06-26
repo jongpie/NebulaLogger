@@ -147,7 +147,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
             logPurgeActionParentFieldName
         };
         String query = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
-        return (List<LogEntry__c>) Database.query(query);
+        return (List<LogEntry__c>) System.Database.query(query);
     }
 
     private String getParentFieldPath(List<Schema.SObjectField> parentFieldChainPieces) {
