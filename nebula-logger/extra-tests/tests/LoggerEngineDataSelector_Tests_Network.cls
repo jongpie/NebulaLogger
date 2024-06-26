@@ -66,6 +66,6 @@ private class LoggerEngineDataSelector_Tests_Network {
     }
 
     static SObject getExperienceCloudNetwork() {
-        return Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME');
+        return System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME');
     }
 }

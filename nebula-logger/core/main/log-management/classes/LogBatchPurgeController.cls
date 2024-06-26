@@ -93,7 +93,7 @@ public with sharing class LogBatchPurgeController {
      */
     @AuraEnabled
     public static String runBatchPurge() {
-        return Database.executeBatch(new LogBatchPurger(), LogBatchPurger.getDefaultBatchSize());
+        return System.Database.executeBatch(new LogBatchPurger(), LogBatchPurger.getDefaultBatchSize());
     }
 
     @TestVisible
@@ -102,7 +102,7 @@ public with sharing class LogBatchPurgeController {
             'select LogPurgeAction__c LogPurgeAction__c, count(id) from Log__c where CreatedDate=' +
             dateFilterOption +
             ' group by LogPurgeAction__c';
-        return Database.query(String.escapeSingleQuotes(query));
+        return System.Database.query(String.escapeSingleQuotes(query));
     }
 
     @TestVisible
@@ -111,7 +111,7 @@ public with sharing class LogBatchPurgeController {
             'select Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntry__c where CreatedDate=' +
             dateFilterOption +
             ' group by Log__r.LogPurgeAction__c';
-        return Database.query(String.escapeSingleQuotes(query));
+        return System.Database.query(String.escapeSingleQuotes(query));
     }
 
     @TestVisible
@@ -120,7 +120,7 @@ public with sharing class LogBatchPurgeController {
             'select LogEntry__r.Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntryTag__c where CreatedDate=' +
             dateFilterOption +
             ' group by LogEntry__r.Log__r.LogPurgeAction__c';
-        return Database.query(String.escapeSingleQuotes(query));
+        return System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**

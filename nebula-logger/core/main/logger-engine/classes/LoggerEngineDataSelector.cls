@@ -219,10 +219,9 @@ public without sharing virtual class LoggerEngineDataSelector {
 
         // Networks (aka experience sites aka community sites aka portal sites ò_ô)
         // may not be enabled in the org (no Schema.Network object), so run everything dynamically
-        // return new Map<Id, SObject>(Database.query(String.escapeSingleQuotes(query)));
         Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
         String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
-        for (SObject networkRecord : Database.query(String.escapeSingleQuotes(query))) {
+        for (SObject networkRecord : System.Database.query(String.escapeSingleQuotes(query))) {
             LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(networkRecord);
             networkIdToNetworkProxy.put(networkProxy.Id, networkProxy);
         }
