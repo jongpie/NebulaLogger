@@ -48,6 +48,6 @@ global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
             this.batchSize = LogBatchPurger.getDefaultBatchSize();
         }
 
-        Database.executebatch(new LogBatchPurger().setChainedBatchSize(this.batchSize), this.batchSize);
+        System.Database.executeBatch(new LogBatchPurger().setChainedBatchSize(this.batchSize), this.batchSize);
     }
 }

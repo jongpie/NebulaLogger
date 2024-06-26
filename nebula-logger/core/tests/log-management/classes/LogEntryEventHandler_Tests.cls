@@ -693,7 +693,7 @@ private class LogEntryEventHandler_Tests {
     //     System.Test.startTest();
     //     LogEntryEventHandler.ENABLE_TAGGING = true;
     //     LogEntryEventHandler.USE_TOPICS_FOR_TAGS = true;
-    //     Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+    //     Database.SaveResult saveResult = System.EventBus.publish(logEntryEvent);
     //     System.Test.stopTest();
 
     //     System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());

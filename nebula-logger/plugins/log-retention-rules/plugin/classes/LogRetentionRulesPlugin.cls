@@ -54,7 +54,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
             Schema.LogEntry__c.Id.getDescribe().getName()
         };
         String logEntryQuery = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
-        return (List<LogEntry__c>) Database.query(logEntryQuery);
+        return (List<LogEntry__c>) System.Database.query(logEntryQuery);
     }
 
     private void setLogRetentionDate(List<LogEntry__c> logEntries) {

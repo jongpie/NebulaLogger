@@ -299,6 +299,6 @@ private class SlackLoggerPlugin_Tests {
         fieldNames.add(logEntryChildQuery);
 
         String query = 'SELECT ' + String.join(fieldNames, ', ') + ' FROM Log__c';
-        return (List<Log__c>) Database.query(query);
+        return (List<Log__c>) System.Database.query(query);
     }
 }

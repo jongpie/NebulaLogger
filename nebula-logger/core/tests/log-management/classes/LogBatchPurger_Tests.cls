@@ -110,7 +110,7 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(true);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
-        Database.executeBatch(new LogBatchPurger());
+        System.Database.executeBatch(new LogBatchPurger());
 
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
@@ -140,7 +140,7 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
-        Database.executeBatch(new LogBatchPurger());
+        System.Database.executeBatch(new LogBatchPurger());
 
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
@@ -166,7 +166,7 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
-        Database.executeBatch(new LogBatchPurger());
+        System.Database.executeBatch(new LogBatchPurger());
 
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
@@ -193,7 +193,7 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
-        Database.executeBatch(new LogBatchPurger());
+        System.Database.executeBatch(new LogBatchPurger());
 
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
@@ -217,7 +217,7 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
-        Database.executeBatch(new LogBatchPurger());
+        System.Database.executeBatch(new LogBatchPurger());
 
         System.Test.stopTest();
         List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
@@ -238,7 +238,7 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
-        Database.executeBatch(new LogBatchPurger());
+        System.Database.executeBatch(new LogBatchPurger());
 
         System.Test.stopTest();
         List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];

@@ -49,7 +49,7 @@ private class LogBatchPurger_Tests_Database {
 
             try {
                 System.Test.startTest();
-                Database.executeBatch(new LogBatchPurger());
+                System.Database.executeBatch(new LogBatchPurger());
                 System.Test.stopTest();
             } catch (NoAccessException ex) {
                 System.Assert.areEqual(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
