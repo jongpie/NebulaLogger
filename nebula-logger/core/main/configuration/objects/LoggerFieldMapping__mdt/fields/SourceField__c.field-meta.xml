@@ -3,6 +3,8 @@
     <fullName>SourceField__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText
+    >The source field containing the value to map to the target field. Any custom fields that you create on the source SObject type must by populated by your own code/customizations.</inlineHelpText>
     <label>Source Field</label>
     <metadataRelationshipControllingField>LoggerFieldMapping__mdt.SourceSObjectType__c</metadataRelationshipControllingField>
     <referenceTo>FieldDefinition</referenceTo>

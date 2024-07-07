@@ -3,6 +3,7 @@
     <fullName>TargetSObjectType__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Only Log__c, LogEntry__c, and LoggerScenario__c are supported as the Target SObject Type</inlineHelpText>
     <label>Target SObject Type</label>
     <referenceTo>EntityDefinition</referenceTo>
     <relationshipLabel>Logger Target Field Mappings</relationshipLabel>

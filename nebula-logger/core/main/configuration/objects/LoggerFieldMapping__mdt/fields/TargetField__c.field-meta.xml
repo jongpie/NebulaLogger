@@ -3,6 +3,8 @@
     <fullName>TargetField__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText
+    >The target field to populate with the value of the source field. The data type of this field must match the data type of the source field - mappings that use different/incompatible data types will be ignored, resulting in lost logging data.</inlineHelpText>
     <label>Target Field</label>
     <metadataRelationshipControllingField>LoggerFieldMapping__mdt.TargetSObjectType__c</metadataRelationshipControllingField>
     <referenceTo>FieldDefinition</referenceTo>
