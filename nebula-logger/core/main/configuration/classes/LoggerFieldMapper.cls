@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Log Management
+ * @group Configuration
  * @description Maps fields values from custom fields on `LogEntryEvent__e`
  *              to equivalent fields on `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
  */
@@ -61,7 +61,7 @@ public without sharing class LoggerFieldMapper {
                 'Unable to map {0} custom fields on {1} record. Target SObject record:\n\n{2}',
                 incompatibleFieldMappings.size(),
                 targetRecord.getSObjectType(),
-                JSON.serializePretty(targetRecord)
+                System.JSON.serializePretty(targetRecord)
             );
             Logger.finest(logMessage, incompatibleFieldMappings);
         }

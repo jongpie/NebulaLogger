@@ -781,6 +781,15 @@ public class LoggerParameter {
         return matchingParameters;
     }
 
+    @TestVisible
+    private static void setMock(LoggerParameter__mdt parameter) {
+        if (String.isBlank(parameter.DeveloperName)) {
+            throw new System.IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + System.JSON.serializePretty(parameter));
+        }
+
+        DEVELOPER_NAME_TO_RECORD.put(parameter.DeveloperName, parameter);
+    }
+
     private static Map<String, LoggerParameter__mdt> loadRecords() {
         Map<String, LoggerParameter__mdt> parameters = LoggerParameter__mdt.getAll().clone();
         if (System.Test.isRunningTest()) {
@@ -797,15 +806,6 @@ public class LoggerParameter {
             parameters.putAll(parametersToLoadDuringTests);
         }
         return parameters;
-    }
-
-    @TestVisible
-    private static void setMock(LoggerParameter__mdt parameter) {
-        if (String.isBlank(parameter.DeveloperName)) {
-            throw new System.IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + System.JSON.serializePretty(parameter));
-        }
-
-        DEVELOPER_NAME_TO_RECORD.put(parameter.DeveloperName, parameter);
     }
 
     private static Object castParameterValue(String parameterDeveloperName, System.Type dataType) {

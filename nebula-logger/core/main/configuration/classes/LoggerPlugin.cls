@@ -98,6 +98,18 @@ public without sharing class LoggerPlugin {
         return (Triggerable) pluginInstance;
     }
 
+    @TestVisible
+    private static void setMock(LoggerPlugin__mdt pluginConfiguration) {
+        if (String.isBlank(pluginConfiguration.DeveloperName)) {
+            throw new System.IllegalArgumentException(
+                'DeveloperName is required on mock LoggerPlugin__mdt: \n' + System.JSON.serializePretty(pluginConfiguration)
+            );
+        }
+        if (pluginConfiguration.IsEnabled__c) {
+            DEVELOPER_NAME_TO_RECORD.put(pluginConfiguration.DeveloperName, pluginConfiguration);
+        }
+    }
+
     private static Object newPluginInstance(String apexClassTypeName) {
         return System.Type.forName(apexClassTypeName)?.newInstance();
     }
@@ -113,18 +125,6 @@ public without sharing class LoggerPlugin {
             pluginDeveloperNameToConfiguration.clear();
         }
         return pluginDeveloperNameToConfiguration;
-    }
-
-    @TestVisible
-    private static void setMock(LoggerPlugin__mdt pluginConfiguration) {
-        if (String.isBlank(pluginConfiguration.DeveloperName)) {
-            throw new System.IllegalArgumentException(
-                'DeveloperName is required on mock LoggerPlugin__mdt: \n' + System.JSON.serializePretty(pluginConfiguration)
-            );
-        }
-        if (pluginConfiguration.IsEnabled__c) {
-            DEVELOPER_NAME_TO_RECORD.put(pluginConfiguration.DeveloperName, pluginConfiguration);
-        }
     }
 
     @SuppressWarnings('PMD.ApexDoc')
