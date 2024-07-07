@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.11.NEXT",
-            "versionName": "Track User Federation Identifier",
-            "versionDescription": "Added new fields LoggedByFederationIdentifier__c on LogEntryEvent__e and Log__c to track the value of Schema.User.FederationIdentifier for the logging user",
+            "versionNumber": "4.13.12.NEXT",
+            "versionName": "Added Refresh Button on relatedLogEntries LWC",
+            "versionDescription": "Added refresh button & lightning-spinner on relatedLogEntries LWC",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
