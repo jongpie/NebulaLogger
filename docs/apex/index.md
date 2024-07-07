@@ -116,10 +116,6 @@ Controller class for the LWC `logViewer`, used to provided different views on a 
 
 Builds and sends email notifications when internal exceptions occur within the logging system
 
-### [LoggerFieldMapper](Log-Management/LoggerFieldMapper)
-
-Maps fields values from custom fields on `LogEntryEvent__e` to equivalent fields on `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
-
 ### [LoggerHomeHeaderController](Log-Management/LoggerHomeHeaderController)
 
 Controller class for the LWC `loggerHomeHeader`
@@ -153,6 +149,10 @@ Class used by the logging system for batch contextual details
 ### [LoggerCache](Configuration/LoggerCache)
 
 Class used to cache query results returned by the selector classes
+
+### [LoggerFieldMapper](Configuration/LoggerFieldMapper)
+
+Maps fields values from custom fields on `LogEntryEvent__e` to equivalent fields on `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
 
 ### [LoggerParameter](Configuration/LoggerParameter)
 
