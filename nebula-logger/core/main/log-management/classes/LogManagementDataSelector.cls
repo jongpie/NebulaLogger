@@ -49,13 +49,13 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a list of `ApexClass` records
+     * @description Returns a list of `Schema.ApexClass` records
      * @param  apexClassNames The names of the Apex classes to query
-     * @return                `List<ApexClass>` containing any matching records
+     * @return                `List<Schema.ApexClass>` containing any matching records
      */
-    public virtual List<ApexClass> getApexClasses(Set<String> apexClassNames) {
+    public virtual List<Schema.ApexClass> getApexClasses(Set<String> apexClassNames) {
         if (LoggerParameter.QUERY_APEX_CLASS_DATA == false) {
-            return new List<ApexClass>();
+            return new List<Schema.ApexClass>();
         }
 
         return [
@@ -67,13 +67,13 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a list of `ApexTrigger` records
+     * @description Returns a list of `Schema.ApexTrigger` records
      * @param  apexTriggerNames The names of the Apex triggers to query
-     * @return                `List<ApexTrigger>` containing any matching records
+     * @return                `List<Schema.ApexTrigger>` containing any matching records
      */
-    public virtual List<ApexTrigger> getApexTriggers(Set<String> apexTriggerNames) {
+    public virtual List<Schema.ApexTrigger> getApexTriggers(Set<String> apexTriggerNames) {
         if (LoggerParameter.QUERY_APEX_TRIGGER_DATA == false) {
-            return new List<ApexTrigger>();
+            return new List<Schema.ApexTrigger>();
         }
 
         return [
@@ -85,16 +85,16 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of the `ApexEmailNotification` records in the org
-     * @return   The cached `List<ApexEmailNotification>` records
+     * @description Returns a cached copy of the `Schema.ApexEmailNotification` records in the org
+     * @return   The cached `List<Schema.ApexEmailNotification>` records
      */
-    public virtual List<ApexEmailNotification> getCachedApexEmailNotifications() {
+    public virtual List<Schema.ApexEmailNotification> getCachedApexEmailNotifications() {
         String cacheKey = 'ApexEmailNotifications';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
-            return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
+            return (List<Schema.ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        List<ApexEmailNotification> apexEmailNotifications = [
+        List<Schema.ApexEmailNotification> apexEmailNotifications = [
             SELECT Email, UserId
             FROM ApexEmailNotification
             WHERE Email != NULL OR User.IsActive = TRUE

@@ -35,14 +35,14 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_matching_apex_classes_for_specified_class_names() {
         Set<String> targetApexClassNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
-        List<ApexClass> expectedResults = [
+        List<Schema.ApexClass> expectedResults = [
             SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexClass
             WHERE Name IN :targetApexClassNames
             ORDER BY NamespacePrefix NULLS LAST
         ];
 
-        List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
+        List<Schema.ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
         System.Assert.areEqual(expectedResults, returnedResults);
     }
@@ -54,7 +54,7 @@ private class LogManagementDataSelector_Tests {
         Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
 
-        List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
+        List<Schema.ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
         System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
         System.Assert.areEqual(0, returnedResults.size());
@@ -63,14 +63,14 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_matching_apex_triggers_for_specified_class_names() {
         Set<String> targetApexTriggerNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
-        List<ApexTrigger> expectedResults = [
+        List<Schema.ApexTrigger> expectedResults = [
             SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexTrigger
             WHERE Name IN :targetApexTriggerNames
             ORDER BY NamespacePrefix NULLS LAST
         ];
 
-        List<ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
+        List<Schema.ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
 
         System.Assert.areEqual(expectedResults, returnedResults);
     }
@@ -82,7 +82,7 @@ private class LogManagementDataSelector_Tests {
         Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = String.valueOf(false)));
 
-        List<ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
+        List<Schema.ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
 
         System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
         System.Assert.areEqual(0, returnedResults.size());
@@ -90,10 +90,10 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_apex_email_notifications() {
-        List<ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
+        List<Schema.ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
         System.Assert.areEqual(1, System.Limits.getQueries());
 
-        List<ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
+        List<Schema.ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
 
         System.Assert.areEqual(2, System.Limits.getQueries());
         LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();

@@ -152,8 +152,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `ApexClass` data.
-     *              When set to `false`, any `ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.ApexClass` data.
+     *              When set to `false`, any `Schema.ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default
      */
     public static final Boolean QUERY_APEX_CLASS_DATA {
@@ -167,8 +167,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `ApexTrigger` data.
-     *              When set to `false`, any `ApexTrigger` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.ApexTrigger` data.
+     *              When set to `false`, any `Schema.ApexTrigger` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryApexTriggerData`, or `true` as the default
      */
     public static final Boolean QUERY_APEX_TRIGGER_DATA {

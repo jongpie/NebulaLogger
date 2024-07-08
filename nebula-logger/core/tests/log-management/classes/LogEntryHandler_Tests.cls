@@ -789,7 +789,7 @@ private class LogEntryHandler_Tests {
         }
 
         LoggerStackTrace stackTrace = new LoggerStackTrace();
-        ApexClass apexClass = [
+        Schema.ApexClass apexClass = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
             WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
@@ -871,7 +871,7 @@ private class LogEntryHandler_Tests {
         }
 
         LoggerStackTrace stackTrace = new LoggerStackTrace();
-        ApexClass apexClass = [
+        Schema.ApexClass apexClass = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
             WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
@@ -927,7 +927,7 @@ private class LogEntryHandler_Tests {
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        // ApexClass fields
+        // Schema.ApexClass fields
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
@@ -974,7 +974,7 @@ private class LogEntryHandler_Tests {
         }
 
         LoggerStackTrace stackTrace = new SomeInnerClass().getLoggerStackTrace();
-        ApexClass apexClass = [
+        Schema.ApexClass apexClass = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexClass
             WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
@@ -1030,7 +1030,7 @@ private class LogEntryHandler_Tests {
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        // ApexClass fields
+        // Schema.ApexClass fields
         System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
         System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
         System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
@@ -1082,7 +1082,7 @@ private class LogEntryHandler_Tests {
         // stack trace string so the code has an actual trigger to query
         String mockTriggerStackTraceString = String.join(new List<String>{ 'Trigger.LogEntry: line 2, column 1', 'AnonymousBlock: line 1, column 1' }, '\n');
         LoggerStackTrace stackTrace = new LoggerStackTrace(mockTriggerStackTraceString);
-        ApexTrigger apexTrigger = [
+        Schema.ApexTrigger apexTrigger = [
             SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
             FROM ApexTrigger
             WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
@@ -1230,7 +1230,7 @@ private class LogEntryHandler_Tests {
         return namespacePrefix;
     }
 
-    // Helper class for testing stack trace parsing & ApexClass querying for an inner class
+    // Helper class for testing stack trace parsing & Schema.ApexClass querying for an inner class
     private class SomeInnerClass {
         public LoggerStackTrace getLoggerStackTrace() {
             return new LoggerStackTrace();

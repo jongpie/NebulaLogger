@@ -47,8 +47,8 @@ private class LoggerEmailSender_Tests {
 
     @IsTest
     static void it_should_send_email_notification_for_saveResult_errors_when_enabled() {
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(Email = 'some.email@test.com'));
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(Email = 'some.email@test.com'));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         Database.SaveResult saveResultWithError = LoggerMockDataCreator.createDatabaseSaveResult(false);
@@ -89,8 +89,8 @@ private class LoggerEmailSender_Tests {
     static void it_should_not_send_email_notification_for_saveResult_errors_when_disabled() {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.Assert.isFalse(LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(Email = 'some.email@test.com'));
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(Email = 'some.email@test.com'));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         Database.SaveResult saveResultWithError = LoggerMockDataCreator.createDatabaseSaveResult(false);
@@ -102,8 +102,8 @@ private class LoggerEmailSender_Tests {
 
     @IsTest
     static void it_should_send_email_notification_for_upsertResult_errors_when_enabled() {
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(Email = 'some.email@test.com'));
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(Email = 'some.email@test.com'));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         Database.UpsertResult upsertResultWithError = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
@@ -144,8 +144,8 @@ private class LoggerEmailSender_Tests {
     static void it_should_not_send_email_notification_for_upsertResult_errors_when_disabled() {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.Assert.isFalse(LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(Email = 'some.email@test.com'));
-        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new ApexEmailNotification(UserId = System.UserInfo.getUserId()));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(Email = 'some.email@test.com'));
+        LoggerEmailSender.MOCK_NOTIFICATIONS.add(new Schema.ApexEmailNotification(UserId = System.UserInfo.getUserId()));
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         Database.UpsertResult upsertResultWithError = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
