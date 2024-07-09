@@ -64,7 +64,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(
             publishedLogEntryEvent.OriginSourceMetadataType__c,
-            'Non-null value populated for OriginSourceMetadata__c: ' + System.JSON.serializePretty(publishedLogEntryEvent)
+            'Non-null value populated for OriginSourceMetadataType__c: ' + System.JSON.serializePretty(publishedLogEntryEvent)
         );
         System.Assert.isNull(publishedLogEntryEvent.StackTrace__c);
         System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);

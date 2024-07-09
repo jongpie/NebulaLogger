@@ -733,13 +733,14 @@ global with sharing class LogEntryEventBuilder {
      * @description **This is only intended to be used internally by Nebula Logger, and is subject to change.**
      * @param timestamp Datetime instance to set timestamp fields on this.logEntryEvent
      */
-    public void setTimestamp(Datetime timestamp) {
+    public LogEntryEventBuilder setTimestamp(Datetime timestamp) {
         // Salesforce does not provide precise datetimes in Apex triggers for platform events
         // Set the string value of timestamp to a second field as a workaround
         // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
         this.logEntryEvent.EpochTimestamp__c = timestamp.getTime();
         this.logEntryEvent.Timestamp__c = timestamp;
         this.logEntryEvent.TimestampString__c = '' + this.logEntryEvent.EpochTimestamp__c;
+        return this;
     }
 
     /**

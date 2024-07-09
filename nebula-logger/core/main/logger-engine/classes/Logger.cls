@@ -51,6 +51,21 @@ global with sharing class Logger {
         set;
     }
 
+    private static final System.Version CURRENT_VERSION {
+        get {
+            if (CURRENT_VERSION == null) {
+                List<String> versionNumberPieces = CURRENT_VERSION_NUMBER.substringAfter('v').split('\\.');
+                CURRENT_VERSION = new System.Version(
+                    Integer.valueOf(versionNumberPieces.get(0)),
+                    Integer.valueOf(versionNumberPieces.get(1)),
+                    Integer.valueOf(versionNumberPieces.get(2))
+                );
+            }
+            return CURRENT_VERSION;
+        }
+        set;
+    }
+
     private static final LogEntryEventBuilder.LoggingContext LOGGING_CONTEXT {
         get {
             if (LOGGING_CONTEXT == null) {
@@ -150,6 +165,10 @@ global with sharing class Logger {
      */
     global static String getVersionNumber() {
         return CURRENT_VERSION_NUMBER;
+    }
+
+    global static System.Version getVersion() {
+        return CURRENT_VERSION;
     }
 
     // TODO delete
