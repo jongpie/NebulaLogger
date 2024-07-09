@@ -1,6 +1,11 @@
 # Pipeline for Nebula Logger
 name: Build
 
+env:
+    SF_DISABLE_AUTOUPDATE: true
+    SF_SKIP_NEW_VERSION_CHECK: true
+    SF_LOG_LEVEL: debug
+
 on:
     push:
         branches:
