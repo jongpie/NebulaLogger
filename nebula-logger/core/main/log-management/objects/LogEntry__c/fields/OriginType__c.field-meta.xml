@@ -29,6 +29,12 @@
                 <default>false</default>
                 <label>Flow</label>
             </value>
+            <value>
+                <fullName>Integration</fullName>
+                <color>#4974A5</color>
+                <default>false</default>
+                <label>Integration</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

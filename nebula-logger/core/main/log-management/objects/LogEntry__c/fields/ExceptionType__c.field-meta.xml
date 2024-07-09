@@ -17,6 +17,11 @@
                 <label>Flow.FaultError</label>
             </value>
             <value>
+                <fullName>Integration.ExternalException</fullName>
+                <default>false</default>
+                <label>Integration.ExternalException</label>
+            </value>
+            <value>
                 <fullName>JavaScript.Error</fullName>
                 <default>false</default>
                 <label>JavaScript.Error</label>
