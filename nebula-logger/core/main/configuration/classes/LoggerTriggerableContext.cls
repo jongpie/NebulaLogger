@@ -12,7 +12,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ExcessiveParameterList')
 public without sharing class LoggerTriggerableContext {
     public Schema.SObjectType sobjectType { get; private set; }
-    public TriggerOperation triggerOperationType { get; private set; }
+    public System.TriggerOperation triggerOperationType { get; private set; }
     public List<SObject> triggerNew { get; private set; }
     public Map<Id, SObject> triggerNewMap { get; private set; }
     public Map<Id, SObject> triggerOldMap { get; private set; }
@@ -26,13 +26,13 @@ public without sharing class LoggerTriggerableContext {
     @AuraEnabled
     public List<RecordInput> triggerRecords { get; private set; }
 
-    public LoggerTriggerableContext(Schema.SObjectType sobjectType, TriggerOperation triggerOperationType, List<SObject> triggerNew) {
+    public LoggerTriggerableContext(Schema.SObjectType sobjectType, System.TriggerOperation triggerOperationType, List<SObject> triggerNew) {
         this(sobjectType, triggerOperationType, triggerNew, null, null);
     }
 
     public LoggerTriggerableContext(
         Schema.SObjectType sobjectType,
-        TriggerOperation triggerOperationType,
+        System.TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
         Map<Id, SObject> triggerNewMap,
         Map<Id, SObject> triggerOldMap

@@ -149,7 +149,7 @@ private class LogManagementDataSelector_Tests {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
 
             System.Assert.areEqual(expectedLog.Id, returnedLog.Id);
-            System.Assert.areEqual(JSON.serialize(expectedLog), JSON.serialize(expectedLog));
+            System.Assert.areEqual(System.JSON.serialize(expectedLog), System.JSON.serialize(expectedLog));
         }
 
         System.Assert.areEqual(2, System.Limits.getQueries());

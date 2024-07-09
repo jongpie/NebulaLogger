@@ -73,7 +73,7 @@ private class LoggerSObjectHandler_Tests {
         LoggerTriggerableContext originalContext = mockHandler.input;
         LoggerTriggerableContext customContext = new LoggerTriggerableContext(
             Schema.User.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<Schema.User>{ new Schema.User(Id = System.UserInfo.getUserId(), Email = System.UserInfo.getUserEmail()) }
         );
         System.Assert.areNotEqual(originalContext, customContext);
@@ -91,7 +91,7 @@ private class LoggerSObjectHandler_Tests {
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.handlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = false);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
@@ -108,7 +108,7 @@ private class LoggerSObjectHandler_Tests {
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.handlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = true);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
@@ -125,7 +125,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
@@ -133,7 +133,7 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.execute();
 
         System.Assert.areEqual(1, mockHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.BEFORE_INSERT, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.BEFORE_INSERT, mockHandler.executedTriggerOperationType);
         System.Assert.areEqual(mockHandler.triggerNew, mockHandler.executedTriggerNew);
         System.Assert.isNull(mockHandler.executedTriggerNewMap);
         System.Assert.isNull(mockHandler.executedTriggerOldMap);
@@ -145,7 +145,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_UPDATE;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_UPDATE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = new Map<Id, SObject>(records);
@@ -153,7 +153,7 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.execute();
 
         System.Assert.areEqual(1, mockHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.BEFORE_UPDATE, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.BEFORE_UPDATE, mockHandler.executedTriggerOperationType);
         System.Assert.isNull(mockHandler.executedTriggerNew);
         System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
         System.Assert.areEqual(mockHandler.triggerOldMap, mockHandler.executedTriggerOldMap);
@@ -165,7 +165,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_DELETE;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_DELETE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = null;
@@ -173,7 +173,7 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.execute();
 
         System.Assert.areEqual(1, mockHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.BEFORE_DELETE, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.BEFORE_DELETE, mockHandler.executedTriggerOperationType);
         System.Assert.isNull(mockHandler.executedTriggerNew);
         System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
         System.Assert.isNull(mockHandler.executedTriggerOldMap);
@@ -187,7 +187,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.AFTER_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.AFTER_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = null;
@@ -195,7 +195,7 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.execute();
 
         System.Assert.areEqual(2, mockHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.AFTER_INSERT, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.AFTER_INSERT, mockHandler.executedTriggerOperationType);
         System.Assert.areEqual(mockHandler.triggerNew, mockHandler.executedTriggerNew);
         System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
         System.Assert.isNull(mockHandler.executedTriggerOldMap);
@@ -207,7 +207,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.AFTER_UPDATE;
+        mockHandler.triggerOperationType = System.TriggerOperation.AFTER_UPDATE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = new Map<Id, SObject>(records);
@@ -215,7 +215,7 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.execute();
 
         System.Assert.areEqual(1, mockHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.AFTER_UPDATE, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.AFTER_UPDATE, mockHandler.executedTriggerOperationType);
         System.Assert.isNull(mockHandler.executedTriggerNew);
         System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
         System.Assert.areEqual(mockHandler.triggerOldMap, mockHandler.executedTriggerOldMap);
@@ -227,7 +227,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.AFTER_DELETE;
+        mockHandler.triggerOperationType = System.TriggerOperation.AFTER_DELETE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = null;
@@ -235,7 +235,7 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.execute();
 
         System.Assert.areEqual(1, mockHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.AFTER_DELETE, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.AFTER_DELETE, mockHandler.executedTriggerOperationType);
         System.Assert.isNull(mockHandler.executedTriggerNew);
         System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
         System.Assert.isNull(mockHandler.executedTriggerOldMap);
@@ -247,7 +247,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.AFTER_UNDELETE;
+        mockHandler.triggerOperationType = System.TriggerOperation.AFTER_UNDELETE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = null;
@@ -255,7 +255,7 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.execute();
 
         System.Assert.areEqual(1, mockHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.AFTER_UNDELETE, mockHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.AFTER_UNDELETE, mockHandler.executedTriggerOperationType);
         System.Assert.isNull(mockHandler.executedTriggerNew);
         System.Assert.areEqual(mockHandler.triggerNewMap, mockHandler.executedTriggerNewMap);
         System.Assert.isNull(mockHandler.executedTriggerOldMap);
@@ -267,7 +267,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
@@ -291,7 +291,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
@@ -318,7 +318,7 @@ private class LoggerSObjectHandler_Tests {
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
         List<SObject> records = new List<Schema.User>{ mockUser };
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
@@ -344,7 +344,7 @@ private class LoggerSObjectHandler_Tests {
 
     public class MockSObjectHandler extends LoggerSObjectHandler {
         public Integer executionCount = 0;
-        public TriggerOperation executedTriggerOperationType;
+        public System.TriggerOperation executedTriggerOperationType;
         public List<SObject> executedTriggerNew;
         public Map<Id, SObject> executedTriggerNewMap;
         public Map<Id, SObject> executedTriggerOldMap;
@@ -365,14 +365,14 @@ private class LoggerSObjectHandler_Tests {
 
         protected override void executeBeforeInsert(List<SObject> triggerNew) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.BEFORE_INSERT;
+            this.executedTriggerOperationType = System.TriggerOperation.BEFORE_INSERT;
             this.executedTriggerNew = triggerNew;
             super.executeBeforeInsert(triggerNew);
         }
 
         protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.BEFORE_UPDATE;
+            this.executedTriggerOperationType = System.TriggerOperation.BEFORE_UPDATE;
             this.executedTriggerNewMap = triggerNewMap;
             this.executedTriggerOldMap = triggerOldMap;
             super.executeBeforeUpdate(triggerNewMap, triggerOldMap);
@@ -380,28 +380,28 @@ private class LoggerSObjectHandler_Tests {
 
         protected override void executeBeforeDelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.BEFORE_DELETE;
+            this.executedTriggerOperationType = System.TriggerOperation.BEFORE_DELETE;
             this.executedTriggerNewMap = triggerNewMap;
             super.executeBeforeDelete(triggerNewMap);
         }
 
         protected override void executeAfterInsert(List<SObject> triggerNew) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_INSERT;
             this.executedTriggerNew = triggerNew;
             super.executeAfterInsert(triggerNew);
         }
 
         protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_INSERT;
             this.executedTriggerNewMap = triggerNewMap;
             super.executeAfterInsert(triggerNewMap);
         }
 
         protected override void executeAfterUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_UPDATE;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_UPDATE;
             this.executedTriggerNewMap = triggerNewMap;
             this.executedTriggerOldMap = triggerOldMap;
             super.executeAfterUpdate(triggerNewMap, triggerOldMap);
@@ -409,14 +409,14 @@ private class LoggerSObjectHandler_Tests {
 
         protected override void executeAfterDelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_DELETE;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_DELETE;
             this.executedTriggerNewMap = triggerNewMap;
             super.executeAfterDelete(triggerNewMap);
         }
 
         protected override void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_UNDELETE;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_UNDELETE;
             this.executedTriggerNewMap = triggerNewMap;
             super.executeAfterUndelete(triggerNewMap);
         }

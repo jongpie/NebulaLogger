@@ -125,7 +125,7 @@ private class LogEntryArchivePlugin_Tests {
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LoggerTriggerableContext pluginInput = new LoggerTriggerableContext(
             Schema.LogEntryEvent__e.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntryEvent__e>{ mockEvent },
             null,
             null

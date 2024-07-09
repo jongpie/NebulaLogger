@@ -115,8 +115,8 @@ private class LogBatchPurger_Tests {
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
-        System.Assert.areEqual(0, logs.size(), JSON.serializePretty(logs));
-        System.Assert.areEqual(0, logEntries.size(), JSON.serializePretty(logEntries));
+        System.Assert.areEqual(0, logs.size(), System.JSON.serializePretty(logs));
+        System.Assert.areEqual(0, logEntries.size(), System.JSON.serializePretty(logEntries));
     }
 
     @IsTest
@@ -145,8 +145,8 @@ private class LogBatchPurger_Tests {
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
-        System.Assert.areEqual(0, logs.size(), JSON.serializePretty(logs));
-        System.Assert.areEqual(0, logEntries.size(), JSON.serializePretty(logEntries));
+        System.Assert.areEqual(0, logs.size(), System.JSON.serializePretty(logs));
+        System.Assert.areEqual(0, logEntries.size(), System.JSON.serializePretty(logEntries));
     }
 
     @IsTest
@@ -198,8 +198,8 @@ private class LogBatchPurger_Tests {
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
-        System.Assert.areEqual(1, logs.size(), JSON.serializePretty(logs));
-        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size(), JSON.serializePretty(logEntries));
+        System.Assert.areEqual(1, logs.size(), System.JSON.serializePretty(logs));
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size(), System.JSON.serializePretty(logEntries));
     }
 
     @IsTest
@@ -288,7 +288,7 @@ private class LogBatchPurger_Tests {
             'No Apex plugins should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexStartPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).get(0);
-        System.Assert.isInstanceOfType(apexStartPlugin, MockBatchPurgerPlugin.class, JSON.serializePretty(apexStartPlugin));
+        System.Assert.isInstanceOfType(apexStartPlugin, MockBatchPurgerPlugin.class, System.JSON.serializePretty(apexStartPlugin));
         System.Assert.isTrue(ranPluginStart);
         System.Assert.isFalse(ranPluginExecute);
         System.Assert.isFalse(ranPluginFinish);
@@ -341,7 +341,7 @@ private class LogBatchPurger_Tests {
             'No Apex plugins should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexExecutePlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).get(0);
-        System.Assert.isInstanceOfType(apexExecutePlugin, MockBatchPurgerPlugin.class, JSON.serializePretty(apexExecutePlugin));
+        System.Assert.isInstanceOfType(apexExecutePlugin, MockBatchPurgerPlugin.class, System.JSON.serializePretty(apexExecutePlugin));
         System.Assert.isFalse(ranPluginStart);
         System.Assert.isTrue(ranPluginExecute);
         System.Assert.isFalse(ranPluginFinish);
@@ -393,7 +393,7 @@ private class LogBatchPurger_Tests {
             'One Apex plugin should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexFinishPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).get(0);
-        System.Assert.isInstanceOfType(apexFinishPlugin, MockBatchPurgerPlugin.class, JSON.serializePretty(apexFinishPlugin));
+        System.Assert.isInstanceOfType(apexFinishPlugin, MockBatchPurgerPlugin.class, System.JSON.serializePretty(apexFinishPlugin));
         System.Assert.isFalse(ranPluginStart);
         System.Assert.isFalse(ranPluginExecute);
         System.Assert.isTrue(ranPluginFinish);

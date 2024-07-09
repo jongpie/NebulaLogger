@@ -118,7 +118,7 @@ public without sharing class LoggerPlugin {
     @TestVisible
     private static void setMock(LoggerPlugin__mdt pluginConfiguration) {
         if (String.isBlank(pluginConfiguration.DeveloperName)) {
-            throw new System.IllegalArgumentException('DeveloperName is required on mock LoggerPlugin__mdt: \n' + JSON.serializePretty(pluginConfiguration));
+            throw new System.IllegalArgumentException('DeveloperName is required on mock LoggerPlugin__mdt: \n' + System.JSON.serializePretty(pluginConfiguration));
         }
         if (pluginConfiguration.IsEnabled__c) {
             DEVELOPER_NAME_TO_RECORD.put(pluginConfiguration.DeveloperName, pluginConfiguration);
@@ -126,7 +126,7 @@ public without sharing class LoggerPlugin {
     }
 
     @SuppressWarnings('PMD.ApexDoc')
-    private class PluginConfigurationSorter implements Comparable {
+    private class PluginConfigurationSorter implements System.Comparable {
         public LoggerPlugin__mdt pluginConfiguration;
         private List<Schema.SObjectField> sortByFields = new List<Schema.SObjectField>();
 

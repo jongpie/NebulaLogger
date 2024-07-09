@@ -134,7 +134,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -156,7 +156,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -176,7 +176,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -198,7 +198,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -218,7 +218,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -237,7 +237,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -257,7 +257,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -276,7 +276,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -296,7 +296,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -321,7 +321,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -341,7 +341,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -363,7 +363,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -383,7 +383,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -402,7 +402,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -422,7 +422,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -444,7 +444,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -464,7 +464,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -486,7 +486,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -506,7 +506,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -525,7 +525,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -545,7 +545,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -570,7 +570,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -590,7 +590,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -612,7 +612,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -632,7 +632,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -651,7 +651,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -671,7 +671,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -690,7 +690,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -710,7 +710,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
         );
         new LogEntryHandler().overrideTriggerableContext(context).execute();
@@ -729,7 +729,7 @@ private class LogEntryHandler_Tests {
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(
             Schema.LogEntry__c.SObjectType,
-            TriggerOperation.BEFORE_UPDATE,
+            System.TriggerOperation.BEFORE_UPDATE,
             updatedRecords,
             new Map<Id, SObject>(updatedRecords),
             null
@@ -858,7 +858,7 @@ private class LogEntryHandler_Tests {
                 [x] public Integer targetLineNumber
                 [ ] public Integer totalLinesOfCode
         */
-        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.ExceptionSourceSnippet__c);
+        System.Assert.areEqual(System.JSON.serializePretty(expectedSnippet), logEntry.ExceptionSourceSnippet__c);
     }
 
     @IsTest
@@ -958,7 +958,7 @@ private class LogEntryHandler_Tests {
                 [x] public Integer targetLineNumber
                 [ ] public Integer totalLinesOfCode
         */
-        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.areEqual(System.JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
         System.Assert.isTrue(logEntry.HasStackTrace__c);
         // FIXME
         // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);
@@ -1063,7 +1063,7 @@ private class LogEntryHandler_Tests {
                 [x] public Integer targetLineNumber
                 [ ] public Integer totalLinesOfCode
         */
-        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.areEqual(System.JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
         System.Assert.isTrue(logEntry.HasStackTrace__c);
         // FIXME
         // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);
@@ -1143,7 +1143,7 @@ private class LogEntryHandler_Tests {
                 [x] public Integer targetLineNumber
                 [ ] public Integer totalLinesOfCode
         */
-        System.Assert.areEqual(JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
+        System.Assert.areEqual(System.JSON.serializePretty(expectedSnippet), logEntry.OriginSourceSnippet__c);
         System.Assert.isTrue(logEntry.HasStackTrace__c);
         // FIXME
         // System.Assert.areEqual(stackTrace.parsedStackTraceString, logEntry.StackTrace__c);

@@ -26,7 +26,7 @@ private class LoggerSettingsController_Tests_Security {
         System.runAs(standardUser) {
             System.Assert.isTrue(
                 System.FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME),
-                JSON.serializePretty(permissionSetAssignment)
+                System.JSON.serializePretty(permissionSetAssignment)
             );
             System.Assert.isTrue(LoggerSettingsController.canUserModifyLoggerSettings());
         }

@@ -105,11 +105,11 @@ private class NebulaLogger_E2E_Tests {
         // So instead, the callout is tested
         String expectedEndpoint = System.URL.getOrgDomainUrl().toExternalForm() + '/services/data/' + getOrganizationApiVersion() + '/composite/sobjects';
         System.Assert.areEqual(expectedEndpoint, mockCallout.request.getEndpoint());
-        Map<String, Object> untypedRequestBody = (Map<String, Object>) JSON.deserializeUntyped(mockCallout.request.getBody());
+        Map<String, Object> untypedRequestBody = (Map<String, Object>) System.JSON.deserializeUntyped(mockCallout.request.getBody());
         Boolean requestAllOrNone = (Boolean) untypedRequestBody.get('allOrNone');
         System.Assert.isTrue(requestAllOrNone);
-        List<LogEntryEvent__e> requestRecords = (List<LogEntryEvent__e>) JSON.deserialize(
-            JSON.serialize(untypedRequestBody.get('records')),
+        List<LogEntryEvent__e> requestRecords = (List<LogEntryEvent__e>) System.JSON.deserialize(
+            System.JSON.serialize(untypedRequestBody.get('records')),
             List<LogEntryEvent__e>.class
         );
         System.Assert.areEqual(1, requestRecords.size());
@@ -153,13 +153,13 @@ private class NebulaLogger_E2E_Tests {
         // So, use System.UserInfo.getUserId() to create the current user's record without querying
         // Then parse the JSON to get the API version
         // Expected JSON: {"attributes":{"type":"Schema.User","url":"/services/data/v53.0/sobjects/Schema.User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
+        String userJson = System.JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static SObject setReadOnlyField(SObject record, Map<Schema.SObjectField, Object> changesToFields) {
-        String serializedRecord = JSON.serialize(record);
-        Map<String, Object> deserializedRecordMap = (Map<String, Object>) JSON.deserializeUntyped(serializedRecord);
+        String serializedRecord = System.JSON.serialize(record);
+        Map<String, Object> deserializedRecordMap = (Map<String, Object>) System.JSON.deserializeUntyped(serializedRecord);
 
         // Loop through the deserialized record map and put the field & value
         // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
@@ -168,8 +168,8 @@ private class NebulaLogger_E2E_Tests {
             deserializedRecordMap.put(fieldName, changesToFields.get(sobjectField));
         }
 
-        serializedRecord = JSON.serialize(deserializedRecordMap);
-        return (SObject) JSON.deserialize(serializedRecord, SObject.class);
+        serializedRecord = System.JSON.serialize(deserializedRecordMap);
+        return (SObject) System.JSON.deserialize(serializedRecord, SObject.class);
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')

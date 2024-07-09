@@ -94,11 +94,11 @@ private class LogMassDeleteExtension_Tests {
 
         logsToDelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToDelete ALL ROWS];
         for (Log__c log : logsToDelete) {
-            System.Assert.isTrue(log.IsDeleted, JSON.serializePretty(log));
+            System.Assert.isTrue(log.IsDeleted, System.JSON.serializePretty(log));
         }
         logsToKeep = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToKeep ALL ROWS];
         for (Log__c log : logsToKeep) {
-            System.Assert.isFalse(log.IsDeleted, JSON.serializePretty(log));
+            System.Assert.isFalse(log.IsDeleted, System.JSON.serializePretty(log));
         }
     }
 }

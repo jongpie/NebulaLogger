@@ -88,7 +88,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         Set<String> bigObjectSaveMethods = new Set<String>{ BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD, BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD };
 
         if (
-            input.triggerOperationType == TriggerOperation.BEFORE_INSERT &&
+            input.triggerOperationType == System.TriggerOperation.BEFORE_INSERT &&
             bigObjectSaveMethods.contains(Logger.getUserSettings().DefaultSaveMethod__c) == false
         ) {
             return;
@@ -168,14 +168,14 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         // In a BEFORE_INSERT context, if one of the 2 Big Object save methods is used, then
         // all of the LogEntryEvent__e records should be saved in LogEntryArchive__b
         if (
-            input.triggerOperationType == TriggerOperation.BEFORE_INSERT &&
+            input.triggerOperationType == System.TriggerOperation.BEFORE_INSERT &&
             new Set<String>{ BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD, BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD }
                 .contains(Logger.getUserSettings().DefaultSaveMethod__c)
         ) {
             return (List<LogEntryEvent__e>) input.triggerNew;
         }
 
-        if (input.triggerOperationType != TriggerOperation.AFTER_INSERT) {
+        if (input.triggerOperationType != System.TriggerOperation.AFTER_INSERT) {
             return new List<LogEntryEvent__e>();
         }
 
@@ -209,9 +209,9 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     }
 
     /**
-     * @description Inner class for publishing log entries via the Queueable interface.
+     * @description Inner class for publishing log entries via the System.Queueable interface.
      */
-    private class QueueableSaver implements Queueable {
+    private class QueueableSaver implements System.Queueable {
         private List<LogEntryArchive__b> logEntryArchives = new List<LogEntryArchive__b>();
 
         private QueueableSaver(List<LogEntryArchive__b> logEntryArchives) {

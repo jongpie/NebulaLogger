@@ -233,7 +233,7 @@ public without sharing class LogRetentionFilter {
                 return (Datetime) datetimeValue;
             } else {
                 String datetimeString = (String) datetimeValue;
-                return (Datetime) JSON.deserialize(datetimeString, Datetime.class);
+                return (Datetime) System.JSON.deserialize(datetimeString, Datetime.class);
             }
         }
 
@@ -244,7 +244,7 @@ public without sharing class LogRetentionFilter {
                 return (Decimal) decimalValue;
             } else {
                 String decimalString = (String) decimalValue;
-                return (Decimal) JSON.deserialize(decimalString, Decimal.class);
+                return (Decimal) System.JSON.deserialize(decimalString, Decimal.class);
             }
         }
 

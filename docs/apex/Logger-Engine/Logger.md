@@ -5736,7 +5736,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### Logger.QueueableSaver class
 
-Inner class for publishing log entries via the Queueable interface.
+Inner class for publishing log entries via the System.Queueable interface.
 
 ---
 

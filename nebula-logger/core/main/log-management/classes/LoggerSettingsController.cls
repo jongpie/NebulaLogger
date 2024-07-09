@@ -367,7 +367,7 @@ public without sharing class LoggerSettingsController {
      *      2. Records tied to profiles do not return the actual profile name in SetupOwner.Name - example: System Admin returns as 'PT1' in query results
      *      3. Records tied to the org or profiles return unhelpful values in SetupOwner.Type - org returns '00D', profiles return '00e'
      */
-    public class SettingsRecordResult implements Comparable {
+    public class SettingsRecordResult implements System.Comparable {
         @AuraEnabled
         public String setupOwnerType;
         @AuraEnabled
@@ -380,7 +380,7 @@ public without sharing class LoggerSettingsController {
         public LoggerSettings__c record;
 
         /**
-         * @description Implements sorting logic for the `Comparable` interface
+         * @description Implements sorting logic for the `System.Comparable` interface
          * @param  compareTo The object to compare to when sorting the current item
          * @return           The sorting result
          */

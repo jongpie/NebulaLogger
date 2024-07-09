@@ -27,7 +27,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_organization_api_version() {
-        String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
+        String userJson = System.JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
         String expectedApiVersion = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
 
         String returnedApiVersion = Logger.getOrganizationApiVersion();
@@ -1365,7 +1365,7 @@ private class Logger_Tests {
             .get(Schema.LogEntryEvent__e.SObjectType)
             .get(0);
         // System.Assert.areEqual(1, mockLogEntryEventBeforeInsertHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
         System.Assert.areEqual(logEntryEvents.size(), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.size());
         System.Assert.areEqual(logEntryEvents.get(0), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(0));
         System.Assert.areEqual(logEntryEvents.get(1), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(1));
@@ -1373,7 +1373,7 @@ private class Logger_Tests {
             .get(Schema.LogEntryEvent__e.SObjectType)
             .get(1);
         // System.Assert.areEqual(1, mockLogEntryEventAfterInsertHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
         System.Assert.areEqual(logEntryEvents.size(), mockLogEntryEventAfterInsertHandler.executedTriggerNew.size());
         System.Assert.areEqual(logEntryEvents.get(0), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(0));
         System.Assert.areEqual(logEntryEvents.get(1), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(1));
@@ -1418,7 +1418,7 @@ private class Logger_Tests {
             .get(Schema.LogEntryEvent__e.SObjectType)
             .get(0);
         // System.Assert.areEqual(1, mockLogEntryEventBeforeInsertHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
         System.Assert.areEqual(logEntryEvents.size(), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.size());
         System.Assert.areEqual(logEntryEvents.get(0), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(0));
         System.Assert.areEqual(logEntryEvents.get(1), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(1));
@@ -1426,7 +1426,7 @@ private class Logger_Tests {
             .get(Schema.LogEntryEvent__e.SObjectType)
             .get(1);
         // System.Assert.areEqual(1, mockLogEntryEventAfterInsertHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
         System.Assert.areEqual(logEntryEvents.size(), mockLogEntryEventAfterInsertHandler.executedTriggerNew.size());
         System.Assert.areEqual(logEntryEvents.get(0), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(0));
         System.Assert.areEqual(logEntryEvents.get(1), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(1));
@@ -1470,7 +1470,7 @@ private class Logger_Tests {
             .get(Schema.LogEntryEvent__e.SObjectType)
             .get(0);
         // System.Assert.areEqual(1, mockLogEntryEventBeforeInsertHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
         System.Assert.areEqual(logEntryEvents.size(), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.size());
         System.Assert.areEqual(logEntryEvents.get(0), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(0));
         System.Assert.areEqual(logEntryEvents.get(1), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(1));
@@ -1478,7 +1478,7 @@ private class Logger_Tests {
             .get(Schema.LogEntryEvent__e.SObjectType)
             .get(1);
         // System.Assert.areEqual(1, mockLogEntryEventAfterInsertHandler.executionCount);
-        System.Assert.areEqual(TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
+        System.Assert.areEqual(System.TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
         System.Assert.areEqual(logEntryEvents.size(), mockLogEntryEventAfterInsertHandler.executedTriggerNew.size());
         System.Assert.areEqual(logEntryEvents.get(0), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(0));
         System.Assert.areEqual(logEntryEvents.get(1), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(1));
@@ -1572,7 +1572,7 @@ private class Logger_Tests {
         System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(logMessage.getMessage(), logEntryEvent.Message__c);
         System.Assert.areEqual(record.Id, logEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(record), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(record), logEntryEvent.RecordJson__c);
         System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
         System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
     }
@@ -1600,7 +1600,7 @@ private class Logger_Tests {
         System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(logMessage.getMessage(), logEntryEvent.Message__c);
         System.Assert.isNull(logEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(records), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(records), logEntryEvent.RecordJson__c);
         System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
         System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
     }
@@ -1682,7 +1682,7 @@ private class Logger_Tests {
         System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(message, logEntryEvent.Message__c);
         System.Assert.areEqual(record.Id, logEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(record), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(record), logEntryEvent.RecordJson__c);
         System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
         System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
     }
@@ -1710,7 +1710,7 @@ private class Logger_Tests {
         System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(message, logEntryEvent.Message__c);
         System.Assert.isNull(logEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(records), logEntryEvent.RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(records), logEntryEvent.RecordJson__c);
         System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
         System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
     }
@@ -1736,7 +1736,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(convertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(convertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(convertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1760,7 +1760,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(convertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(convertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(convertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1784,7 +1784,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1808,7 +1808,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1832,7 +1832,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1856,7 +1856,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1880,7 +1880,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1904,7 +1904,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1928,7 +1928,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1952,7 +1952,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -1976,7 +1976,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2000,7 +2000,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2024,7 +2024,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2048,7 +2048,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2072,7 +2072,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2096,7 +2096,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2183,7 +2183,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2205,7 +2205,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2228,7 +2228,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2251,7 +2251,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2300,7 +2300,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2324,7 +2324,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2348,7 +2348,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2372,7 +2372,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2396,7 +2396,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2420,7 +2420,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2444,7 +2444,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2468,7 +2468,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2492,7 +2492,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2516,7 +2516,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2540,7 +2540,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2564,7 +2564,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2588,7 +2588,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2612,7 +2612,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2636,7 +2636,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2660,7 +2660,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2747,7 +2747,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2769,7 +2769,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2792,7 +2792,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2815,7 +2815,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -2863,7 +2863,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2887,7 +2887,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2911,7 +2911,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2935,7 +2935,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2959,7 +2959,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -2983,7 +2983,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3007,7 +3007,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3031,7 +3031,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3055,7 +3055,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3079,7 +3079,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3103,7 +3103,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3127,7 +3127,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3214,7 +3214,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3236,7 +3236,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3259,7 +3259,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3282,7 +3282,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3331,7 +3331,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3355,7 +3355,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3379,7 +3379,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3403,7 +3403,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3427,7 +3427,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3451,7 +3451,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3475,7 +3475,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3499,7 +3499,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3523,7 +3523,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3547,7 +3547,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3571,7 +3571,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3595,7 +3595,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3682,7 +3682,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3704,7 +3704,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3727,7 +3727,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.areEqual(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.areEqual(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3750,7 +3750,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -3799,7 +3799,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3823,7 +3823,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3847,7 +3847,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3871,7 +3871,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3895,7 +3895,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3919,7 +3919,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3943,7 +3943,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3967,7 +3967,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -3991,7 +3991,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4015,7 +4015,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4058,7 +4058,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -4081,7 +4081,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -4130,7 +4130,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4154,7 +4154,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4178,7 +4178,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4202,7 +4202,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4226,7 +4226,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4250,7 +4250,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4274,7 +4274,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4298,7 +4298,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4322,7 +4322,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4346,7 +4346,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4389,7 +4389,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -4412,7 +4412,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -4461,7 +4461,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4485,7 +4485,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4509,7 +4509,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4533,7 +4533,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4557,7 +4557,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4581,7 +4581,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4605,7 +4605,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4629,7 +4629,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4653,7 +4653,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4677,7 +4677,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4720,7 +4720,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -4743,7 +4743,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -4792,7 +4792,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4816,7 +4816,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4840,7 +4840,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4864,7 +4864,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4888,7 +4888,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4912,7 +4912,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4936,7 +4936,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4960,7 +4960,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -4984,7 +4984,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5008,7 +5008,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5051,7 +5051,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -5074,7 +5074,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -5123,7 +5123,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5147,7 +5147,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5171,7 +5171,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5195,7 +5195,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5219,7 +5219,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5243,7 +5243,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5267,7 +5267,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5291,7 +5291,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5315,7 +5315,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5339,7 +5339,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5382,7 +5382,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -5405,7 +5405,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -5454,7 +5454,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5478,7 +5478,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5502,7 +5502,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5526,7 +5526,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5550,7 +5550,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5574,7 +5574,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5598,7 +5598,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5622,7 +5622,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5646,7 +5646,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5670,7 +5670,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5713,7 +5713,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -5736,7 +5736,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -5785,7 +5785,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5809,7 +5809,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5833,7 +5833,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5857,7 +5857,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5881,7 +5881,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5905,7 +5905,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5929,7 +5929,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5953,7 +5953,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -5977,7 +5977,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6001,7 +6001,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6044,7 +6044,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -6067,7 +6067,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -6116,7 +6116,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6140,7 +6140,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6164,7 +6164,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6188,7 +6188,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6212,7 +6212,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6236,7 +6236,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6260,7 +6260,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6284,7 +6284,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6308,7 +6308,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6332,7 +6332,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6375,7 +6375,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -6398,7 +6398,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -6447,7 +6447,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6471,7 +6471,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6495,7 +6495,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6519,7 +6519,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6543,7 +6543,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6567,7 +6567,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6591,7 +6591,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6615,7 +6615,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6639,7 +6639,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6663,7 +6663,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6706,7 +6706,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -6729,7 +6729,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -6778,7 +6778,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(leadConvertResult.getLeadId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(leadConvertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.LeadConvertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6802,7 +6802,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(deleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6826,7 +6826,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(saveResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6850,7 +6850,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6874,7 +6874,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Insert', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6898,7 +6898,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(upsertResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6922,7 +6922,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6946,7 +6946,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6970,7 +6970,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -6994,7 +6994,7 @@ private class Logger_Tests {
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.Assert.areEqual(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.Assert.areEqual(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
     }
@@ -7037,7 +7037,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -7060,7 +7060,7 @@ private class Logger_Tests {
         System.Assert.areEqual(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
@@ -7143,7 +7143,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7236,7 +7236,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7293,7 +7293,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7350,7 +7350,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7407,7 +7407,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7464,7 +7464,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7521,7 +7521,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7578,7 +7578,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7635,7 +7635,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7692,7 +7692,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
 
@@ -7749,7 +7749,7 @@ private class Logger_Tests {
         System.Assert.isTrue(returnedBuilder.shouldSave());
         System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-        String expectedDatabaseResultJson = JSON.serializePretty(unsuccessfulResult);
+        String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
         System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     }
     // End logDatabaseErrors() test methods
@@ -7921,12 +7921,12 @@ private class Logger_Tests {
         mockApiResponse.releaseVersion = 'Spring \'23 Patch 19.17';
         System.Test.setMock(
             System.HttpCalloutMock.class,
-            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(System.JSON.serialize(mockApiResponse))
         );
 
         Logger.StatusApiResponse returnedApiResponse = Logger.callStatusApi();
 
-        System.Assert.areEqual(JSON.serialize(mockApiResponse), JSON.serialize(returnedApiResponse));
+        System.Assert.areEqual(System.JSON.serialize(mockApiResponse), System.JSON.serialize(returnedApiResponse));
     }
 
     @IsTest
@@ -8063,7 +8063,7 @@ private class Logger_Tests {
 
     public class MockSObjectHandler extends LoggerSObjectHandler {
         public Integer executionCount = 0;
-        public TriggerOperation executedTriggerOperationType;
+        public System.TriggerOperation executedTriggerOperationType;
         public List<SObject> executedTriggerNew;
         public Map<Id, SObject> executedTriggerNewMap;
         public Map<Id, SObject> executedTriggerOldMap;
@@ -8085,51 +8085,51 @@ private class Logger_Tests {
 
         protected override void executeBeforeInsert(List<SObject> triggerNew) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.BEFORE_INSERT;
+            this.executedTriggerOperationType = System.TriggerOperation.BEFORE_INSERT;
             this.executedTriggerNew = triggerNew;
         }
 
         protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.BEFORE_UPDATE;
+            this.executedTriggerOperationType = System.TriggerOperation.BEFORE_UPDATE;
             this.executedTriggerNewMap = triggerNewMap;
             this.executedTriggerOldMap = triggerOldMap;
         }
 
         protected override void executeBeforeDelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.BEFORE_DELETE;
+            this.executedTriggerOperationType = System.TriggerOperation.BEFORE_DELETE;
             this.executedTriggerNewMap = triggerNewMap;
         }
 
         protected override void executeAfterInsert(List<SObject> triggerNew) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_INSERT;
             this.executedTriggerNew = triggerNew;
         }
 
         protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_INSERT;
             this.executedTriggerNewMap = triggerNewMap;
         }
 
         protected override void executeAfterUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_UPDATE;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_UPDATE;
             this.executedTriggerNewMap = triggerNewMap;
             this.executedTriggerOldMap = triggerOldMap;
         }
 
         protected override void executeAfterDelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_DELETE;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_DELETE;
             this.executedTriggerNewMap = triggerNewMap;
         }
 
         protected override void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
-            this.executedTriggerOperationType = TriggerOperation.AFTER_UNDELETE;
+            this.executedTriggerOperationType = System.TriggerOperation.AFTER_UNDELETE;
             this.executedTriggerNewMap = triggerNewMap;
         }
     }

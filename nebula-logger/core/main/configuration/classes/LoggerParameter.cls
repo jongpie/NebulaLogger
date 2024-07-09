@@ -802,7 +802,7 @@ public class LoggerParameter {
     @TestVisible
     private static void setMock(LoggerParameter__mdt parameter) {
         if (String.isBlank(parameter.DeveloperName)) {
-            throw new System.IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + JSON.serializePretty(parameter));
+            throw new System.IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + System.JSON.serializePretty(parameter));
         }
 
         DEVELOPER_NAME_TO_RECORD.put(parameter.DeveloperName, parameter);
@@ -813,7 +813,7 @@ public class LoggerParameter {
         if (parameterValue == null) {
             return null;
         } else {
-            return JSON.deserialize(parameterValue, dataType);
+            return System.JSON.deserialize(parameterValue, dataType);
         }
     }
 

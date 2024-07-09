@@ -535,9 +535,9 @@ Class used to centralize the handling of enqueueing any queueable jobs
 
 ##### Methods
 
-###### `enqueueJob(Queueable queueableJob)` → `Id`
+###### `enqueueJob(System.Queueable queueableJob)` → `Id`
 
-Enqueues a queueable job to execute asynchronously, using `System.enqueueJob(Queueable queueableJob)`
+Enqueues a queueable job to execute asynchronously, using `System.enqueueJob(System.Queueable queueableJob)`
 
 ####### Parameters
 

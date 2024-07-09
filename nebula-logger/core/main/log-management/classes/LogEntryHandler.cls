@@ -495,7 +495,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ExceptionSourceLastModifiedDate__c = apexClass.LastModifiedDate;
 
             LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
-            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexClass));
+            logEntry.ExceptionSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexClass));
         }
 
         public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
@@ -513,7 +513,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ExceptionSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
 
             LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
-            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexTrigger));
+            logEntry.ExceptionSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexTrigger));
         }
     }
 
@@ -548,7 +548,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.OriginSourceLastModifiedById__c = apexClass.LastModifiedById;
             logEntry.OriginSourceLastModifiedByUsername__c = apexClass.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexClass.LastModifiedDate;
-            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexClass));
+            logEntry.OriginSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexClass));
         }
 
         public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
@@ -568,7 +568,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.OriginSourceLastModifiedById__c = apexTrigger.LastModifiedById;
             logEntry.OriginSourceLastModifiedByUsername__c = apexTrigger.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
-            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexTrigger));
+            logEntry.OriginSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexTrigger));
         }
     }
 }

@@ -54,11 +54,11 @@ public without sharing class LoggerMockDataStore {
 
             Schema.SObjectType sobjectType = records.get(0).getSObjectType();
 
-            LoggerTriggerableContext beforeInsertInput = new LoggerTriggerableContext(sobjectType, TriggerOperation.BEFORE_INSERT, records);
+            LoggerTriggerableContext beforeInsertInput = new LoggerTriggerableContext(sobjectType, System.TriggerOperation.BEFORE_INSERT, records);
             LoggerSObjectHandler beforeInsertHandler = LoggerSObjectHandler.getHandler(sobjectType);
             beforeInsertHandler?.overrideTriggerableContext(beforeInsertInput).execute();
 
-            LoggerTriggerableContext afterInsertInput = new LoggerTriggerableContext(sobjectType, TriggerOperation.AFTER_INSERT, records);
+            LoggerTriggerableContext afterInsertInput = new LoggerTriggerableContext(sobjectType, System.TriggerOperation.AFTER_INSERT, records);
             LoggerSObjectHandler afterInsertHandler = LoggerSObjectHandler.getHandler(sobjectType);
             afterInsertHandler?.overrideTriggerableContext(afterInsertInput).execute();
 
@@ -118,7 +118,7 @@ public without sharing class LoggerMockDataStore {
         public void deliver(LoggerSObjectHandler sobjectHandlerInstance) {
             LoggerTriggerableContext platformEventsTriggerContext = new LoggerTriggerableContext(
                 sobjectHandlerInstance.getSObjectType(),
-                TriggerOperation.AFTER_INSERT,
+                System.TriggerOperation.AFTER_INSERT,
                 this.publishedPlatformEvents
             );
             sobjectHandlerInstance?.overrideTriggerableContext(platformEventsTriggerContext).execute();
@@ -127,25 +127,25 @@ public without sharing class LoggerMockDataStore {
     }
 
     public class MockJobQueue extends LoggerDataStore.JobQueue {
-        private List<Queueable> enqueuedJobs;
+        private List<System.Queueable> enqueuedJobs;
         private Integer publishCount;
 
         private MockJobQueue() {
-            this.enqueuedJobs = new List<Queueable>();
+            this.enqueuedJobs = new List<System.Queueable>();
         }
 
-        public List<Queueable> getEnqueuedJobs() {
+        public List<System.Queueable> getEnqueuedJobs() {
             return this.enqueuedJobs;
         }
 
-        public override Id enqueueJob(Queueable queueableJob) {
+        public override Id enqueueJob(System.Queueable queueableJob) {
             this.enqueuedJobs.add(queueableJob);
 
             return LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
         }
 
         public void executeJobs() {
-            for (Queueable job : this.enqueuedJobs) {
+            for (System.Queueable job : this.enqueuedJobs) {
                 job.execute(null); // TODO create mock instance for System.QueueableContext queueableContext
             }
         }
@@ -178,7 +178,7 @@ public without sharing class LoggerMockDataStore {
             Boolean recordHasFieldValue = record.get(requiredField) != null;
             if (recordHasField == false || recordHasFieldValue == false) {
                 SObjectException ex = new SObjectException();
-                ex.setMessage('The field ' + requiredField + ' is required on record: ' + JSON.serializePretty(record));
+                ex.setMessage('The field ' + requiredField + ' is required on record: ' + System.JSON.serializePretty(record));
                 throw ex;
             }
         }

@@ -70,10 +70,10 @@ Utility class used to mock any data-related operations for the database, event b
 
 ##### Methods
 
-###### `enqueueJob(Queueable queueableJob)` → `Id`
+###### `enqueueJob(System.Queueable queueableJob)` → `Id`
 
 ###### `executeJobs()` → `void`
 
-###### `getEnqueuedJobs()` → `List<Queueable>`
+###### `getEnqueuedJobs()` → `List<System.Queueable>`
 
 ---

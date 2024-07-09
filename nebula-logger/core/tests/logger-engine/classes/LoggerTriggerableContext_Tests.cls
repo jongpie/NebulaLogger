@@ -18,7 +18,7 @@ private class LoggerTriggerableContext_Tests {
     @IsTest
     static void it_constructs_instance_when_before_insert_operation() {
         Schema.SObjectType sobjectType = Schema.User.SObjectType;
-        TriggerOperation triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        System.TriggerOperation triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         List<Schema.User> newUsers = new List<Schema.User>();
         for (Integer i = 0; i < 3; i++) {
             newUsers.add((Schema.User) LoggerMockDataCreator.createUser());
@@ -42,7 +42,7 @@ private class LoggerTriggerableContext_Tests {
     @IsTest
     static void it_constructs_instance_when_before_update_operation() {
         Schema.SObjectType sobjectType = Schema.User.SObjectType;
-        TriggerOperation triggerOperationType = TriggerOperation.BEFORE_UPDATE;
+        System.TriggerOperation triggerOperationType = System.TriggerOperation.BEFORE_UPDATE;
         List<Schema.User> updatedUsers = new List<Schema.User>();
         for (Integer i = 0; i < 3; i++) {
             Schema.User user = (Schema.User) LoggerMockDataCreator.createUser();
@@ -71,7 +71,7 @@ private class LoggerTriggerableContext_Tests {
     @IsTest
     static void it_constructs_instance_when_before_delete_operation() {
         Schema.SObjectType sobjectType = Schema.User.SObjectType;
-        TriggerOperation triggerOperationType = TriggerOperation.BEFORE_DELETE;
+        System.TriggerOperation triggerOperationType = System.TriggerOperation.BEFORE_DELETE;
         Map<Id, Schema.User> deletedLogsMap = new Map<Id, Schema.User>();
         for (Integer i = 0; i < 3; i++) {
             Schema.User user = (Schema.User) LoggerMockDataCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();

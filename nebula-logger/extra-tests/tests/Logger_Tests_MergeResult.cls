@@ -40,7 +40,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.areEqual(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry database result JSON was incorrect.'
         );
@@ -77,7 +77,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry database result JSON was incorrect.'
         );
@@ -114,7 +114,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -151,7 +151,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -183,7 +183,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.areEqual(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -220,7 +220,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -257,7 +257,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -294,7 +294,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event databse result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result json was incorrect.'
         );
@@ -326,7 +326,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.areEqual(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was not null.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -363,7 +363,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -400,7 +400,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -437,7 +437,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -469,7 +469,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.areEqual(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -506,7 +506,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -543,7 +543,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -580,7 +580,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -612,7 +612,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.areEqual(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -649,7 +649,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -686,7 +686,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -723,7 +723,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -755,7 +755,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.areEqual(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -792,7 +792,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -829,7 +829,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -866,7 +866,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -898,7 +898,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.areEqual(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -935,7 +935,7 @@ private class Logger_Tests_MergeResult {
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
         System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -972,7 +972,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResult),
+            System.JSON.serializePretty(mergeResult),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );
@@ -1009,7 +1009,7 @@ private class Logger_Tests_MergeResult {
             'Log entry event database result collection type was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(mergeResults),
+            System.JSON.serializePretty(mergeResults),
             entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
             'Log entry event database result JSON was incorrect.'
         );

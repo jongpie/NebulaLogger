@@ -88,7 +88,7 @@ private class LogBatchPurger_Tests_Flow {
         LoggerPlugin__mdt returnedPluginConfiguration = (LoggerPlugin__mdt) flowStartPlugin.getVariableValue('pluginConfiguration');
         System.Assert.areEqual(mockPluginConfiguration, returnedPluginConfiguration, 'LoggerPlugin__mdt records should match');
         LoggerBatchableContext returnedPluginInput = (LoggerBatchableContext) flowStartPlugin.getVariableValue('pluginInput');
-        System.Assert.areEqual(JSON.serialize(expectedInput), JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
+        System.Assert.areEqual(System.JSON.serialize(expectedInput), System.JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
         System.Assert.areEqual(
             MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
             flowStartPlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),
@@ -138,7 +138,7 @@ private class LogBatchPurger_Tests_Flow {
         LoggerPlugin__mdt returnedPluginConfiguration = (LoggerPlugin__mdt) flowExecutePlugin.getVariableValue('pluginConfiguration');
         System.Assert.areEqual(mockPluginConfiguration, returnedPluginConfiguration, 'LoggerPlugin__mdt records should match');
         LoggerBatchableContext returnedPluginInput = (LoggerBatchableContext) flowExecutePlugin.getVariableValue('pluginInput');
-        System.Assert.areEqual(JSON.serialize(expectedInput), JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
+        System.Assert.areEqual(System.JSON.serialize(expectedInput), System.JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
         System.Assert.areEqual(
             MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
             flowExecutePlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),
@@ -189,7 +189,7 @@ private class LogBatchPurger_Tests_Flow {
     //     LoggerPlugin__mdt returnedPluginConfiguration = (LoggerPlugin__mdt) flowFinishPlugin.getVariableValue('pluginConfiguration');
     //     System.Assert.areEqual(mockPluginConfiguration, returnedPluginConfiguration, 'LoggerPlugin__mdt records should match');
     //     LoggerBatchableContext returnedPluginInput = (LoggerBatchableContext) flowFinishPlugin.getVariableValue('pluginInput');
-    //     System.Assert.areEqual(JSON.serialize(expectedInput), JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
+    //     System.Assert.areEqual(System.JSON.serialize(expectedInput), System.JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
     //     System.Assert.areEqual(
     //         MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
     //         flowFinishPlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),

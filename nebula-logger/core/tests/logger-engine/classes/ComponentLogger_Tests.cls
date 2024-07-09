@@ -64,7 +64,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual('Component', publishedLogEntryEvent.OriginType__c);
         System.Assert.isNull(
             publishedLogEntryEvent.OriginSourceMetadataType__c,
-            'Non-null value populated for OriginSourceMetadata__c: ' + JSON.serializePretty(publishedLogEntryEvent)
+            'Non-null value populated for OriginSourceMetadata__c: ' + System.JSON.serializePretty(publishedLogEntryEvent)
         );
         System.Assert.isNull(publishedLogEntryEvent.StackTrace__c);
         System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
@@ -76,7 +76,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(componentLogEntry.record), publishedLogEntryEvent.RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(componentLogEntry.record), publishedLogEntryEvent.RecordJson__c);
         System.Assert.areEqual(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
@@ -121,7 +121,7 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual(componentLogEntry.recordId, publishedLogEntryEvent.RecordId__c);
-        System.Assert.areEqual(JSON.serializePretty(componentLogEntry.record), publishedLogEntryEvent.RecordJson__c);
+        System.Assert.areEqual(System.JSON.serializePretty(componentLogEntry.record), publishedLogEntryEvent.RecordJson__c);
         System.Assert.areEqual(Schema.SObjectType.User.getName(), publishedLogEntryEvent.RecordSObjectType__c);
         System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }

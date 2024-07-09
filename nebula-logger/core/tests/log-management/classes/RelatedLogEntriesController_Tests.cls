@@ -98,7 +98,7 @@ private class RelatedLogEntriesController_Tests {
     //             countOfMatches = countOfMatches + 1;
     //         }
     //     }
-    //     System.Assert.areEqual(1, countOfMatches, JSON.serializePretty(logEntries));
+    //     System.Assert.areEqual(1, countOfMatches, System.JSON.serializePretty(logEntries));
 
     //     System.Test.startTest();
 

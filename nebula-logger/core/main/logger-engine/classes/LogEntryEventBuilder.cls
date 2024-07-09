@@ -781,7 +781,7 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.DatabaseResultCollectionSize__c = databaseResults.size();
         this.logEntryEvent.DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? 'Single' : 'List';
-        String serializedResult = JSON.serializePretty(this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults);
+        String serializedResult = System.JSON.serializePretty(this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults);
         this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
         this.logEntryEvent.DatabaseResultType__c = resultType.getName();
 
@@ -971,12 +971,12 @@ global with sharing class LogEntryEventBuilder {
         }
 
         SObject strippedRecord = records.get(0);
-        return JSON.serializePretty(strippedRecord);
+        return System.JSON.serializePretty(strippedRecord);
     }
 
     private static String getJson(List<SObject> records, Boolean isRecordFieldStrippingEnabled) {
         records = isRecordFieldStrippingEnabled == false ? records : stripInaccessible(records);
-        return JSON.serializePretty(records);
+        return System.JSON.serializePretty(records);
     }
 
     private static String getJson(Map<Id, SObject> recordIdToRecord, Boolean isRecordFieldStrippingEnabled) {
@@ -994,7 +994,7 @@ global with sharing class LogEntryEventBuilder {
             String recordIdString = recordId == null ? '' : recordId;
             strippedRecordIdToRecord.put(recordIdString, record);
         }
-        return JSON.serializePretty(strippedRecordIdToRecord);
+        return System.JSON.serializePretty(strippedRecordIdToRecord);
     }
 
     private static String getOrganizationEnvironmentType(LoggerSettings__c userSettings) {

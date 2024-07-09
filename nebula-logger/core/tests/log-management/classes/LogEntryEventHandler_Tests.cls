@@ -94,7 +94,7 @@ private class LogEntryEventHandler_Tests {
         );
         System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
         List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c FROM LogEntry__c];
-        System.Assert.areEqual(1, logEntries.size(), JSON.serializePretty(logEntries));
+        System.Assert.areEqual(1, logEntries.size(), System.JSON.serializePretty(logEntries));
         System.Assert.areEqual(matchingLogEntryEvent.LoggingLevel__c, logEntries.get(0).LoggingLevel__c);
         System.Assert.areEqual(matchingLogEntryEvent.Message__c, logEntries.get(0).Message__c);
     }
@@ -229,7 +229,7 @@ private class LogEntryEventHandler_Tests {
             'Handler class should have executed one time for AFTER_INSERT'
         );
         List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c];
-        System.Assert.areEqual(2, logs.size(), JSON.serializePretty(logs));
+        System.Assert.areEqual(2, logs.size(), System.JSON.serializePretty(logs));
         Set<String> uniqueTransactionIds = new Set<String>(transactionIds);
         for (Log__c log : logs) {
             System.Assert.isTrue(uniqueTransactionIds.contains(log.TransactionId__c), log.TransactionId__c);
@@ -275,7 +275,7 @@ private class LogEntryEventHandler_Tests {
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.EntryScenario__c = 'some entry scenario';
         logEntryEvent.TransactionScenario__c = 'some transaction scenario';
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(false)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = System.JSON.serialize(false)));
         System.Assert.isFalse(LoggerParameter.NORMALIZE_SCENARIO_DATA);
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -721,7 +721,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Tags__c = 'some entry scenario';
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(false)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = System.JSON.serialize(false)));
         System.Assert.isFalse(LoggerParameter.NORMALIZE_TAG_DATA);
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);

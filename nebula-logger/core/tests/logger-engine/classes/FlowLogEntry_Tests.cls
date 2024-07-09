@@ -284,7 +284,7 @@ private class FlowLogEntry_Tests {
         System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         List<String> publishedLogEntryEventTags = publishedLogEntryEvent.Tags__c.split('\n');
-        System.Assert.areEqual(tags.size(), publishedLogEntryEventTags.size(), JSON.serializePretty(publishedLogEntryEventTags));
+        System.Assert.areEqual(tags.size(), publishedLogEntryEventTags.size(), System.JSON.serializePretty(publishedLogEntryEventTags));
         Set<String> tagsSet = new Set<String>(tags);
         for (String publishedTag : publishedLogEntryEventTags) {
             publishedTag = publishedTag.trim();

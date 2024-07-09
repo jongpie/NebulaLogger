@@ -329,7 +329,7 @@ private class LogBatchPurgeController_Tests {
         System.runAs(standardUser) {
             System.Assert.isTrue(
                 System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION),
-                JSON.serializePretty(permissionSetAssignment)
+                System.JSON.serializePretty(permissionSetAssignment)
             );
             System.Assert.areEqual(
                 true,

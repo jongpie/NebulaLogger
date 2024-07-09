@@ -116,7 +116,7 @@ private class LogRetentionRulesPlugin_Tests {
         insert logEntry;
 
         log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, JSON.serializePretty(log));
+        System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -144,7 +144,7 @@ private class LogRetentionRulesPlugin_Tests {
         insert logEntry;
 
         log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, JSON.serializePretty(log));
+        System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -175,7 +175,7 @@ private class LogRetentionRulesPlugin_Tests {
         insert logEntry;
 
         log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, JSON.serializePretty(log));
+        System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, System.JSON.serializePretty(log));
     }
 
     static void enablePlugin() {
@@ -199,7 +199,7 @@ private class LogRetentionRulesPlugin_Tests {
     }
 
     static LogRetentionRuleCondition__mdt createMockRuleCondition(String fieldPath, String operator, String valueType, Object value) {
-        String valueString = value instanceof String ? (String) value : JSON.serialize(value);
+        String valueString = value instanceof String ? (String) value : System.JSON.serialize(value);
         return new LogRetentionRuleCondition__mdt(
             FieldPath__c = fieldPath,
             Operator__c = operator,
