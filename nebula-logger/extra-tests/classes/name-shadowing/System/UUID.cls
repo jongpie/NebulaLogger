@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // This class intentionally does nothing - it's here to ensure that any references
-// in Nebula Logger's codebase use `Schema.UUID` instead of just `UUID`
+// in Nebula Logger's codebase use `System.UUID` instead of just `UUID`
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
 public without sharing class UUID {
 }
