@@ -413,7 +413,7 @@ public without sharing class LogRetentionFilter {
 
             for (Schema.SObjectField field : this.fieldChain) {
                 Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-                if (fieldDescribe.getSoapType() != Schema.SoapType.Id) {
+                if (fieldDescribe.getSoapType() != Schema.SoapType.ID) {
                     return parentRecord.get(fieldDescribe.getName());
                 } else {
                     parentSObjectType = fieldDescribe.getReferenceTo().get(0);
