@@ -225,7 +225,7 @@ private class LogManagementDataSelector_Tests {
         Schema.User undeleteableRecord = new Schema.User(Id = System.UserInfo.getUserId());
         List<Id> recordIds = new List<Id>{ deleteableRecord.Id, undeleteableRecord.Id };
 
-        List<UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
+        List<Schema.UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
 
         System.Assert.areEqual(1, returnedResults.size());
         System.Assert.areEqual(deleteableRecord.Id, returnedResults.get(0).RecordId);

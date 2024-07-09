@@ -213,8 +213,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `FlowDefinitionView` data.
-     *              When set to `false`, any `FlowDefinitionView` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.FlowDefinitionView` data.
+     *              When set to `false`, any `Schema.FlowDefinitionView` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryFlowDefinitionViewData`, or `true` as the default
      */
     public static final Boolean QUERY_FLOW_DEFINITION_VIEW_DATA {

@@ -156,22 +156,22 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns the list of `UserRecordAccess` records for any of the specified record IDs that the current user can delete
+     * @description Returns the list of `Schema.UserRecordAccess` records for any of the specified record IDs that the current user can delete
      * @param  recordIds The list of `ID` for records to be deleted
-     * @return           The matching `List<UserRecordAccess>` records
+     * @return           The matching `List<Schema.UserRecordAccess>` records
      */
-    public virtual List<UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
+    public virtual List<Schema.UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
         return [SELECT RecordId FROM UserRecordAccess WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE];
     }
 
     /**
-     * @description Returns a list of `FlowDefinitionView` records
+     * @description Returns a list of `Schema.FlowDefinitionView` records
      * @param  flowApiNames The names of the Apex classes to query
-     * @return              `List<FlowDefinitionView>` containing any matching records
+     * @return              `List<Schema.FlowDefinitionView>` containing any matching records
      */
-    public virtual List<FlowDefinitionView> getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
+    public virtual List<Schema.FlowDefinitionView> getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
         if (LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA == false) {
-            return new List<FlowDefinitionView>();
+            return new List<Schema.FlowDefinitionView>();
         }
 
         return [
@@ -196,11 +196,11 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a list of `FlowVersionView` records description
+     * @description Returns a list of `Schema.FlowVersionView` records description
      * @param  durableIds The durable IDs of the Flows to query
-     * @return            `List<FlowDefinitionView>` containing any matching records
+     * @return            `List<Schema.FlowDefinitionView>` containing any matching records
      */
-    public virtual List<FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
+    public virtual List<Schema.FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
         return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId IN :durableIds];
     }
 

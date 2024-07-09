@@ -163,9 +163,9 @@ Integer
 
 The `Integer` count of matching `LogEntry__c` records
 
-#### `getDeleteableUserRecordAccess(List<Id> recordIds)` → `List<UserRecordAccess>`
+#### `getDeleteableUserRecordAccess(List<Id> recordIds)` → `List<Schema.UserRecordAccess>`
 
-Returns the list of `UserRecordAccess` records for any of the specified record IDs that the current user can delete
+Returns the list of `Schema.UserRecordAccess` records for any of the specified record IDs that the current user can delete
 
 ##### Parameters
 
@@ -177,15 +177,15 @@ Returns the list of `UserRecordAccess` records for any of the specified record I
 
 **Type**
 
-List&lt;UserRecordAccess&gt;
+List&lt;Schema.UserRecordAccess&gt;
 
 **Description**
 
-The matching `List&lt;UserRecordAccess&gt;` records
+The matching `List&lt;Schema.UserRecordAccess&gt;` records
 
-#### `getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames)` → `List<FlowDefinitionView>`
+#### `getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames)` → `List<Schema.FlowDefinitionView>`
 
-Returns a list of `FlowDefinitionView` records
+Returns a list of `Schema.FlowDefinitionView` records
 
 ##### Parameters
 
@@ -197,15 +197,15 @@ Returns a list of `FlowDefinitionView` records
 
 **Type**
 
-List&lt;FlowDefinitionView&gt;
+List&lt;Schema.FlowDefinitionView&gt;
 
 **Description**
 
-`List&lt;FlowDefinitionView&gt;` containing any matching records
+`List&lt;Schema.FlowDefinitionView&gt;` containing any matching records
 
-#### `getFlowVersionViewsByDurableId(List<String> durableIds)` → `List<FlowVersionView>`
+#### `getFlowVersionViewsByDurableId(List<String> durableIds)` → `List<Schema.FlowVersionView>`
 
-Returns a list of `FlowVersionView` records description
+Returns a list of `Schema.FlowVersionView` records description
 
 ##### Parameters
 
@@ -217,11 +217,11 @@ Returns a list of `FlowVersionView` records description
 
 **Type**
 
-List&lt;FlowVersionView&gt;
+List&lt;Schema.FlowVersionView&gt;
 
 **Description**
 
-`List&lt;FlowDefinitionView&gt;` containing any matching records
+`List&lt;Schema.FlowDefinitionView&gt;` containing any matching records
 
 #### `getInstance()` → `LogManagementDataSelector`
 

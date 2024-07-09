@@ -33,7 +33,7 @@ public with sharing class LogMassDeleteExtension {
      * @return      The matching `Log__c` records that the current user has access to delete
      */
     public List<Log__c> getDeletableLogs() {
-        // The UserRecordAccess object is weird - RecordId is not an actual ID field, so you can't filter using `List<SObject>` or `List<Id>`, you have to use strings
+        // The Schema.UserRecordAccess object is weird - RecordId is not an actual ID field, so you can't filter using `List<SObject>` or `List<Id>`, you have to use strings
         // So, here's some code that would be unnecessary if RecordId were a polymorphic ID field instead
         List<String> logIds = new List<String>();
         for (Log__c selectedLog : (List<Log__c>) this.controller.getSelected()) {
@@ -42,7 +42,7 @@ public with sharing class LogMassDeleteExtension {
 
         // Get the list of record IDs that the current user can delete
         List<Id> deletableLogIds = new List<Id>();
-        for (UserRecordAccess recordAccess : LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(logIds)) {
+        for (Schema.UserRecordAccess recordAccess : LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(logIds)) {
             deletableLogIds.add(recordAccess.RecordId);
         }
 

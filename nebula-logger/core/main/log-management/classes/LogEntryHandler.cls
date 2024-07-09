@@ -143,8 +143,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, FlowDefinitionView> flowApiNameToDefinition = new Map<String, FlowDefinitionView>();
-        for (FlowDefinitionView flowDefinition : LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(flowApiNames)) {
+        Map<String, Schema.FlowDefinitionView> flowApiNameToDefinition = new Map<String, Schema.FlowDefinitionView>();
+        for (Schema.FlowDefinitionView flowDefinition : LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(flowApiNames)) {
             flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
         }
 
@@ -153,7 +153,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : flowLogEntries) {
-            FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginSourceApiName__c);
+            Schema.FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginSourceApiName__c);
             if (flowDefinition == null) {
                 continue;
             }
@@ -191,8 +191,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, FlowVersionView> flowDurableIdToFlowVersionView = new Map<String, FlowVersionView>();
-        for (FlowVersionView flowVersionView : LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(flowActiveVersionIds)) {
+        Map<String, Schema.FlowVersionView> flowDurableIdToFlowVersionView = new Map<String, Schema.FlowVersionView>();
+        for (Schema.FlowVersionView flowVersionView : LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(flowActiveVersionIds)) {
             // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
             if (flowVersionView.Status == 'Active') {
                 flowDurableIdToFlowVersionView.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
@@ -204,7 +204,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : flowLogEntries) {
-            FlowVersionView flowVersionView = flowDurableIdToFlowVersionView.get(logEntry.FlowDurableId__c);
+            Schema.FlowVersionView flowVersionView = flowDurableIdToFlowVersionView.get(logEntry.FlowDurableId__c);
             if (flowVersionView == null) {
                 continue;
             }
