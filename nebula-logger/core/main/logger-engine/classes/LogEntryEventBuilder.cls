@@ -521,7 +521,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Sets the log entry event's REST Request fields
-     * @param  request The instance of `RestRequest` to log
+     * @param  request The instance of `System.RestRequest` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRestRequestDetails(System.RestRequest request) {
@@ -569,7 +569,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Sets the log entry event's REST Response fields
-     * @param  response The instance of `RestResponse` to log
+     * @param  response The instance of `System.RestResponse` to log
      * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRestResponseDetails(System.RestResponse response) {
