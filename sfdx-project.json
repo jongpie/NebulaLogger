@@ -14,9 +14,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.12.NEXT",
-            "versionName": "Added Refresh Button on relatedLogEntries LWC",
-            "versionDescription": "Added refresh button & lightning-spinner on relatedLogEntries LWC",
+            "versionNumber": "4.13.13.NEXT",
+            "versionName": "Improved Full-Qualified References",
+            "versionDescription": "Switched to using fully-qualified references to all standard classes in the Schema & System namespaces",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
