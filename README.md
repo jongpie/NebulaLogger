@@ -510,7 +510,7 @@ Admins can configure tagging rules to append additional tags using the custom me
 -   Rule-based tags are added in addition to any tags that have been added via Apex and/or Flow.
 -   Each rule is configured to apply tags based on the value of a single field on `LogEntry__c` (e.g., `LogEntry__c.Message__c`).
 -   Each rule can only evaluate 1 field, but multiple rules can evaluate the same field.
--   A single rule can apply mulitple tags. When specifying multiple tags, put each tag on a separate line within the Tags field (`LogEntryTagRule__mdt.Tags__c`).
+-   A single rule can apply multiple tags. When specifying multiple tags, put each tag on a separate line within the Tags field (`LogEntryTagRule__mdt.Tags__c`).
 
 Rules can be set up by configuring a custom metadata record with these fields configured:
 
