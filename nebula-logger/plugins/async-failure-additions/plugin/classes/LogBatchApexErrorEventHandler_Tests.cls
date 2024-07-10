@@ -66,7 +66,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
     }
 
     /**
-     * the `BatchApexErrorEvent` type has a property, `Phase` with three possible values:
+     * the `Schema.BatchApexErrorEvent` type has a property, `Phase` with three possible values:
      * - START
      * - EXECUTE
      * - FINISH

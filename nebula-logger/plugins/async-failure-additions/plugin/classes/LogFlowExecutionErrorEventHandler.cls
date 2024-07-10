@@ -14,15 +14,15 @@ public without sharing class LogFlowExecutionErrorEventHandler {
 
     /**
      * @description Invocable method called by platform event-triggered flow to add errors to logs
-     * @param flowErrorEvents The `List<FlowExecutionErrorEvent>` associated with the unhandled exception(s)
+     * @param flowErrorEvents The `List<Schema.FlowExecutionErrorEvent>` associated with the unhandled exception(s)
      */
     @InvocableMethod(category='Logging' description='Adds error handling for unhandled errors in Screen Flows')
-    public static void logErrors(List<FlowExecutionErrorEvent> flowErrorEvents) {
+    public static void logErrors(List<Schema.FlowExecutionErrorEvent> flowErrorEvents) {
         if (LoggerParameter.getBoolean(PARAMETER_DEV_NAME, false) == false) {
             return;
         }
         Map<String, List<LogEntryEventBuilder>> usernameToBuilders = new Map<String, List<LogEntryEventBuilder>>();
-        for (FlowExecutionErrorEvent flowExecutionErrorEvent : flowErrorEvents) {
+        for (Schema.FlowExecutionErrorEvent flowExecutionErrorEvent : flowErrorEvents) {
             FlowLogger.LogEntry flowLogEntry = new FlowLogger.LogEntry();
             flowLogEntry.faultMessage = flowExecutionErrorEvent.ErrorMessage;
             flowLogEntry.flowName = flowExecutionErrorEvent.FlowApiName;

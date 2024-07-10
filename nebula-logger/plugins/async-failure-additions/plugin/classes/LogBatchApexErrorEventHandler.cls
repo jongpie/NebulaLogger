@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 /**
  * @group Plugins
- * @description `BatchApexErrorEvent` handler to log unexpected batch errors for classes that implement `Database.RaisesPlatformEvents` and opt into processing via `LoggerParameter__mdt`
+ * @description `Schema.BatchApexErrorEvent` handler to log unexpected batch errors for classes that implement `Database.RaisesPlatformEvents` and opt into processing via `LoggerParameter__mdt`
  * @see LoggerSObjectHandler
  */
 public without sharing class LogBatchApexErrorEventHandler extends LoggerSObjectHandler {
@@ -12,7 +12,7 @@ public without sharing class LogBatchApexErrorEventHandler extends LoggerSObject
     public static final String LOG_MESSAGE = 'An unexpected job error occurred: {0} with exception type: {1} and message: {2} during batch phase: {3}.\nStacktrace: {4}';
     private static Boolean shouldSaveLogs = false;
 
-    private List<BatchApexErrorEvent> batchApexErrorEvents;
+    private List<Schema.BatchApexErrorEvent> batchApexErrorEvents;
 
     /**
      * @description Opts into the default constructor
@@ -26,19 +26,21 @@ public without sharing class LogBatchApexErrorEventHandler extends LoggerSObject
     }
 
     protected override void executeAfterInsert(List<SObject> triggerNew) {
-        this.batchApexErrorEvents = (List<BatchApexErrorEvent>) triggerNew;
+        this.batchApexErrorEvents = (List<Schema.BatchApexErrorEvent>) triggerNew;
         this.handleJobErrors();
     }
 
     private void handleJobErrors() {
         Set<Id> asyncApexJobIds = new Set<Id>();
-        for (BatchApexErrorEvent evt : this.batchApexErrorEvents) {
+        for (Schema.BatchApexErrorEvent evt : this.batchApexErrorEvents) {
             asyncApexJobIds.add(evt.AsyncApexJobId);
         }
 
-        Map<Id, AsyncApexJob> jobIdToClass = new Map<Id, AsyncApexJob>([SELECT Id, ApexClass.Name FROM AsyncApexJob WHERE Id IN :asyncApexJobIds]);
+        Map<Id, Schema.AsyncApexJob> jobIdToClass = new Map<Id, Schema.AsyncApexJob>(
+            [SELECT Id, ApexClass.Name FROM AsyncApexJob WHERE Id IN :asyncApexJobIds]
+        );
         Logger.error('Batch job terminated unexpectedly');
-        for (BatchApexErrorEvent errorEvent : this.batchApexErrorEvents) {
+        for (Schema.BatchApexErrorEvent errorEvent : this.batchApexErrorEvents) {
             shouldSaveLogs = this.getShouldSaveLogs(jobIdToClass, errorEvent);
             LogMessage logMessage = new LogMessage(
                 LOG_MESSAGE,
@@ -51,9 +53,9 @@ public without sharing class LogBatchApexErrorEventHandler extends LoggerSObject
         }
     }
 
-    private Boolean getShouldSaveLogs(Map<Id, AsyncApexJob> jobIdToClass, BatchApexErrorEvent errorEvent) {
+    private Boolean getShouldSaveLogs(Map<Id, Schema.AsyncApexJob> jobIdToClass, Schema.BatchApexErrorEvent errorEvent) {
         if (shouldSaveLogs == false) {
-            AsyncApexJob job = jobIdToClass.get(errorEvent.AsyncApexJobId);
+            Schema.AsyncApexJob job = jobIdToClass.get(errorEvent.AsyncApexJobId);
             List<LoggerParameter__mdt> configurationList = LoggerParameter.matchOnPrefix(BATCH_ERROR_LOGGER);
             for (LoggerParameter__mdt config : configurationList) {
                 if (config.Value__c == job?.ApexClass.Name) {

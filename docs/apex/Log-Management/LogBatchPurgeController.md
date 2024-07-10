@@ -24,19 +24,19 @@ Boolean
 
 true if the current user has delete permission on the Log\_\_c object.
 
-#### `getBatchPurgeJobRecords()` → `List<AsyncApexJob>`
+#### `getBatchPurgeJobRecords()` → `List<Schema.AsyncApexJob>`
 
-Returns `List&lt;AsyncApexJob&gt;` to display logBatchPurger jobs details in a Datatable.
+Returns `List&lt;Schema.AsyncApexJob&gt;` to display logBatchPurger jobs details in a Datatable.
 
 ##### Return
 
 **Type**
 
-List&lt;AsyncApexJob&gt;
+List&lt;Schema.AsyncApexJob&gt;
 
 **Description**
 
-The instance of `List&lt;AsyncApexJob&gt;`, containing list of logBatchPurge jobs.
+The instance of `List&lt;Schema.AsyncApexJob&gt;`, containing list of logBatchPurge jobs.
 
 #### `getMetrics(String dateFilterOption)` → `Map<String, Object>`
 
@@ -84,7 +84,7 @@ String
 
 **Description**
 
-Returns the ID of the AsyncApexJob object associated with the LogBatchPurger job as a string
+Returns the ID of the Schema.AsyncApexJob object associated with the LogBatchPurger job as a string
 
 ---
 

@@ -10,7 +10,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         setLoggerParamEnabled(false);
 
         System.Test.startTest();
-        LogFlowExecutionErrorEventHandler.logErrors(new List<FlowExecutionErrorEvent>{ new FlowExecutionErrorEvent() });
+        LogFlowExecutionErrorEventHandler.logErrors(new List<Schema.FlowExecutionErrorEvent>{ new Schema.FlowExecutionErrorEvent() });
         System.Test.stopTest();
 
         System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
@@ -19,7 +19,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
     @IsTest
     static void it_logs_when_enabled() {
         setLoggerParamEnabled(true);
-        FlowExecutionErrorEvent flowExecutionErrorEvent = new FlowExecutionErrorEvent();
+        Schema.FlowExecutionErrorEvent flowExecutionErrorEvent = new Schema.FlowExecutionErrorEvent();
         flowExecutionErrorEvent.EventDate = System.now().addSeconds(-5);
         flowExecutionErrorEvent.ElementApiName = 'test_exception_element';
         flowExecutionErrorEvent.FlowApiName = 'Testing_FlowExecutionErrorEvent';
@@ -28,7 +28,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
 
         System.runAs(new Schema.User(Id = [SELECT Id FROM User WHERE Alias = 'autoproc'].Id)) {
             System.Test.startTest();
-            LogFlowExecutionErrorEventHandler.logErrors(new List<FlowExecutionErrorEvent>{ flowExecutionErrorEvent });
+            LogFlowExecutionErrorEventHandler.logErrors(new List<Schema.FlowExecutionErrorEvent>{ flowExecutionErrorEvent });
             System.Test.stopTest();
         }
 

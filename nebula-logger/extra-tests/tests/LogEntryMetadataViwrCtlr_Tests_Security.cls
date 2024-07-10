@@ -21,14 +21,17 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     static void it_should_return_queried_exception_metadata_when_custom_permission_is_assigned() {
         Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
         insert minimumAccessUser;
-        PermissionSet permissionSet = new PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
+        Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
             SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME]
             .Id
         );
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = minimumAccessUser.Id, PermissionSetId = permissionSet.Id);
+        Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(
+            AssigneeId = minimumAccessUser.Id,
+            PermissionSetId = permissionSet.Id
+        );
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
         String sourceMetadata = 'Exception';
         Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
@@ -54,14 +57,17 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     static void it_should_return_queried_origin_metadata_when_custom_permission_is_assigned() {
         Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
         insert minimumAccessUser;
-        PermissionSet permissionSet = new PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
+        Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
             SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME]
             .Id
         );
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = minimumAccessUser.Id, PermissionSetId = permissionSet.Id);
+        Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(
+            AssigneeId = minimumAccessUser.Id,
+            PermissionSetId = permissionSet.Id
+        );
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
         String sourceMetadata = 'Origin';
         Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');

@@ -317,13 +317,16 @@ private class LogBatchPurgeController_Tests {
     static void it_should_permit_user_to_execute_purge_batch_when_custom_permission_is_assigned() {
         Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
-        PermissionSet permissionSet = new PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
+        Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
             SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId()
         );
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = standardUser.Id, PermissionSetId = permissionSet.Id);
+        Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(
+            AssigneeId = standardUser.Id,
+            PermissionSetId = permissionSet.Id
+        );
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
 
         System.runAs(standardUser) {
@@ -344,9 +347,9 @@ private class LogBatchPurgeController_Tests {
         System.Test.startTest();
         LogBatchPurgeController.runBatchPurge();
         System.Test.stopTest();
-        List<AsyncApexJob> purgeJobs = LogBatchPurgeController.getBatchPurgeJobRecords();
+        List<Schema.AsyncApexJob> purgeJobs = LogBatchPurgeController.getBatchPurgeJobRecords();
         System.Assert.areEqual(1, purgeJobs.size(), 'should return purge batch job records');
-        for (AsyncApexJob job : purgeJobs) {
+        for (Schema.AsyncApexJob job : purgeJobs) {
             System.Assert.isNotNull(job.JobType, 'it should return job type');
             System.Assert.isNotNull(job.JobItemsProcessed, 'it should return JobItemsProcessed');
             System.Assert.isNotNull(job.NumberOfErrors, 'it should return noOfErrors');
@@ -360,7 +363,7 @@ private class LogBatchPurgeController_Tests {
     static void it_should_not_permit_user_to_execute_purge_batch_when_custom_permission_is_not_assigned() {
         Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
-        PermissionSet permissionSet = new PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
+        Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
@@ -388,7 +391,7 @@ private class LogBatchPurgeController_Tests {
         String apexClassName = LogBatchPurger.class.getName().contains('.')
             ? LogBatchPurger.class.getName().substringAfter('.')
             : LogBatchPurger.class.getName();
-        List<AsyncApexJob> purgeBatchJobs = [
+        List<Schema.AsyncApexJob> purgeBatchJobs = [
             SELECT Id
             FROM AsyncApexJob
             WHERE

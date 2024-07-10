@@ -123,15 +123,15 @@ The cached `Log__c` record, or `null` if no match is found
 
 #### `getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses)` → `Integer`
 
-Returns the count of `AsyncApexJob` records with the specified Apex class name, method name &amp; job status
+Returns the count of `Schema.AsyncApexJob` records with the specified Apex class name, method name &amp; job status
 
 ##### Parameters
 
-| Param            | Description                                                                       |
-| ---------------- | --------------------------------------------------------------------------------- |
-| `apexClassName`  | The fully-qualified name of the Apex class associated with `AsyncApexJob`         |
-| `apexMethodName` | The specific method (if any) within the Apex class associated with `AsyncApexJob` |
-| `jobStatuses`    | The list of job statuses that should be used to filter `AsynxApexJob` records     |
+| Param            | Description                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| `apexClassName`  | The fully-qualified name of the Apex class associated with `Schema.AsyncApexJob`         |
+| `apexMethodName` | The specific method (if any) within the Apex class associated with `Schema.AsyncApexJob` |
+| `jobStatuses`    | The list of job statuses that should be used to filter `AsynxApexJob` records            |
 
 ##### Return
 

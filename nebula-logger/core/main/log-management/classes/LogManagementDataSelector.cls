@@ -136,9 +136,9 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns the count of `AsyncApexJob` records with the specified Apex class name, method name & job status
-     * @param  apexClassName  The fully-qualified name of the Apex class associated with `AsyncApexJob`
-     * @param  apexMethodName The specific method (if any) within the Apex class associated with `AsyncApexJob`
+     * @description Returns the count of `Schema.AsyncApexJob` records with the specified Apex class name, method name & job status
+     * @param  apexClassName  The fully-qualified name of the Apex class associated with `Schema.AsyncApexJob`
+     * @param  apexMethodName The specific method (if any) within the Apex class associated with `Schema.AsyncApexJob`
      * @param  jobStatuses    The list of job statuses that should be used to filter `AsynxApexJob` records
      * @return                The `Integer` count of matching `AsynxApexJob` records
      */

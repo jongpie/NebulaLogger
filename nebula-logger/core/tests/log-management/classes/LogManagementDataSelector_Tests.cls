@@ -115,7 +115,7 @@ private class LogManagementDataSelector_Tests {
     //     executeSomeFutureMethod();
     //     System.Test.stopTest();
 
-    //     System.Assert.fail([SELECT status FROM asyncapexjob]);
+    //     System.Assert.fail([SELECT status FROM AsyncApexJob]);
     //     Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
 
     //     System.Assert.areEqual(1, returnedCount);

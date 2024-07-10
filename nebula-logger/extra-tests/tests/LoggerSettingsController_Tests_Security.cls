@@ -13,14 +13,17 @@ private class LoggerSettingsController_Tests_Security {
     static void it_should_permit_user_to_modify_logger_settings_when_custom_permission_is_assigned() {
         Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
-        PermissionSet permissionSet = new PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
+        Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
             SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME]
             .Id
         );
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = standardUser.Id, PermissionSetId = permissionSet.Id);
+        Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(
+            AssigneeId = standardUser.Id,
+            PermissionSetId = permissionSet.Id
+        );
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
 
         System.runAs(standardUser) {
