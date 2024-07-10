@@ -34,6 +34,8 @@ All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more d
 
 ###### `LogoutUrl` → `String`
 
+###### `ParentId` → `Id`
+
 ###### `SessionSecurityLevel` → `String`
 
 ###### `SessionType` → `String`

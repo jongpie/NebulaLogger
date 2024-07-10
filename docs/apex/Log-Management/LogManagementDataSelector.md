@@ -31,9 +31,9 @@ List&lt;SObject&gt;
 
 `List&lt;SObject&gt;` containing any records in the specified `SObjectType`
 
-#### `getApexClasses(Set<String> apexClassNames)` → `List<ApexClass>`
+#### `getApexClasses(Set<String> apexClassNames)` → `List<Schema.ApexClass>`
 
-Returns a list of `ApexClass` records
+Returns a list of `Schema.ApexClass` records
 
 ##### Parameters
 
@@ -45,15 +45,15 @@ Returns a list of `ApexClass` records
 
 **Type**
 
-List&lt;ApexClass&gt;
+List&lt;Schema.ApexClass&gt;
 
 **Description**
 
-`List&lt;ApexClass&gt;` containing any matching records
+`List&lt;Schema.ApexClass&gt;` containing any matching records
 
-#### `getApexTriggers(Set<String> apexTriggerNames)` → `List<ApexTrigger>`
+#### `getApexTriggers(Set<String> apexTriggerNames)` → `List<Schema.ApexTrigger>`
 
-Returns a list of `ApexTrigger` records
+Returns a list of `Schema.ApexTrigger` records
 
 ##### Parameters
 
@@ -65,11 +65,11 @@ Returns a list of `ApexTrigger` records
 
 **Type**
 
-List&lt;ApexTrigger&gt;
+List&lt;Schema.ApexTrigger&gt;
 
 **Description**
 
-`List&lt;ApexTrigger&gt;` containing any matching records
+`List&lt;Schema.ApexTrigger&gt;` containing any matching records
 
 #### `getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds)` → `List<SObject>`
 
@@ -93,19 +93,19 @@ List&lt;SObject&gt;
 
 `List&lt;SObject&gt;` containing any matching records in the specified `SObjectType`
 
-#### `getCachedApexEmailNotifications()` → `List<ApexEmailNotification>`
+#### `getCachedApexEmailNotifications()` → `List<Schema.ApexEmailNotification>`
 
-Returns a cached copy of the `ApexEmailNotification` records in the org
+Returns a cached copy of the `Schema.ApexEmailNotification` records in the org
 
 ##### Return
 
 **Type**
 
-List&lt;ApexEmailNotification&gt;
+List&lt;Schema.ApexEmailNotification&gt;
 
 **Description**
 
-The cached `List&lt;ApexEmailNotification&gt;` records
+The cached `List&lt;Schema.ApexEmailNotification&gt;` records
 
 #### `getCachedRecentLogWithApiReleaseDetails()` → `Log__c`
 

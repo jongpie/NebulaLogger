@@ -781,7 +781,9 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.DatabaseResultCollectionSize__c = databaseResults.size();
         this.logEntryEvent.DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? 'Single' : 'List';
-        String serializedResult = System.JSON.serializePretty(this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults);
+        String serializedResult = System.JSON.serializePretty(
+            this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults
+        );
         this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
         this.logEntryEvent.DatabaseResultType__c = resultType.getName();
 

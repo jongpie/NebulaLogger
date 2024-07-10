@@ -185,7 +185,7 @@ Inner class used for sorting LoggerSettings\_\_c, used for 3 reasons: 1. Trying 
 
 ###### `compareTo(Object compareTo)` → `Integer`
 
-Implements sorting logic for the `Comparable` interface
+Implements sorting logic for the `System.Comparable` interface
 
 ####### Parameters
 

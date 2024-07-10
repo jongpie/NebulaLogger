@@ -129,7 +129,11 @@ private class LogEntryEventBuilder_Tests_Security {
             builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockIdToAccountBrand);
         }
 
-        System.Assert.areEqual(System.JSON.serializePretty(mockIdStringToStrippedAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
+        System.Assert.areEqual(
+            System.JSON.serializePretty(mockIdStringToStrippedAccountBrand),
+            builder.getLogEntryEvent().RecordJson__c,
+            'Record JSON is incorrect.'
+        );
     }
 
     static LoggerSettings__c getUserSettings() {

@@ -97,16 +97,6 @@ Adds the specified string-based origin to the the current transaction&apos;s lis
 | `language` | The source language (Apex or JavaScript)                                     |
 | `origin`   | The string-based name of the Apex type or lightning component name to ignore |
 
-#### `ignoreOrigins(Set<System.Type> apexTypes)` → `void`
-
-Adds the specified Apex types to the list of ignored origin locations for the current transaction. Any ignored types will be removed from the StackTrace\_\_c field, and will be skipped when determining the log entry&apos;s origin location
-
-##### Parameters
-
-| Param       | Description                                                |
-| ----------- | ---------------------------------------------------------- |
-| `apexTypes` | A `Set` containing the Apex types of the classes to ignore |
-
 ---
 
 ### Inner Classes

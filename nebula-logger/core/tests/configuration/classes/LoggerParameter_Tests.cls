@@ -82,7 +82,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_enable_system_messages() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'EnableLoggerSystemMessages',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
@@ -184,7 +187,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_flow_definition_view_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryFlowDefinitionViewData',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
@@ -206,7 +212,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_network_data_synchronously() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryNetworkDataSynchronously',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
@@ -264,7 +273,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_user_data_synchronously() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryUserDataSynchronously',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
@@ -302,7 +314,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_send_error_email_notifications() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'SendErrorEmailNotifications',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
@@ -313,7 +328,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_store_http_response_header_values() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'StoreHttpResponseHeaderValues',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES;
@@ -351,7 +369,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_store_rest_request_header_values() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'StoreRestRequestHeaderValues',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES;
@@ -362,7 +383,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_store_rest_response_header_values() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = System.JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'StoreRestResponseHeaderValues',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;

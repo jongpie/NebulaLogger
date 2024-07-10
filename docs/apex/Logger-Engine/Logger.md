@@ -3488,19 +3488,19 @@ Integer
 
 Integer
 
-#### `getCurrentQuiddity()` → `Quiddity`
+#### `getCurrentQuiddity()` → `System.Quiddity`
 
-Returns the Quiddity context of the current transaction.
+Returns the System.Quiddity context of the current transaction.
 
 ##### Return
 
 **Type**
 
-Quiddity
+System.Quiddity
 
 **Description**
 
-Quiddity - The value of System.Request.getCurrent().getQuiddity()
+System.Quiddity - The value of System.Request.getCurrent().getQuiddity()
 
 #### `getLoggingLevel(String loggingLevelName)` → `System.LoggingLevel`
 

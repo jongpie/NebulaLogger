@@ -14,19 +14,6 @@ Builder class that generates each `LogEntryEvent__e` record
 
 ### Constructors
 
-#### `LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins)`
-
-`Deprecated` - Formally used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
-
-##### Parameters
-
-| Param               | Description                                                                                                        |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `userSettings`      | The instance of `LoggerSettings__c` for the current to use to control any feature flags                            |
-| `entryLoggingLevel` | The `LoggingLevel` value to use for the log entry                                                                  |
-| `shouldSave`        | Indicates if the builder&apos;s instance of `LogEntryEvent__e` should be saved                                     |
-| `ignoredOrigins`    | A `Set&lt;String&gt;` of the names of any Apex classes that should be ignored when parsing the entry&apos;s origin |
-
 #### `LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave)`
 
 Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
@@ -38,6 +25,42 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 | `userSettings`      | The instance of `LoggerSettings__c` for the current to use to control any feature flags |
 | `entryLoggingLevel` | The `LoggingLevel` value to use for the log entry                                       |
 | `shouldSave`        | Indicates if the builder&apos;s instance of `LogEntryEvent__e` should be saved          |
+
+---
+
+### Properties
+
+#### `aggregateQueriesMax` → `Integer`
+
+#### `asyncCallsMax` → `Integer`
+
+#### `calloutsMax` → `Integer`
+
+#### `cpuTimeMax` → `Integer`
+
+#### `dmlRowsMax` → `Integer`
+
+#### `dmlStatementsMax` → `Integer`
+
+#### `emailInvocationsMax` → `Integer`
+
+#### `futureCallsMax` → `Integer`
+
+#### `heapSizeMax` → `Integer`
+
+#### `mobilePushApexCallsMax` → `Integer`
+
+#### `publishImmediateDmlStatementsMax` → `Integer`
+
+#### `queueableJobsMax` → `Integer`
+
+#### `soqlQueriesMax` → `Integer`
+
+#### `soqlQueryLocatorRowsMax` → `Integer`
+
+#### `soqlQueryRowsMax` → `Integer`
+
+#### `soslSearchesMax` → `Integer`
 
 ---
 
@@ -417,6 +440,16 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `setLoggingContext(LoggingContext loggingContext)` → `void`
+
+**This is only intended to be used internally by Nebula Logger, and is subject to change.**
+
+##### Parameters
+
+| Param            | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `loggingContext` | Variables specific to the current Logger state |
+
 #### `setMessage(LogMessage logMessage)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s message field
@@ -583,9 +616,9 @@ Sets the log entry event&apos;s REST Request fields
 
 ##### Parameters
 
-| Param     | Description                          |
-| --------- | ------------------------------------ |
-| `request` | The instance of `RestRequest` to log |
+| Param     | Description                                 |
+| --------- | ------------------------------------------- |
+| `request` | The instance of `System.RestRequest` to log |
 
 ##### Return
 
@@ -603,9 +636,9 @@ Sets the log entry event&apos;s REST Response fields
 
 ##### Parameters
 
-| Param      | Description                           |
-| ---------- | ------------------------------------- |
-| `response` | The instance of `RestResponse` to log |
+| Param      | Description                                  |
+| ---------- | -------------------------------------------- |
+| `response` | The instance of `System.RestResponse` to log |
 
 ##### Return
 
@@ -616,6 +649,16 @@ LogEntryEventBuilder
 **Description**
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setTimestamp(Datetime timestamp)` → `void`
+
+**This is only intended to be used internally by Nebula Logger, and is subject to change.**
+
+##### Parameters
+
+| Param       | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `timestamp` | Datetime instance to set timestamp fields on this.logEntryEvent |
 
 #### `setTopics(List<String> tags)` → `LogEntryEventBuilder`
 
@@ -650,5 +693,39 @@ Boolean
 **Description**
 
 A boolean set to true if the log entries should be saved.
+
+---
+
+### Inner Classes
+
+#### LogEntryEventBuilder.LoggingContext class
+
+---
+
+##### Constructors
+
+###### `LoggingContext(String loggerVersionNumber,String organizationApiVersion,String organizationDomainUrl,String requestId,System.Quiddity systemMode,String transactionId)`
+
+---
+
+##### Properties
+
+###### `currentEntryScenario` → `String`
+
+###### `entryNumber` → `Integer`
+
+###### `loggerVersionNumber` → `String`
+
+###### `organizationApiVersion` → `String`
+
+###### `organizationDomainUrl` → `String`
+
+###### `requestId` → `String`
+
+###### `systemMode` → `System.Quiddity`
+
+###### `transactionId` → `String`
+
+###### `userLoggingLevel` → `System.LoggingLevel`
 
 ---
