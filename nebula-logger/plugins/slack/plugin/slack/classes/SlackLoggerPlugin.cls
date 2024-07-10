@@ -7,7 +7,7 @@
  * @group Plugins
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerable, System.Queueable, Database.AllowsCallouts {
     @TestVisible
     private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
