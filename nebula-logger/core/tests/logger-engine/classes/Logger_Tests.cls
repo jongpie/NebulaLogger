@@ -791,9 +791,13 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_quiddity_level() {
-        List<Quiddity> acceptableDefaultQuidditiesForTests = new List<Quiddity>{ Quiddity.RUNTEST_ASYNC, Quiddity.RUNTEST_DEPLOY, Quiddity.RUNTEST_SYNC };
+        List<System.Quiddity> acceptableDefaultQuidditiesForTests = new List<System.Quiddity>{
+            System.Quiddity.RUNTEST_ASYNC,
+            System.Quiddity.RUNTEST_DEPLOY,
+            System.Quiddity.RUNTEST_SYNC
+        };
 
-        Quiddity currentQuiddity = Logger.getCurrentQuiddity();
+        System.Quiddity currentQuiddity = Logger.getCurrentQuiddity();
 
         System.Assert.isTrue(acceptableDefaultQuidditiesForTests.contains(currentQuiddity));
         System.Assert.areEqual(System.Request.getCurrent().getQuiddity(), currentQuiddity);
