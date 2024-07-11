@@ -15,7 +15,7 @@
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
             "versionNumber": "4.13.13.NEXT",
-            "versionName": "Improved Full-Qualified References",
+            "versionName": "Improved Fully-Qualified References",
             "versionDescription": "Switched to using fully-qualified references to all standard classes in the Schema & System namespaces",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
@@ -180,7 +180,7 @@
         "Nebula Logger - Core@4.13.10-authsession-bugfix-for-lwc-logging": "04t5Y0000027L04QAE",
         "Nebula Logger - Core@4.13.11-track-user-federation-identifier": "04t5Y0000027L98QAE",
         "Nebula Logger - Core@4.13.12-added-refresh-button-on-relatedlogentries-lwc": "04t5Y0000015oCkQAI",
-        "Nebula Logger - Core@4.13.13-improved-full-qualified-references": "04t5Y0000015oDsQAI",
+        "Nebula Logger - Core@4.13.13-improved-fully-qualified-references": "04t5Y0000015oDsQAI",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
