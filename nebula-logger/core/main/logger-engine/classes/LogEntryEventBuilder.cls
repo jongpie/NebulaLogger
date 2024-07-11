@@ -615,7 +615,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        return this.setFields(new Map<Schema.SObjectField, Object>{ field => fieldValue });
+        return this.setField(new Map<Schema.SObjectField, Object>{ field => fieldValue });
     }
 
     /**
@@ -625,7 +625,7 @@ global with sharing class LogEntryEventBuilder {
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @SuppressWarnings('PMD.AvoidDebugStatements')
-    global LogEntryEventBuilder setFields(Map<Schema.SObjectField, Object> fieldToValue) {
+    global LogEntryEventBuilder setField(Map<Schema.SObjectField, Object> fieldToValue) {
         if (this.shouldSave() == false || fieldToValue == null) {
             return this;
         }

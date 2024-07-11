@@ -1818,7 +1818,7 @@ private class LogEntryEventBuilder_Tests {
             builder.getLogEntryEvent().put(field, null);
         }
 
-        builder.setFields(fieldToValue);
+        builder.setField(fieldToValue);
 
         for (Schema.SObjectField field : fieldToValue.keySet()) {
             Object fieldValue = fieldToValue.get(field);

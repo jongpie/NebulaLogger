@@ -400,6 +400,47 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `setField(Schema.SObjectField field, Object fieldValue)` → `LogEntryEventBuilder`
+
+Sets a field values on the builder&apos;s `LogEntryEvent__e` record
+
+##### Parameters
+
+| Param        | Description                                              |
+| ------------ | -------------------------------------------------------- |
+| `field`      | The `Schema.SObjectField` token of the field to populate |
+| `fieldValue` | The `Object` value to populate in the provided field     |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setField(Map<Schema.SObjectField, Object> fieldToValue)` → `LogEntryEventBuilder`
+
+Sets multiple field values on the builder&apos;s `LogEntryEvent__e` record
+
+##### Parameters
+
+| Param          | Description                                                            |
+| -------------- | ---------------------------------------------------------------------- |
+| `fieldToValue` | An instance of `Map&lt;Schema.SObjectField, Object&gt;` containing the |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `setHttpRequestDetails(System.HttpRequest request)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s HTTP Request fields
