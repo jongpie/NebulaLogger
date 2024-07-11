@@ -3,20 +3,15 @@
     "namespace": "",
     "sourceApiVersion": "60.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "plugins": {
-        "sfdx-plugin-prettier": {
-            "enabled": true
-        }
-    },
     "packageDirectories": [
         {
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.13.NEXT",
-            "versionName": "Improved Fully-Qualified References",
-            "versionDescription": "Switched to using fully-qualified references to all standard classes in the Schema & System namespaces",
+            "versionNumber": "4.13.14.NEXT",
+            "versionName": "Custom Field Mappings Support",
+            "versionDescription": "Added the ability to set & map custom fields, using new instance methods LogEntryEventBuilder.setField() & setFields(), and a new CMDT LoggerFieldMapping__mdt",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
