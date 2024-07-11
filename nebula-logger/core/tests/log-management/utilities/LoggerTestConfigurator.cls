@@ -13,7 +13,7 @@
  */
 @IsTest
 public without sharing class LoggerTestConfigurator {
-    private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME = queryPermissionSets();
+    private static final Map<String, Schema.PermissionSet> PERMISSION_SETS_BY_NAME = queryPermissionSets();
 
     /**
      * @description Assigns the permission set `LoggerAdmin` to the specified user ID
@@ -146,15 +146,15 @@ public without sharing class LoggerTestConfigurator {
     }
 
     // Helper methods
-    private static void assignPermissionSet(Id userId, PermissionSet permissionSet) {
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = permissionSet.Id);
+    private static void assignPermissionSet(Id userId, Schema.PermissionSet permissionSet) {
+        Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(AssigneeId = userId, PermissionSetId = permissionSet.Id);
         insert permissionSetAssignment;
     }
 
-    private static Map<String, PermissionSet> queryPermissionSets() {
+    private static Map<String, Schema.PermissionSet> queryPermissionSets() {
         List<String> permissionSetNames = new List<String>{ 'LoggerAdmin', 'LoggerLogViewer', 'LoggerEndUser', 'LoggerLogCreator' };
-        Map<String, PermissionSet> results = new Map<String, PermissionSet>();
-        for (PermissionSet permissionSet : [SELECT Id, Name FROM PermissionSet WHERE Name IN :permissionSetNames]) {
+        Map<String, Schema.PermissionSet> results = new Map<String, Schema.PermissionSet>();
+        for (Schema.PermissionSet permissionSet : [SELECT Id, Name FROM PermissionSet WHERE Name IN :permissionSetNames]) {
             results.put(permissionSet.Name, permissionSet);
         }
         return results;

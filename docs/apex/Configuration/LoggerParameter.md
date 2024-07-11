@@ -48,11 +48,11 @@ The name of the Platform Cache partition to use for caching (when platform cache
 
 #### `QUERY_APEX_CLASS_DATA` → `Boolean`
 
-Controls if Nebula Logger queries `ApexClass` data. When set to `false`, any `ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default
+Controls if Nebula Logger queries `Schema.ApexClass` data. When set to `false`, any `Schema.ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default
 
 #### `QUERY_APEX_TRIGGER_DATA` → `Boolean`
 
-Controls if Nebula Logger queries `ApexTrigger` data. When set to `false`, any `ApexTrigger` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexTriggerData`, or `true` as the default
+Controls if Nebula Logger queries `Schema.ApexTrigger` data. When set to `false`, any `Schema.ApexTrigger` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexTriggerData`, or `true` as the default
 
 #### `QUERY_AUTH_SESSION_DATA` → `Boolean`
 
@@ -64,7 +64,7 @@ Controls if Nebula Logger queries `Schema.AuthSession` data synchronously &amp; 
 
 #### `QUERY_FLOW_DEFINITION_VIEW_DATA` → `Boolean`
 
-Controls if Nebula Logger queries `FlowDefinitionView` data. When set to `false`, any `FlowDefinitionView` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryFlowDefinitionViewData`, or `true` as the default
+Controls if Nebula Logger queries `Schema.FlowDefinitionView` data. When set to `false`, any `Schema.FlowDefinitionView` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryFlowDefinitionViewData`, or `true` as the default
 
 #### `QUERY_NETWORK_DATA` → `Boolean`
 
@@ -101,6 +101,10 @@ Indicates if Nebula Logger will enforce scenario-based logging to be used. When 
 #### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
 
 Indicates if Nebula Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record `LoggerParameter.SendErrorEmailNotifications`, or `true` as the default
+
+#### `STORE_HEAP_SIZE_LIMIT` → `Boolean`
+
+Indicates if Nebula Logger will store the transaction heap limits on `LogEntry__c`, retrieved from the class `System.Limits`. Controlled by the custom metadata record `LoggerParameter.StoreApexHeapSizeLimit`, or `true` as the default. Relies on `LoggerParameter.StoreTransactionLimits` to be true, as well.
 
 #### `STORE_HTTP_RESPONSE_HEADER_VALUES` → `Boolean`
 

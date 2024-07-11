@@ -34,7 +34,7 @@ public without sharing class LoggerScenarioRule {
     @TestVisible
     private static void setMock(LoggerScenarioRule__mdt scenarioRule) {
         if (String.isBlank(scenarioRule.Scenario__c)) {
-            throw new System.IllegalArgumentException('Scenario__c is required on `LoggerScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
+            throw new System.IllegalArgumentException('Scenario__c is required on `LoggerScenarioRule__mdt: \n' + System.JSON.serializePretty(scenarioRule));
         }
 
         if (isValid(scenarioRule)) {

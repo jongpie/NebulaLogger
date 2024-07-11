@@ -38,7 +38,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_call_status_api() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
@@ -60,7 +60,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_enable_log_entry_event_stream() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.ENABLE_LOG_ENTRY_EVENT_STREAM;
@@ -71,7 +71,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_enable_stack_trace_parsing() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = JSON.serialize(false));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = System.JSON.serialize(false));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.ENABLE_STACK_TRACE_PARSING;
@@ -82,7 +82,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_enable_system_messages() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'EnableLoggerSystemMessages',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
@@ -93,7 +96,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_enable_tagging() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
@@ -104,7 +107,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_normalize_scenario_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.NORMALIZE_SCENARIO_DATA;
@@ -115,7 +118,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_normalize_tag_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeTagData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.NORMALIZE_TAG_DATA;
@@ -137,7 +140,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_apex_class_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
@@ -148,7 +151,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_apex_trigger_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_APEX_TRIGGER_DATA;
@@ -159,7 +162,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_auth_session_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
@@ -172,7 +175,7 @@ private class LoggerParameter_Tests {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
             DeveloperName = 'QueryAuthSessionDataSynchronously',
-            Value__c = JSON.serialize(mockValue)
+            Value__c = System.JSON.serialize(mockValue)
         );
         LoggerParameter.setMock(mockParameter);
 
@@ -184,7 +187,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_flow_definition_view_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryFlowDefinitionViewData',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
@@ -195,7 +201,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_network_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
@@ -206,7 +212,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_network_data_synchronously() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryNetworkDataSynchronously',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
@@ -217,7 +226,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_organization_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
@@ -230,7 +239,7 @@ private class LoggerParameter_Tests {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
             DeveloperName = 'QueryOrganizationDataSynchronously',
-            Value__c = JSON.serialize(mockValue)
+            Value__c = System.JSON.serialize(mockValue)
         );
         LoggerParameter.setMock(mockParameter);
 
@@ -242,7 +251,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_related_record_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
@@ -253,7 +262,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_user_data() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
@@ -264,7 +273,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_query_user_data_synchronously() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryUserDataSynchronously',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
@@ -283,7 +295,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_require_scenario_usage_when_true() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = System.JSON.serialize(true)));
 
         Boolean returnedValue = LoggerParameter.REQUIRE_SCENARIO_USAGE;
 
@@ -292,7 +304,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_require_scenario_usage_when_false() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = JSON.serialize(false)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RequireScenarioUsage', Value__c = System.JSON.serialize(false)));
 
         Boolean returnedValue = LoggerParameter.REQUIRE_SCENARIO_USAGE;
 
@@ -302,7 +314,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_send_error_email_notifications() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'SendErrorEmailNotifications',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
@@ -313,7 +328,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_store_http_response_header_values() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'StoreHttpResponseHeaderValues',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES;
@@ -332,7 +350,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_store_organization_limits_when_true() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = System.JSON.serialize(true)));
 
         Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
 
@@ -341,7 +359,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_store_organization_limits_when_false() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(false)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = System.JSON.serialize(false)));
 
         Boolean returnedValue = LoggerParameter.STORE_ORGANIZATION_LIMITS;
 
@@ -351,7 +369,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_store_rest_request_header_values() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'StoreRestRequestHeaderValues',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES;
@@ -362,7 +383,10 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_store_rest_response_header_values() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'StoreRestResponseHeaderValues',
+            Value__c = System.JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES;
@@ -381,7 +405,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_store_transaction_limits_when_true() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = System.JSON.serialize(true)));
 
         Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
 
@@ -390,7 +414,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_store_transaction_limits_when_false() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = JSON.serialize(false)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreTransactionLimits', Value__c = System.JSON.serialize(false)));
 
         Boolean returnedValue = LoggerParameter.STORE_TRANSACTION_LIMITS;
 
@@ -412,7 +436,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_use_platform_cache() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
@@ -423,7 +447,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_constant_value_for_use_topics_for_tags() {
         Boolean mockValue = true;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
@@ -434,7 +458,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_boolean_parameter() {
         Boolean parameterValue = true;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBoolean', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBoolean', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.getBoolean(mockParameter.DeveloperName, null);
@@ -445,7 +469,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_boolean_list_parameter() {
         List<Boolean> parameterValue = new List<Boolean>{ true, false, true, true };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBooleanList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBooleanList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Boolean> returnedValue = LoggerParameter.getBooleanList(mockParameter.DeveloperName, null);
@@ -456,7 +480,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_default_value_when_configured_boolean_list_parameter_is_null() {
         List<Boolean> parameterValue = null;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBooleanList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBooleanList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
         List<Boolean> defaultParameterValue = new List<Boolean>{ true, false };
 
@@ -470,7 +494,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_date_parameter() {
         Date parameterValue = System.today().addDays(-7);
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDate', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDate', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Date returnedValue = LoggerParameter.getDate(mockParameter.DeveloperName, null);
@@ -481,7 +505,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_date_list_parameter() {
         List<Date> parameterValue = new List<Date>{ System.today(), System.today().addDays(10) };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDateList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDateList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Date> returnedValue = LoggerParameter.getDateList(mockParameter.DeveloperName, null);
@@ -492,7 +516,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_datetime_parameter() {
         Datetime parameterValue = System.now().addDays(-7);
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDatetime', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDatetime', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Datetime returnedValue = LoggerParameter.getDatetime(mockParameter.DeveloperName, null);
@@ -503,7 +527,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_datetime_list_parameter() {
         List<Datetime> parameterValue = new List<Datetime>{ System.now(), System.now().addDays(10) };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDatetimeList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDatetimeList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Datetime> returnedValue = LoggerParameter.getDatetimeList(mockParameter.DeveloperName, null);
@@ -514,7 +538,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_decimal_parameter() {
         Decimal parameterValue = 123456.0987;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDecimal', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDecimal', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Decimal returnedValue = LoggerParameter.getDecimal(mockParameter.DeveloperName, null);
@@ -525,7 +549,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_decimal_list_parameter() {
         List<Decimal> parameterValue = new List<Decimal>{ 123.45, 678.09 };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDecimalList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDecimalList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Decimal> returnedValue = LoggerParameter.getDecimalList(mockParameter.DeveloperName, null);
@@ -536,7 +560,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_double_parameter() {
         Double parameterValue = 123456.0987;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDouble', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDouble', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Double returnedValue = LoggerParameter.getDouble(mockParameter.DeveloperName, null);
@@ -547,7 +571,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_double_list_parameter() {
         List<Double> parameterValue = new List<Double>{ 123.45, 678.09 };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDoubleList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyDoubleList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Double> returnedValue = LoggerParameter.getDoubleList(mockParameter.DeveloperName, null);
@@ -558,7 +582,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_id_parameter() {
         Id parameterValue = System.UserInfo.getUserId();
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyId', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyId', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Id returnedValue = LoggerParameter.getId(mockParameter.DeveloperName, null);
@@ -569,7 +593,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_id_list_parameter() {
         List<Id> parameterValue = new List<Id>{ System.UserInfo.getUserId() };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyIdList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyIdList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Id> returnedValue = LoggerParameter.getIdList(mockParameter.DeveloperName, null);
@@ -580,7 +604,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_integer_parameter() {
         Integer parameterValue = 123456;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyInteger', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyInteger', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Integer returnedValue = LoggerParameter.getInteger(mockParameter.DeveloperName, null);
@@ -591,7 +615,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_integer_list_parameter() {
         List<Integer> parameterValue = new List<Integer>{ 12345, 67809 };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyIntegerList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyIntegerList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Integer> returnedValue = LoggerParameter.getIntegerList(mockParameter.DeveloperName, null);
@@ -602,7 +626,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_long_parameter() {
         Long parameterValue = 123456;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyLong', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyLong', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Long returnedValue = LoggerParameter.getLong(mockParameter.DeveloperName, null);
@@ -613,7 +637,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_long_list_parameter() {
         List<Long> parameterValue = new List<Long>{ 12345, 67809 };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyLongList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyLongList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<Long> returnedValue = LoggerParameter.getLongList(mockParameter.DeveloperName, null);
@@ -624,7 +648,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_sobject_parameter() {
         SObject parameterValue = getUserRecord();
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObject', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObject', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         SObject returnedValue = LoggerParameter.getSObject(mockParameter.DeveloperName, null);
@@ -635,7 +659,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_sobject_list_parameter() {
         List<SObject> parameterValue = new List<SObject>{ getUserRecord() };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObjectList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObjectList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<SObject> returnedValue = LoggerParameter.getSObjectList(mockParameter.DeveloperName, null);
@@ -657,7 +681,7 @@ private class LoggerParameter_Tests {
     @IsTest
     static void it_should_return_string_list_parameter() {
         List<String> parameterValue = new List<String>{ 'Hello', 'Goodbye' };
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyStringList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyStringList', Value__c = System.JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         List<String> returnedValue = LoggerParameter.getStringList(mockParameter.DeveloperName, null);

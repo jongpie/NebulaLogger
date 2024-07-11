@@ -12,7 +12,7 @@ Proxy class used as a middle layer between some problematic SObject Types and th
 
 #### LoggerSObjectProxy.AuthSession class
 
-All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible to mock field values directly during unit tests - even using tricks like JSON.deserialize() do not work. The `LoggerSObjectProxy.AuthSession` class acts as a substitute for a `Schema.AuthSession` record to provide the abilility to mock the data during unit &amp; integration tests.
+All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible to mock field values directly during unit tests - even using tricks like System.JSON.deserialize() do not work. The `LoggerSObjectProxy.AuthSession` class acts as a substitute for a `Schema.AuthSession` record to provide the abilility to mock the data during unit &amp; integration tests.
 
 ---
 
@@ -34,6 +34,8 @@ All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more d
 
 ###### `LogoutUrl` → `String`
 
+###### `ParentId` → `Id`
+
 ###### `SessionSecurityLevel` → `String`
 
 ###### `SessionType` → `String`
@@ -46,7 +48,7 @@ All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more d
 
 #### LoggerSObjectProxy.LoginHistory class
 
-All `Schema.LoginHistory` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible to mock field values directly during unit tests - even using tricks like JSON.deserialize() do not work. The `LoggerSObjectProxy.LoginHistory` class acts as a substitute for a `Schema.LoginHistory` record to provide the abilility to mock the data during unit &amp; integration tests.
+All `Schema.LoginHistory` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible to mock field values directly during unit tests - even using tricks like System.JSON.deserialize() do not work. The `LoggerSObjectProxy.LoginHistory` class acts as a substitute for a `Schema.LoginHistory` record to provide the abilility to mock the data during unit &amp; integration tests.
 
 ---
 

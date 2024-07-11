@@ -525,7 +525,7 @@ private class LoggerDataStore_Tests {
         }
     }
 
-    // Queueable tests
+    // System.Queueable tests
     @IsTest
     static void it_should_enqueue_job() {
         System.Assert.areEqual(0, System.Limits.getQueueableJobs());
@@ -593,13 +593,13 @@ private class LoggerDataStore_Tests {
     private class MockJobQueue extends LoggerDataStore.JobQueue {
         public Integer callCount = 0;
 
-        public override Id enqueueJob(Queueable queueableJob) {
+        public override Id enqueueJob(System.Queueable queueableJob) {
             this.callCount++;
             return LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
         }
     }
 
-    private class MockQueueable implements Queueable {
+    private class MockQueueable implements System.Queueable {
         public Integer callCount = 0;
         public void execute(System.QueueableContext queueableContext) {
             this.callCount++;

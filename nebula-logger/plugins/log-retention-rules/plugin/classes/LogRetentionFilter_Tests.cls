@@ -464,7 +464,7 @@ private class LogRetentionFilter_Tests {
     }
 
     static LogRetentionRuleCondition__mdt createMockRuleCondition(String fieldPath, String operator, String valueType, Object value) {
-        String valueString = value instanceof String ? (String) value : JSON.serialize(value);
+        String valueString = value instanceof String ? (String) value : System.JSON.serialize(value);
         return new LogRetentionRuleCondition__mdt(
             FieldPath__c = fieldPath,
             Operator__c = operator,

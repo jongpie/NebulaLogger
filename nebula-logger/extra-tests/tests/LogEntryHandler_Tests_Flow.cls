@@ -50,8 +50,8 @@ private class LogEntryHandler_Tests_Flow {
 
     @IsTest
     static void it_should_set_flow_details_when_origin_location_is_a_flow() {
-        FlowDefinitionView flowDefinitionView = getFlowDefinitionView();
-        FlowVersionView flowVersion = getFlowVersion(flowDefinitionView.ActiveVersionId);
+        Schema.FlowDefinitionView flowDefinitionView = getFlowDefinitionView();
+        Schema.FlowVersionView flowVersion = getFlowVersion(flowDefinitionView.ActiveVersionId);
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -89,23 +89,23 @@ private class LogEntryHandler_Tests_Flow {
         System.Assert.areEqual(flowDefinitionView.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
         System.Assert.isNull(
             logEntry.OriginSourceCreatedById__c,
-            'Neither FlowDefinitionView nor FlowVersionView seem to be have "created by/date" fields, so always expect null 😥'
+            'Neither Schema.FlowDefinitionView nor Schema.FlowVersionView seem to be have "created by/date" fields, so always expect null 😥'
         );
         System.Assert.isNull(
             logEntry.OriginSourceCreatedByUsername__c,
-            'Neither FlowDefinitionView nor FlowVersionView seem to be have "created by/date" fields, so always expect null 😥'
+            'Neither Schema.FlowDefinitionView nor Schema.FlowVersionView seem to be have "created by/date" fields, so always expect null 😥'
         );
         System.Assert.isNull(
             logEntry.OriginSourceCreatedDate__c,
-            'Neither FlowDefinitionView nor FlowVersionView seem to be have "created by/date" fields, so always expect null 😥'
+            'Neither Schema.FlowDefinitionView nor Schema.FlowVersionView seem to be have "created by/date" fields, so always expect null 😥'
         );
         System.Assert.isNull(
             logEntry.OriginSourceLastModifiedById__c,
-            'Neither FlowDefinitionView nor FlowVersionView seem to be have "last modified by" fields (only the person\'s name is stored?!), so always expect null 😥'
+            'Neither Schema.FlowDefinitionView nor Schema.FlowVersionView seem to be have "last modified by" fields (only the person\'s name is stored?!), so always expect null 😥'
         );
         System.Assert.isNull(
             logEntry.OriginSourceLastModifiedByUsername__c,
-            'Neither FlowDefinitionView nor FlowVersionView seem to be have "last modified by" fields (only the person\'s name is stored?!), so always expect null 😥'
+            'Neither Schema.FlowDefinitionView nor FlowVersionView seem to be have "last modified by" fields (only the person\'s name is stored?!), so always expect null 😥'
         );
         System.Assert.isNull(logEntry.OriginSourceSnippet__c, 'There\'s currently not a way to generate a snippet for a Flow, so always expect null 😥');
     }
@@ -147,7 +147,7 @@ private class LogEntryHandler_Tests_Flow {
         ];
     }
 
-    private static FlowDefinitionView getFlowDefinitionView() {
+    private static Schema.FlowDefinitionView getFlowDefinitionView() {
         return [
             SELECT
                 ActiveVersionId,
@@ -168,7 +168,7 @@ private class LogEntryHandler_Tests_Flow {
         ];
     }
 
-    private static FlowVersionView getFlowVersion(Id flowActiveVersionId) {
+    private static Schema.FlowVersionView getFlowVersion(Id flowActiveVersionId) {
         return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId = :flowActiveVersionId];
     }
 }

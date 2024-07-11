@@ -29,7 +29,7 @@ public inherited sharing class FlowLogger {
     //                       which also causes issues with sharing logic between classes (via abstract and virtual classes)
     // +3 goofiness points: if we duplicate properties between classes, we can convert all other classes
     //                      to one common class (FlowLogger.LogEntry), and use it for shared logic.
-    //                      For maximum goofiness, the conversion between classes happens using JSON.deserialize()
+    //                      For maximum goofiness, the conversion between classes happens using System.JSON.deserialize()
     /**
      * @description Inner, wrapper class containing Log Entry information.
      */

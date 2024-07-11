@@ -47,7 +47,7 @@ private class FlowRecordLogEntry_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        String expectedUserJson = JSON.serializePretty(currentUser);
+        String expectedUserJson = System.JSON.serializePretty(currentUser);
         System.Assert.areEqual(flowRecordEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowRecordEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
@@ -93,7 +93,7 @@ private class FlowRecordLogEntry_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        String expectedUserJson = JSON.serializePretty(currentUser);
+        String expectedUserJson = System.JSON.serializePretty(currentUser);
         System.Assert.areEqual(flowRecordEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowRecordEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
@@ -130,7 +130,7 @@ private class FlowRecordLogEntry_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        String expectedUserJson = JSON.serializePretty(currentUser);
+        String expectedUserJson = System.JSON.serializePretty(currentUser);
         System.Assert.areEqual(flowRecordEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.Assert.areEqual(flowRecordEntry.message, publishedLogEntryEvent.Message__c);
         System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
@@ -320,7 +320,7 @@ private class FlowRecordLogEntry_Tests {
         System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         List<String> publishedLogEntryEventTags = publishedLogEntryEvent.Tags__c.split('\n');
-        System.Assert.areEqual(tags.size(), publishedLogEntryEventTags.size(), JSON.serializePretty(publishedLogEntryEventTags));
+        System.Assert.areEqual(tags.size(), publishedLogEntryEventTags.size(), System.JSON.serializePretty(publishedLogEntryEventTags));
         Set<String> tagsSet = new Set<String>(tags);
         for (String publishedTag : publishedLogEntryEventTags) {
             publishedTag = publishedTag.trim();

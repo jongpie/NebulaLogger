@@ -7,7 +7,7 @@
  * @description An example queueable job that will run several chained instances
  * Each instance uses the parentLogTransactionId to relate its log back to the original instance's log
  */
-public with sharing class Account_Queueable_Logger_Example implements Queueable {
+public with sharing class Account_Queueable_Logger_Example implements System.Queueable {
     private Integer numberOfJobsToChain;
     private String parentLogTransactionId;
 

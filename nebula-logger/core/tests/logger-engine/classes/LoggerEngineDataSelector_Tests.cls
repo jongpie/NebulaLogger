@@ -21,11 +21,11 @@ private class LoggerEngineDataSelector_Tests {
         List<Schema.AuthSession> sessions = [
             SELECT
                 Id,
-                LoginType,
-                LoginHistoryId,
                 LoginHistory.Application,
                 LoginHistory.Browser,
                 LoginHistory.Platform,
+                LoginHistoryId,
+                LoginType,
                 LogoutUrl,
                 ParentId,
                 SessionSecurityLevel,

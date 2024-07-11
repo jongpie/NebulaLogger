@@ -38,8 +38,8 @@ private class LogBatchPurgeController_Tests {
     private static void it_should_return_summary_for_logs_created_today() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
-        createLogRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, System.now());
-        createLogRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, System.now());
+        createLogRecords('Delete', expectedRecordCountWithPurgeActionDelete, System.now());
+        createLogRecords('Custom', expectedRecordCountWithPurgeActionCustom, System.now());
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('TODAY');
 
@@ -68,8 +68,8 @@ private class LogBatchPurgeController_Tests {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
         Datetime createDate = DateTime.newInstance(Date.today().toStartOfWeek(), Datetime.now().time());
-        createLogRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-        createLogRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+        createLogRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
+        createLogRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('THIS_WEEK');
 
@@ -90,8 +90,8 @@ private class LogBatchPurgeController_Tests {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
         Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-        createLogRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-        createLogRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+        createLogRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
+        createLogRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('THIS_MONTH');
 
@@ -119,8 +119,8 @@ private class LogBatchPurgeController_Tests {
     private static void it_should_return_summary_for_logEntry_created_today() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
-        createLogEntryRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, System.now());
-        createLogEntryRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, System.now());
+        createLogEntryRecords('Delete', expectedRecordCountWithPurgeActionDelete, System.now());
+        createLogEntryRecords('Custom', expectedRecordCountWithPurgeActionCustom, System.now());
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('TODAY');
 
         Integer expectedAggregateResultSize = 2;
@@ -148,8 +148,8 @@ private class LogBatchPurgeController_Tests {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
         Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-        createLogEntryRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-        createLogEntryRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+        createLogEntryRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
+        createLogEntryRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('THIS_WEEK');
 
@@ -178,8 +178,8 @@ private class LogBatchPurgeController_Tests {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
         Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-        createLogEntryRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-        createLogEntryRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+        createLogEntryRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
+        createLogEntryRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('THIS_MONTH');
 
@@ -317,19 +317,22 @@ private class LogBatchPurgeController_Tests {
     static void it_should_permit_user_to_execute_purge_batch_when_custom_permission_is_assigned() {
         Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
-        PermissionSet permissionSet = new PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
+        Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
             SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId()
         );
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = standardUser.Id, PermissionSetId = permissionSet.Id);
+        Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(
+            AssigneeId = standardUser.Id,
+            PermissionSetId = permissionSet.Id
+        );
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
 
         System.runAs(standardUser) {
             System.Assert.isTrue(
                 System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION),
-                JSON.serializePretty(permissionSetAssignment)
+                System.JSON.serializePretty(permissionSetAssignment)
             );
             System.Assert.areEqual(
                 true,
@@ -344,9 +347,9 @@ private class LogBatchPurgeController_Tests {
         System.Test.startTest();
         LogBatchPurgeController.runBatchPurge();
         System.Test.stopTest();
-        List<AsyncApexJob> purgeJobs = LogBatchPurgeController.getBatchPurgeJobRecords();
+        List<Schema.AsyncApexJob> purgeJobs = LogBatchPurgeController.getBatchPurgeJobRecords();
         System.Assert.areEqual(1, purgeJobs.size(), 'should return purge batch job records');
-        for (AsyncApexJob job : purgeJobs) {
+        for (Schema.AsyncApexJob job : purgeJobs) {
             System.Assert.isNotNull(job.JobType, 'it should return job type');
             System.Assert.isNotNull(job.JobItemsProcessed, 'it should return JobItemsProcessed');
             System.Assert.isNotNull(job.NumberOfErrors, 'it should return noOfErrors');
@@ -360,7 +363,7 @@ private class LogBatchPurgeController_Tests {
     static void it_should_not_permit_user_to_execute_purge_batch_when_custom_permission_is_not_assigned() {
         Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
-        PermissionSet permissionSet = new PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
+        Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
@@ -388,7 +391,7 @@ private class LogBatchPurgeController_Tests {
         String apexClassName = LogBatchPurger.class.getName().contains('.')
             ? LogBatchPurger.class.getName().substringAfter('.')
             : LogBatchPurger.class.getName();
-        List<AsyncApexJob> purgeBatchJobs = [
+        List<Schema.AsyncApexJob> purgeBatchJobs = [
             SELECT Id
             FROM AsyncApexJob
             WHERE
@@ -400,10 +403,10 @@ private class LogBatchPurgeController_Tests {
         System.Assert.areEqual(1, purgeBatchJobs.size(), 'should execute the purge batch job');
     }
 
-    private static void createLogRecords(String transactionIdPrefix, String purgeAction, Integer noOfRecords, Datetime createDate) {
+    private static void createLogRecords(String purgeAction, Integer noOfRecords, Datetime createDate) {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 1; i <= noOfRecords; i++) {
-            Log__c log = new Log__c(TransactionId__c = transactionIdPrefix + i);
+            Log__c log = new Log__c(TransactionId__c = System.UUID.randomUUID().toString());
             log.LogPurgeAction__c = purgeAction;
             log.LogRetentionDate__c = System.today();
             logs.add(log);
@@ -414,8 +417,8 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    private static void createLogEntryRecords(String transactionIdPrefix, String purgeAction, Integer noOfRecords, Datetime createDate) {
-        Log__c log = new log__c(TransactionId__c = transactionIdPrefix);
+    private static void createLogEntryRecords(String purgeAction, Integer noOfRecords, Datetime createDate) {
+        Log__c log = new log__c(TransactionId__c = System.UUID.randomUUID().toString());
         log.LogPurgeAction__c = purgeAction;
         log.LogRetentionDate__c = System.today();
         insert log;

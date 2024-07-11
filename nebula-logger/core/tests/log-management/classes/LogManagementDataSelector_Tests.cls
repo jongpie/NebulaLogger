@@ -10,7 +10,7 @@ private class LogManagementDataSelector_Tests {
     static void it_dynamically_queries_all_records_for_specified_sobject_type_and_fields() {
         Schema.SObjectType targetSObjectType = Schema.Organization.SObjectType;
         Set<String> targetFieldNames = new Set<String>{ Schema.Organization.Id.getDescribe().getName(), Schema.Organization.Name.getDescribe().getName() };
-        List<Schema.Organization> expectedResults = Database.query('SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType);
+        List<Schema.Organization> expectedResults = System.Database.query('SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType);
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getAll(targetSObjectType, targetFieldNames);
 
@@ -23,7 +23,7 @@ private class LogManagementDataSelector_Tests {
         Schema.SObjectType targetSObjectType = Schema.User.SObjectType;
         Set<String> targetFieldNames = new Set<String>{ Schema.User.Id.getDescribe().getName(), Schema.User.Name.getDescribe().getName() };
         List<Id> targetIds = new List<Id>(new Map<Id, Schema.User>([SELECT Id FROM User LIMIT 3]).keySet());
-        List<Schema.User> expectedResults = Database.query(
+        List<Schema.User> expectedResults = System.Database.query(
             'SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds'
         );
 
@@ -35,14 +35,14 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_matching_apex_classes_for_specified_class_names() {
         Set<String> targetApexClassNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
-        List<ApexClass> expectedResults = [
+        List<Schema.ApexClass> expectedResults = [
             SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexClass
             WHERE Name IN :targetApexClassNames
             ORDER BY NamespacePrefix NULLS LAST
         ];
 
-        List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
+        List<Schema.ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
         System.Assert.areEqual(expectedResults, returnedResults);
     }
@@ -54,7 +54,7 @@ private class LogManagementDataSelector_Tests {
         Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
 
-        List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
+        List<Schema.ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
         System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
         System.Assert.areEqual(0, returnedResults.size());
@@ -63,14 +63,14 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_matching_apex_triggers_for_specified_class_names() {
         Set<String> targetApexTriggerNames = new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
-        List<ApexTrigger> expectedResults = [
+        List<Schema.ApexTrigger> expectedResults = [
             SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
             FROM ApexTrigger
             WHERE Name IN :targetApexTriggerNames
             ORDER BY NamespacePrefix NULLS LAST
         ];
 
-        List<ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
+        List<Schema.ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
 
         System.Assert.areEqual(expectedResults, returnedResults);
     }
@@ -82,7 +82,7 @@ private class LogManagementDataSelector_Tests {
         Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = String.valueOf(false)));
 
-        List<ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
+        List<Schema.ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
 
         System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
         System.Assert.areEqual(0, returnedResults.size());
@@ -90,10 +90,10 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_cached_apex_email_notifications() {
-        List<ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
+        List<Schema.ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
         System.Assert.areEqual(1, System.Limits.getQueries());
 
-        List<ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
+        List<Schema.ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
 
         System.Assert.areEqual(2, System.Limits.getQueries());
         LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
@@ -115,7 +115,7 @@ private class LogManagementDataSelector_Tests {
     //     executeSomeFutureMethod();
     //     System.Test.stopTest();
 
-    //     System.Assert.fail([SELECT status FROM asyncapexjob]);
+    //     System.Assert.fail([SELECT status FROM AsyncApexJob]);
     //     Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
 
     //     System.Assert.areEqual(1, returnedCount);
@@ -149,7 +149,7 @@ private class LogManagementDataSelector_Tests {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
 
             System.Assert.areEqual(expectedLog.Id, returnedLog.Id);
-            System.Assert.areEqual(JSON.serialize(expectedLog), JSON.serialize(expectedLog));
+            System.Assert.areEqual(System.JSON.serialize(expectedLog), System.JSON.serialize(expectedLog));
         }
 
         System.Assert.areEqual(2, System.Limits.getQueries());
@@ -225,7 +225,7 @@ private class LogManagementDataSelector_Tests {
         Schema.User undeleteableRecord = new Schema.User(Id = System.UserInfo.getUserId());
         List<Id> recordIds = new List<Id>{ deleteableRecord.Id, undeleteableRecord.Id };
 
-        List<UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
+        List<Schema.UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
 
         System.Assert.areEqual(1, returnedResults.size());
         System.Assert.areEqual(deleteableRecord.Id, returnedResults.get(0).RecordId);

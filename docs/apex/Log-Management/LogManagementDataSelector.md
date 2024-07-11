@@ -31,9 +31,9 @@ List&lt;SObject&gt;
 
 `List&lt;SObject&gt;` containing any records in the specified `SObjectType`
 
-#### `getApexClasses(Set<String> apexClassNames)` → `List<ApexClass>`
+#### `getApexClasses(Set<String> apexClassNames)` → `List<Schema.ApexClass>`
 
-Returns a list of `ApexClass` records
+Returns a list of `Schema.ApexClass` records
 
 ##### Parameters
 
@@ -45,15 +45,15 @@ Returns a list of `ApexClass` records
 
 **Type**
 
-List&lt;ApexClass&gt;
+List&lt;Schema.ApexClass&gt;
 
 **Description**
 
-`List&lt;ApexClass&gt;` containing any matching records
+`List&lt;Schema.ApexClass&gt;` containing any matching records
 
-#### `getApexTriggers(Set<String> apexTriggerNames)` → `List<ApexTrigger>`
+#### `getApexTriggers(Set<String> apexTriggerNames)` → `List<Schema.ApexTrigger>`
 
-Returns a list of `ApexTrigger` records
+Returns a list of `Schema.ApexTrigger` records
 
 ##### Parameters
 
@@ -65,11 +65,11 @@ Returns a list of `ApexTrigger` records
 
 **Type**
 
-List&lt;ApexTrigger&gt;
+List&lt;Schema.ApexTrigger&gt;
 
 **Description**
 
-`List&lt;ApexTrigger&gt;` containing any matching records
+`List&lt;Schema.ApexTrigger&gt;` containing any matching records
 
 #### `getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds)` → `List<SObject>`
 
@@ -93,19 +93,19 @@ List&lt;SObject&gt;
 
 `List&lt;SObject&gt;` containing any matching records in the specified `SObjectType`
 
-#### `getCachedApexEmailNotifications()` → `List<ApexEmailNotification>`
+#### `getCachedApexEmailNotifications()` → `List<Schema.ApexEmailNotification>`
 
-Returns a cached copy of the `ApexEmailNotification` records in the org
+Returns a cached copy of the `Schema.ApexEmailNotification` records in the org
 
 ##### Return
 
 **Type**
 
-List&lt;ApexEmailNotification&gt;
+List&lt;Schema.ApexEmailNotification&gt;
 
 **Description**
 
-The cached `List&lt;ApexEmailNotification&gt;` records
+The cached `List&lt;Schema.ApexEmailNotification&gt;` records
 
 #### `getCachedRecentLogWithApiReleaseDetails()` → `Log__c`
 
@@ -123,15 +123,15 @@ The cached `Log__c` record, or `null` if no match is found
 
 #### `getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses)` → `Integer`
 
-Returns the count of `AsyncApexJob` records with the specified Apex class name, method name &amp; job status
+Returns the count of `Schema.AsyncApexJob` records with the specified Apex class name, method name &amp; job status
 
 ##### Parameters
 
-| Param            | Description                                                                       |
-| ---------------- | --------------------------------------------------------------------------------- |
-| `apexClassName`  | The fully-qualified name of the Apex class associated with `AsyncApexJob`         |
-| `apexMethodName` | The specific method (if any) within the Apex class associated with `AsyncApexJob` |
-| `jobStatuses`    | The list of job statuses that should be used to filter `AsynxApexJob` records     |
+| Param            | Description                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| `apexClassName`  | The fully-qualified name of the Apex class associated with `Schema.AsyncApexJob`         |
+| `apexMethodName` | The specific method (if any) within the Apex class associated with `Schema.AsyncApexJob` |
+| `jobStatuses`    | The list of job statuses that should be used to filter `AsynxApexJob` records            |
 
 ##### Return
 
@@ -163,9 +163,9 @@ Integer
 
 The `Integer` count of matching `LogEntry__c` records
 
-#### `getDeleteableUserRecordAccess(List<Id> recordIds)` → `List<UserRecordAccess>`
+#### `getDeleteableUserRecordAccess(List<Id> recordIds)` → `List<Schema.UserRecordAccess>`
 
-Returns the list of `UserRecordAccess` records for any of the specified record IDs that the current user can delete
+Returns the list of `Schema.UserRecordAccess` records for any of the specified record IDs that the current user can delete
 
 ##### Parameters
 
@@ -177,15 +177,15 @@ Returns the list of `UserRecordAccess` records for any of the specified record I
 
 **Type**
 
-List&lt;UserRecordAccess&gt;
+List&lt;Schema.UserRecordAccess&gt;
 
 **Description**
 
-The matching `List&lt;UserRecordAccess&gt;` records
+The matching `List&lt;Schema.UserRecordAccess&gt;` records
 
-#### `getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames)` → `List<FlowDefinitionView>`
+#### `getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames)` → `List<Schema.FlowDefinitionView>`
 
-Returns a list of `FlowDefinitionView` records
+Returns a list of `Schema.FlowDefinitionView` records
 
 ##### Parameters
 
@@ -197,15 +197,15 @@ Returns a list of `FlowDefinitionView` records
 
 **Type**
 
-List&lt;FlowDefinitionView&gt;
+List&lt;Schema.FlowDefinitionView&gt;
 
 **Description**
 
-`List&lt;FlowDefinitionView&gt;` containing any matching records
+`List&lt;Schema.FlowDefinitionView&gt;` containing any matching records
 
-#### `getFlowVersionViewsByDurableId(List<String> durableIds)` → `List<FlowVersionView>`
+#### `getFlowVersionViewsByDurableId(List<String> durableIds)` → `List<Schema.FlowVersionView>`
 
-Returns a list of `FlowVersionView` records description
+Returns a list of `Schema.FlowVersionView` records description
 
 ##### Parameters
 
@@ -217,11 +217,11 @@ Returns a list of `FlowVersionView` records description
 
 **Type**
 
-List&lt;FlowVersionView&gt;
+List&lt;Schema.FlowVersionView&gt;
 
 **Description**
 
-`List&lt;FlowDefinitionView&gt;` containing any matching records
+`List&lt;Schema.FlowDefinitionView&gt;` containing any matching records
 
 #### `getInstance()` → `LogManagementDataSelector`
 

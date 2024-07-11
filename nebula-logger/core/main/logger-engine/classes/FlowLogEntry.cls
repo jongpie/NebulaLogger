@@ -95,7 +95,7 @@ global inherited sharing class FlowLogEntry {
     global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         List<FlowLogger.LogEntry> shadowLogEntries = new List<FlowLogger.LogEntry>();
         for (FlowLogEntry flowLogEntry : flowLogEntries) {
-            FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) JSON.deserialize(JSON.serialize(flowLogEntry), FlowLogger.LogEntry.class);
+            FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) System.JSON.deserialize(System.JSON.serialize(flowLogEntry), FlowLogger.LogEntry.class);
             shadowLogEntry.addToLoggerBuffer()?.setRecordId(flowLogEntry.recordId);
 
             shadowLogEntries.add(shadowLogEntry);

@@ -28,7 +28,7 @@ public class LoggerMockDataCreator {
      */
     public static AggregateResult createAggregateResult() {
         Map<String, Object> emptyAggregateKeyValues = new Map<String, Object>();
-        return (AggregateResult) JSON.deserialize(JSON.serialize(emptyAggregateKeyValues), AggregateResult.class);
+        return (AggregateResult) System.JSON.deserialize(System.JSON.serialize(emptyAggregateKeyValues), AggregateResult.class);
     }
 
     /**
@@ -51,9 +51,9 @@ public class LoggerMockDataCreator {
      */
     public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId) {
         if (isSuccess) {
-            return (Database.LeadConvertResult) JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
+            return (Database.LeadConvertResult) System.JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
         } else {
-            return (Database.LeadConvertResult) JSON.deserialize(
+            return (Database.LeadConvertResult) System.JSON.deserialize(
                 '{"success":false, "leadid": "' +
                     recordId +
                     '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
@@ -82,9 +82,9 @@ public class LoggerMockDataCreator {
      */
     public static Database.DeleteResult createDatabaseDeleteResult(Boolean isSuccess, Id recordId) {
         if (isSuccess) {
-            return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
+            return (Database.DeleteResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
         } else {
-            return (Database.DeleteResult) JSON.deserialize(
+            return (Database.DeleteResult) System.JSON.deserialize(
                 '{"success":false, "id": "' + recordId + '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
                 Database.DeleteResult.class
             );
@@ -111,9 +111,9 @@ public class LoggerMockDataCreator {
      */
     public static Database.MergeResult createDatabaseMergeResult(Boolean isSuccess, Id recordId) {
         if (isSuccess) {
-            return (Database.MergeResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.MergeResult.class);
+            return (Database.MergeResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.MergeResult.class);
         } else {
-            return (Database.MergeResult) JSON.deserialize(
+            return (Database.MergeResult) System.JSON.deserialize(
                 '{"success":false,"errors":[{"message": "Could not merge...", "statusCode": "MERGE_FAILED"}]}',
                 Database.MergeResult.class
             );
@@ -140,9 +140,9 @@ public class LoggerMockDataCreator {
      */
     public static Database.SaveResult createDatabaseSaveResult(Boolean isSuccess, Id recordId) {
         if (isSuccess) {
-            return (Database.SaveResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.SaveResult.class);
+            return (Database.SaveResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.SaveResult.class);
         } else {
-            return (Database.SaveResult) JSON.deserialize(
+            return (Database.SaveResult) System.JSON.deserialize(
                 '{"success":false,"errors":[{"message": "Could not save...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION", "fields": ["Name"]}]}',
                 Database.SaveResult.class
             );
@@ -169,9 +169,9 @@ public class LoggerMockDataCreator {
      */
     public static Database.UndeleteResult createDatabaseUndeleteResult(Boolean isSuccess, Id recordId) {
         if (isSuccess) {
-            return (Database.UndeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.UndeleteResult.class);
+            return (Database.UndeleteResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.UndeleteResult.class);
         } else {
-            return (Database.UndeleteResult) JSON.deserialize(
+            return (Database.UndeleteResult) System.JSON.deserialize(
                 '{"success":false,"errors":[{"message": "Could not undelete...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION", "fields": ["Name"]}]}',
                 Database.UndeleteResult.class
             );
@@ -200,12 +200,12 @@ public class LoggerMockDataCreator {
      */
     public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
         if (isSuccess) {
-            return (Database.UpsertResult) JSON.deserialize(
+            return (Database.UpsertResult) System.JSON.deserialize(
                 '{"success": ' + isSuccess + ', "created": ' + isCreated + ', "id": "' + recordId + '"}',
                 Database.UpsertResult.class
             );
         } else {
-            return (Database.UpsertResult) JSON.deserialize(
+            return (Database.UpsertResult) System.JSON.deserialize(
                 '{"success":false, "created":' +
                     isCreated +
                     ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION", "fields": ["Name"]}]}',
@@ -415,8 +415,8 @@ public class LoggerMockDataCreator {
      * @return                 A new copy of the original `SObject` record that has the specified read-only fields populated
      */
     public static SObject setReadOnlyField(SObject record, Map<Schema.SObjectField, Object> changesToFields) {
-        String serializedRecord = JSON.serialize(record);
-        Map<String, Object> deserializedRecordMap = (Map<String, Object>) JSON.deserializeUntyped(serializedRecord);
+        String serializedRecord = System.JSON.serialize(record);
+        Map<String, Object> deserializedRecordMap = (Map<String, Object>) System.JSON.deserializeUntyped(serializedRecord);
 
         // Loop through the deserialized record map and put the field & value
         // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
@@ -425,8 +425,8 @@ public class LoggerMockDataCreator {
             deserializedRecordMap.put(fieldName, changesToFields.get(sobjectField));
         }
 
-        serializedRecord = JSON.serialize(deserializedRecordMap);
-        return (SObject) JSON.deserialize(serializedRecord, SObject.class);
+        serializedRecord = System.JSON.serialize(deserializedRecordMap);
+        return (SObject) System.JSON.deserialize(serializedRecord, SObject.class);
     }
 
     @SuppressWarnings('PMD.ApexDoc')

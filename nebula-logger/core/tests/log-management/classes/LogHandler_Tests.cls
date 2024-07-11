@@ -170,7 +170,7 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_set_organization_limits_when_enabled() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = System.JSON.serialize(true)));
         setupConfigurations();
         Log__c log = new Log__c(TransactionId__c = '1234');
 
@@ -194,7 +194,7 @@ private class LogHandler_Tests {
             organizationLimit.Max = systemOrgLimit.getLimit();
             limitNameToExpectedOrganizationLimits.put(organizationLimit.Name, organizationLimit);
         }
-        List<LogHandler.OrganizationLimit> returnedOrganizationLimits = (List<LogHandler.OrganizationLimit>) JSON.deserialize(
+        List<LogHandler.OrganizationLimit> returnedOrganizationLimits = (List<LogHandler.OrganizationLimit>) System.JSON.deserialize(
             log.OrganizationLimits__c,
             List<LogHandler.OrganizationLimit>.class
         );
@@ -210,7 +210,7 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_not_set_organization_limits_when_disabled() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = JSON.serialize(false)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'StoreOrganizationLimits', Value__c = System.JSON.serialize(false)));
         setupConfigurations();
         Log__c log = new Log__c(TransactionId__c = '1234');
 
@@ -245,7 +245,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(expectedLogOwnerUser.Id, log.OwnerId, JSON.serializePretty(log));
+        System.Assert.areEqual(expectedLogOwnerUser.Id, log.OwnerId, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -267,7 +267,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(expectedLogOwnerUser.Id, log.OwnerId, JSON.serializePretty(log));
+        System.Assert.areEqual(expectedLogOwnerUser.Id, log.OwnerId, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -288,7 +288,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(expectedLogOwnerQueue.Id, log.OwnerId, JSON.serializePretty(log));
+        System.Assert.areEqual(expectedLogOwnerQueue.Id, log.OwnerId, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -309,7 +309,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(expectedLogOwnerQueue.Id, log.OwnerId, JSON.serializePretty(log));
+        System.Assert.areEqual(expectedLogOwnerQueue.Id, log.OwnerId, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -329,7 +329,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(System.UserInfo.getUserId(), log.OwnerId, JSON.serializePretty(log));
+        System.Assert.areEqual(System.UserInfo.getUserId(), log.OwnerId, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -340,8 +340,8 @@ private class LogHandler_Tests {
         insert log;
 
         log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, JSON.serializePretty(log));
-        System.Assert.isNull(log.ParentLog__c, JSON.serializePretty(log));
+        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
+        System.Assert.isNull(log.ParentLog__c, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -354,8 +354,8 @@ private class LogHandler_Tests {
         insert log;
 
         log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, JSON.serializePretty(log));
-        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, JSON.serializePretty(log));
+        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
+        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -368,8 +368,8 @@ private class LogHandler_Tests {
         insert parentLog;
 
         log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, JSON.serializePretty(log));
-        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, JSON.serializePretty(log));
+        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
+        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -381,8 +381,8 @@ private class LogHandler_Tests {
         insert new List<Log__c>{ log, parentLog };
 
         log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, JSON.serializePretty(log));
-        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, JSON.serializePretty(log));
+        System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
+        System.Assert.areEqual(parentLog.Id, log.ParentLog__c, System.JSON.serializePretty(log));
     }
 
     @IsTest
@@ -563,7 +563,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-        System.Assert.areEqual(1, logShares.size(), JSON.serializePretty(logShares));
+        System.Assert.areEqual(1, logShares.size(), System.JSON.serializePretty(logShares));
         System.Assert.areEqual('Read', logShares.get(0).AccessLevel);
         System.Assert.areEqual(log.Id, logShares.get(0).ParentId);
         System.Assert.areEqual(Schema.Log__Share.RowCause.LoggedByUser__c, logShares.get(0).RowCause);
@@ -586,7 +586,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-        System.Assert.areEqual(1, logShares.size(), JSON.serializePretty(logShares));
+        System.Assert.areEqual(1, logShares.size(), System.JSON.serializePretty(logShares));
         System.Assert.areEqual('Edit', logShares.get(0).AccessLevel);
         System.Assert.areEqual(log.Id, logShares.get(0).ParentId);
         System.Assert.areEqual(Schema.Log__Share.RowCause.LoggedByUser__c, logShares.get(0).RowCause);
@@ -609,7 +609,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-        System.Assert.areEqual(0, logShares.size(), JSON.serializePretty(logShares));
+        System.Assert.areEqual(0, logShares.size(), System.JSON.serializePretty(logShares));
     }
 
     @IsTest
@@ -628,7 +628,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-        System.Assert.areEqual(0, logShares.size(), JSON.serializePretty(logShares));
+        System.Assert.areEqual(0, logShares.size(), System.JSON.serializePretty(logShares));
     }
 
     private static String getDefaultPicklistValue(Schema.SObjectField field) {

@@ -62,7 +62,7 @@ private class LogEntryEventBuilder_Tests_Network {
     }
 
     static SObject getExperienceCloudNetwork() {
-        return Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME');
+        return System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME');
     }
 
     static LoggerSettings__c getUserSettings() {
@@ -72,7 +72,7 @@ private class LogEntryEventBuilder_Tests_Network {
     }
 
     static Schema.User setupExperienceSiteUser() {
-        UserRole userRole = new UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
+        Schema.UserRole userRole = new Schema.UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
         insert userRole;
         Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
         update currentUser;

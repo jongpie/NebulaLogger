@@ -20,7 +20,7 @@ private class LoggerSObjectHandler_Tests_Flow {
         );
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         MockLogHandler mockHandler = new MockLogHandler();
-        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerOperationType = System.TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;

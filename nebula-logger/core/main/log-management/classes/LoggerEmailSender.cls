@@ -10,12 +10,12 @@
 @SuppressWarnings('PMD.CognitiveComplexity, PMD.PropertyNamingConventions')
 public without sharing class LoggerEmailSender {
     @TestVisible
-    private static final List<ApexEmailNotification> MOCK_NOTIFICATIONS = new List<ApexEmailNotification>();
+    private static final List<Schema.ApexEmailNotification> MOCK_NOTIFICATIONS = new List<Schema.ApexEmailNotification>();
     @TestVisible
     private static final List<Messaging.SingleEmailMessage> SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
 
     @TestVisible
-    private static final List<ApexEmailNotification> CACHED_APEX_ERROR_RECIPIENTS {
+    private static final List<Schema.ApexEmailNotification> CACHED_APEX_ERROR_RECIPIENTS {
         get {
             if (CACHED_APEX_ERROR_RECIPIENTS == null) {
                 CACHED_APEX_ERROR_RECIPIENTS = queryApexErrrorRecipients();
@@ -189,8 +189,8 @@ public without sharing class LoggerEmailSender {
         return String.format(emailBodyTemplate, emailBodyInputs);
     }
 
-    private static List<ApexEmailNotification> queryApexErrrorRecipients() {
-        List<ApexEmailNotification> notifications = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
+    private static List<Schema.ApexEmailNotification> queryApexErrrorRecipients() {
+        List<Schema.ApexEmailNotification> notifications = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
         if (System.Test.isRunningTest()) {
             notifications.clear();
             notifications.addAll(MOCK_NOTIFICATIONS);

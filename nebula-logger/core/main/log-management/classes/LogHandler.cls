@@ -93,7 +93,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
 
         for (Log__c log : this.logs) {
-            log.OrganizationLimits__c = JSON.serializePretty(ORGANIZATION_LIMITS);
+            log.OrganizationLimits__c = System.JSON.serializePretty(ORGANIZATION_LIMITS);
         }
     }
 

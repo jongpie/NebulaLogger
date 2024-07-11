@@ -152,8 +152,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `ApexClass` data.
-     *              When set to `false`, any `ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.ApexClass` data.
+     *              When set to `false`, any `Schema.ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default
      */
     public static final Boolean QUERY_APEX_CLASS_DATA {
@@ -167,8 +167,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `ApexTrigger` data.
-     *              When set to `false`, any `ApexTrigger` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.ApexTrigger` data.
+     *              When set to `false`, any `Schema.ApexTrigger` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryApexTriggerData`, or `true` as the default
      */
     public static final Boolean QUERY_APEX_TRIGGER_DATA {
@@ -213,8 +213,8 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Controls if Nebula Logger queries `FlowDefinitionView` data.
-     *              When set to `false`, any `FlowDefinitionView` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     * @description Controls if Nebula Logger queries `Schema.FlowDefinitionView` data.
+     *              When set to `false`, any `Schema.FlowDefinitionView` fields on `LogEntryEvent__e` and `Log__c` will not be populated
      *              Controlled by the custom metadata record `LoggerParameter.QueryFlowDefinitionViewData`, or `true` as the default
      */
     public static final Boolean QUERY_FLOW_DEFINITION_VIEW_DATA {
@@ -802,7 +802,7 @@ public class LoggerParameter {
     @TestVisible
     private static void setMock(LoggerParameter__mdt parameter) {
         if (String.isBlank(parameter.DeveloperName)) {
-            throw new System.IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + JSON.serializePretty(parameter));
+            throw new System.IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + System.JSON.serializePretty(parameter));
         }
 
         DEVELOPER_NAME_TO_RECORD.put(parameter.DeveloperName, parameter);
@@ -813,7 +813,7 @@ public class LoggerParameter {
         if (parameterValue == null) {
             return null;
         } else {
-            return JSON.deserialize(parameterValue, dataType);
+            return System.JSON.deserialize(parameterValue, dataType);
         }
     }
 

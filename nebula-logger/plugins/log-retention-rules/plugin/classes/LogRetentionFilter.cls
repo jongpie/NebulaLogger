@@ -199,7 +199,7 @@ public without sharing class LogRetentionFilter {
         }
 
         private Boolean matchesRegEx() {
-            Pattern pattern = Pattern.compile(this.filterCondition.Value__c);
+            System.Pattern pattern = System.Pattern.compile(this.filterCondition.Value__c);
             return pattern.matcher(String.valueOf(this.getFieldValue())).matches();
         }
 
@@ -233,7 +233,7 @@ public without sharing class LogRetentionFilter {
                 return (Datetime) datetimeValue;
             } else {
                 String datetimeString = (String) datetimeValue;
-                return (Datetime) JSON.deserialize(datetimeString, Datetime.class);
+                return (Datetime) System.JSON.deserialize(datetimeString, Datetime.class);
             }
         }
 
@@ -244,7 +244,7 @@ public without sharing class LogRetentionFilter {
                 return (Decimal) decimalValue;
             } else {
                 String decimalString = (String) decimalValue;
-                return (Decimal) JSON.deserialize(decimalString, Decimal.class);
+                return (Decimal) System.JSON.deserialize(decimalString, Decimal.class);
             }
         }
 
@@ -413,7 +413,7 @@ public without sharing class LogRetentionFilter {
 
             for (Schema.SObjectField field : this.fieldChain) {
                 Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-                if (fieldDescribe.getSoapType() != Schema.SoapType.Id) {
+                if (fieldDescribe.getSoapType() != Schema.SoapType.ID) {
                     return parentRecord.get(fieldDescribe.getName());
                 } else {
                     parentSObjectType = fieldDescribe.getReferenceTo().get(0);

@@ -75,7 +75,7 @@ public with sharing class RelatedLogEntriesController {
         String logEntrySearch = 'FIND {0} IN ALL FIELDS RETURNING {1}({2} WHERE {3} = :recordId ORDER BY {4} LIMIT {5})';
         logEntrySearch = String.format(logEntrySearch, searchTextReplacements);
 
-        return (List<LogEntry__c>) Search.query(logEntrySearch).get(0);
+        return (List<LogEntry__c>) System.Search.query(logEntrySearch).get(0);
     }
 
     private static String getFieldsClause(List<FieldMetadata> fields) {

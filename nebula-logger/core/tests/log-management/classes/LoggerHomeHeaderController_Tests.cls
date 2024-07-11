@@ -17,7 +17,7 @@ private class LoggerHomeHeaderController_Tests {
         mockApiResponse.Products = new List<Logger.StatusApiResponseProduct>{ mockProduct1, mockProduct2 };
         System.Test.setMock(
             System.HttpCalloutMock.class,
-            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(System.JSON.serialize(mockApiResponse))
         );
 
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();
@@ -52,7 +52,7 @@ private class LoggerHomeHeaderController_Tests {
         mockApiResponse.Products = null;
         System.Test.setMock(
             System.HttpCalloutMock.class,
-            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(JSON.serialize(mockApiResponse))
+            LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(System.JSON.serialize(mockApiResponse))
         );
 
         LoggerHomeHeaderController.Environment returnedEnvironment = LoggerHomeHeaderController.getEnvironmentDetails();

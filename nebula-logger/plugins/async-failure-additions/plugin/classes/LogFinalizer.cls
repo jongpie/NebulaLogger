@@ -8,7 +8,7 @@
  */
 public without sharing virtual class LogFinalizer implements System.Finalizer {
     /**
-     * @description Is called by any `System.Queueable` where the finalizer is attached after the Queueable's `execute` method finishes
+     * @description Is called by any `System.Queueable` where the finalizer is attached after the System.Queueable's `execute` method finishes
      * @param finalizerContext The `System.FinalizerContext` associated with the finalizer
      */
     public void execute(System.FinalizerContext finalizerContext) {

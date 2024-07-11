@@ -11,13 +11,13 @@ private class LogManagementDataSelector_Tests_Flow {
     @IsTest
     static void it_returns_matching_flow_definition_view_for_specified_flow_api_name() {
         List<String> targetFlowApiNames = new List<String>{ TEST_FLOW_NAME };
-        List<FlowDefinitionView> expectedResults = [
+        List<Schema.FlowDefinitionView> expectedResults = [
             SELECT ActiveVersionId, ApiName, Description, DurableId, Label, LastModifiedBy, LastModifiedDate, ManageableState, ProcessType, TriggerType
             FROM FlowDefinitionView
             WHERE ApiName IN :targetFlowApiNames AND IsActive = TRUE
         ];
 
-        List<FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
+        List<Schema.FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
 
         System.Assert.areEqual(expectedResults, returnedResults);
     }
@@ -29,7 +29,7 @@ private class LogManagementDataSelector_Tests_Flow {
         System.Assert.isFalse(LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA);
         Integer originalQueryCount = System.Limits.getQueries();
 
-        List<FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
+        List<Schema.FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
 
         System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
         System.Assert.areEqual(0, returnedResults.size());

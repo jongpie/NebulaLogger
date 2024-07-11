@@ -37,7 +37,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
         LoggerParameter.setMock(mockParam);
         try {
             System.Test.startTest();
-            Database.executeBatch(new LogBatchApexErrorEventHandler_Tests(phase));
+            System.Database.executeBatch(new LogBatchApexErrorEventHandler_Tests(phase));
             System.Test.stopTest();
         } catch (System.Exception ex) {
             // via https://salesforce.stackexchange.com/questions/263419/testing-batchapexerrorevent-trigger
@@ -66,7 +66,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
     }
 
     /**
-     * the `BatchApexErrorEvent` type has a property, `Phase` with three possible values:
+     * the `Schema.BatchApexErrorEvent` type has a property, `Phase` with three possible values:
      * - START
      * - EXECUTE
      * - FINISH
@@ -77,7 +77,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         throwOnLocationMatch(Phase.START);
-        return Database.getQueryLocator([SELECT Id FROM User LIMIT 1]);
+        return System.Database.getQueryLocator([SELECT Id FROM User LIMIT 1]);
     }
 
     public void execute(Database.BatchableContext bc, List<SObject> scope) {

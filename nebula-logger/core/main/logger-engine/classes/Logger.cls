@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.13.12';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.13.13';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -23,7 +23,7 @@ global with sharing class Logger {
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = System.UUID.randomUUID().toString();
-    private static final Quiddity TRANSACTION_QUIDDITY = loadTransactionQuiddity();
+    private static final System.Quiddity TRANSACTION_QUIDDITY = loadTransactionQuiddity();
 
     private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
@@ -76,7 +76,7 @@ global with sharing class Logger {
                 // So, use System.UserInfo.getUserId() to create the current user's record without querying
                 // Then parse the JSON to get the API version
                 // Expected JSON: {"attributes":{"type":"Schema.User","url":"/services/data/v53.0/sobjects/Schema.User/005J000000AugnYIAR"}
-                String userJson = JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
+                String userJson = System.JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()));
                 ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
             }
             return ORGANIZATION_API_VERSION;
@@ -183,10 +183,10 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Returns the Quiddity context of the current transaction.
-     * @return Quiddity - The value of System.Request.getCurrent().getQuiddity()
+     * @description Returns the System.Quiddity context of the current transaction.
+     * @return System.Quiddity - The value of System.Request.getCurrent().getQuiddity()
      */
-    global static Quiddity getCurrentQuiddity() {
+    global static System.Quiddity getCurrentQuiddity() {
         return TRANSACTION_QUIDDITY;
     }
 
@@ -3229,7 +3229,7 @@ global with sharing class Logger {
         // So, execute the handler, which internally then executes any plugins
         LoggerTriggerableContext logEntryEventsBeforeContext = new LoggerTriggerableContext(
             Schema.LogEntryEvent__e.SObjectType,
-            TriggerOperation.BEFORE_INSERT,
+            System.TriggerOperation.BEFORE_INSERT,
             logEntryEvents
         );
         LoggerSObjectHandler.getHandler(Schema.LogEntryEvent__e.SObjectType)?.overrideTriggerableContext(logEntryEventsBeforeContext).execute();
@@ -3259,7 +3259,7 @@ global with sharing class Logger {
             when SYNCHRONOUS_DML {
                 LoggerTriggerableContext logEntryEventsAfterContext = new LoggerTriggerableContext(
                     Schema.LogEntryEvent__e.SObjectType,
-                    TriggerOperation.AFTER_INSERT,
+                    System.TriggerOperation.AFTER_INSERT,
                     logEntryEvents
                 );
                 LoggerSObjectHandler.getHandler(Schema.LogEntryEvent__e.SObjectType)?.overrideTriggerableContext(logEntryEventsAfterContext).execute();
@@ -3325,7 +3325,7 @@ global with sharing class Logger {
                 throw new System.CalloutException(errorMessage);
             }
 
-            StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
+            StatusApiResponse statusApiResponse = (StatusApiResponse) System.JSON.deserialize(response.getBody(), StatusApiResponse.class);
             return statusApiResponse;
         } catch (Exception ex) {
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
@@ -3407,7 +3407,7 @@ global with sharing class Logger {
         return isStartTimeValid && isEndTimeValid;
     }
 
-    private static Quiddity loadTransactionQuiddity() {
+    private static System.Quiddity loadTransactionQuiddity() {
         // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
         // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
         // skip calling System.Request.getCurrent() if there is no user session.
@@ -3421,7 +3421,7 @@ global with sharing class Logger {
 
     private static void setAsyncContext(AsyncContext asyncContext) {
         currentAsyncContext = asyncContext;
-        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + JSON.serializePretty(asyncContext));
+        System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext));
     }
 
     private static SaveMethod getSaveMethod(String saveMethodName) {
@@ -3488,9 +3488,9 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via a queuable job
     /**
-     * @description Inner class for publishing log entries via the Queueable interface.
+     * @description Inner class for publishing log entries via the System.Queueable interface.
      */
-    global class QueueableSaver implements Queueable {
+    global class QueueableSaver implements System.Queueable {
         private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
         private QueueableSaver(List<LogEntryEvent__e> logEntryEvents) {
@@ -3578,7 +3578,7 @@ global with sharing class Logger {
 
             Boolean allOrNone = true;
             RestSaveRequest saveRequest = new RestSaveRequest(records, allOrNone);
-            request.setBody(JSON.serialize(saveRequest));
+            request.setBody(System.JSON.serialize(saveRequest));
 
             System.HttpResponse response = new System.Http().send(request);
             this.validateResponse(response);

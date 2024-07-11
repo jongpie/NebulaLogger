@@ -32,7 +32,7 @@ public without sharing virtual class LogManagementDataSelector {
      */
     public virtual List<SObject> getAll(Schema.SObjectType sobjectType, Set<String> fieldNames) {
         String query = String.format('SELECT {0} FROM {1}', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
-        return Database.query(String.escapeSingleQuotes(query));
+        return System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -45,17 +45,17 @@ public without sharing virtual class LogManagementDataSelector {
      */
     public virtual List<SObject> getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds) {
         String query = String.format('SELECT {0} FROM {1} WHERE Id IN :recordIds', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
-        return Database.query(String.escapeSingleQuotes(query));
+        return System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
-     * @description Returns a list of `ApexClass` records
+     * @description Returns a list of `Schema.ApexClass` records
      * @param  apexClassNames The names of the Apex classes to query
-     * @return                `List<ApexClass>` containing any matching records
+     * @return                `List<Schema.ApexClass>` containing any matching records
      */
-    public virtual List<ApexClass> getApexClasses(Set<String> apexClassNames) {
+    public virtual List<Schema.ApexClass> getApexClasses(Set<String> apexClassNames) {
         if (LoggerParameter.QUERY_APEX_CLASS_DATA == false) {
-            return new List<ApexClass>();
+            return new List<Schema.ApexClass>();
         }
 
         return [
@@ -67,13 +67,13 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a list of `ApexTrigger` records
+     * @description Returns a list of `Schema.ApexTrigger` records
      * @param  apexTriggerNames The names of the Apex triggers to query
-     * @return                `List<ApexTrigger>` containing any matching records
+     * @return                `List<Schema.ApexTrigger>` containing any matching records
      */
-    public virtual List<ApexTrigger> getApexTriggers(Set<String> apexTriggerNames) {
+    public virtual List<Schema.ApexTrigger> getApexTriggers(Set<String> apexTriggerNames) {
         if (LoggerParameter.QUERY_APEX_TRIGGER_DATA == false) {
-            return new List<ApexTrigger>();
+            return new List<Schema.ApexTrigger>();
         }
 
         return [
@@ -85,16 +85,16 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of the `ApexEmailNotification` records in the org
-     * @return   The cached `List<ApexEmailNotification>` records
+     * @description Returns a cached copy of the `Schema.ApexEmailNotification` records in the org
+     * @return   The cached `List<Schema.ApexEmailNotification>` records
      */
-    public virtual List<ApexEmailNotification> getCachedApexEmailNotifications() {
+    public virtual List<Schema.ApexEmailNotification> getCachedApexEmailNotifications() {
         String cacheKey = 'ApexEmailNotifications';
         if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
-            return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
+            return (List<Schema.ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        List<ApexEmailNotification> apexEmailNotifications = [
+        List<Schema.ApexEmailNotification> apexEmailNotifications = [
             SELECT Email, UserId
             FROM ApexEmailNotification
             WHERE Email != NULL OR User.IsActive = TRUE
@@ -136,9 +136,9 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns the count of `AsyncApexJob` records with the specified Apex class name, method name & job status
-     * @param  apexClassName  The fully-qualified name of the Apex class associated with `AsyncApexJob`
-     * @param  apexMethodName The specific method (if any) within the Apex class associated with `AsyncApexJob`
+     * @description Returns the count of `Schema.AsyncApexJob` records with the specified Apex class name, method name & job status
+     * @param  apexClassName  The fully-qualified name of the Apex class associated with `Schema.AsyncApexJob`
+     * @param  apexMethodName The specific method (if any) within the Apex class associated with `Schema.AsyncApexJob`
      * @param  jobStatuses    The list of job statuses that should be used to filter `AsynxApexJob` records
      * @return                The `Integer` count of matching `AsynxApexJob` records
      */
@@ -156,22 +156,22 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns the list of `UserRecordAccess` records for any of the specified record IDs that the current user can delete
+     * @description Returns the list of `Schema.UserRecordAccess` records for any of the specified record IDs that the current user can delete
      * @param  recordIds The list of `ID` for records to be deleted
-     * @return           The matching `List<UserRecordAccess>` records
+     * @return           The matching `List<Schema.UserRecordAccess>` records
      */
-    public virtual List<UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
+    public virtual List<Schema.UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
         return [SELECT RecordId FROM UserRecordAccess WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE];
     }
 
     /**
-     * @description Returns a list of `FlowDefinitionView` records
+     * @description Returns a list of `Schema.FlowDefinitionView` records
      * @param  flowApiNames The names of the Apex classes to query
-     * @return              `List<FlowDefinitionView>` containing any matching records
+     * @return              `List<Schema.FlowDefinitionView>` containing any matching records
      */
-    public virtual List<FlowDefinitionView> getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
+    public virtual List<Schema.FlowDefinitionView> getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
         if (LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA == false) {
-            return new List<FlowDefinitionView>();
+            return new List<Schema.FlowDefinitionView>();
         }
 
         return [
@@ -196,11 +196,11 @@ public without sharing virtual class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a list of `FlowVersionView` records description
+     * @description Returns a list of `Schema.FlowVersionView` records description
      * @param  durableIds The durable IDs of the Flows to query
-     * @return            `List<FlowDefinitionView>` containing any matching records
+     * @return            `List<Schema.FlowDefinitionView>` containing any matching records
      */
-    public virtual List<FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
+    public virtual List<Schema.FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
         return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId IN :durableIds];
     }
 
@@ -217,7 +217,7 @@ public without sharing virtual class LogManagementDataSelector {
         List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), Schema.Log__c.SObjectType.getDescribe().getName() };
 
         String query = String.format(queryTemplate, textReplacements);
-        return (Log__c) Database.query(String.escapeSingleQuotes(query));
+        return (Log__c) System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -232,7 +232,7 @@ public without sharing virtual class LogManagementDataSelector {
         List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ','), Schema.LogEntry__c.SObjectType.getDescribe().getName() };
 
         String query = String.format(queryTemplate, textReplacements);
-        return (LogEntry__c) Database.query(String.escapeSingleQuotes(query));
+        return (LogEntry__c) System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -252,7 +252,7 @@ public without sharing virtual class LogManagementDataSelector {
         };
 
         String query = String.format(queryTemplate, textReplacements);
-        return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(query));
+        return (List<LogEntry__c>) System.Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -342,7 +342,7 @@ public without sharing virtual class LogManagementDataSelector {
         String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
         logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
 
-        return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(logEntryQuery));
+        return (List<LogEntry__c>) System.Database.query(String.escapeSingleQuotes(logEntryQuery));
     }
 
     /**

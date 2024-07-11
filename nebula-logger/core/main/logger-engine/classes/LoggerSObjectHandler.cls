@@ -29,7 +29,7 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     @TestVisible
-    private TriggerOperation triggerOperationType;
+    private System.TriggerOperation triggerOperationType;
     @TestVisible
     private List<SObject> triggerNew;
     @TestVisible

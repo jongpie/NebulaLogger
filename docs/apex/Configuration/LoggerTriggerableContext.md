@@ -16,9 +16,9 @@ Class used by the logging system for trigger contextual details
 
 ### Constructors
 
-#### `LoggerTriggerableContext(Schema.SObjectType sobjectType, TriggerOperation triggerOperationType, List<SObject> triggerNew)`
+#### `LoggerTriggerableContext(Schema.SObjectType sobjectType, System.TriggerOperation triggerOperationType, List<SObject> triggerNew)`
 
-#### `LoggerTriggerableContext(Schema.SObjectType sobjectType,TriggerOperation triggerOperationType,List<SObject> triggerNew,Map<Id, SObject> triggerNewMap,Map<Id, SObject> triggerOldMap)`
+#### `LoggerTriggerableContext(Schema.SObjectType sobjectType,System.TriggerOperation triggerOperationType,List<SObject> triggerNew,Map<Id, SObject> triggerNewMap,Map<Id, SObject> triggerOldMap)`
 
 ---
 
@@ -34,7 +34,7 @@ Class used by the logging system for trigger contextual details
 
 #### `triggerOldMap` → `Map<Id, SObject>`
 
-#### `triggerOperationType` → `TriggerOperation`
+#### `triggerOperationType` → `System.TriggerOperation`
 
 #### `triggerOperationTypeName` → `String`
 

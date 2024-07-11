@@ -37,12 +37,12 @@ private class LogEntryEventBuilder_Tests_Security {
         }
 
         System.Assert.areNotEqual(
-            JSON.serializePretty(mockAccountBrand),
+            System.JSON.serializePretty(mockAccountBrand),
             builder.getLogEntryEvent().RecordJson__c,
             'Log entry event record JSON was incorrect.'
         );
         System.Assert.areEqual(
-            JSON.serializePretty(strippedAccountBrand),
+            System.JSON.serializePretty(strippedAccountBrand),
             builder.getLogEntryEvent().RecordJson__c,
             'Log entry event record JSON was incorrect.'
         );
@@ -83,8 +83,8 @@ private class LogEntryEventBuilder_Tests_Security {
             builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockAccountBrands);
         }
 
-        System.Assert.areNotEqual(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
-        System.Assert.areEqual(JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
+        System.Assert.areNotEqual(System.JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
+        System.Assert.areEqual(System.JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
     }
 
     @IsTest
@@ -129,7 +129,11 @@ private class LogEntryEventBuilder_Tests_Security {
             builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockIdToAccountBrand);
         }
 
-        System.Assert.areEqual(JSON.serializePretty(mockIdStringToStrippedAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
+        System.Assert.areEqual(
+            System.JSON.serializePretty(mockIdStringToStrippedAccountBrand),
+            builder.getLogEntryEvent().RecordJson__c,
+            'Record JSON is incorrect.'
+        );
     }
 
     static LoggerSettings__c getUserSettings() {

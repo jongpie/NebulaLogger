@@ -15,7 +15,7 @@ private class SlackLoggerPlugin_Tests {
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, false);
         Log__c log = logs.get(0);
         System.Assert.isFalse(log.SendSlackNotification__c);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.BEFORE_INSERT, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.BEFORE_INSERT, logs);
 
         SlackLoggerPlugin plugin = new SlackLoggerPlugin();
         plugin.execute(pluginConfiguration, context);
@@ -33,7 +33,7 @@ private class SlackLoggerPlugin_Tests {
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, false);
         Log__c log = logs.get(0);
         System.Assert.isFalse(log.SendSlackNotification__c);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.BEFORE_INSERT, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.BEFORE_INSERT, logs);
 
         SlackLoggerPlugin plugin = new SlackLoggerPlugin();
         plugin.execute(pluginConfiguration, context);
@@ -50,7 +50,7 @@ private class SlackLoggerPlugin_Tests {
         System.Assert.isTrue(logEntryLoggingLevel.ordinal() < slackNotificationLoggingLevel.ordinal(), 'Slack logging level ordinal was incorrect');
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(slackNotificationLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, false);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -71,7 +71,7 @@ private class SlackLoggerPlugin_Tests {
         System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.ERROR;
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -89,7 +89,7 @@ private class SlackLoggerPlugin_Tests {
         System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.WARN;
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -107,7 +107,7 @@ private class SlackLoggerPlugin_Tests {
         System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.INFO;
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -125,7 +125,7 @@ private class SlackLoggerPlugin_Tests {
         System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.DEBUG;
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -143,7 +143,7 @@ private class SlackLoggerPlugin_Tests {
         System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINE;
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -161,7 +161,7 @@ private class SlackLoggerPlugin_Tests {
         System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINER;
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -179,7 +179,7 @@ private class SlackLoggerPlugin_Tests {
         System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
         LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
         List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
-        LoggerTriggerableContext context = mockContext(TriggerOperation.AFTER_UPDATE, logs);
+        LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
@@ -210,7 +210,7 @@ private class SlackLoggerPlugin_Tests {
         return pluginConfiguration;
     }
 
-    private static LoggerTriggerableContext mockContext(TriggerOperation operationType, List<Log__c> logs) {
+    private static LoggerTriggerableContext mockContext(System.TriggerOperation operationType, List<Log__c> logs) {
         return new LoggerTriggerableContext(Schema.Log__c.SObjectType, operationType, logs, new Map<Id, SObject>(logs), new Map<Id, SObject>(logs));
     }
 
@@ -233,7 +233,7 @@ private class SlackLoggerPlugin_Tests {
     private static SlackLoggerPlugin.NotificationDto validateSlackNotification(LoggerMockDataCreator.MockHttpCallout calloutMock, Log__c log) {
         // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
         String requestBody = calloutMock.request.getBody().replace('"short"', '"isShort"');
-        SlackLoggerPlugin.NotificationDto slackNotification = (SlackLoggerPlugin.NotificationDto) JSON.deserialize(
+        SlackLoggerPlugin.NotificationDto slackNotification = (SlackLoggerPlugin.NotificationDto) System.JSON.deserialize(
             requestBody,
             SlackLoggerPlugin.NotificationDto.class
         );
@@ -299,6 +299,6 @@ private class SlackLoggerPlugin_Tests {
         fieldNames.add(logEntryChildQuery);
 
         String query = 'SELECT ' + String.join(fieldNames, ', ') + ' FROM Log__c';
-        return (List<Log__c>) Database.query(query);
+        return (List<Log__c>) System.Database.query(query);
     }
 }

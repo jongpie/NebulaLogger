@@ -64,8 +64,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, ApexClass> classNameToApexClass = new Map<String, ApexClass>();
-        for (ApexClass apexClass : LogManagementDataSelector.getInstance().getApexClasses(apexClassNames)) {
+        Map<String, Schema.ApexClass> classNameToApexClass = new Map<String, Schema.ApexClass>();
+        for (Schema.ApexClass apexClass : LogManagementDataSelector.getInstance().getApexClasses(apexClassNames)) {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }
 
@@ -74,10 +74,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : apexClassLogEntries) {
-            ApexClass originApexClass = classNameToApexClass.get(logEntry.OriginSourceApiName__c);
+            Schema.ApexClass originApexClass = classNameToApexClass.get(logEntry.OriginSourceApiName__c);
             new OriginApexMetadataFieldApplier().apply(logEntry, originApexClass);
 
-            ApexClass exceptionApexClass = classNameToApexClass.get(logEntry.ExceptionSourceApiName__c);
+            Schema.ApexClass exceptionApexClass = classNameToApexClass.get(logEntry.ExceptionSourceApiName__c);
             new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexClass);
         }
     }
@@ -102,8 +102,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, ApexTrigger> triggerNameToApexTrigger = new Map<String, ApexTrigger>();
-        for (ApexTrigger apexTrigger : LogManagementDataSelector.getInstance().getApexTriggers(apexTriggerNames)) {
+        Map<String, Schema.ApexTrigger> triggerNameToApexTrigger = new Map<String, Schema.ApexTrigger>();
+        for (Schema.ApexTrigger apexTrigger : LogManagementDataSelector.getInstance().getApexTriggers(apexTriggerNames)) {
             triggerNameToApexTrigger.put(apexTrigger.Name, apexTrigger);
         }
 
@@ -112,10 +112,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : apexTriggerLogEntries) {
-            ApexTrigger originApexTrigger = triggerNameToApexTrigger.get(logEntry.OriginSourceApiName__c);
+            Schema.ApexTrigger originApexTrigger = triggerNameToApexTrigger.get(logEntry.OriginSourceApiName__c);
             new OriginApexMetadataFieldApplier().apply(logEntry, originApexTrigger);
 
-            ApexTrigger exceptionApexTrigger = triggerNameToApexTrigger.get(logEntry.ExceptionSourceApiName__c);
+            Schema.ApexTrigger exceptionApexTrigger = triggerNameToApexTrigger.get(logEntry.ExceptionSourceApiName__c);
             new ExceptionApexMetadataFieldApplier().apply(logEntry, exceptionApexTrigger);
         }
     }
@@ -143,8 +143,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, FlowDefinitionView> flowApiNameToDefinition = new Map<String, FlowDefinitionView>();
-        for (FlowDefinitionView flowDefinition : LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(flowApiNames)) {
+        Map<String, Schema.FlowDefinitionView> flowApiNameToDefinition = new Map<String, Schema.FlowDefinitionView>();
+        for (Schema.FlowDefinitionView flowDefinition : LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(flowApiNames)) {
             flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
         }
 
@@ -153,7 +153,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : flowLogEntries) {
-            FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginSourceApiName__c);
+            Schema.FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginSourceApiName__c);
             if (flowDefinition == null) {
                 continue;
             }
@@ -191,8 +191,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, FlowVersionView> flowDurableIdToFlowVersionView = new Map<String, FlowVersionView>();
-        for (FlowVersionView flowVersionView : LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(flowActiveVersionIds)) {
+        Map<String, Schema.FlowVersionView> flowDurableIdToFlowVersionView = new Map<String, Schema.FlowVersionView>();
+        for (Schema.FlowVersionView flowVersionView : LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(flowActiveVersionIds)) {
             // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
             if (flowVersionView.Status == 'Active') {
                 flowDurableIdToFlowVersionView.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
@@ -204,7 +204,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : flowLogEntries) {
-            FlowVersionView flowVersionView = flowDurableIdToFlowVersionView.get(logEntry.FlowDurableId__c);
+            Schema.FlowVersionView flowVersionView = flowDurableIdToFlowVersionView.get(logEntry.FlowDurableId__c);
             if (flowVersionView == null) {
                 continue;
             }
@@ -471,7 +471,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
     }
 
-    // Helper classes that are used to apply field values for each entry's related ApexClass or ApexTrigger
+    // Helper classes that are used to apply field values for each entry's related Schema.ApexClass or Schema.ApexTrigger
     @SuppressWarnings('PMD.ApexDoc')
     private abstract class ApexMetadataFieldApplier {
         public abstract void apply(LogEntry__c logEntry, Schema.ApexClass topLevelApexClass);
@@ -495,7 +495,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ExceptionSourceLastModifiedDate__c = apexClass.LastModifiedDate;
 
             LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
-            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexClass));
+            logEntry.ExceptionSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexClass));
         }
 
         public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
@@ -513,7 +513,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ExceptionSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
 
             LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(logEntry.ExceptionStackTrace__c);
-            logEntry.ExceptionSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexTrigger));
+            logEntry.ExceptionSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(exceptionStackTrace, apexTrigger));
         }
     }
 
@@ -526,7 +526,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
             LoggerStackTrace originStackTrace = new LoggerStackTrace(logEntry.StackTrace__c);
 
-            // Older ApexClass-specific fields
+            // Older Schema.ApexClass-specific fields
             logEntry.ApexClassApiVersion__c = 'v' + apexClass.ApiVersion;
             logEntry.ApexClassCreatedDate__c = apexClass.CreatedDate;
             logEntry.ApexClassId__c = apexClass.Id;
@@ -548,7 +548,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.OriginSourceLastModifiedById__c = apexClass.LastModifiedById;
             logEntry.OriginSourceLastModifiedByUsername__c = apexClass.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexClass.LastModifiedDate;
-            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexClass));
+            logEntry.OriginSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexClass));
         }
 
         public override void apply(LogEntry__c logEntry, Schema.ApexTrigger apexTrigger) {
@@ -558,7 +558,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
             LoggerStackTrace originStackTrace = new LoggerStackTrace(logEntry.StackTrace__c);
 
-            // Currently, there aren't any ApexTrigger-specific fields on LogEntry__c,
+            // Currently, there aren't any Schema.ApexTrigger-specific fields on LogEntry__c,
             // so only set the newer, general-purpose 'origin source' fields
             logEntry.OriginSourceApiVersion__c = 'v' + apexTrigger.ApiVersion;
             logEntry.OriginSourceCreatedById__c = apexTrigger.CreatedById;
@@ -568,7 +568,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.OriginSourceLastModifiedById__c = apexTrigger.LastModifiedById;
             logEntry.OriginSourceLastModifiedByUsername__c = apexTrigger.LastModifiedBy.Username;
             logEntry.OriginSourceLastModifiedDate__c = apexTrigger.LastModifiedDate;
-            logEntry.OriginSourceSnippet__c = JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexTrigger));
+            logEntry.OriginSourceSnippet__c = System.JSON.serializePretty(new SourceMetadataSnippet(originStackTrace, apexTrigger));
         }
     }
 }

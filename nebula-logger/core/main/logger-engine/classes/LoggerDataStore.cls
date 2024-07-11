@@ -325,11 +325,11 @@ public without sharing class LoggerDataStore {
         }
 
         /**
-         * @description Enqueues a queueable job to execute asynchronously, using `System.enqueueJob(Queueable queueableJob)`
+         * @description Enqueues a queueable job to execute asynchronously, using `System.enqueueJob(System.Queueable queueableJob)`
          * @param  queueableJob An instance of a `Queueable` class that should be enqueued
          * @return              The `Id` of the queueable job
          */
-        public virtual Id enqueueJob(Queueable queueableJob) {
+        public virtual Id enqueueJob(System.Queueable queueableJob) {
             return System.enqueueJob(queueableJob);
         }
     }

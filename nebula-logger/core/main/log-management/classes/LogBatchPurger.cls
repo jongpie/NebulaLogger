@@ -144,7 +144,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
         Id nextBatchJobId;
         if (this.currentSObjectType != Schema.Log__c.SObjectType) {
-            nextBatchJobId = Database.executeBatch(this, this.chainedBatchSize);
+            nextBatchJobId = System.Database.executeBatch(this, this.chainedBatchSize);
         }
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
@@ -215,7 +215,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
         switch on sobjectType.newSObject() {
             when LogEntryTag__c logEntryTag {
-                queryLocator = Database.getQueryLocator(
+                queryLocator = System.Database.getQueryLocator(
                     [
                         SELECT Id
                         FROM LogEntryTag__c
@@ -225,7 +225,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 );
             }
             when LogEntry__c logEntry {
-                queryLocator = Database.getQueryLocator(
+                queryLocator = System.Database.getQueryLocator(
                     [
                         SELECT Id
                         FROM LogEntry__c
@@ -235,7 +235,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 );
             }
             when Log__c log {
-                queryLocator = Database.getQueryLocator(
+                queryLocator = System.Database.getQueryLocator(
                     [
                         SELECT Id
                         FROM Log__c

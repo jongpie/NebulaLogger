@@ -9,7 +9,7 @@ private class LogEntryEventStreamController_Tests {
     @IsTest
     static void it_should_return_is_enabled_parameter() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventStream', Value__c = System.JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LogEntryEventStreamController.isEnabled();
@@ -23,7 +23,7 @@ private class LogEntryEventStreamController_Tests {
         LoggerTestConfigurator.setMock(
             new LoggerParameter__mdt(DeveloperName = LogEntryEventStreamController.DISPLAY_FIELDS_PARAMETER_NAME, Value__c = fields)
         );
-        List<String> mockDisplayFields = (List<String>) JSON.deserialize(fields, List<String>.class);
+        List<String> mockDisplayFields = (List<String>) System.JSON.deserialize(fields, List<String>.class);
         List<String> displayFields = LogEntryEventStreamController.getDatatableDisplayFields();
 
         System.Assert.areEqual(mockDisplayFields.size(), displayFields.size(), 'fields count mismatch');

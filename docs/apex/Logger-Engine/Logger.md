@@ -3488,19 +3488,19 @@ Integer
 
 Integer
 
-#### `getCurrentQuiddity()` → `Quiddity`
+#### `getCurrentQuiddity()` → `System.Quiddity`
 
-Returns the Quiddity context of the current transaction.
+Returns the System.Quiddity context of the current transaction.
 
 ##### Return
 
 **Type**
 
-Quiddity
+System.Quiddity
 
 **Description**
 
-Quiddity - The value of System.Request.getCurrent().getQuiddity()
+System.Quiddity - The value of System.Request.getCurrent().getQuiddity()
 
 #### `getLoggingLevel(String loggingLevelName)` → `System.LoggingLevel`
 
@@ -5736,7 +5736,7 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### Logger.QueueableSaver class
 
-Inner class for publishing log entries via the Queueable interface.
+Inner class for publishing log entries via the System.Queueable interface.
 
 ---
 

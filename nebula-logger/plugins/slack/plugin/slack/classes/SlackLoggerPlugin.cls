@@ -7,8 +7,8 @@
  * @group Plugins
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
-public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerable, Queueable, Database.AllowsCallouts {
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerable, System.Queueable, Database.AllowsCallouts {
     @TestVisible
     private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
     @TestVisible
@@ -69,7 +69,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     }
 
     /**
-     * @description Handles the queuable execute logic. Required by the Queueable interface.
+     * @description Handles the queuable execute logic. Required by the System.Queueable interface.
      * @param queueableContext Context of the current queuable instance.
      */
     public void execute(System.QueueableContext queueableContext) {
@@ -97,7 +97,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             notification.text = NOTIFICATION_TITLE;
             notification.attachments = new List<LogDto>{ this.convertLog(log) };
             // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
-            String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
+            String notificationJson = System.JSON.serialize(notification).replace('"isShort"', '"short"');
             request.setBody(notificationJson);
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
                 Logger.finest('Sending log entries to Slack endpoint').setHttpRequestDetails(request);
@@ -180,7 +180,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             '\nAND MaxLogEntryLoggingLevelOrdinal__c >= :loggingLevelOrdinal' +
             '\nAND SendSlackNotification__c = TRUE' +
             '\nAND SlackNotificationDate__c = NULL';
-        this.logs = (List<Log__c>) Database.query(query);
+        this.logs = (List<Log__c>) System.Database.query(query);
     }
 
     private System.HttpRequest createSlackHttpRequest() {

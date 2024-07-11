@@ -7,8 +7,8 @@
  * @group packaging
  * @description Automatically enables org default settings when installing the managed package
  */
-@SuppressWarnings('PMD.AvoidGlobalModifier')
-global without sharing class LoggerInstallHandler implements InstallHandler {
+@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.ApexCRUDViolation')
+global without sharing class LoggerInstallHandler implements System.InstallHandler {
     @TestVisible
     private List<LoggerSettings__c> settingsWithouDefaultSaveMethod = [
         SELECT Id, DefaultSaveMethod__c
