@@ -11,7 +11,7 @@
             "scopeProfiles": true,
             "versionNumber": "4.13.14.NEXT",
             "versionName": "Custom Field Mappings Support",
-            "versionDescription": "Added the ability to set & map custom fields, using new instance methods LogEntryEventBuilder.setField() & setFields(), and a new CMDT LoggerFieldMapping__mdt",
+            "versionDescription": "Added the ability to set & map custom fields, using new instance method overloads LogEntryEventBuilder.setField(), and a new CMDT LoggerFieldMapping__mdt",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
