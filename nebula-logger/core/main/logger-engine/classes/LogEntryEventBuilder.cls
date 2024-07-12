@@ -604,6 +604,50 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description Sets a field values on the builder's `LogEntryEvent__e` record
+     * @param  field      The `Schema.SObjectField` token of the field to populate
+     *                    on the builder's `LogEntryEvent__e` record
+     * @param  fieldValue The `Object` value to populate in the provided field
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setField(Schema.SObjectField field, Object fieldValue) {
+        if (this.shouldSave() == false) {
+            return this;
+        }
+
+        return this.setField(new Map<Schema.SObjectField, Object>{ field => fieldValue });
+    }
+
+    /**
+     * @description Sets multiple field values on the builder's `LogEntryEvent__e` record
+     * @param  fieldToValue An instance of `Map<Schema.SObjectField, Object>` containing the
+     *                      the fields & values to populate the builder's `LogEntryEvent__e` record
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    @SuppressWarnings('PMD.AvoidDebugStatements')
+    global LogEntryEventBuilder setField(Map<Schema.SObjectField, Object> fieldToValue) {
+        if (this.shouldSave() == false || fieldToValue == null) {
+            return this;
+        }
+
+        for (Schema.SObjectField field : fieldToValue.keySet()) {
+            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+            Object value = fieldToValue.get(field);
+            if (fieldDescribe.getSoapType() == Schema.SoapType.STRING) {
+                value = LoggerDataStore.truncateFieldValue(field, (String) value);
+            }
+            try {
+                this.logEntryEvent.put(field, value);
+            } catch (System.Exception ex) {
+                LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
+                System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
+            }
+        }
+
+        return this;
+    }
+
+    /**
      * @description Appends the tag to the existing list of tags
      * @param tag The string to use as a tag for the current entry
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods

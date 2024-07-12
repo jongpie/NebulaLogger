@@ -5,15 +5,15 @@
 
 The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.13.13
+## Unlocked Package - v4.13.14
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oDsQAI)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oDsQAI)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oE2QAI)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oE2QAI)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oDsQAI`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oE2QAI`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oDsQAI`
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oE2QAI`
 
 ---
 
@@ -31,7 +31,7 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 
 ## Features
 
-1. Easily add log entries via Apex, Lightning Components (lwc & aura), Flow & Process Builder to generate 1 consolidated, unified log
+1. Easily add log entries via Apex, Lightning Components (lightning web components (LWCs) & aura components), Flow & Process Builder to generate 1 consolidated, unified log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
@@ -87,11 +87,6 @@ Nebula Logger is available as both an unlocked package and a managed package. Th
             <td>Requires adding your own calls for <code>System.debug()</code> due to Salesforce limitations with managed packages</td>
         </tr>
         <tr>
-            <td>Apex Stack Traces</td>
-            <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
-            <td>Requires calling <code>parseStackTrace()</code> due to Salesforce limitations with managed packages. For example:<br><code>Logger.debug('my message').parseStackTrace(new DmlException().getStackTrace());</code></td>
-        </tr>
-        <tr>
             <td>Logger Plugin Framework</td>
             <td>Leverage Apex or Flow to build your own "plugins" for Logger - easily add your own automation to the any of the included objects: <code>LogEntryEvent__e</code>, <code>Log__c</code>, <code>LogEntry__c</code>, <code>LogEntryTag__c</code> and <code>LoggerTag__c</code>. The logger system will then automatically run your plugins for each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
             <td>This functionality is not currently available in the managed package</td>
@@ -142,20 +137,21 @@ This results in 1 `Log__c` record with several related `LogEntry__c` records.
 
 ### Logger for Lightning Components: Quick Start
 
-For lightning component developers, the `logger` lwc provides very similar functionality that is offered in Apex. Simply embed the `logger` lwc in your component, and call the desired logging methods within your code.
+For lightning component developers, the `logger` LWC provides very similar functionality that is offered in Apex. Simply incorporate the `logger` LWC into your component, and call the desired logging methods within your code.
 
 ```javascript
-// For lwc, retrieve logger from your component's template
-const logger = this.template.querySelector('c-logger');
+// For LWC, import logger's createLogger() function into your component
+import { createLogger } from 'c/logger';
 
-logger.error('Hello, world!').addTag('some important tag');
-logger.warn('Hello, world!');
-logger.info('Hello, world!');
-logger.debug('Hello, world!');
-logger.fine('Hello, world!');
-logger.finer('Hello, world!');
-logger.finest('Hello, world!');
-logger.saveLog();
+export default class LoggerLWCDemo extends LightningElement {
+    logger;
+
+    async connectedCallback() {
+        this.logger = await createLogger();
+        this.logger.info('Hello, world');
+        this.logger.saveLog();
+    }
+}
 ```
 
 ```javascript
@@ -388,7 +384,7 @@ For more details, check out the `LogMessage` class [documentation](https://jongp
 
 ## Features for Lightning Component Developers
 
-For lightning component developers, the included `logger` lwc can be used in other lwc & aura components for frontend logging. Similar to `Logger` and `LogEntryBuilder` Apex classes, the lwc has both `logger` and `logEntryBuilder` classes. This provides a fluent API for javascript developers so they can chain the method calls.
+For lightning component developers, the included `logger` LWC can be used in other LWCs & aura components for frontend logging. Similar to `Logger` and `LogEntryBuilder` Apex classes, the LWC has both `logger` and `logEntryBuilder` classes. This provides a fluent API for JavaScript developers so they can chain the method calls.
 
 Once you've incorporated `logger` into your lightning components, you can see your `LogEntry__c` records using the included list view "All Component Log Entries'.
 
@@ -400,34 +396,48 @@ Each `LogEntry__c` record automatically stores the component's type ('Aura' or '
 
 #### Example LWC Usage
 
-To use the logger component, it has to be added to your lwc's markup:
-
-```html
-<template>
-    <c-logger></c-logger>
-
-    <div>My component</div>
-</template>
-```
-
-Once you've added logger to your markup, you can call it in your lwc's controller:
+For lightning component developers, the `logger` LWC provides very similar functionality that is offered in Apex. Simply import the `logger` LWC in your component, and call the desired logging methods within your code.
 
 ```javascript
-import { LightningElement } from 'lwc';
+// For LWC, import logger's createLogger() function into your component
+import { createLogger } from 'c/logger';
 
-export default class LoggerDemo extends LightningElement {
+export default class LoggerLWCDemo extends LightningElement {
+    logger;
+
+    async connectedCallback() {
+        // Call createLogger() once per component
+        this.logger = await createLogger();
+
+        this.logger.setScenario('some scenario');
+        this.logger.finer('initialized demo LWC');
+    }
+
     logSomeStuff() {
-        const logger = this.template.querySelector('c-logger');
+        this.logger.error('Add log entry using Nebula Logger with logging level == ERROR').addTag('some important tag');
+        this.logger.warn('Add log entry using Nebula Logger with logging level == WARN');
+        this.logger.info('Add log entry using Nebula Logger with logging level == INFO');
+        this.logger.debug('Add log entry using Nebula Logger with logging level == DEBUG');
+        this.logger.fine('Add log entry using Nebula Logger with logging level == FINE');
+        this.logger.finer('Add log entry using Nebula Logger with logging level == FINER');
+        this.logger.finest('Add log entry using Nebula Logger with logging level == FINEST');
 
-        logger.error('Hello, world!').addTag('some important tag');
-        logger.warn('Hello, world!');
-        logger.info('Hello, world!');
-        logger.debug('Hello, world!');
-        logger.fine('Hello, world!');
-        logger.finer('Hello, world!');
-        logger.finest('Hello, world!');
+        this.logger.saveLog();
+    }
 
-        logger.saveLog();
+    doSomething(event) {
+        this.logger.finest('Starting doSomething() with event: ' + JSON.stringify(event));
+        try {
+            this.logger.debug('TODO - finishing implementation of doSomething()').addTag('another tag');
+            // TODO add the function's implementation below
+        } catch (thrownError) {
+            this.logger
+                .error('An unexpected error log entry using Nebula Logger with logging level == ERROR')
+                .setError(thrownError)
+                .addTag('some important tag');
+        } finally {
+            this.logger.saveLog();
+        }
     }
 }
 ```
@@ -581,6 +591,53 @@ Once you've implementing log entry tagging within Apex or Flow, you can choose h
         </tr>
     </tbody>
 </table>
+
+---
+
+## Adding Custom Fields to Nebula Logger's Data Model
+
+As of `v4.13.14`, Nebula Logger supports defining, setting, and mapping custom fields within Nebula Logger's data model. This is helpful in orgs that want to extend Nebula Logger's included data model by creating their own org/project-specific fields.
+
+This feature requires that you populate your custom fields yourself, and is only available in Apex currently. The plan is to add in a future release the ability to also set custom fields via JavaScript & Flow.
+
+### Adding Custom Fields to the Platform Event `LogEntryEvent__e`
+
+The first step is to add a field to the platform event `LogEntryEvent__e`
+
+-   Create a custom field on `LogEntryEvent__e`. Any data type supported by platform events can be used.
+
+    -   In this example, a custom text field called `SomeCustomField__c` has been added:
+
+        ![Custom Field on LogEntryEvent__e](./images/custom-field-log-entry-event.png)
+
+-   Populate your field(s) in Apex by calling the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
+
+    ```apex
+    Logger.info('hello, world')
+        // Set a single field
+        .setField(LogEntryEvent__e.SomeCustomTextField__c, 'some text value')
+        // Set multiple fields
+        .setFields(new Map<Schema.SObjectField, Object>{
+            LogEntryEvent__e.AnotherCustomTextField__c => 'another text value',
+            LogEntryEvent__e.SomeCustomDatetimeField__c => System.now()
+        });
+    ```
+
+### Adding Custom Fields to the Custom Objects `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
+
+If you want to store the data in one of Nebula Logger's custom objects, you can follow the above steps, and also...
+
+-   Create an equivalent custom field on one of Nebula Logger's custom objects - right now, only `Log__c`, `LogEntry__c`, and `LoggerScenario__c` are supported.
+
+    -   In this example, a custom text field _also_ called `SomeCustomField__c` has been added to `Log__c` object - this will be used to store the value of the field `LogEntryEvent__e.SomeCustomField__c`:
+
+        ![Custom Field on LogEntryEvent__e](./images/custom-field-log.png)
+
+-   Create a record in the new CMDT `LoggerFieldMapping__mdt` to map the `LogEntryEvent__e` custom field to the custom object's custom field, shown below. Nebula Logger will automatically populate the custom object's target field with the value of the source `LogEntryEvent__e` field.
+
+    -   In this example, a custom text field called `SomeCustomField__c` has been added to both `LogEntryEvent__e` and `Log__c`.
+
+        ![Custom Field on LogEntryEvent__e](./images/custom-field-mapping.png)
 
 ---
 

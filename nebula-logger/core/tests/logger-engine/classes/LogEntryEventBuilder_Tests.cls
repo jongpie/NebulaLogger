@@ -1794,6 +1794,66 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_single_field_with_specified_value() {
+        Schema.SObjectField field = Schema.LogEntryEvent__e.OrganizationId__c;
+        String fieldValue = 'Some_value';
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+        // Wipe out any pre-populated field value to avoid a false-positive on the asserts below
+        builder.getLogEntryEvent().put(field, null);
+
+        builder.setField(field, fieldValue);
+
+        System.Assert.areEqual(fieldValue, builder.getLogEntryEvent().get(field));
+    }
+
+    @IsTest
+    static void it_should_set_map_of_fields_with_specified_values() {
+        Map<Schema.SObjectField, Object> fieldToValue = new Map<Schema.SObjectField, Object>{
+            Schema.LogEntryEvent__e.OrganizationId__c => 'Some_value',
+            Schema.LogEntryEvent__e.ProfileId__c => 'Some Profile Name'
+        };
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+        // Wipe out any pre-populated fields values to avoid a false-positive on the asserts below
+        for (Schema.SObjectField field : fieldToValue.keySet()) {
+            builder.getLogEntryEvent().put(field, null);
+        }
+
+        builder.setField(fieldToValue);
+
+        for (Schema.SObjectField field : fieldToValue.keySet()) {
+            Object fieldValue = fieldToValue.get(field);
+            System.Assert.areEqual(fieldValue, builder.getLogEntryEvent().get(field));
+        }
+    }
+
+    @IsTest
+    static void it_should_set_single_field_with_truncated_string_value() {
+        Schema.SObjectField stringField = Schema.LogEntryEvent__e.OrganizationId__c;
+        Integer maxLength = stringField.getDescribe().getLength();
+        String fieldValue = 'A'.repeat(maxLength + 1);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+        // Wipe out any pre-populated field value to avoid a false-positive on the asserts below
+        builder.getLogEntryEvent().put(stringField, null);
+
+        builder.setField(stringField, fieldValue);
+
+        System.Assert.areEqual(fieldValue.left(maxLength), builder.getLogEntryEvent().get(stringField));
+    }
+
+    @IsTest
+    static void it_gracefully_handles_invalid_value_for_field() {
+        Schema.SObjectField datetimeField = Schema.LogEntryEvent__e.Timestamp__c;
+        String thingThatIsNotADatetime = 'this is DEFINITELY not a valid datetime, surely 🤷';
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+        // Wipe out any pre-populated field value to avoid a false-positive on the asserts below
+        builder.getLogEntryEvent().put(datetimeField, null);
+
+        builder.setField(datetimeField, thingThatIsNotADatetime);
+
+        System.Assert.isNull(builder.getLogEntryEvent().get(datetimeField));
+    }
+
+    @IsTest
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected

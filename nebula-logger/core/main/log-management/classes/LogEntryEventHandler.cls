@@ -108,6 +108,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                     continue;
                 } else if (LoggerParameter.NORMALIZE_SCENARIO_DATA) {
                     LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
+
+                    LoggerFieldMapper.mapFieldValues(logEntryEvent, loggerScenario);
                     loggerScenario.setOptions(DML_OPTIONS);
                     SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
                 }
@@ -215,6 +217,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).Id;
             }
 
+            LoggerFieldMapper.mapFieldValues(logEntryEvent, log);
             log.setOptions(DML_OPTIONS);
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
@@ -370,6 +373,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 logEntry.Tags__c = logEntryEvent.Tags__c;
             }
 
+            LoggerFieldMapper.mapFieldValues(logEntryEvent, logEntry);
             logEntry.setOptions(DML_OPTIONS);
             this.logEntries.add(logEntry);
 

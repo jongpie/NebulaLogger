@@ -150,6 +150,10 @@ Class used by the logging system for batch contextual details
 
 Class used to cache query results returned by the selector classes
 
+### [LoggerFieldMapper](Configuration/LoggerFieldMapper)
+
+Maps fields values from custom fields on `LogEntryEvent__e` to equivalent fields on `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
+
 ### [LoggerParameter](Configuration/LoggerParameter)
 
 Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types

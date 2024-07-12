@@ -3,20 +3,15 @@
     "namespace": "",
     "sourceApiVersion": "60.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "plugins": {
-        "sfdx-plugin-prettier": {
-            "enabled": true
-        }
-    },
     "packageDirectories": [
         {
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.13.NEXT",
-            "versionName": "Improved Fully-Qualified References",
-            "versionDescription": "Switched to using fully-qualified references to all standard classes in the Schema & System namespaces",
+            "versionNumber": "4.13.14.NEXT",
+            "versionName": "Custom Field Mappings Support",
+            "versionDescription": "Added the ability to set & map custom fields, using new instance method overloads LogEntryEventBuilder.setField(), and a new CMDT LoggerFieldMapping__mdt",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -181,6 +176,7 @@
         "Nebula Logger - Core@4.13.11-track-user-federation-identifier": "04t5Y0000027L98QAE",
         "Nebula Logger - Core@4.13.12-added-refresh-button-on-relatedlogentries-lwc": "04t5Y0000015oCkQAI",
         "Nebula Logger - Core@4.13.13-improved-fully-qualified-references": "04t5Y0000015oDsQAI",
+        "Nebula Logger - Core@4.13.14-custom-field-mappings-support": "04t5Y0000015oE2QAI",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
