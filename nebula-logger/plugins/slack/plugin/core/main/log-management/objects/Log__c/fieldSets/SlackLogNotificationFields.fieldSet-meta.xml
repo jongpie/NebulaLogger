@@ -3,11 +3,6 @@
     <fullName>SlackLogNotificationFields</fullName>
     <description>The default list of fields displayed in Slack notifications sent Nebula Logger's Slack plugin.</description>
     <displayedFields>
-        <field>ApiVersion__c</field>
-        <isFieldManaged>false</isFieldManaged>
-        <isRequired>false</isRequired>
-    </displayedFields>
-    <displayedFields>
         <field>TotalLimitsCpuTimeUsed__c</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
