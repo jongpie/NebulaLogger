@@ -27,8 +27,8 @@
                     "package": "Nebula Logger - Core@4.7.2-parent-log-transaction-id-bugfix"
                 }
             ],
-            "versionName": "Added logging for Screen Flow failures",
             "versionNumber": "1.0.2.NEXT",
+            "versionName": "Added logging for Screen Flow failures",
             "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)"
         },
         {
@@ -39,8 +39,8 @@
                     "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
                 }
             ],
-            "versionName": "Beta Release",
             "versionNumber": "0.9.0.NEXT",
+            "versionName": "Beta Release",
             "versionDescription": "Initial beta version of new plugin",
             "default": false
         },
@@ -52,8 +52,8 @@
                     "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
                 }
             ],
-            "versionName": "Beta Release",
             "versionNumber": "0.9.0.NEXT",
+            "versionName": "Beta Release",
             "versionDescription": "Initial beta version of new plugin",
             "default": false
         },
@@ -65,9 +65,9 @@
                     "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
                 }
             ],
-            "versionName": "Customizable Notification Fields",
-            "versionNumber": "1.5.2.NEXT",
-            "versionDescription": "Added support for customizing which Log__c fields are included in Slack notifications with a new field set, Log__c.SlackNotificationFields, and a new LoggerParameter__mdt record, LoggerParameter.SlackLogNotificationFields",
+            "versionNumber": "1.5.3.NEXT",
+            "versionName": "Removed ApiVersion__c in Field Set",
+            "versionDescription": "Removed the deprecated field Log__c.ApiVersion__c from the field set Log__c.SlackNotificationFields",
             "default": false
         },
         {
@@ -193,6 +193,8 @@
         "Nebula Logger - Core Plugin - Slack@0.9.2-beta-release-round-3": "04t5Y0000015l2WQAQ",
         "Nebula Logger - Core Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
         "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
-        "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
+        "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE",
+        "Nebula Logger - Core Plugin - Slack@1.5.2": "04t5Y0000015nDJQAY",
+        "Nebula Logger - Core Plugin - Slack@1.5.3": "04t5Y0000015oERQAY"
     }
 }
