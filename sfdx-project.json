@@ -9,9 +9,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.14.NEXT",
-            "versionName": "Custom Field Mappings Support",
-            "versionDescription": "Added the ability to set & map custom fields, using new instance method overloads LogEntryEventBuilder.setField(), and a new CMDT LoggerFieldMapping__mdt",
+            "versionNumber": "4.13.15.NEXT",
+            "versionName": "Replaced BrowserUrl__c with BrowserAddress__c",
+            "versionDescription": "Deprecated the BrowserUrl__c fields on LogEntryEvent__e and LogEntry__c, and replaced them with new BrowserAddress__c that have a much longer max length (2,000 vs 255)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
