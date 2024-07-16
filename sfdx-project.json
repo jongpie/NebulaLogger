@@ -9,9 +9,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.17.NEXT",
-            "versionName": "Overhauled JavaScript Stack Trace Parsing",
-            "versionDescription": "Moved JS stack trace parsing to happen in JS (instead of Apex) using stacktrace.js library. Also added a ton of recipes metadata to make it easier to test JS stack traces in different Salesforce contexts.",
+            "versionNumber": "4.14.0.NEXT",
+            "versionName": "Summer '24 Release",
+            "versionDescription": "Updated all metadata to API v61.0, added component visibility rules to flexipage tabs, replaced BrowserUrl__c field with new field BrowserLocation__c",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
