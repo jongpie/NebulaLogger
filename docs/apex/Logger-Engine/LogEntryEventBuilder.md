@@ -691,7 +691,7 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setTimestamp(Datetime timestamp)` → `void`
+#### `setTimestamp(Datetime timestamp)` → `LogEntryEventBuilder`
 
 **This is only intended to be used internally by Nebula Logger, and is subject to change.**
 
@@ -700,6 +700,16 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 | Param       | Description                                                     |
 | ----------- | --------------------------------------------------------------- |
 | `timestamp` | Datetime instance to set timestamp fields on this.logEntryEvent |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setTopics(List<String> tags)` → `LogEntryEventBuilder`
 
