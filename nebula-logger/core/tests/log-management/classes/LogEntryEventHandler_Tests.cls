@@ -1303,6 +1303,7 @@ private class LogEntryEventHandler_Tests {
                 UserType__c,
                 (
                     SELECT
+                        BrowserAddress__c,
                         BrowserFormFactor__c,
                         BrowserLanguage__c,
                         BrowserScreenResolution__c,
@@ -1513,6 +1514,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     private static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
+        System.Assert.areEqual(logEntryEvent.BrowserAddress__c, logEntry.BrowserAddress__c, 'logEntry.BrowserAddress__c was not properly set');
         System.Assert.areEqual(logEntryEvent.BrowserFormFactor__c, logEntry.BrowserFormFactor__c, 'logEntry.BrowserFormFactor__c was not properly set');
         System.Assert.areEqual(logEntryEvent.BrowserLanguage__c, logEntry.BrowserLanguage__c, 'logEntry.BrowserLanguage__c was not properly set');
         System.Assert.areEqual(

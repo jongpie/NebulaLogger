@@ -908,6 +908,7 @@ describe('logger lwc legacy markup tests', () => {
             .getComponentLogEntry();
 
         expect(logger.getBufferSize()).toEqual(0);
+        expect(logEntry.browserAddress).toEqual(window.location.href);
         expect(logEntry.browserFormFactor).toEqual(FORM_FACTOR);
         expect(logEntry.browserLanguage).toEqual(window.navigator.language);
         expect(logEntry.browserScreenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);

@@ -85,6 +85,10 @@ A DTO object used to create log entries for lightning components
 
 ##### Properties
 
+###### `browserAddress` → `String`
+
+The URL displayed in the user&apos;s browser
+
 ###### `browserFormFactor` → `String`
 
 The form factor of the user&apos;s browser
@@ -99,7 +103,7 @@ The resolution of the user&apos;s device
 
 ###### `browserUrl` → `String`
 
-The URL displayed in the user&apos;s browser
+DEPRECATED: Use `browserAddress` instead
 
 ###### `browserUserAgent` → `String`
 

@@ -2150,6 +2150,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.BrowserAddress__c</fieldItem>
+                <identifier>RecordBrowserAddress_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.BrowserLanguage__c</fieldItem>
                 <identifier>RecordBrowserLanguage_cField</identifier>
             </fieldInstance>

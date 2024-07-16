@@ -2,9 +2,12 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>BrowserLanguage__c</fullName>
     <externalId>false</externalId>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <label>Browser Language</label>
     <length>255</length>
     <required>false</required>
+    <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>

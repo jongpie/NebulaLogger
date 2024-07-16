@@ -80,12 +80,23 @@ public inherited sharing class ComponentLogger {
     }
 
     private static void setBrowserDetails(LogEntryEvent__e logEntryEvent, ComponentLogEntry componentLogEntry) {
-        logEntryEvent.BrowserFormFactor__c = componentLogEntry.browserFormFactor;
-        logEntryEvent.BrowserLanguage__c = componentLogEntry.browserLanguage;
-        logEntryEvent.BrowserScreenResolution__c = componentLogEntry.browserScreenResolution;
-        logEntryEvent.BrowserUrl__c = componentLogEntry.browserUrl;
-        logEntryEvent.BrowserUserAgent__c = componentLogEntry.browserUserAgent;
-        logEntryEvent.BrowserWindowResolution__c = componentLogEntry.browserWindowResolution;
+        logEntryEvent.BrowserAddress__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserAddress__c, componentLogEntry.browserAddress);
+        logEntryEvent.BrowserFormFactor__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.BrowserFormFactor__c,
+            componentLogEntry.browserFormFactor
+        );
+        logEntryEvent.BrowserLanguage__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserLanguage__c, componentLogEntry.browserLanguage);
+        logEntryEvent.BrowserScreenResolution__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.BrowserScreenResolution__c,
+            componentLogEntry.browserScreenResolution
+        );
+        // TODO BrowserUrl__c is deprecated (replaced by BrowserAddress__c), but keep setting BrowserUrl__c for now so people have time to migrate to referencing BrowserAddress__c
+        logEntryEvent.BrowserUrl__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUrl__c, componentLogEntry.browserAddress);
+        logEntryEvent.BrowserUserAgent__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUserAgent__c, componentLogEntry.browserUserAgent);
+        logEntryEvent.BrowserWindowResolution__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.BrowserWindowResolution__c,
+            componentLogEntry.browserWindowResolution
+        );
     }
 
     private static void setComponentErrorDetails(LogEntryEvent__e logEntryEvent, ComponentError componentError) {
@@ -224,6 +235,12 @@ public inherited sharing class ComponentLogger {
      */
     public class ComponentLogEntry {
         /**
+         * @description The URL displayed in the user's browser
+         */
+        @AuraEnabled
+        public String browserAddress { get; set; }
+
+        /**
          * @description The form factor of the user's browser
          */
         @AuraEnabled
@@ -242,7 +259,7 @@ public inherited sharing class ComponentLogger {
         public String browserScreenResolution { get; set; }
 
         /**
-         * @description The URL displayed in the user's browser
+         * @description DEPRECATED: Use `browserAddress` instead
          */
         @AuraEnabled
         public String browserUrl { get; set; }
