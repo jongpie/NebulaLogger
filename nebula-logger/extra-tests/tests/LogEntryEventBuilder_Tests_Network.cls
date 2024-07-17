@@ -6,7 +6,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests_Network {
-    private static final String EXPERIENCE_CLOUD_NETWORK_NAME = 'Logger Test Site';
+    private static final String EXPERIENCE_CLOUD_NETWORK_NAME = 'Logger Test LWR Site';
     private static final String EXPERIENCE_CLOUD_USER_PROFILE_NAME = 'Logger Test Site User Profile';
 
     @IsTest

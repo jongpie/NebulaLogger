@@ -1,0 +1,96 @@
+{
+    "appPageId": "afe8e8b5-77c5-4b64-a762-574353caf1f1",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "20510fbe-728d-4df6-834e-c4cea948d498",
+    "label": "Register",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "salesforceIdentity:communityLogo2",
+                    "id": "324e7f83-e1bb-4133-9685-d8216c3c504e",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "richTextValue": "<div style=\"text-align: center;\" class=\"inverseTextColor\">Join the community to receive personalized information and customer support.</div>"
+                    },
+                    "componentName": "forceCommunity:richTextInline",
+                    "id": "59aa7002-0cff-41e7-ab18-5b1a8c9045ca",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "confirmPasswordLabel": "Confirm Password",
+                        "emailLabel": "Email",
+                        "extraFieldsFieldSet": "",
+                        "firstnameLabel": "First Name",
+                        "includePasswordField": false,
+                        "lastnameLabel": "Last Name",
+                        "passwordLabel": "Create Password",
+                        "regConfirmUrl": "./CheckPasswordResetEmail",
+                        "startUrl": "",
+                        "submitButtonLabel": "Sign Up"
+                    },
+                    "componentName": "salesforceIdentity:selfRegister2",
+                    "id": "7c3445d1-9039-4222-9d4d-a45e59dae374",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "headerText": "",
+                        "showHeader": false,
+                        "useCommunityDomainSso": true
+                    },
+                    "componentName": "salesforceIdentity:socialLogin2",
+                    "id": "9a950595-22c6-4ed9-8985-d13cc8f98a78",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "richTextValue": "<div style=\"text-align: center;\"><a class=\"inverseTextColor\" href=\"./\">Already have an account?</a></div>"
+                    },
+                    "componentName": "forceCommunity:richTextInline",
+                    "id": "a50d8b18-4ad8-49f1-becc-182ffb491f27",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "478b1330-236a-4690-9282-44cc96673549",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Register"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "13b4ed5e-8e4f-4787-a087-2b6108ee1017",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "0ae69647-38c4-40a0-94a7-2dc4d4508bc9",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Login",
+    "type": "view",
+    "viewType": "self-register"
+}

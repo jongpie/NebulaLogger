@@ -224,11 +224,11 @@ jobs:
             - name: 'Create Experience Cloud Scratch Org'
               run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --set-default --json
 
-            - name: 'Deploy Test Experience Site Metadata'
-              run: npm run experience:deploy
-
             - name: 'Deploy Source to Scratch Org'
               run: npx sf project deploy start --source-dir ./nebula-logger/
+
+            - name: 'Deploy Test Experience Site Metadata'
+              run: npm run experience:deploy
 
             - name: 'Assign Logger Admin Permission Set'
               run: npm run permset:assign:admin

@@ -28,15 +28,19 @@
     <label>Logger Recipes Admin</label>
     <license>Salesforce</license>
     <tabSettings>
-        <tab>LoggerAuraDemo</tab>
+        <tab>Logger_App_Page_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>Logger_lwc_demo</tab>
+        <tab>Logger_Aura_Embed_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>Logger_lwc_legacy_demo</tab>
+        <tab>Logger_LWC_Import_Demo</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>Logger_LWC_Embed_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

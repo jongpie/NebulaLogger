@@ -143,7 +143,7 @@ For lightning component developers, the `logger` LWC provides very similar funct
 // For LWC, import logger's createLogger() function into your component
 import { createLogger } from 'c/logger';
 
-export default class LoggerLWCDemo extends LightningElement {
+export default class LoggerLWCImportDemo extends LightningElement {
     logger;
 
     async connectedCallback() {
@@ -402,7 +402,7 @@ For lightning component developers, the `logger` LWC provides very similar funct
 // For LWC, import logger's createLogger() function into your component
 import { createLogger } from 'c/logger';
 
-export default class LoggerLWCDemo extends LightningElement {
+export default class LoggerLWCImportDemo extends LightningElement {
     logger;
 
     async connectedCallback() {
