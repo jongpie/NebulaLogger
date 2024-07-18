@@ -93,7 +93,7 @@ private class ComponentLogger_Tests {
         String expectedComponentFunctionName = 'saveLogAuraExample';
         String expectedSourceType = 'AuraDefinitionBundle';
         ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
-        componentLogEntry.stack = getMockAuraComponentStackTrace(expectedComponentApiName, expectedComponentFunctionName);
+        componentLogEntry.stack = getMockAuraEmbeddedComponentStackTrace(expectedComponentApiName, expectedComponentFunctionName);
         System.Test.startTest();
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
@@ -136,7 +136,7 @@ private class ComponentLogger_Tests {
         String exceptionFunctionName = 'someAuraFunction';
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = 'some JavaScript error message';
-        mockComponentError.stack = getMockAuraComponentStackTrace(exceptionSourceApiName, exceptionFunctionName);
+        mockComponentError.stack = getMockAuraEmbeddedComponentStackTrace(exceptionSourceApiName, exceptionFunctionName);
         mockComponentError.type = 'JavaScript.ReferenceError';
         ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
         componentLogEntry.error = mockComponentError;
@@ -379,8 +379,48 @@ private class ComponentLogger_Tests {
         System.Assert.areEqual(componentLogEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
     }
 
+    /*
+        <target>lightning__AppPage</target>
+        <target>lightning__FlowScreen</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordAction</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__Tab</target>
+        <target>lightning__UtilityBar</target>
+        <target>lightningCommunity__Page</target>
+    */
     @IsTest
-    static void it_should_parse_aura_component_stack_trace() {
+    static void it_should_parse_chrome_lwc_embed_stack_traces() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String expectedComponentType = 'LWC';
+        String componentApiName = 'c/loggerLWCDemo';
+        String comonentFunctionName = 'logErrorExample';
+        String expectedSourceType = 'LightningComponentBundle';
+        for (WebComponentTarget target : WebComponentTarget.values()) {
+            String mockStackTrace = new ChromeEmbedLWCStackTraceGenerator().generate(target, componentApiName, comonentFunctionName);
+            ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+            componentLogEntry.stack = mockStackTrace;
+
+            ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+            LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+            System.Assert.areEqual(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
+            System.Assert.areEqual(componentApiName + '.' + comonentFunctionName, publishedLogEntryEvent.OriginLocation__c);
+            System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceMetadataType__c);
+            System.Assert.areEqual(
+                'at Proxy.' + comonentFunctionName + mockStackTrace.substringAfter('at Proxy.' + comonentFunctionName),
+                publishedLogEntryEvent.StackTrace__c
+            );
+            // TODO Move these asserts to LogEntryHandler_Tests
+            // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
+            // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
+        }
+        System.Assert.fail('TODO finish adding asserts');
+    }
+
+    @IsTest
+    static void it_should_parse_aura_embedded_component_stack_trace() {
         LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         String expectedComponentType = 'Aura';
@@ -388,7 +428,44 @@ private class ComponentLogger_Tests {
         String expectedComponentFunctionName = 'saveLogAuraExample';
         String expectedSourceType = 'AuraDefinitionBundle';
         ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
-        componentLogEntry.stack = getMockAuraComponentStackTrace(expectedComponentApiName, expectedComponentFunctionName);
+        componentLogEntry.stack = getMockAuraEmbeddedComponentStackTrace(expectedComponentApiName, expectedComponentFunctionName);
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.Assert.areEqual(componentLogEntry.browserFormFactor, publishedLogEntryEvent.BrowserFormFactor__c);
+        System.Assert.areEqual(componentLogEntry.browserLanguage, publishedLogEntryEvent.BrowserLanguage__c);
+        System.Assert.areEqual(componentLogEntry.browserScreenResolution, publishedLogEntryEvent.BrowserScreenResolution__c);
+        System.Assert.areEqual(componentLogEntry.browserUrl, publishedLogEntryEvent.BrowserUrl__c);
+        System.Assert.areEqual(componentLogEntry.browserUserAgent, publishedLogEntryEvent.BrowserUserAgent__c);
+        System.Assert.areEqual(componentLogEntry.browserWindowResolution, publishedLogEntryEvent.BrowserWindowResolution__c);
+        System.Assert.areEqual(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual(expectedComponentApiName + '.' + expectedComponentFunctionName, publishedLogEntryEvent.OriginLocation__c);
+        System.Assert.areEqual(expectedSourceType, publishedLogEntryEvent.OriginSourceMetadataType__c);
+        // TODO Move these asserts to LogEntryHandler_Tests
+        // System.Assert.areEqual(expectedComponentApiName, publishedLogEntryEvent.ComponentApiName__c);
+        // System.Assert.areEqual(expectedComponentFunctionName, publishedLogEntryEvent.ComponentFunctionName__c);
+        System.Assert.areEqual(expectedComponentType, publishedLogEntryEvent.ComponentType__c);
+        System.Assert.areEqual(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+    }
+
+    @IsTest
+    static void it_should_parse_aura_flexipage_component_stack_trace() {
+        LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String expectedComponentType = 'Aura';
+        String expectedComponentApiName = 'c/loggerAuraDemo';
+        String expectedComponentFunctionName = 'saveLogAuraExample';
+        String expectedSourceType = 'AuraDefinitionBundle';
+        ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+        componentLogEntry.stack = getMockAuraFlexipageComponentStackTrace(expectedComponentApiName, expectedComponentFunctionName);
         System.Assert.areEqual(0, Logger.saveLogCallCount);
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -515,7 +592,53 @@ private class ComponentLogger_Tests {
         return componentLogEntry;
     }
 
-    private static String getMockAuraComponentStackTrace(String originComponentName, String originFunctionName) {
+    private LoggerStackTrace createMockStackTrace(LoggerStackTrace.SourceMetadataType sourceMetadataType) {
+        // The properties on LoggerStackTrace have private setters,
+        // so let's use some JSON deserialization to create mocks
+        String apiName;
+        String actionName;
+        switch on sourceMetadataType {
+            when AnonymousBlock {
+                apiName = 'SomeAnonymousBlock';
+                actionName = null;
+            }
+            when ApexClass {
+                apiName = 'ApexClass';
+                actionName = 'someMethodName';
+            }
+            when ApexTrigger {
+                apiName = 'ApexTrigger';
+                actionName = null;
+            }
+            when AuraDefinitionBundle {
+                apiName = 'c/someSomeAuraDefinition';
+                actionName = 'someFunctionName';
+            }
+            when LightningComponentBundle {
+                apiName = 'c/someLightningComponentBundle';
+                actionName = 'someFunctionName';
+            }
+        }
+
+        String sourceLocation = apiName + (actionName == null ? '' : '.' + actionName);
+        // LoggerStackTrace stackTrace = new LoggerStackTrace();
+        // Map<String, Object> untypedStackTrace = System.JSON.deserializeUntyped(System.JSON.serialize(stackTrace));
+        Map<String, Object> untypedSourceMetadata = new Map<String, Object>{
+            'ActionName' => actionName,
+            'ApiName' => apiName,
+            'LineNumber' => 12345,
+            'MetadataType' => sourceMetadataType.name()
+        };
+        Map<String, Object> untypedStackTrace = new Map<String, Object>{
+            'Language' => 'Apex',
+            'Location' => sourceLocation,
+            'ParsedStackTraceString' => 'Some stack trace\nthe value here should not really matter\nI do not think\nhopefully\\but\nwe shall see',
+            'Source' => untypedSourceMetadata
+        };
+        return (LoggerStackTrace) System.JSON.deserialize(System.JSON.serialize(untypedStackTrace), LoggerStackTrace.class);
+    }
+
+    private static String getMockAuraEmbeddedComponentStackTrace(String originComponentName, String originFunctionName) {
         // This is a copy of an actual stack trace generated from c/loggerAuraDemo in August 2021
         List<String> auraStackTraceLines = new List<String>{
             'LogEntryBuilder@https://flow-ability-5496.lightning.force.com/lightning/n/modules/' +
@@ -561,6 +684,60 @@ private class ComponentLogger_Tests {
             'AuraRenderingService.prototype.$renderFacet$@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:54337:29',
             'render@https://static.lightning.force.com/cs44/auraFW/javascript/QPQi8lbYE8YujG6og6Dqgw/aura_proddebug.js:43718:45',
             '\nloggerAuraDemo.js:17:17'
+        };
+        return String.join(auraStackTraceLines, '\n');
+    }
+
+    private static String getMockAuraFlexipageComponentStackTrace(String originComponentName, String originFunctionName) {
+        // This is a copy of an actual stack trace generated from c/loggerAuraDemo in August 2021
+        List<String> auraStackTraceLines = new List<String>{
+            'ComponentLogEntry@modules/' +
+            ComponentLogger.LOGGER_COMPONENT_NAME +
+            '.js:34:22',
+            'LogEntryBuilder@modules/' +
+            ComponentLogger.LOGGER_COMPONENT_NAME +
+            '.js:58:87',
+            'newLogEntry@modules/' +
+            ComponentLogger.LOGGER_COMPONENT_NAME +
+            '.js:193:14',
+            '_newEntry@modules/' +
+            ComponentLogger.LOGGER_COMPONENT_NAME +
+            '.js:311:44',
+            'fine@modules/' +
+            ComponentLogger.LOGGER_COMPONENT_NAME +
+            '.js:241:21',
+            'fine@modules/' +
+            ComponentLogger.LOGGER_COMPONENT_NAME +
+            '.js:416:82',
+            'createHooksCallback$LWS/<@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js line 37462 > eval:2536:24',
+            'applyOrConstructTrapForTwoOrMoreArgs$LWS@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:34328:38',
+            'callHook@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:10703:19',
+            'createMethodCaller/<@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:7511:20',
+            'InteropComponent.prototype.$setupMethods$/</self[m]@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:50206:24',
+            'createHooksCallback$LWS/<@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:36101:24',
+            'applyOrConstructTrapForOneOrMoreArgs$LWS@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js line 37462 > eval:708:38',
+            'applyOrConstructTrap$LWS@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js line 37462 > eval:651:195',
+            originFunctionName +
+            '@https://speed-momentum-5634.scratch.lightning.force.com/lightning/r/Account/0018D00000aEV81QAG/components/' +
+            originComponentName +
+            '.js:14:16',
+            'createHooksCallback$LWS/<@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js line 37462 > eval:2536:24',
+            'applyOrConstructTrapForTwoOrMoreArgs$LWS@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:34459:38',
+            'applyOrConstructTrapForOneOrMoreArgs$LWS@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:34261:197',
+            'Action.prototype.$runDeprecated$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:52957:36',
+            'Action.prototype.$run$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:52944:8',
+            'handleClick@https://speed-momentum-5634.scratch.lightning.force.com/components/lightning/button.js:23:20',
+            'Action.prototype.$runDeprecated$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:52957:36',
+            '$dispatchAction$/<@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:49332:12',
+            'AuraInstance.prototype.$run$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:65016:12',
+            '$dispatchAction$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:49331:6',
+            'DomHandlersPlugin.prototype.$instrumentCallback$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:67081:23',
+            'Aura.$Utils$.$Override$.prototype.$continuation$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:45043:20',
+            'bound@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:44980:29',
+            '$domEventHandler$@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:49327:12',
+            'callbackWrapper@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:64863:23',
+            'wrapperFn@https://static.lightning.force.com/cs217/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQU5JeDJ0XzlUM1JKeDdLZ2xrSmxkRGcyNTAuOC4zLTYuNC41/aura_proddebug.js:1505:29',
+            'EventListener.handleEvent*patchedAddEventListener@https://'
         };
         return String.join(auraStackTraceLines, '\n');
     }
@@ -641,5 +818,198 @@ private class ComponentLogger_Tests {
             '...blah,blah,blah more javascript code goes here, etc.'
         };
         return String.join(lwcStackTraceLines, '\n');
+    }
+
+    @SuppressWarnings('PMD.FieldNamingConventions')
+    private enum WebComponentTarget {
+        lightning_AppPage,
+        lightning_FlowScreen,
+        lightning_HomePage,
+        lightning_RecordAction,
+        lightning_RecordPage,
+        lightning_Tab,
+        lightning_UtilityBar,
+        lightningCommunity_Page
+    }
+
+    private abstract class MockWebComponentStackTraceGenerator {
+        protected abstract String forLightningAppPage(String originComponentName, String originFunctionName);
+        protected abstract String forLightningFlowScreen(String originComponentName, String originFunctionName);
+        protected abstract String forLightningHomePage(String originComponentName, String originFunctionName);
+        protected abstract String forLightningRecordAction(String originComponentName, String originFunctionName);
+        protected abstract String forLightningRecordPage(String originComponentName, String originFunctionName);
+        protected abstract String forLightningTab(String originComponentName, String originFunctionName);
+        protected abstract String forLightningUtilityBar(String originComponentName, String originFunctionName);
+        protected abstract String forLightningCommunityPage(String originComponentName, String originFunctionName);
+
+        public String generate(WebComponentTarget target, String originComponentName, String originFunctionName) {
+            switch on target {
+                when lightning_AppPage {
+                    return this.forLightningAppPage(originComponentName, originFunctionName);
+                }
+                when lightning_FlowScreen {
+                    return this.forLightningFlowScreen(originComponentName, originFunctionName);
+                }
+                when lightning_HomePage {
+                    return this.forLightningHomePage(originComponentName, originFunctionName);
+                }
+                when lightning_RecordAction {
+                    return this.forLightningRecordAction(originComponentName, originFunctionName);
+                }
+                when lightning_RecordPage {
+                    return this.forLightningRecordPage(originComponentName, originFunctionName);
+                }
+                when lightning_Tab {
+                    return this.forLightningTab(originComponentName, originFunctionName);
+                }
+                when lightning_UtilityBar {
+                    return this.forLightningUtilityBar(originComponentName, originFunctionName);
+                }
+                when lightningCommunity_Page {
+                    return this.forLightningCommunityPage(originComponentName, originFunctionName);
+                }
+                when else {
+                    throw new System.IllegalArgumentException('Unknown target ' + target.name());
+                }
+            }
+        }
+    }
+
+    private class ChromeEmbedLWCStackTraceGenerator extends MockWebComponentStackTraceGenerator {
+        public override String forLightningAppPage(String originComponentName, String originFunctionName) {
+            List<String> stackTracePieces = new List<String>{
+                '"Error',
+                'at Proxy.info (modules/c/logger.js:3:6914)',
+                'at eval (eval at <anonymous> (https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:105:98298), <anonymous>:3:23715)',
+                'at en.<anonymous> (https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:105:67030)',
+                'at mo (https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:49:43179)',
+                'at c.<anonymous> (https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:49:21644)',
+                'at https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:105:85471',
+                'at en.eval [as applyTrapForOneOrMoreArgs] (eval at <anonymous> (https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:105:98298), <anonymous>:3:4751)',
+                'at en.eval (eval at <anonymous> (https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:105:98298), <anonymous>:3:4255)',
+                new LogMessage('at Proxy.{1} (modules/{0}.js:3:4689)', originComponentName, originFunctionName).getMessage(),
+                'at eval (eval at <anonymous> (https://static.lightning.force.com/cs219/auraFW/javascript/WFIwUmVJdmtIRnI3MTFpX0d6c1VwQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41/aura_prod.js:105:98298), <anonymous>:3:23715)"'
+            };
+            return String.join(stackTracePieces, '\n');
+        }
+
+        public override String forLightningCommunityPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO! forLightningCommunityPage()');
+            return null;
+        }
+
+        public override String forLightningFlowScreen(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO! forLightningFlowScreen()');
+            return null;
+        }
+
+        public override String forLightningHomePage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO! forLightningHomePage()');
+            return null;
+        }
+
+        public override String forLightningRecordAction(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO! forLightningRecordAction()');
+            return null;
+        }
+
+        public override String forLightningRecordPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO! forLightningRecordPage()');
+            return null;
+        }
+
+        public override String forLightningTab(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO! forLightningTab()');
+            return null;
+        }
+
+        public override String forLightningUtilityBar(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO! forLightningUtilityBar()');
+            return null;
+        }
+    }
+
+    private class ChromeLWCImportStackTrace extends MockWebComponentStackTraceGenerator {
+        public override String forLightningAppPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningCommunityPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningFlowScreen(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningHomePage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningRecordAction(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningRecordPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningTab(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningUtilityBar(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+    }
+
+    private class FirefoxLWCEmbedStackTrace extends MockWebComponentStackTraceGenerator {
+        public override String forLightningAppPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningCommunityPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningFlowScreen(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningHomePage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningRecordAction(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningRecordPage(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningTab(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
+
+        public override String forLightningUtilityBar(String originComponentName, String originFunctionName) {
+            System.Assert.fail('TODO!');
+            return null;
+        }
     }
 }
