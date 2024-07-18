@@ -44,6 +44,8 @@ const LogEntryBuilder = class {
      */
     constructor(loggingLevel, isConsoleLoggingEnabled) {
         this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
+        // TODO remove this
+        console.log('>>> Nebula Logger testing - logEntryBuilder.js - created new ComponentLogEntry instance, using auto-generated stack trace:\n\n' + this.#componentLogEntry.stack);
         this.#isConsoleLoggingEnabled = isConsoleLoggingEnabled;
 
         this._setBrowserDetails();
@@ -110,6 +112,16 @@ const LogEntryBuilder = class {
             this.#componentLogEntry.error.stack = error.stack;
             this.#componentLogEntry.error.type = 'JavaScript.' + error.name;
         }
+        return this;
+    }
+
+    /**
+     * @description Appends the tag to the existing list of tags
+     * @param {Error} error The instance of a JavaScript `Error` object with a stack trace to parse
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
+     */
+    parseStackTrace(error) {
+        this.#componentLogEntry.stack = error?.stack;
         return this;
     }
 

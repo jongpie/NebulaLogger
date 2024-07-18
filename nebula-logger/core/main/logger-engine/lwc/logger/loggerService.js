@@ -113,6 +113,8 @@ const LoggerService = class {
     }
 
     _newEntry(loggingLevel, message) {
+        // TODO remove this
+        console.log('>>> Nebula Logger testing - loggerService.js - created an unused stack trace here for comparison/testing, unused stack trace:\n\n' + new Error().stack);
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         logEntryBuilder.setMessage(message);
         logEntryBuilder.setScenario(this.#scenario);
