@@ -141,7 +141,8 @@ public inherited sharing class ComponentLogger {
 
         // New Origin fields
         logEntryEvent.OriginLocation__c = originStackTrace.Location;
-        logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
+        logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, originStackTrace.ParsedStackTraceString);
+        // logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
         if (originStackTrace.Source != null) {
             logEntryEvent.OriginSourceActionName__c = originStackTrace.Source.ActionName;
             logEntryEvent.OriginSourceMetadataType__c = originStackTrace.Source.MetadataType.name();

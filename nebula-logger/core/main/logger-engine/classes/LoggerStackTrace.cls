@@ -180,7 +180,8 @@ public without sharing class LoggerStackTrace {
         javaScriptStackTraceString = String.join(cleansedStackTraceLines, NEW_LINE_DELIMITER);
 
         if (String.isNotBlank(javaScriptStackTraceString)) {
-            String auraComponentContent = '/n/components/';
+            // String auraComponentContent = '/n/components/';
+            String auraComponentContent = 'components/';
             String lwcModuleContent = 'modules/';
             Boolean parentComponentFound = false;
 
@@ -209,18 +210,48 @@ public without sharing class LoggerStackTrace {
                 } else if (isWebComponent) {
                     componentContent = lwcModuleContent;
                 }
+                List<String> cleanedStackTraceLines = new List<String>();
                 for (String currentStackTraceLine : javaScriptStackTraceString.split('\n')) {
-                    if (currentStackTraceLine.trim().startsWith('at eval')) {
+                    // TODO temp always add for testing/seeing original stack trace
+                    cleanedStackTraceLines.add(currentStackTraceLine);
+
+                    if (currentStackTraceLine.contains(componentContent) == false) {
                         continue;
                     }
 
-                    // Example: 'someFunctionName@modules/c/someComponentName.js:266:35'
-                    componentFunction = currentStackTraceLine.substringBefore('@').removeEnd('/<');
+
+                    Boolean ignoredOriginFound = false;
+                    for (String ignoredOrigin : IGNORED_JAVASCRIPT_ORIGINS) {
+                        // System.Assert.fail(componentContent + ignoredOrigin);
+                        if (currentStackTraceLine.contains(componentContent + ignoredOrigin + '.js')) {
+                            ignoredOriginFound = true;
+                            break;
+                        }
+                    }
+                    if (ignoredOriginFound) {
+                        continue;
+                    }
+
+                    // cleanedStackTraceLines.add(currentStackTraceLine);
+
+                    if (currentStackTraceLine.trim().startsWith('at eval')) {
+                        componentFunction = 'Unknown';
+                    } else {
+                        // Example: 'someFunctionName@modules/c/someComponentName.js:266:35'
+                        componentFunction = currentStackTraceLine.substringBefore('@').removeEnd('/<');
+                        if (componentFunction.contains('.')) {
+                            componentFunction = componentFunction.substringAfter('.');
+                        }
+                        if (componentFunction.contains(' ')) {
+                            componentFunction = componentFunction.substringBefore(' ');
+                        }
+                    }
                     String everythingAfterComponentContent = currentStackTraceLine.substringAfterLast(componentContent);
                     componentName = everythingAfterComponentContent.substringBefore('.js');
                     codeLineNumberString = everythingAfterComponentContent.substringAfter('.js:').substringBefore(':');
                     break;
                 }
+                javaScriptStackTraceString = String.join(cleanedStackTraceLines, '\n');
                 componentStackTraceLocation = componentName + '.' + componentFunction;
             }
         }
