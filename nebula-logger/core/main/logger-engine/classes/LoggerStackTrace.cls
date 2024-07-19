@@ -219,7 +219,6 @@ public without sharing class LoggerStackTrace {
                         continue;
                     }
 
-
                     Boolean ignoredOriginFound = false;
                     for (String ignoredOrigin : IGNORED_JAVASCRIPT_ORIGINS) {
                         // System.Assert.fail(componentContent + ignoredOrigin);
@@ -273,6 +272,28 @@ public without sharing class LoggerStackTrace {
                 this.Source.LineNumber = Integer.valueOf(codeLineNumberString);
             }
         }
+    }
+
+    // TODO revert to private instance method
+    public static String removeIgnoredOrigins(String stackTraceString, String ignoredOriginPrefix, Set<String> ignoredOrigins, String ignoredOriginSuffix) {
+        String cleanedStackTraceString = stackTraceString;
+        for (String ignoredOrigin : ignoredOrigins) {
+            String qualifiedIgnoredOrigin = ignoredOriginPrefix + ignoredOrigin + ignoredOriginSuffix;
+            if (cleanedStackTraceString.contains(qualifiedIgnoredOrigin) == false) {
+                continue;
+            }
+
+            Integer lastIgnoredOriginIndex = cleanedStackTraceString.lastIndexOf(qualifiedIgnoredOrigin) + qualifiedIgnoredOrigin.length();
+            // System.debug('>>> lastIgnoredOriginIndex: ' + lastIgnoredOriginIndex);
+            String inputAfterIgnoredOrigin = cleanedStackTraceString.substring(lastIgnoredOriginIndex);
+            // System.debug('>>> inputAfterIgnoredOrigin: ' + inputAfterIgnoredOrigin);
+            Integer nextLineBreakAfterIgnoredOrigin = inputAfterIgnoredOrigin.indexOf('\n');
+            // System.debug('>>> nextLineBreakAfterIgnoredOrigin: ' + nextLineBreakAfterIgnoredOrigin);
+            cleanedStackTraceString = inputAfterIgnoredOrigin.substring(nextLineBreakAfterIgnoredOrigin).trim();
+            // System.debug('>>> final: ' + cleanedStackTraceString);
+        }
+
+        return cleanedStackTraceString;
     }
 
     private AnonymousBlock generateAnonymousBlock(String cleanedLocation) {
