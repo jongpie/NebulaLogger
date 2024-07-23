@@ -9,9 +9,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.15.NEXT",
-            "versionName": "Replaced BrowserUrl__c with BrowserAddress__c",
-            "versionDescription": "Deprecated the BrowserUrl__c fields on LogEntryEvent__e and LogEntry__c, and replaced them with new BrowserAddress__c that have a much longer max length (2,000 vs 255)",
+            "versionNumber": "4.13.16.NEXT",
+            "versionName": "Bugfix for Scenario Logging Level Not Being Respected",
+            "versionDescription": "Changed LogEntryEventHandler to always save log entry events with a matching LoggerScenarioRule__mdt when LoggerSettings__c.DefaultPlatformEventStorageLoggingLevel__c is null",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
