@@ -44,8 +44,6 @@ const LogEntryBuilder = class {
      */
     constructor(loggingLevel, isConsoleLoggingEnabled) {
         this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
-        // TODO remove this
-        console.log('>>> Nebula Logger testing - logEntryBuilder.js - created new ComponentLogEntry instance, using auto-generated stack trace:\n\n' + this.#componentLogEntry.stack);
         this.#isConsoleLoggingEnabled = isConsoleLoggingEnabled;
 
         this._setBrowserDetails();

@@ -109,7 +109,7 @@ public inherited sharing class ComponentLogger {
 
         LoggerStackTrace.SourceLanguage language = LoggerStackTrace.SourceLanguage.JavaScript;
         // All exception classes in Apex must end in 'Exception'
-        if (componentError.type?.endsWith('Exception')) {
+        if (componentError.type?.endsWith('Exception') == true) {
             language = LoggerStackTrace.SourceLanguage.Apex;
         }
         LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(language, componentError.stack);
