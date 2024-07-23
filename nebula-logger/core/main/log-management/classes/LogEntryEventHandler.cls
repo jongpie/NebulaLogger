@@ -78,14 +78,18 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                     platformEventStorageLocation = scenarioRule.PlatformEventStorageLocation__c;
                 }
             }
-            // Filter first based on storage logging location
-            if (platformEventStorageLocation == DEFAULT_STORAGE_LOCATION_NAME) {
-                // Then filter further based on storage logging level
-                String userStorageLoggingLevelName = loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c;
-                if (String.isBlank(userStorageLoggingLevelName)) {
-                    userStorageLoggingLevelName = loggingUserSettings.LoggingLevel__c;
-                }
-                System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(userStorageLoggingLevelName);
+
+            if (platformEventStorageLocation != DEFAULT_STORAGE_LOCATION_NAME) {
+                // For any other storage location (besides CUSTOM_OBJECTS), it's assumed that a plugin will be handling everything,
+                // so there's nothing else to do here
+                continue;
+            }
+
+            if (String.isBlank(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c)) {
+                // DefaultPlatformEventStorageLoggingLevel__c is optional - if it's null, then always save the event
+                logEntryEventsToSave.add(logEntryEvent);
+            } else {
+                System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c);
                 System.LoggingLevel entryLoggingLevel = System.LoggingLevel.valueOf(logEntryEvent.LoggingLevel__c);
                 if (userStorageLoggingLevel.ordinal() <= entryLoggingLevel.ordinal()) {
                     logEntryEventsToSave.add(logEntryEvent);
