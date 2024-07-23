@@ -40,7 +40,7 @@
         <apexClass>RelatedLogEntriesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Provides access to view all logs</description>
+    <description>Provides read-only access to Nebula Logger's data &amp; custom features</description>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntryTag__c.LogEntryOrigin__c</field>

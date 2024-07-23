@@ -44,9 +44,9 @@
         <apexClass>RelatedLogEntriesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Provides access to:
-  - Generate log entries via Apex, Lightning Components, Flow and Process Builder.
-  - View shared logs &amp; log entries, based on OWD &amp; sharing rules</description>
+    <description>Provides limited access to Nebula Logger's data, including:
+  - The same access as the Log Creator permission set
+  - Read-only access (but not view-all access) to logging records that have been shared with the user (using OWD, sharing rules, etc.)</description>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntryTag__c.LogEntryOrigin__c</field>

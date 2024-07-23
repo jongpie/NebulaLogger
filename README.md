@@ -101,10 +101,7 @@ Nebula Logger is available as both an unlocked package and a managed package. Th
 After installing Nebula Logger in your org, there are a few additional configuration changes needed...
 
 -   Assign permission set(s) to users
-    -   `LoggerLogCreator` provides the minimum access needed for users to generate logs via Apex, Lightning Components, Flow or Process Builder
-    -   `LoggerEndUser` provides access to generate logs, as well as read-only access to any log records shared with the user.
-    -   `LoggerLogViewer` provides view-all access (read-only) to all log records. This does **not** provide access to generate logs.
-    -   `LoggerAdmin` provides view-all and modify-all access to all log records.
+    -   See the wiki page [Assigning Permission Sets](https://github.com/jongpie/NebulaLogger/wiki/Assigning-Permission-Sets) for more details on each of the included permission sets
 -   Customize the default settings in `LoggerSettings__c`
     -   You can customize settings at the org, profile and user levels
 
