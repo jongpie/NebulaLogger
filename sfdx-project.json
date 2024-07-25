@@ -10,8 +10,8 @@
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
             "versionNumber": "4.13.16.NEXT",
-            "versionName": "Bugfix for Scenario Logging Level Not Being Respected",
-            "versionDescription": "Changed LogEntryEventHandler to always save log entry events with a matching LoggerScenarioRule__mdt when LoggerSettings__c.DefaultPlatformEventStorageLoggingLevel__c is null",
+            "versionName": "Bugfixes for Scenario Rules",
+            "versionDescription": "Fixed a bug where log entry events with a matching LoggerScenarioRule__mdt did not save when LoggerSettings__c.DefaultPlatformEventStorageLoggingLevel__c is null, and fixed a bug where scenario rule overrides weren't properly reverted when a scenario ended",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
@@ -178,7 +178,7 @@
         "Nebula Logger - Core@4.13.13-improved-fully-qualified-references": "04t5Y0000015oDsQAI",
         "Nebula Logger - Core@4.13.14-custom-field-mappings-support": "04t5Y0000015oE2QAI",
         "Nebula Logger - Core@4.13.15-replaced-browserurl__c-with-browseraddress__c": "04t5Y0000015oF5QAI",
-        "Nebula Logger - Core@4.13.16-bugfix-for-scenario-logging-level-not-being-respected": "04t5Y0000015oFjQAI",
+        "Nebula Logger - Core@4.13.16-bugfixes-for-scenario-rules": "04t5Y0000015oFjQAI",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
