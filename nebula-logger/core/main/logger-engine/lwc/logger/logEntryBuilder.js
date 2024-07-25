@@ -6,13 +6,21 @@ import FORM_FACTOR from '@salesforce/client/formFactor';
 
 const CURRENT_VERSION_NUMBER = 'v4.13.16';
 
-// JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
+const LOGGING_LEVEL_EMOJIS = {
+    ERROR: '⛔',
+    WARN: '⚠️',
+    INFO: 'ℹ️',
+    DEBUG: '🐞',
+    FINE: '👍',
+    FINER: '👌',
+    FINEST: '🌟'
+};
+
 const ComponentBrowser = class {
     address = null;
     formFactor = null;
     language = null;
     screenResolution = null;
-    url = null;
     userAgent = null;
     windowResolution = null;
 
@@ -21,12 +29,12 @@ const ComponentBrowser = class {
         this.formFactor = FORM_FACTOR;
         this.language = window.navigator.language;
         this.screenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
-        this.url = this.address;
         this.userAgent = window.navigator.userAgent;
         this.windowResolution = window.innerWidth + ' x ' + window.innerHeight;
     }
 };
 
+// JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
 const ComponentLogEntry = class {
     browserAddress = null;
     browserFormFactor = null;
@@ -182,7 +190,7 @@ const LogEntryBuilder = class {
         this.#componentLogEntry.browserLanguage = browser.language;
         this.#componentLogEntry.browserScreenResolution = browser.screenResolution;
         // TODO Deprecated, remove in a future release
-        this.#componentLogEntry.browserUrl = browser.url;
+        this.#componentLogEntry.browserUrl = browser.address;
         this.#componentLogEntry.browserUserAgent = browser.userAgent;
         this.#componentLogEntry.browserWindowResolution = browser.windowResolution;
     }
@@ -211,20 +219,21 @@ const LogEntryBuilder = class {
                 break;
         }
 
-        const qualifiedMessage = `${this.#componentLogEntry.loggingLevel}: ${this.#componentLogEntry.message}`;
+        const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[this.#componentLogEntry.loggingLevel];
+        const qualifiedMessage = `${this.#componentLogEntry.loggingLevel}${loggingLevelEmoji}: ${this.#componentLogEntry.message}`;
         consoleLoggingFunction(
             consoleMessagePrefix,
             consoleFormatting,
             qualifiedMessage,
             // Some JS stack traces are huuuuge, so don't print it in the browser console.
             // The stack trace will still be saved on the backend.
-            '\n\n' + JSON.stringify(this.#componentLogEntry, replacer, 2)
+            '\n' + JSON.stringify(this.#componentLogEntry, replacer, 2)
         );
     }
 };
 
 function replacer(key, value) {
-    if (Array.isArray(value) && value.length == 0) {
+    if (Array.isArray(value) && value.length === 0) {
         return undefined;
     }
 
@@ -242,7 +251,10 @@ function replacer(key, value) {
         'browserWindowResolution',
         'loggingLevel',
         'message',
-        'stack'
+        'stack',
+        // tags are set via a builder method after console logging has happened,
+        // so always exclude it
+        'tags'
     ]);
     if (keysToIgnore.has(key)) {
         return undefined;
@@ -257,7 +269,8 @@ export function newLogEntry(loggingLevel, isConsoleLoggingEnabled) {
         const consoleMessagePrefix = `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `;
         const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
         const browserDetails = new ComponentBrowser();
-        console.info(consoleMessagePrefix, consoleFormatting, '\n\n' + JSON.stringify(browserDetails, null, 2));
+        /* eslint-disable no-console */
+        console.info(consoleMessagePrefix, consoleFormatting, 'INFOℹ️: logger component initialized\n' + JSON.stringify(browserDetails, null, 2));
 
         hasInitialized = true;
     }
