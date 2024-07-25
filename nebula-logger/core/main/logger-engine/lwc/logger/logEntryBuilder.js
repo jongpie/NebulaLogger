@@ -7,6 +7,26 @@ import FORM_FACTOR from '@salesforce/client/formFactor';
 const CURRENT_VERSION_NUMBER = 'v4.13.16';
 
 // JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
+const ComponentBrowser = class {
+    address = null;
+    formFactor = null;
+    language = null;
+    screenResolution = null;
+    url = null;
+    userAgent = null;
+    windowResolution = null;
+
+    constructor() {
+        this.address = window.location.href;
+        this.formFactor = FORM_FACTOR;
+        this.language = window.navigator.language;
+        this.screenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
+        this.url = this.address;
+        this.userAgent = window.navigator.userAgent;
+        this.windowResolution = window.innerWidth + ' x ' + window.innerHeight;
+    }
+};
+
 const ComponentLogEntry = class {
     browserAddress = null;
     browserFormFactor = null;
@@ -156,14 +176,15 @@ const LogEntryBuilder = class {
     }
 
     _setBrowserDetails() {
-        this.#componentLogEntry.browserAddress = window.location.href;
-        this.#componentLogEntry.browserFormFactor = FORM_FACTOR;
-        this.#componentLogEntry.browserLanguage = window.navigator.language;
-        this.#componentLogEntry.browserScreenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
+        const browser = new ComponentBrowser();
+        this.#componentLogEntry.browserAddress = browser.address;
+        this.#componentLogEntry.browserFormFactor = browser.formFactor;
+        this.#componentLogEntry.browserLanguage = browser.language;
+        this.#componentLogEntry.browserScreenResolution = browser.screenResolution;
         // TODO Deprecated, remove in a future release
-        this.#componentLogEntry.browserUrl = this.#componentLogEntry.browserAddress;
-        this.#componentLogEntry.browserUserAgent = window.navigator.userAgent;
-        this.#componentLogEntry.browserWindowResolution = window.innerWidth + ' x ' + window.innerHeight;
+        this.#componentLogEntry.browserUrl = browser.url;
+        this.#componentLogEntry.browserUserAgent = browser.userAgent;
+        this.#componentLogEntry.browserWindowResolution = browser.windowResolution;
     }
 
     /* eslint-disable no-console */
@@ -191,10 +212,54 @@ const LogEntryBuilder = class {
         }
 
         const qualifiedMessage = `${this.#componentLogEntry.loggingLevel}: ${this.#componentLogEntry.message}`;
-        consoleLoggingFunction(consoleMessagePrefix, consoleFormatting, qualifiedMessage, this.#componentLogEntry);
+        consoleLoggingFunction(
+            consoleMessagePrefix,
+            consoleFormatting,
+            qualifiedMessage,
+            // Some JS stack traces are huuuuge, so don't print it in the browser console.
+            // The stack trace will still be saved on the backend.
+            '\n\n' + JSON.stringify(this.#componentLogEntry, replacer, 2)
+        );
     }
 };
 
+function replacer(key, value) {
+    if (Array.isArray(value) && value.length == 0) {
+        return undefined;
+    }
+
+    if (!value) {
+        return undefined;
+    }
+
+    const keysToIgnore = new Set([
+        'browserAddress',
+        'browserFormFactor',
+        'browserLanguage',
+        'browserScreenResolution',
+        'browserUrl',
+        'browserUserAgent',
+        'browserWindowResolution',
+        'loggingLevel',
+        'message',
+        'stack'
+    ]);
+    if (keysToIgnore.has(key)) {
+        return undefined;
+    }
+
+    return value;
+}
+
+let hasInitialized = false;
 export function newLogEntry(loggingLevel, isConsoleLoggingEnabled) {
+    if (!hasInitialized) {
+        const consoleMessagePrefix = `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `;
+        const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
+        const browserDetails = new ComponentBrowser();
+        console.info(consoleMessagePrefix, consoleFormatting, '\n\n' + JSON.stringify(browserDetails, null, 2));
+
+        hasInitialized = true;
+    }
     return new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled);
 }
