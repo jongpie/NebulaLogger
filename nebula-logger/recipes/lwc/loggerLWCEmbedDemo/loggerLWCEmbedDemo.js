@@ -53,8 +53,7 @@ export default class LoggerLWCEmbedDemo extends LightningElement {
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
         const someError = new TypeError('oops');
-        const entry = logger.error(this.message).setError(someError).addTag('lwc logging demo');
-        console.log('stack==' + entry.stack);
+        logger.error(this.message).setError(someError).addTag('lwc logging demo');
     }
 
     logWarnExample() {

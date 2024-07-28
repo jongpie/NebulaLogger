@@ -43,11 +43,11 @@ export default class Logger extends LightningElement {
         // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
         // TEMP
         const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.error(message).parseStackTrace(stackTraceSourceError);
-        console.log(
-            '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-                stackTraceSourceError.stack
-        );
+        const builder = this.#loggerService.error(message, stackTraceSourceError);
+        // console.log(
+        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
+        //         stackTraceSourceError.stack
+        // );
         return builder;
     }
 
@@ -62,11 +62,11 @@ export default class Logger extends LightningElement {
         // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
         // TEMP
         const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.warn(message).parseStackTrace(stackTraceSourceError);
-        console.log(
-            '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-                stackTraceSourceError.stack
-        );
+        const builder = this.#loggerService.warn(message, stackTraceSourceError);
+        // console.log(
+        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
+        //         stackTraceSourceError.stack
+        // );
         return builder;
     }
 
@@ -81,11 +81,11 @@ export default class Logger extends LightningElement {
         // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
         // TEMP
         const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.info(message).parseStackTrace(stackTraceSourceError);
-        console.log(
-            '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-                stackTraceSourceError.stack
-        );
+        const builder = this.#loggerService.info(message, stackTraceSourceError);
+        // console.log(
+        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
+        //         stackTraceSourceError.stack
+        // );
         return builder;
     }
 
@@ -100,11 +100,11 @@ export default class Logger extends LightningElement {
         // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
         // TEMP
         const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.debug(message).parseStackTrace(stackTraceSourceError);
-        console.log(
-            '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-                stackTraceSourceError.stack
-        );
+        const builder = this.#loggerService.debug(message, stackTraceSourceError);
+        // console.log(
+        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
+        //         stackTraceSourceError.stack
+        // );
         return builder;
     }
 
@@ -119,11 +119,11 @@ export default class Logger extends LightningElement {
         // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
         // TEMP
         const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.fine(message).parseStackTrace(stackTraceSourceError);
-        console.log(
-            '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-                stackTraceSourceError.stack
-        );
+        const builder = this.#loggerService.fine(message, stackTraceSourceError);
+        // console.log(
+        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
+        //         stackTraceSourceError.stack
+        // );
         return builder;
     }
 
@@ -138,11 +138,11 @@ export default class Logger extends LightningElement {
         // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
         // TEMP
         const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.finer(message).parseStackTrace(stackTraceSourceError);
-        console.log(
-            '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-                stackTraceSourceError.stack
-        );
+        const builder = this.#loggerService.finer(message, stackTraceSourceError);
+        // console.log(
+        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
+        //         stackTraceSourceError.stack
+        // );
         return builder;
     }
 
@@ -157,11 +157,11 @@ export default class Logger extends LightningElement {
         // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
         // TEMP
         const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.finest(message).parseStackTrace(stackTraceSourceError);
-        console.log(
-            '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-                stackTraceSourceError.stack
-        );
+        const builder = this.#loggerService.finest(message, stackTraceSourceError);
+        // console.log(
+        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
+        //         stackTraceSourceError.stack
+        // );
         return builder;
     }
 

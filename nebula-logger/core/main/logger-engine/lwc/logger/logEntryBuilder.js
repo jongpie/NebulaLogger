@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 import FORM_FACTOR from '@salesforce/client/formFactor';
+import { ErrorStackParser } from './stackTrace';
 
 const CURRENT_VERSION_NUMBER = 'v4.13.16';
 
@@ -47,10 +48,11 @@ const ComponentLogEntry = class {
     error = null;
     loggingLevel = null;
     message = null;
+    origin = null;
     record = null;
     recordId = null;
     scenario = null;
-    stack = new Error().stack;
+    stack = null;
     tags = [];
     timestamp = new Date().toISOString();
 
@@ -146,8 +148,37 @@ const LogEntryBuilder = class {
      * @param {Error} error The instance of a JavaScript `Error` object with a stack trace to parse
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
-    parseStackTrace(error) {
-        this.#componentLogEntry.stack = error?.stack;
+    parseStackTrace(originStackTraceError) {
+        if (!originStackTraceError) {
+            return this;
+        }
+
+        const originStackTraceParticles = new ErrorStackParser().parse(originStackTraceError);
+        let originStackTraceParticle;
+        const parsedStackTraceLines = [];
+        originStackTraceParticles.forEach(particle => {
+            if (particle.fileName?.endsWith('/logger.js')) {
+                return;
+            }
+
+            if (!originStackTraceParticle && particle.fileName?.endsWith('aura_proddebug.js')) {
+                return;
+            }
+
+            this._cleanStackTraceParticle(particle);
+
+            if (!originStackTraceParticle) {
+                originStackTraceParticle = { ...{ componentName: undefined }, ...particle };
+            }
+
+            if (particle.source) {
+                parsedStackTraceLines.push(particle.source?.trim());
+            }
+        });
+        const parsedStackTraceString = parsedStackTraceLines.join('\n');
+        this.#componentLogEntry.origin = { ...originStackTraceParticle, parsedStackTraceString };
+
+        this.#componentLogEntry.stack = originStackTraceError?.stack;
         return this;
     }
 
@@ -195,6 +226,49 @@ const LogEntryBuilder = class {
         this.#componentLogEntry.browserWindowResolution = browser.windowResolution;
     }
 
+    // Handles some Salesforce-specific stack trace parsing for LWC & Aura components
+    _cleanStackTraceParticle(stackTraceParticle) {
+        stackTraceParticle.source = stackTraceParticle.source?.trim();
+
+        const lwcModulesFileNamePrefix = 'modules/';
+        if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
+            stackTraceParticle.metadataType = 'LightningComponentBundle';
+
+            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
+                stackTraceParticle.fileName.indexOf(lwcModulesFileNamePrefix) + lwcModulesFileNamePrefix.length
+            );
+        }
+        const auraComponentsContent = '/components/';
+        if (stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
+            stackTraceParticle.metadataType = 'AuraDefinitionBundle';
+
+            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
+                stackTraceParticle.fileName.indexOf(auraComponentsContent) + auraComponentsContent.length,
+                stackTraceParticle.fileName.length
+            );
+        }
+        const jsFileNameSuffix = '.js';
+        if (stackTraceParticle.fileName?.endsWith(jsFileNameSuffix)) {
+            stackTraceParticle.componentName = stackTraceParticle.fileName.substring(0, stackTraceParticle.fileName.length - jsFileNameSuffix.length);
+        }
+
+        const invalidFunctionNameSuffix = '/<';
+        if (stackTraceParticle.functionName?.endsWith(invalidFunctionNameSuffix)) {
+            stackTraceParticle.functionName = stackTraceParticle.functionName.substring(
+                0,
+                stackTraceParticle.functionName.length - invalidFunctionNameSuffix.length
+            );
+        }
+
+        if (stackTraceParticle.columnNumber) {
+            stackTraceParticle.columnNumber = isNaN(stackTraceParticle.columnNumber) ? null : Number(stackTraceParticle.columnNumber);
+        }
+
+        if (stackTraceParticle.lineNumber) {
+            stackTraceParticle.lineNumber = isNaN(stackTraceParticle.lineNumber) ? null : Number(stackTraceParticle.lineNumber);
+        }
+    }
+
     /* eslint-disable no-console */
     _logToConsole() {
         if (!this.#isConsoleLoggingEnabled) {
@@ -220,7 +294,7 @@ const LogEntryBuilder = class {
         }
 
         const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[this.#componentLogEntry.loggingLevel];
-        const qualifiedMessage = `${this.#componentLogEntry.loggingLevel}${loggingLevelEmoji}: ${this.#componentLogEntry.message}`;
+        const qualifiedMessage = `${this.#componentLogEntry.loggingLevel} ${loggingLevelEmoji}: ${this.#componentLogEntry.message}`;
         consoleLoggingFunction(
             consoleMessagePrefix,
             consoleFormatting,
@@ -252,6 +326,12 @@ function replacer(key, value) {
         'loggingLevel',
         'message',
         'stack',
+        // These properties exist on the origin object:
+        'columnNumber',
+        'fileName',
+        'lineNumber',
+        'parsedStackTraceString',
+        'source',
         // tags are set via a builder method after console logging has happened,
         // so always exclude it
         'tags'

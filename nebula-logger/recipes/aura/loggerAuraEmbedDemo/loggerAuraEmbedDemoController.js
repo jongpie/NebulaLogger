@@ -5,9 +5,7 @@
 
         const logger = component.find('logger');
         console.log(logger);
-        logger.fine('Logging from an aura component').addTag('aura cmp');
-        const entry = logger.info(component.get('{!v.logMessage}'));
-        console.log('stack==' + entry.stack);
+        logger.info(component.get('{!v.logMessage}'));
         logger.saveLog();
     }
 });

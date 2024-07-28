@@ -101,8 +101,7 @@ export default class LoggerLWCImportDemo extends LightningElement {
         console.log('running logError for btn');
         console.log(this.logger);
         const someError = new TypeError('oops');
-        const entry = this.logger.error(this.message).setError(someError).addTag('lwc logging demo');
-        console.log('stack==' + entry.stack);
+        this.logger.error(this.message).setError(someError).addTag('lwc logging demo');
     }
 
     logWarnExample() {
