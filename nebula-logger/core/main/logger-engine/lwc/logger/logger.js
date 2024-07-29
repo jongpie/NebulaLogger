@@ -39,16 +39,9 @@ export default class Logger extends LightningElement {
      */
     @api
     error(message) {
-        // parseStackTrace() has to be called from here (in logger.js, not loggerService.js) so that accurate stack traces
-        // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
-        // TEMP
-        const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.error(message, stackTraceSourceError);
-        // console.log(
-        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-        //         stackTraceSourceError.stack
-        // );
-        return builder;
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.error(message, new Error());
     }
 
     /**
@@ -58,16 +51,9 @@ export default class Logger extends LightningElement {
      */
     @api
     warn(message) {
-        // parseStackTrace() has to be called from here (in logger.js, not loggerService.js) so that accurate stack traces
-        // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
-        // TEMP
-        const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.warn(message, stackTraceSourceError);
-        // console.log(
-        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-        //         stackTraceSourceError.stack
-        // );
-        return builder;
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.warn(message, new Error());
     }
 
     /**
@@ -77,16 +63,9 @@ export default class Logger extends LightningElement {
      */
     @api
     info(message) {
-        // parseStackTrace() has to be called from here (in logger.js, not loggerService.js) so that accurate stack traces
-        // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
-        // TEMP
-        const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.info(message, stackTraceSourceError);
-        // console.log(
-        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-        //         stackTraceSourceError.stack
-        // );
-        return builder;
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.info(message, new Error());
     }
 
     /**
@@ -96,16 +75,9 @@ export default class Logger extends LightningElement {
      */
     @api
     debug(message) {
-        // parseStackTrace() has to be called from here (in logger.js, not loggerService.js) so that accurate stack traces
-        // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
-        // TEMP
-        const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.debug(message, stackTraceSourceError);
-        // console.log(
-        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-        //         stackTraceSourceError.stack
-        // );
-        return builder;
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.debug(message, new Error());
     }
 
     /**
@@ -115,16 +87,9 @@ export default class Logger extends LightningElement {
      */
     @api
     fine(message) {
-        // parseStackTrace() has to be called from here (in logger.js, not loggerService.js) so that accurate stack traces
-        // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
-        // TEMP
-        const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.fine(message, stackTraceSourceError);
-        // console.log(
-        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-        //         stackTraceSourceError.stack
-        // );
-        return builder;
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.fine(message, new Error());
     }
 
     /**
@@ -134,16 +99,9 @@ export default class Logger extends LightningElement {
      */
     @api
     finer(message) {
-        // parseStackTrace() has to be called from here (in logger.js, not loggerService.js) so that accurate stack traces
-        // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
-        // TEMP
-        const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.finer(message, stackTraceSourceError);
-        // console.log(
-        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-        //         stackTraceSourceError.stack
-        // );
-        return builder;
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.finer(message, new Error());
     }
 
     /**
@@ -153,16 +111,9 @@ export default class Logger extends LightningElement {
      */
     @api
     finest(message) {
-        // parseStackTrace() has to be called from here (in logger.js, not loggerService.js) so that accurate stack traces
-        // are generated in Chrome & Firefox when the logger LWC is embedded in a component's markup
-        // TEMP
-        const stackTraceSourceError = new Error();
-        const builder = this.#loggerService.finest(message, stackTraceSourceError);
-        // console.log(
-        //     '>>> Nebula Logger testing - logger.js - overriding stack trace in logger markup embed, now using generated stack trace:\n\n' +
-        //         stackTraceSourceError.stack
-        // );
-        return builder;
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.finest(message, new Error());
     }
 
     /**

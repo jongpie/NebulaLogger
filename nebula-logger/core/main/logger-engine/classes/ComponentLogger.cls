@@ -55,16 +55,16 @@ public inherited sharing class ComponentLogger {
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
                 if (componentLogEntry.recordId != null) {
-                    logEntryEventBuilder.setRecord(componentLogEntry.recordId).getLogEntryEvent();
+                    logEntryEventBuilder.setRecord(componentLogEntry.recordId);
                 }
                 if (componentLogEntry.record != null) {
-                    logEntryEventBuilder.setRecord(componentLogEntry.record).getLogEntryEvent();
+                    logEntryEventBuilder.setRecord(componentLogEntry.record);
                 }
 
                 logEntryEventBuilder.setTimestamp(componentLogEntry.timestamp);
                 setBrowserDetails(logEntryEvent, componentLogEntry);
                 setComponentErrorDetails(logEntryEvent, componentLogEntry.error);
-                setOriginStackTraceDetails(logEntryEvent, componentLogEntry.stack);
+                setOriginStackTraceDetails(logEntryEvent, componentLogEntry.originStackTrace);
             }
             if (String.isNotBlank(saveMethodName)) {
                 saveMethod = Logger.SaveMethod.valueOf(saveMethodName);
@@ -112,42 +112,70 @@ public inherited sharing class ComponentLogger {
         if (componentError.type?.endsWith('Exception') == true) {
             language = LoggerStackTrace.SourceLanguage.Apex;
         }
-        LoggerStackTrace exceptionStackTrace = new LoggerStackTrace(language, componentError.stack);
-        logEntryEvent.ExceptionLocation__c = exceptionStackTrace.Location;
-        logEntryEvent.ExceptionSourceActionName__c = exceptionStackTrace.Source?.ActionName;
-        logEntryEvent.ExceptionSourceApiName__c = exceptionStackTrace.Source?.ApiName;
-        logEntryEvent.ExceptionSourceMetadataType__c = exceptionStackTrace.Source?.MetadataType.name();
+
+        if (componentError.stackTrace == null) {
+            return;
+        }
+
+        logEntryEvent.ExceptionLocation__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.ExceptionLocation__c,
+            componentError.stackTrace.componentName + '.' + componentError.stackTrace.functionName
+        );
+        logEntryEvent.ExceptionSourceActionName__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.ExceptionSourceActionName__c,
+            componentError.stackTrace.functionName
+        );
+        logEntryEvent.ExceptionSourceApiName__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.ExceptionSourceApiName__c,
+            componentError.stackTrace.componentName
+        );
+        logEntryEvent.ExceptionSourceMetadataType__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.ExceptionSourceMetadataType__c,
+            componentError.stackTrace.metadataType
+        );
         logEntryEvent.ExceptionStackTrace__c = LoggerDataStore.truncateFieldValue(
             Schema.LogEntryEvent__e.ExceptionStackTrace__c,
-            exceptionStackTrace.ParsedStackTraceString
+            componentError.stackTrace.ParsedStackTraceString
         );
     }
 
-    @SuppressWarnings('PMD.AvoidDeeplyNestedIfStmts, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
-    private static void setOriginStackTraceDetails(LogEntryEvent__e logEntryEvent, String stackTraceString) {
-        LoggerStackTrace originStackTrace = new LoggerStackTrace(LoggerStackTrace.SourceLanguage.JavaScript, stackTraceString);
+    private static void setOriginStackTraceDetails(LogEntryEvent__e logEntryEvent, ComponentStackTrace originStackTrace) {
+        logEntryEvent.OriginType__c = 'Component';
+
+        if (originStackTrace == null) {
+            logEntryEvent.StackTrace__c = null;
+            return;
+        }
 
         // Older, custom convention used for a 'type', with values 'Aura' and 'LWC'
         String componentType;
-        if (originStackTrace.Source?.MetadataType == LoggerStackTrace.SourceMetadataType.AuraDefinitionBundle) {
+        if (originStackTrace.metadataType == LoggerStackTrace.SourceMetadataType.AuraDefinitionBundle.name()) {
             componentType = 'Aura';
-        } else if (originStackTrace.Source?.MetadataType == LoggerStackTrace.SourceMetadataType.LightningComponentBundle) {
+        } else if (originStackTrace.metadataType == LoggerStackTrace.SourceMetadataType.LightningComponentBundle.name()) {
             componentType = 'LWC';
         }
 
         // Legacy fields (OriginType__c is considered legacy, even though it uses the 'Origin' prefix)
         logEntryEvent.ComponentType__c = componentType;
-        logEntryEvent.OriginType__c = 'Component';
 
         // New Origin fields
-        logEntryEvent.OriginLocation__c = originStackTrace.Location;
-        logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, originStackTrace.ParsedStackTraceString);
-        // logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
-        if (originStackTrace.Source != null) {
-            logEntryEvent.OriginSourceActionName__c = originStackTrace.Source.ActionName;
-            logEntryEvent.OriginSourceMetadataType__c = originStackTrace.Source.MetadataType.name();
-            logEntryEvent.OriginSourceApiName__c = originStackTrace.Source.ApiName;
-        }
+        logEntryEvent.OriginLocation__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.OriginLocation__c,
+            originStackTrace.componentName + '.' + originStackTrace.functionName
+        );
+        logEntryEvent.OriginSourceActionName__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.OriginSourceActionName__c,
+            originStackTrace.functionName
+        );
+        logEntryEvent.OriginSourceApiName__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.OriginSourceApiName__c,
+            originStackTrace.componentName
+        );
+        logEntryEvent.OriginSourceMetadataType__c = LoggerDataStore.truncateFieldValue(
+            Schema.LogEntryEvent__e.OriginSourceMetadataType__c,
+            originStackTrace.metadataType
+        );
+        logEntryEvent.StackTrace__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, originStackTrace.parsedStackTraceString);
     }
 
     /**
@@ -260,7 +288,7 @@ public inherited sharing class ComponentLogger {
         public String browserScreenResolution { get; set; }
 
         /**
-         * @description DEPRECATED: Use `browserAddress` instead
+         * @description `DEPRECATED` Use `browserAddress` instead
          */
         @AuraEnabled
         public String browserUrl { get; set; }
@@ -278,6 +306,12 @@ public inherited sharing class ComponentLogger {
         public String browserWindowResolution { get; set; }
 
         /**
+         * @description (Optional) A JavaScript Error to log
+         */
+        @AuraEnabled
+        public ComponentError error { get; set; }
+
+        /**
          * @description The name of the `LoggingLevel` enum value
          */
         @AuraEnabled
@@ -288,6 +322,12 @@ public inherited sharing class ComponentLogger {
          */
         @AuraEnabled
         public String message { get; set; }
+
+        /**
+         * @description Contains details about the origin of the component log entry
+         */
+        @AuraEnabled
+        public ComponentStackTrace originStackTrace { get; set; }
 
         /**
          * @description (Optional) The record ID to relate to the log entry
@@ -308,7 +348,8 @@ public inherited sharing class ComponentLogger {
         public String scenario { get; set; }
 
         /**
-         * @description The JavaScript stack trace from when the log entry was created
+         * @description `DEPRECATED` This property is no longer used, and will be removed in a future release.
+         *              The JavaScript stack trace from when the log entry was created
          */
         @AuraEnabled
         public String stack { get; set; }
@@ -320,16 +361,40 @@ public inherited sharing class ComponentLogger {
         public Datetime timestamp { get; set; }
 
         /**
-         * @description (Optional) A JavaScript Error to log
-         */
-        @AuraEnabled
-        public ComponentError error { get; set; }
-
-        /**
          * @description (Optional) A list of tags to associate with the log entry
          */
         @AuraEnabled
         public List<String> tags { get; set; }
+    }
+
+    /**
+     * @description A DTO object used to log details about the origin of a JavaScript log entry
+     */
+    public class ComponentStackTrace {
+        /**
+         * @description The component that generated the log entry
+         */
+        @AuraEnabled
+        public String componentName { get; set; }
+
+        /**
+         * @description The component's function that generated the log entry
+         */
+        @AuraEnabled
+        public String functionName { get; set; }
+
+        /**
+         * @description The metadata type of the component thatthat generated the log entry
+         *              Possible values are `AuraDefinitionBundle` and `LightningComponentBundle`
+         */
+        @AuraEnabled
+        public String metadataType { get; set; }
+
+        /**
+         * @description The parsed stack trace used to determine the log entry origin
+         */
+        @AuraEnabled
+        public String parsedStackTraceString { get; set; }
     }
 
     /**
@@ -343,10 +408,17 @@ public inherited sharing class ComponentLogger {
         public String message { get; set; }
 
         /**
-         * @description The error's stack trace
+         * @description `DEPRECATED` This property is no longer used, and will be removed in a future release.
+         *              The error's stack trace string
          */
         @AuraEnabled
         public String stack { get; set; }
+
+        /**
+         * @description Contains details about the origin of the error
+         */
+        @AuraEnabled
+        public ComponentStackTrace stackTrace { get; set; }
 
         /**
          * @description The type of JavaScript error

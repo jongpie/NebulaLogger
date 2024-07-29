@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 import FORM_FACTOR from '@salesforce/client/formFactor';
-import { ErrorStackParser } from './stackTrace';
+import { LoggerStackTrace } from './loggerStackTrace';
 
 const CURRENT_VERSION_NUMBER = 'v4.13.16';
 
@@ -48,11 +48,10 @@ const ComponentLogEntry = class {
     error = null;
     loggingLevel = null;
     message = null;
-    origin = null;
+    originStackTrace = null;
     record = null;
     recordId = null;
     scenario = null;
-    stack = null;
     tags = [];
     timestamp = new Date().toISOString();
 
@@ -137,14 +136,14 @@ const LogEntryBuilder = class {
             this.#componentLogEntry.error.type = error.body.exceptionType;
         } else {
             this.#componentLogEntry.error.message = error.message;
-            this.#componentLogEntry.error.stack = error.stack;
+            this.#componentLogEntry.error.stackTrace = new LoggerStackTrace().parse(error);
             this.#componentLogEntry.error.type = 'JavaScript.' + error.name;
         }
         return this;
     }
 
     /**
-     * @description Appends the tag to the existing list of tags
+     * @description Parses the provided error's stack trace and sets the log entry's origin & stack trace fields
      * @param {Error} error The instance of a JavaScript `Error` object with a stack trace to parse
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
@@ -153,32 +152,7 @@ const LogEntryBuilder = class {
             return this;
         }
 
-        const originStackTraceParticles = new ErrorStackParser().parse(originStackTraceError);
-        let originStackTraceParticle;
-        const parsedStackTraceLines = [];
-        originStackTraceParticles.forEach(particle => {
-            if (particle.fileName?.endsWith('/logger.js')) {
-                return;
-            }
-
-            if (!originStackTraceParticle && particle.fileName?.endsWith('aura_proddebug.js')) {
-                return;
-            }
-
-            this._cleanStackTraceParticle(particle);
-
-            if (!originStackTraceParticle) {
-                originStackTraceParticle = { ...{ componentName: undefined }, ...particle };
-            }
-
-            if (particle.source) {
-                parsedStackTraceLines.push(particle.source?.trim());
-            }
-        });
-        const parsedStackTraceString = parsedStackTraceLines.join('\n');
-        this.#componentLogEntry.origin = { ...originStackTraceParticle, parsedStackTraceString };
-
-        this.#componentLogEntry.stack = originStackTraceError?.stack;
+        this.#componentLogEntry.originStackTrace = new LoggerStackTrace().parse(originStackTraceError);
         return this;
     }
 
@@ -214,61 +188,6 @@ const LogEntryBuilder = class {
         return this.#componentLogEntry;
     }
 
-    _setBrowserDetails() {
-        const browser = new ComponentBrowser();
-        this.#componentLogEntry.browserAddress = browser.address;
-        this.#componentLogEntry.browserFormFactor = browser.formFactor;
-        this.#componentLogEntry.browserLanguage = browser.language;
-        this.#componentLogEntry.browserScreenResolution = browser.screenResolution;
-        // TODO Deprecated, remove in a future release
-        this.#componentLogEntry.browserUrl = browser.address;
-        this.#componentLogEntry.browserUserAgent = browser.userAgent;
-        this.#componentLogEntry.browserWindowResolution = browser.windowResolution;
-    }
-
-    // Handles some Salesforce-specific stack trace parsing for LWC & Aura components
-    _cleanStackTraceParticle(stackTraceParticle) {
-        stackTraceParticle.source = stackTraceParticle.source?.trim();
-
-        const lwcModulesFileNamePrefix = 'modules/';
-        if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
-            stackTraceParticle.metadataType = 'LightningComponentBundle';
-
-            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
-                stackTraceParticle.fileName.indexOf(lwcModulesFileNamePrefix) + lwcModulesFileNamePrefix.length
-            );
-        }
-        const auraComponentsContent = '/components/';
-        if (stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
-            stackTraceParticle.metadataType = 'AuraDefinitionBundle';
-
-            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
-                stackTraceParticle.fileName.indexOf(auraComponentsContent) + auraComponentsContent.length,
-                stackTraceParticle.fileName.length
-            );
-        }
-        const jsFileNameSuffix = '.js';
-        if (stackTraceParticle.fileName?.endsWith(jsFileNameSuffix)) {
-            stackTraceParticle.componentName = stackTraceParticle.fileName.substring(0, stackTraceParticle.fileName.length - jsFileNameSuffix.length);
-        }
-
-        const invalidFunctionNameSuffix = '/<';
-        if (stackTraceParticle.functionName?.endsWith(invalidFunctionNameSuffix)) {
-            stackTraceParticle.functionName = stackTraceParticle.functionName.substring(
-                0,
-                stackTraceParticle.functionName.length - invalidFunctionNameSuffix.length
-            );
-        }
-
-        if (stackTraceParticle.columnNumber) {
-            stackTraceParticle.columnNumber = isNaN(stackTraceParticle.columnNumber) ? null : Number(stackTraceParticle.columnNumber);
-        }
-
-        if (stackTraceParticle.lineNumber) {
-            stackTraceParticle.lineNumber = isNaN(stackTraceParticle.lineNumber) ? null : Number(stackTraceParticle.lineNumber);
-        }
-    }
-
     /* eslint-disable no-console */
     _logToConsole() {
         if (!this.#isConsoleLoggingEnabled) {
@@ -301,47 +220,36 @@ const LogEntryBuilder = class {
             qualifiedMessage,
             // Some JS stack traces are huuuuge, so don't print it in the browser console.
             // The stack trace will still be saved on the backend.
-            '\n' + JSON.stringify(this.#componentLogEntry, replacer, 2)
+            // '\n' + JSON.stringify(this.#componentLogEntry, replacer, 2)
+            '\n' +
+                JSON.stringify(
+                    {
+                        origin: {
+                            component: this.#componentLogEntry.originStackTrace?.componentName,
+                            function: this.#componentLogEntry.originStackTrace?.functionName,
+                            metadataType: this.#componentLogEntry.originStackTrace?.metadataType
+                        },
+                        scenario: this.#componentLogEntry.scenario,
+                        timestamp: this.#componentLogEntry.timestamp
+                    },
+                    (_key, value) => value ?? undefined,
+                    2
+                )
         );
     }
+
+    _setBrowserDetails() {
+        const browser = new ComponentBrowser();
+        this.#componentLogEntry.browserAddress = browser.address;
+        this.#componentLogEntry.browserFormFactor = browser.formFactor;
+        this.#componentLogEntry.browserLanguage = browser.language;
+        this.#componentLogEntry.browserScreenResolution = browser.screenResolution;
+        // TODO Deprecated, remove in a future release
+        this.#componentLogEntry.browserUrl = browser.address;
+        this.#componentLogEntry.browserUserAgent = browser.userAgent;
+        this.#componentLogEntry.browserWindowResolution = browser.windowResolution;
+    }
 };
-
-function replacer(key, value) {
-    if (Array.isArray(value) && value.length === 0) {
-        return undefined;
-    }
-
-    if (!value) {
-        return undefined;
-    }
-
-    const keysToIgnore = new Set([
-        'browserAddress',
-        'browserFormFactor',
-        'browserLanguage',
-        'browserScreenResolution',
-        'browserUrl',
-        'browserUserAgent',
-        'browserWindowResolution',
-        'loggingLevel',
-        'message',
-        'stack',
-        // These properties exist on the origin object:
-        'columnNumber',
-        'fileName',
-        'lineNumber',
-        'parsedStackTraceString',
-        'source',
-        // tags are set via a builder method after console logging has happened,
-        // so always exclude it
-        'tags'
-    ]);
-    if (keysToIgnore.has(key)) {
-        return undefined;
-    }
-
-    return value;
-}
 
 let hasInitialized = false;
 export function newLogEntry(loggingLevel, isConsoleLoggingEnabled) {

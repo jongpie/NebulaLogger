@@ -5,8 +5,8 @@
 
 /*
 The code below is originally from the project stacktrace.js - also released under the MIT License.
-It provides with cross-browser stack trace parsing, which is utilizied internally by Nebula Logger
-to automatically track the source compontent that is logging. The original JavaScript code has been modified
+It provides cross-browser stack trace parsing, which is utilized internally by Nebula Logger
+to automatically track the source component that is logging. The original JavaScript code has been modified
 to be used for Nebula Logger, but credit goes to the contributors of stacktrace.js for the original implementation.
 
     - The stacktrace.js project's LICENSE file has been copied below. For full license details, visit:
@@ -15,12 +15,12 @@ to be used for Nebula Logger, but credit goes to the contributors of stacktrace.
       https://github.com/stacktracejs/stacktrace.js/blob/710bba1118d396466ee342a30b3dfd19ecbda8b5/dist/stacktrace.js#L14C9-L202C7
 
 Some of the changes made below for Nebula Logger's usage includes:
-- converting the function ErrorStackParser(StackFrame) into a class
-- converting var variables to const & let
-- removal of the StackFrame class originally returned, and replaced with an Object
-- updated some parsing logic to reflect the current structure of some JavaScript stack traces for Aura & LWC
-- updated some parsing logic to align with what data will be stored in Nebula Logger
-
+    - converting the function ErrorStackParser(StackFrame) into a class
+    - converting var variables to const & let
+    - updating a few others lines to use shorter/newer JS syntax
+    - removal of the StackFrame class originally returned, and replaced with a simple Object
+    - updated some parsing logic to reflect the current structure of some JavaScript stack traces
+      (e.g., Chrome & Edge stack traces include 'Proxy.' before the function name, so 'Proxy.' is now stripped out)
 */
 
 /*
@@ -48,7 +48,7 @@ const FIREFOX_SAFARI_STACK_REGEXP = /(^|@)\S+:\d+/;
 const CHROME_IE_STACK_REGEXP = /^\s*at .*(\S+:\d+|\(native\))/m;
 const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/;
 
-export class ErrorStackParser {
+class ErrorStackParser {
     parse(error) {
         let stackTraceParticles;
         if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined') {
@@ -131,20 +131,19 @@ export class ErrorStackParser {
                 return {
                     functionName: line
                 };
-            } 
-                const functionNameRegex = /((.*".+"[^@]*)?[^@]*)(?:@)/;
-                const matches = line.match(functionNameRegex);
-                const functionName = matches && matches[1] ? matches[1] : undefined;
-                const locationParts = this.extractLocation(line.replace(functionNameRegex, ''));
+            }
+            const functionNameRegex = /((.*".+"[^@]*)?[^@]*)(?:@)/;
+            const matches = line.match(functionNameRegex);
+            const functionName = matches && matches[1] ? matches[1] : undefined;
+            const locationParts = this.extractLocation(line.replace(functionNameRegex, ''));
 
-                return {
-                    functionName: functionName,
-                    fileName: locationParts[0],
-                    lineNumber: locationParts[1],
-                    columnNumber: locationParts[2],
-                    source: line
-                };
-            
+            return {
+                functionName: functionName,
+                fileName: locationParts[0],
+                lineNumber: locationParts[1],
+                columnNumber: locationParts[2],
+                source: line
+            };
         }, this);
     }
 
@@ -153,9 +152,8 @@ export class ErrorStackParser {
             return this.parseOpera9(e);
         } else if (!e.stack) {
             return this.parseOpera10(e);
-        } 
-            return this.parseOpera11(e);
-        
+        }
+        return this.parseOpera11(e);
     }
 
     parseOpera9(e) {
@@ -226,3 +224,67 @@ export class ErrorStackParser {
     }
 }
 /* End of code originally copied from stacktrace.js */
+
+/*
+The code below is specific to Nebula Logger - it leverages stacktrace.js plus some
+additional parsing logic to handle Salesforce-specific stack traces in LWC & Aura components
+*/
+export class LoggerStackTrace {
+    parse(originStackTraceError) {
+        if (!originStackTraceError) {
+            return this;
+        }
+
+        const originStackTraceParticles = new ErrorStackParser().parse(originStackTraceError);
+        let originStackTraceParticle;
+        const parsedStackTraceLines = [];
+        originStackTraceParticles.forEach(currentStackTraceParticle => {
+            if (currentStackTraceParticle.fileName?.endsWith('/logger.js')) {
+                return;
+            }
+
+            if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug.js')) {
+                return;
+            }
+
+            currentStackTraceParticle.source = currentStackTraceParticle.source?.trim();
+            if (currentStackTraceParticle.source) {
+                this._cleanStackTraceParticle(currentStackTraceParticle);
+                parsedStackTraceLines.push(currentStackTraceParticle.source);
+            }
+        });
+        const parsedStackTraceString = parsedStackTraceLines.join('\n');
+        return { ...originStackTraceParticle, parsedStackTraceString };
+    }
+
+    _cleanStackTraceParticle(stackTraceParticle) {
+        const lwcModulesFileNamePrefix = 'modules/';
+        if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
+            stackTraceParticle.metadataType = 'LightningComponentBundle';
+
+            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
+                stackTraceParticle.fileName.indexOf(lwcModulesFileNamePrefix) + lwcModulesFileNamePrefix.length
+            );
+        }
+        const auraComponentsContent = '/components/';
+        if (stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
+            stackTraceParticle.metadataType = 'AuraDefinitionBundle';
+
+            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
+                stackTraceParticle.fileName.indexOf(auraComponentsContent) + auraComponentsContent.length,
+                stackTraceParticle.fileName.length
+            );
+        }
+        const jsFileNameSuffix = '.js';
+        if (stackTraceParticle.fileName?.endsWith(jsFileNameSuffix)) {
+            stackTraceParticle.componentName = stackTraceParticle.fileName.substring(0, stackTraceParticle.fileName.length - jsFileNameSuffix.length);
+        }
+        const invalidFunctionNameSuffix = '/<';
+        if (stackTraceParticle.functionName?.endsWith(invalidFunctionNameSuffix)) {
+            stackTraceParticle.functionName = stackTraceParticle.functionName.substring(
+                0,
+                stackTraceParticle.functionName.length - invalidFunctionNameSuffix.length
+            );
+        }
+    }
+}

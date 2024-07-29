@@ -69,6 +69,7 @@ const LoggerService = class {
         if (this.#componentLogEntries.length === 0) {
             return;
         }
+
         if (!saveMethodName && this.#settings?.defaultSaveMethodName) {
             saveMethodName = this.#settings.defaultSaveMethodName;
         }
@@ -113,11 +114,9 @@ const LoggerService = class {
     }
 
     _newEntry(loggingLevel, message, originStackTraceError) {
-        if (!originStackTraceError) {
-            originStackTraceError = new Error();
-        }
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
         if (this._meetsUserLoggingLevel(loggingLevel)) {
+            originStackTraceError = originStackTraceError ?? new Error();
             logEntryBuilder.parseStackTrace(originStackTraceError).setMessage(message);
             logEntryBuilder.setScenario(this.#scenario);
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());

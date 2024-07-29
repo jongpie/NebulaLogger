@@ -97,7 +97,7 @@ Sets the log entry event's exception fields
 
 ### logEntryBuilder.parseStackTrace(error) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
-Appends the tag to the existing list of tags
+Parses the provided error's stack trace and sets the log entry's origin & stack trace fields
 
 **Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
