@@ -9,9 +9,9 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.16.NEXT",
-            "versionName": "Bugfixes for Scenario Rules",
-            "versionDescription": "Fixed a bug where log entry events with a matching LoggerScenarioRule__mdt did not save when LoggerSettings__c.DefaultPlatformEventStorageLoggingLevel__c is null, and fixed a bug where scenario rule overrides weren't properly reverted when a scenario ended",
+            "versionNumber": "4.13.17.NEXT",
+            "versionName": "Overhauled JavaScript Stack Trace Parsing",
+            "versionDescription": "Moved JS stack trace parsing to happen in JS (instead of Apex) using stacktrace.js library. Also added a ton of recipes metadata to make it easier to test JS stack traces in different Salesforce contexts.",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
