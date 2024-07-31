@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 import FORM_FACTOR from '@salesforce/client/formFactor';
 
-const CURRENT_VERSION_NUMBER = 'v4.13.15';
+const CURRENT_VERSION_NUMBER = 'v4.13.16';
 
 // JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
 const ComponentLogEntry = class {

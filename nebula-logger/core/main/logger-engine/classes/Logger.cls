@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.13.15';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.13.16';
     private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -27,6 +27,7 @@ global with sharing class Logger {
 
     private static AsyncContext currentAsyncContext;
     private static String currentEntryScenario;
+    private static LoggerSettings__c currentUserSettings;
     @TestVisible
     private static String lastSaveMethodNameUsed;
     private static List<String> orderedScenarios = new List<String>();
@@ -35,7 +36,6 @@ global with sharing class Logger {
     private static Integer saveLogCallCount = 0;
     private static Boolean suspendSaving = false;
     private static String transactionScenario;
-    private static LoggerSettings__c userSettings;
 
     private static final List<String> CLASSES_TO_IGNORE {
         get {
@@ -347,11 +347,11 @@ global with sharing class Logger {
      */
     public static LoggerSettings__c getUserSettings() {
         // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
-        if (userSettings == null) {
+        if (currentUserSettings == null) {
             Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
-            userSettings = getUserSettings(currentUser);
+            currentUserSettings = getUserSettings(currentUser);
         }
-        return userSettings;
+        return currentUserSettings;
     }
 
     /**
@@ -3088,6 +3088,8 @@ global with sharing class Logger {
         }
         LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
+            // Clear & reload the user's settings so that there aren't any lingering changes made by previous scenario rules
+            currentUserSettings = null;
             LoggerSettings__c userSettings = getUserSettings();
             if (String.isNotBlank(matchingScenarioRule.IsLoggerEnabled__c)) {
                 userSettings.IsEnabled__c = Boolean.valueOf(matchingScenarioRule.IsLoggerEnabled__c);
@@ -3138,6 +3140,9 @@ global with sharing class Logger {
         }
         if (String.isBlank(previousScenario)) {
             currentEntryScenario = null;
+            // Clear & reload the user's settings so that there aren't any lingering changes made by previous scenario rules
+            // The settings will then be auto-reloaded when setScenario(previousScenario) is called below
+            currentUserSettings = null;
         }
 
         setScenario(previousScenario);

@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
 @IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests {
+    private static final String MOCK_TRANSACTION_ID = System.UUID.randomUUID().toString();
+
+    private static Integer currentLogEntryNumber = 1;
+
     @IsTest
     static void it_should_return_the_logEntryEvent_sobjectType() {
         System.Assert.areEqual(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
@@ -97,6 +101,60 @@ private class LogEntryEventHandler_Tests {
         System.Assert.areEqual(1, logEntries.size(), System.JSON.serializePretty(logEntries));
         System.Assert.areEqual(matchingLogEntryEvent.LoggingLevel__c, logEntries.get(0).LoggingLevel__c);
         System.Assert.areEqual(matchingLogEntryEvent.Message__c, logEntries.get(0).Message__c);
+    }
+
+    @IsTest
+    static void it_should_create_log_entry_data_with_matching_scenario_rule_when_platform_event_storage_logging_level_is_null() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
+        System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c]);
+        LoggerSettings__c settings = Logger.getUserSettings();
+        settings.LoggingLevel__c = System.LoggingLevel.WARN.name();
+        settings.DefaultPlatformEventStorageLocation__c = 'CUSTOM_OBJECTS';
+        settings.DefaultPlatformEventStorageLoggingLevel__c = null;
+        upsert settings;
+        String someScenario = 'some scenario with a configured rule';
+        LoggerScenarioRule.setMock(new LoggerScenarioRule__mdt(IsEnabled__c = true, Scenario__c = someScenario));
+        LogEntryEvent__e firstMatchingLogEntryEvent = createLogEntryEvent();
+        firstMatchingLogEntryEvent.LoggingLevel__c = System.LoggingLevel.ERROR.name();
+        firstMatchingLogEntryEvent.Message__c = 'This event should be saved in LogEntry__c';
+        firstMatchingLogEntryEvent.TransactionScenario__c = someScenario;
+        LogEntryEvent__e secondMatchingLogEntryEvent = createLogEntryEvent();
+        secondMatchingLogEntryEvent.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+        secondMatchingLogEntryEvent.Message__c = 'This event should ALSO be saved in LogEntry__c';
+        secondMatchingLogEntryEvent.TransactionScenario__c = someScenario;
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstMatchingLogEntryEvent, secondMatchingLogEntryEvent };
+
+        List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.Assert.areEqual(logEntryEvents.size(), saveResults.size());
+        for (Database.SaveResult saveResult : saveResults) {
+            System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        }
+        System.Assert.areEqual(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
+        LogEntry__c firstMatchingLogEntry = [
+            SELECT Id, LoggingLevel__c, Message__c
+            FROM LogEntry__c
+            WHERE LoggingLevel__c = :firstMatchingLogEntryEvent.LoggingLevel__c
+        ];
+        System.Assert.areEqual(firstMatchingLogEntryEvent.LoggingLevel__c, firstMatchingLogEntry.LoggingLevel__c);
+        System.Assert.areEqual(firstMatchingLogEntryEvent.Message__c, firstMatchingLogEntry.Message__c);
+        LogEntry__c secondMatchingLogEntry = [
+            SELECT Id, LoggingLevel__c, Message__c
+            FROM LogEntry__c
+            WHERE LoggingLevel__c = :secondMatchingLogEntryEvent.LoggingLevel__c
+        ];
+        System.Assert.areEqual(secondMatchingLogEntryEvent.LoggingLevel__c, secondMatchingLogEntry.LoggingLevel__c);
+        System.Assert.areEqual(secondMatchingLogEntryEvent.Message__c, secondMatchingLogEntry.Message__c);
     }
 
     @IsTest
@@ -1222,6 +1280,8 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.RecordCollectionType__c = 'Single';
         logEntryEvent.RecordId__c = System.UserInfo.getUserId();
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
+        logEntryEvent.TransactionEntryNumber__c = currentLogEntryNumber++;
+        logEntryEvent.TransactionId__c = MOCK_TRANSACTION_ID;
         logEntryEvent.UserLoggingLevel__c = System.LoggingLevel.INFO.name();
         logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
         logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(logEntryEvent, Schema.LogEntryEvent__e.EventUuid, System.UUID.randomUUID());

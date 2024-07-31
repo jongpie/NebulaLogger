@@ -477,6 +477,90 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_revert_to_previous_user_settings_when_the_only_scenario_is_ended() {
+        LoggerSettings__c userSettingsToCreate = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+        userSettingsToCreate.IsRecordFieldStrippingEnabled__c = true;
+        userSettingsToCreate.LoggingLevel__c = System.LoggingLevel.INFO.name();
+        userSettingsToCreate.SetupOwnerId = System.UserInfo.getUserId();
+        insert userSettingsToCreate;
+        LoggerSettings__c originalUserSettings = Logger.getUserSettings().clone();
+        System.LoggingLevel originalLoggingLevel = Logger.getUserLoggingLevel();
+        System.Assert.isNull(Logger.getScenario());
+        String mockScenario = 'some test scenario ';
+        LoggerScenarioRule__mdt mockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsRecordFieldStrippingEnabled__c = String.valueOf(false),
+            Scenario__c = mockScenario,
+            UserLoggingLevel__c = System.LoggingLevel.FINE.name()
+        );
+        LoggerScenarioRule.setMock(mockScenarioRule);
+        System.Assert.areNotEqual(originalLoggingLevel.name(), mockScenarioRule.UserLoggingLevel__c);
+        Logger.setScenario(mockScenario);
+        System.Assert.areEqual(mockScenario, Logger.getScenario());
+        System.Assert.areEqual(mockScenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
+
+        Logger.endScenario(mockScenario);
+
+        System.Assert.areEqual(originalUserSettings.IsEnabled__c, Logger.getUserSettings().IsEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsAnonymousModeEnabled__c, Logger.getUserSettings().IsAnonymousModeEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsApexSystemDebugLoggingEnabled__c, Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsDataMaskingEnabled__c, Logger.getUserSettings().IsDataMaskingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsJavaScriptConsoleLoggingEnabled__c, Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsRecordFieldStrippingEnabled__c, Logger.getUserSettings().IsRecordFieldStrippingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsSavingEnabled__c, Logger.getUserSettings().IsSavingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.LoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
+    }
+
+    @IsTest
+    static void it_should_revert_to_previous_user_settings_with_scenario_rule_applied_when_scenario_is_ended_and_other_scenarios_have_been_used() {
+        LoggerSettings__c userSettingsToCreate = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+        userSettingsToCreate.IsRecordFieldStrippingEnabled__c = true;
+        userSettingsToCreate.LoggingLevel__c = System.LoggingLevel.INFO.name();
+        userSettingsToCreate.SetupOwnerId = System.UserInfo.getUserId();
+        insert userSettingsToCreate;
+        LoggerSettings__c originalUserSettings = Logger.getUserSettings().clone();
+        System.Assert.isNull(Logger.getScenario());
+        String firstMockScenario = 'some test scenario ';
+        LoggerScenarioRule__mdt firstMockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsRecordFieldStrippingEnabled__c = String.valueOf(false),
+            Scenario__c = firstMockScenario,
+            UserLoggingLevel__c = System.LoggingLevel.FINE.name()
+        );
+        LoggerScenarioRule.setMock(firstMockScenarioRule);
+        Logger.setScenario(firstMockScenario);
+        System.Assert.areEqual(firstMockScenario, Logger.getScenario());
+        System.Assert.areEqual(firstMockScenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
+        String secondMockScenario = 'another test scenario ';
+        LoggerScenarioRule__mdt secondMockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            Scenario__c = secondMockScenario,
+            UserLoggingLevel__c = System.LoggingLevel.DEBUG.name()
+        );
+        LoggerScenarioRule.setMock(secondMockScenarioRule);
+        System.Assert.areNotEqual(firstMockScenarioRule.UserLoggingLevel__c, secondMockScenarioRule.UserLoggingLevel__c);
+        Logger.setScenario(secondMockScenario);
+        System.Assert.areEqual(secondMockScenario, Logger.getScenario());
+        System.Assert.areEqual(originalUserSettings.IsRecordFieldStrippingEnabled__c, Logger.getUserSettings().IsRecordFieldStrippingEnabled__c);
+        System.Assert.areEqual(secondMockScenarioRule.UserLoggingLevel__c, Logger.getUserLoggingLevel().name());
+
+        Logger.endScenario(secondMockScenario);
+
+        System.Assert.areEqual(firstMockScenario, Logger.getScenario());
+        System.Assert.areEqual(firstMockScenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
+        System.Assert.areEqual(
+            Boolean.valueOf(firstMockScenarioRule.IsRecordFieldStrippingEnabled__c),
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c
+        );
+        System.Assert.areEqual(originalUserSettings.IsEnabled__c, Logger.getUserSettings().IsEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsAnonymousModeEnabled__c, Logger.getUserSettings().IsAnonymousModeEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsApexSystemDebugLoggingEnabled__c, Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsDataMaskingEnabled__c, Logger.getUserSettings().IsDataMaskingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsJavaScriptConsoleLoggingEnabled__c, Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c);
+        System.Assert.areEqual(originalUserSettings.IsSavingEnabled__c, Logger.getUserSettings().IsSavingEnabled__c);
+    }
+
+    @IsTest
     static void it_should_not_ignore_origin_when_apex_class_type_not_specified() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
