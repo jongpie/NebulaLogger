@@ -76,7 +76,6 @@ private class LoggerRestResource_Tests {
         System.Assert.isNotNull(endpointResponse.logger, System.JSON.serializePretty(endpointResponse.logger));
         System.Assert.isNotNull(endpointResponse.logger.userSettings, System.JSON.serializePretty(endpointResponse.logger.userSettings));
         System.Assert.areEqual(Nebula.Logger.isEnabled(), endpointResponse.logger.userSettings.isEnabled);
-        System.Assert.areEqual(Nebula.Logger.isSavingSuspended() == false, endpointResponse.logger.userSettings.isSavingEnabled);
         System.Assert.areEqual(Nebula.Logger.getUserLoggingLevel().name(), endpointResponse.logger.userSettings.loggingLevel);
         System.Assert.areEqual(Nebula.Logger.getSaveMethod()?.name(), endpointResponse.logger.userSettings.saveMethod);
         System.Assert.areEqual(Nebula.Logger.getVersionNumber(), endpointResponse.logger.versionNumber);

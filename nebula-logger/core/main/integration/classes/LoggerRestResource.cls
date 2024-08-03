@@ -59,13 +59,13 @@ global class LoggerRestResource {
 
     /* Base classes for REST responses returned by all endpoints */
     public virtual class EndpointResponse {
-        public String endpoint;
-        public List<EndpointError> errors = new List<EndpointError>();
-        public EndpointLoggerContext logger;
-        public EndpointOrganizationContext organization;
-        public String requestId = System.Request.getCurrent().getRequestId();
-        public String transactionId = Nebula.Logger.getTransactionId();
-        public EndpointUserContext user;
+        public final EndpointRequestContext endpoint;
+        public final List<EndpointError> errors = new List<EndpointError>();
+        public final EndpointLoggerContext logger;
+        public final EndpointOrganizationContext organization;
+        public final String requestId = System.Request.getCurrent().getRequestId();
+        public final String transactionId = Nebula.Logger.getTransactionId();
+        public final EndpointUserContext user;
 
         public Boolean isSuccess {
             get {
@@ -73,12 +73,17 @@ global class LoggerRestResource {
             }
         }
 
-        public EndpointResponse(Boolean includeVerboseContext) {
-            if (includeVerboseContext == true) {
+        public EndpointResponse(System.RestRequest restRequest) {
+            if (this.shouldIncludeVerboseContext(restRequest)) {
+                this.endpoint = new EndpointRequestContext(restRequest);
                 this.logger = new EndpointLoggerContext();
                 this.organization = new EndpointOrganizationContext();
                 this.user = new EndpointUserContext();
             }
+        }
+
+        private Boolean shouldIncludeVerboseContext(System.RestRequest restRequest) {
+            return restRequest.params.get('verbose') == 'true';
         }
     }
 
@@ -112,7 +117,6 @@ global class LoggerRestResource {
     @TestVisible
     private class EndpointLoggerSettingsContext {
         public Boolean isEnabled = Nebula.Logger.isEnabled();
-        public Boolean isSavingEnabled = Nebula.Logger.isSavingSuspended() == false;
         public String loggingLevel = Nebula.Logger.getUserLoggingLevel().name();
         public String saveMethod = Nebula.Logger.getSaveMethod()?.name();
     }
@@ -130,6 +134,18 @@ global class LoggerRestResource {
             this.apiVersion = System.JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()))
                 .substringAfter('/data/')
                 .substringBefore('/sobjects/User');
+        }
+    }
+
+    @TestVisible
+    private class EndpointRequestContext {
+        public String name;
+        public Map<String, String> parameters;
+
+        public EndpointRequestContext(System.RestRequest restRequest) {
+            // TODO revisit, this is using a static method from top-level class
+            this.name = getEndpointName(restRequest);
+            this.parameters = restRequest.params;
         }
     }
 
@@ -170,8 +186,8 @@ global class LoggerRestResource {
         // TODO finalize the name of this property
         public LogCreateSummary log;
 
-        public LogCreateResponse(Boolean includeVerboseContext) {
-            super(includeVerboseContext);
+        public LogCreateResponse(System.RestRequest restRequest) {
+            super(restRequest);
         }
     }
 
@@ -184,17 +200,15 @@ global class LoggerRestResource {
 
     private class LogEndpoint extends Endpoint {
         public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
-            Boolean includeVerboseContext = restRequest.params.get('verbose') == 'true';
-
             try {
                 LogCreateSummary logCreateSummary = this.saveLogRequest(restRequest);
 
-                LogCreateResponse logCreateResponse = new LogCreateResponse(includeVerboseContext);
+                LogCreateResponse logCreateResponse = new LogCreateResponse(restRequest);
                 logCreateResponse.log = logCreateSummary;
                 restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logCreateResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
                 restResponse.statusCode = 200;
             } catch (Exception apexException) {
-                EndpointResponse errorResponse = new EndpointResponse(includeVerboseContext);
+                EndpointResponse errorResponse = new EndpointResponse(restRequest);
                 errorResponse.errors.add(new EndpointError(apexException));
                 restResponse.responseBody = Blob.valueOf(System.JSON.serialize(errorResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
                 restResponse.statusCode = 400;
@@ -254,10 +268,8 @@ global class LoggerRestResource {
         }
 
         public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
-            Boolean includeVerboseContext = restRequest.params.get('verbose') == 'true';
-
             String errorMessage = 'Unknown endpoint provided: ' + this.endpointName;
-            EndpointResponse unknownEndpointResponse = new EndpointResponse(includeVerboseContext);
+            EndpointResponse unknownEndpointResponse = new EndpointResponse(restRequest);
             unknownEndpointResponse.errors.add(new EndpointError(errorMessage));
             restResponse.responseBody = Blob.valueOf(System.JSON.serialize(unknownEndpointResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
             restResponse.statusCode = 404;
