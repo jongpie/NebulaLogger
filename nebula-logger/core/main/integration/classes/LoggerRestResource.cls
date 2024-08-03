@@ -61,15 +61,23 @@ global class LoggerRestResource {
     public virtual class EndpointResponse {
         public String endpoint;
         public List<EndpointError> errors = new List<EndpointError>();
-        public EndpointLoggerContext logger = new EndpointLoggerContext();
-        public EndpointOrganizationContext organization = new EndpointOrganizationContext();
+        public EndpointLoggerContext logger;
+        public EndpointOrganizationContext organization;
         public String requestId = System.Request.getCurrent().getRequestId();
         public String transactionId = Nebula.Logger.getTransactionId();
-        public EndpointUserContext user = new EndpointUserContext();
+        public EndpointUserContext user;
 
         public Boolean isSuccess {
             get {
                 return this.errors.isEmpty();
+            }
+        }
+
+        public EndpointResponse(Boolean includeVerboseContext) {
+            if (includeVerboseContext == true) {
+                this.logger = new EndpointLoggerContext();
+                this.organization = new EndpointOrganizationContext();
+                this.user = new EndpointUserContext();
             }
         }
     }
@@ -97,7 +105,16 @@ global class LoggerRestResource {
         // FIXME The managed package currently doesn't have access to the method Logger.getNamespacePrefix(),
         // so there's not a great way to correctly set namespace without duplicating the logic
         public String namespace; // = Logger.getNamespacePrefix()
+        public EndpointLoggerSettingsContext userSettings = new EndpointLoggerSettingsContext();
         public String versionNumber = Nebula.Logger.getVersionNumber();
+    }
+
+    @TestVisible
+    private class EndpointLoggerSettingsContext {
+        public Boolean isEnabled = Nebula.Logger.isEnabled();
+        public Boolean isSavingEnabled = Nebula.Logger.isSavingSuspended() == false;
+        public String loggingLevel = Nebula.Logger.getUserLoggingLevel().name();
+        public String saveMethod = Nebula.Logger.getSaveMethod()?.name();
     }
 
     @TestVisible
@@ -149,40 +166,53 @@ global class LoggerRestResource {
     }
 
     @TestVisible
-    private class LogEntryCreateResponse extends EndpointResponse {
-        // TODO add details about Logger.bufferSize(), save method, scenario, etc.
-        public LogCreateSummary log = new LogCreateSummary();
+    private class LogCreateResponse extends EndpointResponse {
+        // TODO finalize the name of this property
+        public LogCreateSummary log;
+
+        public LogCreateResponse(Boolean includeVerboseContext) {
+            super(includeVerboseContext);
+        }
     }
 
+    @TestVisible
     private class LogCreateSummary {
-        public Integer logEntriesSent;
         public Integer logEntriesSaved;
-        public String saveMethod;
+        public Integer logEntriesSent;
     }
     /* end of '/log' endpoint classes */
 
     private class LogEndpoint extends Endpoint {
         public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
-            try {
-                this.saveLogRequest(restRequest);
+            Boolean includeVerboseContext = restRequest.params.get('verbose') == 'true';
 
-                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(new EndpointResponse(), SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
+            try {
+                LogCreateSummary logCreateSummary = this.saveLogRequest(restRequest);
+
+                LogCreateResponse logCreateResponse = new LogCreateResponse(includeVerboseContext);
+                logCreateResponse.log = logCreateSummary;
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logCreateResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
                 restResponse.statusCode = 200;
             } catch (Exception apexException) {
+                EndpointResponse errorResponse = new EndpointResponse(includeVerboseContext);
+                errorResponse.errors.add(new EndpointError(apexException));
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(errorResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
+                restResponse.statusCode = 400;
+
                 Nebula.Logger.error('Failed to save external log', apexException).setRestRequestDetails(restRequest).setRestResponseDetails(restResponse);
                 Nebula.Logger.saveLog();
-
-                EndpointResponse endpointResponse = new LogEntryCreateResponse();
-                endpointResponse.errors.add(new EndpointError(apexException));
-                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(endpointResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
-                restResponse.statusCode = 400;
             }
         }
 
-        private void saveLogRequest(System.RestRequest restRequest) {
+        private LogCreateSummary saveLogRequest(System.RestRequest restRequest) {
+            LogCreateSummary logCreateSummary = new LogCreateSummary();
+
             LogCreateRequest logCreateRequest = this.deserializeLogRequest(restRequest);
+            logCreateSummary.logEntriesSent = logCreateRequest.logEntries?.size() ?? 0;
+
             Nebula.Logger.setParentLogTransactionId(logCreateRequest.parentLogTransactionId);
             Nebula.Logger.setScenario(logCreateRequest.scenario);
+
             for (LogEntryCreateRequest logEntryCreateRequest : logCreateRequest.logEntries) {
                 System.LoggingLevel loggingLevel = Nebula.Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel);
                 Nebula.Logger.newEntry(loggingLevel, logEntryCreateRequest.message)
@@ -192,7 +222,12 @@ global class LoggerRestResource {
                     // .setTimestamp(logEntryCreateRequest.timestamp)
                     .addTags(logEntryCreateRequest.tags);
             }
+            // Capture the number of log entries in the buffer just before calling saveLog(),
+            // since saveLog() will then flush the buffer
+            logCreateSummary.logEntriesSaved = Nebula.Logger.getBufferSize();
             Nebula.Logger.saveLog();
+
+            return logCreateSummary;
         }
 
         private LogCreateRequest deserializeLogRequest(System.RestRequest restRequest) {
@@ -218,20 +253,17 @@ global class LoggerRestResource {
             this.endpointName = endpointName;
         }
 
-        // public override void handleGet(System.RestRequest restRequest, System.RestResponse restResponse) {
-        //     this.buildEndpointResponse(restResponse);
-        // }
-
         public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
-            this.buildEndpointResponse(restResponse);
-        }
+            Boolean includeVerboseContext = restRequest.params.get('verbose') == 'true';
 
-        private void buildEndpointResponse(System.RestResponse restResponse) {
             String errorMessage = 'Unknown endpoint provided: ' + this.endpointName;
-            EndpointResponse unknownEndpointResponse = new EndpointResponse();
+            EndpointResponse unknownEndpointResponse = new EndpointResponse(includeVerboseContext);
             unknownEndpointResponse.errors.add(new EndpointError(errorMessage));
             restResponse.responseBody = Blob.valueOf(System.JSON.serialize(unknownEndpointResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
             restResponse.statusCode = 404;
+
+            Nebula.Logger.warn(errorMessage).setRestRequestDetails(restRequest).setRestResponseDetails(restResponse);
+            Nebula.Logger.saveLog();
         }
     }
 }
