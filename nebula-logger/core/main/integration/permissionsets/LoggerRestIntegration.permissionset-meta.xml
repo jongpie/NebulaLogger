@@ -4,7 +4,7 @@
         <apexClass>LoggerRestResource</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description
-    >Provides access to generate log entries for external systems/integrations via a custom Apex REST service.</description>
+    <description>Provides access to integrate with Nebula Logger via REST API calls</description>
+    <hasActivationRequired>false</hasActivationRequired>
     <label>Nebula Logger: REST Integration</label>
 </PermissionSet>
