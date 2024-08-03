@@ -139,13 +139,17 @@ global class LoggerRestResource {
 
     @TestVisible
     private class EndpointRequestContext {
+        public List<String> headerKeys;
         public String name;
         public Map<String, String> parameters;
+        public String uri;
 
         public EndpointRequestContext(System.RestRequest restRequest) {
+            this.headerKeys = new List<String>(System.RestContext.request.headers.keySet());
             // TODO revisit, this is using a static method from top-level class
             this.name = getEndpointName(restRequest);
             this.parameters = restRequest.params;
+            this.uri = restRequest.requestURI;
         }
     }
 

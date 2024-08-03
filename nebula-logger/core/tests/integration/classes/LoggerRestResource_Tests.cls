@@ -35,6 +35,7 @@ private class LoggerRestResource_Tests {
             System.RestContext.response.responseBody.toString(),
             LoggerRestResource.EndpointResponse.class
         );
+        System.Assert.isNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
         System.Assert.isNull(endpointResponse.logger, System.JSON.serializePretty(endpointResponse.logger));
         System.Assert.isNull(endpointResponse.organization);
         System.Assert.isNull(endpointResponse.user, System.JSON.serializePretty(endpointResponse.user));
@@ -54,6 +55,7 @@ private class LoggerRestResource_Tests {
             System.RestContext.response.responseBody.toString(),
             LoggerRestResource.EndpointResponse.class
         );
+        System.Assert.isNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
         System.Assert.isNull(endpointResponse.logger, System.JSON.serializePretty(endpointResponse.logger));
         System.Assert.isNull(endpointResponse.organization);
         System.Assert.isNull(endpointResponse.user, System.JSON.serializePretty(endpointResponse.user));
@@ -64,6 +66,7 @@ private class LoggerRestResource_Tests {
         String someEndpointName = 'any-endpoint-even-if-it-is-not-valid-we-do-not-care-for-this-test-k-thx-bye';
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.addParameter('verbose', 'true');
+        System.RestContext.request.addHeader('X-some-header', 'some-value');
         System.RestContext.request.httpMethod = 'GET';
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + someEndpointName;
 
@@ -73,6 +76,11 @@ private class LoggerRestResource_Tests {
             System.RestContext.response.responseBody.toString(),
             LoggerRestResource.EndpointResponse.class
         );
+        System.Assert.isNotNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
+        System.Assert.areEqual(new List<String>(System.RestContext.request.headers.keySet()), endpointResponse.endpoint.headerKeys);
+        System.Assert.areEqual(someEndpointName, endpointResponse.endpoint.name);
+        System.Assert.areEqual(System.RestContext.request.params, endpointResponse.endpoint.parameters);
+        System.Assert.areEqual(System.RestContext.request.requestUri, endpointResponse.endpoint.uri);
         System.Assert.isNotNull(endpointResponse.logger, System.JSON.serializePretty(endpointResponse.logger));
         System.Assert.isNotNull(endpointResponse.logger.userSettings, System.JSON.serializePretty(endpointResponse.logger.userSettings));
         System.Assert.areEqual(Nebula.Logger.isEnabled(), endpointResponse.logger.userSettings.isEnabled);
