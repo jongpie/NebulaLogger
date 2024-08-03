@@ -1,59 +1,76 @@
 @RestResource(urlMapping='/logger/*')
 global class LoggerRestResource {
-    // TODO revisit this value / confirm how it will behave with a namespace
+    // TODO revisit REQUEST_URI_BASE value / add tests to make it work with a namespace
+    /*
+    From the Apex Dev docs (https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_rest_resource.htm):
+      "The URL for a namespaced class contains the namespace. For example, if your class is in namespace abc and the class is
+       mapped to your_url, then the API URL is modified as follows: https://instance.salesforce.com/services/apexrest/abc/your_url/.
+       In the case of a URL collision, the namespaced class is always used."
+    */
     @TestVisible
-    private static final String REQUEST_URI_BASE = '/services/apexrest/logger';
-
-    @HttpGet
-    global static void handleGet() {
-        // TODO revisit this line
-        System.RestContext.response = System.RestContext.response ?? new System.RestResponse();
-        System.RestContext.response.addHeader('Content-Type', 'application/json');
-
-        RequestResolver requestResolver = new RequestResolver(System.RestContext.request);
-        switch on requestResolver.getEndpoint() {
-            // when '/log' {
-            //     new LogCreateRequestSaver().respond(System.RestContext.request, System.RestContext.response);
-            // }
-            when else {
-                new UnknownEndpointResponder(requestResolver).respond(System.RestContext.request, System.RestContext.response);
-            }
-        }
-    }
+    private static final String REQUEST_URI_BASE = '/logger';
+    private static final Boolean SUPPRESS_NULLS_IN_JSON_SERIALIZATION = true;
 
     @HttpPost
     global static void handlePost() {
-        // TODO revisit this line
-        System.RestContext.response = System.RestContext.response ?? new System.RestResponse();
-        System.RestContext.response.addHeader('Content-Type', 'application/json');
+        System.RestContext.response = initializeRestResponse();
+        String endpointName = getEndpointName(System.RestContext.request);
 
-        RequestResolver requestResolver = new RequestResolver(System.RestContext.request);
-        switch on requestResolver.getEndpoint() {
-            when '/log' {
-                new LogCreateRequestSaver().respond(System.RestContext.request, System.RestContext.response);
+        switch on endpointName {
+            when 'log' {
+                new LogEndpoint().handlePost(System.RestContext.request, System.RestContext.response);
             }
             when else {
-                new UnknownEndpointResponder(requestResolver).respond(System.RestContext.request, System.RestContext.response);
+                new UnknownEndpointResponder(endpointName).handlePost(System.RestContext.request, System.RestContext.response);
             }
         }
     }
 
-    /* Base classes for requests & responses */
+    private static String getEndpointName(System.RestRequest restRequest) {
+        /*
+             Endpoint names will (at least for now) only have one layer, using formats like:
+             /logger/log
+             /logger/log/?some-url-parameter=true&and-another=true
+             /logger/something
+             /logger/something?another-url-parameter=something
+             /Nebula/logger/log
+             /Nebula/logger/log/?some-url-parameter=true&and-another=true
+             /Nebula/logger/something
+             /Nebula/logger/something?another-url-parameter=something
+
+             The endpoint name will be just the last bit of the URL, without any parameters or '/' slashes.
+             So if the URL is:
+                /logger/something?some-url-parameter=true&and-another=true
+             then the endpoint name will be 'something'
+
+        */
+        String parsedEndpoint = restRequest.requestUri.substringAfter(REQUEST_URI_BASE);
+        if (parsedEndpoint.contains('?')) {
+            parsedEndpoint = parsedEndpoint.substringBefore('?');
+        }
+        return parsedEndpoint.removeStart('/').removeEnd('/');
+    }
+
+    private static System.RestResponse initializeRestResponse() {
+        System.RestResponse restResponse = System.RestContext.response ?? new System.RestResponse();
+        restResponse.addHeader('Content-Type', 'application/json');
+        return restResponse;
+    }
+
+    /* Base classes for REST responses returned by all endpoints */
     public virtual class EndpointResponse {
         public String endpoint;
         public List<EndpointError> errors = new List<EndpointError>();
-        public String requestId;
-        public String transactionId;
+        public EndpointLoggerContext logger = new EndpointLoggerContext();
+        public EndpointOrganizationContext organization = new EndpointOrganizationContext();
+        public String requestId = System.Request.getCurrent().getRequestId();
+        public String transactionId = Nebula.Logger.getTransactionId();
+        public EndpointUserContext user = new EndpointUserContext();
 
         public Boolean isSuccess {
             get {
                 return this.errors.isEmpty();
             }
-        }
-
-        public EndpointResponse() {
-            this.requestId = System.Request.getCurrent().getRequestId();
-            this.transactionId = Nebula.Logger.getTransactionId();
         }
     }
 
@@ -75,66 +92,90 @@ global class LoggerRestResource {
         }
     }
 
-    /* start of '/log' endpoint POST classes */
-    public class LogCreateRequest {
+    @TestVisible
+    private class EndpointLoggerContext {
+        // FIXME The managed package currently doesn't have access to the method Logger.getNamespacePrefix(),
+        // so there's not a great way to correctly set namespace without duplicating the logic
+        public String namespace; // = Logger.getNamespacePrefix()
+        public String versionNumber = Nebula.Logger.getVersionNumber();
+    }
+
+    @TestVisible
+    private class EndpointOrganizationContext {
+        // FIXME The managed package currently doesn't have access the method Logger.getOrganizationApiVersion(),
+        // so there's not a great way to correctly set apiVersion without duplicating the logic
+        public String apiVersion; // = Logger.getOrganizationApiVersion();
+        public String baseDomain = System.URL.getOrgDomainUrl()?.toExternalForm();
+        public String id = System.UserInfo.getOrganizationId();
+        public String name = System.UserInfo.getOrganizationName();
+
+        public EndpointOrganizationContext() {
+            this.apiVersion = System.JSON.serialize(new Schema.User(Id = System.UserInfo.getUserId()))
+                .substringAfter('/data/')
+                .substringBefore('/sobjects/User');
+        }
+    }
+
+    @TestVisible
+    private class EndpointUserContext {
+        public String id = System.UserInfo.getUserId();
+        public String type = System.UserInfo.getUserType();
+        public String username = System.UserInfo.getUsername();
+    }
+
+    private abstract class Endpoint {
+        // For now, only POST is used by Nebula Logger, so there's no need to have methods
+        // for the other HTTP verbs DELETE, GET PATCH, and PUT.
+        public virtual void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
+            throw new System.IllegalArgumentException('Unsupported method: ' + restRequest.httpMethod);
+        }
+    }
+
+    /* start of '/log' endpoint classes */
+    @TestVisible
+    private class LogCreateRequest {
         public List<LogEntryCreateRequest> logEntries = new List<LogEntryCreateRequest>();
         public String parentLogTransactionId;
         public String scenario;
     }
 
-    public class LogEntryCreateRequest {
+    @TestVisible
+    private class LogEntryCreateRequest {
         public String loggingLevel;
         public String message;
         public String relatedRecordId;
         public List<String> tags = new List<String>();
         public Datetime timestamp;
     }
-    /* end of '/log' endpoint POST classes */
 
-    private class RequestResolver {
-        private final System.RestRequest restRequest;
-
-        private String endpoint;
-
-        public RequestResolver(System.RestRequest restRequest) {
-            this.restRequest = restRequest;
-        }
-
-        public String getEndpoint() {
-            if (this.endpoint == null) {
-                // TODO decide if anything else needs to be trimmed (trailing whitespace, trailing slash '/', trailing '?', etc.)
-                String parsedEndpoint = this.restRequest.requestUri.substringAfter(REQUEST_URI_BASE);
-                if (parsedEndpoint.contains('?')) {
-                    parsedEndpoint = parsedEndpoint.substringBefore('?');
-                }
-                this.endpoint = parsedEndpoint.removeEnd('/');
-            }
-            return this.endpoint;
-        }
+    @TestVisible
+    private class LogEntryCreateResponse extends EndpointResponse {
+        // TODO add details about Logger.bufferSize(), save method, scenario, etc.
+        public LogCreateSummary log = new LogCreateSummary();
     }
 
-    private abstract class RequestResponder {
-        abstract void respond(System.RestRequest restRequest, System.RestResponse restResponse);
+    private class LogCreateSummary {
+        public Integer logEntriesSent;
+        public Integer logEntriesSaved;
+        public String saveMethod;
     }
+    /* end of '/log' endpoint classes */
 
-    private class LogCreateRequestSaver extends RequestResponder {
-        public LogCreateRequestSaver() {
-            // No-op for now
-        }
-
-        public override void respond(System.RestRequest restRequest, System.RestResponse restResponse) {
-            EndpointResponse endpointResponse = new EndpointResponse();
+    private class LogEndpoint extends Endpoint {
+        public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
             try {
                 this.saveLogRequest(restRequest);
+
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(new EndpointResponse(), SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
                 restResponse.statusCode = 200;
-                restResponse.responseBody = System.Blob.valueOf(System.JSON.serialize(endpointResponse));
             } catch (Exception apexException) {
                 Nebula.Logger.error('Failed to save external log', apexException).setRestRequestDetails(restRequest).setRestResponseDetails(restResponse);
                 Nebula.Logger.saveLog();
 
+                EndpointResponse endpointResponse = new LogEntryCreateResponse();
                 endpointResponse.errors.add(new EndpointError(apexException));
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(endpointResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
                 restResponse.statusCode = 400;
-                restResponse.responseBody = System.Blob.valueOf(System.JSON.serialize(endpointResponse));
             }
         }
 
@@ -146,10 +187,10 @@ global class LoggerRestResource {
                 System.LoggingLevel loggingLevel = Nebula.Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel);
                 Nebula.Logger.newEntry(loggingLevel, logEntryCreateRequest.message)
                     .setRecord(logEntryCreateRequest.relatedRecordId)
+                    // FIXME The managed package currently doesn't have the .setTimestamp() builder method,
+                    // so there's not a great way to correctly set the Timestamp__c field yet
+                    // .setTimestamp(logEntryCreateRequest.timestamp)
                     .addTags(logEntryCreateRequest.tags);
-
-                // FIXME The managed package currently doesn't have the .setTimestamp() builder method,
-                // so there's not a great way to correctly set the Timestamp__c field yet
             }
             Nebula.Logger.saveLog();
         }
@@ -168,20 +209,29 @@ global class LoggerRestResource {
             return logCreateRequest;
         }
     }
+    /* end of '/log' endpoint classes */
 
-    private class UnknownEndpointResponder extends RequestResponder {
-        private final RequestResolver requestResolver;
+    private class UnknownEndpointResponder extends Endpoint {
+        private final String endpointName;
 
-        public UnknownEndpointResponder(RequestResolver requestResolver) {
-            this.requestResolver = requestResolver;
+        public UnknownEndpointResponder(String endpointName) {
+            this.endpointName = endpointName;
         }
 
-        public override void respond(System.RestRequest restRequest, System.RestResponse restResponse) {
+        // public override void handleGet(System.RestRequest restRequest, System.RestResponse restResponse) {
+        //     this.buildEndpointResponse(restResponse);
+        // }
+
+        public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
+            this.buildEndpointResponse(restResponse);
+        }
+
+        private void buildEndpointResponse(System.RestResponse restResponse) {
+            String errorMessage = 'Unknown endpoint provided: ' + this.endpointName;
             EndpointResponse unknownEndpointResponse = new EndpointResponse();
-            String errorMessage = 'Unknown endpoint provided: ' + this.requestResolver.getEndpoint();
             unknownEndpointResponse.errors.add(new EndpointError(errorMessage));
+            restResponse.responseBody = Blob.valueOf(System.JSON.serialize(unknownEndpointResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
             restResponse.statusCode = 404;
-            restResponse.responseBody = System.Blob.valueOf(System.JSON.serialize(unknownEndpointResponse));
         }
     }
 }
