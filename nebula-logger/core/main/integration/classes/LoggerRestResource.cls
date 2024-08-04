@@ -452,12 +452,37 @@ global with sharing class LoggerRestResource {
         public override void handleGet(EndpointRequest endpointRequest, System.RestResponse restResponse) {
             String possibleTransactionId = endpointRequest.particle;
             if (possibleTransactionId == null) {
-                // TODO could mean they're calling '/logs' to query data?
+                this.searchLogs(endpointRequest, restResponse);
+            } else {
+                this.getSingleLog(endpointRequest, restResponse);
             }
+        }
 
+        public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
+            try {
+                this.saveLogRequest(restRequest);
+                EndpointResponse logCreateResponse = new EndpointResponse(restRequest);
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logCreateResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
+                restResponse.statusCode = 200;
+            } catch (Exception apexException) {
+                EndpointResponse errorResponse = new EndpointResponse(restRequest);
+                errorResponse.errors.add(new EndpointError(apexException));
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(errorResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
+                restResponse.statusCode = 400;
+
+                Nebula.Logger.error('Failed to save external log', apexException).setRestRequestDetails(restRequest).setRestResponseDetails(restResponse);
+                Nebula.Logger.saveLog();
+            }
+        }
+
+        private void searchLogs(EndpointRequest endpointRequest, System.RestResponse restResponse) {
+            // TODO implement
+        }
+
+        private void getSingleLog(EndpointRequest endpointRequest, System.RestResponse restResponse) {
             Boolean isValidUuid = false;
             try {
-                System.UUID.fromString(possibleTransactionId);
+                System.UUID.fromString(endpointRequest.particle);
                 isValidUuid = true;
             } catch(System.IllegalArgumentException invalidUuidException) {
                 isValidUuid = false;
@@ -484,11 +509,11 @@ global with sharing class LoggerRestResource {
                         FROM Nebula__LogEntries__r
                     )
                 FROM Nebula__Log__c
-                WHERE Nebula__TransactionId__c = :possibleTransactionId
+                WHERE Nebula__TransactionId__c = :endpointRequest.particle
             ];
 
             if (matchingLogs.isEmpty()) {
-                String errorMessage = 'No matching logs found for transaction ID: ' + possibleTransactionId;
+                String errorMessage = 'No matching logs found for transaction ID: ' + endpointRequest.particle;
                 System.NoDataFoundException noDataFoundException = new System.NoDataFoundException();
                 noDataFoundException.setMessage(errorMessage);
                 EndpointResponse failureResponse = new EndpointResponse(endpointRequest);
@@ -502,23 +527,6 @@ global with sharing class LoggerRestResource {
 
                 restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logGetResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
                 restResponse.statusCode = 200;
-            }
-        }
-
-        public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
-            try {
-                this.saveLogRequest(restRequest);
-                EndpointResponse logCreateResponse = new EndpointResponse(restRequest);
-                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logCreateResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
-                restResponse.statusCode = 200;
-            } catch (Exception apexException) {
-                EndpointResponse errorResponse = new EndpointResponse(restRequest);
-                errorResponse.errors.add(new EndpointError(apexException));
-                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(errorResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
-                restResponse.statusCode = 400;
-
-                Nebula.Logger.error('Failed to save external log', apexException).setRestRequestDetails(restRequest).setRestResponseDetails(restResponse);
-                Nebula.Logger.saveLog();
             }
         }
 
