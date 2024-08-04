@@ -1,4 +1,10 @@
-@IsTest
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+@SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
+@IsTest(IsParallel=true)
 private class LoggerRestResource_Tests {
     /* Start of common endpoint functionality tests */
     @IsTest
@@ -142,13 +148,11 @@ private class LoggerRestResource_Tests {
 
     @IsTest
     static void logs_endpoint_get_successfully_returns_log_when_matching_transaction_id_is_found() {
-        Nebula__Log__c log = new Nebula__Log__c(
-            Nebula__TransactionId__c = System.UUID.randomUUID().toString()
-        );
+        Nebula__Log__c log = new Nebula__Log__c(Nebula__TransactionId__c = System.UUID.randomUUID().toString());
         insert log;
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = null;
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs/' + log.Nebula__TransactionId__c;
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs/' + log.Nebula__TransactionId__c + '/?some-parameter=true';
 
         LoggerRestResource.handleGet();
 
@@ -189,10 +193,9 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void logs_endpoint_post_throws_an_exception_when_null_log_entries_list_is_provided() {
+    static void logs_endpoint_post_throws_an_exception_when_null_origin_system_name_is_provided() {
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
-        logCreateRequest.logEntries = null;
-        System.Assert.isNull(logCreateRequest.logEntries);
+        logCreateRequest.originSystemName = null;
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
@@ -208,7 +211,32 @@ private class LoggerRestResource_Tests {
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
-        System.Assert.areEqual('No log entries provided', endpointResponse.errors.get(0).message);
+        System.Assert.areEqual('No data provided for required property "originSystemName"', endpointResponse.errors.get(0).message);
+        System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
+        System.Assert.isNull(endpointResponse.log);
+    }
+
+    @IsTest
+    static void logs_endpoint_post_throws_an_exception_when_null_log_entries_list_is_provided() {
+        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        logCreateRequest.originSystemName = 'some source system';
+        logCreateRequest.logEntries = null;
+        System.RestContext.request = new System.RestRequest();
+        System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
+
+        LoggerRestResource.handlePost();
+
+        System.Assert.areEqual(400, System.RestContext.response.statusCode);
+        System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
+        System.Assert.isNotNull(System.RestContext.response.responseBody);
+        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+            System.RestContext.response.responseBody.toString(),
+            LoggerRestResource.LogCreateResponse.class
+        );
+        System.Assert.isFalse(endpointResponse.isSuccess);
+        System.Assert.areEqual(1, endpointResponse.errors.size());
+        System.Assert.areEqual('No data provided for required property "logEntries"', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
         System.Assert.isNull(endpointResponse.log);
     }
@@ -216,7 +244,8 @@ private class LoggerRestResource_Tests {
     @IsTest
     static void logs_endpoint_post_throws_an_exception_when_empty_log_entries_list_is_provided() {
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
-        System.Assert.isTrue(logCreateRequest.logEntries.isEmpty());
+        logCreateRequest.originSystemName = 'some source system';
+        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryCreateRequest>();
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
@@ -232,7 +261,7 @@ private class LoggerRestResource_Tests {
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
-        System.Assert.areEqual('No log entries provided', endpointResponse.errors.get(0).message);
+        System.Assert.areEqual('No data provided for required property logEntries', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
         System.Assert.isNull(endpointResponse.log);
     }
@@ -248,6 +277,7 @@ private class LoggerRestResource_Tests {
         secondLogEntryCreateRequest.message = 'some message for WARN';
         secondLogEntryCreateRequest.timestamp = System.now().addDays(-1);
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        logCreateRequest.originSystemName = 'some source system';
         logCreateRequest.logEntries.add(firstLogEntryCreateRequest);
         logCreateRequest.logEntries.add(secondLogEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
@@ -303,6 +333,7 @@ private class LoggerRestResource_Tests {
         logEntryCreateRequest.message = 'some message';
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        logCreateRequest.originSystemName = 'some source system';
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         logCreateRequest.parentLogTransactionId = parentLog.Nebula__TransactionId__c;
         System.RestContext.request = new System.RestRequest();
@@ -339,6 +370,7 @@ private class LoggerRestResource_Tests {
         logEntryCreateRequest.message = 'some message';
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        logCreateRequest.originSystemName = 'some source system';
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         logCreateRequest.scenario = 'some scenario';
         System.RestContext.request = new System.RestRequest();
@@ -381,6 +413,7 @@ private class LoggerRestResource_Tests {
         logEntryCreateRequest.relatedRecordId = recordId;
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        logCreateRequest.originSystemName = 'some source system';
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
@@ -420,6 +453,7 @@ private class LoggerRestResource_Tests {
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
         logEntryCreateRequest.tags = new List<String>{ 'some tag', 'another tag' };
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        logCreateRequest.originSystemName = 'some source system';
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
