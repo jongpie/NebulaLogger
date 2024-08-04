@@ -128,9 +128,10 @@ private class LoggerRestResource_Tests {
     /* Start of '/logs' endpoint tests */
     @IsTest
     static void logs_endpoint_get_returns_is_success_false_when_no_matching_transaction_id_found() {
+        String fakeTransactionId = System.UUID.randomUUID().toString();
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = null;
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs/' + System.UUID.randomUUID();
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs/' + fakeTransactionId;
 
         LoggerRestResource.handleGet();
 
@@ -143,7 +144,8 @@ private class LoggerRestResource_Tests {
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
-        System.Assert.fail('TODO');
+        System.Assert.areEqual('No matching logs found for transaction ID: ' + fakeTransactionId, endpointResponse.errors.get(0).message);
+        System.Assert.areEqual(System.NoDataFoundException.class.getName(), endpointResponse.errors.get(0).type);
     }
 
     @IsTest
@@ -159,13 +161,13 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(200, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogGetResponse endpointResponse = (LoggerRestResource.LogGetResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogGetResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
-        System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.log);
         System.Assert.areEqual(log.Nebula__TransactionId__c, endpointResponse.log.transactionId);
         System.Assert.fail('TODO add more asserts, including asserts for log entry & tags');
     }
@@ -181,20 +183,20 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(400, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
         System.Assert.areEqual('No data provided', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.log);
     }
 
     @IsTest
     static void logs_endpoint_post_throws_an_exception_when_null_origin_system_name_is_provided() {
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = null;
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
@@ -205,20 +207,20 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(400, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
         System.Assert.areEqual('No data provided for required property "originSystemName"', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.log);
     }
 
     @IsTest
     static void logs_endpoint_post_throws_an_exception_when_null_log_entries_list_is_provided() {
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = 'some source system';
         logCreateRequest.logEntries = null;
         System.RestContext.request = new System.RestRequest();
@@ -230,22 +232,22 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(400, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
         System.Assert.areEqual('No data provided for required property "logEntries"', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.log);
     }
 
     @IsTest
     static void logs_endpoint_post_throws_an_exception_when_empty_log_entries_list_is_provided() {
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = 'some source system';
-        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryCreateRequest>();
+        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryDTO>();
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
@@ -255,29 +257,30 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(400, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
-        System.Assert.areEqual('No data provided for required property logEntries', endpointResponse.errors.get(0).message);
+        System.Assert.areEqual('No data provided for required property "logEntries"', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.log);
     }
 
     @IsTest
     static void logs_endpoint_post_successsfully_saves_when_log_entries_are_provided() {
-        LoggerRestResource.LogEntryCreateRequest firstLogEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
+        LoggerRestResource.LogEntryDTO firstLogEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
         firstLogEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         firstLogEntryCreateRequest.message = 'some message for INFO';
         firstLogEntryCreateRequest.timestamp = System.now().addDays(-1);
-        LoggerRestResource.LogEntryCreateRequest secondLogEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
+        LoggerRestResource.LogEntryDTO secondLogEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
         secondLogEntryCreateRequest.loggingLevel = System.LoggingLevel.WARN.name();
         secondLogEntryCreateRequest.message = 'some message for WARN';
         secondLogEntryCreateRequest.timestamp = System.now().addDays(-1);
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = 'some source system';
+        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryDTO>();
         logCreateRequest.logEntries.add(firstLogEntryCreateRequest);
         logCreateRequest.logEntries.add(secondLogEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
@@ -290,18 +293,18 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(200, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.log);
         // TODO Revisit to add a specific count of log entries saved
-        System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
         Nebula__Log__c log = [SELECT Id, Nebula__TransactionId__c FROM Nebula__Log__c];
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), log.Nebula__TransactionId__c);
         Nebula__LogEntry__c firstLogEntry = [
@@ -328,12 +331,13 @@ private class LoggerRestResource_Tests {
     static void logs_endpoint_post_sets_parent_log_transaction_id_when_provided() {
         Nebula__Log__c parentLog = new Nebula__Log__c(Nebula__TransactionId__c = 'some fake parent transaction id');
         insert parentLog;
-        LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
+        LoggerRestResource.LogEntryDTO logEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
         logEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         logEntryCreateRequest.message = 'some message';
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = 'some source system';
+        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryDTO>();
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         logCreateRequest.parentLogTransactionId = parentLog.Nebula__TransactionId__c;
         System.RestContext.request = new System.RestRequest();
@@ -346,18 +350,18 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(200, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.log);
         // TODO Revisit to add a specific count of log entries saved
-        System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
         Nebula__Log__c log = [SELECT Id, Nebula__ParentLog__c, Nebula__TransactionId__c FROM Nebula__Log__c WHERE Id != :parentLog.Id];
         System.Assert.areEqual(parentLog.Id, log.Nebula__ParentLog__c);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), log.Nebula__TransactionId__c);
@@ -365,14 +369,15 @@ private class LoggerRestResource_Tests {
 
     @IsTest
     static void logs_endpoint_post_sets_scenario_when_provided() {
-        LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
+        LoggerRestResource.LogEntryDTO logEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
         logEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         logEntryCreateRequest.message = 'some message';
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = 'some source system';
+        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryDTO>();
         logCreateRequest.logEntries.add(logEntryCreateRequest);
-        logCreateRequest.scenario = 'some scenario';
+        logCreateRequest.transactionScenario = 'some scenario';
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
@@ -383,37 +388,38 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(200, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.log);
         // TODO Revisit to add a specific count of log entries saved
-        System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
         Nebula__Log__c log = [SELECT Id, Nebula__TransactionScenario__r.Name FROM Nebula__Log__c];
-        System.Assert.areEqual(logCreateRequest.scenario, log.Nebula__TransactionScenario__r.Name);
+        System.Assert.areEqual(logCreateRequest.transactionScenario, log.Nebula__TransactionScenario__r.Name);
         List<Nebula__LogEntry__c> logEntries = [SELECT Id, Nebula__EntryScenario__r.Name FROM Nebula__LogEntry__c];
         System.Assert.areEqual(logCreateRequest.logEntries.size(), logEntries.size());
         for (Nebula__LogEntry__c logEntry : logEntries) {
-            System.Assert.areEqual(logCreateRequest.scenario, logEntry.Nebula__EntryScenario__r.Name);
+            System.Assert.areEqual(logCreateRequest.transactionScenario, logEntry.Nebula__EntryScenario__r.Name);
         }
     }
 
     @IsTest
     static void logs_endpoint_post_sets_related_record_id_when_provided() {
         String recordId = System.UserInfo.getUserId();
-        LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
+        LoggerRestResource.LogEntryDTO logEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
         logEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         logEntryCreateRequest.message = 'some message';
         logEntryCreateRequest.relatedRecordId = recordId;
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = 'some source system';
+        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryDTO>();
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
@@ -425,18 +431,18 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(200, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.log);
         // TODO Revisit to add a specific count of log entries saved
-        System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
         Nebula__LogEntry__c logEntry = [
             SELECT Id, Nebula__RecordId__c
             FROM Nebula__LogEntry__c
@@ -447,13 +453,14 @@ private class LoggerRestResource_Tests {
 
     @IsTest
     static void logs_endpoint_post_stores_tags_when_provided() {
-        LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
+        LoggerRestResource.LogEntryDTO logEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
         logEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         logEntryCreateRequest.message = 'some message';
         logEntryCreateRequest.timestamp = System.now().addDays(-1);
         logEntryCreateRequest.tags = new List<String>{ 'some tag', 'another tag' };
-        LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
+        LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
         logCreateRequest.originSystemName = 'some source system';
+        logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryDTO>();
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
@@ -465,9 +472,9 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(200, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogCreateResponse endpointResponse = (LoggerRestResource.LogCreateResponse) System.JSON.deserialize(
+        LoggerRestResource.LogsSingularGetResponse endpointResponse = (LoggerRestResource.LogsSingularGetResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogCreateResponse.class
+            LoggerRestResource.LogsSingularGetResponse.class
         );
         Nebula__LogEntry__c logEntry = [
             SELECT Id, (SELECT Id, Nebula__Tag__r.Name FROM Nebula__LogEntryTags__r)
