@@ -29,8 +29,17 @@ global with sharing class LoggerRestResource {
 
         Endpoint endpoint;
         switch on endpointName {
+            when 'logger-scenarios' {
+                endpoint = new LoggerScenariosEndpoint();
+            }
             when 'logs' {
                 endpoint = new LogsEndpoint();
+            }
+            when 'log-entries' {
+                endpoint = new LogEntriesEndpoint();
+            }
+            when 'logger-tags' {
+                endpoint = new LoggerTagsEndpoint();
             }
             when else {
                 endpoint = new UnknownEndpointResponder(endpointName);
@@ -90,6 +99,142 @@ global with sharing class LoggerRestResource {
         System.RestResponse restResponse = System.RestContext.response ?? new System.RestResponse();
         restResponse.addHeader('Content-Type', 'application/json');
         return restResponse;
+    }
+
+    /* DTO classes for converting Nebula Logger's SObjects to a simplified representation that is returned as JSON */
+    @TestVisible
+    private class LoggerScenarioDTO {
+        public List<LogDTO> logs;
+        public List<LogEntryDTO> logEntries;
+        public String name;
+
+        public LoggerScenarioDTO(Nebula__LoggerScenario__c loggerScenario, List<Nebula__Log__c> logs, List<Nebula__LogEntry__c> logEntries) {
+            this.name = loggerScenario.Nebula__UniqueId__c;
+
+            this.setLogs(logs);
+            this.setLogEntries(logEntries);
+        }
+
+        private void setLogs(List<Nebula__Log__c> logs) {
+            if (logs == null) {
+                return;
+            }
+
+            this.logs = new List<LogDTO>();
+            for (Nebula__Log__c log : logs) {
+                this.logs.add(new LogDTO(log));
+            }
+        }
+
+        private void setLogEntries(List<Nebula__LogEntry__c> logEntries) {
+            if (logEntries == null) {
+                return;
+            }
+
+            this.logEntries = new List<LogEntryDTO>();
+            for (Nebula__LogEntry__c logEntry : logEntries) {
+                this.logEntries.add(new LogEntryDTO(logEntry, logEntry.Nebula__LogEntryTags__r));
+            }
+        }
+    }
+
+    @TestVisible
+    private class LogDTO {
+        public List<LogEntryDTO> logEntries;
+        public String originSystemName;
+        public String originSystemReferenceId;
+        public String parentLogTransactionId;
+        public String transactionId;
+        public String transactionScenario;
+
+        public LogDTO() {
+            // No-op - used by tests to mock this
+        }
+
+        public LogDTO(Nebula__Log__c log) {
+            this(log, null);
+        }
+
+        public LogDTO(Nebula__Log__c log, List<Nebula__LogEntry__c> logEntries) {
+            this();
+            this.parentLogTransactionId = log.Nebula__ParentLog__r.Nebula__TransactionId__c;
+            this.transactionId = log.Nebula__TransactionId__c;
+            this.transactionScenario = log.Nebula__TransactionScenario__r.Nebula__UniqueId__c;
+
+            this.setLogEntries(logEntries);
+        }
+
+        private void setLogEntries(List<Nebula__LogEntry__c> logEntries) {
+            if (logEntries == null) {
+                return;
+            }
+
+            this.logEntries = new List<LogEntryDTO>();
+            for (Nebula__LogEntry__c logEntry : logEntries) {
+                this.logEntries.add(new LogEntryDTO(logEntry));
+            }
+        }
+    }
+
+    @TestVisible
+    private class LogEntryDTO {
+        public String loggingLevel;
+        public String message;
+        public String relatedRecordId;
+        public List<String> tags;
+        public Datetime timestamp;
+
+        public LogEntryDTO() {
+            // No-op - used by tests to mock this
+        }
+
+        public LogEntryDTO(Nebula__LogEntry__c logEntry) {
+            this(logEntry, null);
+        }
+
+        public LogEntryDTO(Nebula__LogEntry__c logEntry, List<Nebula__LogEntryTag__c> logEntryTags) {
+            this();
+            this.loggingLevel = logEntry.Nebula__LoggingLevel__c;
+            this.message = logEntry.Nebula__Message__c;
+            this.relatedRecordId = logEntry.Nebula__RecordId__c;
+            this.timestamp = logEntry.Nebula__Timestamp__c;
+
+            this.setTags(logEntryTags);
+        }
+
+        private void setTags(List<Nebula__LogEntryTag__c> logEntryTags) {
+            if (logEntryTags == null) {
+                return;
+            }
+
+            this.tags = new List<String>();
+            for (Nebula__LogEntryTag__c logEntryTag : logEntryTags) {
+                this.tags.add(logEntryTag.Nebula__Tag__r.Nebula__UniqueId__c);
+            }
+        }
+    }
+
+    @TestVisible
+    private class LoggerTagDTO {
+        public List<LogEntryDTO> logEntries;
+        public String name;
+
+        public LoggerTagDTO(Nebula__LoggerTag__c loggerTag, List<Nebula__LogEntry__c> logEntries) {
+            this.name = loggerTag.Nebula__UniqueId__c;
+
+            this.setLogEntries(logEntries);
+        }
+
+        private void setLogEntries(List<Nebula__LogEntry__c> logEntries) {
+            if (logEntries == null) {
+                return;
+            }
+
+            this.logEntries = new List<LogEntryDTO>();
+            for (Nebula__LogEntry__c logEntry : logEntries) {
+                this.logEntries.add(new LogEntryDTO(logEntry));
+            }
+        }
     }
 
     /* Base classes for REST responses returned by all endpoints */
@@ -207,95 +352,101 @@ global with sharing class LoggerRestResource {
         public String username = System.UserInfo.getUsername();
     }
 
+    /* Start of '/logger-scenarios' endpoint classes */
+    private class LoggerScenariosEndpoint extends Endpoint {
+        // TODO
+    }
+    /* End of '/logger-scenarios' endpoint classes */
+
     /* Start of '/logs' endpoint classes */
-    @TestVisible
-    private class LogCreateRequest {
-        public List<LogEntryCreateRequest> logEntries = new List<LogEntryCreateRequest>();
-        public String originSystemName;
-        public String originSystemReferenceId;
-        public String parentLogTransactionId;
-        public String scenario;
-    }
+    // @TestVisible
+    // private class LogCreateRequest {
+    //     public List<LogEntryCreateRequest> logEntries = new List<LogEntryCreateRequest>();
+    //     public String originSystemName;
+    //     public String originSystemReferenceId;
+    //     public String parentLogTransactionId;
+    //     public String scenario;
+    // }
 
-    @TestVisible
-    private class LogEntryCreateRequest {
-        public String loggingLevel;
-        public String message;
-        public String originSystemReferenceId;
-        public String relatedRecordId;
-        public List<String> tags = new List<String>();
-        public Datetime timestamp;
-    }
+    // @TestVisible
+    // private class LogEntryCreateRequest {
+    //     public String loggingLevel;
+    //     public String message;
+    //     public String originSystemReferenceId;
+    //     public String relatedRecordId;
+    //     public List<String> tags = new List<String>();
+    //     public Datetime timestamp;
+    // }
 
-    @TestVisible
-    private class LogCreateResponse extends EndpointResponse {
-        // TODO finalize the name of this property
-        public LogCreateSummary log;
+    // @TestVisible
+    // private class LogCreateResponse extends EndpointResponse {
+    //     // TODO finalize the name of this property
+    //     public LogCreateSummary log;
 
-        public LogCreateResponse(System.RestRequest restRequest) {
-            super(restRequest);
-        }
-    }
+    //     public LogCreateResponse(System.RestRequest restRequest) {
+    //         super(restRequest);
+    //     }
+    // }
 
-    @TestVisible
-    private class LogCreateSummary {
-        public Integer logEntriesSaved;
-        public Integer logEntriesSent;
-    }
+    // @TestVisible
+    // private class LogCreateSummary {
+    //     public Integer logEntriesSaved;
+    //     public Integer logEntriesSent;
+    // }
 
     // new attempt, maybe?
     @TestVisible
-    private class LogGetResponse extends EndpointResponse {
-        public EndpointLog log;
+    private class LogsSingularGetResponse extends EndpointResponse {
+        public LogDto log;
 
-        public LogGetResponse(System.RestRequest restRequest) {
+        public LogsSingularGetResponse(System.RestRequest restRequest) {
             super(restRequest);
         }
     }
     @TestVisible
-    private class LogCollectionGetResponse extends EndpointResponse {
-        public List<EndpointLog> logs;
+    private class LogsCollectionGetResponse extends EndpointResponse {
+        public List<LogDto> logs;
 
-        public LogCollectionGetResponse(System.RestRequest restRequest) {
+        public LogsCollectionGetResponse(System.RestRequest restRequest) {
             super(restRequest);
         }
     }
 
-    @TestVisible
-    private class EndpointLog {
-        public List<EndpointLogEntry> logEntries = new List<EndpointLogEntry>();
-        public String parentLogTransactionId;
-        public String transactionId;
-        public String transactionScenario;
+    // @TestVisible
+    // private class EndpointLog {
+    //     public List<EndpointLogEntry> logEntries = new List<EndpointLogEntry>();
+    //     public String parentLogTransactionId;
+    //     public String transactionId;
+    //     public String transactionScenario;
 
-        public EndpointLog(Nebula__Log__c log) {
-            this.parentLogTransactionId = log.Nebula__ParentLog__r.Nebula__TransactionId__c;
-            this.transactionId = log.Nebula__TransactionId__c;
-            this.transactionScenario = log.Nebula__TransactionScenario__r.Nebula__UniqueId__c;
-            for (Nebula__LogEntry__c logEntry : log.Nebula__LogEntries__r) {
-                this.logEntries.add(new EndpointLogEntry(logEntry));
-            }
-        }
-    }
+    //     public EndpointLog(Nebula__Log__c log) {
+    //         this.parentLogTransactionId = log.Nebula__ParentLog__r.Nebula__TransactionId__c;
+    //         this.transactionId = log.Nebula__TransactionId__c;
+    //         this.transactionScenario = log.Nebula__TransactionScenario__r.Nebula__UniqueId__c;
+    //         for (Nebula__LogEntry__c logEntry : log.Nebula__LogEntries__r) {
+    //             this.logEntries.add(new EndpointLogEntry(logEntry));
+    //         }
+    //     }
+    // }
 
-    @TestVisible
-    private class EndpointLogEntry {
-        public String loggingLevel;
-        public String message;
-        public String relatedRecordId;
-        public List<String> tags = new List<String>();
-        public Datetime timestamp;
+    // @TestVisible
+    // private class EndpointLogEntry {
+    //     public String loggingLevel;
+    //     public String message;
+    //     public String relatedRecordId;
+    //     public List<String> tags = new List<String>();
+    //     public Datetime timestamp;
 
-        public EndpointLogEntry(Nebula__LogEntry__c logEntry) {
-            this.loggingLevel = logEntry.Nebula__LoggingLevel__c;
-            this.message = logEntry.Nebula__Message__c;
-            this.relatedRecordId = logEntry.Nebula__RecordId__c;
-            this.timestamp = logEntry.Nebula__Timestamp__c;
-            for (Nebula__LogEntryTag__c tag : logEntry.Nebula__LogEntryTags__r) {
-                this.tags.add(tag.Nebula__Tag__r.Nebula__UniqueId__c);
-            }
-        }
-    }
+    //     public EndpointLogEntry(Nebula__LogEntry__c logEntry) {
+    //         this.loggingLevel = logEntry.Nebula__LoggingLevel__c;
+    //         this.message = logEntry.Nebula__Message__c;
+    //         this.relatedRecordId = logEntry.Nebula__RecordId__c;
+    //         this.timestamp = logEntry.Nebula__Timestamp__c;
+    //         for (Nebula__LogEntryTag__c tag : logEntry.Nebula__LogEntryTags__r) {
+    //             this.tags.add(tag.Nebula__Tag__r.Nebula__UniqueId__c);
+    //         }
+    //     }
+    // }
 
     // @TestVisible
     // private class EndpointLogOrigin {
@@ -315,7 +466,7 @@ global with sharing class LoggerRestResource {
                 // TODO
             }
 
-            Nebula__Log__c log = [
+            List<Nebula__Log__c> matchingLogs = [
                 SELECT
                     Nebula__ParentLog__r.Nebula__TransactionId__c,
                     Nebula__TransactionId__c,
@@ -332,19 +483,29 @@ global with sharing class LoggerRestResource {
                 FROM Nebula__Log__c
                 WHERE Nebula__TransactionId__c = :transactionIdFilter
             ];
-            LogGetResponse logGetResponse = new LogGetResponse(restRequest);
-            logGetResponse.log = new EndpointLog(log);
 
-            restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logGetResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
-            restResponse.statusCode = 200;
+            if (matchingLogs.isEmpty()) {
+                String errorMessage = 'No matching logs found for transaction ID: ' + transactionIdFilter;
+                System.NoDataFoundException noDataFoundException = new System.NoDataFoundException();
+                noDataFoundException.setMessage(errorMessage);
+                EndpointResponse failureResponse = new EndpointResponse(restRequest);
+                failureResponse.errors.add(new EndpointError(noDataFoundException));
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(failureResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
+                restResponse.statusCode = 400;
+            } else {
+                Nebula__Log__c matchingLog = matchingLogs.get(0);
+                LogsSingularGetResponse logGetResponse = new LogsSingularGetResponse(restRequest);
+                logGetResponse.log = new LogDTO(matchingLog, matchingLog.Nebula__LogEntries__r);
+
+                restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logGetResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
+                restResponse.statusCode = 200;
+            }
         }
 
         public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
             try {
-                LogCreateSummary logCreateSummary = this.saveLogRequest(restRequest);
-
-                LogCreateResponse logCreateResponse = new LogCreateResponse(restRequest);
-                logCreateResponse.log = logCreateSummary;
+                this.saveLogRequest(restRequest);
+                EndpointResponse logCreateResponse = new EndpointResponse(restRequest);
                 restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logCreateResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
                 restResponse.statusCode = 200;
             } catch (Exception apexException) {
@@ -358,16 +519,16 @@ global with sharing class LoggerRestResource {
             }
         }
 
-        private LogCreateSummary saveLogRequest(System.RestRequest restRequest) {
-            LogCreateSummary logCreateSummary = new LogCreateSummary();
+        private void saveLogRequest(System.RestRequest restRequest) {
+            // LogCreateSummary logCreateSummary = new LogCreateSummary();
 
-            LogCreateRequest logCreateRequest = this.deserializeLogRequest(restRequest);
-            logCreateSummary.logEntriesSent = logCreateRequest.logEntries?.size() ?? 0;
+            LogDTO logCreateRequest = this.deserializeLogRequest(restRequest);
+            // logCreateSummary.logEntriesSent = logCreateRequest.logEntries?.size() ?? 0;
 
             Nebula.Logger.setParentLogTransactionId(logCreateRequest.parentLogTransactionId);
-            Nebula.Logger.setScenario(logCreateRequest.scenario);
+            Nebula.Logger.setScenario(logCreateRequest.transactionScenario);
 
-            for (LogEntryCreateRequest logEntryCreateRequest : logCreateRequest.logEntries) {
+            for (LogEntryDTO logEntryCreateRequest : logCreateRequest.logEntries) {
                 System.LoggingLevel loggingLevel = Nebula.Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel);
                 Nebula.Logger.newEntry(loggingLevel, logEntryCreateRequest.message)
                     // FIXME The managed package currently doesn't have a way to set the value
@@ -380,18 +541,18 @@ global with sharing class LoggerRestResource {
             }
             // Capture the number of log entries in the buffer just before calling saveLog(),
             // since saveLog() will then flush the buffer
-            logCreateSummary.logEntriesSaved = Nebula.Logger.getBufferSize();
+            // logCreateSummary.logEntriesSaved = Nebula.Logger.getBufferSize();
             Nebula.Logger.saveLog();
 
-            return logCreateSummary;
+            // return logCreateSummary;
         }
 
-        private LogCreateRequest deserializeLogRequest(System.RestRequest restRequest) {
+        private LogDTO deserializeLogRequest(System.RestRequest restRequest) {
             if (String.isBlank(restRequest?.requestBody?.toString())) {
                 throw new System.IllegalArgumentException('No data provided');
             }
 
-            LogCreateRequest logCreateRequest = (LogCreateRequest) System.JSON.deserialize(restRequest.requestBody.toString(), LogCreateRequest.class);
+            LogDTO logCreateRequest = (LogDTO) System.JSON.deserialize(restRequest.requestBody.toString(), LogDTO.class);
 
             // TODO add support for adding these as errors in logCreateRequest.errors
             // (instead of only bubbling up 1 via throwing an exception)
@@ -406,7 +567,20 @@ global with sharing class LoggerRestResource {
             return logCreateRequest;
         }
     }
-    /* end of '/log' endpoint classes */
+    /* end of '/logs' endpoint classes */
+
+
+    /* Start of '/log-entries' endpoint classes */
+    private class LogEntriesEndpoint extends Endpoint {
+        // TODO
+    }
+    /* End of '/log-entries' endpoint classes */
+
+    /* Start of '/logger-tags' endpoint classes */
+    private class LoggerTagsEndpoint extends Endpoint {
+        // TODO
+    }
+    /* End of '/logger-tags' endpoint classes */
 
     private class UnknownEndpointResponder extends Endpoint {
         private final String endpointName;
