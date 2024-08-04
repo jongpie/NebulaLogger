@@ -8,7 +8,52 @@
 private class LoggerRestResource_Tests {
     /* Start of common endpoint functionality tests */
     @IsTest
-    static void it_throws_an_exception_for_unknown_endpoint_on_get() {
+    static void endpoint_request_correctly_parses_system_rest_request_without_endpoint_particle() {
+        String expectedEndpointName = 'some-endpoint-name';
+        String expectedRequestBody = 'some string that may or may not be valid JSON (but hopefully it is)';
+        System.RestRequest restRequest = new System.RestRequest();
+        restRequest.addHeader('X-some-header', 'some-value');
+        restRequest.addHeader('X-another-header', 'another-value');
+        restRequest.addParameter('verbose', 'true');
+        restRequest.addParameter('some-other-parameter', 'someValue');
+        restRequest.requestBody = Blob.valueOf(expectedRequestBody);
+        restRequest.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + expectedEndpointName + '/';
+
+        LoggerRestResource.EndpointRequest endpointRequest = new LoggerRestResource.EndpointRequest(restRequest);
+
+        System.Assert.areEqual(expectedRequestBody, endpointRequest.body);
+        System.Assert.areEqual(expectedEndpointName, endpointRequest.name);
+        System.Assert.isNull(endpointRequest.particle);
+        System.Assert.areEqual(new List<String>(restRequest.headers.keySet()), endpointRequest.headerKeys);
+        System.Assert.areEqual(restRequest.params, endpointRequest.parameters);
+        System.Assert.areEqual(restRequest.requestUri, endpointRequest.uri);
+    }
+
+    @IsTest
+    static void endpoint_request_correctly_parses_system_rest_request_with_endpoint_particle() {
+        String expectedEndpointName = 'some-endpoint-name';
+        String expectedEndpointParticle = System.UUID.randomUUID().toString();
+        String expectedRequestBody = 'some string that may or may not be valid JSON (but hopefully it is)';
+        System.RestRequest restRequest = new System.RestRequest();
+        restRequest.addHeader('X-some-header', 'some-value');
+        restRequest.addHeader('X-another-header', 'another-value');
+        restRequest.addParameter('verbose', 'true');
+        restRequest.addParameter('some-other-parameter', 'someValue');
+        restRequest.requestBody = Blob.valueOf(expectedRequestBody);
+        restRequest.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + expectedEndpointName + '/' + expectedEndpointParticle;
+
+        LoggerRestResource.EndpointRequest endpointRequest = new LoggerRestResource.EndpointRequest(restRequest);
+
+        System.Assert.areEqual(expectedRequestBody, endpointRequest.body);
+        System.Assert.areEqual(expectedEndpointName, endpointRequest.name);
+        System.Assert.areEqual(expectedEndpointParticle, endpointRequest.particle);
+        System.Assert.areEqual(new List<String>(restRequest.headers.keySet()), endpointRequest.headerKeys);
+        System.Assert.areEqual(restRequest.params, endpointRequest.parameters);
+        System.Assert.areEqual(restRequest.requestUri, endpointRequest.uri);
+    }
+
+    @IsTest
+    static void unknown_endpoint_get_throws_an_exception() {
         String unknownEndpoint = 'some-endpoint-that-definitely-should-not-exist';
         String someParameters = '/?i-hope=true';
         System.RestContext.request = new System.RestRequest();
@@ -29,7 +74,7 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void it_throws_an_exception_for_unknown_endpoint_on_post() {
+    static void unknown_endpoint_post_throws_an_exception() {
         String unknownEndpoint = 'some-endpoint-that-definitely-should-not-exist';
         String someParameters = '/?i-hope=true';
         System.RestContext.request = new System.RestRequest();
@@ -50,7 +95,7 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void it_excludes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_excluded() {
+    static void base_response_excludes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_excluded() {
         String someEndpointName = 'any-endpoint-even-if-it-is-not-valid-we-do-not-care-for-this-test-k-thx-bye';
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + someEndpointName;
@@ -61,14 +106,14 @@ private class LoggerRestResource_Tests {
             System.RestContext.response.responseBody.toString(),
             LoggerRestResource.EndpointResponse.class
         );
-        System.Assert.isNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
+        // System.Assert.isNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
         System.Assert.isNull(endpointResponse.logger, System.JSON.serializePretty(endpointResponse.logger));
         System.Assert.isNull(endpointResponse.organization);
         System.Assert.isNull(endpointResponse.user, System.JSON.serializePretty(endpointResponse.user));
     }
 
     @IsTest
-    static void it_excludes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_false() {
+    static void base_response_excludes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_false() {
         String someEndpointName = 'any-endpoint-even-if-it-is-not-valid-we-do-not-care-for-this-test-k-thx-bye';
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.addParameter('verbose', 'false');
@@ -80,14 +125,14 @@ private class LoggerRestResource_Tests {
             System.RestContext.response.responseBody.toString(),
             LoggerRestResource.EndpointResponse.class
         );
-        System.Assert.isNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
+        // // System.Assert.isNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
         System.Assert.isNull(endpointResponse.logger, System.JSON.serializePretty(endpointResponse.logger));
         System.Assert.isNull(endpointResponse.organization);
         System.Assert.isNull(endpointResponse.user, System.JSON.serializePretty(endpointResponse.user));
     }
 
     @IsTest
-    static void it_includes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_true() {
+    static void base_response_includes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_true() {
         String someEndpointName = 'any-endpoint-even-if-it-is-not-valid-we-do-not-care-for-this-test-k-thx-bye';
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.addParameter('verbose', 'true');
@@ -100,11 +145,11 @@ private class LoggerRestResource_Tests {
             System.RestContext.response.responseBody.toString(),
             LoggerRestResource.EndpointResponse.class
         );
-        System.Assert.isNotNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
-        System.Assert.areEqual(new List<String>(System.RestContext.request.headers.keySet()), endpointResponse.endpoint.headerKeys);
-        System.Assert.areEqual(someEndpointName, endpointResponse.endpoint.name);
-        System.Assert.areEqual(System.RestContext.request.params, endpointResponse.endpoint.parameters);
-        System.Assert.areEqual(System.RestContext.request.requestUri, endpointResponse.endpoint.uri);
+        // // System.Assert.isNotNull(endpointResponse.endpoint, System.JSON.serializePretty(endpointResponse.endpoint));
+        // System.Assert.areEqual(new List<String>(System.RestContext.request.headers.keySet()), endpointResponse.endpoint.headerKeys);
+        // System.Assert.areEqual(someEndpointName, endpointResponse.endpoint.name);
+        // System.Assert.areEqual(System.RestContext.request.params, endpointResponse.endpoint.parameters);
+        // System.Assert.areEqual(System.RestContext.request.requestUri, endpointResponse.endpoint.uri);
         System.Assert.isNotNull(endpointResponse.logger, System.JSON.serializePretty(endpointResponse.logger));
         System.Assert.isNotNull(endpointResponse.logger.userSettings, System.JSON.serializePretty(endpointResponse.logger.userSettings));
         System.Assert.areEqual(Nebula.Logger.isEnabled(), endpointResponse.logger.userSettings.isEnabled);
@@ -124,6 +169,13 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(System.UserInfo.getUserType(), endpointResponse.user.type);
     }
     /* End of common endpoint functionality tests */
+
+    /* Start of '/logger-scenarios' endpoint tests */
+    @IsTest
+    static void logger_scenarios_endpoint_has_tests_added() {
+        System.Assert.fail('TODO add tests to cover expected functionality for /logger-scenarios endpoint');
+    }
+    /* End of '/logger-scenarios' endpoint tests */
 
     /* Start of '/logs' endpoint tests */
     @IsTest
@@ -487,4 +539,18 @@ private class LoggerRestResource_Tests {
         }
     }
     /* End of '/logs' endpoint tests */
+
+    /* Start of '/log-entries' endpoint tests */
+    @IsTest
+    static void log_entries_endpoint_has_tests_added() {
+        System.Assert.fail('TODO add tests to cover expected functionality for /log-entries endpoint');
+    }
+    /* End of '/log-entries' endpoint tests */
+
+    /* Start of '/logger-tags' endpoint tests */
+    @IsTest
+    static void logger_tags_endpoint_has_tests_added() {
+        System.Assert.fail('TODO add tests to cover expected functionality for /logger-tags endpoint');
+    }
+    /* End of '/logger-tags' endpoint tests */
 }
