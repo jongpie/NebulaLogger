@@ -1,11 +1,32 @@
 @IsTest
 private class LoggerRestResource_Tests {
+    /* Start of common endpoint functionality tests */
+    @IsTest
+    static void it_throws_an_exception_for_unknown_endpoint_on_get() {
+        String unknownEndpoint = 'some-endpoint-that-definitely-should-not-exist';
+        String someParameters = '/?i-hope=true';
+        System.RestContext.request = new System.RestRequest();
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + unknownEndpoint + someParameters;
+
+        LoggerRestResource.handleGet();
+
+        System.Assert.areEqual(404, System.RestContext.response.statusCode);
+        System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
+        System.Assert.isNotNull(System.RestContext.response.responseBody);
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
+            System.RestContext.response.responseBody.toString(),
+            LoggerRestResource.EndpointResponse.class
+        );
+        System.Assert.isFalse(endpointResponse.isSuccess);
+        System.Assert.areEqual(1, endpointResponse.errors.size());
+        System.Assert.areEqual('Unknown endpoint provided: ' + unknownEndpoint, endpointResponse.errors.get(0).message);
+    }
+
     @IsTest
     static void it_throws_an_exception_for_unknown_endpoint_on_post() {
         String unknownEndpoint = 'some-endpoint-that-definitely-should-not-exist';
         String someParameters = '/?i-hope=true';
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + unknownEndpoint + someParameters;
 
         LoggerRestResource.handlePost();
@@ -26,7 +47,6 @@ private class LoggerRestResource_Tests {
     static void it_excludes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_excluded() {
         String someEndpointName = 'any-endpoint-even-if-it-is-not-valid-we-do-not-care-for-this-test-k-thx-bye';
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'GET';
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + someEndpointName;
 
         LoggerRestResource.handlePost();
@@ -46,7 +66,6 @@ private class LoggerRestResource_Tests {
         String someEndpointName = 'any-endpoint-even-if-it-is-not-valid-we-do-not-care-for-this-test-k-thx-bye';
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.addParameter('verbose', 'false');
-        System.RestContext.request.httpMethod = 'GET';
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + someEndpointName;
 
         LoggerRestResource.handlePost();
@@ -67,7 +86,6 @@ private class LoggerRestResource_Tests {
         System.RestContext.request = new System.RestRequest();
         System.RestContext.request.addParameter('verbose', 'true');
         System.RestContext.request.addHeader('X-some-header', 'some-value');
-        System.RestContext.request.httpMethod = 'GET';
         System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + someEndpointName;
 
         LoggerRestResource.handlePost();
@@ -99,13 +117,60 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(System.UserInfo.getUserId(), endpointResponse.user.id);
         System.Assert.areEqual(System.UserInfo.getUserType(), endpointResponse.user.type);
     }
+    /* End of common endpoint functionality tests */
+
+    /* Start of '/logs' endpoint tests */
+    @IsTest
+    static void logs_endpoint_get_returns_is_success_false_when_no_matching_transaction_id_found() {
+        System.RestContext.request = new System.RestRequest();
+        System.RestContext.request.requestBody = null;
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs/' + System.UUID.randomUUID();
+
+        LoggerRestResource.handleGet();
+
+        System.Assert.areEqual(400, System.RestContext.response.statusCode);
+        System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
+        System.Assert.isNotNull(System.RestContext.response.responseBody);
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
+            System.RestContext.response.responseBody.toString(),
+            LoggerRestResource.EndpointResponse.class
+        );
+        System.Assert.isFalse(endpointResponse.isSuccess);
+        System.Assert.areEqual(1, endpointResponse.errors.size());
+        System.Assert.fail('TODO');
+    }
 
     @IsTest
-    static void log_endpoint_throws_an_exception_when_no_json_data_is_posted() {
+    static void logs_endpoint_get_successfully_returns_log_when_matching_transaction_id_is_found() {
+        Nebula__Log__c log = new Nebula__Log__c(
+            Nebula__TransactionId__c = System.UUID.randomUUID().toString()
+        );
+        insert log;
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = null;
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs/' + log.Nebula__TransactionId__c;
+
+        LoggerRestResource.handleGet();
+
+        System.Assert.areEqual(200, System.RestContext.response.statusCode);
+        System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
+        System.Assert.isNotNull(System.RestContext.response.responseBody);
+        LoggerRestResource.LogGetResponse endpointResponse = (LoggerRestResource.LogGetResponse) System.JSON.deserialize(
+            System.RestContext.response.responseBody.toString(),
+            LoggerRestResource.LogGetResponse.class
+        );
+        System.Assert.isTrue(endpointResponse.isSuccess);
+        System.Assert.areEqual(0, endpointResponse.errors.size());
+        System.Assert.isNotNull(endpointResponse.log);
+        System.Assert.areEqual(log.Nebula__TransactionId__c, endpointResponse.log.transactionId);
+        System.Assert.fail('TODO add more asserts, including asserts for log entry & tags');
+    }
+
+    @IsTest
+    static void logs_endpoint_post_throws_an_exception_when_no_json_data_is_provided() {
+        System.RestContext.request = new System.RestRequest();
+        System.RestContext.request.requestBody = null;
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
 
@@ -124,14 +189,13 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void log_endpoint_throws_an_exception_when_null_log_entries_list_is_posted() {
+    static void logs_endpoint_post_throws_an_exception_when_null_log_entries_list_is_provided() {
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
         logCreateRequest.logEntries = null;
         System.Assert.isNull(logCreateRequest.logEntries);
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
 
@@ -150,13 +214,12 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void log_endpoint_throws_an_exception_when_empty_log_entries_list_is_posted() {
+    static void logs_endpoint_post_throws_an_exception_when_empty_log_entries_list_is_provided() {
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
         System.Assert.isTrue(logCreateRequest.logEntries.isEmpty());
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
 
@@ -175,7 +238,7 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void log_endpoint_should_successsfully_save_when_log_request_with_log_entries_is_posted() {
+    static void logs_endpoint_post_successsfully_saves_when_log_entries_are_provided() {
         LoggerRestResource.LogEntryCreateRequest firstLogEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
         firstLogEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         firstLogEntryCreateRequest.message = 'some message for INFO';
@@ -188,9 +251,8 @@ private class LoggerRestResource_Tests {
         logCreateRequest.logEntries.add(firstLogEntryCreateRequest);
         logCreateRequest.logEntries.add(secondLogEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
@@ -233,7 +295,7 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void log_endpoint_sets_parent_log_transaction_id_when_provided() {
+    static void logs_endpoint_post_sets_parent_log_transaction_id_when_provided() {
         Nebula__Log__c parentLog = new Nebula__Log__c(Nebula__TransactionId__c = 'some fake parent transaction id');
         insert parentLog;
         LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
@@ -244,9 +306,8 @@ private class LoggerRestResource_Tests {
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         logCreateRequest.parentLogTransactionId = parentLog.Nebula__TransactionId__c;
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
@@ -272,7 +333,7 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void log_endpoint_sets_scenario_when_provided() {
+    static void logs_endpoint_post_sets_scenario_when_provided() {
         LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
         logEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         logEntryCreateRequest.message = 'some message';
@@ -281,9 +342,8 @@ private class LoggerRestResource_Tests {
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         logCreateRequest.scenario = 'some scenario';
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
@@ -313,7 +373,7 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void log_endpoint_sets_related_record_id_when_provided() {
+    static void logs_endpoint_post_sets_related_record_id_when_provided() {
         String recordId = System.UserInfo.getUserId();
         LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
         logEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
@@ -323,9 +383,8 @@ private class LoggerRestResource_Tests {
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
@@ -354,7 +413,7 @@ private class LoggerRestResource_Tests {
     }
 
     @IsTest
-    static void log_endpoint_stores_tags_when_provided() {
+    static void logs_endpoint_post_stores_tags_when_provided() {
         LoggerRestResource.LogEntryCreateRequest logEntryCreateRequest = new LoggerRestResource.LogEntryCreateRequest();
         logEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
         logEntryCreateRequest.message = 'some message';
@@ -363,9 +422,8 @@ private class LoggerRestResource_Tests {
         LoggerRestResource.LogCreateRequest logCreateRequest = new LoggerRestResource.LogCreateRequest();
         logCreateRequest.logEntries.add(logEntryCreateRequest);
         System.RestContext.request = new System.RestRequest();
-        System.RestContext.request.httpMethod = 'POST';
         System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/log';
+        System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
@@ -387,4 +445,5 @@ private class LoggerRestResource_Tests {
             System.Assert.isTrue(providedTags.contains(logEntryTag.Nebula__Tag__r.Name));
         }
     }
+    /* End of '/logs' endpoint tests */
 }

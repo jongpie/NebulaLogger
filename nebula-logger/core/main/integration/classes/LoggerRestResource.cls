@@ -11,30 +11,50 @@ global class LoggerRestResource {
     private static final String REQUEST_URI_BASE = '/logger';
     private static final Boolean SUPPRESS_NULLS_IN_JSON_SERIALIZATION = true;
 
+    @HttpGet
+    global static void handleGet() {
+        System.RestContext.response = initializeRestResponse();
+        String endpointName = getEndpointName(System.RestContext.request);
+
+        Endpoint endpoint;
+        switch on endpointName {
+            when 'logs' {
+                endpoint = new LogsEndpoint();
+            }
+            when else {
+                endpoint = new UnknownEndpointResponder(endpointName);
+            }
+        }
+        endpoint.handleGet(System.RestContext.request, System.RestContext.response);
+    }
+
     @HttpPost
     global static void handlePost() {
         System.RestContext.response = initializeRestResponse();
         String endpointName = getEndpointName(System.RestContext.request);
 
+        Endpoint endpoint;
         switch on endpointName {
-            when 'log' {
-                new LogEndpoint().handlePost(System.RestContext.request, System.RestContext.response);
+            when 'logs' {
+                endpoint = new LogsEndpoint();
             }
             when else {
-                new UnknownEndpointResponder(endpointName).handlePost(System.RestContext.request, System.RestContext.response);
+                endpoint = new UnknownEndpointResponder(endpointName);
             }
         }
+        endpoint.handlePost(System.RestContext.request, System.RestContext.response);
     }
 
     private static String getEndpointName(System.RestRequest restRequest) {
+        // FIXME the comments below are no longer accurate - endpoints like /logs/<some-uuid> are now used
         /*
              Endpoint names will (at least for now) only have one layer, using formats like:
-             /logger/log
-             /logger/log/?some-url-parameter=true&and-another=true
+             /logger/logs
+             /logger/logs/?some-url-parameter=true&and-another=true
              /logger/something
              /logger/something?another-url-parameter=something
-             /Nebula/logger/log
-             /Nebula/logger/log/?some-url-parameter=true&and-another=true
+             /Nebula/logger/logs
+             /Nebula/logger/logs/?some-url-parameter=true&and-another=true
              /Nebula/logger/something
              /Nebula/logger/something?another-url-parameter=something
 
@@ -48,7 +68,11 @@ global class LoggerRestResource {
         if (parsedEndpoint.contains('?')) {
             parsedEndpoint = parsedEndpoint.substringBefore('?');
         }
-        return parsedEndpoint.removeStart('/').removeEnd('/');
+        parsedEndpoint = parsedEndpoint.removeStart('/').removeEnd('/');
+        if (parsedEndpoint.contains('/')) {
+            parsedEndpoint = parsedEndpoint.substringBefore('/');
+        }
+        return parsedEndpoint;
     }
 
     private static System.RestResponse initializeRestResponse() {
@@ -58,6 +82,18 @@ global class LoggerRestResource {
     }
 
     /* Base classes for REST responses returned by all endpoints */
+    private abstract class Endpoint {
+        // For now, only GET & POST are used by Nebula Logger, so there's no need to have methods
+        // for the other HTTP verbs DELETE, PATCH, and PUT.
+        public virtual void handleGet(System.RestRequest restRequest, System.RestResponse restResponse) {
+            throw new System.IllegalArgumentException('Unsupported method: GET');
+        }
+
+        public virtual void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
+            throw new System.IllegalArgumentException('Unsupported method: POST');
+        }
+    }
+
     public virtual class EndpointResponse {
         public final EndpointRequestContext endpoint;
         public final List<EndpointError> errors = new List<EndpointError>();
@@ -160,15 +196,7 @@ global class LoggerRestResource {
         public String username = System.UserInfo.getUsername();
     }
 
-    private abstract class Endpoint {
-        // For now, only POST is used by Nebula Logger, so there's no need to have methods
-        // for the other HTTP verbs DELETE, GET PATCH, and PUT.
-        public virtual void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
-            throw new System.IllegalArgumentException('Unsupported method: ' + restRequest.httpMethod);
-        }
-    }
-
-    /* start of '/log' endpoint classes */
+    /* Start of '/logs' endpoint classes */
     @TestVisible
     private class LogCreateRequest {
         public List<LogEntryCreateRequest> logEntries = new List<LogEntryCreateRequest>();
@@ -200,9 +228,89 @@ global class LoggerRestResource {
         public Integer logEntriesSaved;
         public Integer logEntriesSent;
     }
-    /* end of '/log' endpoint classes */
 
-    private class LogEndpoint extends Endpoint {
+    // new attempt, maybe?
+    @TestVisible
+    private class LogGetResponse extends EndpointResponse {
+        public EndpointLog log;
+
+        public LogGetResponse(System.RestRequest restRequest) {
+            super(restRequest);
+        }
+    }
+    @TestVisible
+    private class LogCollectionGetResponse extends EndpointResponse {
+        public List<EndpointLog> logs;
+
+        public LogCollectionGetResponse(System.RestRequest restRequest) {
+            super(restRequest);
+        }
+    }
+
+    @TestVisible
+    private class EndpointLog {
+        public List<EndpointLogEntry> logEntries = new List<EndpointLogEntry>();
+        public String parentLogTransactionId;
+        public String transactionId;
+        public String transactionScenario;
+
+        public EndpointLog(Nebula__Log__c log) {
+            this.parentLogTransactionId = log.Nebula__ParentLog__r.Nebula__TransactionId__c;
+            this.transactionId = log.Nebula__TransactionId__c;
+            this.transactionScenario = log.Nebula__TransactionScenario__c;
+            for (Nebula__LogEntry__c logEntry : log.Nebula__LogEntries__r) {
+                this.logEntries.add(new EndpointLogEntry(logEntry));
+            }
+        }
+    }
+
+    @TestVisible
+    private class EndpointLogEntry {
+        public String loggingLevel;
+        public String message;
+        public String relatedRecordId;
+        public List<String> tags = new List<String>();
+        public Datetime timestamp;
+
+        public EndpointLogEntry(Nebula__LogEntry__c logEntry) {
+            this.loggingLevel = logEntry.Nebula__LoggingLevel__c;
+            this.message = logEntry.Nebula__Message__c;
+            this.relatedRecordId = logEntry.Nebula__RecordId__c;
+            this.timestamp = logEntry.Nebula__Timestamp__c;
+            for (Nebula__LogEntryTag__c tag : logEntry.Nebula__LogEntryTags__r) {
+                this.tags.add(tag.Nebula__Tag__r.Nebula__UniqueId__c);
+            }
+        }
+    }
+    /* End of '/logs' endpoint classes */
+
+    private class LogsEndpoint extends Endpoint {
+        public override void handleGet(System.RestRequest restRequest, System.RestResponse restResponse) {
+            String transactionIdFilter = restRequest.requestURI.substringAfter('/logs/');
+
+            if (String.isBlank(transactionIdFilter)) {
+                // TODO
+            }
+
+            Nebula__Log__c log = [
+                SELECT
+                    Nebula__ParentLog__r.Nebula__TransactionId__c,
+                    Nebula__TransactionId__c,
+                    Nebula__TransactionScenario__c,
+                    (
+                        SELECT Nebula__LoggingLevel__c, Nebula__Message__c, Nebula__RecordId__c, Nebula__Timestamp__c
+                        FROM Nebula__LogEntries__r
+                    )
+                FROM Nebula__Log__c
+                WHERE Nebula__TransactionId__c = :transactionIdFilter
+            ];
+            LogGetResponse logGetResponse = new LogGetResponse(restRequest);
+            logGetResponse.log = new EndpointLog(log);
+
+            restResponse.responseBody = Blob.valueOf(System.JSON.serialize(logGetResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
+            restResponse.statusCode = 200;
+        }
+
         public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
             try {
                 LogCreateSummary logCreateSummary = this.saveLogRequest(restRequest);
@@ -271,7 +379,15 @@ global class LoggerRestResource {
             this.endpointName = endpointName;
         }
 
+        public override void handleGet(System.RestRequest restRequest, System.RestResponse restResponse) {
+            this.handleResponse(restRequest, restResponse);
+        }
+
         public override void handlePost(System.RestRequest restRequest, System.RestResponse restResponse) {
+            this.handleResponse(restRequest, restResponse);
+        }
+
+        private void handleResponse(System.RestRequest restRequest, System.RestResponse restResponse) {
             String errorMessage = 'Unknown endpoint provided: ' + this.endpointName;
             EndpointResponse unknownEndpointResponse = new EndpointResponse(restRequest);
             unknownEndpointResponse.errors.add(new EndpointError(errorMessage));
