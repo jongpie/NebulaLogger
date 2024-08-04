@@ -1,5 +1,16 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Integration
+ * @description REST Resource class for external integrations to create & retrieve logging data
+ */
+
 @RestResource(urlMapping='/logger/*')
-global class LoggerRestResource {
+@SuppressWarnings('PMD.AvoidGlobalModifier')
+global with sharing class LoggerRestResource {
     // TODO revisit REQUEST_URI_BASE value / add tests to make it work with a namespace
     /*
     From the Apex Dev docs (https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_rest_resource.htm):
@@ -200,6 +211,8 @@ global class LoggerRestResource {
     @TestVisible
     private class LogCreateRequest {
         public List<LogEntryCreateRequest> logEntries = new List<LogEntryCreateRequest>();
+        public String originSystemName;
+        public String originSystemReferenceId;
         public String parentLogTransactionId;
         public String scenario;
     }
@@ -208,6 +221,7 @@ global class LoggerRestResource {
     private class LogEntryCreateRequest {
         public String loggingLevel;
         public String message;
+        public String originSystemReferenceId;
         public String relatedRecordId;
         public List<String> tags = new List<String>();
         public Datetime timestamp;
@@ -257,7 +271,7 @@ global class LoggerRestResource {
         public EndpointLog(Nebula__Log__c log) {
             this.parentLogTransactionId = log.Nebula__ParentLog__r.Nebula__TransactionId__c;
             this.transactionId = log.Nebula__TransactionId__c;
-            this.transactionScenario = log.Nebula__TransactionScenario__c;
+            this.transactionScenario = log.Nebula__TransactionScenario__r.Nebula__UniqueId__c;
             for (Nebula__LogEntry__c logEntry : log.Nebula__LogEntries__r) {
                 this.logEntries.add(new EndpointLogEntry(logEntry));
             }
@@ -282,11 +296,20 @@ global class LoggerRestResource {
             }
         }
     }
+
+    // @TestVisible
+    // private class EndpointLogOrigin {
+    //     public String systemName;
+    // }
     /* End of '/logs' endpoint classes */
 
     private class LogsEndpoint extends Endpoint {
         public override void handleGet(System.RestRequest restRequest, System.RestResponse restResponse) {
             String transactionIdFilter = restRequest.requestURI.substringAfter('/logs/');
+            if (transactionIdFilter?.contains('?')) {
+                transactionIdFilter = transactionIdFilter.substringBefore('?');
+            }
+            transactionIdFilter = transactionIdFilter.removeEnd('/');
 
             if (String.isBlank(transactionIdFilter)) {
                 // TODO
@@ -296,9 +319,14 @@ global class LoggerRestResource {
                 SELECT
                     Nebula__ParentLog__r.Nebula__TransactionId__c,
                     Nebula__TransactionId__c,
-                    Nebula__TransactionScenario__c,
+                    Nebula__TransactionScenario__r.Nebula__UniqueId__c,
                     (
-                        SELECT Nebula__LoggingLevel__c, Nebula__Message__c, Nebula__RecordId__c, Nebula__Timestamp__c
+                        SELECT
+                            Nebula__LoggingLevel__c,
+                            Nebula__Message__c,
+                            Nebula__RecordId__c,
+                            Nebula__Timestamp__c,
+                            (SELECT Nebula__Tag__r.Nebula__UniqueId__c FROM Nebula__LogEntryTags__r)
                         FROM Nebula__LogEntries__r
                     )
                 FROM Nebula__Log__c
@@ -342,6 +370,8 @@ global class LoggerRestResource {
             for (LogEntryCreateRequest logEntryCreateRequest : logCreateRequest.logEntries) {
                 System.LoggingLevel loggingLevel = Nebula.Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel);
                 Nebula.Logger.newEntry(loggingLevel, logEntryCreateRequest.message)
+                    // FIXME The managed package currently doesn't have a way to set the value
+                    // of OriginType__c = 'Integration'
                     .setRecord(logEntryCreateRequest.relatedRecordId)
                     // FIXME The managed package currently doesn't have the .setTimestamp() builder method,
                     // so there's not a great way to correctly set the Timestamp__c field yet
@@ -363,8 +393,14 @@ global class LoggerRestResource {
 
             LogCreateRequest logCreateRequest = (LogCreateRequest) System.JSON.deserialize(restRequest.requestBody.toString(), LogCreateRequest.class);
 
+            // TODO add support for adding these as errors in logCreateRequest.errors
+            // (instead of only bubbling up 1 via throwing an exception)
+            if (String.isBlank(logCreateRequest.originSystemName)) {
+                throw new System.IllegalArgumentException('No data provided for required property "originSystemName"');
+            }
+
             if (logCreateRequest.logEntries == null || logCreateRequest.logEntries.isEmpty()) {
-                throw new System.IllegalArgumentException('No log entries provided');
+                throw new System.IllegalArgumentException('No data provided for required property "logEntries"');
             }
 
             return logCreateRequest;
