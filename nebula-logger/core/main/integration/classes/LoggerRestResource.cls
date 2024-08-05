@@ -36,6 +36,7 @@ global with sharing class LoggerRestResource {
 
     @HttpGet
     global static void handleGet() {
+        // TODO wrap everything in a try-catch block?
         EndpointRequest endpointRequest = new EndpointRequest(System.RestContext.request);
         Endpoint endpoint = getEndpoint(endpointRequest.name);
 
@@ -47,6 +48,7 @@ global with sharing class LoggerRestResource {
 
     @HttpPost
     global static void handlePost() {
+        // TODO wrap everything in a try-catch block?
         EndpointRequest endpointRequest = new EndpointRequest(System.RestContext.request);
         Endpoint endpoint = getEndpoint(endpointRequest.name);
 
@@ -128,6 +130,7 @@ global with sharing class LoggerRestResource {
     @TestVisible
     private class EndpointRequest {
         public String body;
+        public EndpointRequestContext context;
         public List<String> headerKeys;
         public String name;
         public Map<String, String> parameters;
@@ -193,16 +196,18 @@ global with sharing class LoggerRestResource {
     @TestVisible
     private class EndpointResponse {
         public final EndpointRequest endpointRequest;
+        public final EndpointRequestContext endpointRequestContext;
         public final List<EndpointError> errors = new List<EndpointError>();
         public final EndpointLoggerContext logger;
         public final EndpointOrganizationContext organization;
         public final String requestId = System.Request.getCurrent().getRequestId();
-        // Only 'result' or 'results' will be set (depending on which endpoint parameters & method are used)
+        public final String transactionId = Nebula.Logger.getTransactionId();
+        public final EndpointUserContext user;
+
+        // Only 'result' or 'results' will be set (depending on which endpoint, parameters, and method are used)
         // There should not be a situation where both 'result' & 'results' are set
         public SObjectDTO result;
         public List<SObjectDTO> results;
-        public final String transactionId = Nebula.Logger.getTransactionId();
-        public final EndpointUserContext user;
 
         // The status code doesn't need to be returned in the RestResponse body
         // since the RestResponse headers will include the status code, so use
@@ -219,9 +224,10 @@ global with sharing class LoggerRestResource {
             if (this.isTruthy(endpointRequest.parameters, 'verbose')) {
                 // TODO revisit to decide if/what endpoint info should be returned in the reponse
                 this.endpointRequest = endpointRequest;
-                this.logger = new EndpointLoggerContext();
-                this.organization = new EndpointOrganizationContext();
-                this.user = new EndpointUserContext();
+                this.endpointRequest.context = new EndpointRequestContext();
+                // this.logger = new EndpointLoggerContext();
+                // this.organization = new EndpointOrganizationContext();
+                // this.user = new EndpointUserContext();
             }
         }
 
@@ -281,6 +287,12 @@ global with sharing class LoggerRestResource {
         }
     }
 
+    @TestVisible
+    private class EndpointRequestContext {
+        public final EndpointLoggerContext logger = new EndpointLoggerContext();
+        public final EndpointOrganizationContext organization = new EndpointOrganizationContext();
+        public final EndpointUserContext user = new EndpointUserContext();
+    }
     @TestVisible
     private class EndpointLoggerContext {
         // FIXME The managed package currently doesn't have access to the method Logger.getNamespacePrefix(),
@@ -371,21 +383,34 @@ global with sharing class LoggerRestResource {
 
     @TestVisible
     private class LogDTO extends SObjectDTO {
+        public String impersonatedById = 'TODO';
+        public String impersonatedByFederationIdentifier = 'TODO';
+        public String impersonatedByUsername = 'TODO';
         public List<LogEntryDTO> logEntries;
-        // TODO consider making 'logged by' fields into an instance
-        // of EndpointUserContext (perhaps with a new class name?)
-        public UserDTO loggedBy;
-        // TODO either revert to using these properties, or delete them
-        // public String loggedById;
-        // public String loggedByFederationIdentifier;
-        // public String loggedByUsername;
+        // TODO either used loggedBy object, or String fields (not both)
+        public UserDTO loggedBy; // TODO delete?
+        public String loggedById;
+        public String loggedByFederationIdentifier;
+        public String loggedByUsername;
         public String originSystemName;
         public String originSystemReferenceId;
         public String parentLogTransactionId;
+        public String profileId;
+        public String profileName;
         public Datetime startTime;
-        public Map<String, Integer> totalLogEntries;
+        // TODO either used totalLogEntries map, or String fields (not both)
+        public Map<String, Integer> totalLogEntries; // TODO delete?
+        public Integer totalDEBUGLogEntries;
+        public Integer totalERRORLogEntries;
+        public Integer totalFINELogEntries;
+        public Integer totalFINERLogEntries;
+        public Integer totalFINESTLogEntries;
+        public Integer totalINFOLogEntries;
+        public Integer totalWARNLogEntries;
         public String transactionId;
         public String transactionScenario;
+        public String userRoleId;
+        public String userRoleName;
 
         public LogDTO() {
             super('Log');
@@ -399,42 +424,61 @@ global with sharing class LoggerRestResource {
             this();
 
             this.id = logRecord.Id;
+            /* // TODO delete?
             this.loggedBy = new UserDTO();
             this.loggedBy.id = logRecord.Nebula__LoggedBy__c;
             // TODO the managed package does not yet have the field LoggedByFederationIdentifier__c
-            // this.loggedByFederationIdentifier = logRecord.Nebula__LoggedByFederationIdentifier__c;
-            this.loggedBy.federationIdentifier = 'TODO';
-            this.loggedBy.profile = new ProfileDTO(logRecord.Nebula__ProfileId__c, logRecord.Nebula__ProfileName__c);
+            this.loggedBy.federationIdentifier = 'TODO?';
             this.loggedBy.username = logRecord.Nebula__LoggedByUsername__c;
+            // TODO keep?
+            this.loggedByFederationIdentifier = 'TODO!'; // = logRecord.Nebula__LoggedByFederationIdentifier__c;
+            this.loggedByFederationIdentifier = 'TODO!'; // = logRecord.Nebula__LoggedByFederationIdentifier__c;
+            // TODO delete?
+            this.loggedBy.profile = new ProfileDTO(logRecord.Nebula__ProfileId__c, logRecord.Nebula__ProfileName__c);
+            // TODO keep?
+            this.loggedBy.profileId = logRecord.Nebula__ProfileId__c;
+            this.loggedBy.profileName = logRecord.Nebula__ProfileName__c;
             this.loggedBy.userRole = logRecord.Nebula__UserRoleId__c == null
                 ? null
-                : new UserRoleDTO(logRecord.Nebula__UserRoleId__c, logRecord.Nebula__UserRoleName__c);
+                : new UserRoleDTO(logRecord.Nebula__UserRoleId__c, logRecord.Nebula__UserRoleName__c); */
 
-            // this.loggedById = logRecord.Nebula__LoggedBy__c;
-            // // TODO the managed package does not yet have the field LoggedByFederationIdentifier__c
-            // // this.loggedByFederationIdentifier = logRecord.Nebula__LoggedByFederationIdentifier__c;
-            // this.loggedByFederationIdentifier = 'TODO';
-            // this.loggedByUsername = logRecord.Nebula__LoggedByUsername__c;
+            this.loggedById = logRecord.Nebula__LoggedBy__c;
+            // TODO the managed package does not yet have the field LoggedByFederationIdentifier__c
+            // this.loggedByFederationIdentifier = logRecord.Nebula__LoggedByFederationIdentifier__c;
+            this.loggedByFederationIdentifier = 'TODO';
+            this.loggedByUsername = logRecord.Nebula__LoggedByUsername__c;
             this.name = logRecord.Name;
             this.originSystemName = 'TODO';
             this.originSystemReferenceId = 'TODO';
             this.parentLogTransactionId = logRecord.Nebula__ParentLog__r.Nebula__TransactionId__c;
+            this.profileId = logRecord.Nebula__ProfileId__c;
+            this.profileName = logRecord.Nebula__ProfileName__c;
             this.startTime = logRecord.Nebula__StartTime__c;
-            this.totalLogEntries = new Map<String, Integer>{
-                'error' => Integer.valueOf(logRecord.Nebula__TotalERRORLogEntries__c),
-                'warn' => Integer.valueOf(logRecord.Nebula__TotalWARNLogEntries__c),
-                'info' => Integer.valueOf(logRecord.Nebula__TotalINFOLogEntries__c),
-                'debug' => Integer.valueOf(logRecord.Nebula__TotalDEBUGLogEntries__c),
-                'fine' => Integer.valueOf(logRecord.Nebula__TotalFINELogEntries__c),
-                'finer' => Integer.valueOf(logRecord.Nebula__TotalFINERLogEntries__c),
-                'finest' => Integer.valueOf(logRecord.Nebula__TotalFINESTLogEntries__c)
-            };
+            this.totalDEBUGLogEntries = Integer.valueOf(logRecord.Nebula__TotalDEBUGLogEntries__c);
+            this.totalERRORLogEntries = Integer.valueOf(logRecord.Nebula__TotalERRORLogEntries__c);
+            this.totalFINELogEntries = Integer.valueOf(logRecord.Nebula__TotalFINELogEntries__c);
+            this.totalFINERLogEntries = Integer.valueOf(logRecord.Nebula__TotalFINERLogEntries__c);
+            this.totalFINESTLogEntries = Integer.valueOf(logRecord.Nebula__TotalFINESTLogEntries__c);
+            this.totalINFOLogEntries = Integer.valueOf(logRecord.Nebula__TotalINFOLogEntries__c);
+            this.totalWARNLogEntries = Integer.valueOf(logRecord.Nebula__TotalWARNLogEntries__c);
+            // Delete?
+            // this.totalLogEntries = new Map<String, Integer>{
+            //     'error' => Integer.valueOf(logRecord.Nebula__TotalERRORLogEntries__c),
+            //     'warn' => Integer.valueOf(logRecord.Nebula__TotalWARNLogEntries__c),
+            //     'info' => Integer.valueOf(logRecord.Nebula__TotalINFOLogEntries__c),
+            //     'debug' => Integer.valueOf(logRecord.Nebula__TotalDEBUGLogEntries__c),
+            //     'fine' => Integer.valueOf(logRecord.Nebula__TotalFINELogEntries__c),
+            //     'finer' => Integer.valueOf(logRecord.Nebula__TotalFINERLogEntries__c),
+            //     'finest' => Integer.valueOf(logRecord.Nebula__TotalFINESTLogEntries__c)
+            // };
             this.transactionId = logRecord.Nebula__TransactionId__c;
             // The transactionScenario property is intentionally mapped to UniqueId__c
             // because the standard Name field is only 80 characters long
             // and the UniqueId__c field is 255 characters, so it has the
             // correct/full name
-            this.transactionScenario = logRecord.Nebula__TransactionScenario__r.Nebula__UniqueId__c;
+            this.transactionScenario = logRecord.Nebula__TransactionScenarioText__c;
+            this.userRoleId = logRecord.Nebula__UserRoleId__c;
+            this.userRoleName = logRecord.Nebula__UserRoleName__c;
 
             this.setLogEntries(logEntryRecords);
         }
@@ -453,6 +497,11 @@ global with sharing class LoggerRestResource {
 
     @TestVisible
     private class LogEntryDTO extends SObjectDTO {
+        // The entryScenario property is intentionally mapped to UniqueId__c
+        // because the standard Name field is only 80 characters long
+        // and the UniqueId__c field is 255 characters, so it has the
+        // correct/full name
+        public String entryScenario;
         // TODO confirm if anything needs to be done with data type/format
         // since epoch is originally a Long, but stored as Decimal
         public Decimal epochTimestamp;
@@ -461,6 +510,8 @@ global with sharing class LoggerRestResource {
         // It probably makes the most sense to be consistent with the SObject fields,
         // like LogEntry__c.EventUuid__c field --> eventUuid property
         public String eventUuid;
+        public String exceptionMessage;
+        public String exceptionType;
         // TODO revert to using this or delete it
         // public Map<String, String> loggingLevel;
         public String loggingLevel;
@@ -480,8 +531,11 @@ global with sharing class LoggerRestResource {
         public LogEntryDTO(Nebula__LogEntry__c logEntryRecord, List<Nebula__LogEntryTag__c> logEntryTagRecords) {
             this();
 
+            this.entryScenario = logEntryRecord.Nebula__EntryScenarioText__c;
             this.epochTimestamp = logEntryRecord.Nebula__EpochTimestamp__c;
             this.eventUuid = logEntryRecord.Nebula__EventUuid__c;
+            this.exceptionMessage = logEntryRecord.Nebula__ExceptionMessage__c;
+            this.exceptionType = logEntryRecord.Nebula__ExceptionType__c;
             this.id = logEntryRecord.Id;
             // this.loggingLevel = new Map<String, String>{
             //     'name' => logEntryRecord.Nebula__LoggingLevel__c,
@@ -586,7 +640,20 @@ global with sharing class LoggerRestResource {
     }
     /* End of DTO classes for converting Nebula Logger's SObjects to a simplified representation that is returned as JSON */
 
-    /* Start of '/logs' endpoint classes */
+    /* Classes for dynamic query building 😐 */
+    private class QueryFilter {
+        public String field;
+        public String operator;
+        public Object value;
+
+        public QueryFilter(String field, String operator, Object value) {
+            this.field = field;
+            this.operator = operator;
+            this.value = value;
+        }
+    }
+
+    /* Endpoints */
     private class LogsEndpoint extends Endpoint {
         public override EndpointResponse handleGet(EndpointRequest endpointRequest) {
             String possibleTransactionId = endpointRequest.particle;
@@ -600,7 +667,8 @@ global with sharing class LoggerRestResource {
         public override EndpointResponse handlePost(EndpointRequest endpointRequest) {
             EndpointResponse postResponse = new EndpointResponse(endpointRequest);
             try {
-                this.saveLogRequest(endpointRequest);
+                LogDTO logToCreate = this.deserializeLog(endpointRequest.body);
+                this.saveLog(logToCreate);
                 postResponse.setStatusCode(STATUS_CODE_201_CREATED);
                 return postResponse;
             } catch (Exception apexException) {
@@ -638,15 +706,18 @@ global with sharing class LoggerRestResource {
                     Nebula__TotalINFOLogEntries__c,
                     Nebula__TotalWARNLogEntries__c,
                     Nebula__TransactionId__c,
-                    Nebula__TransactionScenario__r.Nebula__UniqueId__c,
+                    Nebula__TransactionScenarioText__c,
                     Nebula__UserRoleId__c,
                     Nebula__UserRoleName__c,
                     (
                         SELECT
                             Id,
                             Name,
+                            Nebula__EntryScenarioText__c,
                             Nebula__EpochTimestamp__c,
                             Nebula__EventUuid__c,
+                            Nebula__ExceptionMessage__c,
+                            Nebula__ExceptionType__c,
                             Nebula__LoggingLevel__c,
                             Nebula__LoggingLevelOrdinal__c,
                             Nebula__Message__c,
@@ -676,13 +747,61 @@ global with sharing class LoggerRestResource {
         }
 
         private EndpointResponse searchLogs(EndpointRequest endpointRequest) {
+            List<QueryFilter> filters = new List<QueryFilter>();
+            List<String> filterStrings = new List<String>();
+
+            List<String> queryFieldNames = new List<String>(Schema.Nebula__Log__c.SObjectType.getDescribe().fields.getMap().keySet());
+            String parentLogRelationshipName = Nebula__Log__c.Nebula__ParentLog__c.getDescribe().getRelationshipName();
+            queryFieldNames.add(parentLogRelationshipName + '.' + Nebula__Log__c.Nebula__TransactionId__c.getDescribe().getName());
+            // String fieldClause = 'Id, Name';
+            String queryFieldsClause = String.join(queryFieldNames, ', ');
+
+            Integer bindVarCount = 0;
+            Map<String, Object> bindKeyToValue = new Map<String, Object>();
+
+            String minStartDateFilter = 'minStartDate';
+            if (endpointRequest.parameters.containsKey(minStartDateFilter)) {
+                String field = Schema.Nebula__Log__c.Nebula__StartTime__c.getDescribe().getName();
+                Date value = Date.valueOf(endpointRequest.parameters.get(minStartDateFilter));
+
+                // System.Assert.fail('minStartDate value=' + value);
+
+                String bindKey = 'bindVar' + bindVarCount;
+                bindKeyToValue.put(bindKey, value);
+                // QueryFilter filter = new QueryFilter(field, '>=', value);
+                // filters.add(filter);
+                filterStrings.add(field + ' >= :' + bindKey);
+            }
+
+            String queryFiltersClause = filterStrings.isEmpty() ? '' : 'WHERE ' + String.join(filterStrings, ' AND ');
+
+            String queryTemplate = 'SELECT {0} FROM {1} {2} ORDER BY {3} DESC LIMIT {4}';
+            String query = String.format(
+                queryTemplate,
+                new List<Object>{
+                    queryFieldsClause,
+                    Schema.Nebula__Log__c.SObjectType.toString(),
+                    queryFiltersClause,
+                    Schema.Nebula__Log__c.Nebula__StartTime__c.toString(),
+                    20
+                }
+            );
+            // System.Assert.fail('query=' + query);
+            List<Nebula__Log__c> matchingLogRecords = System.Database.queryWithBinds(query, bindKeyToValue, System.AccessLevel.USER_MODE);
+
+            List<LogDTO> logs = new List<LogDTO>();
+            for (Nebula__Log__c logRecord : matchingLogRecords) {
+                logs.add(new LogDTO(logRecord, logRecord.Nebula__LogEntries__r));
+            }
+
             // TODO implement search, using endpointRequest.parameters for search criteria
-            return new EndpointResponse(endpointRequest).addError(new EndpointError('oops'));
+            // return new EndpointResponse(endpointRequest).addError(new EndpointError('oops'));
+            EndpointResponse endpointResponse = new EndpointResponse(endpointRequest);
+            endpointResponse.results = logs;
+            return endpointResponse;
         }
 
-        private void saveLogRequest(EndpointRequest endpointRequest) {
-            LogDTO logCreateRequest = this.deserializeLogRequest(endpointRequest.body);
-
+        private void saveLog(LogDTO logCreateRequest) {
             Nebula.Logger.setParentLogTransactionId(logCreateRequest.parentLogTransactionId);
             Nebula.Logger.setScenario(logCreateRequest.transactionScenario);
 
@@ -705,7 +824,7 @@ global with sharing class LoggerRestResource {
             Nebula.Logger.saveLog();
         }
 
-        private LogDTO deserializeLogRequest(String jsonBody) {
+        private LogDTO deserializeLog(String jsonBody) {
             if (String.isBlank(jsonBody)) {
                 throw new System.IllegalArgumentException('No data provided');
             }
@@ -725,25 +844,18 @@ global with sharing class LoggerRestResource {
             return logToCreate;
         }
     }
-    /* end of '/logs' endpoint classes */
 
-    /* Start of '/log-entries' endpoint classes */
     private class LogEntriesEndpoint extends Endpoint {
         // TODO
     }
-    /* End of '/log-entries' endpoint classes */
 
-    /* Start of '/logger-scenarios' endpoint classes */
     private class LoggerScenariosEndpoint extends Endpoint {
         // TODO
     }
-    /* End of '/logger-scenarios' endpoint classes */
 
-    /* Start of '/logger-tags' endpoint classes */
     private class LoggerTagsEndpoint extends Endpoint {
         // TODO
     }
-    /* End of '/logger-tags' endpoint classes */
 
     private class UnknownEndpointResponder extends Endpoint {
         public override EndpointResponse handleGet(EndpointRequest endpointRequest) {
