@@ -185,16 +185,14 @@ global with sharing class LoggerRestResource {
                 parsedEndpointParticle = parsedEndpointParticle.substringBefore('?');
             }
             parsedEndpointParticle = parsedEndpointParticle.removeEnd('/');
-            if (String.isBlank(parsedEndpointParticle)) {
-                parsedEndpointParticle = null;
-            }
-            return parsedEndpointParticle;
+
+            return String.isBlank(parsedEndpointParticle) ? null : parsedEndpointParticle;
         }
     }
 
     @TestVisible
     private virtual class EndpointResponse {
-        // public final EndpointRequest endpointRequest;
+        public final EndpointRequest endpointRequest;
         public final List<EndpointError> errors = new List<EndpointError>();
         public final EndpointLoggerContext logger;
         public final EndpointOrganizationContext organization;
@@ -213,7 +211,7 @@ global with sharing class LoggerRestResource {
         public EndpointResponse(EndpointRequest endpointRequest) {
             if (this.isTruthy(endpointRequest.parameters, 'verbose')) {
                 // TODO revisit to decide if/what endpoint info should be returned in the reponse
-                // this.endpointRequest = endpointRequest;
+                this.endpointRequest = endpointRequest;
                 this.logger = new EndpointLoggerContext();
                 this.organization = new EndpointOrganizationContext();
                 this.user = new EndpointUserContext();
