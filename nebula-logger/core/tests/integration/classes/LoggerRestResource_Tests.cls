@@ -194,7 +194,7 @@ private class LoggerRestResource_Tests {
 
         LoggerRestResource.handleGet();
 
-        System.Assert.areEqual(400, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_200_OK, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
@@ -217,7 +217,7 @@ private class LoggerRestResource_Tests {
 
         LoggerRestResource.handleGet();
 
-        System.Assert.areEqual(200, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_200_OK, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -239,7 +239,7 @@ private class LoggerRestResource_Tests {
 
         LoggerRestResource.handlePost();
 
-        System.Assert.areEqual(400, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -263,7 +263,7 @@ private class LoggerRestResource_Tests {
 
         LoggerRestResource.handlePost();
 
-        System.Assert.areEqual(400, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -288,7 +288,7 @@ private class LoggerRestResource_Tests {
 
         LoggerRestResource.handlePost();
 
-        System.Assert.areEqual(400, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -313,7 +313,7 @@ private class LoggerRestResource_Tests {
 
         LoggerRestResource.handlePost();
 
-        System.Assert.areEqual(400, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -349,7 +349,7 @@ private class LoggerRestResource_Tests {
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
 
-        System.Assert.areEqual(200, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -406,7 +406,7 @@ private class LoggerRestResource_Tests {
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
 
-        System.Assert.areEqual(200, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -444,7 +444,7 @@ private class LoggerRestResource_Tests {
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
 
-        System.Assert.areEqual(200, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -487,7 +487,7 @@ private class LoggerRestResource_Tests {
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
 
-        System.Assert.areEqual(200, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
@@ -528,7 +528,7 @@ private class LoggerRestResource_Tests {
         LoggerRestResource.handlePost();
         System.Test.getEventBus().deliver();
 
-        System.Assert.areEqual(200, System.RestContext.response.statusCode);
+        System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
         LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
