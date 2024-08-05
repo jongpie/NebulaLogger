@@ -313,6 +313,9 @@ global with sharing class LoggerRestResource {
     @TestVisible
     private class LogDTO {
         public List<LogEntryDTO> logEntries;
+        public String loggedById;
+        public String loggedByFederationIdentifier;
+        public String loggedByUsername;
         public String originSystemName;
         public String originSystemReferenceId;
         public String parentLogTransactionId;
@@ -329,6 +332,13 @@ global with sharing class LoggerRestResource {
 
         public LogDTO(Nebula__Log__c log, List<Nebula__LogEntry__c> logEntries) {
             this();
+            this.loggedById = log.Nebula__LoggedBy__c;
+            // TODO the managed package does not yet have the field LoggedByFederationIdentifier__c
+            // this.loggedByFederationIdentifier = log.Nebula__LoggedByFederationIdentifier__c;
+            this.loggedByFederationIdentifier = 'TODO';
+            this.loggedByUsername = log.Nebula__LoggedByUsername__c;
+            this.originSystemName = 'TODO';
+            this.originSystemReferenceId = 'TODO';
             this.parentLogTransactionId = log.Nebula__ParentLog__r.Nebula__TransactionId__c;
             this.transactionId = log.Nebula__TransactionId__c;
             this.transactionScenario = log.Nebula__TransactionScenario__r.Nebula__UniqueId__c;
@@ -428,7 +438,7 @@ global with sharing class LoggerRestResource {
     /* Start of '/logs' endpoint classes */
     @TestVisible
     private class LogsEndpointResponse extends EndpointResponse {
-        // Only log or logs will be set (depending on which endpoint parameters & method is used)
+        // Only log or logs will be set (depending on which endpoint parameters & method are used)
         // There should not be a situation where both log & logs are set
         public LogDto log;
         public List<LogDto> logs;
@@ -444,7 +454,7 @@ global with sharing class LoggerRestResource {
             if (possibleTransactionId == null) {
                 return this.searchLogs(endpointRequest);
             } else {
-                return this.getSingleLog(endpointRequest);
+                return this.queryLog(endpointRequest);
             }
         }
 
@@ -453,8 +463,6 @@ global with sharing class LoggerRestResource {
             try {
                 this.saveLogRequest(endpointRequest);
                 postResponse.setStatusCode(200);
-                // restResponse.responseBody = Blob.valueOf(System.JSON.serialize(postResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
-                // restResponse.statusCode = 200;
                 return postResponse;
             } catch (Exception apexException) {
                 postResponse.setStatusCode(400).addError(apexException);
@@ -464,11 +472,10 @@ global with sharing class LoggerRestResource {
 
         private EndpointResponse searchLogs(EndpointRequest endpointRequest) {
             // TODO implement search, using endpointRequest.parameters for search criteria
-            // TODO determine if this should be a separate class
             return null;
         }
 
-        private EndpointResponse getSingleLog(EndpointRequest endpointRequest) {
+        private EndpointResponse queryLog(EndpointRequest endpointRequest) {
             Boolean isValidUuid = false;
             try {
                 System.UUID.fromString(endpointRequest.particle);
@@ -518,10 +525,7 @@ global with sharing class LoggerRestResource {
         }
 
         private void saveLogRequest(EndpointRequest endpointRequest) {
-            // LogCreateSummary logCreateSummary = new LogCreateSummary();
-
             LogDTO logCreateRequest = this.deserializeLogRequest(endpointRequest.body);
-            // logCreateSummary.logEntriesSent = logCreateRequest.logEntries?.size() ?? 0;
 
             Nebula.Logger.setParentLogTransactionId(logCreateRequest.parentLogTransactionId);
             Nebula.Logger.setScenario(logCreateRequest.transactionScenario);
@@ -537,12 +541,8 @@ global with sharing class LoggerRestResource {
                     // .setTimestamp(logEntryCreateRequest.timestamp)
                     .addTags(logEntryCreateRequest.tags);
             }
-            // Capture the number of log entries in the buffer just before calling saveLog(),
-            // since saveLog() will then flush the buffer
-            // logCreateSummary.logEntriesSaved = Nebula.Logger.getBufferSize();
-            Nebula.Logger.saveLog();
 
-            // return logCreateSummary;
+            Nebula.Logger.saveLog();
         }
 
         private LogDTO deserializeLogRequest(String jsonBody) {
