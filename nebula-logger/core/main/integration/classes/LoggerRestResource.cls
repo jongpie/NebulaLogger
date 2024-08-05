@@ -58,14 +58,14 @@ global with sharing class LoggerRestResource {
 
     private static Endpoint getEndpoint(String endpointName) {
         switch on endpointName {
-            when 'logger-scenarios' {
-                return new LoggerScenariosEndpoint();
-            }
             when 'logs' {
                 return new LogsEndpoint();
             }
             when 'log-entries' {
                 return new LogEntriesEndpoint();
+            }
+            when 'logger-scenarios' {
+                return new LoggerScenariosEndpoint();
             }
             when 'logger-tags' {
                 return new LoggerTagsEndpoint();
@@ -97,7 +97,7 @@ global with sharing class LoggerRestResource {
 
         Nebula.LogMessage warningMessage = new Nebula.LogMessage(
             'Inbound call to {0} endpoint failed with {1} errors:\n\n{2}',
-            endpointRequest.name,
+            REQUEST_URI_BASE + '/' + endpointRequest.name,
             endpointResponse.errors.size(),
             System.JSON.serializePretty(endpointResponse.errors)
         );
@@ -119,7 +119,7 @@ global with sharing class LoggerRestResource {
 
         private EndpointResponse getDefaultResponse(EndpointRequest endpointRequest, String httpMethod) {
             System.Exception unsupportedOperationException = new System.IllegalArgumentException(
-                endpointRequest.name + ' endpoint does not support ' + httpMethod + ' requests'
+                REQUEST_URI_BASE + '/' + endpointRequest.name + ' endpoint does not support ' + httpMethod + ' requests'
             );
             return new EndpointResponse(endpointRequest).setStatusCode(STATUS_CODE_405_METHOD_NOT_ALLOWED).addError(unsupportedOperationException);
         }
@@ -200,6 +200,9 @@ global with sharing class LoggerRestResource {
         public final String transactionId = Nebula.Logger.getTransactionId();
         public final EndpointUserContext user;
 
+        // The status code doesn't need to be returned in the RestResponse body
+        // since the RestResponse headers will include the status code, so use
+        // 'transient' to exclude it during serialization
         public transient Integer statusCode;
 
         public Boolean isSuccess {
@@ -249,7 +252,7 @@ global with sharing class LoggerRestResource {
                     - /services/apexrest/logger/some-endpoint?some-parameter=anything-else
             */
             String parameterStringValue = parameters.get(targetParameterName);
-            return (parameters.containsKey(targetParameterName) && parameterStringValue == null) ||
+            return (parameters.containsKey(targetParameterName) && String.isBlank(parameterStringValue)) ||
                 parameterStringValue?.toLowerCase() == 'true' ||
                 parameterStringValue == '1';
         }
@@ -315,44 +318,6 @@ global with sharing class LoggerRestResource {
     }
 
     /* Start of DTO classes for converting Nebula Logger's SObjects to a simplified representation that is returned as JSON */
-    @TestVisible
-    private class LoggerScenarioDTO {
-        public List<LogDTO> logs;
-        public List<LogEntryDTO> logEntries;
-        public String name;
-
-        public LoggerScenarioDTO(Nebula__LoggerScenario__c loggerScenarioRecord, List<Nebula__Log__c> logs, List<Nebula__LogEntry__c> logEntries) {
-            this.name = loggerScenarioRecord.Nebula__UniqueId__c;
-
-            this.setLogs(logs);
-            this.setLogEntries(logEntries);
-        }
-
-        private void setLogs(List<Nebula__Log__c> logRecords) {
-            if (logRecords == null) {
-                return;
-            }
-
-            this.logs = new List<LogDTO>();
-            for (Nebula__Log__c logRecord : logRecords) {
-                this.logs.add(new LogDTO(logRecord));
-            }
-        }
-
-        private void setLogEntries(List<Nebula__LogEntry__c> logEntryRecords) {
-            if (logEntryRecords == null) {
-                return;
-            }
-
-            this.logEntries = new List<LogEntryDTO>();
-            for (Nebula__LogEntry__c logEntryRecord : logEntryRecords) {
-                // TODO in this situation, it could be helpful for each LogEntryDTO to have a reference to its parent LogDTO,
-                // since the entries in the 'logEntries' property is separate from the logs in the 'logs' property
-                this.logEntries.add(new LogEntryDTO(logEntryRecord, logEntryRecord.Nebula__LogEntryTags__r));
-            }
-        }
-    }
-
     @TestVisible
     private class LogDTO {
         public List<LogEntryDTO> logEntries;
@@ -442,6 +407,44 @@ global with sharing class LoggerRestResource {
     }
 
     @TestVisible
+    private class LoggerScenarioDTO {
+        public List<LogDTO> logs;
+        public List<LogEntryDTO> logEntries;
+        public String name;
+
+        public LoggerScenarioDTO(Nebula__LoggerScenario__c loggerScenarioRecord, List<Nebula__Log__c> logs, List<Nebula__LogEntry__c> logEntries) {
+            this.name = loggerScenarioRecord.Nebula__UniqueId__c;
+
+            this.setLogs(logs);
+            this.setLogEntries(logEntries);
+        }
+
+        private void setLogs(List<Nebula__Log__c> logRecords) {
+            if (logRecords == null) {
+                return;
+            }
+
+            this.logs = new List<LogDTO>();
+            for (Nebula__Log__c logRecord : logRecords) {
+                this.logs.add(new LogDTO(logRecord));
+            }
+        }
+
+        private void setLogEntries(List<Nebula__LogEntry__c> logEntryRecords) {
+            if (logEntryRecords == null) {
+                return;
+            }
+
+            this.logEntries = new List<LogEntryDTO>();
+            for (Nebula__LogEntry__c logEntryRecord : logEntryRecords) {
+                // TODO in this situation, it could be helpful for each LogEntryDTO to have a reference to its parent LogDTO,
+                // since the entries in the 'logEntries' property is separate from the logs in the 'logs' property
+                this.logEntries.add(new LogEntryDTO(logEntryRecord, logEntryRecord.Nebula__LogEntryTags__r));
+            }
+        }
+    }
+
+    @TestVisible
     private class LoggerTagDTO {
         public List<LogEntryDTO> logEntries;
         public String name;
@@ -465,21 +468,6 @@ global with sharing class LoggerRestResource {
     }
     /* End of DTO classes for converting Nebula Logger's SObjects to a simplified representation that is returned as JSON */
 
-    /* Start of '/logger-scenarios' endpoint classes */
-    @TestVisible
-    private class LoggerScenariosEndpointResponse extends EndpointResponse {
-        public List<LoggerScenarioDTO> loggerScenarios;
-
-        public LoggerScenariosEndpointResponse(EndpointRequest endpointRequest) {
-            super(endpointRequest);
-        }
-    }
-
-    private class LoggerScenariosEndpoint extends Endpoint {
-        // TODO
-    }
-    /* End of '/logger-scenarios' endpoint classes */
-
     /* Start of '/logs' endpoint classes */
     @TestVisible
     private class LogsEndpointResponse extends EndpointResponse {
@@ -496,10 +484,10 @@ global with sharing class LoggerRestResource {
     private class LogsEndpoint extends Endpoint {
         public override EndpointResponse handleGet(EndpointRequest endpointRequest) {
             String possibleTransactionId = endpointRequest.particle;
-            if (possibleTransactionId == null) {
-                return this.searchLogs(endpointRequest);
-            } else {
+            if (possibleTransactionId != null) {
                 return this.queryLog(endpointRequest);
+            } else {
+                return this.searchLogs(endpointRequest);
             }
         }
 
@@ -513,11 +501,6 @@ global with sharing class LoggerRestResource {
                 postResponse.setStatusCode(STATUS_CODE_400_BAD_REQUEST).addError(apexException);
                 return postResponse;
             }
-        }
-
-        private EndpointResponse searchLogs(EndpointRequest endpointRequest) {
-            // TODO implement search, using endpointRequest.parameters for search criteria
-            return null;
         }
 
         private EndpointResponse queryLog(EndpointRequest endpointRequest) {
@@ -565,6 +548,11 @@ global with sharing class LoggerRestResource {
             endpointResponse.setStatusCode(STATUS_CODE_200_OK);
 
             return endpointResponse;
+        }
+
+        private EndpointResponse searchLogs(EndpointRequest endpointRequest) {
+            // TODO implement search, using endpointRequest.parameters for search criteria
+            return new EndpointResponse(endpointRequest).addError(new EndpointError('oops'));
         }
 
         private void saveLogRequest(EndpointRequest endpointRequest) {
@@ -625,6 +613,21 @@ global with sharing class LoggerRestResource {
     }
     /* End of '/log-entries' endpoint classes */
 
+    /* Start of '/logger-scenarios' endpoint classes */
+    @TestVisible
+    private class LoggerScenariosEndpointResponse extends EndpointResponse {
+        public List<LoggerScenarioDTO> loggerScenarios;
+
+        public LoggerScenariosEndpointResponse(EndpointRequest endpointRequest) {
+            super(endpointRequest);
+        }
+    }
+
+    private class LoggerScenariosEndpoint extends Endpoint {
+        // TODO
+    }
+    /* End of '/logger-scenarios' endpoint classes */
+
     /* Start of '/logger-tags' endpoint classes */
     @TestVisible
     private class LoggerTagsEndpointResponse extends EndpointResponse {
@@ -650,7 +653,12 @@ global with sharing class LoggerRestResource {
         }
 
         private EndpointResponse handleResponse(EndpointRequest endpointRequest) {
-            String errorMessage = 'Unknown endpoint provided: ' + endpointRequest.name;
+            String errorMessage;
+            if (endpointRequest.name == null) {
+                errorMessage = 'Calling root endpoint /logger is not supported, please provide a specific endpoint';
+            } else {
+                errorMessage = 'Unknown endpoint provided: ' + endpointRequest.uri;
+            }
             return new EndpointResponse(endpointRequest).setStatusCode(STATUS_CODE_404_NOT_FOUND).addError(new EndpointError(errorMessage));
         }
     }

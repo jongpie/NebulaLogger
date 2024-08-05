@@ -177,13 +177,6 @@ private class LoggerRestResource_Tests {
     }
     /* End of SObject --> DTO conversion tests */
 
-    /* Start of '/logger-scenarios' endpoint tests */
-    @IsTest
-    static void logger_scenarios_endpoint_has_tests_added() {
-        System.Assert.fail('TODO add tests to cover expected functionality for /logger-scenarios endpoint');
-    }
-    /* End of '/logger-scenarios' endpoint tests */
-
     /* Start of '/logs' endpoint tests */
     @IsTest
     static void logs_endpoint_get_returns_is_success_false_when_no_matching_transaction_id_found() {
@@ -553,6 +546,13 @@ private class LoggerRestResource_Tests {
         System.Assert.fail('TODO add tests to cover expected functionality for /log-entries endpoint');
     }
     /* End of '/log-entries' endpoint tests */
+
+    /* Start of '/logger-scenarios' endpoint tests */
+    @IsTest
+    static void logger_scenarios_endpoint_has_tests_added() {
+        System.Assert.fail('TODO add tests to cover expected functionality for /logger-scenarios endpoint');
+    }
+    /* End of '/logger-scenarios' endpoint tests */
 
     /* Start of '/logger-tags' endpoint tests */
     @IsTest
