@@ -91,17 +91,15 @@ global with sharing class LoggerRestResource {
         public String uri;
 
         public EndpointRequest(System.RestRequest restRequest) {
-            this.body = restRequest.requestBody?.toString() ?? null;
+            String parsedName = this.getEndpointName(restRequest.requestUri);
+            String requestBody = restRequest.requestBody?.toString();
+
+            this.body = String.isBlank(requestBody) ? null : requestBody;
             this.headerKeys = new List<String>(restRequest.headers.keySet());
+            this.name = parsedName;
             this.parameters = restRequest.params;
-            this.uri = restRequest.requestURI;
-
-            this.parseUri(restRequest.requestUri);
-        }
-
-        private void parseUri(String restRequestUri) {
-            this.name = this.getEndpointName(restRequestUri);
-            this.particle = this.getEndpointParticle(restRequestUri, this.name);
+            this.particle = this.getEndpointParticle(restRequest.requestUri, parsedName);
+            this.uri = restRequest.requestUri;
         }
 
         private String getEndpointName(String restRequestUri) {
@@ -269,6 +267,7 @@ global with sharing class LoggerRestResource {
     @TestVisible
     private class EndpointUserContext {
         public String id = System.UserInfo.getUserId();
+        public String federationIdentifier = 'TODO - need to query this field, not provided via UserInfo';
         public String type = System.UserInfo.getUserType();
         public String username = System.UserInfo.getUsername();
     }
@@ -313,6 +312,8 @@ global with sharing class LoggerRestResource {
     @TestVisible
     private class LogDTO {
         public List<LogEntryDTO> logEntries;
+        // TODO consider making 'logged by' fields into an instance
+        // of EndpointUserContext (perhaps with a new class name?)
         public String loggedById;
         public String loggedByFederationIdentifier;
         public String loggedByUsername;
@@ -476,21 +477,20 @@ global with sharing class LoggerRestResource {
         }
 
         private EndpointResponse queryLog(EndpointRequest endpointRequest) {
-            Boolean isValidUuid = false;
+            LogsEndpointResponse endpointResponse = new LogsEndpointResponse(endpointRequest);
+
             try {
                 System.UUID.fromString(endpointRequest.particle);
-                isValidUuid = true;
             } catch (System.IllegalArgumentException invalidUuidException) {
-                isValidUuid = false;
-            }
-
-            if (isValidUuid == false) {
-                // TODO throw an error of some sort
+                endpointResponse.addError(invalidUuidException);
+                return endpointResponse;
             }
 
             // TODO move query to a selector class
             List<Nebula__Log__c> matchingLogs = [
                 SELECT
+                    Nebula__LoggedBy__c,
+                    Nebula__LoggedByUsername__c,
                     Nebula__ParentLog__r.Nebula__TransactionId__c,
                     Nebula__TransactionId__c,
                     Nebula__TransactionScenario__r.Nebula__UniqueId__c,
@@ -507,7 +507,7 @@ global with sharing class LoggerRestResource {
                 WHERE Nebula__TransactionId__c = :endpointRequest.particle
             ];
 
-            LogsEndpointResponse endpointResponse = new LogsEndpointResponse(endpointRequest);
+
             if (matchingLogs.isEmpty()) {
                 String errorMessage = 'No matching logs found for transaction ID: ' + endpointRequest.particle;
                 System.NoDataFoundException noDataFoundException = new System.NoDataFoundException();
