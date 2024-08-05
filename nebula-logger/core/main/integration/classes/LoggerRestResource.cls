@@ -169,7 +169,7 @@ global with sharing class LoggerRestResource {
         }
 
         public EndpointResponse(EndpointRequest endpointRequest) {
-            if (this.isTruthyValue(endpointRequest.parameters, 'verbose')) {
+            if (this.isTruthy(endpointRequest.parameters, 'verbose')) {
                 // TODO revisit to decide if/what endpoint info should be returned in the reponse
                 // this.endpointRequest = endpointRequest;
                 this.logger = new EndpointLoggerContext();
@@ -192,9 +192,9 @@ global with sharing class LoggerRestResource {
             return this;
         }
 
-        private Boolean isTruthyValue(Map<String, String> parameters, String targetParameterName) {
+        private Boolean isTruthy(Map<String, String> parameters, String targetParameterName) {
             /*
-                If 'some-parameter' is not in the list of parameters, it will be interpreted as false.
+                If 'some-parameter' is not in the map of parameters, it will be interpreted as false.
                 All of these example URL parameters should return true for 'some-parameter':
                     - /services/apexrest/logger/some-endpoint?some-parameter
                     - /services/apexrest/logger/some-endpoint?some-parameter=true
@@ -411,6 +411,15 @@ global with sharing class LoggerRestResource {
     /* End of DTO classes for converting Nebula Logger's SObjects to a simplified representation that is returned as JSON */
 
     /* Start of '/logger-scenarios' endpoint classes */
+    @TestVisible
+    private class LoggerScenariosEndpointResponse extends EndpointResponse {
+        public List<LoggerScenarioDTO> logScenarios;
+
+        public LoggerScenariosEndpointResponse(EndpointRequest endpointRequest) {
+            super(endpointRequest);
+        }
+    }
+
     private class LoggerScenariosEndpoint extends Endpoint {
         // TODO
     }
@@ -419,6 +428,8 @@ global with sharing class LoggerRestResource {
     /* Start of '/logs' endpoint classes */
     @TestVisible
     private class LogsEndpointResponse extends EndpointResponse {
+        // Only log or logs will be set (depending on which endpoint parameters & method is used)
+        // There should not be a situation where both log & logs are set
         public LogDto log;
         public List<LogDto> logs;
 
@@ -557,12 +568,30 @@ global with sharing class LoggerRestResource {
     /* end of '/logs' endpoint classes */
 
     /* Start of '/log-entries' endpoint classes */
+    @TestVisible
+    private class LogEntriesEndpointResponse extends EndpointResponse {
+        public List<LogEntryDTO> logEntries;
+
+        public LogEntriesEndpointResponse(EndpointRequest endpointRequest) {
+            super(endpointRequest);
+        }
+    }
+
     private class LogEntriesEndpoint extends Endpoint {
         // TODO
     }
     /* End of '/log-entries' endpoint classes */
 
     /* Start of '/logger-tags' endpoint classes */
+    @TestVisible
+    private class LoggerTagsEndpointResponse extends EndpointResponse {
+        public List<LoggerTagDTO> loggerTags;
+
+        public LoggerTagsEndpointResponse(EndpointRequest endpointRequest) {
+            super(endpointRequest);
+        }
+    }
+
     private class LoggerTagsEndpoint extends Endpoint {
         // TODO
     }
