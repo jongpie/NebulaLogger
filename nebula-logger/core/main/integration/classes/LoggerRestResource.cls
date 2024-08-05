@@ -191,12 +191,16 @@ global with sharing class LoggerRestResource {
     }
 
     @TestVisible
-    private virtual class EndpointResponse {
+    private class EndpointResponse {
         public final EndpointRequest endpointRequest;
         public final List<EndpointError> errors = new List<EndpointError>();
         public final EndpointLoggerContext logger;
         public final EndpointOrganizationContext organization;
         public final String requestId = System.Request.getCurrent().getRequestId();
+        // Only 'result' or 'results' will be set (depending on which endpoint parameters & method are used)
+        // There should not be a situation where both 'result' & 'results' are set
+        public SObjectDTO result;
+        public List<SObjectDTO> results;
         public final String transactionId = Nebula.Logger.getTransactionId();
         public final EndpointUserContext user;
 
@@ -319,21 +323,72 @@ global with sharing class LoggerRestResource {
 
     /* Start of DTO classes for converting Nebula Logger's SObjects to a simplified representation that is returned as JSON */
     @TestVisible
-    private class LogDTO {
+    private abstract class SObjectDTO {
+        // This property is intended to mimic the attributes property
+        // that's included in SObject records. For example, this Apex code:
+        //      JSON.serializePretty(new User(Id = Userinfo.getUserId())
+        // ...includes an 'attributes' property in the JSON string:
+        //      {"attributes":{"type":"User","url":"/services/data/v61.0/sobjects/User/00553000007b3HvAAI"},"Id":"00553000007b3HvAAI"}
+        public final Map<String, String> attributes;
+
+        public String id;
+        public String name;
+
+        protected SObjectDTO(String type) {
+            this.attributes = new Map<String, String>{ 'type' => type };
+        }
+    }
+
+    // DTOs for some standard objects
+    public class ProfileDTO extends SObjectDTO {
+        public ProfileDTO(String id, String name) {
+            super('Profile');
+
+            this.id = id;
+            this.name = name;
+        }
+    }
+
+    public class UserRoleDTO extends SObjectDTO {
+        public UserRoleDTO(String id, String name) {
+            super('UserRole');
+
+            this.id = id;
+            this.name = name;
+        }
+    }
+
+    public class UserDTO extends SObjectDTO {
+        public String federationIdentifier;
+        public ProfileDTO profile;
+        public String username;
+        public UserRoleDTO userRole;
+
+        public UserDTO() {
+            super('User');
+        }
+    }
+
+    @TestVisible
+    private class LogDTO extends SObjectDTO {
         public List<LogEntryDTO> logEntries;
         // TODO consider making 'logged by' fields into an instance
         // of EndpointUserContext (perhaps with a new class name?)
-        public String loggedById;
-        public String loggedByFederationIdentifier;
-        public String loggedByUsername;
+        public UserDTO loggedBy;
+        // TODO either revert to using these properties, or delete them
+        // public String loggedById;
+        // public String loggedByFederationIdentifier;
+        // public String loggedByUsername;
         public String originSystemName;
         public String originSystemReferenceId;
         public String parentLogTransactionId;
+        public Datetime startTime;
+        public Map<String, Integer> totalLogEntries;
         public String transactionId;
         public String transactionScenario;
 
         public LogDTO() {
-            // No-op - used by tests to mock this
+            super('Log');
         }
 
         public LogDTO(Nebula__Log__c logRecord) {
@@ -342,15 +397,43 @@ global with sharing class LoggerRestResource {
 
         public LogDTO(Nebula__Log__c logRecord, List<Nebula__LogEntry__c> logEntryRecords) {
             this();
-            this.loggedById = logRecord.Nebula__LoggedBy__c;
+
+            this.id = logRecord.Id;
+            this.loggedBy = new UserDTO();
+            this.loggedBy.id = logRecord.Nebula__LoggedBy__c;
             // TODO the managed package does not yet have the field LoggedByFederationIdentifier__c
             // this.loggedByFederationIdentifier = logRecord.Nebula__LoggedByFederationIdentifier__c;
-            this.loggedByFederationIdentifier = 'TODO';
-            this.loggedByUsername = logRecord.Nebula__LoggedByUsername__c;
+            this.loggedBy.federationIdentifier = 'TODO';
+            this.loggedBy.profile = new ProfileDTO(logRecord.Nebula__ProfileId__c, logRecord.Nebula__ProfileName__c);
+            this.loggedBy.username = logRecord.Nebula__LoggedByUsername__c;
+            this.loggedBy.userRole = logRecord.Nebula__UserRoleId__c == null
+                ? null
+                : new UserRoleDTO(logRecord.Nebula__UserRoleId__c, logRecord.Nebula__UserRoleName__c);
+
+            // this.loggedById = logRecord.Nebula__LoggedBy__c;
+            // // TODO the managed package does not yet have the field LoggedByFederationIdentifier__c
+            // // this.loggedByFederationIdentifier = logRecord.Nebula__LoggedByFederationIdentifier__c;
+            // this.loggedByFederationIdentifier = 'TODO';
+            // this.loggedByUsername = logRecord.Nebula__LoggedByUsername__c;
+            this.name = logRecord.Name;
             this.originSystemName = 'TODO';
             this.originSystemReferenceId = 'TODO';
             this.parentLogTransactionId = logRecord.Nebula__ParentLog__r.Nebula__TransactionId__c;
+            this.startTime = logRecord.Nebula__StartTime__c;
+            this.totalLogEntries = new Map<String, Integer>{
+                'error' => Integer.valueOf(logRecord.Nebula__TotalERRORLogEntries__c),
+                'warn' => Integer.valueOf(logRecord.Nebula__TotalWARNLogEntries__c),
+                'info' => Integer.valueOf(logRecord.Nebula__TotalINFOLogEntries__c),
+                'debug' => Integer.valueOf(logRecord.Nebula__TotalDEBUGLogEntries__c),
+                'fine' => Integer.valueOf(logRecord.Nebula__TotalFINELogEntries__c),
+                'finer' => Integer.valueOf(logRecord.Nebula__TotalFINERLogEntries__c),
+                'finest' => Integer.valueOf(logRecord.Nebula__TotalFINESTLogEntries__c)
+            };
             this.transactionId = logRecord.Nebula__TransactionId__c;
+            // The transactionScenario property is intentionally mapped to UniqueId__c
+            // because the standard Name field is only 80 characters long
+            // and the UniqueId__c field is 255 characters, so it has the
+            // correct/full name
             this.transactionScenario = logRecord.Nebula__TransactionScenario__r.Nebula__UniqueId__c;
 
             this.setLogEntries(logEntryRecords);
@@ -369,7 +452,17 @@ global with sharing class LoggerRestResource {
     }
 
     @TestVisible
-    private class LogEntryDTO {
+    private class LogEntryDTO extends SObjectDTO {
+        // TODO confirm if anything needs to be done with data type/format
+        // since epoch is originally a Long, but stored as Decimal
+        public Decimal epochTimestamp;
+        // TODO finalize a convention to be used for all DTO properties for things
+        // like UUID/Uuid, URI/Uri, REST/Rest, etc
+        // It probably makes the most sense to be consistent with the SObject fields,
+        // like LogEntry__c.EventUuid__c field --> eventUuid property
+        public String eventUuid;
+        // TODO revert to using this or delete it
+        // public Map<String, String> loggingLevel;
         public String loggingLevel;
         public String message;
         public String relatedRecordId;
@@ -377,7 +470,7 @@ global with sharing class LoggerRestResource {
         public Datetime timestamp;
 
         public LogEntryDTO() {
-            // No-op - used by tests to mock this
+            super('LogEntry');
         }
 
         public LogEntryDTO(Nebula__LogEntry__c logEntryRecord) {
@@ -386,8 +479,17 @@ global with sharing class LoggerRestResource {
 
         public LogEntryDTO(Nebula__LogEntry__c logEntryRecord, List<Nebula__LogEntryTag__c> logEntryTagRecords) {
             this();
+
+            this.epochTimestamp = logEntryRecord.Nebula__EpochTimestamp__c;
+            this.eventUuid = logEntryRecord.Nebula__EventUuid__c;
+            this.id = logEntryRecord.Id;
+            // this.loggingLevel = new Map<String, String>{
+            //     'name' => logEntryRecord.Nebula__LoggingLevel__c,
+            //     'ordinal' => logEntryRecord.Nebula__LoggingLevelOrdinal__c.toString()
+            // };
             this.loggingLevel = logEntryRecord.Nebula__LoggingLevel__c;
             this.message = logEntryRecord.Nebula__Message__c;
+            this.name = logEntryRecord.Name;
             this.relatedRecordId = logEntryRecord.Nebula__RecordId__c;
             this.timestamp = logEntryRecord.Nebula__Timestamp__c;
 
@@ -407,16 +509,26 @@ global with sharing class LoggerRestResource {
     }
 
     @TestVisible
-    private class LoggerScenarioDTO {
+    private class LoggerScenarioDTO extends SObjectDTO {
         public List<LogDTO> logs;
         public List<LogEntryDTO> logEntries;
-        public String name;
 
         public LoggerScenarioDTO(Nebula__LoggerScenario__c loggerScenarioRecord, List<Nebula__Log__c> logs, List<Nebula__LogEntry__c> logEntries) {
+            this();
+
+            this.id = loggerScenarioRecord.id;
+            // The name property is intentionally mapped to UniqueId__c
+            // because the standard Name field is only 80 characters long
+            // and the UniqueId__c field is 255 characters, so it has the
+            // correct/full name
             this.name = loggerScenarioRecord.Nebula__UniqueId__c;
 
             this.setLogs(logs);
             this.setLogEntries(logEntries);
+        }
+
+        public LoggerScenarioDTO() {
+            super('LoggerScenario');
         }
 
         private void setLogs(List<Nebula__Log__c> logRecords) {
@@ -445,14 +557,20 @@ global with sharing class LoggerRestResource {
     }
 
     @TestVisible
-    private class LoggerTagDTO {
+    private class LoggerTagDTO extends SObjectDTO {
         public List<LogEntryDTO> logEntries;
         public String name;
 
         public LoggerTagDTO(Nebula__LoggerTag__c loggerTagRecord, List<Nebula__LogEntry__c> logEntryRecords) {
+            this();
+
             this.name = loggerTagRecord.Nebula__UniqueId__c;
 
             this.setLogEntries(logEntryRecords);
+        }
+
+        public LoggerTagDTO() {
+            super('LoggerTag');
         }
 
         private void setLogEntries(List<Nebula__LogEntry__c> logEntryRecords) {
@@ -469,18 +587,6 @@ global with sharing class LoggerRestResource {
     /* End of DTO classes for converting Nebula Logger's SObjects to a simplified representation that is returned as JSON */
 
     /* Start of '/logs' endpoint classes */
-    @TestVisible
-    private class LogsEndpointResponse extends EndpointResponse {
-        // Only log or logs will be set (depending on which endpoint parameters & method are used)
-        // There should not be a situation where both log & logs are set
-        public LogDto log;
-        public List<LogDto> logs;
-
-        public LogsEndpointResponse(EndpointRequest endpointRequest) {
-            super(endpointRequest);
-        }
-    }
-
     private class LogsEndpoint extends Endpoint {
         public override EndpointResponse handleGet(EndpointRequest endpointRequest) {
             String possibleTransactionId = endpointRequest.particle;
@@ -504,7 +610,7 @@ global with sharing class LoggerRestResource {
         }
 
         private EndpointResponse queryLog(EndpointRequest endpointRequest) {
-            LogsEndpointResponse endpointResponse = new LogsEndpointResponse(endpointRequest);
+            EndpointResponse endpointResponse = new EndpointResponse(endpointRequest);
 
             try {
                 System.UUID.fromString(endpointRequest.particle);
@@ -516,14 +622,33 @@ global with sharing class LoggerRestResource {
             // TODO move query to a selector class
             List<Nebula__Log__c> matchingLogRecords = [
                 SELECT
+                    Id,
+                    Name,
                     Nebula__LoggedBy__c,
                     Nebula__LoggedByUsername__c,
                     Nebula__ParentLog__r.Nebula__TransactionId__c,
+                    Nebula__ProfileId__c,
+                    Nebula__ProfileName__c,
+                    Nebula__StartTime__c,
+                    Nebula__TotalDEBUGLogEntries__c,
+                    Nebula__TotalERRORLogEntries__c,
+                    Nebula__TotalFINELogEntries__c,
+                    Nebula__TotalFINERLogEntries__c,
+                    Nebula__TotalFINESTLogEntries__c,
+                    Nebula__TotalINFOLogEntries__c,
+                    Nebula__TotalWARNLogEntries__c,
                     Nebula__TransactionId__c,
                     Nebula__TransactionScenario__r.Nebula__UniqueId__c,
+                    Nebula__UserRoleId__c,
+                    Nebula__UserRoleName__c,
                     (
                         SELECT
+                            Id,
+                            Name,
+                            Nebula__EpochTimestamp__c,
+                            Nebula__EventUuid__c,
                             Nebula__LoggingLevel__c,
+                            Nebula__LoggingLevelOrdinal__c,
                             Nebula__Message__c,
                             Nebula__RecordId__c,
                             Nebula__Timestamp__c,
@@ -543,7 +668,7 @@ global with sharing class LoggerRestResource {
                 endpointResponse.addError(noDataFoundException);
             } else {
                 Nebula__Log__c matchingLogRecord = matchingLogRecords.get(0);
-                endpointResponse.log = new LogDTO(matchingLogRecord, matchingLogRecord.Nebula__LogEntries__r);
+                endpointResponse.result = new LogDTO(matchingLogRecord, matchingLogRecord.Nebula__LogEntries__r);
             }
             endpointResponse.setStatusCode(STATUS_CODE_200_OK);
 
@@ -562,6 +687,10 @@ global with sharing class LoggerRestResource {
             Nebula.Logger.setScenario(logCreateRequest.transactionScenario);
 
             for (LogEntryDTO logEntryCreateRequest : logCreateRequest.logEntries) {
+                // TODO need to revisit the shape of loggingLevel - should it be a string, or a Map/inner class?
+                // For inbound requests to create a log, it's easier for developers to just pass a string
+                // For responses, having loggingLevel as a Mapl/inner class might make the JSON more readable...?
+                // System.LoggingLevel loggingLevel = Nebula.Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel.get('name'));
                 System.LoggingLevel loggingLevel = Nebula.Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel);
                 Nebula.Logger.newEntry(loggingLevel, logEntryCreateRequest.message)
                     // FIXME The managed package currently doesn't have a way to set the value
@@ -599,45 +728,18 @@ global with sharing class LoggerRestResource {
     /* end of '/logs' endpoint classes */
 
     /* Start of '/log-entries' endpoint classes */
-    @TestVisible
-    private class LogEntriesEndpointResponse extends EndpointResponse {
-        public List<LogEntryDTO> logEntries;
-
-        public LogEntriesEndpointResponse(EndpointRequest endpointRequest) {
-            super(endpointRequest);
-        }
-    }
-
     private class LogEntriesEndpoint extends Endpoint {
         // TODO
     }
     /* End of '/log-entries' endpoint classes */
 
     /* Start of '/logger-scenarios' endpoint classes */
-    @TestVisible
-    private class LoggerScenariosEndpointResponse extends EndpointResponse {
-        public List<LoggerScenarioDTO> loggerScenarios;
-
-        public LoggerScenariosEndpointResponse(EndpointRequest endpointRequest) {
-            super(endpointRequest);
-        }
-    }
-
     private class LoggerScenariosEndpoint extends Endpoint {
         // TODO
     }
     /* End of '/logger-scenarios' endpoint classes */
 
     /* Start of '/logger-tags' endpoint classes */
-    @TestVisible
-    private class LoggerTagsEndpointResponse extends EndpointResponse {
-        public List<LoggerTagDTO> loggerTags;
-
-        public LoggerTagsEndpointResponse(EndpointRequest endpointRequest) {
-            super(endpointRequest);
-        }
-    }
-
     private class LoggerTagsEndpoint extends Endpoint {
         // TODO
     }
