@@ -170,6 +170,13 @@ private class LoggerRestResource_Tests {
     }
     /* End of common endpoint functionality tests */
 
+    /* Start of SObject --> DTO conversion tests */
+    @IsTest
+    static void dto_classes_have_tests_added() {
+        System.Assert.fail('TODO add tests to cover expected functionality for converting SObject records to DTOs');
+    }
+    /* End of SObject --> DTO conversion tests */
+
     /* Start of '/logger-scenarios' endpoint tests */
     @IsTest
     static void logger_scenarios_endpoint_has_tests_added() {
