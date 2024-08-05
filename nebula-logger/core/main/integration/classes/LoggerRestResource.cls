@@ -41,6 +41,8 @@ global with sharing class LoggerRestResource {
 
         EndpointResponse endpointResponse = endpoint.handleGet(endpointRequest);
         System.RestContext.response = buildRestResponse(endpointResponse);
+
+        logErrors(endpointRequest, endpointResponse, System.RestContext.request, System.RestContext.response);
     }
 
     @HttpPost
@@ -51,16 +53,7 @@ global with sharing class LoggerRestResource {
         EndpointResponse endpointResponse = endpoint.handlePost(endpointRequest);
         System.RestContext.response = buildRestResponse(endpointResponse);
 
-        if (endpointResponse.isSuccess == false) {
-            Nebula.LogMessage warningMessage = new Nebula.LogMessage(
-                'Inbound call to {0} endpoint failed with {1} errors:\n\n{2}',
-                endpointRequest.name,
-                endpointResponse.errors.size(),
-                System.JSON.serializePretty(endpointResponse.errors)
-            );
-            Nebula.Logger.warn(warningMessage).setRestRequestDetails(System.RestContext.request).setRestResponseDetails(System.RestContext.response);
-            Nebula.Logger.saveLog();
-        }
+        logErrors(endpointRequest, endpointResponse, System.RestContext.request, System.RestContext.response);
     }
 
     private static Endpoint getEndpoint(String endpointName) {
@@ -89,6 +82,27 @@ global with sharing class LoggerRestResource {
         restResponse.responseBody = Blob.valueOf(System.JSON.serialize(endpointResponse, SUPPRESS_NULLS_IN_JSON_SERIALIZATION));
         restResponse.statusCode = endpointResponse.statusCode;
         return restResponse;
+    }
+
+    // TODO revisit - this is probably too many parameters...?
+    private static void logErrors(
+        EndpointRequest endpointRequest,
+        EndpointResponse endpointResponse,
+        System.RestRequest restRequest,
+        System.RestResponse restResponse
+    ) {
+        if (endpointResponse.isSuccess) {
+            return;
+        }
+
+        Nebula.LogMessage warningMessage = new Nebula.LogMessage(
+            'Inbound call to {0} endpoint failed with {1} errors:\n\n{2}',
+            endpointRequest.name,
+            endpointResponse.errors.size(),
+            System.JSON.serializePretty(endpointResponse.errors)
+        );
+        Nebula.Logger.warn(warningMessage).setRestRequestDetails(restRequest).setRestResponseDetails(restResponse);
+        Nebula.Logger.saveLog();
     }
 
     /* Base classes that act as the building blocks for all endpoints */
