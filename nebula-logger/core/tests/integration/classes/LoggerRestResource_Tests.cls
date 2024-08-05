@@ -213,14 +213,15 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_200_OK, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
-        // System.Assert.isNotNull(endpointResponse.log);
-        System.Assert.areEqual(log.Nebula__TransactionId__c, endpointResponse.log.transactionId);
+        // System.Assert.isNotNull(endpointResponse.result);
+        LoggerRestResource.LogDTO logResult = (LoggerRestResource.LogDTO) endpointResponse.result;
+        System.Assert.areEqual(log.Nebula__TransactionId__c, logResult.transactionId);
         System.Assert.fail('TODO add more asserts, including asserts for log entry & tags');
     }
 
@@ -235,15 +236,15 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
         System.Assert.areEqual('No data provided', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        // System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.result);
     }
 
     @IsTest
@@ -259,15 +260,15 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
         System.Assert.areEqual('No data provided for required property "originSystemName"', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        // System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.result);
     }
 
     @IsTest
@@ -284,15 +285,15 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
         System.Assert.areEqual('No data provided for required property "logEntries"', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        // System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.result);
     }
 
     @IsTest
@@ -309,15 +310,15 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_400_BAD_REQUEST, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isFalse(endpointResponse.isSuccess);
         System.Assert.areEqual(1, endpointResponse.errors.size());
         System.Assert.areEqual('No data provided for required property "logEntries"', endpointResponse.errors.get(0).message);
         System.Assert.areEqual(System.IllegalArgumentException.class.getName(), endpointResponse.errors.get(0).type);
-        // System.Assert.isNull(endpointResponse.log);
+        // System.Assert.isNull(endpointResponse.result);
     }
 
     @IsTest
@@ -345,18 +346,18 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        // System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.result);
         // TODO Revisit to add a specific count of log entries saved
-        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.result.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.result.logEntriesSent);
         Nebula__Log__c log = [SELECT Id, Nebula__TransactionId__c FROM Nebula__Log__c];
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), log.Nebula__TransactionId__c);
         Nebula__LogEntry__c firstLogEntry = [
@@ -402,18 +403,18 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        // System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.result);
         // TODO Revisit to add a specific count of log entries saved
-        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.result.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.result.logEntriesSent);
         Nebula__Log__c log = [SELECT Id, Nebula__ParentLog__c, Nebula__TransactionId__c FROM Nebula__Log__c WHERE Id != :parentLog.Id];
         System.Assert.areEqual(parentLog.Id, log.Nebula__ParentLog__c);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), log.Nebula__TransactionId__c);
@@ -440,18 +441,18 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        // System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.result);
         // TODO Revisit to add a specific count of log entries saved
-        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.result.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.result.logEntriesSent);
         Nebula__Log__c log = [SELECT Id, Nebula__TransactionScenario__r.Name FROM Nebula__Log__c];
         System.Assert.areEqual(logCreateRequest.transactionScenario, log.Nebula__TransactionScenario__r.Name);
         List<Nebula__LogEntry__c> logEntries = [SELECT Id, Nebula__EntryScenario__r.Name FROM Nebula__LogEntry__c];
@@ -483,18 +484,18 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         System.Assert.isTrue(endpointResponse.isSuccess);
         System.Assert.areEqual(0, endpointResponse.errors.size());
         System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
         System.Assert.areEqual(Nebula.Logger.getTransactionId(), endpointResponse.transactionId);
-        // System.Assert.isNotNull(endpointResponse.log);
+        // System.Assert.isNotNull(endpointResponse.result);
         // TODO Revisit to add a specific count of log entries saved
-        // System.Assert.isNotNull(endpointResponse.log.logEntriesSaved);
-        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.log.logEntriesSent);
+        // System.Assert.isNotNull(endpointResponse.result.logEntriesSaved);
+        // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.result.logEntriesSent);
         Nebula__LogEntry__c logEntry = [
             SELECT Id, Nebula__RecordId__c
             FROM Nebula__LogEntry__c
@@ -524,9 +525,9 @@ private class LoggerRestResource_Tests {
         System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
         System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
         System.Assert.isNotNull(System.RestContext.response.responseBody);
-        LoggerRestResource.LogsEndpointResponse endpointResponse = (LoggerRestResource.LogsEndpointResponse) System.JSON.deserialize(
+        LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
             System.RestContext.response.responseBody.toString(),
-            LoggerRestResource.LogsEndpointResponse.class
+            LoggerRestResource.EndpointResponse.class
         );
         Nebula__LogEntry__c logEntry = [
             SELECT Id, (SELECT Id, Nebula__Tag__r.Name FROM Nebula__LogEntryTags__r)
