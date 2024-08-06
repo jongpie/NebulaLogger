@@ -183,12 +183,6 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ---
 
-### REST API for External Integrations
-
-TODO add content here about external integration systems using LoggerRestResource REST API
-
----
-
 ### All Together: Apex, Lightning Components & Flow in One Logging Tool, maybe? (TODO revisit this sections)
 
 After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.

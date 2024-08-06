@@ -1,0 +1,11 @@
+# Config file for using the mob CLI (https://mob.sh) with Nebula Logger
+
+# General mob CLI settings
+MOB_TIMER="20"
+MOB_TIMER_ROOM=""
+MOB_TIMER_URL=""
+
+# Branch & commit settings
+MOB_START_COMMIT_MESSAGE="[WIP] started"
+MOB_WIP_BRANCH_PREFIX="wip/"
+MOB_WIP_COMMIT_MESSAGE="[WIP] checkpoint"
