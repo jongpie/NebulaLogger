@@ -1,7 +1,7 @@
 {
-    "orgName": "Nebula Logger - Base Scratch Org",
+    "orgName": "Nebula Logger - Build - Base Scratch Org",
     "edition": "Enterprise",
-    "hasSampleData": true,
+    "hasSampleData": false,
     "country": "US",
     "language": "en_US",
     "features": [],
@@ -14,14 +14,6 @@
         },
         "pathAssistantSettings": {
             "pathAssistantEnabled": false
-        },
-        "securitySettings": {
-            "enableAdminLoginAsAnyUser": false
-        },
-        "userManagementSettings": {
-            "enableEnhancedPermsetMgmt": true,
-            "enableEnhancedProfileMgmt": true,
-            "enableNewProfileUI": true
         }
     }
 }

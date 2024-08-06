@@ -7,7 +7,7 @@
         {
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
-            "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
+            "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
             "scopeProfiles": true,
             "versionNumber": "4.14.0.NEXT",
             "versionName": "Summer '24 Release",
@@ -16,10 +16,9 @@
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
             },
-            "default": true
+            "default": false
         },
         {
-            "default": false,
             "package": "Nebula Logger - Core Plugin - Async Failure Additions",
             "path": "./nebula-logger/plugins/async-failure-additions/plugin",
             "dependencies": [
@@ -29,7 +28,8 @@
             ],
             "versionNumber": "1.0.2.NEXT",
             "versionName": "Added logging for Screen Flow failures",
-            "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)"
+            "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)",
+            "default": false
         },
         {
             "package": "Nebula Logger - Core Plugin - Big Object Archiving",
@@ -69,6 +69,10 @@
             "versionName": "Removed ApiVersion__c in Field Set",
             "versionDescription": "Removed the deprecated field Log__c.ApiVersion__c from the field set Log__c.SlackNotificationFields",
             "default": false
+        },
+        {
+            "path": "./nebula-logger/dev",
+            "default": true
         },
         {
             "path": "./nebula-logger/extra-tests",
