@@ -384,7 +384,7 @@ public inherited sharing class ComponentLogger {
         public String functionName { get; set; }
 
         /**
-         * @description The metadata type of the component thatthat generated the log entry
+         * @description The metadata type of the component that generated the log entry
          *              Possible values are `AuraDefinitionBundle` and `LightningComponentBundle`
          */
         @AuraEnabled

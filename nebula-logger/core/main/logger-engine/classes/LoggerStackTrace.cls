@@ -30,7 +30,7 @@ public without sharing class LoggerStackTrace {
     @SuppressWarnings('PMD.FieldNamingConventions')
     public enum SourceLanguage {
         Apex,
-        // JavaScript is now deprecated (possible SourceLanguage altogether?),
+        // JavaScript is now deprecated (possibly SourceLanguage altogether?),
         // and will be removed in a future release
         JavaScript
     }

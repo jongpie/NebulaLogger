@@ -232,7 +232,7 @@ const LogEntryBuilder = class {
                         scenario: this.#componentLogEntry.scenario,
                         timestamp: this.#componentLogEntry.timestamp
                     },
-                    (_key, value) => value ?? undefined,
+                    (_, value) => value ?? undefined,
                     2
                 )
         );

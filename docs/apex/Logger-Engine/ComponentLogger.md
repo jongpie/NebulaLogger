@@ -225,7 +225,7 @@ The component&apos;s function that generated the log entry
 
 ###### `metadataType` → `String`
 
-The metadata type of the component thatthat generated the log entry Possible values are `AuraDefinitionBundle` and `LightningComponentBundle`
+The metadata type of the component that generated the log entry Possible values are `AuraDefinitionBundle` and `LightningComponentBundle`
 
 ###### `parsedStackTraceString` → `String`
 
