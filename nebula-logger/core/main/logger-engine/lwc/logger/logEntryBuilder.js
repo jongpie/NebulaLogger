@@ -213,7 +213,7 @@ const LogEntryBuilder = class {
         }
 
         const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[this.#componentLogEntry.loggingLevel];
-        const qualifiedMessage = `${this.#componentLogEntry.loggingLevel} ${loggingLevelEmoji}: ${this.#componentLogEntry.message}`;
+        const qualifiedMessage = `${loggingLevelEmoji} ${this.#componentLogEntry.loggingLevel}: ${this.#componentLogEntry.message}`;
         consoleLoggingFunction(
             consoleMessagePrefix,
             consoleFormatting,

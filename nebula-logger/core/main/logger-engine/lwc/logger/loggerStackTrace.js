@@ -239,7 +239,7 @@ export class LoggerStackTrace {
         let originStackTraceParticle;
         const parsedStackTraceLines = [];
         originStackTraceParticles.forEach(currentStackTraceParticle => {
-            if (currentStackTraceParticle.fileName?.endsWith('/logger.js')) {
+            if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('/logger.js')) {
                 return;
             }
 
@@ -247,9 +247,14 @@ export class LoggerStackTrace {
                 return;
             }
 
+            if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug')) {
+                return;
+            }
+
             currentStackTraceParticle.source = currentStackTraceParticle.source?.trim();
             if (currentStackTraceParticle.source) {
                 this._cleanStackTraceParticle(currentStackTraceParticle);
+                originStackTraceParticle = originStackTraceParticle ?? currentStackTraceParticle;
                 parsedStackTraceLines.push(currentStackTraceParticle.source);
             }
         });
