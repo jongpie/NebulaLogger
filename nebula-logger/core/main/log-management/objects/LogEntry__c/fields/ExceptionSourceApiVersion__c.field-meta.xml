@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <inlineHelpText>The API version for this source metadata that generated the exception</inlineHelpText>
+    <inlineHelpText>The API version for the source metadata that generated the exception</inlineHelpText>
     <label>Exception Source API Version</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

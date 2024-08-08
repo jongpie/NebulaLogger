@@ -11,6 +11,7 @@
     -   [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.setScenario(scenario)](#LogEntryBuilder+setScenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.parseStackTrace(error)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
     -   [.getComponentLogEntry()](#LogEntryBuilder+getComponentLogEntry) <code>ComponentLogEntry</code>
@@ -91,6 +92,19 @@ Sets the log entry event's exception fields
 | Param | Type               | Description                                                                      |
 | ----- | ------------------ | -------------------------------------------------------------------------------- |
 | error | <code>Error</code> | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
+
+<a name="LogEntryBuilder+parseStackTrace"></a>
+
+### logEntryBuilder.parseStackTrace(error) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+
+Parses the provided error's stack trace and sets the log entry's origin & stack trace fields
+
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+
+| Param | Type               | Description                                                             |
+| ----- | ------------------ | ----------------------------------------------------------------------- |
+| error | <code>Error</code> | The instance of a JavaScript `Error` object with a stack trace to parse |
 
 <a name="LogEntryBuilder+addTag"></a>
 

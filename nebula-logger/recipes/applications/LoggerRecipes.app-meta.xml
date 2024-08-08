@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <content>Logger_Recipes_Home_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+    </actionOverrides>
     <brand>
         <headerColor>#F47536</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
@@ -10,11 +18,19 @@
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
     <label>Logger Recipes</label>
     <navType>Standard</navType>
-    <tabs>Logger_lwc_demo</tabs>
-    <tabs>Logger_lwc_legacy_demo</tabs>
-    <tabs>LoggerAuraDemo</tabs>
+    <tabs>standard-home</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>Logger_App_Page_Demo</tabs>
+    <tabs>Logger_LWC_Import_Demo</tabs>
+    <tabs>Logger_LWC_Embed_Demo</tabs>
+    <tabs>Logger_Aura_Embed_Demo</tabs>
+    <tabs>Log__c</tabs>
+    <tabs>LogEntry__c</tabs>
+    <tabs>LoggerScenario__c</tabs>
+    <tabs>LoggerTag__c</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar>Logger_Recipes_UtilityBar</utilityBar>
+    <utilityBar>Logger_Recipes_Utility_Bar</utilityBar>
 </CustomApplication>

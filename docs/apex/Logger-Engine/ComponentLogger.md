@@ -69,7 +69,11 @@ The error&apos;s message
 
 ###### `stack` → `String`
 
-The error&apos;s stack trace
+`DEPRECATED` This property is no longer used, and will be removed in a future release. The error&apos;s stack trace string
+
+###### `stackTrace` → `ComponentStackTrace`
+
+Contains details about the origin of the error
 
 ###### `type` → `String`
 
@@ -103,7 +107,7 @@ The resolution of the user&apos;s device
 
 ###### `browserUrl` → `String`
 
-DEPRECATED: Use `browserAddress` instead
+`DEPRECATED` Use `browserAddress` instead
 
 ###### `browserUserAgent` → `String`
 
@@ -125,6 +129,10 @@ The name of the `LoggingLevel` enum value
 
 The value to use as the log entry&apos;s message
 
+###### `originStackTrace` → `ComponentStackTrace`
+
+Contains details about the origin of the component log entry
+
 ###### `record` → `SObject`
 
 (Optional) The record to relate to the log entry - the record&apos;s JSON is also stored
@@ -139,7 +147,7 @@ Optionally specify the name to use for the current transaction&apos;s scenario
 
 ###### `stack` → `String`
 
-The JavaScript stack trace from when the log entry was created
+`DEPRECATED` This property is no longer used, and will be removed in a future release. The JavaScript stack trace from when the log entry was created
 
 ###### `tags` → `List<String>`
 
@@ -196,5 +204,31 @@ The name of the `LoggingLevel` enum value
 ###### `ordinal` → `Integer`
 
 The ordinal of the `LoggingLevel` enum value
+
+---
+
+#### ComponentLogger.ComponentStackTrace class
+
+A DTO object used to log details about the origin of a JavaScript log entry
+
+---
+
+##### Properties
+
+###### `componentName` → `String`
+
+The component that generated the log entry
+
+###### `functionName` → `String`
+
+The component&apos;s function that generated the log entry
+
+###### `metadataType` → `String`
+
+The metadata type of the component that generated the log entry Possible values are `AuraDefinitionBundle` and `LightningComponentBundle`
+
+###### `parsedStackTraceString` → `String`
+
+The parsed stack trace used to determine the log entry origin
 
 ---

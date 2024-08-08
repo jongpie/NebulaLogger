@@ -39,7 +39,9 @@ export default class Logger extends LightningElement {
      */
     @api
     error(message) {
-        return this.#loggerService.error(message);
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.error(message, new Error());
     }
 
     /**
@@ -49,7 +51,9 @@ export default class Logger extends LightningElement {
      */
     @api
     warn(message) {
-        return this.#loggerService.warn(message);
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.warn(message, new Error());
     }
 
     /**
@@ -59,7 +63,9 @@ export default class Logger extends LightningElement {
      */
     @api
     info(message) {
-        return this.#loggerService.info(message);
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.info(message, new Error());
     }
 
     /**
@@ -69,7 +75,9 @@ export default class Logger extends LightningElement {
      */
     @api
     debug(message) {
-        return this.#loggerService.debug(message);
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.debug(message, new Error());
     }
 
     /**
@@ -79,7 +87,9 @@ export default class Logger extends LightningElement {
      */
     @api
     fine(message) {
-        return this.#loggerService.fine(message);
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.fine(message, new Error());
     }
 
     /**
@@ -89,7 +99,9 @@ export default class Logger extends LightningElement {
      */
     @api
     finer(message) {
-        return this.#loggerService.finer(message);
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.finer(message, new Error());
     }
 
     /**
@@ -99,7 +111,9 @@ export default class Logger extends LightningElement {
      */
     @api
     finest(message) {
-        return this.#loggerService.finest(message);
+        // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+        // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+        return this.#loggerService.finest(message, new Error());
     }
 
     /**

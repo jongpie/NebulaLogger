@@ -5,15 +5,15 @@
 
 The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.13.16
+## Unlocked Package - v4.13.17
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oFjQAI)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oFjQAI)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oPCQAY)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oPCQAY)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oFjQAI`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oPCQAY`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oFjQAI`
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oPCQAY`
 
 ---
 
@@ -143,7 +143,7 @@ For lightning component developers, the `logger` LWC provides very similar funct
 // For LWC, import logger's createLogger() function into your component
 import { createLogger } from 'c/logger';
 
-export default class LoggerLWCDemo extends LightningElement {
+export default class LoggerLWCImportDemo extends LightningElement {
     logger;
 
     async connectedCallback() {
@@ -402,7 +402,7 @@ For lightning component developers, the `logger` LWC provides very similar funct
 // For LWC, import logger's createLogger() function into your component
 import { createLogger } from 'c/logger';
 
-export default class LoggerLWCDemo extends LightningElement {
+export default class LoggerLWCImportDemo extends LightningElement {
     logger;
 
     async connectedCallback() {

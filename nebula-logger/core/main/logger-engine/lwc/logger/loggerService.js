@@ -24,32 +24,32 @@ const LoggerService = class {
         });
     }
 
-    error(message) {
-        return this._newEntry('ERROR', message);
+    error(message, originStackTraceError) {
+        return this._newEntry('ERROR', message, originStackTraceError);
     }
 
-    warn(message) {
-        return this._newEntry('WARN', message);
+    warn(message, originStackTraceError) {
+        return this._newEntry('WARN', message, originStackTraceError);
     }
 
-    info(message) {
-        return this._newEntry('INFO', message);
+    info(message, originStackTraceError) {
+        return this._newEntry('INFO', message, originStackTraceError);
     }
 
-    debug(message) {
-        return this._newEntry('DEBUG', message);
+    debug(message, originStackTraceError) {
+        return this._newEntry('DEBUG', message, originStackTraceError);
     }
 
-    fine(message) {
-        return this._newEntry('FINE', message);
+    fine(message, originStackTraceError) {
+        return this._newEntry('FINE', message, originStackTraceError);
     }
 
-    finer(message) {
-        return this._newEntry('FINER', message);
+    finer(message, originStackTraceError) {
+        return this._newEntry('FINER', message, originStackTraceError);
     }
 
-    finest(message) {
-        return this._newEntry('FINEST', message);
+    finest(message, originStackTraceError) {
+        return this._newEntry('FINEST', message, originStackTraceError);
     }
 
     getBufferSize() {
@@ -69,6 +69,7 @@ const LoggerService = class {
         if (this.#componentLogEntries.length === 0) {
             return;
         }
+
         if (!saveMethodName && this.#settings?.defaultSaveMethodName) {
             saveMethodName = this.#settings.defaultSaveMethodName;
         }
@@ -112,11 +113,12 @@ const LoggerService = class {
         return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings?.supportedLoggingLevels[logEntryLoggingLevel];
     }
 
-    _newEntry(loggingLevel, message) {
+    _newEntry(loggingLevel, message, originStackTraceError) {
         const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
-        logEntryBuilder.setMessage(message);
-        logEntryBuilder.setScenario(this.#scenario);
         if (this._meetsUserLoggingLevel(loggingLevel)) {
+            originStackTraceError = originStackTraceError ?? new Error();
+            logEntryBuilder.parseStackTrace(originStackTraceError).setMessage(message);
+            logEntryBuilder.setScenario(this.#scenario);
             this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
         }
 

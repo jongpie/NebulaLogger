@@ -1,0 +1,16 @@
+<aura:component
+    access="global"
+    implements="forceCommunity:availableForAllPageTypes, flexipage:availableForAllPageTypes, force:appHostable, force:lightningQuickAction, lightning:availableForFlowScreens"
+>
+    <c:logger aura:id="logger" />
+
+    <aura:attribute name="logMessage" type="String" default="Something to log" />
+
+    <lightning:card title="Nebula Logger for Aura Components" iconName="custom:custom19">
+        <div class="slds-var-m-around_medium">This component demonstrates how to use Nebula Logger in Aura components</div>
+        <div class="slds-var-m-around_medium">
+            <lightning:input label="Example Log Message" value="{!v.logMessage}" />
+            <lightning:button label="Save Log Entry" onclick="{!c.saveLogExample}" />
+        </div>
+    </lightning:card>
+</aura:component>
