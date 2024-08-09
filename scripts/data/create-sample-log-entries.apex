@@ -24,26 +24,42 @@ Logger.info('In case you want to steal my identity, my fake social is 400-11-999
     .addTag('data masking rule')
     .addTag('an informational tag');
 Logger.debug('Here are some accounts', [SELECT Id, Name, Description FROM Account LIMIT 5]);
-Logger.debug('Here are some save results', Database.update([SELECT Id, Name, Description FROM Account LIMIT 5], false));
+Logger.debug('Here are some save results', System.Database.update([SELECT Id, Name, Description FROM Account LIMIT 5], false));
 Logger.saveLog();
 Logger.debug('Example DEBUG entry', currentUser);
 Logger.fine('Example FINE entry');
 Logger.finer('Example FINER entry');
 Logger.finest('Example FINEST entry');
 
-System.HttpRequest request = new System.HttpRequest();
-request.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');
-request.setEndpoint('https://fake.salesforce.com');
-request.setMethod('GET');
-Logger.info('logging an HTTP request').setHttpRequestDetails(request);
+System.HttpRequest httpRequest = new System.HttpRequest();
+httpRequest.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');
+httpRequest.setEndpoint('https://fake.salesforce.com');
+httpRequest.setMethod('GET');
+Logger.info('logging an HTTP request').setHttpRequestDetails(httpRequest);
 
-System.HttpResponse response = new System.HttpResponse();
-response.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');
-response.setHeader('someKey', 'some string value');
-response.setHeader('anotherKey', 'an amazing example value, wow');
-response.setStatus('STATUS_GOOD_JOB_YOU_DID_IT');
-response.setStatusCode(201);
-Logger.info('logging an HTTP response').setHttpResponseDetails(response);
+System.HttpResponse httpResponse = new System.HttpResponse();
+httpResponse.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');
+httpResponse.setHeader('someKey', 'some string value');
+httpResponse.setHeader('anotherKey', 'an amazing example value, wow');
+httpResponse.setStatus('STATUS_GOOD_JOB_YOU_DID_IT');
+httpResponse.setStatusCode(201);
+Logger.info('logging an HTTP response').setHttpResponseDetails(httpResponse);
+
+System.RestRequest restRequest = new System.RestRequest();
+restRequest.httpMethod = 'GET';
+restRequest.remoteAddress = '1.1.1.1';
+restRequest.requestBody = Blob.valueOf('{hello:"world"}');
+restRequest.requestURI = 'some-uri-value';
+restRequest.resourcePath = '/some/resource/path';
+restRequest.addHeader('some-header', 'some value');
+restRequest.addParameter('some-parameter', 'some value');
+Logger.info('logging a REST request').setRestRequestDetails(restRequest);
+
+System.RestResponse restResponse = new System.RestResponse();
+restResponse.addHeader('some-header', 'some value');
+restResponse.responseBody = Blob.valueOf('{hello:"world"}');
+restResponse.statusCode = 200;
+Logger.info('logging a REST response').setRestResponseDetails(restResponse);
 
 Logger.saveLog();
 

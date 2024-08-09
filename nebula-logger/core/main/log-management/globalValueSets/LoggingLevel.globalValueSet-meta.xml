@@ -4,39 +4,39 @@
         <fullName>ERROR</fullName>
         <color>#FF5050</color>
         <default>false</default>
-        <label>ERROR</label>
+        <label>⛔ ERROR</label>
     </customValue>
     <customValue>
         <fullName>WARN</fullName>
         <color>#FFCC00</color>
         <default>false</default>
-        <label>WARN</label>
+        <label>⚠️ WARN</label>
     </customValue>
     <customValue>
         <fullName>INFO</fullName>
         <color>#33CC33</color>
         <default>false</default>
-        <label>INFO</label>
+        <label>ℹ️ INFO</label>
     </customValue>
     <customValue>
         <fullName>DEBUG</fullName>
         <default>false</default>
-        <label>DEBUG</label>
+        <label>🐞 DEBUG</label>
     </customValue>
     <customValue>
         <fullName>FINE</fullName>
         <default>false</default>
-        <label>FINE</label>
+        <label>👍 FINE</label>
     </customValue>
     <customValue>
         <fullName>FINER</fullName>
         <default>false</default>
-        <label>FINER</label>
+        <label>👌 FINER</label>
     </customValue>
     <customValue>
         <fullName>FINEST</fullName>
         <default>false</default>
-        <label>FINEST</label>
+        <label>🌟 FINEST</label>
     </customValue>
     <masterLabel>Nebula Logger: Logging Level</masterLabel>
     <sorted>false</sorted>

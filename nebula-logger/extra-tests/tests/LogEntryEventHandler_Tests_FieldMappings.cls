@@ -84,6 +84,7 @@ private class LogEntryEventHandler_Tests_FieldMappings {
         logEntryEvent.RecordCollectionType__c = 'Single';
         logEntryEvent.RecordId__c = System.UserInfo.getUserId();
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
+        logEntryEvent.TransactionId__c = System.UUID.randomUUID().toString();
         logEntryEvent.UserLoggingLevel__c = System.LoggingLevel.INFO.name();
         logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
         logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(logEntryEvent, Schema.LogEntryEvent__e.EventUuid, System.UUID.randomUUID());

@@ -374,7 +374,7 @@
         <fields>Message__c</fields>
         <fields>RecordDetailedLink__c</fields>
         <fields>EntryScenarioLink__c</fields>
-        <fields>LoggingLevelWithImage__c</fields>
+        <fields>LoggingLevel__c</fields>
         <fields>TransactionEntryNumber__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
         <sortField>TransactionEntryNumber__c</sortField>

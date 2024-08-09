@@ -3,7 +3,7 @@
     <fullName>AllERRORandWARNLogEntries</fullName>
     <columns>NAME</columns>
     <columns>Log__c</columns>
-    <columns>LoggingLevelWithImage__c</columns>
+    <columns>LoggingLevel__c</columns>
     <columns>LoggedByUsernameLink__c</columns>
     <columns>Message__c</columns>
     <columns>OriginType__c</columns>

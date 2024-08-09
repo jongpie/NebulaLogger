@@ -1,13 +1,13 @@
 {
     "namespace": "Nebula",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "60.0",
+    "sourceApiVersion": "61.0",
     "packageDirectories": [
         {
             "package": "Nebula Logger - Managed Package",
             "path": "./nebula-logger/managed-package/core",
             "default": true,
-            "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
+            "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
             "scopeProfiles": true,
             "ancestorVersion": "HIGHEST",

@@ -34,9 +34,6 @@
         <field>LogEntry__c.Timestamp__c</field>
     </columns>
     <columns>
-        <field>LogEntry__c.LoggingLevelWithImage__c</field>
-    </columns>
-    <columns>
         <field>Log__c.LoggedBy__c</field>
     </columns>
     <columns>

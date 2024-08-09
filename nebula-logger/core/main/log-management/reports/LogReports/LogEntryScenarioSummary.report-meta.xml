@@ -39,7 +39,7 @@
         <field>LogEntry__c.LoggingLevel__c</field>
     </columns>
     <columns>
-        <field>LogEntry__c.LoggingLevelWithImage__c</field>
+        <field>LogEntry__c.LoggingLevel__c</field>
     </columns>
     <columns>
         <field>LogEntry__c.Message__c</field>

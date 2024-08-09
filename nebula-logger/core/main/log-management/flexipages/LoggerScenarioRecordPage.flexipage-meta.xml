@@ -164,7 +164,7 @@
                             <value>Message__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>LoggingLevelWithImage__c</value>
+                            <value>LoggingLevel__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>Log__c</value>

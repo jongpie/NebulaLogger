@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllRestRequestLogEntries</fullName>
+    <columns>NAME</columns>
+    <columns>Log__c</columns>
+    <columns>LoggingLevel__c</columns>
+    <columns>LoggedByUsernameLink__c</columns>
+    <columns>Message__c</columns>
+    <columns>Origin__c</columns>
+    <columns>RestRequestUri__c</columns>
+    <columns>RestRequestMethod__c</columns>
+    <columns>RestRequestBody__c</columns>
+    <columns>Timestamp__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RestRequestUri__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>All REST Request Log Entries</label>
+</ListView>
