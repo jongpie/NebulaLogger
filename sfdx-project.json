@@ -11,7 +11,7 @@
             "scopeProfiles": true,
             "versionNumber": "4.14.0.NEXT",
             "versionName": "Summer '24 Release",
-            "versionDescription": "Updated all metadata to API v61.0, added component visibility rules to flexipage tabs, replaced BrowserUrl__c field with new field BrowserLocation__c",
+            "versionDescription": "Updated all metadata to API v61.0, added component visibility rules to flexipage tabs, added new LogEntry__c list views",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllRestResponseLogEntries</fullName>
+    <booleanFilter>1 OR 2 OR 3</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Log__c</columns>
+    <columns>LoggingLevel__c</columns>
+    <columns>LoggedByUsernameLink__c</columns>
+    <columns>Message__c</columns>
+    <columns>Origin__c</columns>
+    <columns>RestResponseStatusCode__c</columns>
+    <columns>RestResponseHeaderKeys__c</columns>
+    <columns>RestResponseBody__c</columns>
+    <columns>Timestamp__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>HasRestResponseBody__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>HasRestResponseHeaderKeys__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>HasRestResponseHeaders__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>All REST Response Log Entries</label>
+</ListView>
