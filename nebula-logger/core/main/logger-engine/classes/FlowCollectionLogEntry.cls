@@ -93,6 +93,7 @@ global inherited sharing class FlowCollectionLogEntry {
      */
     @InvocableMethod(
         category='Logging'
+        configurationEditor='c-logger-invocable-action-configurator'
         label='Add Log Entry for an SObject Record Collection'
         description='Creates a log entry for a flow or process builder and stores the record list as JSON'
     )

@@ -1,0 +1,59 @@
+<template>
+    <c-logger-page-section class="slds-m-bottom_small">
+        <span slot="title">Flow Details</span>
+        <span slot="content">
+            TODO - flowName
+            <br />
+            [this.originFlowActionName: {originFlowActionName}]
+        </span>
+    </c-logger-page-section>
+    <c-logger-page-section class="slds-m-bottom_small">
+        <span slot="title">Log Message Details</span>
+        <span slot="content">
+            <lightning-layout multiple-rows vertical-align="start">
+                <lightning-layout-item size="12">
+                    <lightning-combobox
+                        label="Logging Level"
+                        options={loggingLevels}
+                        placeholder="Select logging level"
+                        required
+                        value={loggingLevelName}
+                    ></lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-textarea label="Message" placeholder="Enter log message here..." required value={message}> </lightning-textarea>
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" label="Related Record ID" placeholder="Enter related record ID here..." value={recordId}> </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" label="Scenario" placeholder="Enter logger scenario here..." value={scenario}> </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" label="Tags" placeholder="Enter comma-separated tags here..." value={tagsString}> </lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+        </span>
+    </c-logger-page-section>
+    <c-logger-page-section class="slds-m-bottom_small">
+        <span slot="title">Exception Details</span>
+        <span slot="content"> TODO - faultMessage, shouldThrowFaultMessageException </span>
+    </c-logger-page-section>
+
+    <c-logger-page-section class="slds-m-bottom_small">
+        <span slot="title">Save Options</span>
+        <span slot="content">
+            <lightning-layout multiple-rows vertical-align="start">
+                <lightning-layout-item size="12">
+                    <lightning-input type="toggle" label="Save Log" checked={saveLog}> </lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <!-- <template lwc:if={saveLog}> -->
+            <lightning-layout-item size="12">
+                <lightning-combobox label="Save Method" value={saveMethodName} options={saveMethods} placeholder="Select save method"></lightning-combobox>
+                <!-- onchange={handleChange} -->
+            </lightning-layout-item>
+            <!-- </template> -->
+        </span>
+    </c-logger-page-section>
+</template>

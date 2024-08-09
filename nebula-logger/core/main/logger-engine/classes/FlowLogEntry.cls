@@ -91,7 +91,7 @@ global inherited sharing class FlowLogEntry {
      * @param flowLogEntries The list of FlowLogEntry instances to save
      * @return The current transaction's ID (based on `Logger.getTransactionId()`)
      */
-    @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a flow or process builder')
+    @InvocableMethod(category='Logging' label='Add Log Entry' configurationEditor='c-logger-invocable-action-configurator' description='Creates a log entry for a flow or process builder')
     global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         List<FlowLogger.LogEntry> shadowLogEntries = new List<FlowLogger.LogEntry>();
         for (FlowLogEntry flowLogEntry : flowLogEntries) {
