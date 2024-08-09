@@ -88,7 +88,7 @@
     <relatedLists>
         <fields>LogEntry__c.NAME</fields>
         <fields>LogEntry__c.Log__c</fields>
-        <fields>LogEntry__c.LoggingLevelWithImage__c</fields>
+        <fields>LogEntry__c.LoggingLevel__c</fields>
         <fields>LogEntry__c.Message__c</fields>
         <fields>LogEntry__c.Origin__c</fields>
         <fields>LogEntry__c.RecordDetailedLink__c</fields>

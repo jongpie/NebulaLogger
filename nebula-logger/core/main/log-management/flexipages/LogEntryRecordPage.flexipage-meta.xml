@@ -1820,8 +1820,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.LoggingLevelWithImage__c</fieldItem>
-                <identifier>RecordLoggingLevelWithImage__cField</identifier>
+                <fieldItem>Record.LoggingLevel__c</fieldItem>
+                <identifier>RecordLoggingLevel__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
