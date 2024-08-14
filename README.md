@@ -19,13 +19,13 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 
 ## Managed Package - v4.14.0
 
-[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y000001Mk8YQAS)
-[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y000001Mk8YQAS)
+[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015oPqQAI)
+[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015oPqQAI)
 [![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/12?closed=1)
 
-`sf package install --wait 30 --security-type AdminsOnly --package 04t5Y000001Mk8YQAS`
+`sf package install --wait 30 --security-type AdminsOnly --package 04t5Y0000015oPqQAI`
 
-`sfdx force:package:install --wait 30 --securitytype AdminsOnly --package 04t5Y000001Mk8YQAS`
+`sfdx force:package:install --wait 30 --securitytype AdminsOnly --package 04t5Y0000015oPqQAI`
 
 ---
 
