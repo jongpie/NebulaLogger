@@ -17,7 +17,7 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 
 ---
 
-## Managed Package - v4.13.0
+## Managed Package - v4.14.0
 
 [![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y000001Mk8YQAS)
 [![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y000001Mk8YQAS)
@@ -183,7 +183,7 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ---
 
-### All Together: Apex, Lightning Components & Flow in One Logging Tool, maybe? (TODO revisit this sections)
+### All Together: Apex, Lightning Components & Flow in One Log
 
 After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
 
@@ -486,21 +486,6 @@ Within Flow (and Process Builder), there are 4 invocable actions that you can us
 
 ---
 
-## Features for Integrations
-
-<!-- Within Flow (and Process Builder), there are 4 invocable actions that you can use to leverage Nebula Logger
-
-1. 'Add Log Entry' - uses the class `FlowLogEntry` to add a log entry with a specified message
-2. 'Add Log Entry for an SObject Record' - uses the class `FlowRecordLogEntry` to add a log entry with a specified message for a particular SObject record
-3. 'Add Log Entry for an SObject Record Collection' - uses the class `FlowCollectionLogEntry` to add a log entry with a specified message for an SObject record collection
-4. 'Save Log' - uses the class `Logger` to save any pending logs
-
-![Flow Builder: Logging Invocable Actions](./images/flow-builder-logging-invocable-actions.png) -->
-
-TODO add details about LoggerRestResource REST API for storing logs from external systems
-
----
-
 ## Tagging Your Log Entries
 
 Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records via Apex, Flow, and custom metadata records in `LogEntryTagRule__mdt`. Tags can then be stored using one of the two supported modes (discussed below).
@@ -799,10 +784,3 @@ Check out the [Slack plugin](./nebula-logger/plugins/slack) for more details on 
 If you want to remove the unlocked or managed packages, you can do so by simply uninstalling them in your org under Setup --> Installed Packages.
 
 ![Uninstall Packages](./images/installed-packages-uninstall-option.png)
-
-## Project Dependencies & External Libraries
-
-TODO
-
--   Prism JS - this library
--   stacktrace.js - https://github.com/stacktracejs/stacktrace.js

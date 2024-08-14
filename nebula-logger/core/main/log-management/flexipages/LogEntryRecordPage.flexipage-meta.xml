@@ -905,6 +905,64 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.DatabaseResultCollectionType__c</fieldItem>
+                <identifier>RecordDatabaseResultCollectionType__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.DatabaseResultType__c</fieldItem>
+                <identifier>RecordDatabaseResultType__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.DatabaseResultCollectionSize__c</fieldItem>
+                <identifier>RecordDatabaseResultCollectionSize_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.DatabaseResultJson__c</fieldItem>
+                <identifier>RecordDatabaseResultJson__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column11</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-b0b8c0ec-36e3-469b-9106-00d34530d793</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.RecordLink__c</fieldItem>
                 <identifier>RecordRecordLink__cField</identifier>
             </fieldInstance>
@@ -1001,86 +1059,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
-                    <value>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Related Record Details</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection8</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-dxcl7nfj6iq</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.DatabaseResultCollectionType__c</fieldItem>
-                <identifier>RecordDatabaseResultCollectionType__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.DatabaseResultType__c</fieldItem>
-                <identifier>RecordDatabaseResultType__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.DatabaseResultCollectionSize__c</fieldItem>
-                <identifier>RecordDatabaseResultCollectionSize_cField1</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.DatabaseResultJson__c</fieldItem>
-                <identifier>RecordDatabaseResultJson__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column11</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-b0b8c0ec-36e3-469b-9106-00d34530d793</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
                     <value>Facet-b0b8c0ec-36e3-469b-9106-00d34530d793</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -1093,9 +1071,53 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection7</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HasDatabaseResult__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HasDatabaseResultJson__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>Facet-79a52362-9213-4bd3-9eb2-a054b03f85ba</name>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Related Record Details</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection8</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HasRecordId__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HasRecordJson__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-dxcl7nfj6iq</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -1639,7 +1661,7 @@
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab3</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 OR 2</booleanFilter>
+                    <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HasRecordId__c}</leftValue>
                         <operator>EQUAL</operator>
@@ -1650,23 +1672,6 @@
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-79a52362-9213-4bd3-9eb2-a054b03f85ba</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Database Results</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>flexipage_tab4</identifier>
-                <visibilityRule>
-                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HasDatabaseResult__c}</leftValue>
                         <operator>EQUAL</operator>
