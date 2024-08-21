@@ -1,11 +1,11 @@
 {
-    "cmsSettings": {},
-    "currentThemeId": "7eb75af3-aff9-43ed-9631-c394f6d7b9b8",
-    "headMarkup": null,
-    "id": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
-    "isLockerServiceEnabled": true,
-    "isRelaxedCSPLevel": false,
-    "label": "main",
-    "templateName": "Starter Template",
-    "type": "appPage"
+  "cmsSettings": {},
+  "currentThemeId": "7eb75af3-aff9-43ed-9631-c394f6d7b9b8",
+  "headMarkup": null,
+  "id": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
+  "isLockerServiceEnabled": true,
+  "isRelaxedCSPLevel": false,
+  "label": "main",
+  "templateName": "Starter Template",
+  "type": "appPage"
 }

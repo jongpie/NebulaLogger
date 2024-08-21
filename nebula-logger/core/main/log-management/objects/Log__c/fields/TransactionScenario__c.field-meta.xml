@@ -1,17 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TransactionScenario__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <deleteConstraint>SetNull</deleteConstraint>
-    <externalId>false</externalId>
     <label>Transaction Scenario</label>
     <referenceTo>LoggerScenario__c</referenceTo>
     <relationshipLabel>Logs</relationshipLabel>
     <relationshipName>Logs</relationshipName>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>

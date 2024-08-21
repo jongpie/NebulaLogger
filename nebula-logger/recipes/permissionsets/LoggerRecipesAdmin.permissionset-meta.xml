@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <applicationVisibilities>
         <application>LoggerRecipes</application>
@@ -36,11 +36,11 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>Logger_LWC_Import_Demo</tab>
+        <tab>Logger_LWC_Embed_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>Logger_LWC_Embed_Demo</tab>
+        <tab>Logger_LWC_Import_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

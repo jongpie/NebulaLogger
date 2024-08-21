@@ -1,22 +1,22 @@
 {
-    "orgName": "Nebula Logger - Build - Experience Cloud Scratch Org",
-    "edition": "Enterprise",
-    "hasSampleData": false,
-    "country": "ES",
-    "language": "es",
-    "features": ["Communities", "PlatformCache"],
-    "settings": {
-        "chatterSettings": {
-            "enableChatter": true
-        },
-        "communitiesSettings": {
-            "enableNetworksEnabled": true
-        },
-        "experienceBundleSettings": {
-            "enableExperienceBundleMetadata": true
-        },
-        "pathAssistantSettings": {
-            "pathAssistantEnabled": true
-        }
+  "orgName": "Nebula Logger - Build - Experience Cloud Scratch Org",
+  "edition": "Enterprise",
+  "hasSampleData": false,
+  "country": "ES",
+  "language": "es",
+  "features": ["Communities", "PlatformCache"],
+  "settings": {
+    "chatterSettings": {
+      "enableChatter": true
+    },
+    "communitiesSettings": {
+      "enableNetworksEnabled": true
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
+    },
+    "pathAssistantSettings": {
+      "pathAssistantEnabled": true
     }
+  }
 }

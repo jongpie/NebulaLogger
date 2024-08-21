@@ -4,17 +4,17 @@
 
 **Kind**: global class
 
--   [LogEntryBuilder](#LogEntryBuilder)
-    -   [new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled)](#new_LogEntryBuilder_new)
-    -   [.setMessage(message)](#LogEntryBuilder+setMessage) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.setScenario(scenario)](#LogEntryBuilder+setScenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.parseStackTrace(error)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.getComponentLogEntry()](#LogEntryBuilder+getComponentLogEntry) <code>ComponentLogEntry</code>
+- [LogEntryBuilder](#LogEntryBuilder)
+  - [new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled)](#new_LogEntryBuilder_new)
+  - [.setMessage(message)](#LogEntryBuilder+setMessage) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.setScenario(scenario)](#LogEntryBuilder+setScenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.parseStackTrace(error)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.getComponentLogEntry()](#LogEntryBuilder+getComponentLogEntry) <code>ComponentLogEntry</code>
 
 <a name="new_LogEntryBuilder_new"></a>
 

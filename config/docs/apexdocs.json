@@ -1,9 +1,9 @@
 {
-    "root": "",
-    "sourceLanguage": "java",
-    "content": {
-        "startingHeadingLevel": 2,
-        "includeAuthor": false,
-        "includeDate": false
-    }
+  "root": "",
+  "sourceLanguage": "java",
+  "content": {
+    "startingHeadingLevel": 2,
+    "includeAuthor": false,
+    "includeDate": false
+  }
 }

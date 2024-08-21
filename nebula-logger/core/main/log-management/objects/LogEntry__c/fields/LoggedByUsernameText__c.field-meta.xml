@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LoggedByUsernameText__c</fullName>
     <businessStatus>Active</businessStatus>
@@ -7,6 +7,7 @@
     <formula>Log__r.LoggedByUsernameText__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Username</label>
+    <required>false</required>
     <securityClassification>Confidential</securityClassification>
     <trackTrending>false</trackTrending>
     <type>Text</type>

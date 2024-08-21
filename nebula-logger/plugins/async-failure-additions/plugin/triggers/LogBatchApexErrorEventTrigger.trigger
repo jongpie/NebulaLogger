@@ -3,5 +3,5 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 trigger LogBatchApexErrorEventTrigger on BatchApexErrorEvent(after insert) {
-    LoggerSObjectHandler.getHandler(Schema.BatchApexErrorEvent.SObjectType, new LogBatchApexErrorEventHandler()).execute();
+  LoggerSObjectHandler.getHandler(Schema.BatchApexErrorEvent.SObjectType, new LogBatchApexErrorEventHandler()).execute();
 }

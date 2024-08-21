@@ -8,139 +8,139 @@ import { refreshApex } from '@salesforce/apex';
 
 import getQueryResult from '@salesforce/apex/RelatedLogEntriesController.getQueryResult';
 export default class RelatedLogEntries extends LightningElement {
-    /* eslint-disable @lwc/lwc/no-api-reassignments */
-    @api recordId;
-    @api fieldSetName;
-    @api sortBy = '';
-    @api sortDirection = '';
-    @api rowLimit;
-    @api search = '';
-    @api queryResult;
+  /* eslint-disable @lwc/lwc/no-api-reassignments */
+  @api recordId;
+  @api fieldSetName;
+  @api sortBy = '';
+  @api sortDirection = '';
+  @api rowLimit;
+  @api search = '';
+  @api queryResult;
 
-    @track showComponent = false;
-    @track title;
-    @track wiredResult;
-    @track isLoading = true;
+  @track showComponent = false;
+  @track title;
+  @track wiredResult;
+  @track isLoading = true;
 
-    @api
-    handleSort(event) {
-        this.sortBy = event.detail.fieldName;
-        this.sortDirection = event.detail.sortDirection;
+  @api
+  handleSort(event) {
+    this.sortBy = event.detail.fieldName;
+    this.sortDirection = event.detail.sortDirection;
+  }
+
+  @api
+  handleSearchChange(event) {
+    this.isLoading = true;
+    this.search = event.target.value;
+  }
+
+  @wire(getQueryResult, {
+    recordId: '$recordId',
+    fieldSetName: '$fieldSetName',
+    rowLimit: '$rowLimit',
+    sortByFieldName: '$sortBy',
+    sortDirection: '$sortDirection',
+    search: '$search'
+  })
+  wiredLogEntries(result) {
+    this.wiredResult = result;
+    if (result.data) {
+      let queryResult = this.processResult(result.data);
+      this.queryResult = queryResult;
+      this.showComponent = queryResult.isAccessible;
+      this.title = queryResult.labelPlural + ' (' + queryResult.totalLogEntriesCount + ' Total)';
+    } else if (result.error) {
+      this.logEntryData = undefined;
+      this.logEntryColumns = undefined;
+      /* eslint-disable-next-line no-console */
+      console.log(result.error);
+    }
+    this.isLoading = false;
+  }
+
+  async refresh() {
+    this.isLoading = true;
+    await refreshApex(this.wiredResult);
+    this.isLoading = false;
+  }
+
+  // Parse the Apex results & add any UI-specific attributes based on field metadata
+  processResult(queryResult) {
+    if (queryResult.fieldSet === undefined) {
+      return null;
     }
 
-    @api
-    handleSearchChange(event) {
-        this.isLoading = true;
-        this.search = event.target.value;
-    }
+    queryResult = Object.assign({}, queryResult); // clone queryResult
 
-    @wire(getQueryResult, {
-        recordId: '$recordId',
-        fieldSetName: '$fieldSetName',
-        rowLimit: '$rowLimit',
-        sortByFieldName: '$sortBy',
-        sortDirection: '$sortDirection',
-        search: '$search'
-    })
-    wiredLogEntries(result) {
-        this.wiredResult = result;
-        if (result.data) {
-            let queryResult = this.processResult(result.data);
-            this.queryResult = queryResult;
-            this.showComponent = queryResult.isAccessible;
-            this.title = queryResult.labelPlural + ' (' + queryResult.totalLogEntriesCount + ' Total)';
-        } else if (result.error) {
-            this.logEntryData = undefined;
-            this.logEntryColumns = undefined;
-            /* eslint-disable-next-line no-console */
-            console.log(result.error);
+    let fieldSet = Object.assign({}, queryResult.fieldSet); // clone fieldSet
+    let fields = [].concat(queryResult.fieldSet.fields); // clone fields
+    let records = [].concat(queryResult.records); // clone records
+
+    for (let i = 0; i < fieldSet.fields.length; i++) {
+      let field = Object.assign({}, fieldSet.fields[i]); // clone field
+
+      if (field.type === 'datetime') {
+        field.type = 'date';
+        // FIXME and make dynamic based on user prefences for datetimes
+        field.typeAttributes = {
+          month: '2-digit',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        };
+      } else if (field.type === 'reference') {
+        let displayFieldName = field.lookupDisplayFieldName.replace('.', '') + 'Display';
+        let looupFieldName = field.fieldName;
+
+        // Add URL formatting to the field
+        field.type = 'url';
+        field.typeAttributes = {
+          label: { fieldName: displayFieldName },
+          name: { fieldName: looupFieldName },
+          target: '_self'
+        };
+
+        // Add the link to each log entry record
+        for (let j = 0; j < records.length; j++) {
+          let record = Object.assign({}, records[j]); //cloning object
+
+          let parentObject = record[field.relationshipName];
+          record[displayFieldName] = parentObject[field.lookupDisplayFieldName.split('.').splice(1)];
+          record[field.fieldName] = '/' + record[looupFieldName];
+
+          records[j] = record;
         }
-        this.isLoading = false;
-    }
+      } else if (field.isNameField) {
+        // Make the record's Name field a clickable link to the record
+        let displayFieldName = field.fieldName + 'Display';
 
-    async refresh() {
-        this.isLoading = true;
-        await refreshApex(this.wiredResult);
-        this.isLoading = false;
-    }
+        // Add URL formatting to the field
+        field.type = 'url';
+        field.typeAttributes = {
+          label: { fieldName: displayFieldName },
+          name: { fieldName: 'Id' },
+          target: '_self'
+        };
 
-    // Parse the Apex results & add any UI-specific attributes based on field metadata
-    processResult(queryResult) {
-        if (queryResult.fieldSet === undefined) {
-            return null;
+        // Add the link to each log entry record
+        for (let j = 0; j < records.length; j++) {
+          let record = Object.assign({}, records[j]); //cloning object
+          record[displayFieldName] = record[field.fieldName];
+          record[field.fieldName] = '/' + record.Id;
+
+          records[j] = record;
         }
+      }
 
-        queryResult = Object.assign({}, queryResult); // clone queryResult
-
-        let fieldSet = Object.assign({}, queryResult.fieldSet); // clone fieldSet
-        let fields = [].concat(queryResult.fieldSet.fields); // clone fields
-        let records = [].concat(queryResult.records); // clone records
-
-        for (let i = 0; i < fieldSet.fields.length; i++) {
-            let field = Object.assign({}, fieldSet.fields[i]); // clone field
-
-            if (field.type === 'datetime') {
-                field.type = 'date';
-                // FIXME and make dynamic based on user prefences for datetimes
-                field.typeAttributes = {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                };
-            } else if (field.type === 'reference') {
-                let displayFieldName = field.lookupDisplayFieldName.replace('.', '') + 'Display';
-                let looupFieldName = field.fieldName;
-
-                // Add URL formatting to the field
-                field.type = 'url';
-                field.typeAttributes = {
-                    label: { fieldName: displayFieldName },
-                    name: { fieldName: looupFieldName },
-                    target: '_self'
-                };
-
-                // Add the link to each log entry record
-                for (let j = 0; j < records.length; j++) {
-                    let record = Object.assign({}, records[j]); //cloning object
-
-                    let parentObject = record[field.relationshipName];
-                    record[displayFieldName] = parentObject[field.lookupDisplayFieldName.split('.').splice(1)];
-                    record[field.fieldName] = '/' + record[looupFieldName];
-
-                    records[j] = record;
-                }
-            } else if (field.isNameField) {
-                // Make the record's Name field a clickable link to the record
-                let displayFieldName = field.fieldName + 'Display';
-
-                // Add URL formatting to the field
-                field.type = 'url';
-                field.typeAttributes = {
-                    label: { fieldName: displayFieldName },
-                    name: { fieldName: 'Id' },
-                    target: '_self'
-                };
-
-                // Add the link to each log entry record
-                for (let j = 0; j < records.length; j++) {
-                    let record = Object.assign({}, records[j]); //cloning object
-                    record[displayFieldName] = record[field.fieldName];
-                    record[field.fieldName] = '/' + record.Id;
-
-                    records[j] = record;
-                }
-            }
-
-            fields[i] = field;
-        }
-
-        queryResult.fieldSet = fieldSet;
-        queryResult.fieldSet.fields = fields;
-        queryResult.records = records;
-
-        return queryResult;
+      fields[i] = field;
     }
+
+    queryResult.fieldSet = fieldSet;
+    queryResult.fieldSet.fields = fields;
+    queryResult.records = records;
+
+    return queryResult;
+  }
 }

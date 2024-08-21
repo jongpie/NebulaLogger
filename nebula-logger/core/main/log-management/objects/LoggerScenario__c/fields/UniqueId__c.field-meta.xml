@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>UniqueId__c</fullName>
     <caseSensitive>false</caseSensitive>
@@ -7,7 +7,6 @@
     <label>Unique ID</label>
     <length>255</length>
     <required>true</required>
-    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>

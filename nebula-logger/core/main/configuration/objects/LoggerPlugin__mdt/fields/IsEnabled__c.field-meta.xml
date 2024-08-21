@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsEnabled__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <defaultValue>true</defaultValue>
     <description>Controls if the plugin is enabled/disabled. Only enabled plugins will be executed by the logging system.</description>
-    <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Controls if the plugin is enabled/disabled. Only enabled plugins will be executed by the logging system.</inlineHelpText>
     <label>Is Enabled</label>

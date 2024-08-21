@@ -1,13 +1,13 @@
 .container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .datatable-header {
-    height: 32px;
+  height: 32px;
 }
 
 .datatable-container {
-    height: 300px;
+  height: 300px;
 }

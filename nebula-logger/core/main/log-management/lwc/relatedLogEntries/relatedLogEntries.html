@@ -4,33 +4,33 @@
  **********************************************************************************************-->
 
 <template>
-    <template if:true={showComponent}>
-        <lightning-card title={title} icon-name="custom:custom83" class="log-entry-card">
-            <div class="slds-grid" slot="actions">
-                <lightning-input
-                    class="slds-m-right_xx-small"
-                    data-id="enter-search"
-                    placeholder="Search"
-                    type="search"
-                    value={search}
-                    onchange={handleSearchChange}
-                    variant="label-hidden"
-                ></lightning-input>
-                <lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon>
-            </div>
-            <div class="slds-is-relative">
-                <lightning-datatable
-                    key-field="id"
-                    show-row-number-column="true"
-                    data={queryResult.records}
-                    columns={queryResult.fieldSet.fields}
-                    onsort={handleSort}
-                    sorted-by={sortBy}
-                    sorted-direction={sortDirection}
-                    default-sort-direction={sortDirection}
-                ></lightning-datatable>
-                <lightning-spinner if:true={isLoading} size="small"></lightning-spinner>
-            </div>
-        </lightning-card>
-    </template>
+  <template if:true={showComponent}>
+    <lightning-card title={title} icon-name="custom:custom83" class="log-entry-card">
+      <div class="slds-grid" slot="actions">
+        <lightning-input
+          class="slds-m-right_xx-small"
+          data-id="enter-search"
+          placeholder="Search"
+          type="search"
+          value={search}
+          onchange={handleSearchChange}
+          variant="label-hidden"
+        ></lightning-input>
+        <lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon>
+      </div>
+      <div class="slds-is-relative">
+        <lightning-datatable
+          key-field="id"
+          show-row-number-column="true"
+          data={queryResult.records}
+          columns={queryResult.fieldSet.fields}
+          onsort={handleSort}
+          sorted-by={sortBy}
+          sorted-direction={sortDirection}
+          default-sort-direction={sortDirection}
+        ></lightning-datatable>
+        <lightning-spinner if:true={isLoading} size="small"></lightning-spinner>
+      </div>
+    </lightning-card>
+  </template>
 </template>

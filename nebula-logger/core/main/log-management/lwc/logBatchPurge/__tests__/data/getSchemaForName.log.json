@@ -1,573 +1,573 @@
 {
-    "apiName": "Log__c",
-    "fields": {
-        "Id": {
-            "apiName": "Id",
-            "label": "Record ID",
-            "localApiName": "Id",
-            "type": "id"
-        },
-        "OwnerId": {
-            "apiName": "OwnerId",
-            "label": "Owner ID",
-            "localApiName": "OwnerId",
-            "type": "reference"
-        },
-        "IsDeleted": {
-            "apiName": "IsDeleted",
-            "label": "Deleted",
-            "localApiName": "IsDeleted",
-            "type": "boolean"
-        },
-        "Name": {
-            "apiName": "Name",
-            "label": "Log Number",
-            "localApiName": "Name",
-            "type": "string"
-        },
-        "CreatedDate": {
-            "apiName": "CreatedDate",
-            "label": "Created Date",
-            "localApiName": "CreatedDate",
-            "type": "datetime"
-        },
-        "CreatedById": {
-            "apiName": "CreatedById",
-            "label": "Created By ID",
-            "localApiName": "CreatedById",
-            "type": "reference"
-        },
-        "LastModifiedDate": {
-            "apiName": "LastModifiedDate",
-            "label": "Last Modified Date",
-            "localApiName": "LastModifiedDate",
-            "type": "datetime"
-        },
-        "LastModifiedById": {
-            "apiName": "LastModifiedById",
-            "label": "Last Modified By ID",
-            "localApiName": "LastModifiedById",
-            "type": "reference"
-        },
-        "SystemModstamp": {
-            "apiName": "SystemModstamp",
-            "label": "System Modstamp",
-            "localApiName": "SystemModstamp",
-            "type": "datetime"
-        },
-        "LastActivityDate": {
-            "apiName": "LastActivityDate",
-            "label": "Last Activity Date",
-            "localApiName": "LastActivityDate",
-            "type": "date"
-        },
-        "LastViewedDate": {
-            "apiName": "LastViewedDate",
-            "label": "Last Viewed Date",
-            "localApiName": "LastViewedDate",
-            "type": "datetime"
-        },
-        "LastReferencedDate": {
-            "apiName": "LastReferencedDate",
-            "label": "Last Referenced Date",
-            "localApiName": "LastReferencedDate",
-            "type": "datetime"
-        },
-        "ApiReleaseNumber__c": {
-            "apiName": "ApiReleaseNumber__c",
-            "inlineHelpText": "The release number for the org's instance - determined by making a callout to status.salesforce.com",
-            "label": "API Release Number",
-            "localApiName": "ApiReleaseNumber__c",
-            "type": "string"
-        },
-        "ApiReleaseVersion__c": {
-            "apiName": "ApiReleaseVersion__c",
-            "inlineHelpText": "The release version for the org's instance - determined by making a callout to status.salesforce.com",
-            "label": "API Release Version",
-            "localApiName": "ApiReleaseVersion__c",
-            "type": "string"
-        },
-        "ApiVersion__c": {
-            "apiName": "ApiVersion__c",
-            "inlineHelpText": "The Salesforce release (API version) of the environment",
-            "label": "API Version",
-            "localApiName": "ApiVersion__c",
-            "type": "picklist"
-        },
-        "ClosedBy__c": {
-            "apiName": "ClosedBy__c",
-            "label": "Closed By",
-            "localApiName": "ClosedBy__c",
-            "type": "reference"
-        },
-        "ClosedDate__c": {
-            "apiName": "ClosedDate__c",
-            "label": "Closed Date",
-            "localApiName": "ClosedDate__c",
-            "type": "datetime"
-        },
-        "Comments__c": {
-            "apiName": "Comments__c",
-            "label": "Comments",
-            "localApiName": "Comments__c",
-            "type": "textarea"
-        },
-        "IsClosed__c": {
-            "apiName": "IsClosed__c",
-            "label": "Is Closed",
-            "localApiName": "IsClosed__c",
-            "type": "boolean"
-        },
-        "IsResolved__c": {
-            "apiName": "IsResolved__c",
-            "label": "Is Resolved",
-            "localApiName": "IsResolved__c",
-            "type": "boolean"
-        },
-        "Issue__c": {
-            "apiName": "Issue__c",
-            "label": "Issue",
-            "localApiName": "Issue__c",
-            "type": "picklist"
-        },
-        "Locale__c": {
-            "apiName": "Locale__c",
-            "label": "Locale",
-            "localApiName": "Locale__c",
-            "type": "string"
-        },
-        "LogEntriesSummary__c": {
-            "apiName": "LogEntriesSummary__c",
-            "label": "Summary",
-            "localApiName": "LogEntriesSummary__c",
-            "type": "string"
-        },
-        "LogPurgeAction__c": {
-            "apiName": "LogPurgeAction__c",
-            "inlineHelpText": "Used by the batch job LogBatchPurger, this indicates the action that should be taken for a Log__c record when LogRetentionDate__c < TODAY. Out of the box, only 'Delete' is used by Logger, but plugins can add & use new values.",
-            "label": "Log Purge Action",
-            "localApiName": "LogPurgeAction__c",
-            "type": "picklist"
-        },
-        "LogRetentionDate__c": {
-            "apiName": "LogRetentionDate__c",
-            "inlineHelpText": "The date that this log can be automatically deleted by the batch job LogBatchPurger.",
-            "label": "Log Retention Date",
-            "localApiName": "LogRetentionDate__c",
-            "type": "date"
-        },
-        "LoggedByUsernameLink__c": {
-            "apiName": "LoggedByUsernameLink__c",
-            "label": "Username",
-            "localApiName": "LoggedByUsernameLink__c",
-            "type": "string"
-        },
-        "LoggedByUsername__c": {
-            "apiName": "LoggedByUsername__c",
-            "label": "Username",
-            "localApiName": "LoggedByUsername__c",
-            "type": "string"
-        },
-        "LoggedBy__c": {
-            "apiName": "LoggedBy__c",
-            "label": "Logged By",
-            "localApiName": "LoggedBy__c",
-            "type": "reference"
-        },
-        "LoggerVersionNumber__c": {
-            "apiName": "LoggerVersionNumber__c",
-            "label": "Logger Version Number",
-            "localApiName": "LoggerVersionNumber__c",
-            "type": "string"
-        },
-        "LoginApplication__c": {
-            "apiName": "LoginApplication__c",
-            "label": "Login Application",
-            "localApiName": "LoginApplication__c",
-            "type": "string"
-        },
-        "LoginBrowser__c": {
-            "apiName": "LoginBrowser__c",
-            "label": "Login Browser",
-            "localApiName": "LoginBrowser__c",
-            "type": "string"
-        },
-        "LoginDomain__c": {
-            "apiName": "LoginDomain__c",
-            "label": "DEPRECATED: Login Domain",
-            "localApiName": "LoginDomain__c",
-            "type": "url"
-        },
-        "LoginHistoryId__c": {
-            "apiName": "LoginHistoryId__c",
-            "label": "Login History ID",
-            "localApiName": "LoginHistoryId__c",
-            "type": "string"
-        },
-        "LoginPlatform__c": {
-            "apiName": "LoginPlatform__c",
-            "label": "Login Platform",
-            "localApiName": "LoginPlatform__c",
-            "type": "string"
-        },
-        "LoginType__c": {
-            "apiName": "LoginType__c",
-            "label": "Login Type",
-            "localApiName": "LoginType__c",
-            "type": "picklist"
-        },
-        "LogoutUrl__c": {
-            "apiName": "LogoutUrl__c",
-            "label": "Logout URL",
-            "localApiName": "LogoutUrl__c",
-            "type": "url"
-        },
-        "NetworkId__c": {
-            "apiName": "NetworkId__c",
-            "inlineHelpText": "The Network ID of the user's Community site.",
-            "label": "Site Network ID",
-            "localApiName": "NetworkId__c",
-            "type": "string"
-        },
-        "NetworkLoginUrl__c": {
-            "apiName": "NetworkLoginUrl__c",
-            "label": "Site Login URL",
-            "localApiName": "NetworkLoginUrl__c",
-            "type": "url"
-        },
-        "NetworkLogoutUrl__c": {
-            "apiName": "NetworkLogoutUrl__c",
-            "label": "Site Logout URL",
-            "localApiName": "NetworkLogoutUrl__c",
-            "type": "url"
-        },
-        "NetworkName__c": {
-            "apiName": "NetworkName__c",
-            "inlineHelpText": "The name of the user's Community site (based on NetworkId).",
-            "label": "Site Name",
-            "localApiName": "NetworkName__c",
-            "type": "string"
-        },
-        "NetworkSelfRegistrationUrl__c": {
-            "apiName": "NetworkSelfRegistrationUrl__c",
-            "label": "Site Self Registration URL",
-            "localApiName": "NetworkSelfRegistrationUrl__c",
-            "type": "url"
-        },
-        "NetworkUrlPathPrefix__c": {
-            "apiName": "NetworkUrlPathPrefix__c",
-            "inlineHelpText": "The UrlPathPrefix is a unique string at the end of the URL for this community. For example, in the community URL CommunitiesSubdomainName.force.com/customers, customers is the UrlPathPrefix.",
-            "label": "Site URL Path Prefix",
-            "localApiName": "NetworkUrlPathPrefix__c",
-            "type": "string"
-        },
-        "OrganizationDomainUrl__c": {
-            "apiName": "OrganizationDomainUrl__c",
-            "inlineHelpText": "The value returned from System.URL.getOrgDomainUrl()",
-            "label": "Organization Domain URL",
-            "localApiName": "OrganizationDomainUrl__c",
-            "type": "url"
-        },
-        "OrganizationEnvironmentType__c": {
-            "apiName": "OrganizationEnvironmentType__c",
-            "label": "Environment Type",
-            "localApiName": "OrganizationEnvironmentType__c",
-            "type": "picklist"
-        },
-        "OrganizationId__c": {
-            "apiName": "OrganizationId__c",
-            "label": "Organization ID",
-            "localApiName": "OrganizationId__c",
-            "type": "string"
-        },
-        "OrganizationInstanceName__c": {
-            "apiName": "OrganizationInstanceName__c",
-            "label": "Instance Name",
-            "localApiName": "OrganizationInstanceName__c",
-            "type": "string"
-        },
-        "OrganizationInstanceReleaseCycle__c": {
-            "apiName": "OrganizationInstanceReleaseCycle__c",
-            "label": "DEPRECATED: Instance Release Cycle",
-            "localApiName": "OrganizationInstanceReleaseCycle__c",
-            "type": "picklist"
-        },
-        "OrganizationName__c": {
-            "apiName": "OrganizationName__c",
-            "label": "Organization Name",
-            "localApiName": "OrganizationName__c",
-            "type": "string"
-        },
-        "OrganizationNamespacePrefix__c": {
-            "apiName": "OrganizationNamespacePrefix__c",
-            "label": "Organization Namespace Prefix",
-            "localApiName": "OrganizationNamespacePrefix__c",
-            "type": "string"
-        },
-        "OrganizationType__c": {
-            "apiName": "OrganizationType__c",
-            "label": "Organization Type",
-            "localApiName": "OrganizationType__c",
-            "type": "picklist"
-        },
-        "ParentLogLink__c": {
-            "apiName": "ParentLogLink__c",
-            "label": "Parent Log",
-            "localApiName": "ParentLogLink__c",
-            "type": "string"
-        },
-        "ParentLogTransactionId__c": {
-            "apiName": "ParentLogTransactionId__c",
-            "label": "Parent Log Transaction ID",
-            "localApiName": "ParentLogTransactionId__c",
-            "type": "string"
-        },
-        "ParentLog__c": {
-            "apiName": "ParentLog__c",
-            "inlineHelpText": "The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.",
-            "label": "Parent Log",
-            "localApiName": "ParentLog__c",
-            "type": "reference"
-        },
-        "Priority__c": {
-            "apiName": "Priority__c",
-            "label": "Priority",
-            "localApiName": "Priority__c",
-            "type": "picklist"
-        },
-        "ProfileId__c": {
-            "apiName": "ProfileId__c",
-            "label": "Profile ID",
-            "localApiName": "ProfileId__c",
-            "type": "string"
-        },
-        "ProfileLink__c": {
-            "apiName": "ProfileLink__c",
-            "label": "Profile",
-            "localApiName": "ProfileLink__c",
-            "type": "string"
-        },
-        "ProfileName__c": {
-            "apiName": "ProfileName__c",
-            "label": "Profile Name",
-            "localApiName": "ProfileName__c",
-            "type": "string"
-        },
-        "Scenario__c": {
-            "apiName": "Scenario__c",
-            "label": "Scenario",
-            "localApiName": "Scenario__c",
-            "type": "string"
-        },
-        "SessionId__c": {
-            "apiName": "SessionId__c",
-            "label": "Session ID",
-            "localApiName": "SessionId__c",
-            "type": "string"
-        },
-        "SessionSecurityLevel__c": {
-            "apiName": "SessionSecurityLevel__c",
-            "label": "Session Security Level",
-            "localApiName": "SessionSecurityLevel__c",
-            "type": "picklist"
-        },
-        "SessionType__c": {
-            "apiName": "SessionType__c",
-            "label": "Session Type",
-            "localApiName": "SessionType__c",
-            "type": "picklist"
-        },
-        "SourceIp__c": {
-            "apiName": "SourceIp__c",
-            "label": "Source IP",
-            "localApiName": "SourceIp__c",
-            "type": "string"
-        },
-        "Status__c": {
-            "apiName": "Status__c",
-            "label": "Status",
-            "localApiName": "Status__c",
-            "type": "picklist"
-        },
-        "SystemModeSummary__c": {
-            "apiName": "SystemModeSummary__c",
-            "label": "System Mode",
-            "localApiName": "SystemModeSummary__c",
-            "type": "string"
-        },
-        "SystemMode__c": {
-            "apiName": "SystemMode__c",
-            "label": "System Mode",
-            "localApiName": "SystemMode__c",
-            "type": "picklist"
-        },
-        "ThemeDisplayed__c": {
-            "apiName": "ThemeDisplayed__c",
-            "label": "Theme Displayed",
-            "localApiName": "ThemeDisplayed__c",
-            "type": "picklist"
-        },
-        "TimeZoneId__c": {
-            "apiName": "TimeZoneId__c",
-            "label": "Time Zone ID",
-            "localApiName": "TimeZoneId__c",
-            "type": "string"
-        },
-        "TimeZoneName__c": {
-            "apiName": "TimeZoneName__c",
-            "label": "Time Zone Name",
-            "localApiName": "TimeZoneName__c",
-            "type": "string"
-        },
-        "TotalLogEntries__c": {
-            "apiName": "TotalLogEntries__c",
-            "label": "Total Entries",
-            "localApiName": "TotalLogEntries__c",
-            "type": "double"
-        },
-        "TransactionId__c": {
-            "apiName": "TransactionId__c",
-            "label": "Transaction ID",
-            "localApiName": "TransactionId__c",
-            "type": "string"
-        },
-        "UserLicenseDefinitionKey__c": {
-            "apiName": "UserLicenseDefinitionKey__c",
-            "label": "User License Definition Key",
-            "localApiName": "UserLicenseDefinitionKey__c",
-            "type": "picklist"
-        },
-        "UserLicenseId__c": {
-            "apiName": "UserLicenseId__c",
-            "label": "User License ID",
-            "localApiName": "UserLicenseId__c",
-            "type": "string"
-        },
-        "UserLicenseName__c": {
-            "apiName": "UserLicenseName__c",
-            "label": "User License Name",
-            "localApiName": "UserLicenseName__c",
-            "type": "picklist"
-        },
-        "UserLoggingLevelOrdinal__c": {
-            "apiName": "UserLoggingLevelOrdinal__c",
-            "label": "User Logging Level Ordinal",
-            "localApiName": "UserLoggingLevelOrdinal__c",
-            "type": "double"
-        },
-        "UserLoggingLevel__c": {
-            "apiName": "UserLoggingLevel__c",
-            "label": "User Logging Level",
-            "localApiName": "UserLoggingLevel__c",
-            "type": "picklist"
-        },
-        "UserRoleId__c": {
-            "apiName": "UserRoleId__c",
-            "label": "User Role ID",
-            "localApiName": "UserRoleId__c",
-            "type": "string"
-        },
-        "UserRoleLink__c": {
-            "apiName": "UserRoleLink__c",
-            "label": "User Role",
-            "localApiName": "UserRoleLink__c",
-            "type": "string"
-        },
-        "UserRoleName__c": {
-            "apiName": "UserRoleName__c",
-            "label": "User Role Name",
-            "localApiName": "UserRoleName__c",
-            "type": "string"
-        },
-        "UserType__c": {
-            "apiName": "UserType__c",
-            "label": "User Type",
-            "localApiName": "UserType__c",
-            "type": "picklist"
-        },
-        "WasLoggedByCurrentUser__c": {
-            "apiName": "WasLoggedByCurrentUser__c",
-            "label": "Logged By Current User",
-            "localApiName": "WasLoggedByCurrentUser__c",
-            "type": "boolean"
-        },
-        "EndTime__c": {
-            "apiName": "EndTime__c",
-            "label": "End Time",
-            "localApiName": "EndTime__c",
-            "type": "datetime"
-        },
-        "MaxLogEntryLoggingLevelOrdinal__c": {
-            "apiName": "MaxLogEntryLoggingLevelOrdinal__c",
-            "inlineHelpText": "The highest logging level ordinal of any related log entries",
-            "label": "Max Log Entry Logging Level Ordinal",
-            "localApiName": "MaxLogEntryLoggingLevelOrdinal__c",
-            "type": "double"
-        },
-        "StartTime__c": {
-            "apiName": "StartTime__c",
-            "label": "Start Time",
-            "localApiName": "StartTime__c",
-            "type": "datetime"
-        },
-        "TotalDEBUGLogEntries__c": {
-            "apiName": "TotalDEBUGLogEntries__c",
-            "inlineHelpText": "The total number of log entries with logging level == 'DEBUG'",
-            "label": "Total DEBUG Entries",
-            "localApiName": "TotalDEBUGLogEntries__c",
-            "type": "double"
-        },
-        "TotalERRORLogEntries__c": {
-            "apiName": "TotalERRORLogEntries__c",
-            "inlineHelpText": "The total number of log entries with logging level == 'ERROR'",
-            "label": "Total ERROR Entries",
-            "localApiName": "TotalERRORLogEntries__c",
-            "type": "double"
-        },
-        "TotalFINELogEntries__c": {
-            "apiName": "TotalFINELogEntries__c",
-            "inlineHelpText": "The total number of log entries with logging level == 'FINE'",
-            "label": "Total FINE Entries",
-            "localApiName": "TotalFINELogEntries__c",
-            "type": "double"
-        },
-        "TotalFINERLogEntries__c": {
-            "apiName": "TotalFINERLogEntries__c",
-            "inlineHelpText": "The total number of log entries with logging level == 'FINER'",
-            "label": "Total FINER Entries",
-            "localApiName": "TotalFINERLogEntries__c",
-            "type": "double"
-        },
-        "TotalFINESTLogEntries__c": {
-            "apiName": "TotalFINESTLogEntries__c",
-            "inlineHelpText": "The total number of log entries with logging level == 'FINEST'",
-            "label": "Total FINEST Entries",
-            "localApiName": "TotalFINESTLogEntries__c",
-            "type": "double"
-        },
-        "TotalINFOLogEntries__c": {
-            "apiName": "TotalINFOLogEntries__c",
-            "inlineHelpText": "The total number of log entries with logging level == 'INFO'",
-            "label": "Total INFO Entries",
-            "localApiName": "TotalINFOLogEntries__c",
-            "type": "double"
-        },
-        "TotalLimitsCpuTimeUsed__c": {
-            "apiName": "TotalLimitsCpuTimeUsed__c",
-            "label": "Total CPU",
-            "localApiName": "TotalLimitsCpuTimeUsed__c",
-            "type": "double"
-        },
-        "TotalWARNLogEntries__c": {
-            "apiName": "TotalWARNLogEntries__c",
-            "inlineHelpText": "The total number of log entries with logging level == 'WARN'",
-            "label": "Total WARN Entries",
-            "localApiName": "TotalWARNLogEntries__c",
-            "type": "double"
-        }
+  "apiName": "Log__c",
+  "fields": {
+    "Id": {
+      "apiName": "Id",
+      "label": "Record ID",
+      "localApiName": "Id",
+      "type": "id"
     },
-    "label": "Log",
-    "labelPlural": "Logs",
-    "localApiName": "Log__c",
-    "namespacePrefix": ""
+    "OwnerId": {
+      "apiName": "OwnerId",
+      "label": "Owner ID",
+      "localApiName": "OwnerId",
+      "type": "reference"
+    },
+    "IsDeleted": {
+      "apiName": "IsDeleted",
+      "label": "Deleted",
+      "localApiName": "IsDeleted",
+      "type": "boolean"
+    },
+    "Name": {
+      "apiName": "Name",
+      "label": "Log Number",
+      "localApiName": "Name",
+      "type": "string"
+    },
+    "CreatedDate": {
+      "apiName": "CreatedDate",
+      "label": "Created Date",
+      "localApiName": "CreatedDate",
+      "type": "datetime"
+    },
+    "CreatedById": {
+      "apiName": "CreatedById",
+      "label": "Created By ID",
+      "localApiName": "CreatedById",
+      "type": "reference"
+    },
+    "LastModifiedDate": {
+      "apiName": "LastModifiedDate",
+      "label": "Last Modified Date",
+      "localApiName": "LastModifiedDate",
+      "type": "datetime"
+    },
+    "LastModifiedById": {
+      "apiName": "LastModifiedById",
+      "label": "Last Modified By ID",
+      "localApiName": "LastModifiedById",
+      "type": "reference"
+    },
+    "SystemModstamp": {
+      "apiName": "SystemModstamp",
+      "label": "System Modstamp",
+      "localApiName": "SystemModstamp",
+      "type": "datetime"
+    },
+    "LastActivityDate": {
+      "apiName": "LastActivityDate",
+      "label": "Last Activity Date",
+      "localApiName": "LastActivityDate",
+      "type": "date"
+    },
+    "LastViewedDate": {
+      "apiName": "LastViewedDate",
+      "label": "Last Viewed Date",
+      "localApiName": "LastViewedDate",
+      "type": "datetime"
+    },
+    "LastReferencedDate": {
+      "apiName": "LastReferencedDate",
+      "label": "Last Referenced Date",
+      "localApiName": "LastReferencedDate",
+      "type": "datetime"
+    },
+    "ApiReleaseNumber__c": {
+      "apiName": "ApiReleaseNumber__c",
+      "inlineHelpText": "The release number for the org's instance - determined by making a callout to status.salesforce.com",
+      "label": "API Release Number",
+      "localApiName": "ApiReleaseNumber__c",
+      "type": "string"
+    },
+    "ApiReleaseVersion__c": {
+      "apiName": "ApiReleaseVersion__c",
+      "inlineHelpText": "The release version for the org's instance - determined by making a callout to status.salesforce.com",
+      "label": "API Release Version",
+      "localApiName": "ApiReleaseVersion__c",
+      "type": "string"
+    },
+    "ApiVersion__c": {
+      "apiName": "ApiVersion__c",
+      "inlineHelpText": "The Salesforce release (API version) of the environment",
+      "label": "API Version",
+      "localApiName": "ApiVersion__c",
+      "type": "picklist"
+    },
+    "ClosedBy__c": {
+      "apiName": "ClosedBy__c",
+      "label": "Closed By",
+      "localApiName": "ClosedBy__c",
+      "type": "reference"
+    },
+    "ClosedDate__c": {
+      "apiName": "ClosedDate__c",
+      "label": "Closed Date",
+      "localApiName": "ClosedDate__c",
+      "type": "datetime"
+    },
+    "Comments__c": {
+      "apiName": "Comments__c",
+      "label": "Comments",
+      "localApiName": "Comments__c",
+      "type": "textarea"
+    },
+    "IsClosed__c": {
+      "apiName": "IsClosed__c",
+      "label": "Is Closed",
+      "localApiName": "IsClosed__c",
+      "type": "boolean"
+    },
+    "IsResolved__c": {
+      "apiName": "IsResolved__c",
+      "label": "Is Resolved",
+      "localApiName": "IsResolved__c",
+      "type": "boolean"
+    },
+    "Issue__c": {
+      "apiName": "Issue__c",
+      "label": "Issue",
+      "localApiName": "Issue__c",
+      "type": "picklist"
+    },
+    "Locale__c": {
+      "apiName": "Locale__c",
+      "label": "Locale",
+      "localApiName": "Locale__c",
+      "type": "string"
+    },
+    "LogEntriesSummary__c": {
+      "apiName": "LogEntriesSummary__c",
+      "label": "Summary",
+      "localApiName": "LogEntriesSummary__c",
+      "type": "string"
+    },
+    "LogPurgeAction__c": {
+      "apiName": "LogPurgeAction__c",
+      "inlineHelpText": "Used by the batch job LogBatchPurger, this indicates the action that should be taken for a Log__c record when LogRetentionDate__c < TODAY. Out of the box, only 'Delete' is used by Logger, but plugins can add & use new values.",
+      "label": "Log Purge Action",
+      "localApiName": "LogPurgeAction__c",
+      "type": "picklist"
+    },
+    "LogRetentionDate__c": {
+      "apiName": "LogRetentionDate__c",
+      "inlineHelpText": "The date that this log can be automatically deleted by the batch job LogBatchPurger.",
+      "label": "Log Retention Date",
+      "localApiName": "LogRetentionDate__c",
+      "type": "date"
+    },
+    "LoggedByUsernameLink__c": {
+      "apiName": "LoggedByUsernameLink__c",
+      "label": "Username",
+      "localApiName": "LoggedByUsernameLink__c",
+      "type": "string"
+    },
+    "LoggedByUsername__c": {
+      "apiName": "LoggedByUsername__c",
+      "label": "Username",
+      "localApiName": "LoggedByUsername__c",
+      "type": "string"
+    },
+    "LoggedBy__c": {
+      "apiName": "LoggedBy__c",
+      "label": "Logged By",
+      "localApiName": "LoggedBy__c",
+      "type": "reference"
+    },
+    "LoggerVersionNumber__c": {
+      "apiName": "LoggerVersionNumber__c",
+      "label": "Logger Version Number",
+      "localApiName": "LoggerVersionNumber__c",
+      "type": "string"
+    },
+    "LoginApplication__c": {
+      "apiName": "LoginApplication__c",
+      "label": "Login Application",
+      "localApiName": "LoginApplication__c",
+      "type": "string"
+    },
+    "LoginBrowser__c": {
+      "apiName": "LoginBrowser__c",
+      "label": "Login Browser",
+      "localApiName": "LoginBrowser__c",
+      "type": "string"
+    },
+    "LoginDomain__c": {
+      "apiName": "LoginDomain__c",
+      "label": "DEPRECATED: Login Domain",
+      "localApiName": "LoginDomain__c",
+      "type": "url"
+    },
+    "LoginHistoryId__c": {
+      "apiName": "LoginHistoryId__c",
+      "label": "Login History ID",
+      "localApiName": "LoginHistoryId__c",
+      "type": "string"
+    },
+    "LoginPlatform__c": {
+      "apiName": "LoginPlatform__c",
+      "label": "Login Platform",
+      "localApiName": "LoginPlatform__c",
+      "type": "string"
+    },
+    "LoginType__c": {
+      "apiName": "LoginType__c",
+      "label": "Login Type",
+      "localApiName": "LoginType__c",
+      "type": "picklist"
+    },
+    "LogoutUrl__c": {
+      "apiName": "LogoutUrl__c",
+      "label": "Logout URL",
+      "localApiName": "LogoutUrl__c",
+      "type": "url"
+    },
+    "NetworkId__c": {
+      "apiName": "NetworkId__c",
+      "inlineHelpText": "The Network ID of the user's Community site.",
+      "label": "Site Network ID",
+      "localApiName": "NetworkId__c",
+      "type": "string"
+    },
+    "NetworkLoginUrl__c": {
+      "apiName": "NetworkLoginUrl__c",
+      "label": "Site Login URL",
+      "localApiName": "NetworkLoginUrl__c",
+      "type": "url"
+    },
+    "NetworkLogoutUrl__c": {
+      "apiName": "NetworkLogoutUrl__c",
+      "label": "Site Logout URL",
+      "localApiName": "NetworkLogoutUrl__c",
+      "type": "url"
+    },
+    "NetworkName__c": {
+      "apiName": "NetworkName__c",
+      "inlineHelpText": "The name of the user's Community site (based on NetworkId).",
+      "label": "Site Name",
+      "localApiName": "NetworkName__c",
+      "type": "string"
+    },
+    "NetworkSelfRegistrationUrl__c": {
+      "apiName": "NetworkSelfRegistrationUrl__c",
+      "label": "Site Self Registration URL",
+      "localApiName": "NetworkSelfRegistrationUrl__c",
+      "type": "url"
+    },
+    "NetworkUrlPathPrefix__c": {
+      "apiName": "NetworkUrlPathPrefix__c",
+      "inlineHelpText": "The UrlPathPrefix is a unique string at the end of the URL for this community. For example, in the community URL CommunitiesSubdomainName.force.com/customers, customers is the UrlPathPrefix.",
+      "label": "Site URL Path Prefix",
+      "localApiName": "NetworkUrlPathPrefix__c",
+      "type": "string"
+    },
+    "OrganizationDomainUrl__c": {
+      "apiName": "OrganizationDomainUrl__c",
+      "inlineHelpText": "The value returned from System.URL.getOrgDomainUrl()",
+      "label": "Organization Domain URL",
+      "localApiName": "OrganizationDomainUrl__c",
+      "type": "url"
+    },
+    "OrganizationEnvironmentType__c": {
+      "apiName": "OrganizationEnvironmentType__c",
+      "label": "Environment Type",
+      "localApiName": "OrganizationEnvironmentType__c",
+      "type": "picklist"
+    },
+    "OrganizationId__c": {
+      "apiName": "OrganizationId__c",
+      "label": "Organization ID",
+      "localApiName": "OrganizationId__c",
+      "type": "string"
+    },
+    "OrganizationInstanceName__c": {
+      "apiName": "OrganizationInstanceName__c",
+      "label": "Instance Name",
+      "localApiName": "OrganizationInstanceName__c",
+      "type": "string"
+    },
+    "OrganizationInstanceReleaseCycle__c": {
+      "apiName": "OrganizationInstanceReleaseCycle__c",
+      "label": "DEPRECATED: Instance Release Cycle",
+      "localApiName": "OrganizationInstanceReleaseCycle__c",
+      "type": "picklist"
+    },
+    "OrganizationName__c": {
+      "apiName": "OrganizationName__c",
+      "label": "Organization Name",
+      "localApiName": "OrganizationName__c",
+      "type": "string"
+    },
+    "OrganizationNamespacePrefix__c": {
+      "apiName": "OrganizationNamespacePrefix__c",
+      "label": "Organization Namespace Prefix",
+      "localApiName": "OrganizationNamespacePrefix__c",
+      "type": "string"
+    },
+    "OrganizationType__c": {
+      "apiName": "OrganizationType__c",
+      "label": "Organization Type",
+      "localApiName": "OrganizationType__c",
+      "type": "picklist"
+    },
+    "ParentLogLink__c": {
+      "apiName": "ParentLogLink__c",
+      "label": "Parent Log",
+      "localApiName": "ParentLogLink__c",
+      "type": "string"
+    },
+    "ParentLogTransactionId__c": {
+      "apiName": "ParentLogTransactionId__c",
+      "label": "Parent Log Transaction ID",
+      "localApiName": "ParentLogTransactionId__c",
+      "type": "string"
+    },
+    "ParentLog__c": {
+      "apiName": "ParentLog__c",
+      "inlineHelpText": "The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.",
+      "label": "Parent Log",
+      "localApiName": "ParentLog__c",
+      "type": "reference"
+    },
+    "Priority__c": {
+      "apiName": "Priority__c",
+      "label": "Priority",
+      "localApiName": "Priority__c",
+      "type": "picklist"
+    },
+    "ProfileId__c": {
+      "apiName": "ProfileId__c",
+      "label": "Profile ID",
+      "localApiName": "ProfileId__c",
+      "type": "string"
+    },
+    "ProfileLink__c": {
+      "apiName": "ProfileLink__c",
+      "label": "Profile",
+      "localApiName": "ProfileLink__c",
+      "type": "string"
+    },
+    "ProfileName__c": {
+      "apiName": "ProfileName__c",
+      "label": "Profile Name",
+      "localApiName": "ProfileName__c",
+      "type": "string"
+    },
+    "Scenario__c": {
+      "apiName": "Scenario__c",
+      "label": "Scenario",
+      "localApiName": "Scenario__c",
+      "type": "string"
+    },
+    "SessionId__c": {
+      "apiName": "SessionId__c",
+      "label": "Session ID",
+      "localApiName": "SessionId__c",
+      "type": "string"
+    },
+    "SessionSecurityLevel__c": {
+      "apiName": "SessionSecurityLevel__c",
+      "label": "Session Security Level",
+      "localApiName": "SessionSecurityLevel__c",
+      "type": "picklist"
+    },
+    "SessionType__c": {
+      "apiName": "SessionType__c",
+      "label": "Session Type",
+      "localApiName": "SessionType__c",
+      "type": "picklist"
+    },
+    "SourceIp__c": {
+      "apiName": "SourceIp__c",
+      "label": "Source IP",
+      "localApiName": "SourceIp__c",
+      "type": "string"
+    },
+    "Status__c": {
+      "apiName": "Status__c",
+      "label": "Status",
+      "localApiName": "Status__c",
+      "type": "picklist"
+    },
+    "SystemModeSummary__c": {
+      "apiName": "SystemModeSummary__c",
+      "label": "System Mode",
+      "localApiName": "SystemModeSummary__c",
+      "type": "string"
+    },
+    "SystemMode__c": {
+      "apiName": "SystemMode__c",
+      "label": "System Mode",
+      "localApiName": "SystemMode__c",
+      "type": "picklist"
+    },
+    "ThemeDisplayed__c": {
+      "apiName": "ThemeDisplayed__c",
+      "label": "Theme Displayed",
+      "localApiName": "ThemeDisplayed__c",
+      "type": "picklist"
+    },
+    "TimeZoneId__c": {
+      "apiName": "TimeZoneId__c",
+      "label": "Time Zone ID",
+      "localApiName": "TimeZoneId__c",
+      "type": "string"
+    },
+    "TimeZoneName__c": {
+      "apiName": "TimeZoneName__c",
+      "label": "Time Zone Name",
+      "localApiName": "TimeZoneName__c",
+      "type": "string"
+    },
+    "TotalLogEntries__c": {
+      "apiName": "TotalLogEntries__c",
+      "label": "Total Entries",
+      "localApiName": "TotalLogEntries__c",
+      "type": "double"
+    },
+    "TransactionId__c": {
+      "apiName": "TransactionId__c",
+      "label": "Transaction ID",
+      "localApiName": "TransactionId__c",
+      "type": "string"
+    },
+    "UserLicenseDefinitionKey__c": {
+      "apiName": "UserLicenseDefinitionKey__c",
+      "label": "User License Definition Key",
+      "localApiName": "UserLicenseDefinitionKey__c",
+      "type": "picklist"
+    },
+    "UserLicenseId__c": {
+      "apiName": "UserLicenseId__c",
+      "label": "User License ID",
+      "localApiName": "UserLicenseId__c",
+      "type": "string"
+    },
+    "UserLicenseName__c": {
+      "apiName": "UserLicenseName__c",
+      "label": "User License Name",
+      "localApiName": "UserLicenseName__c",
+      "type": "picklist"
+    },
+    "UserLoggingLevelOrdinal__c": {
+      "apiName": "UserLoggingLevelOrdinal__c",
+      "label": "User Logging Level Ordinal",
+      "localApiName": "UserLoggingLevelOrdinal__c",
+      "type": "double"
+    },
+    "UserLoggingLevel__c": {
+      "apiName": "UserLoggingLevel__c",
+      "label": "User Logging Level",
+      "localApiName": "UserLoggingLevel__c",
+      "type": "picklist"
+    },
+    "UserRoleId__c": {
+      "apiName": "UserRoleId__c",
+      "label": "User Role ID",
+      "localApiName": "UserRoleId__c",
+      "type": "string"
+    },
+    "UserRoleLink__c": {
+      "apiName": "UserRoleLink__c",
+      "label": "User Role",
+      "localApiName": "UserRoleLink__c",
+      "type": "string"
+    },
+    "UserRoleName__c": {
+      "apiName": "UserRoleName__c",
+      "label": "User Role Name",
+      "localApiName": "UserRoleName__c",
+      "type": "string"
+    },
+    "UserType__c": {
+      "apiName": "UserType__c",
+      "label": "User Type",
+      "localApiName": "UserType__c",
+      "type": "picklist"
+    },
+    "WasLoggedByCurrentUser__c": {
+      "apiName": "WasLoggedByCurrentUser__c",
+      "label": "Logged By Current User",
+      "localApiName": "WasLoggedByCurrentUser__c",
+      "type": "boolean"
+    },
+    "EndTime__c": {
+      "apiName": "EndTime__c",
+      "label": "End Time",
+      "localApiName": "EndTime__c",
+      "type": "datetime"
+    },
+    "MaxLogEntryLoggingLevelOrdinal__c": {
+      "apiName": "MaxLogEntryLoggingLevelOrdinal__c",
+      "inlineHelpText": "The highest logging level ordinal of any related log entries",
+      "label": "Max Log Entry Logging Level Ordinal",
+      "localApiName": "MaxLogEntryLoggingLevelOrdinal__c",
+      "type": "double"
+    },
+    "StartTime__c": {
+      "apiName": "StartTime__c",
+      "label": "Start Time",
+      "localApiName": "StartTime__c",
+      "type": "datetime"
+    },
+    "TotalDEBUGLogEntries__c": {
+      "apiName": "TotalDEBUGLogEntries__c",
+      "inlineHelpText": "The total number of log entries with logging level == 'DEBUG'",
+      "label": "Total DEBUG Entries",
+      "localApiName": "TotalDEBUGLogEntries__c",
+      "type": "double"
+    },
+    "TotalERRORLogEntries__c": {
+      "apiName": "TotalERRORLogEntries__c",
+      "inlineHelpText": "The total number of log entries with logging level == 'ERROR'",
+      "label": "Total ERROR Entries",
+      "localApiName": "TotalERRORLogEntries__c",
+      "type": "double"
+    },
+    "TotalFINELogEntries__c": {
+      "apiName": "TotalFINELogEntries__c",
+      "inlineHelpText": "The total number of log entries with logging level == 'FINE'",
+      "label": "Total FINE Entries",
+      "localApiName": "TotalFINELogEntries__c",
+      "type": "double"
+    },
+    "TotalFINERLogEntries__c": {
+      "apiName": "TotalFINERLogEntries__c",
+      "inlineHelpText": "The total number of log entries with logging level == 'FINER'",
+      "label": "Total FINER Entries",
+      "localApiName": "TotalFINERLogEntries__c",
+      "type": "double"
+    },
+    "TotalFINESTLogEntries__c": {
+      "apiName": "TotalFINESTLogEntries__c",
+      "inlineHelpText": "The total number of log entries with logging level == 'FINEST'",
+      "label": "Total FINEST Entries",
+      "localApiName": "TotalFINESTLogEntries__c",
+      "type": "double"
+    },
+    "TotalINFOLogEntries__c": {
+      "apiName": "TotalINFOLogEntries__c",
+      "inlineHelpText": "The total number of log entries with logging level == 'INFO'",
+      "label": "Total INFO Entries",
+      "localApiName": "TotalINFOLogEntries__c",
+      "type": "double"
+    },
+    "TotalLimitsCpuTimeUsed__c": {
+      "apiName": "TotalLimitsCpuTimeUsed__c",
+      "label": "Total CPU",
+      "localApiName": "TotalLimitsCpuTimeUsed__c",
+      "type": "double"
+    },
+    "TotalWARNLogEntries__c": {
+      "apiName": "TotalWARNLogEntries__c",
+      "inlineHelpText": "The total number of log entries with logging level == 'WARN'",
+      "label": "Total WARN Entries",
+      "localApiName": "TotalWARNLogEntries__c",
+      "type": "double"
+    }
+  },
+  "label": "Log",
+  "labelPlural": "Logs",
+  "localApiName": "Log__c",
+  "namespacePrefix": ""
 }

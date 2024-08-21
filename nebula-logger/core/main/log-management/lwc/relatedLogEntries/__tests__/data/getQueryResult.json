@@ -1,128 +1,128 @@
 {
-    "totalLogEntriesCount": 4,
-    "records": [
-        {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004OazXAAS" },
-            "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksDlAAI" },
-                "Id": "a0154000007ksDlAAI",
-                "Name": "Log-001429"
-            },
-            "Log__c": "a0154000007ksDlAAI",
-            "Message__c": "hello",
-            "Id": "a0054000004OazXAAS",
-            "Origin__c": "Apex.AnonymousBlock",
-            "Timestamp__c": "2021-05-30T15:29:48.000+0000",
-            "LoggingLevel__c": "INFO",
-            "Name": "a0054000004OazX"
-        },
-        {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004OazYAAS" },
-            "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksDlAAI" },
-                "Id": "a0154000007ksDlAAI",
-                "Name": "Log-001429"
-            },
-            "Log__c": "a0154000007ksDlAAI",
-            "Message__c": "goodbye",
-            "Id": "a0054000004OazYAAS",
-            "Origin__c": "Apex.AnonymousBlock",
-            "Timestamp__c": "2021-05-30T15:29:48.000+0000",
-            "LoggingLevel__c": "DEBUG",
-            "Name": "a0054000004OazY"
-        },
-        {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004Ob2gAAC" },
-            "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksGuAAI" },
-                "Id": "a0154000007ksGuAAI",
-                "Name": "Log-001430"
-            },
-            "Log__c": "a0154000007ksGuAAI",
-            "Message__c": "hello",
-            "Id": "a0054000004Ob2gAAC",
-            "Origin__c": "Apex.AnonymousBlock",
-            "Timestamp__c": "2021-05-30T15:34:49.000+0000",
-            "LoggingLevel__c": "INFO",
-            "Name": "a0054000004Ob2g"
-        },
-        {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004Ob2hAAC" },
-            "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksGuAAI" },
-                "Id": "a0154000007ksGuAAI",
-                "Name": "Log-001430"
-            },
-            "Log__c": "a0154000007ksGuAAI",
-            "Message__c": "goodbye",
-            "Id": "a0054000004Ob2hAAC",
-            "Origin__c": "Apex.AnonymousBlock",
-            "Timestamp__c": "2021-05-30T15:34:50.000+0000",
-            "LoggingLevel__c": "DEBUG",
-            "Name": "a0054000004Ob2h"
-        }
-    ],
-    "labelPlural": "Log Entries",
-    "label": "Log Entry",
-    "isAccessible": true,
-    "fieldSet": {
-        "name": "Related_List_Defaults",
-        "label": "Related List Defaults",
-        "fields": [
-            {
-                "type": "string",
-                "sortable": true,
-                "relationshipName": null,
-                "lookupDisplayFieldName": null,
-                "label": "Entry ID",
-                "isNameField": true,
-                "fieldName": "Name"
-            },
-            {
-                "type": "picklist",
-                "sortable": true,
-                "relationshipName": null,
-                "lookupDisplayFieldName": null,
-                "label": "Logging Level",
-                "isNameField": false,
-                "fieldName": "LoggingLevel__c"
-            },
-            {
-                "type": "textarea",
-                "sortable": false,
-                "relationshipName": null,
-                "lookupDisplayFieldName": null,
-                "label": "Message",
-                "isNameField": false,
-                "fieldName": "Message__c"
-            },
-            {
-                "type": "reference",
-                "sortable": true,
-                "relationshipName": "Log__r",
-                "lookupDisplayFieldName": "Log__r.Name",
-                "label": "Log",
-                "isNameField": false,
-                "fieldName": "Log__c"
-            },
-            {
-                "type": "string",
-                "sortable": true,
-                "relationshipName": null,
-                "lookupDisplayFieldName": null,
-                "label": "Origin",
-                "isNameField": false,
-                "fieldName": "Origin__c"
-            },
-            {
-                "type": "datetime",
-                "sortable": true,
-                "relationshipName": null,
-                "lookupDisplayFieldName": null,
-                "label": "Timestamp",
-                "isNameField": false,
-                "fieldName": "Timestamp__c"
-            }
-        ]
+  "totalLogEntriesCount": 4,
+  "records": [
+    {
+      "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004OazXAAS" },
+      "Log__r": {
+        "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksDlAAI" },
+        "Id": "a0154000007ksDlAAI",
+        "Name": "Log-001429"
+      },
+      "Log__c": "a0154000007ksDlAAI",
+      "Message__c": "hello",
+      "Id": "a0054000004OazXAAS",
+      "Origin__c": "Apex.AnonymousBlock",
+      "Timestamp__c": "2021-05-30T15:29:48.000+0000",
+      "LoggingLevel__c": "INFO",
+      "Name": "a0054000004OazX"
+    },
+    {
+      "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004OazYAAS" },
+      "Log__r": {
+        "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksDlAAI" },
+        "Id": "a0154000007ksDlAAI",
+        "Name": "Log-001429"
+      },
+      "Log__c": "a0154000007ksDlAAI",
+      "Message__c": "goodbye",
+      "Id": "a0054000004OazYAAS",
+      "Origin__c": "Apex.AnonymousBlock",
+      "Timestamp__c": "2021-05-30T15:29:48.000+0000",
+      "LoggingLevel__c": "DEBUG",
+      "Name": "a0054000004OazY"
+    },
+    {
+      "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004Ob2gAAC" },
+      "Log__r": {
+        "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksGuAAI" },
+        "Id": "a0154000007ksGuAAI",
+        "Name": "Log-001430"
+      },
+      "Log__c": "a0154000007ksGuAAI",
+      "Message__c": "hello",
+      "Id": "a0054000004Ob2gAAC",
+      "Origin__c": "Apex.AnonymousBlock",
+      "Timestamp__c": "2021-05-30T15:34:49.000+0000",
+      "LoggingLevel__c": "INFO",
+      "Name": "a0054000004Ob2g"
+    },
+    {
+      "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004Ob2hAAC" },
+      "Log__r": {
+        "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksGuAAI" },
+        "Id": "a0154000007ksGuAAI",
+        "Name": "Log-001430"
+      },
+      "Log__c": "a0154000007ksGuAAI",
+      "Message__c": "goodbye",
+      "Id": "a0054000004Ob2hAAC",
+      "Origin__c": "Apex.AnonymousBlock",
+      "Timestamp__c": "2021-05-30T15:34:50.000+0000",
+      "LoggingLevel__c": "DEBUG",
+      "Name": "a0054000004Ob2h"
     }
+  ],
+  "labelPlural": "Log Entries",
+  "label": "Log Entry",
+  "isAccessible": true,
+  "fieldSet": {
+    "name": "Related_List_Defaults",
+    "label": "Related List Defaults",
+    "fields": [
+      {
+        "type": "string",
+        "sortable": true,
+        "relationshipName": null,
+        "lookupDisplayFieldName": null,
+        "label": "Entry ID",
+        "isNameField": true,
+        "fieldName": "Name"
+      },
+      {
+        "type": "picklist",
+        "sortable": true,
+        "relationshipName": null,
+        "lookupDisplayFieldName": null,
+        "label": "Logging Level",
+        "isNameField": false,
+        "fieldName": "LoggingLevel__c"
+      },
+      {
+        "type": "textarea",
+        "sortable": false,
+        "relationshipName": null,
+        "lookupDisplayFieldName": null,
+        "label": "Message",
+        "isNameField": false,
+        "fieldName": "Message__c"
+      },
+      {
+        "type": "reference",
+        "sortable": true,
+        "relationshipName": "Log__r",
+        "lookupDisplayFieldName": "Log__r.Name",
+        "label": "Log",
+        "isNameField": false,
+        "fieldName": "Log__c"
+      },
+      {
+        "type": "string",
+        "sortable": true,
+        "relationshipName": null,
+        "lookupDisplayFieldName": null,
+        "label": "Origin",
+        "isNameField": false,
+        "fieldName": "Origin__c"
+      },
+      {
+        "type": "datetime",
+        "sortable": true,
+        "relationshipName": null,
+        "lookupDisplayFieldName": null,
+        "label": "Timestamp",
+        "isNameField": false,
+        "fieldName": "Timestamp__c"
+      }
+    ]
+  }
 }

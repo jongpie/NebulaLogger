@@ -1,36 +1,36 @@
 {
-    "id": "cde68d04-30b0-4d1f-a92d-12cd0626ef46",
-    "mobilePublisherAppUpdateConfig": {
-        "forceAppUpdate": false,
-        "enableAppUpdate": false,
-        "minVersion": {
-            "ios": {
-                "version": "10.0",
-                "url": "https://apps.apple.com/us"
-            },
-            "android": {
-                "version": "10.1",
-                "url": "https://play.google.com/store"
-            }
-        }
+  "id": "cde68d04-30b0-4d1f-a92d-12cd0626ef46",
+  "mobilePublisherAppUpdateConfig": {
+    "forceAppUpdate": false,
+    "enableAppUpdate": false,
+    "minVersion": {
+      "ios": {
+        "version": "10.0",
+        "url": "https://apps.apple.com/us"
+      },
+      "android": {
+        "version": "10.1",
+        "url": "https://play.google.com/store"
+      }
+    }
+  },
+  "nativeMobileNavConfig": {
+    "showBackButton": true,
+    "showHamburgerMenuWithBackButton": false
+  },
+  "nativeTabMenu": {
+    "branding": {
+      "iconTintColorUnselected": "#C9C5C5",
+      "barTintColor": "#FFFFFF"
     },
-    "nativeMobileNavConfig": {
-        "showBackButton": true,
-        "showHamburgerMenuWithBackButton": false
-    },
-    "nativeTabMenu": {
-        "branding": {
-            "iconTintColorUnselected": "#C9C5C5",
-            "barTintColor": "#FFFFFF"
-        },
-        "menuItems": [
-            {
-                "name": "Home",
-                "targetUrl": "/",
-                "iconAsset": "slds-icon:home"
-            }
-        ]
-    },
-    "showHamburgerMenu": true,
-    "type": "nativeConfig"
+    "menuItems": [
+      {
+        "name": "Home",
+        "targetUrl": "/",
+        "iconAsset": "slds-icon:home"
+      }
+    ]
+  },
+  "showHamburgerMenu": true,
+  "type": "nativeConfig"
 }

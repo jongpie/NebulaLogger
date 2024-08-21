@@ -2,30 +2,30 @@ name: Bug Report
 description: File a bug report for Nebula Logger
 labels: ['bug']
 body:
-    - type: dropdown
-      id: package-edition
-      attributes:
-          label: Package Edition of Nebula Logger
-          description: Which package are you using?
-          options:
-              - Unlocked Package
-              - Managed Package
-      validations:
-          required: true
+  - type: dropdown
+    id: package-edition
+    attributes:
+      label: Package Edition of Nebula Logger
+      description: Which package are you using?
+      options:
+        - Unlocked Package
+        - Managed Package
+    validations:
+      required: true
 
-    - type: input
-      id: package-version
-      attributes:
-          label: Package Version of Nebula Logger
-          description: The package version number (displayed under Setup --> Installed Packages)
-          placeholder: v4.6.0, v4.6.1, etc.
-      validations:
-          required: true
+  - type: input
+    id: package-version
+    attributes:
+      label: Package Version of Nebula Logger
+      description: The package version number (displayed under Setup --> Installed Packages)
+      placeholder: v4.6.0, v4.6.1, etc.
+    validations:
+      required: true
 
-    - type: textarea
-      id: summary
-      attributes:
-          label: New Bug Summary
-          description: A description of what issue you are experiencing with Nebula Logger
-      validations:
-          required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: New Bug Summary
+      description: A description of what issue you are experiencing with Nebula Logger
+    validations:
+      required: true

@@ -1,4 +1,4 @@
 [
-    { "value": "Delete", "label": "Delete" },
-    { "value": "Custom", "label": "Custom" }
+  { "value": "Delete", "label": "Delete" },
+  { "value": "Custom", "label": "Custom" }
 ]

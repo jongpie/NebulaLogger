@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<CustomMetadata
-    xmlns="http://soap.sforce.com/2006/04/metadata"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
->
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <label>Require Scenario Usage</label>
     <protected>false</protected>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
     <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">When set to &apos;false&apos; (default), specifying a scenario is completely optional.

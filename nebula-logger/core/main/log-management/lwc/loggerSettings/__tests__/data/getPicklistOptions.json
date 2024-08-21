@@ -1,38 +1,38 @@
 {
-    "loggingLevelOptions": [
-        { "value": "", "label": "--None--" },
-        { "value": "ERROR", "label": "ERROR" },
-        { "value": "WARN", "label": "WARN" },
-        { "value": "INFO", "label": "INFO" },
-        { "value": "DEBUG", "label": "DEBUG" },
-        { "value": "FINE", "label": "FINE" },
-        { "value": "FINER", "label": "FINER" },
-        { "value": "FINEST", "label": "FINEST" }
-    ],
-    "platformEventStorageLocationOptions": [
-        { "value": "", "label": "--None--" },
-        { "value": "CUSTOM_OBJECTS", "label": "CUSTOM_OBJECTS" }
-    ],
-    "purgeActionOptions": [
-        { "value": "", "label": "--None--" },
-        { "value": "Delete", "label": "Delete" }
-    ],
-    "saveMethodOptions": [
-        { "value": "", "label": "--None--" },
-        { "value": "EVENT_BUS", "label": "EVENT_BUS" },
-        { "value": "QUEUEABLE", "label": "QUEUEABLE" },
-        { "value": "REST", "label": "REST" },
-        { "value": "SYNCHRONOUS_DML", "label": "SYNCHRONOUS_DML" }
-    ],
-    "setupOwnerTypeOptions": [
-        { "value": "", "label": "--None--" },
-        { "value": "Organization", "label": "Organization" },
-        { "value": "Profile", "label": "Profile" },
-        { "value": "User", "label": "User" }
-    ],
-    "shareAccessLevelOptions": [
-        { "value": "", "label": "--None--" },
-        { "value": "Read", "label": "Read" },
-        { "value": "Edit", "label": "Edit" }
-    ]
+  "loggingLevelOptions": [
+    { "value": "", "label": "--None--" },
+    { "value": "ERROR", "label": "ERROR" },
+    { "value": "WARN", "label": "WARN" },
+    { "value": "INFO", "label": "INFO" },
+    { "value": "DEBUG", "label": "DEBUG" },
+    { "value": "FINE", "label": "FINE" },
+    { "value": "FINER", "label": "FINER" },
+    { "value": "FINEST", "label": "FINEST" }
+  ],
+  "platformEventStorageLocationOptions": [
+    { "value": "", "label": "--None--" },
+    { "value": "CUSTOM_OBJECTS", "label": "CUSTOM_OBJECTS" }
+  ],
+  "purgeActionOptions": [
+    { "value": "", "label": "--None--" },
+    { "value": "Delete", "label": "Delete" }
+  ],
+  "saveMethodOptions": [
+    { "value": "", "label": "--None--" },
+    { "value": "EVENT_BUS", "label": "EVENT_BUS" },
+    { "value": "QUEUEABLE", "label": "QUEUEABLE" },
+    { "value": "REST", "label": "REST" },
+    { "value": "SYNCHRONOUS_DML", "label": "SYNCHRONOUS_DML" }
+  ],
+  "setupOwnerTypeOptions": [
+    { "value": "", "label": "--None--" },
+    { "value": "Organization", "label": "Organization" },
+    { "value": "Profile", "label": "Profile" },
+    { "value": "User", "label": "User" }
+  ],
+  "shareAccessLevelOptions": [
+    { "value": "", "label": "--None--" },
+    { "value": "Read", "label": "Read" },
+    { "value": "Edit", "label": "Edit" }
+  ]
 }

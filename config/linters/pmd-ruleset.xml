@@ -9,8 +9,8 @@
         Nebula Logger custom PMD ruleset
     </description>
     <rule ref="category/apex/bestpractices.xml">
-      <exclude name="ApexAssertionsShouldIncludeMessage" />
-      <exclude name="AvoidLogicInTrigger" />
+        <exclude name="ApexAssertionsShouldIncludeMessage" />
+        <exclude name="AvoidLogicInTrigger" />
     </rule>
     <rule ref="category/apex/codestyle.xml">
     </rule>

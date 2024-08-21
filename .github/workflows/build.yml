@@ -2,413 +2,413 @@
 name: Build
 
 env:
-    SF_DISABLE_AUTOUPDATE: true
-    SF_SKIP_NEW_VERSION_CHECK: true
-    SF_LOG_LEVEL: debug
+  SF_DISABLE_AUTOUPDATE: true
+  SF_SKIP_NEW_VERSION_CHECK: true
+  SF_LOG_LEVEL: debug
 
 on:
-    push:
-        branches:
-            - main
-            - 'devops/**'
-        paths-ignore:
-            - 'content/**'
-            - 'docs/**'
-            - 'examples/**'
-            - 'packages/**'
-            - '.forceignore'
-            - '.gitignore'
-            - '.prettierignore'
-            - '.prettierrc'
-            - 'CONTRIBUTING.md'
-            - 'LICENSE'
-            - 'package.json'
-            - 'README.md'
-            - './**/README.md'
-            - 'sfdx-project.json'
-    pull_request:
-        types: [opened, synchronize, reopened]
-        paths-ignore:
-            - 'content/**'
-            - 'docs/**'
-            - 'examples/**'
-            - 'packages/**'
-            - '.forceignore'
-            - '.gitignore'
-            - '.prettierignore'
-            - '.prettierrc'
-            - 'CONTRIBUTING.md'
-            - 'LICENSE'
-            - 'package.json'
-            - 'README.md'
-            - './**/README.md'
-            - 'sfdx-project.json'
+  push:
+    branches:
+      - main
+      - 'devops/**'
+    paths-ignore:
+      - 'content/**'
+      - 'docs/**'
+      - 'examples/**'
+      - 'packages/**'
+      - '.forceignore'
+      - '.gitignore'
+      - '.prettierignore'
+      - '.prettierrc'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'package.json'
+      - 'README.md'
+      - './**/README.md'
+      - 'sfdx-project.json'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'content/**'
+      - 'docs/**'
+      - 'examples/**'
+      - 'packages/**'
+      - '.forceignore'
+      - '.gitignore'
+      - '.prettierignore'
+      - '.prettierrc'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'package.json'
+      - 'README.md'
+      - './**/README.md'
+      - 'sfdx-project.json'
 
 jobs:
-    code-quality-tests:
-        name: 'Run Code Quality Tests'
-        runs-on: ubuntu-latest
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
+  code-quality-tests:
+    name: 'Run Code Quality Tests'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Authorize Dev Hub'
-              if: ${{ github.event_name == 'pull_request' }}
-              shell: bash
-              run: |
-                  npx sf version
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+      - name: 'Authorize Dev Hub'
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            - name: 'Verify package version number is updated'
-              if: ${{ github.event_name == 'pull_request' }}
-              run: npm run package:version:number:verify
+      - name: 'Verify package version number is updated'
+        if: ${{ github.event_name == 'pull_request' }}
+        run: npm run package:version:number:verify
 
-            - name: 'Verify LWC with ESLint'
-              run: npm run scan:lwc
+      - name: 'Verify LWC with ESLint'
+        run: npm run scan:lwc
 
-            - name: 'Verify Apex with SFDX Scanner'
-              run: |
-                  npm run sf:plugins:link:scanner
-                  npm run scan:apex
+      - name: 'Verify Apex with SFDX Scanner'
+        run: |
+          npm run sf:plugins:link:scanner
+          npm run scan:apex
 
-            # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
-            # - name: 'Verify docs are updated'
-            #   run: npm run docs:verify
+      # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
+      # - name: 'Verify docs are updated'
+      #   run: npm run docs:verify
 
-            - name: 'Verify formatting with Prettier'
-              run: npm run prettier:verify
+      - name: 'Verify formatting with Prettier'
+        run: npm run prettier:verify
 
-    lwc-tests:
-        name: 'Run LWC Tests'
-        needs: [code-quality-tests]
-        runs-on: ubuntu-latest
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
+  lwc-tests:
+    name: 'Run LWC Tests'
+    needs: [code-quality-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Run LWC Tests'
-              run: npm run test:lwc
+      - name: 'Run LWC Tests'
+        run: npm run test:lwc
 
-            - name: 'Upload LWC code coverage to Codecov.io'
-              uses: codecov/codecov-action@v3
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  flags: LWC
+      - name: 'Upload LWC code coverage to Codecov.io'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: LWC
 
-    base-scratch-org-tests:
-        name: 'Run Base Scratch Org Tests'
-        needs: [code-quality-tests]
-        runs-on: ubuntu-latest
-        environment: 'Base Scratch Org'
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
+  base-scratch-org-tests:
+    name: 'Run Base Scratch Org Tests'
+    needs: [code-quality-tests]
+    runs-on: ubuntu-latest
+    environment: 'Base Scratch Org'
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Authorize Dev Hub'
-              shell: bash
-              run: |
-                  npx sf version
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+      - name: 'Authorize Dev Hub'
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            - name: 'Create Base Scratch Org'
-              run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-base-scratch-def.json --wait 20 --set-default --json
+      - name: 'Create Base Scratch Org'
+        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-base-scratch-def.json --wait 20 --set-default --json
 
-            - name: 'Deploy Source to Scratch Org'
-              run: npx sf project deploy start --source-dir ./nebula-logger/
+      - name: 'Deploy Source to Scratch Org'
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
-            - name: 'Assign Logger Admin Permission Set'
-              run: npm run permset:assign:admin
+      - name: 'Assign Logger Admin Permission Set'
+        run: npm run permset:assign:admin
 
-            - name: 'Validate Custom Metadata Records'
-              run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
+      - name: 'Validate Custom Metadata Records'
+        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
-            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
-            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
-            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
-            # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
-            - name: 'Run Apex Tests Asynchronously'
-              run: npm run test:apex:nocoverage
+      # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+      # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+      # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
 
-            - name: 'Run Apex Tests Synchronously'
-              run: npm run test:apex:nocoverage -- --synchronous
+      - name: 'Run Apex Tests Synchronously'
+        run: npm run test:apex:nocoverage -- --synchronous
 
-            - name: 'Delete Base Scratch Org'
-              run: npx sf org delete scratch --no-prompt
-              if: ${{ always() }}
+      - name: 'Delete Base Scratch Org'
+        run: npx sf org delete scratch --no-prompt
+        if: ${{ always() }}
 
-    experience-cloud-scratch-org-tests:
-        name: 'Run Experience Cloud Scratch Org Tests'
-        needs: [code-quality-tests]
-        runs-on: ubuntu-latest
-        environment: 'Experience Cloud Scratch Org'
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
+  experience-cloud-scratch-org-tests:
+    name: 'Run Experience Cloud Scratch Org Tests'
+    needs: [code-quality-tests]
+    runs-on: ubuntu-latest
+    environment: 'Experience Cloud Scratch Org'
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Authorize Dev Hub'
-              shell: bash
-              run: |
-                  npx sf version
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+      - name: 'Authorize Dev Hub'
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            - name: 'Create Experience Cloud Scratch Org'
-              run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-experience-cloud-scratch-def.json --wait 20 --set-default --json
+      - name: 'Create Experience Cloud Scratch Org'
+        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-experience-cloud-scratch-def.json --wait 20 --set-default --json
 
-            - name: 'Deploy Source to Scratch Org'
-              run: npx sf project deploy start --source-dir ./nebula-logger/
+      - name: 'Deploy Source to Scratch Org'
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
-            - name: 'Deploy Test Experience Site Metadata'
-              run: npm run experience:deploy
+      - name: 'Deploy Test Experience Site Metadata'
+        run: npm run experience:deploy
 
-            - name: 'Assign Logger Admin Permission Set'
-              run: npm run permset:assign:admin
+      - name: 'Assign Logger Admin Permission Set'
+        run: npm run permset:assign:admin
 
-            - name: 'Validate Custom Metadata Records'
-              run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
+      - name: 'Validate Custom Metadata Records'
+        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
-            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
-            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
-            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
-            # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
-            - name: 'Run Apex Tests Asynchronously'
-              run: npm run test:apex:nocoverage
+      # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+      # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+      # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
 
-            - name: 'Run Apex Tests Synchronously'
-              run: npm run test:apex -- --synchronous
+      - name: 'Run Apex Tests Synchronously'
+        run: npm run test:apex -- --synchronous
 
-            - name: 'Upload Apex test code coverage to Codecov.io'
-              uses: codecov/codecov-action@v3
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  flags: Apex
+      - name: 'Upload Apex test code coverage to Codecov.io'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: Apex
 
-            - name: 'Delete Experience Cloud Scratch Org'
-              run: npx sf org delete scratch --no-prompt
-              if: ${{ always() }}
+      - name: 'Delete Experience Cloud Scratch Org'
+        run: npx sf org delete scratch --no-prompt
+        if: ${{ always() }}
 
-    create-managed-package-beta:
-        name: 'Create Managed Package Beta'
-        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
-        if: ${{ github.ref != 'refs/heads/main' }}
-        runs-on: ubuntu-latest
-        environment: 'Demo Org'
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.event.pull_request.head.ref }}
+  create-managed-package-beta:
+    name: 'Create Managed Package Beta'
+    needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: 'Demo Org'
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Authorize Dev Hub'
-              shell: bash
-              run: |
-                  npx sf version
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+      - name: 'Authorize Dev Hub'
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            - name: 'Create Beta Managed Package Version'
-              run: npm run package:version:create:managed
+      - name: 'Create Beta Managed Package Version'
+        run: npm run package:version:create:managed
 
-    create-unlocked-package-release-candidate:
-        name: 'Create Core Package Release Candidate'
-        needs: [create-managed-package-beta]
-        if: ${{ github.ref != 'refs/heads/main' }}
-        runs-on: ubuntu-latest
-        environment: 'Demo Org'
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.event.pull_request.head.ref }}
+  create-unlocked-package-release-candidate:
+    name: 'Create Core Package Release Candidate'
+    needs: [create-managed-package-beta]
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: 'Demo Org'
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Authorize Dev Hub'
-              shell: bash
-              run: |
-                  npx sf version
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+      - name: 'Authorize Dev Hub'
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            - name: 'Authorize Demo Org'
-              shell: bash
-              run: |
-                  echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-                  npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo
-              env:
-                  PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+      - name: 'Authorize Demo Org'
+        shell: bash
+        run: |
+          echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
+          npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo
+        env:
+          PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
-            - name: 'Create & Install Package Version'
-              run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
+      - name: 'Create & Install Package Version'
+        run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
 
-            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
-            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
-            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
-            # Running the Apex tests sync & async serves as an extra level of integration testing in the meantime to ensure that everything works with or without an active session.
-            - name: 'Run Apex Tests Asynchronously'
-              run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo
+      # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+      # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+      # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Running the Apex tests sync & async serves as an extra level of integration testing in the meantime to ensure that everything works with or without an active session.
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo
 
-            - name: 'Run Apex Tests Synchronously'
-              run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo --synchronous
+      - name: 'Run Apex Tests Synchronously'
+        run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo --synchronous
 
-            - name: 'Commit New Package Version'
-              run: |
-                  git config --local user.email "action@github.com"
-                  git config --local user.name "GitHub Action Bot"
-                  # npm run sf:plugins:link:bummer
-                  echo y | npx sf plugins install @jongpie/sfdx-bummer-plugin --force
-                  npx sf bummer:package:aliases:sort
-                  npx prettier --write ./sfdx-project.json
-                  git add ./sfdx-project.json
-                  git commit -m "Created new core unlocked package version"
-                  git push
+      - name: 'Commit New Package Version'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Bot"
+          # npm run sf:plugins:link:bummer
+          echo y | npx sf plugins install @jongpie/sfdx-bummer-plugin --force
+          npx sf bummer:package:aliases:sort
+          npx prettier --write ./sfdx-project.json
+          git add ./sfdx-project.json
+          git commit -m "Created new core unlocked package version"
+          git push
 
-    promote-package-versions:
-        name: 'Promote Package Versions'
-        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
-        if: ${{ github.ref == 'refs/heads/main' }}
-        runs-on: ubuntu-latest
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v4
+  promote-package-versions:
+    name: 'Promote Package Versions'
+    needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
 
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
 
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Authorize Dev Hub'
-              shell: bash
-              run: |
-                  npx sf version
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+      - name: 'Authorize Dev Hub'
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            - name: 'Promote package versions'
-              run: npx pwsh ./scripts/build/promote-readme-packages.ps1
+      - name: 'Promote package versions'
+        run: npx pwsh ./scripts/build/promote-readme-packages.ps1

@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>NumberOfDaysToRetainLogs__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <inlineHelpText
-    >This value is used to set the field Log__c.LogRetentionDate__c, which is then used by LogBatchPurger to delete old logs. To keep logs indefinitely, set this field to a blank value (null).</inlineHelpText>
+    <inlineHelpText>This value is used to set the field Log__c.LogRetentionDate__c, which is then used by LogBatchPurger to delete old logs. To keep logs indefinitely, set this field to a blank value (null).</inlineHelpText>
     <label>Days to Retain Logs</label>
     <precision>4</precision>
     <required>false</required>

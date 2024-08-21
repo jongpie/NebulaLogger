@@ -4,21 +4,21 @@
  **********************************************************************************************-->
 
 <template>
-    <div class="slds-section slds-is-open slds-m-vertical_none">
-        <h3 class="slds-section__title slds-truncate slds-p-around_xx-small slds-theme_shade">
-            <button class="slds-button slds-section__title-action" onclick={toggleSection}>
-                <lightning-icon icon-name={sectionToggleIcon} size="x-small"></lightning-icon>
-                <span class="slds-truncate slds-m-left_xx-small">
-                    <slot name="title"></slot>
-                </span>
-            </button>
-        </h3>
-        <div class={sectionToggleClass}>
-            <lightning-layout class="slds-p-horizontal_medium">
-                <lightning-layout-item size="12">
-                    <slot name="content"></slot>
-                </lightning-layout-item>
-            </lightning-layout>
-        </div>
+  <div class="slds-section slds-is-open slds-m-vertical_none">
+    <h3 class="slds-section__title slds-truncate slds-p-around_xx-small slds-theme_shade">
+      <button class="slds-button slds-section__title-action" onclick={toggleSection}>
+        <lightning-icon icon-name={sectionToggleIcon} size="x-small"></lightning-icon>
+        <span class="slds-truncate slds-m-left_xx-small">
+          <slot name="title"></slot>
+        </span>
+      </button>
+    </h3>
+    <div class={sectionToggleClass}>
+      <lightning-layout class="slds-p-horizontal_medium">
+        <lightning-layout-item size="12">
+          <slot name="content"></slot>
+        </lightning-layout-item>
+      </lightning-layout>
     </div>
+  </div>
 </template>

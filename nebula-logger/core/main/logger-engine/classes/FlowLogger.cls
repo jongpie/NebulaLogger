@@ -13,204 +13,204 @@
  * @see LogEntryEventBuilder
  */
 public inherited sharing class FlowLogger {
-    @TestVisible
-    private static final String FLOW_EXCEPTION_TYPE_NAME = 'Flow.FaultError';
-    @TestVisible
-    private static final String FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE = 'An unknown Flow exception has occurred';
-    @TestVisible
-    private static final String FLOW_SOURCE_METADATA_TYPE = 'Flow';
+  @TestVisible
+  private static final String FLOW_EXCEPTION_TYPE_NAME = 'Flow.FaultError';
+  @TestVisible
+  private static final String FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE = 'An unknown Flow exception has occurred';
+  @TestVisible
+  private static final String FLOW_SOURCE_METADATA_TYPE = 'Flow';
 
-    static {
-        Logger.ignoreOrigin(FlowLogger.class);
-    }
+  static {
+    Logger.ignoreOrigin(FlowLogger.class);
+  }
 
-    // Invocable methods and properties are goofy, but we can be goofier
-    // Properties goofiness: you can’t keep common properties in a parent class & extend properties in other classes,
-    //                       which also causes issues with sharing logic between classes (via abstract and virtual classes)
-    // +3 goofiness points: if we duplicate properties between classes, we can convert all other classes
-    //                      to one common class (FlowLogger.LogEntry), and use it for shared logic.
-    //                      For maximum goofiness, the conversion between classes happens using System.JSON.deserialize()
-    /**
-     * @description Inner, wrapper class containing Log Entry information.
-     */
-    public class LogEntry {
-        // Public member variables - all other Flow classes should duplicate these public variables
-
-        /**
-         * @description API name of the flow
-         */
-        public String flowName;
-
-        /**
-         * @description General message to log
-         */
-        public String message;
-
-        /**
-         * @description String name of the entry's logging level
-         */
-        public String loggingLevelName;
-
-        /**
-         * @description String containing fault message, if applicable
-         */
-        public String faultMessage;
-
-        /**
-         * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
-         */
-        public Boolean shouldThrowFaultMessageException = false;
-
-        /**
-         * @description Optionally specify the scenario to use for the current transaction
-         */
-        @InvocableVariable(required=false label='(Optional) Scenario')
-        public String scenario;
-
-        /**
-         * @description Comma-separated string of tags
-         */
-        public String tagsString;
-
-        /**
-         * @description List of tags / topics
-         */
-        public List<String> topics; // TODO: deprecated, remove in a future release
-
-        /**
-         * @description Boolean used to determine if logs are saved to Salesforce
-         */
-        public Boolean saveLog = false;
-
-        /**
-         * @description String name of the instance of Logger.SaveMethod to use when 'Save Log' is set to `true`
-         */
-        public String saveMethodName;
-
-        /**
-         * @description timestamp of the log
-         */
-        public DateTime timestamp;
-
-        // Private member variables
-        private System.LoggingLevel entryLoggingLevel;
-        private LogEntryEventBuilder logEntryEventBuilder;
-        private LogEntryEvent__e logEntryEvent;
-
-        /**
-         * @description Adds the logger to the buffer
-         * @return An instance of LogEntryEventBuilder
-         */
-        public LogEntryEventBuilder addToLoggerBuffer() {
-            if (this.logEntryEventBuilder != null) {
-                return this.logEntryEventBuilder;
-            }
-
-            // Set the logging level if it's blank
-            if (String.isBlank(this.loggingLevelName)) {
-                if (String.isNotBlank(this.faultMessage)) {
-                    this.loggingLevelName = System.LoggingLevel.ERROR.name();
-                } else {
-                    this.loggingLevelName = System.LoggingLevel.DEBUG.name();
-                }
-            }
-
-            // In Flow, using comma-separated String is easier than List<String>
-            // but LogEntryEventBuilder.addTags() uses List<String>, so FlowLogger handles the conversion work
-            List<String> parsedTags = this.tagsString?.replaceAll('( ,)|(,)|(, )', ',').split(',');
-
-            Logger.setScenario(this.scenario);
-            this.entryLoggingLevel = Logger.getLoggingLevel(this.loggingLevelName);
-            this.logEntryEventBuilder = Logger.newEntry(this.entryLoggingLevel, this.message);
-
-            if (this.logEntryEventBuilder.shouldSave() == false) {
-                return this.logEntryEventBuilder;
-            }
-
-            this.logEntryEvent = this.logEntryEventBuilder.setTimestamp(this.timestamp).addTags(this.topics).addTags(parsedTags).getLogEntryEvent();
-            this.logEntryEvent.OriginLocation__c = this.flowName;
-            this.logEntryEvent.OriginSourceApiName__c = this.flowName;
-            this.logEntryEvent.OriginSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
-            this.logEntryEvent.OriginType__c = FLOW_SOURCE_METADATA_TYPE;
-            // Flow does not have an equivalent to a stack trace, so always clear the fields
-            this.logEntryEvent.ExceptionStackTrace__c = null;
-            this.logEntryEvent.StackTrace__c = null;
-            // The Flow actions do not have an equivalent to a action name, so always clear the fields
-            // TODO revisit this - maybe the actions _should_ have a parameter to provide the name?
-            this.logEntryEvent.OriginSourceActionName__c = null;
-            this.logEntryEvent.ExceptionSourceActionName__c = null;
-
-            Boolean hasFaultMessage = String.isNotBlank(this.faultMessage);
-            if (hasFaultMessage || this.shouldThrowFaultMessageException) {
-                // For now, this code takes the approach of treating the Flow itself as the source of the exception.
-                // But, if the exception actually came from Apex (and is surfaced by Flow), it'd be more accurate to list
-                // the Apex class/trigger/whatever as the exception's "source" fields.
-                //
-                // TODO Need to revisit this to see if there is a way to determine this programatically, or if new
-                // Flow parameter(s) would be needed.
-                this.logEntryEvent.ExceptionMessage__c = hasFaultMessage ? this.faultMessage : FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
-                this.logEntryEvent.ExceptionSourceApiName__c = this.flowName;
-                this.logEntryEvent.ExceptionSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
-                this.logEntryEvent.ExceptionType__c = FLOW_EXCEPTION_TYPE_NAME;
-            }
-
-            return this.logEntryEventBuilder;
-        }
-    }
-
-    // Static methods
+  // Invocable methods and properties are goofy, but we can be goofier
+  // Properties goofiness: you can’t keep common properties in a parent class & extend properties in other classes,
+  //                       which also causes issues with sharing logic between classes (via abstract and virtual classes)
+  // +3 goofiness points: if we duplicate properties between classes, we can convert all other classes
+  //                      to one common class (FlowLogger.LogEntry), and use it for shared logic.
+  //                      For maximum goofiness, the conversion between classes happens using System.JSON.deserialize()
+  /**
+   * @description Inner, wrapper class containing Log Entry information.
+   */
+  public class LogEntry {
+    // Public member variables - all other Flow classes should duplicate these public variables
 
     /**
-     * @description Adds logging entries
-     * @param flowEntries The log entry instances to add.
-     * @return A list of transaction ids.
+     * @description API name of the flow
      */
-    public static List<String> addEntries(List<LogEntry> flowEntries) {
-        Boolean saveLog = false;
-        Logger.SaveMethod saveMethod = Logger.getSaveMethod();
-        Boolean shouldThrowFaultMessageException = false;
-        String faultMessage = FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
+    public String flowName;
 
-        for (LogEntry flowEntry : flowEntries) {
-            flowEntry.addToLoggerBuffer();
+    /**
+     * @description General message to log
+     */
+    public String message;
 
-            if (flowEntry.saveLog) {
-                saveLog = flowEntry.saveLog;
-                if (String.isNotBlank(flowEntry.saveMethodName)) {
-                    saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
-                }
-            }
-            if (String.isNotBlank(flowEntry.faultMessage)) {
-                faultMessage = flowEntry.faultMessage;
-            }
-            if (flowEntry.shouldThrowFaultMessageException) {
-                shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
-            }
+    /**
+     * @description String name of the entry's logging level
+     */
+    public String loggingLevelName;
+
+    /**
+     * @description String containing fault message, if applicable
+     */
+    public String faultMessage;
+
+    /**
+     * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
+     */
+    public Boolean shouldThrowFaultMessageException = false;
+
+    /**
+     * @description Optionally specify the scenario to use for the current transaction
+     */
+    @InvocableVariable(required=false label='(Optional) Scenario')
+    public String scenario;
+
+    /**
+     * @description Comma-separated string of tags
+     */
+    public String tagsString;
+
+    /**
+     * @description List of tags / topics
+     */
+    public List<String> topics; // TODO: deprecated, remove in a future release
+
+    /**
+     * @description Boolean used to determine if logs are saved to Salesforce
+     */
+    public Boolean saveLog = false;
+
+    /**
+     * @description String name of the instance of Logger.SaveMethod to use when 'Save Log' is set to `true`
+     */
+    public String saveMethodName;
+
+    /**
+     * @description timestamp of the log
+     */
+    public DateTime timestamp;
+
+    // Private member variables
+    private System.LoggingLevel entryLoggingLevel;
+    private LogEntryEventBuilder logEntryEventBuilder;
+    private LogEntryEvent__e logEntryEvent;
+
+    /**
+     * @description Adds the logger to the buffer
+     * @return An instance of LogEntryEventBuilder
+     */
+    public LogEntryEventBuilder addToLoggerBuffer() {
+      if (this.logEntryEventBuilder != null) {
+        return this.logEntryEventBuilder;
+      }
+
+      // Set the logging level if it's blank
+      if (String.isBlank(this.loggingLevelName)) {
+        if (String.isNotBlank(this.faultMessage)) {
+          this.loggingLevelName = System.LoggingLevel.ERROR.name();
+        } else {
+          this.loggingLevelName = System.LoggingLevel.DEBUG.name();
         }
+      }
 
-        if (saveLog) {
-            Logger.saveLog(saveMethod);
+      // In Flow, using comma-separated String is easier than List<String>
+      // but LogEntryEventBuilder.addTags() uses List<String>, so FlowLogger handles the conversion work
+      List<String> parsedTags = this.tagsString?.replaceAll('( ,)|(,)|(, )', ',').split(',');
+
+      Logger.setScenario(this.scenario);
+      this.entryLoggingLevel = Logger.getLoggingLevel(this.loggingLevelName);
+      this.logEntryEventBuilder = Logger.newEntry(this.entryLoggingLevel, this.message);
+
+      if (this.logEntryEventBuilder.shouldSave() == false) {
+        return this.logEntryEventBuilder;
+      }
+
+      this.logEntryEvent = this.logEntryEventBuilder.setTimestamp(this.timestamp).addTags(this.topics).addTags(parsedTags).getLogEntryEvent();
+      this.logEntryEvent.OriginLocation__c = this.flowName;
+      this.logEntryEvent.OriginSourceApiName__c = this.flowName;
+      this.logEntryEvent.OriginSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
+      this.logEntryEvent.OriginType__c = FLOW_SOURCE_METADATA_TYPE;
+      // Flow does not have an equivalent to a stack trace, so always clear the fields
+      this.logEntryEvent.ExceptionStackTrace__c = null;
+      this.logEntryEvent.StackTrace__c = null;
+      // The Flow actions do not have an equivalent to a action name, so always clear the fields
+      // TODO revisit this - maybe the actions _should_ have a parameter to provide the name?
+      this.logEntryEvent.OriginSourceActionName__c = null;
+      this.logEntryEvent.ExceptionSourceActionName__c = null;
+
+      Boolean hasFaultMessage = String.isNotBlank(this.faultMessage);
+      if (hasFaultMessage || this.shouldThrowFaultMessageException) {
+        // For now, this code takes the approach of treating the Flow itself as the source of the exception.
+        // But, if the exception actually came from Apex (and is surfaced by Flow), it'd be more accurate to list
+        // the Apex class/trigger/whatever as the exception's "source" fields.
+        //
+        // TODO Need to revisit this to see if there is a way to determine this programatically, or if new
+        // Flow parameter(s) would be needed.
+        this.logEntryEvent.ExceptionMessage__c = hasFaultMessage ? this.faultMessage : FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
+        this.logEntryEvent.ExceptionSourceApiName__c = this.flowName;
+        this.logEntryEvent.ExceptionSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
+        this.logEntryEvent.ExceptionType__c = FLOW_EXCEPTION_TYPE_NAME;
+      }
+
+      return this.logEntryEventBuilder;
+    }
+  }
+
+  // Static methods
+
+  /**
+   * @description Adds logging entries
+   * @param flowEntries The log entry instances to add.
+   * @return A list of transaction ids.
+   */
+  public static List<String> addEntries(List<LogEntry> flowEntries) {
+    Boolean saveLog = false;
+    Logger.SaveMethod saveMethod = Logger.getSaveMethod();
+    Boolean shouldThrowFaultMessageException = false;
+    String faultMessage = FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
+
+    for (LogEntry flowEntry : flowEntries) {
+      flowEntry.addToLoggerBuffer();
+
+      if (flowEntry.saveLog) {
+        saveLog = flowEntry.saveLog;
+        if (String.isNotBlank(flowEntry.saveMethodName)) {
+          saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
         }
-
-        // Here we throw an exception so we stop synchronous database updates from happening,
-        // avoiding inconsistencies in the data
-        if (shouldThrowFaultMessageException) {
-            Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
-            throw new System.FlowException(faultMessage);
-        }
-
-        return setTransactionIds(flowEntries.size());
+      }
+      if (String.isNotBlank(flowEntry.faultMessage)) {
+        faultMessage = flowEntry.faultMessage;
+      }
+      if (flowEntry.shouldThrowFaultMessageException) {
+        shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
+      }
     }
 
-    private static List<String> setTransactionIds(Integer size) {
-        // Event though it's the same transaction ID, Salesforce expects the returned list...
-        // to have the same number of items as the initial input.
-        // When there's a mismatch, Salesforce throws an error:
-        // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
-        List<String> transactionIds = new List<String>();
-        for (Integer i = 0; i < size; i++) {
-            transactionIds.add(Logger.getTransactionId());
-        }
-        return transactionIds;
+    if (saveLog) {
+      Logger.saveLog(saveMethod);
     }
+
+    // Here we throw an exception so we stop synchronous database updates from happening,
+    // avoiding inconsistencies in the data
+    if (shouldThrowFaultMessageException) {
+      Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+      throw new System.FlowException(faultMessage);
+    }
+
+    return setTransactionIds(flowEntries.size());
+  }
+
+  private static List<String> setTransactionIds(Integer size) {
+    // Event though it's the same transaction ID, Salesforce expects the returned list...
+    // to have the same number of items as the initial input.
+    // When there's a mismatch, Salesforce throws an error:
+    // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
+    List<String> transactionIds = new List<String>();
+    for (Integer i = 0; i < size; i++) {
+      transactionIds.add(Logger.getTransactionId());
+    }
+    return transactionIds;
+  }
 }

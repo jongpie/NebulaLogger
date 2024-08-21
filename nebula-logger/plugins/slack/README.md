@@ -42,10 +42,10 @@ Check out [Slack's webhooks documentation](https://api.slack.com/messaging/webho
 1. Ensure that you have the unlocked package version of Nebula Logger installed in your org
 2. Install the unlocked package for the Slack plugin
 3. Go to Setup --> Custom Metadata Types --> Logger Parameters. There are 2 parameters to configure (shown in screenshot below)
-    - Parameter 'Slack Endpoint' - You can configure this webhook in 1 of 2 ways:
-        - Easier but less secure: Paste the Slack webhook URL into the `Value__c` field and save the Plugin Parameter record.
-        - More secure: Create a new Named Credential, using the webhook URL as the endpoint. Within the Parameter 'Slack Endpoint', enter `callout:<your named credential>` into the `Value__c` field and save the Plugin Parameter record
-    - Parameter 'Slack Notification Logging Level' - Set the desired logging level value that should trigger a Slack notification to be sent the Logger Plugin Parameter 'Slack Notification Logging Level`. It controls which logging level (ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST) will trigger the Slack notifications to be sent.
+   - Parameter 'Slack Endpoint' - You can configure this webhook in 1 of 2 ways:
+     - Easier but less secure: Paste the Slack webhook URL into the `Value__c` field and save the Plugin Parameter record.
+     - More secure: Create a new Named Credential, using the webhook URL as the endpoint. Within the Parameter 'Slack Endpoint', enter `callout:<your named credential>` into the `Value__c` field and save the Plugin Parameter record
+   - Parameter 'Slack Notification Logging Level' - Set the desired logging level value that should trigger a Slack notification to be sent the Logger Plugin Parameter 'Slack Notification Logging Level`. It controls which logging level (ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST) will trigger the Slack notifications to be sent.
 
 The Slack integration should now be setup & working - any new logs that meet the specified notification logging level (step 6 above) will send a Slack notification.
 

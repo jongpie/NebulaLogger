@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Log_after_screen</name>
@@ -38,7 +38,9 @@
                 <stringValue>finished screen, end of flow</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>FlowLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
+        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <name>Log_before_screen</name>
@@ -85,7 +87,9 @@
                 <elementReference>Get_Current_User</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
+        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>61.0</apiVersion>
     <description>A screen Flow used to help test the Apex class LogEntryHandler</description>

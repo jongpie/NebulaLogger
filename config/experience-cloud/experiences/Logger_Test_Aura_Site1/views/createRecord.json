@@ -1,40 +1,40 @@
 {
-    "appPageId": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
-    "componentName": "siteforce:sldsOneColLayout",
-    "dataProviders": [],
-    "id": "62923a25-8142-4204-beef-f35508cda7ed",
-    "label": "Create Record",
-    "regions": [
+  "appPageId": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
+  "componentName": "siteforce:sldsOneColLayout",
+  "dataProviders": [],
+  "id": "62923a25-8142-4204-beef-f35508cda7ed",
+  "label": "Create Record",
+  "regions": [
+    {
+      "id": "dca6885b-595d-4cb1-ba72-4015c27f9bb2",
+      "regionName": "header",
+      "type": "region"
+    },
+    {
+      "components": [
         {
-            "id": "dca6885b-595d-4cb1-ba72-4015c27f9bb2",
-            "regionName": "header",
-            "type": "region"
-        },
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "actionApiName": "{!actionApiName}",
-                        "isMicrobatch": false
-                    },
-                    "componentName": "forceCommunity:createRecordForm",
-                    "id": "0a6119f5-aa16-42a7-9fe0-271b1e5fcade",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "d1f963fb-6e1b-48e4-9745-2303ca3f86b8",
-            "regionName": "content",
-            "type": "region"
-        },
-        {
-            "id": "d7455ba8-91cd-4420-a3a7-a1fbac0c71ea",
-            "regionName": "footer",
-            "type": "region"
+          "componentAttributes": {
+            "actionApiName": "{!actionApiName}",
+            "isMicrobatch": false
+          },
+          "componentName": "forceCommunity:createRecordForm",
+          "id": "0a6119f5-aa16-42a7-9fe0-271b1e5fcade",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
         }
-    ],
-    "themeLayoutType": "Inner",
-    "type": "view",
-    "viewType": "createrecord"
+      ],
+      "id": "d1f963fb-6e1b-48e4-9745-2303ca3f86b8",
+      "regionName": "content",
+      "type": "region"
+    },
+    {
+      "id": "d7455ba8-91cd-4420-a3a7-a1fbac0c71ea",
+      "regionName": "footer",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "Inner",
+  "type": "view",
+  "viewType": "createrecord"
 }

@@ -1,53 +1,53 @@
 {
-    "appPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
-    "componentName": "community_layout:sldsFlexibleLayout",
-    "dataProviders": [],
-    "id": "59f97560-6ead-4050-b3ba-2fcdf0e281e9",
-    "label": "Service Not Available",
-    "regions": [
+  "appPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
+  "componentName": "community_layout:sldsFlexibleLayout",
+  "dataProviders": [],
+  "id": "59f97560-6ead-4050-b3ba-2fcdf0e281e9",
+  "label": "Service Not Available",
+  "regions": [
+    {
+      "components": [
         {
-            "components": [
+          "componentAttributes": {
+            "backgroundImageConfig": "",
+            "backgroundImageOverlay": "rgba(0,0,0,0)",
+            "sectionConfig": "{\"UUID\":\"fe92686a-e482-4e69-b861-8fae405cd14d\",\"columns\":[{\"UUID\":\"0ab20d00-1245-4edc-b8cb-738be0b64813\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
+          },
+          "componentName": "community_layout:section",
+          "id": "fe92686a-e482-4e69-b861-8fae405cd14d",
+          "regions": [
+            {
+              "components": [
                 {
-                    "componentAttributes": {
-                        "backgroundImageConfig": "",
-                        "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"fe92686a-e482-4e69-b861-8fae405cd14d\",\"columns\":[{\"UUID\":\"0ab20d00-1245-4edc-b8cb-738be0b64813\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
-                    },
-                    "componentName": "community_layout:section",
-                    "id": "fe92686a-e482-4e69-b861-8fae405cd14d",
-                    "regions": [
-                        {
-                            "components": [
-                                {
-                                    "componentAttributes": {
-                                        "richTextValue": "<div style=\"display: flex; align-items: center; flex-direction: column; margin: 60px 25px 40px 25px;\">\n\t<div style=\"background: url(assets/img/serviceNotAvailable.svg) center no-repeat; background-size: contain; height: 331px; width: 100%; max-width: 538px;\"></div>\n</div>\n<div style=\"margin: 0 25px; text-align: center;\">\n\t<h1><b style=\"font-size: 2em\">Looks like the site is temporarily unavailable</b></h1>\n\t<br/>\n\t<p><span style=\"font-size: 1.5em;\">Please try again in a bit.</span></p>\n</div>"
-                                    },
-                                    "componentName": "community_builder:htmlEditor",
-                                    "id": "6233cb2b-d745-4354-84ed-425c9f4d9043",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                }
-                            ],
-                            "id": "0ab20d00-1245-4edc-b8cb-738be0b64813",
-                            "regionLabel": "Column 1",
-                            "regionName": "col1",
-                            "renditionMap": {},
-                            "type": "region"
-                        }
-                    ],
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "scopedBrandingSetId": null,
-                    "type": "component"
+                  "componentAttributes": {
+                    "richTextValue": "<div style=\"display: flex; align-items: center; flex-direction: column; margin: 60px 25px 40px 25px;\">\n\t<div style=\"background: url(assets/img/serviceNotAvailable.svg) center no-repeat; background-size: contain; height: 331px; width: 100%; max-width: 538px;\"></div>\n</div>\n<div style=\"margin: 0 25px; text-align: center;\">\n\t<h1><b style=\"font-size: 2em\">Looks like the site is temporarily unavailable</b></h1>\n\t<br/>\n\t<p><span style=\"font-size: 1.5em;\">Please try again in a bit.</span></p>\n</div>"
+                  },
+                  "componentName": "community_builder:htmlEditor",
+                  "id": "6233cb2b-d745-4354-84ed-425c9f4d9043",
+                  "renderPriority": "NEUTRAL",
+                  "renditionMap": {},
+                  "type": "component"
                 }
-            ],
-            "id": "b89e3407-c18a-4acf-9be2-c76ea7c4b1cc",
-            "regionName": "content",
-            "type": "region"
+              ],
+              "id": "0ab20d00-1245-4edc-b8cb-738be0b64813",
+              "regionLabel": "Column 1",
+              "regionName": "col1",
+              "renditionMap": {},
+              "type": "region"
+            }
+          ],
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "scopedBrandingSetId": null,
+          "type": "component"
         }
-    ],
-    "themeLayoutType": "ServiceNotAvailable",
-    "type": "view",
-    "viewType": "service-not-available"
+      ],
+      "id": "b89e3407-c18a-4acf-9be2-c76ea7c4b1cc",
+      "regionName": "content",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "ServiceNotAvailable",
+  "type": "view",
+  "viewType": "service-not-available"
 }

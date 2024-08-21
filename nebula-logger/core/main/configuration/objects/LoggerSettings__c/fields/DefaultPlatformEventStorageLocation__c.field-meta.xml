@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DefaultPlatformEventStorageLocation__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <defaultValue>&apos;CUSTOM_OBJECTS&apos;</defaultValue>
-    <description
-    >Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.</description>
+    <description>Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.</description>
     <externalId>false</externalId>
-    <inlineHelpText
-    >Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.</inlineHelpText>
+    <inlineHelpText>Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.</inlineHelpText>
     <label>Platform Event Storage Location</label>
     <length>255</length>
     <required>false</required>

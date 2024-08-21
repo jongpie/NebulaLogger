@@ -1,29 +1,29 @@
 {
-    "appPageId": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
-    "componentName": "siteforce:sldsOneColLayout",
-    "dataProviders": [],
-    "id": "6642848f-7783-402c-93af-62d82833cc9e",
-    "label": "Service Not Available",
-    "regions": [
+  "appPageId": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
+  "componentName": "siteforce:sldsOneColLayout",
+  "dataProviders": [],
+  "id": "6642848f-7783-402c-93af-62d82833cc9e",
+  "label": "Service Not Available",
+  "regions": [
+    {
+      "components": [
         {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "richTextValue": "<div style='display: flex; align-items: center; flex-direction: column; margin: 60px 25px 40px 25px;'><div style='background: url(/sfsites/assets/Images/serviceNotAvailable/serviceNotAvailable.svg) center no-repeat; background-size: contain; height: 331px; width: 100%; max-width: 538px;'></div></div><div style='margin: 0 25px; text-align: center;'><h1><b style='font-size: 2em'>Looks like the site is temporarily unavailable</b></h1><br/><p><span style='font-size: 1.5em;'>Please try again in a bit.</span></p></div>"
-                    },
-                    "componentName": "forceCommunity:htmlBlock",
-                    "id": "8f5a256f-6f08-4aa6-a404-81d41b316575",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "f667f47d-12d2-432c-bbbf-9666c0ec086a",
-            "regionName": "content",
-            "type": "region"
+          "componentAttributes": {
+            "richTextValue": "<div style='display: flex; align-items: center; flex-direction: column; margin: 60px 25px 40px 25px;'><div style='background: url(/sfsites/assets/Images/serviceNotAvailable/serviceNotAvailable.svg) center no-repeat; background-size: contain; height: 331px; width: 100%; max-width: 538px;'></div></div><div style='margin: 0 25px; text-align: center;'><h1><b style='font-size: 2em'>Looks like the site is temporarily unavailable</b></h1><br/><p><span style='font-size: 1.5em;'>Please try again in a bit.</span></p></div>"
+          },
+          "componentName": "forceCommunity:htmlBlock",
+          "id": "8f5a256f-6f08-4aa6-a404-81d41b316575",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
         }
-    ],
-    "themeLayoutType": "ServiceNotAvailable",
-    "type": "view",
-    "viewType": "service-not-available"
+      ],
+      "id": "f667f47d-12d2-432c-bbbf-9666c0ec086a",
+      "regionName": "content",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "ServiceNotAvailable",
+  "type": "view",
+  "viewType": "service-not-available"
 }

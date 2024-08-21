@@ -5,10 +5,8 @@
 .sfdx/
 .vscode/
 docs/apex/Miscellaneous/
-# nebula-logger/**/main/default/
-# tests/
-test-coverage/
 temp/
+test-coverage/
 
 # NPM
 node_modules/

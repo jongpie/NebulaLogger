@@ -1,21 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ParentLog__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description
-    >The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.</description>
-    <externalId>false</externalId>
-    <inlineHelpText
-    >The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.</inlineHelpText>
+    <description>The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.</description>
+    <inlineHelpText>The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.</inlineHelpText>
     <label>Parent Log</label>
     <referenceTo>Log__c</referenceTo>
     <relationshipLabel>Related Logs</relationshipLabel>
     <relationshipName>ChildLogs</relationshipName>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>

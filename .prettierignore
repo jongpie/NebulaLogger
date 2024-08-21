@@ -8,6 +8,7 @@
 .sf/
 .sfdx/
 .vscode/
+temp/
 test-coverage/
 
 # NPM
@@ -17,3 +18,4 @@ yarn.lock
 
 # Files to exclude
 *.log
+*.xml

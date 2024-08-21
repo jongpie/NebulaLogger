@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionOverrides>
         <actionName>Accept</actionName>
@@ -149,11 +149,10 @@
     <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>LogEntryCompactLayout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description
-    >Used by Nebula Logger to represent a single log message within a transaction - log entries can be generated via Apex, Flow, Process Builder, Lightning Web Components, and Aura Components.</description>
+    <description>Used by Nebula Logger to represent a single log message within a transaction - log entries can be generated via Apex, Flow, Process Builder, Lightning Web Components, and Aura Components.</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
-    <enableFeeds>true</enableFeeds>
+    <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
@@ -164,17 +163,16 @@
     <label>Log Entry</label>
     <nameField>
         <label>Entry ID</label>
-        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Log Entries</pluralLabel>
     <searchLayouts>
         <excludedStandardButtons>New</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <excludedStandardButtons>Import</excludedStandardButtons>
         <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
-        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LoggingLevel__c</lookupDialogsAdditionalFields>

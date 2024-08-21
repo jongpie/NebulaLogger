@@ -1,11 +1,11 @@
 {
-    "activeViewId": "6b247a75-7907-4a77-b8eb-0e4f04617d25",
-    "appPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
-    "configurationTags": [],
-    "devName": "Login",
-    "id": "dce2bd33-ae33-4e52-ab11-1e6a387afbe6",
-    "label": "Login",
-    "routeType": "login-main",
-    "type": "route",
-    "urlPrefix": "login"
+  "activeViewId": "6b247a75-7907-4a77-b8eb-0e4f04617d25",
+  "appPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
+  "configurationTags": [],
+  "devName": "Login",
+  "id": "dce2bd33-ae33-4e52-ab11-1e6a387afbe6",
+  "label": "Login",
+  "routeType": "login-main",
+  "type": "route",
+  "urlPrefix": "login"
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ApexTestSuite xmlns="http://soap.sforce.com/2006/04/metadata">
     <testClassName>ComponentLogger_Tests</testClassName>
     <testClassName>FlowCollectionLogEntry_Tests</testClassName>
@@ -10,9 +10,9 @@
     <testClassName>LogBatchPurgeScheduler_Tests</testClassName>
     <testClassName>LogEntryEventBuilder_Tests</testClassName>
     <testClassName>LogEntryEventHandler_Tests</testClassName>
-    <testClassName>LogEntryMetadataViewerController_Tests</testClassName>
     <testClassName>LogEntryFieldSetPicklist_Tests</testClassName>
     <testClassName>LogEntryHandler_Tests</testClassName>
+    <testClassName>LogEntryMetadataViewerController_Tests</testClassName>
     <testClassName>LogEntryTagHandler_Tests</testClassName>
     <testClassName>LoggerBatchableContext_Tests</testClassName>
     <testClassName>LoggerCache_Tests</testClassName>

@@ -1,10 +1,10 @@
 {
-    "authenticationType": "AUTHENTICATED_WITH_PUBLIC_ACCESS_ENABLED",
-    "forgotPasswordRouteId": null,
-    "isFilteredComponentsView": false,
-    "isProgressiveRenderingEnabled": false,
-    "mainAppPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
-    "preferredDomain": "none",
-    "selfRegistrationRouteId": null,
-    "type": "site"
+  "authenticationType": "AUTHENTICATED_WITH_PUBLIC_ACCESS_ENABLED",
+  "forgotPasswordRouteId": null,
+  "isFilteredComponentsView": false,
+  "isProgressiveRenderingEnabled": false,
+  "mainAppPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
+  "preferredDomain": "none",
+  "selfRegistrationRouteId": null,
+  "type": "site"
 }

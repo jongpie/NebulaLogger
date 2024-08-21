@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsRecordFieldStrippingEnabled__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <defaultValue>false</defaultValue>
-    <externalId>false</externalId>
-    <inlineHelpText
-    >When enabled, any time an SObject record is logged, only fields that the current user can access will be included in the record&apos;s JSON.</inlineHelpText>
+    <inlineHelpText>When enabled, any time an SObject record is logged, only fields that the current user can access will be included in the record&apos;s JSON.</inlineHelpText>
     <label>Strip Inaccessible Record Fields</label>
     <securityClassification>Confidential</securityClassification>
     <trackTrending>false</trackTrending>

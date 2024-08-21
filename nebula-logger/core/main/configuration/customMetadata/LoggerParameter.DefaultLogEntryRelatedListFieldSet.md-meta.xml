@@ -1,20 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<CustomMetadata
-    xmlns="http://soap.sforce.com/2006/04/metadata"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
->
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <label>Default Log Entry Related List Field Set</label>
     <protected>false</protected>
     <values>
         <field>Comments__c</field>
-        <value xsi:nil="true" />
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Description__c</field>
-        <value
-            xsi:type="xsd:string"
-        >The name of the LogEntry__c field set to use as the default field set when configuring the LWC &lt;c-related-log-entries&gt; within App Builder.
+        <value xsi:type="xsd:string">The name of the LogEntry__c field set to use as the default field set when configuring the LWC &lt;c-related-log-entries&gt; within App Builder.
 
 By default, the included field set &apos;Related_List_Defaults&apos; is used.</value>
     </values>

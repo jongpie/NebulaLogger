@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description
-    >Used to configure custom field mappings in Nebula Logger to map data between LogEntryEvent__e and the custom objects Log__c, LogEntry__c, and LoggerScenario__c</description>
+    <description>Used to configure custom field mappings in Nebula Logger to map data between LogEntryEvent__e and the custom objects Log__c, LogEntry__c, and LoggerScenario__c</description>
     <label>Logger Field Mapping</label>
     <pluralLabel>Logger Field Mappings</pluralLabel>
     <visibility>Public</visibility>

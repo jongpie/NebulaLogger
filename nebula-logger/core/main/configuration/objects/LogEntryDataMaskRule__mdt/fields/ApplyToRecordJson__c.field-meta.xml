@@ -1,13 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ApplyToRecordJson__c</fullName>
     <businessStatus>DeprecateCandidate</businessStatus>
     <complianceGroup>None</complianceGroup>
     <defaultValue>true</defaultValue>
-    <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <inlineHelpText
-    >When checked, the data mask rule is applied to log entry messages (stored in LogEntryEvent__e.RecordJson__c and LogEntry__c.RecordJson__c)</inlineHelpText>
+    <inlineHelpText>When checked, the data mask rule is applied to log entry messages (stored in LogEntryEvent__e.RecordJson__c and LogEntry__c.RecordJson__c)</inlineHelpText>
     <label>Apply to Record JSON</label>
     <securityClassification>Confidential</securityClassification>
     <type>Checkbox</type>

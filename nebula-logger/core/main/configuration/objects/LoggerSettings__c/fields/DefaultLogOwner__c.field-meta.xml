@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DefaultLogOwner__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <externalId>false</externalId>
-    <inlineHelpText
-    >Specifies the default owner for new Log__c records. This can be a user ID, a username, a queue ID, or a queue&apos;s developer name.</inlineHelpText>
+    <inlineHelpText>Specifies the default owner for new Log__c records. This can be a user ID, a username, a queue ID, or a queue&apos;s developer name.</inlineHelpText>
     <label>Log Owner</label>
     <length>255</length>
     <required>false</required>

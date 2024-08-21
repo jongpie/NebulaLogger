@@ -1,19 +1,19 @@
 {
-    "orgName": "Nebula Logger - Build - Base Scratch Org",
-    "edition": "Enterprise",
-    "hasSampleData": false,
-    "country": "US",
-    "language": "en_US",
-    "features": [],
-    "settings": {
-        "chatterSettings": {
-            "enableChatter": false
-        },
-        "communitiesSettings": {
-            "enableNetworksEnabled": false
-        },
-        "pathAssistantSettings": {
-            "pathAssistantEnabled": false
-        }
+  "orgName": "Nebula Logger - Build - Base Scratch Org",
+  "edition": "Enterprise",
+  "hasSampleData": false,
+  "country": "US",
+  "language": "en_US",
+  "features": [],
+  "settings": {
+    "chatterSettings": {
+      "enableChatter": false
+    },
+    "communitiesSettings": {
+      "enableNetworksEnabled": false
+    },
+    "pathAssistantSettings": {
+      "pathAssistantEnabled": false
     }
+  }
 }

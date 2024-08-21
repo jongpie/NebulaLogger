@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsSavingEnabled__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <defaultValue>true</defaultValue>
     <description>Controls if saving is enabled - when disabled, any calls to saveLog() are ignored.</description>
-    <externalId>false</externalId>
     <inlineHelpText>Controls if saving is enabled - when disabled, any calls to saveLog() are ignored.</inlineHelpText>
     <label>Enable Saving</label>
     <securityClassification>Confidential</securityClassification>
