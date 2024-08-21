@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.0.NEXT",
-      "versionName": "Summer '24 Release",
-      "versionDescription": "Updated all metadata to API v61.0, added component visibility rules to flexipage tabs, added new LogEntry__c list views",
+      "versionNumber": "4.14.1.NEXT",
+      "versionName": "Reduced prettier tab width",
+      "versionDescription": "No functional changes - updated prettier to use 2 spaces (instead of 4) + reformatted all metadata",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
