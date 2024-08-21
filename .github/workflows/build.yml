@@ -1,6 +1,11 @@
 # Pipeline for Nebula Logger
 name: Build
 
+env:
+    SF_DISABLE_AUTOUPDATE: true
+    SF_SKIP_NEW_VERSION_CHECK: true
+    SF_LOG_LEVEL: debug
+
 on:
     push:
         branches:
@@ -160,7 +165,7 @@ jobs:
                   DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Base Scratch Org'
-              run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
+              run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-base-scratch-def.json --wait 20 --set-default --json
 
             - name: 'Deploy Source to Scratch Org'
               run: npx sf project deploy start --source-dir ./nebula-logger/
@@ -222,7 +227,7 @@ jobs:
                   DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Experience Cloud Scratch Org'
-              run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --set-default --json
+              run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-experience-cloud-scratch-def.json --wait 20 --set-default --json
 
             - name: 'Deploy Source to Scratch Org'
               run: npx sf project deploy start --source-dir ./nebula-logger/

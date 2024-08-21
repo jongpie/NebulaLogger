@@ -1,25 +1,24 @@
 {
     "name": "Nebula Logger",
     "namespace": "",
-    "sourceApiVersion": "60.0",
+    "sourceApiVersion": "61.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "packageDirectories": [
         {
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
-            "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
+            "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
             "scopeProfiles": true,
-            "versionNumber": "4.13.17.NEXT",
-            "versionName": "Overhauled JavaScript Stack Trace Parsing",
-            "versionDescription": "Moved JS stack trace parsing to happen in JS (instead of Apex) using stacktrace.js library. Also added a ton of recipes metadata to make it easier to test JS stack traces in different Salesforce contexts.",
+            "versionNumber": "4.14.0.NEXT",
+            "versionName": "Summer '24 Release",
+            "versionDescription": "Updated all metadata to API v61.0, added component visibility rules to flexipage tabs, added new LogEntry__c list views",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
             },
-            "default": true
+            "default": false
         },
         {
-            "default": false,
             "package": "Nebula Logger - Core Plugin - Async Failure Additions",
             "path": "./nebula-logger/plugins/async-failure-additions/plugin",
             "dependencies": [
@@ -29,7 +28,8 @@
             ],
             "versionNumber": "1.0.2.NEXT",
             "versionName": "Added logging for Screen Flow failures",
-            "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)"
+            "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)",
+            "default": false
         },
         {
             "package": "Nebula Logger - Core Plugin - Big Object Archiving",
@@ -69,6 +69,10 @@
             "versionName": "Removed ApiVersion__c in Field Set",
             "versionDescription": "Removed the deprecated field Log__c.ApiVersion__c from the field set Log__c.SlackNotificationFields",
             "default": false
+        },
+        {
+            "path": "./nebula-logger/dev",
+            "default": true
         },
         {
             "path": "./nebula-logger/extra-tests",
@@ -180,6 +184,7 @@
         "Nebula Logger - Core@4.13.15-replaced-browserurl__c-with-browseraddress__c": "04t5Y0000015oF5QAI",
         "Nebula Logger - Core@4.13.16-bugfixes-for-scenario-rules": "04t5Y0000015oFjQAI",
         "Nebula Logger - Core@4.13.17-overhauled-javascript-stack-trace-parsing": "04t5Y0000015oPCQAY",
+        "Nebula Logger - Core@4.14.0-summer-'24-release": "04t5Y0000015oPvQAI",
         "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

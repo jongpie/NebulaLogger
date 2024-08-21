@@ -1,7 +1,7 @@
 {
-    "orgName": "Nebula Logger - Experience Cloud Scratch Org",
+    "orgName": "Nebula Logger - Build - Experience Cloud Scratch Org",
     "edition": "Enterprise",
-    "hasSampleData": true,
+    "hasSampleData": false,
     "country": "ES",
     "language": "es",
     "features": ["Communities", "PlatformCache"],
@@ -17,14 +17,6 @@
         },
         "pathAssistantSettings": {
             "pathAssistantEnabled": true
-        },
-        "securitySettings": {
-            "enableAdminLoginAsAnyUser": true
-        },
-        "userManagementSettings": {
-            "enableEnhancedPermsetMgmt": true,
-            "enableEnhancedProfileMgmt": true,
-            "enableNewProfileUI": true
         }
     }
 }

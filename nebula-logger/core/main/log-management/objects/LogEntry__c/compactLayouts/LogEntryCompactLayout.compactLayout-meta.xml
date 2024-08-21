@@ -5,7 +5,7 @@
     <fields>Log__c</fields>
     <fields>LoggedByUsernameLink__c</fields>
     <fields>Timestamp__c</fields>
-    <fields>LoggingLevelWithImage__c</fields>
+    <fields>LoggingLevel__c</fields>
     <fields>LogTransactionId__c</fields>
     <fields>TransactionEntryNumber__c</fields>
     <fields>EventUuid__c</fields>

@@ -108,7 +108,7 @@
         <fields>LoggedByUsernameLink__c</fields>
         <fields>Origin__c</fields>
         <fields>Message__c</fields>
-        <fields>LoggingLevelWithImage__c</fields>
+        <fields>LoggingLevel__c</fields>
         <fields>Log__c</fields>
         <fields>RecordLink__c</fields>
         <fields>Timestamp__c</fields>

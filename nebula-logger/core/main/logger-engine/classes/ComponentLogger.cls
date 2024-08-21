@@ -51,8 +51,15 @@ public inherited sharing class ComponentLogger {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 Logger.setScenario(componentLogEntry.scenario);
                 System.LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
-                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message).addTags(componentLogEntry.tags);
-                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message);
+
+                if (logEntryEventBuilder.shouldSave() == false) {
+                    continue;
+                }
+
+                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.setTimestamp(componentLogEntry.timestamp)
+                    .addTags(componentLogEntry.tags)
+                    .getLogEntryEvent();
 
                 if (componentLogEntry.recordId != null) {
                     logEntryEventBuilder.setRecord(componentLogEntry.recordId);
@@ -61,7 +68,6 @@ public inherited sharing class ComponentLogger {
                     logEntryEventBuilder.setRecord(componentLogEntry.record);
                 }
 
-                logEntryEventBuilder.setTimestamp(componentLogEntry.timestamp);
                 setBrowserDetails(logEntryEvent, componentLogEntry);
                 setComponentErrorDetails(logEntryEvent, componentLogEntry.error);
                 setOriginStackTraceDetails(logEntryEvent, componentLogEntry.originStackTrace);

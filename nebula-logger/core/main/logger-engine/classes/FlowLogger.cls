@@ -121,18 +121,17 @@ public inherited sharing class FlowLogger {
 
             Logger.setScenario(this.scenario);
             this.entryLoggingLevel = Logger.getLoggingLevel(this.loggingLevelName);
-            this.logEntryEventBuilder = Logger.newEntry(this.entryLoggingLevel, this.message).addTags(this.topics).addTags(parsedTags);
+            this.logEntryEventBuilder = Logger.newEntry(this.entryLoggingLevel, this.message);
 
             if (this.logEntryEventBuilder.shouldSave() == false) {
                 return this.logEntryEventBuilder;
             }
 
-            this.logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+            this.logEntryEvent = this.logEntryEventBuilder.setTimestamp(this.timestamp).addTags(this.topics).addTags(parsedTags).getLogEntryEvent();
             this.logEntryEvent.OriginLocation__c = this.flowName;
             this.logEntryEvent.OriginSourceApiName__c = this.flowName;
             this.logEntryEvent.OriginSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
             this.logEntryEvent.OriginType__c = FLOW_SOURCE_METADATA_TYPE;
-            this.logEntryEventBuilder.setTimestamp(this.timestamp);
             // Flow does not have an equivalent to a stack trace, so always clear the fields
             this.logEntryEvent.ExceptionStackTrace__c = null;
             this.logEntryEvent.StackTrace__c = null;

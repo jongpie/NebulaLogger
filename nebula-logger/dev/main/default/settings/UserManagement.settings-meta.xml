@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<UserManagementSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <enableEnhancedPermsetMgmt>true</enableEnhancedPermsetMgmt>
+    <enableEnhancedProfileMgmt>true</enableEnhancedProfileMgmt>
+    <enableEnhcUiUserAccessPolicies>true</enableEnhcUiUserAccessPolicies>
+    <enableNewProfileUI>true</enableNewProfileUI>
+    <enableProfileFiltering>true</enableProfileFiltering>
+    <permsetsInFieldCreation>true</permsetsInFieldCreation>
+    <psaExpirationUIEnabled>true</psaExpirationUIEnabled>
+    <restrictedProfileCloning>true</restrictedProfileCloning>
+    <userAccessPoliciesEnabled>true</userAccessPoliciesEnabled>
+</UserManagementSettings>

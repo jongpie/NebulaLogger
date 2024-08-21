@@ -29,7 +29,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <description
-    >Provides access to generate log entries via Apex, Lightning Components, Flow and Process Builder. This is currently optional, but required if/when Salesforce activates the release update called &quot;Require User Access to Apex Classes Invoked by Flow&quot;.</description>
+    >Provides explicit access to metadata needed to generate (but not access) logging data. This typically is not needed - but in some situations it's required, such as logging in lightning components within an Experience Cloud site.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Nebula Logger: Log Creator</label>
     <objectPermissions>
