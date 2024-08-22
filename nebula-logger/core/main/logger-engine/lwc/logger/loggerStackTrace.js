@@ -49,179 +49,179 @@ const CHROME_IE_STACK_REGEXP = /^\s*at .*(\S+:\d+|\(native\))/m;
 const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/;
 
 class ErrorStackParser {
-    parse(error) {
-        let stackTraceParticles;
-        if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined') {
-            stackTraceParticles = this.parseOpera(error);
-        } else if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP)) {
-            stackTraceParticles = this.parseV8OrIE(error);
-        } else if (error.stack) {
-            stackTraceParticles = this.parseFFOrSafari(error);
-        } else {
-            throw new Error('Cannot parse given Error object');
-        }
-
-        return stackTraceParticles;
+  parse(error) {
+    let stackTraceParticles;
+    if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined') {
+      stackTraceParticles = this.parseOpera(error);
+    } else if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP)) {
+      stackTraceParticles = this.parseV8OrIE(error);
+    } else if (error.stack) {
+      stackTraceParticles = this.parseFFOrSafari(error);
+    } else {
+      throw new Error('Cannot parse given Error object');
     }
 
-    // Separate line and column numbers from a string of the form: (URI:Line:Column)
-    extractLocation(urlLike) {
-        // Fail-fast but return locations like "(native)"
-        if (urlLike.indexOf(':') === -1) {
-            return [urlLike];
-        }
+    return stackTraceParticles;
+  }
 
-        const regExp = /(.+?)(?::(\d+))?(?::(\d+))?$/;
-        const parts = regExp.exec(urlLike.replace(/[()]/g, ''));
-        return [parts[1], parts[2] || undefined, parts[3] || undefined];
+  // Separate line and column numbers from a string of the form: (URI:Line:Column)
+  extractLocation(urlLike) {
+    // Fail-fast but return locations like "(native)"
+    if (urlLike.indexOf(':') === -1) {
+      return [urlLike];
     }
 
-    parseV8OrIE(error) {
-        const filtered = error.stack.split('\n').filter(function (line) {
-            return !!line.match(CHROME_IE_STACK_REGEXP);
-        }, this);
+    const regExp = /(.+?)(?::(\d+))?(?::(\d+))?$/;
+    const parts = regExp.exec(urlLike.replace(/[()]/g, ''));
+    return [parts[1], parts[2] || undefined, parts[3] || undefined];
+  }
 
-        return filtered.map(function (line) {
-            if (line.indexOf('(eval ') > -1) {
-                // Throw away eval information until we implement stacktrace.js/stackframe#8
-                line = line.replace(/eval code/g, 'eval').replace(/(\(eval at [^()]*)|(\),.*$)/g, '');
-            }
-            let sanitizedLine = line.replace(/^\s+/, '').replace(/\(eval code/g, '(');
+  parseV8OrIE(error) {
+    const filtered = error.stack.split('\n').filter(function (line) {
+      return !!line.match(CHROME_IE_STACK_REGEXP);
+    }, this);
 
-            // capture and preseve the parenthesized location "(/foo/my bar.js:12:87)" in
-            // case it has spaces in it, as the string is split on \s+ later on
-            const location = sanitizedLine.match(/ (\((.+):(\d+):(\d+)\)$)/);
+    return filtered.map(function (line) {
+      if (line.indexOf('(eval ') > -1) {
+        // Throw away eval information until we implement stacktrace.js/stackframe#8
+        line = line.replace(/eval code/g, 'eval').replace(/(\(eval at [^()]*)|(\),.*$)/g, '');
+      }
+      let sanitizedLine = line.replace(/^\s+/, '').replace(/\(eval code/g, '(');
 
-            // remove the parenthesized location from the line, if it was matched
-            sanitizedLine = location ? sanitizedLine.replace(location[0], '') : sanitizedLine;
+      // capture and preseve the parenthesized location "(/foo/my bar.js:12:87)" in
+      // case it has spaces in it, as the string is split on \s+ later on
+      const location = sanitizedLine.match(/ (\((.+):(\d+):(\d+)\)$)/);
 
-            const tokens = sanitizedLine.split(/\s+/).slice(1);
-            // if a location was matched, pass it to extractLocation() otherwise pop the last token
-            const locationParts = this.extractLocation(location ? location[1] : tokens.pop());
-            const proxyPrefix = 'Proxy.';
-            let functionName = tokens.join(' ') || undefined;
-            if (functionName?.startsWith('Proxy.')) {
-                functionName = functionName.substring(functionName.indexOf(proxyPrefix) + proxyPrefix.length);
-            }
-            const fileName = ['eval', '<anonymous>'].indexOf(locationParts[0]) > -1 ? undefined : locationParts[0];
+      // remove the parenthesized location from the line, if it was matched
+      sanitizedLine = location ? sanitizedLine.replace(location[0], '') : sanitizedLine;
 
-            return {
-                functionName: functionName,
-                fileName: fileName,
-                lineNumber: locationParts[1],
-                columnNumber: locationParts[2],
-                source: line
-            };
-        }, this);
+      const tokens = sanitizedLine.split(/\s+/).slice(1);
+      // if a location was matched, pass it to extractLocation() otherwise pop the last token
+      const locationParts = this.extractLocation(location ? location[1] : tokens.pop());
+      const proxyPrefix = 'Proxy.';
+      let functionName = tokens.join(' ') || undefined;
+      if (functionName?.startsWith('Proxy.')) {
+        functionName = functionName.substring(functionName.indexOf(proxyPrefix) + proxyPrefix.length);
+      }
+      const fileName = ['eval', '<anonymous>'].indexOf(locationParts[0]) > -1 ? undefined : locationParts[0];
+
+      return {
+        functionName: functionName,
+        fileName: fileName,
+        lineNumber: locationParts[1],
+        columnNumber: locationParts[2],
+        source: line
+      };
+    }, this);
+  }
+
+  parseFFOrSafari(error) {
+    const filtered = error.stack.split('\n').filter(function (line) {
+      return !line.match(SAFARI_NATIVE_CODE_REGEXP);
+    }, this);
+
+    return filtered.map(function (line) {
+      // Throw away eval information until we implement stacktrace.js/stackframe#8
+      if (line.indexOf(' > eval') > -1) {
+        line = line.replace(/ line (\d+)(?: > eval line \d+)* > eval:\d+:\d+/g, ':$1');
+      }
+
+      if (line.indexOf('@') === -1 && line.indexOf(':') === -1) {
+        // Safari eval frames only have function names and nothing else
+        return {
+          functionName: line
+        };
+      }
+      const functionNameRegex = /((.*".+"[^@]*)?[^@]*)(?:@)/;
+      const matches = line.match(functionNameRegex);
+      const functionName = matches && matches[1] ? matches[1] : undefined;
+      const locationParts = this.extractLocation(line.replace(functionNameRegex, ''));
+
+      return {
+        functionName: functionName,
+        fileName: locationParts[0],
+        lineNumber: locationParts[1],
+        columnNumber: locationParts[2],
+        source: line
+      };
+    }, this);
+  }
+
+  parseOpera(e) {
+    if (!e.stacktrace || (e.message.indexOf('\n') > -1 && e.message.split('\n').length > e.stacktrace.split('\n').length)) {
+      return this.parseOpera9(e);
+    } else if (!e.stack) {
+      return this.parseOpera10(e);
+    }
+    return this.parseOpera11(e);
+  }
+
+  parseOpera9(e) {
+    const lineRE = /Line (\d+).*script (?:in )?(\S+)/i;
+    const lines = e.message.split('\n');
+    const result = [];
+
+    for (let i = 2, len = lines.length; i < len; i += 2) {
+      const match = lineRE.exec(lines[i]);
+      if (match) {
+        result.push({
+          fileName: match[2],
+          lineNumber: match[1],
+          source: lines[i]
+        });
+      }
     }
 
-    parseFFOrSafari(error) {
-        const filtered = error.stack.split('\n').filter(function (line) {
-            return !line.match(SAFARI_NATIVE_CODE_REGEXP);
-        }, this);
+    return result;
+  }
 
-        return filtered.map(function (line) {
-            // Throw away eval information until we implement stacktrace.js/stackframe#8
-            if (line.indexOf(' > eval') > -1) {
-                line = line.replace(/ line (\d+)(?: > eval line \d+)* > eval:\d+:\d+/g, ':$1');
-            }
+  parseOpera10(e) {
+    const lineRE = /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i;
+    const lines = e.stacktrace.split('\n');
+    const result = [];
 
-            if (line.indexOf('@') === -1 && line.indexOf(':') === -1) {
-                // Safari eval frames only have function names and nothing else
-                return {
-                    functionName: line
-                };
-            }
-            const functionNameRegex = /((.*".+"[^@]*)?[^@]*)(?:@)/;
-            const matches = line.match(functionNameRegex);
-            const functionName = matches && matches[1] ? matches[1] : undefined;
-            const locationParts = this.extractLocation(line.replace(functionNameRegex, ''));
-
-            return {
-                functionName: functionName,
-                fileName: locationParts[0],
-                lineNumber: locationParts[1],
-                columnNumber: locationParts[2],
-                source: line
-            };
-        }, this);
+    for (let i = 0, len = lines.length; i < len; i += 2) {
+      const match = lineRE.exec(lines[i]);
+      if (match) {
+        result.push({
+          functionName: match[3] || undefined,
+          fileName: match[2],
+          lineNumber: match[1],
+          source: lines[i]
+        });
+      }
     }
 
-    parseOpera(e) {
-        if (!e.stacktrace || (e.message.indexOf('\n') > -1 && e.message.split('\n').length > e.stacktrace.split('\n').length)) {
-            return this.parseOpera9(e);
-        } else if (!e.stack) {
-            return this.parseOpera10(e);
-        }
-        return this.parseOpera11(e);
-    }
+    return result;
+  }
 
-    parseOpera9(e) {
-        const lineRE = /Line (\d+).*script (?:in )?(\S+)/i;
-        const lines = e.message.split('\n');
-        const result = [];
+  // Opera 10.65+ Error.stack very similar to FF/Safari
+  parseOpera11(error) {
+    const filtered = error.stack.split('\n').filter(function (line) {
+      return !!line.match(FIREFOX_SAFARI_STACK_REGEXP) && !line.match(/^Error created at/);
+    }, this);
 
-        for (let i = 2, len = lines.length; i < len; i += 2) {
-            const match = lineRE.exec(lines[i]);
-            if (match) {
-                result.push({
-                    fileName: match[2],
-                    lineNumber: match[1],
-                    source: lines[i]
-                });
-            }
-        }
+    return filtered.map(function (line) {
+      const tokens = line.split('@');
+      const locationParts = this.extractLocation(tokens.pop());
+      const functionCall = tokens.shift() || '';
+      const functionName = functionCall.replace(/<anonymous function(: (\w+))?>/, '$2').replace(/\([^)]*\)/g, '') || undefined;
+      let argsRaw;
+      if (functionCall.match(/\(([^)]*)\)/)) {
+        argsRaw = functionCall.replace(/^[^(]+\(([^)]*)\)$/, '$1');
+      }
+      const args = argsRaw === undefined || argsRaw === '[arguments not available]' ? undefined : argsRaw.split(',');
 
-        return result;
-    }
-
-    parseOpera10(e) {
-        const lineRE = /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i;
-        const lines = e.stacktrace.split('\n');
-        const result = [];
-
-        for (let i = 0, len = lines.length; i < len; i += 2) {
-            const match = lineRE.exec(lines[i]);
-            if (match) {
-                result.push({
-                    functionName: match[3] || undefined,
-                    fileName: match[2],
-                    lineNumber: match[1],
-                    source: lines[i]
-                });
-            }
-        }
-
-        return result;
-    }
-
-    // Opera 10.65+ Error.stack very similar to FF/Safari
-    parseOpera11(error) {
-        const filtered = error.stack.split('\n').filter(function (line) {
-            return !!line.match(FIREFOX_SAFARI_STACK_REGEXP) && !line.match(/^Error created at/);
-        }, this);
-
-        return filtered.map(function (line) {
-            const tokens = line.split('@');
-            const locationParts = this.extractLocation(tokens.pop());
-            const functionCall = tokens.shift() || '';
-            const functionName = functionCall.replace(/<anonymous function(: (\w+))?>/, '$2').replace(/\([^)]*\)/g, '') || undefined;
-            let argsRaw;
-            if (functionCall.match(/\(([^)]*)\)/)) {
-                argsRaw = functionCall.replace(/^[^(]+\(([^)]*)\)$/, '$1');
-            }
-            const args = argsRaw === undefined || argsRaw === '[arguments not available]' ? undefined : argsRaw.split(',');
-
-            return {
-                functionName: functionName,
-                args: args,
-                fileName: locationParts[0],
-                lineNumber: locationParts[1],
-                columnNumber: locationParts[2],
-                source: line
-            };
-        }, this);
-    }
+      return {
+        functionName: functionName,
+        args: args,
+        fileName: locationParts[0],
+        lineNumber: locationParts[1],
+        columnNumber: locationParts[2],
+        source: line
+      };
+    }, this);
+  }
 }
 /* End of code originally copied from stacktrace.js */
 
@@ -230,66 +230,63 @@ The code below is specific to Nebula Logger - it leverages stacktrace.js plus so
 additional parsing logic to handle Salesforce-specific stack traces in LWC & Aura components
 */
 export class LoggerStackTrace {
-    parse(originStackTraceError) {
-        if (!originStackTraceError) {
-            return this;
-        }
-
-        const originStackTraceParticles = new ErrorStackParser().parse(originStackTraceError);
-        let originStackTraceParticle;
-        const parsedStackTraceLines = [];
-        originStackTraceParticles.forEach(currentStackTraceParticle => {
-            if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('/logger.js')) {
-                return;
-            }
-
-            if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug.js')) {
-                return;
-            }
-
-            if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug')) {
-                return;
-            }
-
-            currentStackTraceParticle.source = currentStackTraceParticle.source?.trim();
-            if (currentStackTraceParticle.source) {
-                this._cleanStackTraceParticle(currentStackTraceParticle);
-                originStackTraceParticle = originStackTraceParticle ?? currentStackTraceParticle;
-                parsedStackTraceLines.push(currentStackTraceParticle.source);
-            }
-        });
-        const parsedStackTraceString = parsedStackTraceLines.join('\n');
-        return { ...originStackTraceParticle, parsedStackTraceString };
+  parse(originStackTraceError) {
+    if (!originStackTraceError) {
+      return this;
     }
 
-    _cleanStackTraceParticle(stackTraceParticle) {
-        const lwcModulesFileNamePrefix = 'modules/';
-        if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
-            stackTraceParticle.metadataType = 'LightningComponentBundle';
+    const originStackTraceParticles = new ErrorStackParser().parse(originStackTraceError);
+    let originStackTraceParticle;
+    const parsedStackTraceLines = [];
+    originStackTraceParticles.forEach(currentStackTraceParticle => {
+      if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('/logger.js')) {
+        return;
+      }
 
-            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
-                stackTraceParticle.fileName.indexOf(lwcModulesFileNamePrefix) + lwcModulesFileNamePrefix.length
-            );
-        }
-        const auraComponentsContent = '/components/';
-        if (stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
-            stackTraceParticle.metadataType = 'AuraDefinitionBundle';
+      if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug.js')) {
+        return;
+      }
 
-            stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
-                stackTraceParticle.fileName.indexOf(auraComponentsContent) + auraComponentsContent.length,
-                stackTraceParticle.fileName.length
-            );
-        }
-        const jsFileNameSuffix = '.js';
-        if (stackTraceParticle.fileName?.endsWith(jsFileNameSuffix)) {
-            stackTraceParticle.componentName = stackTraceParticle.fileName.substring(0, stackTraceParticle.fileName.length - jsFileNameSuffix.length);
-        }
-        const invalidFunctionNameSuffix = '/<';
-        if (stackTraceParticle.functionName?.endsWith(invalidFunctionNameSuffix)) {
-            stackTraceParticle.functionName = stackTraceParticle.functionName.substring(
-                0,
-                stackTraceParticle.functionName.length - invalidFunctionNameSuffix.length
-            );
-        }
+      if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug')) {
+        return;
+      }
+
+      currentStackTraceParticle.source = currentStackTraceParticle.source?.trim();
+      if (currentStackTraceParticle.source) {
+        this._cleanStackTraceParticle(currentStackTraceParticle);
+        originStackTraceParticle = originStackTraceParticle ?? currentStackTraceParticle;
+        parsedStackTraceLines.push(currentStackTraceParticle.source);
+      }
+    });
+    const parsedStackTraceString = parsedStackTraceLines.join('\n');
+    return { ...originStackTraceParticle, parsedStackTraceString };
+  }
+
+  _cleanStackTraceParticle(stackTraceParticle) {
+    const lwcModulesFileNamePrefix = 'modules/';
+    if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
+      stackTraceParticle.metadataType = 'LightningComponentBundle';
+
+      stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
+        stackTraceParticle.fileName.indexOf(lwcModulesFileNamePrefix) + lwcModulesFileNamePrefix.length
+      );
     }
+    const auraComponentsContent = '/components/';
+    if (stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
+      stackTraceParticle.metadataType = 'AuraDefinitionBundle';
+
+      stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
+        stackTraceParticle.fileName.indexOf(auraComponentsContent) + auraComponentsContent.length,
+        stackTraceParticle.fileName.length
+      );
+    }
+    const jsFileNameSuffix = '.js';
+    if (stackTraceParticle.fileName?.endsWith(jsFileNameSuffix)) {
+      stackTraceParticle.componentName = stackTraceParticle.fileName.substring(0, stackTraceParticle.fileName.length - jsFileNameSuffix.length);
+    }
+    const invalidFunctionNameSuffix = '/<';
+    if (stackTraceParticle.functionName?.endsWith(invalidFunctionNameSuffix)) {
+      stackTraceParticle.functionName = stackTraceParticle.functionName.substring(0, stackTraceParticle.functionName.length - invalidFunctionNameSuffix.length);
+    }
+  }
 }

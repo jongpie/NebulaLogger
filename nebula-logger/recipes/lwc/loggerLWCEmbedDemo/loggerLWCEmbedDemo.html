@@ -6,38 +6,37 @@
 -->
 
 <template>
-    <!-- This is the legacy approach for using c-logger - the new approach is to import it in your JS file -->
-    <c-logger></c-logger>
+  <!-- This is the legacy approach for using c-logger - the new approach is to import it in your JS file -->
+  <c-logger></c-logger>
 
-    <lightning-card title="Nebula Logger for Lightning Web Components - Legacy Approach" icon-name="custom:custom19">
-        <div class="slds-var-m-around_medium">
-            ⚠ This component demonstrates how to use Nebula Logger by adding <code>&lt;c-logger&gt;</code> to your component's markup. This approach is still
-            supported, but is considered deprecate as of v4.10.2. The new recommended approach is import the logger component in your component's JavaScript
-            file.
-        </div>
-        <div>
-            <lightning-button label="Re-render LWC" onclick={handleRerenderButton}></lightning-button>
-            <template if:true={someBoolean}>Boolean is true!</template>
-            <template if:false={someBoolean}>Boolean is false!</template>
-        </div>
-        <div class="slds-var-m-around_medium">
-            <lightning-input label="Example Log Message" value={message} onchange={messageChange}></lightning-input>
-            <lightning-input label="Scenario" value={scenario} onchange={scenarioChange}></lightning-input>
-            <lightning-input label="Comma-Separated Tags" value={tagsString} onchange={tagsStringChange}></lightning-input>
-            <div class="slds-button-group" role="group">
-                <lightning-button label="⛔Log Apex ERROR" onclick={logApexErrorExample}></lightning-button>
-                <lightning-button label="⛔Log ERROR" onclick={logErrorExample}></lightning-button>
-                <lightning-button label="⚠️Log WARN" onclick={logWarnExample}></lightning-button>
-                <lightning-button label="ℹ️Log INFO" onclick={logInfoExample}></lightning-button>
-                <lightning-button label="🐞Log DEBUG" onclick={logDebugExample}></lightning-button>
-            </div>
-            <br />
-            <div class="slds-button-group" role="group">
-                <lightning-button label="👍Log FINE" onclick={logFineExample}></lightning-button>
-                <lightning-button label="👌Log FINER" onclick={logFinerExample}></lightning-button>
-                <lightning-button label="🌟Log FINEST" onclick={logFinestExample}></lightning-button>
-                <lightning-button label="Save Log" variant="brand" onclick={saveLogExample}></lightning-button>
-            </div>
-        </div>
-    </lightning-card>
+  <lightning-card title="Nebula Logger for Lightning Web Components - Legacy Approach" icon-name="custom:custom19">
+    <div class="slds-var-m-around_medium">
+      ⚠ This component demonstrates how to use Nebula Logger by adding <code>&lt;c-logger&gt;</code> to your component's markup. This approach is still
+      supported, but is considered deprecate as of v4.10.2. The new recommended approach is import the logger component in your component's JavaScript file.
+    </div>
+    <div>
+      <lightning-button label="Re-render LWC" onclick={handleRerenderButton}></lightning-button>
+      <template if:true={someBoolean}>Boolean is true!</template>
+      <template if:false={someBoolean}>Boolean is false!</template>
+    </div>
+    <div class="slds-var-m-around_medium">
+      <lightning-input label="Example Log Message" value={message} onchange={messageChange}></lightning-input>
+      <lightning-input label="Scenario" value={scenario} onchange={scenarioChange}></lightning-input>
+      <lightning-input label="Comma-Separated Tags" value={tagsString} onchange={tagsStringChange}></lightning-input>
+      <div class="slds-button-group" role="group">
+        <lightning-button label="⛔Log Apex ERROR" onclick={logApexErrorExample}></lightning-button>
+        <lightning-button label="⛔Log ERROR" onclick={logErrorExample}></lightning-button>
+        <lightning-button label="⚠️Log WARN" onclick={logWarnExample}></lightning-button>
+        <lightning-button label="ℹ️Log INFO" onclick={logInfoExample}></lightning-button>
+        <lightning-button label="🐞Log DEBUG" onclick={logDebugExample}></lightning-button>
+      </div>
+      <br />
+      <div class="slds-button-group" role="group">
+        <lightning-button label="👍Log FINE" onclick={logFineExample}></lightning-button>
+        <lightning-button label="👌Log FINER" onclick={logFinerExample}></lightning-button>
+        <lightning-button label="🌟Log FINEST" onclick={logFinestExample}></lightning-button>
+        <lightning-button label="Save Log" variant="brand" onclick={saveLogExample}></lightning-button>
+      </div>
+    </div>
+  </lightning-card>
 </template>

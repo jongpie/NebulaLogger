@@ -5,15 +5,15 @@
 
 The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.14.0
+## Unlocked Package - v4.14.1
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oPvQAI)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oPvQAI)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oQPQAY)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oQPQAY)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oPvQAI`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oQPQAY`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oPvQAI`
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oQPQAY`
 
 ---
 
@@ -35,7 +35,7 @@ The most robust logger for Salesforce. Works with Apex, Lightning Components, Fl
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
-    - In addition to the required fields on this Custom Setting record, `LoggerSettings__c` ships with `SystemLogMessageFormat__c`, which uses Handlebars-esque syntax to refer to fields on the `LogEntryEvent__e` Platform Event. You can use curly braces to denote merge field logic, eg: `{OriginLocation__c}\n{Message__c}` - this will output the contents of `LogEntryEvent__e.OriginLocation__c`, a line break, and then the contents of `LogEntryEvent__e.Message__c`
+   - In addition to the required fields on this Custom Setting record, `LoggerSettings__c` ships with `SystemLogMessageFormat__c`, which uses Handlebars-esque syntax to refer to fields on the `LogEntryEvent__e` Platform Event. You can use curly braces to denote merge field logic, eg: `{OriginLocation__c}\n{Message__c}` - this will output the contents of `LogEntryEvent__e.OriginLocation__c`, a line break, and then the contents of `LogEntryEvent__e.Message__c`
 5. Automatically mask sensitive data by configuring `LogEntryDataMaskRule__mdt` custom metadata rules
 6. View related log entries on any Lightning SObject flexipage by adding the 'Related Log Entries' component in App Builder
 7. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs
@@ -100,10 +100,10 @@ Nebula Logger is available as both an unlocked package and a managed package. Th
 
 After installing Nebula Logger in your org, there are a few additional configuration changes needed...
 
--   Assign permission set(s) to users
-    -   See the wiki page [Assigning Permission Sets](https://github.com/jongpie/NebulaLogger/wiki/Assigning-Permission-Sets) for more details on each of the included permission sets
--   Customize the default settings in `LoggerSettings__c`
-    -   You can customize settings at the org, profile and user levels
+- Assign permission set(s) to users
+  - See the wiki page [Assigning Permission Sets](https://github.com/jongpie/NebulaLogger/wiki/Assigning-Permission-Sets) for more details on each of the included permission sets
+- Customize the default settings in `LoggerSettings__c`
+  - You can customize settings at the org, profile and user levels
 
 ---
 
@@ -141,13 +141,13 @@ For lightning component developers, the `logger` LWC provides very similar funct
 import { createLogger } from 'c/logger';
 
 export default class LoggerLWCImportDemo extends LightningElement {
-    logger;
+  logger;
 
-    async connectedCallback() {
-        this.logger = await createLogger();
-        this.logger.info('Hello, world');
-        this.logger.saveLog();
-    }
+  async connectedCallback() {
+    this.logger = await createLogger();
+    this.logger.info('Hello, world');
+    this.logger.saveLog();
+  }
 }
 ```
 
@@ -213,16 +213,16 @@ Within Apex, there are several different methods that you can use that provide g
 
 Apex developers can use additional `Logger` methods to dynamically control how logs are saved during the current transaction.
 
--   `Logger.suspendSaving()` – causes `Logger` to ignore any calls to `saveLog()` in the current transaction until `resumeSaving()` is called. Useful for reducing DML statements used by `Logger`
--   `Logger.resumeSaving()` – re-enables saving after `suspendSaving()` is used
--   `Logger.flushBuffer()` – discards any unsaved log entries
--   `Logger.setSaveMethod(SaveMethod saveMethod)` - sets the default save method used when calling `saveLog()`. Any subsequent calls to `saveLog()` in the current transaction will use the specified save method
--   `Logger.saveLog(SaveMethod saveMethod)` - saves any entries in Logger's buffer, using the specified save method for only this call. All subsequent calls to `saveLog()` will use the default save method.
--   Enum `Logger.SaveMethod` - this enum can be used for both `Logger.setSaveMethod(saveMethod)` and `Logger.saveLog(saveMethod)`
-    -   `Logger.SaveMethod.EVENT_BUS` - The default save method, this uses the `EventBus` class to publish `LogEntryEvent__e` records. The default save method can also be controlled declaratively by updating the field `LoggerSettings__c.DefaultSaveMethod__c`
-    -   `Logger.SaveMethod.QUEUEABLE` - This save method will trigger `Logger` to save any pending records asynchronously using a queueable job. This is useful when you need to defer some CPU usage and other limits consumed by Logger.
-    -   `Logger.SaveMethod.REST` - This save method will use the current user’s session ID to make a synchronous callout to the org’s REST API. This is useful when you have other callouts being made and you need to avoid mixed DML operations.
-    -   `Logger.SaveMethod.SYNCHRONOUS_DML` - This save method will skip publishing the `LogEntryEvent__e` platform events, and instead immediately creates `Log__c` and `LogEntry__c` records. This is useful when you are logging from within the context of another platform event and/or you do not anticipate any exceptions to occur in the current transaction. **Note**: when using this save method, any exceptions will prevent your log entries from being saved - Salesforce will rollback any DML statements, including your log entries! Use this save method cautiously.
+- `Logger.suspendSaving()` – causes `Logger` to ignore any calls to `saveLog()` in the current transaction until `resumeSaving()` is called. Useful for reducing DML statements used by `Logger`
+- `Logger.resumeSaving()` – re-enables saving after `suspendSaving()` is used
+- `Logger.flushBuffer()` – discards any unsaved log entries
+- `Logger.setSaveMethod(SaveMethod saveMethod)` - sets the default save method used when calling `saveLog()`. Any subsequent calls to `saveLog()` in the current transaction will use the specified save method
+- `Logger.saveLog(SaveMethod saveMethod)` - saves any entries in Logger's buffer, using the specified save method for only this call. All subsequent calls to `saveLog()` will use the default save method.
+- Enum `Logger.SaveMethod` - this enum can be used for both `Logger.setSaveMethod(saveMethod)` and `Logger.saveLog(saveMethod)`
+  - `Logger.SaveMethod.EVENT_BUS` - The default save method, this uses the `EventBus` class to publish `LogEntryEvent__e` records. The default save method can also be controlled declaratively by updating the field `LoggerSettings__c.DefaultSaveMethod__c`
+  - `Logger.SaveMethod.QUEUEABLE` - This save method will trigger `Logger` to save any pending records asynchronously using a queueable job. This is useful when you need to defer some CPU usage and other limits consumed by Logger.
+  - `Logger.SaveMethod.REST` - This save method will use the current user’s session ID to make a synchronous callout to the org’s REST API. This is useful when you have other callouts being made and you need to avoid mixed DML operations.
+  - `Logger.SaveMethod.SYNCHRONOUS_DML` - This save method will skip publishing the `LogEntryEvent__e` platform events, and instead immediately creates `Log__c` and `LogEntry__c` records. This is useful when you are logging from within the context of another platform event and/or you do not anticipate any exceptions to occur in the current transaction. **Note**: when using this save method, any exceptions will prevent your log entries from being saved - Salesforce will rollback any DML statements, including your log entries! Use this save method cautiously.
 
 ### Track Related Logs in Batchable and Queuable Jobs
 
@@ -321,10 +321,10 @@ public with sharing class QueueableLoggerExample implements Queueable {
 
 Each of the logging methods in `Logger` (such as `Logger.error()`, `Logger.debug()`, and so on) has several static overloads for various parameters. These are intended to provide simple method calls for common parameters, such as:
 
--   Log a message and a record - `Logger.error(String message, SObject record)`
--   Log a message and a record ID - `Logger.error(String message, Id recordId)`
--   Log a message and a save result - `Logger.error(String message, Database.SaveResult saveResult)`
--   ...
+- Log a message and a record - `Logger.error(String message, SObject record)`
+- Log a message and a record ID - `Logger.error(String message, Id recordId)`
+- Log a message and a save result - `Logger.error(String message, Database.SaveResult saveResult)`
+- ...
 
 To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/Logger).
 
@@ -356,24 +356,24 @@ The class `LogMessage` provides the ability to generate string messages on deman
 
 1. Improved CPU usage by skipping unnecessary calls to `String.format()`
 
-    ```java
-    // Without using LogMessage, String.format() is always called, even if the FINE logging level is not enabled for a user
-    String formattedString = String.format('my example with input: {0}', List<Object>{'myString'});
-    Logger.fine(formattedString);
+   ```java
+   // Without using LogMessage, String.format() is always called, even if the FINE logging level is not enabled for a user
+   String formattedString = String.format('my example with input: {0}', List<Object>{'myString'});
+   Logger.fine(formattedString);
 
-    // With LogMessage, when the specified logging level (FINE) is disabled for the current user, `String.format()` is not called
-    LogMessage logMessage = new LogMessage('my example with input: {0}', 'myString');
-    Logger.fine(logMessage);
-    ```
+   // With LogMessage, when the specified logging level (FINE) is disabled for the current user, `String.format()` is not called
+   LogMessage logMessage = new LogMessage('my example with input: {0}', 'myString');
+   Logger.fine(logMessage);
+   ```
 
 2. Easily build complex strings
-    ```java
-     // There are several constructors for LogMessage to support different numbers of parameters for the formatted string
-     String unformattedMessage = 'my string with 3 inputs: {0} and then {1} and finally {2}';
-     String formattedMessage = new LogMessage(unformattedMessage, 'something', 'something else', 'one more').getMessage();
-     String expectedMessage = 'my string with 3 inputs: something and then something else and finally one more';
-     System.assertEquals(expectedMessage, formattedMessage);
-    ```
+   ```java
+    // There are several constructors for LogMessage to support different numbers of parameters for the formatted string
+    String unformattedMessage = 'my string with 3 inputs: {0} and then {1} and finally {2}';
+    String formattedMessage = new LogMessage(unformattedMessage, 'something', 'something else', 'one more').getMessage();
+    String expectedMessage = 'my string with 3 inputs: something and then something else and finally one more';
+    System.assertEquals(expectedMessage, formattedMessage);
+   ```
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/LogMessage).
 
@@ -400,42 +400,39 @@ For lightning component developers, the `logger` LWC provides very similar funct
 import { createLogger } from 'c/logger';
 
 export default class LoggerLWCImportDemo extends LightningElement {
-    logger;
+  logger;
 
-    async connectedCallback() {
-        // Call createLogger() once per component
-        this.logger = await createLogger();
+  async connectedCallback() {
+    // Call createLogger() once per component
+    this.logger = await createLogger();
 
-        this.logger.setScenario('some scenario');
-        this.logger.finer('initialized demo LWC');
+    this.logger.setScenario('some scenario');
+    this.logger.finer('initialized demo LWC');
+  }
+
+  logSomeStuff() {
+    this.logger.error('Add log entry using Nebula Logger with logging level == ERROR').addTag('some important tag');
+    this.logger.warn('Add log entry using Nebula Logger with logging level == WARN');
+    this.logger.info('Add log entry using Nebula Logger with logging level == INFO');
+    this.logger.debug('Add log entry using Nebula Logger with logging level == DEBUG');
+    this.logger.fine('Add log entry using Nebula Logger with logging level == FINE');
+    this.logger.finer('Add log entry using Nebula Logger with logging level == FINER');
+    this.logger.finest('Add log entry using Nebula Logger with logging level == FINEST');
+
+    this.logger.saveLog();
+  }
+
+  doSomething(event) {
+    this.logger.finest('Starting doSomething() with event: ' + JSON.stringify(event));
+    try {
+      this.logger.debug('TODO - finishing implementation of doSomething()').addTag('another tag');
+      // TODO add the function's implementation below
+    } catch (thrownError) {
+      this.logger.error('An unexpected error log entry using Nebula Logger with logging level == ERROR').setError(thrownError).addTag('some important tag');
+    } finally {
+      this.logger.saveLog();
     }
-
-    logSomeStuff() {
-        this.logger.error('Add log entry using Nebula Logger with logging level == ERROR').addTag('some important tag');
-        this.logger.warn('Add log entry using Nebula Logger with logging level == WARN');
-        this.logger.info('Add log entry using Nebula Logger with logging level == INFO');
-        this.logger.debug('Add log entry using Nebula Logger with logging level == DEBUG');
-        this.logger.fine('Add log entry using Nebula Logger with logging level == FINE');
-        this.logger.finer('Add log entry using Nebula Logger with logging level == FINER');
-        this.logger.finest('Add log entry using Nebula Logger with logging level == FINEST');
-
-        this.logger.saveLog();
-    }
-
-    doSomething(event) {
-        this.logger.finest('Starting doSomething() with event: ' + JSON.stringify(event));
-        try {
-            this.logger.debug('TODO - finishing implementation of doSomething()').addTag('another tag');
-            // TODO add the function's implementation below
-        } catch (thrownError) {
-            this.logger
-                .error('An unexpected error log entry using Nebula Logger with logging level == ERROR')
-                .setError(thrownError)
-                .addTag('some important tag');
-        } finally {
-            this.logger.saveLog();
-        }
-    }
+  }
 }
 ```
 
@@ -445,9 +442,9 @@ To use the logger component, it has to be added to your aura component's markup:
 
 ```html
 <aura:component implements="force:appHostable">
-    <c:logger aura:id="logger" />
+  <c:logger aura:id="logger" />
 
-    <div>My component</div>
+  <div>My component</div>
 </aura:component>
 ```
 
@@ -455,19 +452,19 @@ Once you've added logger to your markup, you can call it in your aura component'
 
 ```javascript
 ({
-    logSomeStuff: function (component, event, helper) {
-        const logger = component.find('logger');
+  logSomeStuff: function (component, event, helper) {
+    const logger = component.find('logger');
 
-        logger.error('Hello, world!').addTag('some important tag');
-        logger.warn('Hello, world!');
-        logger.info('Hello, world!');
-        logger.debug('Hello, world!');
-        logger.fine('Hello, world!');
-        logger.finer('Hello, world!');
-        logger.finest('Hello, world!');
+    logger.error('Hello, world!').addTag('some important tag');
+    logger.warn('Hello, world!');
+    logger.info('Hello, world!');
+    logger.debug('Hello, world!');
+    logger.fine('Hello, world!');
+    logger.finer('Hello, world!');
+    logger.finest('Hello, world!');
 
-        logger.saveLog();
-    }
+    logger.saveLog();
+  }
 });
 ```
 
@@ -513,11 +510,11 @@ Flow builders can use the `Tags` property to specify a comma-separated list of t
 
 Admins can configure tagging rules to append additional tags using the custom metadata type `LogEntryTagRule__mdt`.
 
--   Rule-based tags are only added when `LogEntry__c` records are created (not on update).
--   Rule-based tags are added in addition to any tags that have been added via Apex and/or Flow.
--   Each rule is configured to apply tags based on the value of a single field on `LogEntry__c` (e.g., `LogEntry__c.Message__c`).
--   Each rule can only evaluate 1 field, but multiple rules can evaluate the same field.
--   A single rule can apply multiple tags. When specifying multiple tags, put each tag on a separate line within the Tags field (`LogEntryTagRule__mdt.Tags__c`).
+- Rule-based tags are only added when `LogEntry__c` records are created (not on update).
+- Rule-based tags are added in addition to any tags that have been added via Apex and/or Flow.
+- Each rule is configured to apply tags based on the value of a single field on `LogEntry__c` (e.g., `LogEntry__c.Message__c`).
+- Each rule can only evaluate 1 field, but multiple rules can evaluate the same field.
+- A single rule can apply multiple tags. When specifying multiple tags, put each tag on a separate line within the Tags field (`LogEntryTagRule__mdt.Tags__c`).
 
 Rules can be set up by configuring a custom metadata record with these fields configured:
 
@@ -601,40 +598,40 @@ This feature requires that you populate your custom fields yourself, and is only
 
 The first step is to add a field to the platform event `LogEntryEvent__e`
 
--   Create a custom field on `LogEntryEvent__e`. Any data type supported by platform events can be used.
+- Create a custom field on `LogEntryEvent__e`. Any data type supported by platform events can be used.
 
-    -   In this example, a custom text field called `SomeCustomField__c` has been added:
+  - In this example, a custom text field called `SomeCustomField__c` has been added:
 
-        ![Custom Field on LogEntryEvent__e](./images/custom-field-log-entry-event.png)
+    ![Custom Field on LogEntryEvent__e](./images/custom-field-log-entry-event.png)
 
--   Populate your field(s) in Apex by calling the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
+- Populate your field(s) in Apex by calling the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
 
-    ```apex
-    Logger.info('hello, world')
-        // Set a single field
-        .setField(LogEntryEvent__e.SomeCustomTextField__c, 'some text value')
-        // Set multiple fields
-        .setFields(new Map<Schema.SObjectField, Object>{
-            LogEntryEvent__e.AnotherCustomTextField__c => 'another text value',
-            LogEntryEvent__e.SomeCustomDatetimeField__c => System.now()
-        });
-    ```
+  ```apex
+  Logger.info('hello, world')
+      // Set a single field
+      .setField(LogEntryEvent__e.SomeCustomTextField__c, 'some text value')
+      // Set multiple fields
+      .setFields(new Map<Schema.SObjectField, Object>{
+          LogEntryEvent__e.AnotherCustomTextField__c => 'another text value',
+          LogEntryEvent__e.SomeCustomDatetimeField__c => System.now()
+      });
+  ```
 
 ### Adding Custom Fields to the Custom Objects `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
 
 If you want to store the data in one of Nebula Logger's custom objects, you can follow the above steps, and also...
 
--   Create an equivalent custom field on one of Nebula Logger's custom objects - right now, only `Log__c`, `LogEntry__c`, and `LoggerScenario__c` are supported.
+- Create an equivalent custom field on one of Nebula Logger's custom objects - right now, only `Log__c`, `LogEntry__c`, and `LoggerScenario__c` are supported.
 
-    -   In this example, a custom text field _also_ called `SomeCustomField__c` has been added to `Log__c` object - this will be used to store the value of the field `LogEntryEvent__e.SomeCustomField__c`:
+  - In this example, a custom text field _also_ called `SomeCustomField__c` has been added to `Log__c` object - this will be used to store the value of the field `LogEntryEvent__e.SomeCustomField__c`:
 
-        ![Custom Field on LogEntryEvent__e](./images/custom-field-log.png)
+    ![Custom Field on LogEntryEvent__e](./images/custom-field-log.png)
 
--   Create a record in the new CMDT `LoggerFieldMapping__mdt` to map the `LogEntryEvent__e` custom field to the custom object's custom field, shown below. Nebula Logger will automatically populate the custom object's target field with the value of the source `LogEntryEvent__e` field.
+- Create a record in the new CMDT `LoggerFieldMapping__mdt` to map the `LogEntryEvent__e` custom field to the custom object's custom field, shown below. Nebula Logger will automatically populate the custom object's target field with the value of the source `LogEntryEvent__e` field.
 
-    -   In this example, a custom text field called `SomeCustomField__c` has been added to both `LogEntryEvent__e` and `Log__c`.
+  - In this example, a custom text field called `SomeCustomField__c` has been added to both `LogEntryEvent__e` and `Log__c`.
 
-        ![Custom Field on LogEntryEvent__e](./images/custom-field-mapping.png)
+    ![Custom Field on LogEntryEvent__e](./images/custom-field-mapping.png)
 
 ---
 
@@ -650,16 +647,16 @@ The Logger Console app provides access to the tabs for Logger's objects: `Log__c
 
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
 
--   All editable fields on `Log__c` can be updated via the 'Manage Log' quick action (shown below)
+- All editable fields on `Log__c` can be updated via the 'Manage Log' quick action (shown below)
 
-    ![Manage Log QuickAction](./images/manage-log-quickaction.png)
+  ![Manage Log QuickAction](./images/manage-log-quickaction.png)
 
--   Additional fields are automatically set based on changes to `Log__c.Status__c`
-    -   `Log__c.ClosedBy__c` - The user who closed the log
-    -   `Log__c.ClosedDate__c` - The datetime that the log was closed
-    -   `Log__c.IsClosed__c` - Indicates if the log is closed, based on the selected status (and associated config in the 'Log Status' custom metadata type)
-    -   `Log__c.IsResolved__c` - Indicates if the log is resolved (meaning that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
--   To customize the statuses provided, simply update the picklist values for `Log__c.Status__c` and create/update corresponding records in the custom metadata type `LogStatus__mdt`. This custom metadata type controls which statuses are considered closed and resolved.
+- Additional fields are automatically set based on changes to `Log__c.Status__c`
+  - `Log__c.ClosedBy__c` - The user who closed the log
+  - `Log__c.ClosedDate__c` - The datetime that the log was closed
+  - `Log__c.IsClosed__c` - Indicates if the log is closed, based on the selected status (and associated config in the 'Log Status' custom metadata type)
+  - `Log__c.IsResolved__c` - Indicates if the log is resolved (meaning that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
+- To customize the statuses provided, simply update the picklist values for `Log__c.Status__c` and create/update corresponding records in the custom metadata type `LogStatus__mdt`. This custom metadata type controls which statuses are considered closed and resolved.
 
 ---
 
@@ -685,12 +682,12 @@ Within Logger Console app, the Log Entry Event Stream tab provides real-time mon
 
 Within App Builder, admins can add the 'Related Log Entries' lightning web component (lwc) to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
 
--   The component automatically shows any related log entries, based on `LogEntry__c.RecordId__c == :recordId`
--   Users can search the list of log entries for a particular record using the component's built-insearch box. The component dynamically searches all related log entries using SOSL.
--   Component automatically enforces Salesforce's security model
-    -   Object-Level Security - Users without read access to `LogEntry__c` will not see the component
-    -   Record-Level Security - Users will only see records that have been shared with them
-    -   Field-Level Security - Users will only see the fields within the field set that they have access to
+- The component automatically shows any related log entries, based on `LogEntry__c.RecordId__c == :recordId`
+- Users can search the list of log entries for a particular record using the component's built-insearch box. The component dynamically searches all related log entries using SOSL.
+- Component automatically enforces Salesforce's security model
+  - Object-Level Security - Users without read access to `LogEntry__c` will not see the component
+  - Record-Level Security - Users will only see records that have been shared with them
+  - Field-Level Security - Users will only see the fields within the field set that they have access to
 
 ![Related Log Entries](./images/relate-log-entries-lwc.png)
 
@@ -717,8 +714,8 @@ Salesforce (still) does not support mass deleting records out-of-the-box. There'
 Two Apex classes are provided out-of-the-box to handle automatically deleting old logs
 
 1. `LogBatchPurger` - this batch Apex class will delete any `Log__c` records with `Log__c.LogRetentionDate__c <= System.today()`.
-    - By default, this field is populated with "TODAY + 14 DAYS" - the number of days to retain a log can be customized in `LoggerSettings__c`.
-    - Admins can also manually edit this field to change the retention date - or set it to null to prevent the log from being automatically deleted
+   - By default, this field is populated with "TODAY + 14 DAYS" - the number of days to retain a log can be customized in `LoggerSettings__c`.
+   - Admins can also manually edit this field to change the retention date - or set it to null to prevent the log from being automatically deleted
 2. `LogBatchPurgeScheduler` - this schedulable Apex class can be schedule to run `LogBatchPurger` on a daily or weekly basis
 
 ---
@@ -727,40 +724,40 @@ Two Apex classes are provided out-of-the-box to handle automatically deleting ol
 
 If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "plugins" - the logger system will then automatically run the plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on). This framework makes it easy to build your own plugins, or deploy/install others' prebuilt packages, without having to modify the logging system directly.
 
--   Flow plugins: your Flow should be built as auto-launched Flows with these parameters:
+- Flow plugins: your Flow should be built as auto-launched Flows with these parameters:
 
-    1. `Input` parameter `triggerOperationType` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
-    2. `Input` parameter `triggerNew` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
-    3. `Output` parameter `updatedTriggerNew` - If your Flow makes any updates to the collection of records, you should return a record collection containing the updated records
-    4. `Input` parameter `triggerOld` - The list of logger records as they exist in the datatabase
+  1. `Input` parameter `triggerOperationType` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
+  2. `Input` parameter `triggerNew` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
+  3. `Output` parameter `updatedTriggerNew` - If your Flow makes any updates to the collection of records, you should return a record collection containing the updated records
+  4. `Input` parameter `triggerOld` - The list of logger records as they exist in the datatabase
 
--   Apex plugins: your Apex class should extend the abstract class `LoggerSObjectHandlerPlugin`. For example:
+- Apex plugins: your Apex class should extend the abstract class `LoggerSObjectHandlerPlugin`. For example:
 
-    ```java
-    public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
-        public override void execute(
-            TriggerOperation triggerOperationType,
-            List<SObject> triggerNew,
-            Map<Id, SObject> triggerNewMap,
-            List<SObject> triggerOld,
-            Map<Id, SObject> triggerOldMap
-        ) {
-            switch on triggerOperationType {
-                when BEFORE_INSERT {
-                    for (Log__c log : (List<Log__c>) triggerNew) {
-                        log.Status__c = 'On Hold';
-                    }
-                }
-            }
-        }
-    }
+  ```java
+  public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
+      public override void execute(
+          TriggerOperation triggerOperationType,
+          List<SObject> triggerNew,
+          Map<Id, SObject> triggerNewMap,
+          List<SObject> triggerOld,
+          Map<Id, SObject> triggerOldMap
+      ) {
+          switch on triggerOperationType {
+              when BEFORE_INSERT {
+                  for (Log__c log : (List<Log__c>) triggerNew) {
+                      log.Status__c = 'On Hold';
+                  }
+              }
+          }
+      }
+  }
 
-    ```
+  ```
 
 Once you've created your Apex or Flow plugin(s), you will also need to configure the plugin:
 
--   'Logger Plugin' - use the custom metadata type `LoggerPlugin__mdt` to define your plugin, including the plugin type (Apex or Flow) and the API name of your plugin's Apex class or Flow
--   'Logger Parameter' - use the custom metadata type `LoggerParameter__mdt` to define any configurable parameters needed for your plugin, such as environment-specific URLs and other similar configurations
+- 'Logger Plugin' - use the custom metadata type `LoggerPlugin__mdt` to define your plugin, including the plugin type (Apex or Flow) and the API name of your plugin's Apex class or Flow
+- 'Logger Parameter' - use the custom metadata type `LoggerParameter__mdt` to define any configurable parameters needed for your plugin, such as environment-specific URLs and other similar configurations
 
 Note: the logger plugin framework is not available in the managed package due to some platform limitations & considerations with some of the underlying code. The unlocked package is recommended (instead of the managed package) when possible, including if you want to be able to leverage the plugin framework in your org.
 
@@ -768,10 +765,10 @@ Note: the logger plugin framework is not available in the managed package due to
 
 The optional [Slack plugin](./nebula-logger/plugins/slack) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
 
--   Use Apex to apply custom logic to `Log__c` and `LogEntry__c` records
--   Add custom fields and list views to Logger's objects
--   Extend permission sets to include field-level security for your custom fields
--   Leverage the new `LoggerParameter__mdt` CMDT object to store configuration for your plugin
+- Use Apex to apply custom logic to `Log__c` and `LogEntry__c` records
+- Add custom fields and list views to Logger's objects
+- Extend permission sets to include field-level security for your custom fields
+- Leverage the new `LoggerParameter__mdt` CMDT object to store configuration for your plugin
 
 Check out the [Slack plugin](./nebula-logger/plugins/slack) for more details on how to install & customize the plugin
 

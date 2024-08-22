@@ -4,38 +4,38 @@
  **********************************************************************************************-->
 
 <template>
-    <lightning-quick-action-panel header={title}>
-        <template if:false={isLoaded}>
-            <div class="slds-is-relative" style="min-height: 12em">
-                <lightning-spinner variant="brand"></lightning-spinner>
-            </div>
-        </template>
-        <template if:true={isLoaded}>
-            <lightning-tabset>
-                <lightning-tab data-id="json-content" label="Record JSON" value="json" onactive={handleTabActivated}>
-                    <div class="content">
-                        <c-logger-code-viewer code={currentMode.data} language="json"></c-logger-code-viewer>
-                    </div>
-                </lightning-tab>
-                <lightning-tab data-id="file-content" label="Log File" value="file" onactive={handleTabActivated}>
-                    <div class="content">
-                        <c-logger-code-viewer code={currentMode.data} language="shell"></c-logger-code-viewer>
-                    </div>
-                </lightning-tab>
-            </lightning-tabset>
-            <div slot="footer">
-                <lightning-button label={downloadButtonLabel} class="slds-m-right_small" onclick={downloadFile}></lightning-button>
-                <lightning-button-stateful
-                    data-id="copy-btn"
-                    label-when-off="Copy to Clipboard"
-                    label-when-on="Copied to Clipboard"
-                    icon-name-when-off="utility:copy_to_clipboard"
-                    icon-name-when-on="utility:check"
-                    selected={dataCopied}
-                    onclick={copyToClipboard}
-                    variant={variant}
-                ></lightning-button-stateful>
-            </div>
-        </template>
-    </lightning-quick-action-panel>
+  <lightning-quick-action-panel header={title}>
+    <template if:false={isLoaded}>
+      <div class="slds-is-relative" style="min-height: 12em">
+        <lightning-spinner variant="brand"></lightning-spinner>
+      </div>
+    </template>
+    <template if:true={isLoaded}>
+      <lightning-tabset>
+        <lightning-tab data-id="json-content" label="Record JSON" value="json" onactive={handleTabActivated}>
+          <div class="content">
+            <c-logger-code-viewer code={currentMode.data} language="json"></c-logger-code-viewer>
+          </div>
+        </lightning-tab>
+        <lightning-tab data-id="file-content" label="Log File" value="file" onactive={handleTabActivated}>
+          <div class="content">
+            <c-logger-code-viewer code={currentMode.data} language="shell"></c-logger-code-viewer>
+          </div>
+        </lightning-tab>
+      </lightning-tabset>
+      <div slot="footer">
+        <lightning-button label={downloadButtonLabel} class="slds-m-right_small" onclick={downloadFile}></lightning-button>
+        <lightning-button-stateful
+          data-id="copy-btn"
+          label-when-off="Copy to Clipboard"
+          label-when-on="Copied to Clipboard"
+          icon-name-when-off="utility:copy_to_clipboard"
+          icon-name-when-on="utility:check"
+          selected={dataCopied}
+          onclick={copyToClipboard}
+          variant={variant}
+        ></lightning-button-stateful>
+      </div>
+    </template>
+  </lightning-quick-action-panel>
 </template>

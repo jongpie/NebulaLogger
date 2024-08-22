@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <description>Logs the account again after the field assignment has made changes to the account</description>
@@ -37,7 +37,9 @@
                 <elementReference>Account_Record</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
+        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <description>Logs the input account records before any changes are made to the record in this Flow</description>
@@ -79,7 +81,9 @@
                 <elementReference>Account_Record</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
+        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>61.0</apiVersion>
     <assignments>

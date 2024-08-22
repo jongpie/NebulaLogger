@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SObjectTypeOverride__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <description
-    >Not all base platform types can be selected using the SObjectType picklist. If your object is not supported, supply the API name for the object here instead.</description>
+    <description>Not all base platform types can be selected using the SObjectType picklist. If your object is not supported, supply the API name for the object here instead.</description>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText
-    >Not all base platform types can be selected using the SObjectType picklist. If your object is not supported, supply the API name for the object here instead.</inlineHelpText>
+    <inlineHelpText>Not all base platform types can be selected using the SObjectType picklist. If your object is not supported, supply the API name for the object here instead.</inlineHelpText>
     <label>SObjectType Override</label>
     <length>255</length>
     <required>false</required>

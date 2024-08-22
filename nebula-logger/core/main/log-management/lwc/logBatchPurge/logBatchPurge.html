@@ -4,97 +4,97 @@
  **********************************************************************************************-->
 
 <template>
-    <lightning-card title={title} icon-name="standard:record_delete">
-        <div class="slds-p-around_small">
-            <!-- Log Object Metrics -->
-            <div class="slds-p-left_small slds-p-right_small slds-p-bottom_small container">
-                <lightning-radio-group
-                    data-id="date-filter"
-                    label=""
-                    name="Date Filter"
-                    onchange={onChangeDateFilter}
-                    options={dateFilterOptions}
-                    type="button"
-                    value={selectedDateFilterOption}
-                ></lightning-radio-group>
-            </div>
-            <div class="slds-p-left_small slds-p-right_small">
-                <div class="slds-box slds-p-around_none">
-                    <table data-id="metrics-table" class="slds-table slds-no-row-hover slds-table_bordered">
-                        <thead>
-                            <tr class="slds-line-height_reset datatable-header">
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="Object Name">Object Name</div>
-                                </th>
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="Purge Action">Purge Action</div>
-                                </th>
-                                <th class="" scope="col">
-                                    <div class="slds-truncate" title="Count">Count</div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template for:each={metricsRecords} for:item="metric">
-                                <tr key={metric.sObjectName} class="slds-hint-parent">
-                                    <th data-label={metric.sObjectName} scope="row" rowspan={metric.rowSpan}>
-                                        <div data-id={metric.sObjectName} class="slds-truncate" title={metric.sObjectName}>{metric.sObjectName}</div>
-                                    </th>
-                                </tr>
-                                <template for:each={metric.summary} for:item="item">
-                                    <tr key={item.key}>
-                                        <th scope="row">
-                                            <div data-label={item.key} class="slds-truncate" title={item.purgeAction}>{item.purgeAction}</div>
-                                        </th>
-                                        <th scope="row">
-                                            <div data-id={item.key} class="slds-truncate" title="Count">{item.count}</div>
-                                        </th>
-                                    </tr>
-                                </template>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  <lightning-card title={title} icon-name="standard:record_delete">
+    <div class="slds-p-around_small">
+      <!-- Log Object Metrics -->
+      <div class="slds-p-left_small slds-p-right_small slds-p-bottom_small container">
+        <lightning-radio-group
+          data-id="date-filter"
+          label=""
+          name="Date Filter"
+          onchange={onChangeDateFilter}
+          options={dateFilterOptions}
+          type="button"
+          value={selectedDateFilterOption}
+        ></lightning-radio-group>
+      </div>
+      <div class="slds-p-left_small slds-p-right_small">
+        <div class="slds-box slds-p-around_none">
+          <table data-id="metrics-table" class="slds-table slds-no-row-hover slds-table_bordered">
+            <thead>
+              <tr class="slds-line-height_reset datatable-header">
+                <th class="" scope="col">
+                  <div class="slds-truncate" title="Object Name">Object Name</div>
+                </th>
+                <th class="" scope="col">
+                  <div class="slds-truncate" title="Purge Action">Purge Action</div>
+                </th>
+                <th class="" scope="col">
+                  <div class="slds-truncate" title="Count">Count</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <template for:each={metricsRecords} for:item="metric">
+                <tr key={metric.sObjectName} class="slds-hint-parent">
+                  <th data-label={metric.sObjectName} scope="row" rowspan={metric.rowSpan}>
+                    <div data-id={metric.sObjectName} class="slds-truncate" title={metric.sObjectName}>{metric.sObjectName}</div>
+                  </th>
+                </tr>
+                <template for:each={metric.summary} for:item="item">
+                  <tr key={item.key}>
+                    <th scope="row">
+                      <div data-label={item.key} class="slds-truncate" title={item.purgeAction}>{item.purgeAction}</div>
+                    </th>
+                    <th scope="row">
+                      <div data-id={item.key} class="slds-truncate" title="Count">{item.count}</div>
+                    </th>
+                  </tr>
+                </template>
+              </template>
+            </tbody>
+          </table>
         </div>
-        <!-- Purge Batch -->
-        <div class="slds-p-around_small slds-is-relative">
-            <div class="slds-p-left_small slds-p-right_small container">
-                <lightning-button-icon
-                    alternative-text="refresh"
-                    data-id="refresh-button"
-                    icon-name="utility:refresh"
-                    onclick={refreshPurgeBatchRecords}
-                    title="refresh"
-                >
-                </lightning-button-icon>
+      </div>
+    </div>
+    <!-- Purge Batch -->
+    <div class="slds-p-around_small slds-is-relative">
+      <div class="slds-p-left_small slds-p-right_small container">
+        <lightning-button-icon
+          alternative-text="refresh"
+          data-id="refresh-button"
+          icon-name="utility:refresh"
+          onclick={refreshPurgeBatchRecords}
+          title="refresh"
+        >
+        </lightning-button-icon>
 
-                <lightning-button
-                    class="slds-m-left_x-small"
-                    data-id="run-purge-button"
-                    disabled={disableRunPurgeButton}
-                    label="Run Purge Batch"
-                    onclick={runBatchPurge}
-                    title="Run Purge Batch"
-                    variant="destructive"
-                >
-                </lightning-button>
-            </div>
-            <div class="slds-p-around_small">
-                <div class="slds-box slds-p-around_none slds-scrollable datatable-container">
-                    <lightning-datatable
-                        columns={purgeBatchColumns}
-                        data-id="purge-batch-jobs"
-                        data={purgeBatchJobRecords}
-                        hide-checkbox-column="true"
-                        is-loading={showLoadingSpinner}
-                        key-field="id"
-                        onrowaction={handleRowAction}
-                        show-row-number-column
-                    >
-                    </lightning-datatable>
-                </div>
-            </div>
+        <lightning-button
+          class="slds-m-left_x-small"
+          data-id="run-purge-button"
+          disabled={disableRunPurgeButton}
+          label="Run Purge Batch"
+          onclick={runBatchPurge}
+          title="Run Purge Batch"
+          variant="destructive"
+        >
+        </lightning-button>
+      </div>
+      <div class="slds-p-around_small">
+        <div class="slds-box slds-p-around_none slds-scrollable datatable-container">
+          <lightning-datatable
+            columns={purgeBatchColumns}
+            data-id="purge-batch-jobs"
+            data={purgeBatchJobRecords}
+            hide-checkbox-column="true"
+            is-loading={showLoadingSpinner}
+            key-field="id"
+            onrowaction={handleRowAction}
+            show-row-number-column
+          >
+          </lightning-datatable>
         </div>
-    </lightning-card>
+      </div>
+    </div>
+  </lightning-card>
 </template>

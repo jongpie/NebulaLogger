@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<CustomMetadata
-    xmlns="http://soap.sforce.com/2006/04/metadata"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
->
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <label>Log Entry Archive Plugin</label>
     <protected>false</protected>
     <values>
@@ -12,15 +8,19 @@
     </values>
     <values>
         <field>BatchPurgerExecutionOrder__c</field>
-        <value xsi:nil="true" />
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>BatchPurgerFlowName__c</field>
-        <value xsi:nil="true" />
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">Adds the ability to log directly to the Big Object LogEntryArchive__b</value>
+    </values>
+    <values>
+        <field>ExecutionOrder__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>IsEnabled__c</field>
@@ -28,7 +28,15 @@
     </values>
     <values>
         <field>Link__c</field>
-        <value xsi:nil="true" />
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PluginApiName__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PluginType__c</field>
+        <value xsi:type="xsd:string">Apex</value>
     </values>
     <values>
         <field>SObjectHandlerApexClass__c</field>
@@ -36,14 +44,18 @@
     </values>
     <values>
         <field>SObjectHandlerExecutionOrder__c</field>
-        <value xsi:nil="true" />
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>SObjectHandlerFlowName__c</field>
-        <value xsi:nil="true" />
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>SObjectType__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>VersionNumber__c</field>
-        <value xsi:nil="true" />
+        <value xsi:nil="true"/>
     </values>
 </CustomMetadata>

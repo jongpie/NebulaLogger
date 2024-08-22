@@ -15,8 +15,8 @@ This plugin includes some add-on metadata for Nebula Logger to support the Slack
 
 1. Plugin configuration details stored in Logger's CMDT objects `LoggerPlugin__mdt.LogRetentionRules`
 2. New custom metadata types
-    - `LogRetentionRule__mdt` - Used to configure rules that set the value of `Log__c`.`LogRetentionDate__c`. Each rules consists of 1 or more conditions, stored in `LogRetentionRuleCondition__mdt`.
-    - `LogRetentionRuleCondition__mdt` - Used to configure field-level conditions for retention rules - each condition checks a `LogEntry__c` or `Log__c` field for a specific value, regular expression (regex), or field comparisons.
+   - `LogRetentionRule__mdt` - Used to configure rules that set the value of `Log__c`.`LogRetentionDate__c`. Each rules consists of 1 or more conditions, stored in `LogRetentionRuleCondition__mdt`.
+   - `LogRetentionRuleCondition__mdt` - Used to configure field-level conditions for retention rules - each condition checks a `LogEntry__c` or `Log__c` field for a specific value, regular expression (regex), or field comparisons.
 3. Apex class `LogRetentionRulesPlugin` (and corresponding tests in `LogRetentionRulesPlugin_Tests`). The plugin class reads the configured rules & conditions and automatically sets the field `Log__c.LogRetentionDate__c` when new `Log__c` records are inserted.
 
 ---

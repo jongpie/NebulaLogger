@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description
-    >Used to configure field-level conditions for retention rules - each condition checks a LogEntry__c or Log__c field for a specific value, regular expression (regex), or field comparisons</description>
+    <description>Used to configure field-level conditions for retention rules - each condition checks a LogEntry__c or Log__c field for a specific value, regular expression (regex), or field comparisons</description>
     <label>Log Retention Rule Condition</label>
     <pluralLabel>Log Retention Rule Conditions</pluralLabel>
     <visibility>Public</visibility>

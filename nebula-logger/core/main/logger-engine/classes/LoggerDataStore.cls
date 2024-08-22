@@ -10,327 +10,327 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public without sharing class LoggerDataStore {
-    private static Database databaseInstance {
-        get {
-            if (databaseInstance == null) {
-                databaseInstance = new Database();
-            }
-            return databaseInstance;
-        }
-        set;
+  private static Database databaseInstance {
+    get {
+      if (databaseInstance == null) {
+        databaseInstance = new Database();
+      }
+      return databaseInstance;
     }
+    set;
+  }
 
-    private static EventBus eventBusInstance {
-        get {
-            if (eventBusInstance == null) {
-                eventBusInstance = new EventBus();
-            }
-            return eventBusInstance;
-        }
-        set;
+  private static EventBus eventBusInstance {
+    get {
+      if (eventBusInstance == null) {
+        eventBusInstance = new EventBus();
+      }
+      return eventBusInstance;
     }
+    set;
+  }
 
-    private static JobQueue jobQueueInstance {
-        get {
-            if (jobQueueInstance == null) {
-                jobQueueInstance = new JobQueue();
-            }
-            return jobQueueInstance;
-        }
-        set;
+  private static JobQueue jobQueueInstance {
+    get {
+      if (jobQueueInstance == null) {
+        jobQueueInstance = new JobQueue();
+      }
+      return jobQueueInstance;
     }
+    set;
+  }
 
-    /**
-     * @description Truncates a string field using the max field length allowed for that `Schema.SObjectField`
-     * @param  field   The `Schema.SObjectField` token to base the max field length off of
-     * @param  value   The `String` value to truncate
-     * @return         The truncated value or null
-     */
-    public static String truncateFieldValue(Schema.SObjectField field, String value) {
-        return value?.left(field.getDescribe().getLength());
-    }
+  /**
+   * @description Truncates a string field using the max field length allowed for that `Schema.SObjectField`
+   * @param  field   The `Schema.SObjectField` token to base the max field length off of
+   * @param  value   The `String` value to truncate
+   * @return         The truncated value or null
+   */
+  public static String truncateFieldValue(Schema.SObjectField field, String value) {
+    return value?.left(field.getDescribe().getLength());
+  }
 
-    /**
-     * @description The instance `LoggerDataStore.Database` used for any DML
-     *              operations in the current transaction.
-     * @return   The singleton instance of `LoggerDataStore.Database`
-     */
-    public static Database getDatabase() {
-        return databaseInstance;
-    }
+  /**
+   * @description The instance `LoggerDataStore.Database` used for any DML
+   *              operations in the current transaction.
+   * @return   The singleton instance of `LoggerDataStore.Database`
+   */
+  public static Database getDatabase() {
+    return databaseInstance;
+  }
 
-    /**
-     * @description The instance `LoggerDataStore.EventBus` used for publishing
-     *              platform events in the current transaction.
-     * @return   The singleton instance of `LoggerDataStore.EventBus`
-     */
-    public static EventBus getEventBus() {
-        return eventBusInstance;
-    }
+  /**
+   * @description The instance `LoggerDataStore.EventBus` used for publishing
+   *              platform events in the current transaction.
+   * @return   The singleton instance of `LoggerDataStore.EventBus`
+   */
+  public static EventBus getEventBus() {
+    return eventBusInstance;
+  }
 
-    /**
-     * @description The instance `LoggerDataStore.JobQueue` used for enqueuing
-     *              any queueable jobs in the current transaction.
-     * @return   The singleton instance of `LoggerDataStore.JobQueue`
-     */
-    public static JobQueue getJobQueue() {
-        return jobQueueInstance;
-    }
+  /**
+   * @description The instance `LoggerDataStore.JobQueue` used for enqueuing
+   *              any queueable jobs in the current transaction.
+   * @return   The singleton instance of `LoggerDataStore.JobQueue`
+   */
+  public static JobQueue getJobQueue() {
+    return jobQueueInstance;
+  }
 
-    @TestVisible
-    private static void setMock(Database mockDatabase) {
-        databaseInstance = mockDatabase;
-    }
+  @TestVisible
+  private static void setMock(Database mockDatabase) {
+    databaseInstance = mockDatabase;
+  }
 
-    @TestVisible
-    private static void setMock(EventBus mockEventBus) {
-        eventBusInstance = mockEventBus;
-    }
+  @TestVisible
+  private static void setMock(EventBus mockEventBus) {
+    eventBusInstance = mockEventBus;
+  }
 
-    @TestVisible
-    private static void setMock(JobQueue mockJobQueue) {
-        jobQueueInstance = mockJobQueue;
-    }
+  @TestVisible
+  private static void setMock(JobQueue mockJobQueue) {
+    jobQueueInstance = mockJobQueue;
+  }
 
-    /**
-     * @description Class used to centralize the handling of any DML operations
-     */
-    public virtual class Database {
-        @SuppressWarnings('PMD.EmptyStatementBlock')
-        protected Database() {
-        }
-
-        /**
-         * @description Executes a `delete` DML operation for the `SObject` record
-         * @param  record   The `SObject` record to delete
-         * @return          The instance of `Database.DeleteResult`, generated by the platform when deleting the record
-         */
-        public virtual Database.DeleteResult deleteRecord(SObject record) {
-            return System.Database.delete(record);
-        }
-
-        /**
-         * @description Executes a `delete` DML operation on the provided list of `SObject` records
-         * @param  records   The list of `SObject` records to delete
-         * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when deleting the records
-         */
-        public virtual List<Database.DeleteResult> deleteRecords(List<SObject> records) {
-            return System.Database.delete(records);
-        }
-
-        /**
-         * @description Executes a `delete` DML operation on the provided list of `SObject` records
-         * @param  records   The list of `SObject` records to delete
-         * @param  allOrNone Controls if all records must be deleted (`true`), or if partial deletion should be used (`false`)
-         * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when deleting the records
-         */
-        public virtual List<Database.DeleteResult> deleteRecords(List<SObject> records, Boolean allOrNone) {
-            return System.Database.delete(records, allOrNone);
-        }
-
-        /**
-         * @description Executes a `delete` DML operation for the `SObject` record, followed by hard deleting the
-         *              record using `Database.emptyRecycleBin(record)`
-         * @param  record   The `SObject` record to delete
-         * @return          The instance of `Database.DeleteResult`, generated by the platform when deleting the record
-         */
-        public virtual Database.DeleteResult hardDeleteRecord(SObject record) {
-            return this.hardDeleteRecords(new List<SObject>{ record }).get(0);
-        }
-
-        /**
-         * @description Executes a `delete` DML operation on the provided list of `SObject` records, followed by hard deleting the
-         *              records using `Database.emptyRecycleBin(records)`
-         * @param  records   The list of `SObject` records to delete
-         * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when deleting the records
-         */
-        public virtual List<Database.DeleteResult> hardDeleteRecords(List<SObject> records) {
-            List<Database.DeleteResult> results = this.deleteRecords(records);
-            if (records.isEmpty() == false) {
-                System.Database.emptyRecycleBin(records);
-            }
-            return results;
-        }
-
-        /**
-         * @description Executes an `insert` DML operation on the provided `SObject` record
-         * @param  record    The  `SObject` record to insert
-         * @return           The instance of `Database.SaveResult`, generated by the platform when creating the record
-         */
-        public virtual Database.SaveResult insertRecord(SObject record) {
-            return System.Database.insert(record);
-        }
-
-        /**
-         * @description Executes an `insert` DML operation on the provided list of `SObject` records
-         * @param  records    The list of `SObject` records to insert
-         * @return            The instance of `List<Database.SaveResult>`, generated by the platform when creating the records
-         */
-        public virtual List<Database.SaveResult> insertRecords(List<SObject> records) {
-            return System.Database.insert(records);
-        }
-
-        /**
-         * @description Executes an `insert` DML operation on the provided list of `SObject` records
-         * @param  records   The list of `SObject` records to insert
-         * @param  allOrNone Controls if all records must be created (`true`), or if partial creation should be used (`false`)
-         * @return           The instance of `List<Database.SaveResult>`, generated by the platform when creating the records
-         */
-        public virtual List<Database.SaveResult> insertRecords(List<SObject> records, Boolean allOrNone) {
-            return System.Database.insert(records, allOrNone);
-        }
-
-        /**
-         * @description Executes an `insert` DML operation on the provided list of `SObject` records
-         * @param  records    The list of `SObject` records to insert
-         * @param  dmlOptions Controls additional DML options, using the provided instance of `Database.DmlOptions`
-         * @return            The instance of `List<Database.SaveResult>`, generated by the platform when creating the records
-         */
-        public virtual List<Database.SaveResult> insertRecords(List<SObject> records, Database.DmlOptions dmlOptions) {
-            return System.Database.insert(records, dmlOptions);
-        }
-
-        /**
-         * @description Executes an `undelete` DML operation on the provided `SObject` record
-         * @param  record    The  `SObject` record to undelete
-         * @return           The instance of `Database.UndeleteResult`, generated by the platform when undeleting the record
-         */
-        public virtual Database.UndeleteResult undeleteRecord(SObject record) {
-            return System.Database.undelete(record);
-        }
-
-        /**
-         * @description Executes an `undelete` DML operation on the provided list of `SObject` records
-         * @param  records   The list of `SObject` records to undelete
-         * @return           The instance of `List<Database.UndeleteResult>`, generated by the platform when deleting the records
-         */
-        public virtual List<Database.UndeleteResult> undeleteRecords(List<SObject> records) {
-            return System.Database.undelete(records);
-        }
-
-        /**
-         * @description Executes an `undelete` DML operation on the provided list of `SObject` records
-         * @param  records   The list of `SObject` records to undelete
-         * @param  allOrNone Controls if all records must be undeleted (`true`), or if partial undeletion should be used (`false`)
-         * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when undeleting the records
-         */
-        public virtual List<Database.UndeleteResult> undeleteRecords(List<SObject> records, Boolean allOrNone) {
-            return System.Database.undelete(records, allOrNone);
-        }
-
-        /**
-         * @description Executes an `update` DML operation on the provided `SObject` record
-         * @param  record    The  `SObject` record to update
-         * @return           The instance of `Database.SaveResult`, generated by the platform when updating the record
-         */
-        public virtual Database.SaveResult updateRecord(SObject record) {
-            return System.Database.update(record);
-        }
-
-        /**
-         * @description Executes an `update` DML operation on the provided list of `SObject` records
-         * @param  records   The list of `SObject` records to update
-         * @return           The instance of `List<Database.SaveResult>`, generated by the platform when updating the records
-         */
-        public virtual List<Database.SaveResult> updateRecords(List<SObject> records) {
-            return System.Database.update(records);
-        }
-
-        /**
-         * @description Executes an `update` DML operation on the provided list of `SObject` records
-         * @param  records   The list of `SObject` records to update
-         * @param  allOrNone Controls if all records must be updated (`true`), or if partial updates should be used (`false`)
-         * @return           The instance of `List<Database.SaveResult>`, generated by the platform when updating the records
-         */
-        public virtual List<Database.SaveResult> updateRecords(List<SObject> records, Boolean allOrNone) {
-            return System.Database.update(records, allOrNone);
-        }
-
-        /**
-         * @description Executes an `update` DML operation on the provided list of `SObject` records
-         * @param  records    The list of `SObject` records to update
-         * @param  dmlOptions Controls additional DML options, using the provided instance of `Database.DmlOptions`
-         * @return            The instance of `List<Database.SaveResult>`, generated by the platform when updating the records
-         */
-        public virtual List<Database.SaveResult> updateRecords(List<SObject> records, Database.DmlOptions dmlOptions) {
-            return System.Database.update(records, dmlOptions);
-        }
-
-        /**
-         * @description Executes an `upsert` DML operation on the provided list of `SObject` records
-         * @param  record          The  `SObject` record to update
-         * @param  externalIdField The `SObjectField` of the external ID field on the target `SObject` to use for upserting
-         * @return                 The instance of `Database.UpsertResult`, generated by the platform when upserting the record
-         */
-        public virtual Database.UpsertResult upsertRecord(SObject record, Schema.SObjectField externalIdField) {
-            return System.Database.upsert(record, externalIdField);
-        }
-
-        /**
-         * @description Executes an `upsert` DML operation on the provided list of `SObject` records
-         * @param  records         The list of `SObject` records to upsert
-         * @param  externalIdField The `SObjectField` of the external ID field on the target `SObject` to use for upserting
-         * @return                 The instance of `List<Database.UpsertResult>`, generated by the platform when Upserting the records
-         */
-        public virtual List<Database.UpsertResult> upsertRecords(List<SObject> records, Schema.SObjectField externalIdField) {
-            return System.Database.upsert(records, externalIdField);
-        }
-
-        /**
-         * @description Executes an `upsert` DML operation on the provided list of `SObject` records
-         * @param  records         The list of `SObject` records to upsert
-         * @param  externalIdField The `SObjectField` of the external ID field on the target `SObject` to use for upserting
-         * @param  allOrNone Controls if all records must be updated (`true`), or if partial updates should be used (`false`)
-         * @return                 The instance of `List<Database.UpsertResult>`, generated by the platform when Upserting the records
-         */
-        public virtual List<Database.UpsertResult> upsertRecords(List<SObject> records, Schema.SObjectField externalIdField, Boolean allOrNone) {
-            return System.Database.upsert(records, externalIdField, allOrNone);
-        }
+  /**
+   * @description Class used to centralize the handling of any DML operations
+   */
+  public virtual class Database {
+    @SuppressWarnings('PMD.EmptyStatementBlock')
+    protected Database() {
     }
 
     /**
-     * @description Class used to centralize the handling of any platform event publishing operations
+     * @description Executes a `delete` DML operation for the `SObject` record
+     * @param  record   The `SObject` record to delete
+     * @return          The instance of `Database.DeleteResult`, generated by the platform when deleting the record
      */
-    @SuppressWarnings('PMD.StdCyclomaticComplexity')
-    public virtual class EventBus {
-        @SuppressWarnings('PMD.EmptyStatementBlock')
-        protected EventBus() {
-        }
-
-        /**
-         * @description Publishes a single platform event record, using `EventBus.publish(SObject record);`
-         * @param  platformEvent The platform event record to publish
-         * @return               The instance of `Database.SaveResult`, generated by the platform when publishing the platform event record
-         */
-        public virtual Database.SaveResult publishRecord(SObject platformEvent) {
-            return System.EventBus.publish(platformEvent);
-        }
-
-        /**
-         * @description Publishes a list of platform event records, using `EventBus.publish(List<SObject> records);`
-         * @param  platformEvents The list of platform event records to publish
-         * @return                The instance of `List<Database.SaveResult>`, generated by the platform when publishing the platform event records
-         */
-        public virtual List<Database.SaveResult> publishRecords(List<SObject> platformEvents) {
-            return System.EventBus.publish(platformEvents);
-        }
+    public virtual Database.DeleteResult deleteRecord(SObject record) {
+      return System.Database.delete(record);
     }
 
     /**
-     * @description Class used to centralize the handling of enqueueing any queueable jobs
+     * @description Executes a `delete` DML operation on the provided list of `SObject` records
+     * @param  records   The list of `SObject` records to delete
+     * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when deleting the records
      */
-    public virtual class JobQueue {
-        @SuppressWarnings('PMD.EmptyStatementBlock')
-        protected JobQueue() {
-        }
-
-        /**
-         * @description Enqueues a queueable job to execute asynchronously, using `System.enqueueJob(System.Queueable queueableJob)`
-         * @param  queueableJob An instance of a `Queueable` class that should be enqueued
-         * @return              The `Id` of the queueable job
-         */
-        public virtual Id enqueueJob(System.Queueable queueableJob) {
-            return System.enqueueJob(queueableJob);
-        }
+    public virtual List<Database.DeleteResult> deleteRecords(List<SObject> records) {
+      return System.Database.delete(records);
     }
+
+    /**
+     * @description Executes a `delete` DML operation on the provided list of `SObject` records
+     * @param  records   The list of `SObject` records to delete
+     * @param  allOrNone Controls if all records must be deleted (`true`), or if partial deletion should be used (`false`)
+     * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when deleting the records
+     */
+    public virtual List<Database.DeleteResult> deleteRecords(List<SObject> records, Boolean allOrNone) {
+      return System.Database.delete(records, allOrNone);
+    }
+
+    /**
+     * @description Executes a `delete` DML operation for the `SObject` record, followed by hard deleting the
+     *              record using `Database.emptyRecycleBin(record)`
+     * @param  record   The `SObject` record to delete
+     * @return          The instance of `Database.DeleteResult`, generated by the platform when deleting the record
+     */
+    public virtual Database.DeleteResult hardDeleteRecord(SObject record) {
+      return this.hardDeleteRecords(new List<SObject>{ record }).get(0);
+    }
+
+    /**
+     * @description Executes a `delete` DML operation on the provided list of `SObject` records, followed by hard deleting the
+     *              records using `Database.emptyRecycleBin(records)`
+     * @param  records   The list of `SObject` records to delete
+     * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when deleting the records
+     */
+    public virtual List<Database.DeleteResult> hardDeleteRecords(List<SObject> records) {
+      List<Database.DeleteResult> results = this.deleteRecords(records);
+      if (records.isEmpty() == false) {
+        System.Database.emptyRecycleBin(records);
+      }
+      return results;
+    }
+
+    /**
+     * @description Executes an `insert` DML operation on the provided `SObject` record
+     * @param  record    The  `SObject` record to insert
+     * @return           The instance of `Database.SaveResult`, generated by the platform when creating the record
+     */
+    public virtual Database.SaveResult insertRecord(SObject record) {
+      return System.Database.insert(record);
+    }
+
+    /**
+     * @description Executes an `insert` DML operation on the provided list of `SObject` records
+     * @param  records    The list of `SObject` records to insert
+     * @return            The instance of `List<Database.SaveResult>`, generated by the platform when creating the records
+     */
+    public virtual List<Database.SaveResult> insertRecords(List<SObject> records) {
+      return System.Database.insert(records);
+    }
+
+    /**
+     * @description Executes an `insert` DML operation on the provided list of `SObject` records
+     * @param  records   The list of `SObject` records to insert
+     * @param  allOrNone Controls if all records must be created (`true`), or if partial creation should be used (`false`)
+     * @return           The instance of `List<Database.SaveResult>`, generated by the platform when creating the records
+     */
+    public virtual List<Database.SaveResult> insertRecords(List<SObject> records, Boolean allOrNone) {
+      return System.Database.insert(records, allOrNone);
+    }
+
+    /**
+     * @description Executes an `insert` DML operation on the provided list of `SObject` records
+     * @param  records    The list of `SObject` records to insert
+     * @param  dmlOptions Controls additional DML options, using the provided instance of `Database.DmlOptions`
+     * @return            The instance of `List<Database.SaveResult>`, generated by the platform when creating the records
+     */
+    public virtual List<Database.SaveResult> insertRecords(List<SObject> records, Database.DmlOptions dmlOptions) {
+      return System.Database.insert(records, dmlOptions);
+    }
+
+    /**
+     * @description Executes an `undelete` DML operation on the provided `SObject` record
+     * @param  record    The  `SObject` record to undelete
+     * @return           The instance of `Database.UndeleteResult`, generated by the platform when undeleting the record
+     */
+    public virtual Database.UndeleteResult undeleteRecord(SObject record) {
+      return System.Database.undelete(record);
+    }
+
+    /**
+     * @description Executes an `undelete` DML operation on the provided list of `SObject` records
+     * @param  records   The list of `SObject` records to undelete
+     * @return           The instance of `List<Database.UndeleteResult>`, generated by the platform when deleting the records
+     */
+    public virtual List<Database.UndeleteResult> undeleteRecords(List<SObject> records) {
+      return System.Database.undelete(records);
+    }
+
+    /**
+     * @description Executes an `undelete` DML operation on the provided list of `SObject` records
+     * @param  records   The list of `SObject` records to undelete
+     * @param  allOrNone Controls if all records must be undeleted (`true`), or if partial undeletion should be used (`false`)
+     * @return           The instance of `List<Database.DeleteResult>`, generated by the platform when undeleting the records
+     */
+    public virtual List<Database.UndeleteResult> undeleteRecords(List<SObject> records, Boolean allOrNone) {
+      return System.Database.undelete(records, allOrNone);
+    }
+
+    /**
+     * @description Executes an `update` DML operation on the provided `SObject` record
+     * @param  record    The  `SObject` record to update
+     * @return           The instance of `Database.SaveResult`, generated by the platform when updating the record
+     */
+    public virtual Database.SaveResult updateRecord(SObject record) {
+      return System.Database.update(record);
+    }
+
+    /**
+     * @description Executes an `update` DML operation on the provided list of `SObject` records
+     * @param  records   The list of `SObject` records to update
+     * @return           The instance of `List<Database.SaveResult>`, generated by the platform when updating the records
+     */
+    public virtual List<Database.SaveResult> updateRecords(List<SObject> records) {
+      return System.Database.update(records);
+    }
+
+    /**
+     * @description Executes an `update` DML operation on the provided list of `SObject` records
+     * @param  records   The list of `SObject` records to update
+     * @param  allOrNone Controls if all records must be updated (`true`), or if partial updates should be used (`false`)
+     * @return           The instance of `List<Database.SaveResult>`, generated by the platform when updating the records
+     */
+    public virtual List<Database.SaveResult> updateRecords(List<SObject> records, Boolean allOrNone) {
+      return System.Database.update(records, allOrNone);
+    }
+
+    /**
+     * @description Executes an `update` DML operation on the provided list of `SObject` records
+     * @param  records    The list of `SObject` records to update
+     * @param  dmlOptions Controls additional DML options, using the provided instance of `Database.DmlOptions`
+     * @return            The instance of `List<Database.SaveResult>`, generated by the platform when updating the records
+     */
+    public virtual List<Database.SaveResult> updateRecords(List<SObject> records, Database.DmlOptions dmlOptions) {
+      return System.Database.update(records, dmlOptions);
+    }
+
+    /**
+     * @description Executes an `upsert` DML operation on the provided list of `SObject` records
+     * @param  record          The  `SObject` record to update
+     * @param  externalIdField The `SObjectField` of the external ID field on the target `SObject` to use for upserting
+     * @return                 The instance of `Database.UpsertResult`, generated by the platform when upserting the record
+     */
+    public virtual Database.UpsertResult upsertRecord(SObject record, Schema.SObjectField externalIdField) {
+      return System.Database.upsert(record, externalIdField);
+    }
+
+    /**
+     * @description Executes an `upsert` DML operation on the provided list of `SObject` records
+     * @param  records         The list of `SObject` records to upsert
+     * @param  externalIdField The `SObjectField` of the external ID field on the target `SObject` to use for upserting
+     * @return                 The instance of `List<Database.UpsertResult>`, generated by the platform when Upserting the records
+     */
+    public virtual List<Database.UpsertResult> upsertRecords(List<SObject> records, Schema.SObjectField externalIdField) {
+      return System.Database.upsert(records, externalIdField);
+    }
+
+    /**
+     * @description Executes an `upsert` DML operation on the provided list of `SObject` records
+     * @param  records         The list of `SObject` records to upsert
+     * @param  externalIdField The `SObjectField` of the external ID field on the target `SObject` to use for upserting
+     * @param  allOrNone Controls if all records must be updated (`true`), or if partial updates should be used (`false`)
+     * @return                 The instance of `List<Database.UpsertResult>`, generated by the platform when Upserting the records
+     */
+    public virtual List<Database.UpsertResult> upsertRecords(List<SObject> records, Schema.SObjectField externalIdField, Boolean allOrNone) {
+      return System.Database.upsert(records, externalIdField, allOrNone);
+    }
+  }
+
+  /**
+   * @description Class used to centralize the handling of any platform event publishing operations
+   */
+  @SuppressWarnings('PMD.StdCyclomaticComplexity')
+  public virtual class EventBus {
+    @SuppressWarnings('PMD.EmptyStatementBlock')
+    protected EventBus() {
+    }
+
+    /**
+     * @description Publishes a single platform event record, using `EventBus.publish(SObject record);`
+     * @param  platformEvent The platform event record to publish
+     * @return               The instance of `Database.SaveResult`, generated by the platform when publishing the platform event record
+     */
+    public virtual Database.SaveResult publishRecord(SObject platformEvent) {
+      return System.EventBus.publish(platformEvent);
+    }
+
+    /**
+     * @description Publishes a list of platform event records, using `EventBus.publish(List<SObject> records);`
+     * @param  platformEvents The list of platform event records to publish
+     * @return                The instance of `List<Database.SaveResult>`, generated by the platform when publishing the platform event records
+     */
+    public virtual List<Database.SaveResult> publishRecords(List<SObject> platformEvents) {
+      return System.EventBus.publish(platformEvents);
+    }
+  }
+
+  /**
+   * @description Class used to centralize the handling of enqueueing any queueable jobs
+   */
+  public virtual class JobQueue {
+    @SuppressWarnings('PMD.EmptyStatementBlock')
+    protected JobQueue() {
+    }
+
+    /**
+     * @description Enqueues a queueable job to execute asynchronously, using `System.enqueueJob(System.Queueable queueableJob)`
+     * @param  queueableJob An instance of a `Queueable` class that should be enqueued
+     * @return              The `Id` of the queueable job
+     */
+    public virtual Id enqueueJob(System.Queueable queueableJob) {
+      return System.enqueueJob(queueableJob);
+    }
+  }
 }

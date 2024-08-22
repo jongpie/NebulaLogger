@@ -11,75 +11,75 @@ const GITHUB_REPO_URL = 'https://github.com/jongpie/NebulaLogger/';
 const STATUS_SITE_URL = 'https://status.salesforce.com/instances/';
 
 export default class LoggerHomeHeader extends NavigationMixin(LightningElement) {
-    environment = {};
-    showEnvironmentDetailsModal = false;
+  environment = {};
+  showEnvironmentDetailsModal = false;
 
-    @wire(getEnvironmentDetails)
-    wiredEnvironmentDetails({ data }) {
-        if (data) {
-            this.environment = data;
-        }
+  @wire(getEnvironmentDetails)
+  wiredEnvironmentDetails({ data }) {
+    if (data) {
+      this.environment = data;
+    }
+  }
+
+  get title() {
+    let titleText = 'Nebula Logger';
+    if (this.environment.loggerVersionNumber) {
+      titleText += ' ' + this.environment.loggerVersionNumber;
+    }
+    return titleText;
+  }
+
+  get enabledPluginsSummary() {
+    if (!this.environment.loggerEnabledPlugins) {
+      return undefined;
     }
 
-    get title() {
-        let titleText = 'Nebula Logger';
-        if (this.environment.loggerVersionNumber) {
-            titleText += ' ' + this.environment.loggerVersionNumber;
-        }
-        return titleText;
-    }
+    return this.environment.loggerEnabledPluginsCount + ' Enabled Plugins';
+  }
 
-    get enabledPluginsSummary() {
-        if (!this.environment.loggerEnabledPlugins) {
-            return undefined;
-        }
+  get environmentDetailsButtonLabel() {
+    return `View Environment Details`;
+  }
 
-        return this.environment.loggerEnabledPluginsCount + ' Enabled Plugins';
-    }
+  get showReleaseNotesButton() {
+    return !!this.environment?.loggerVersionNumber;
+  }
 
-    get environmentDetailsButtonLabel() {
-        return `View Environment Details`;
-    }
+  get releaseNotesButtonLabel() {
+    return `View ${this.environment.loggerVersionNumber} Release Notes`;
+  }
 
-    get showReleaseNotesButton() {
-        return !!this.environment?.loggerVersionNumber;
-    }
+  handleViewEnvironmentDetails() {
+    this.showEnvironmentDetailsModal = true;
+  }
 
-    get releaseNotesButtonLabel() {
-        return `View ${this.environment.loggerVersionNumber} Release Notes`;
-    }
+  handleCloseEnvironmentDetailsModal() {
+    this.showEnvironmentDetailsModal = false;
+  }
 
-    handleViewEnvironmentDetails() {
-        this.showEnvironmentDetailsModal = true;
-    }
+  handleViewStatusSite() {
+    const config = {
+      type: 'standard__webPage',
+      attributes: {
+        url: `${STATUS_SITE_URL}${this.environment.organizationInstanceName}`
+      }
+    };
+    this[NavigationMixin.Navigate](config);
+  }
 
-    handleCloseEnvironmentDetailsModal() {
-        this.showEnvironmentDetailsModal = false;
-    }
+  handleViewReleaseNotes() {
+    const pageReference = {
+      type: 'standard__webPage',
+      attributes: {
+        url: `${GITHUB_REPO_URL}releases/tag/${this.environment.loggerVersionNumber}`
+      }
+    };
+    this[NavigationMixin.Navigate](pageReference);
+  }
 
-    handleViewStatusSite() {
-        const config = {
-            type: 'standard__webPage',
-            attributes: {
-                url: `${STATUS_SITE_URL}${this.environment.organizationInstanceName}`
-            }
-        };
-        this[NavigationMixin.Navigate](config);
+  handleKeyDown(event) {
+    if (event.code === 'Escape') {
+      this.handleCloseEnvironmentDetailsModal();
     }
-
-    handleViewReleaseNotes() {
-        const pageReference = {
-            type: 'standard__webPage',
-            attributes: {
-                url: `${GITHUB_REPO_URL}releases/tag/${this.environment.loggerVersionNumber}`
-            }
-        };
-        this[NavigationMixin.Navigate](pageReference);
-    }
-
-    handleKeyDown(event) {
-        if (event.code === 'Escape') {
-            this.handleCloseEnvironmentDetailsModal();
-        }
-    }
+  }
 }

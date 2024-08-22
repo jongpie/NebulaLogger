@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>BatchPurgerExecutionOrder__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <description
-    >The specific order to execute plugins in the org. Plugins are executed in order by sorting by execution order, then plugin name (ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName).</description>
+    <description>The specific order to execute plugins in the org. Plugins are executed in order by sorting by execution order, then plugin name (ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName).</description>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText
-    >The specific order to execute plugins in the org. Plugins are executed in order by sorting by execution order, then plugin name (ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName).</inlineHelpText>
+    <inlineHelpText>The specific order to execute plugins in the org. Plugins are executed in order by sorting by execution order, then plugin name (ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName).</inlineHelpText>
     <label>Batch Purger Execution Order</label>
     <precision>3</precision>
     <required>false</required>

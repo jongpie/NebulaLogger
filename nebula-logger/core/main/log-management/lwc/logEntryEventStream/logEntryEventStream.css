@@ -1,68 +1,68 @@
 .expanded {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 9999;
-    padding: 0;
-    margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 9999;
+  padding: 0;
+  margin: 0;
 }
 
 .event-stream {
-    background-color: #22272e;
-    color: white;
-    font-family: 'Lucida Console', 'Courier New', monospace;
-    text-indent: -32px;
-    padding-left: 32px;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
+  background-color: #22272e;
+  color: white;
+  font-family: 'Lucida Console', 'Courier New', monospace;
+  text-indent: -32px;
+  padding-left: 32px;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
 
-    display: flex;
-    flex-direction: column-reverse;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .event-stream-entry {
-    font-family: 'Lucida Console', 'Courier New', monospace;
-    margin: 4px 0;
+  font-family: 'Lucida Console', 'Courier New', monospace;
+  margin: 4px 0;
 }
 
 .timestamp {
-    color: darkgrey;
-    margin-right: 8px;
+  color: darkgrey;
+  margin-right: 8px;
 }
 
 .logged-by {
-    color: #45c65a;
-    font-weight: bold;
-    margin-right: 8px;
+  color: #45c65a;
+  font-weight: bold;
+  margin-right: 8px;
 }
 
 .origin {
-    color: cornflowerblue;
-    margin-right: 8px;
+  color: cornflowerblue;
+  margin-right: 8px;
 }
 
 .logging-level {
-    background-color: dimgray;
-    color: white;
-    margin-right: 8px;
-    padding: 4px;
+  background-color: dimgray;
+  color: white;
+  margin-right: 8px;
+  padding: 4px;
 }
 
 .main-container {
-    display: flex;
-    width: 100vw;
+  display: flex;
+  width: 100vw;
 }
 .event-stream-container {
-    width: calc(100vw - 24rem);
+  width: calc(100vw - 24rem);
 }
 
 .height-full {
-    height: 100%;
+  height: 100%;
 }
 
 .card-body {
-    height: calc(100% - 70px);
+  height: calc(100% - 70px);
 }

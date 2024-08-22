@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DefaultPlatformEventStorageLoggingLevel__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <externalId>false</externalId>
-    <inlineHelpText
-    >Optional - when set, Nebula Logger will only save LogEntryEvent__e records in custom objects if the entry&apos;s logging level has the same or greater logging level</inlineHelpText>
+    <inlineHelpText>Optional - when set, Nebula Logger will only save LogEntryEvent__e records in custom objects if the entry&apos;s logging level has the same or greater logging level</inlineHelpText>
     <label>Platform Event Storage Logging Level</label>
     <length>255</length>
     <required>false</required>

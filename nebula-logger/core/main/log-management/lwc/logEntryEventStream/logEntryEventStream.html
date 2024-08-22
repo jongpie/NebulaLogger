@@ -4,221 +4,221 @@
  **********************************************************************************************-->
 
 <template>
-    <template if:false={isEnabled}>
-        <div class="disabled-warning-message slds-card slds-theme_shade">
-            <div class="slds-card__header slds-grid">
-                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
-                    <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>
-                    <div class="slds-text-heading_medium">{disabledWarningMessage}</div>
-                </div>
-            </div>
+  <template if:false={isEnabled}>
+    <div class="disabled-warning-message slds-card slds-theme_shade">
+      <div class="slds-card__header slds-grid">
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+          <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>
+          <div class="slds-text-heading_medium">{disabledWarningMessage}</div>
         </div>
-    </template>
-    <div class="main-container height-full slds-p-around_none">
-        <div class="slds-is-relative height-full">
-            <button
-                data-id="split-view-button"
-                class="slds-button slds-button_icon slds-button_icon slds-split-view__toggle-button slds-is-open"
-                title={splitViewLabel}
-                onclick={onToggleSplitView}
-            >
-                <lightning-icon class="slds-button__icon" icon-name="utility:left" size="xx-small" alternative-text="Event" title="Event"></lightning-icon>
-                <span class="slds-assistive-text">Close Split View</span>
-            </button>
-            <div data-id="split-view-container" class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false">
-                <div class="slds-panel__header">
-                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                        <div class="slds-media__figure">
-                            <lightning-icon icon-name="custom:custom27" alternative-text="settings" title="Stream Settings"></lightning-icon>
-                        </div>
-                        <div class="slds-media__body">
-                            <h2 class="slds-card__header-title" aria-level="2"><span class="slds-text-heading_small slds-truncate">Stream Settings</span></h2>
-                        </div>
-                    </header>
-                </div>
-                <div class="slds-panel__body">
-                    <div class="slds-p-horizontal_small">
-                        <lightning-input
-                            disabled={isDisabled}
-                            field-level-help={maxEventsToStreamHelp}
-                            label="Max Number of Events to Stream"
-                            onchange={handleMaxEventsStreamedChange}
-                            placeholder="Specify Max Events To Stream"
-                            type="number"
-                            value={maxEventsToStream}
-                        ></lightning-input>
-                        <lightning-input
-                            disabled={isDisabled}
-                            label="Max Number of Events to Display"
-                            onchange={handleMaxEventsToDisplayChange}
-                            placeholder="Specify Max Events"
-                            type="number"
-                            value={maxEventsToDisplay}
-                        ></lightning-input>
-                        <lightning-combobox
-                            data-id="loggingLevelFilter"
-                            disabled={isDisabled}
-                            label="Minimum Logging Level"
-                            onchange={handleFilterChange}
-                            options={loggingLevelOptions}
-                            placeholder="Select Logging Level"
-                            value={loggingLevelFilter}
-                        ></lightning-combobox>
-                        <lightning-combobox
-                            data-id="originTypeFilter"
-                            disabled={isDisabled}
-                            label="Origin Type"
-                            onchange={handleFilterChange}
-                            options={originTypeOptions}
-                            placeholder="Select Origin Type"
-                            value={originTypeFilter}
-                        ></lightning-combobox>
-                        <lightning-input
-                            data-id="originLocationFilter"
-                            disabled={isDisabled}
-                            label="Origin Location"
-                            onchange={handleFilterChange}
-                            placeholder="Specify Origin Location"
-                            value={originLocationFilter}
-                        ></lightning-input>
-                        <lightning-input
-                            data-id="scenarioFilter"
-                            disabled={isDisabled}
-                            label="Scenario"
-                            onchange={handleFilterChange}
-                            placeholder="Specify Scenario"
-                            value={scenarioFilter}
-                        ></lightning-input>
-                        <lightning-input
-                            data-id="loggedByFilter"
-                            disabled={isDisabled}
-                            label="Logged By"
-                            onchange={handleFilterChange}
-                            placeholder="Specify Username"
-                            value={loggedByFilter}
-                        ></lightning-input>
-                        <lightning-textarea
-                            data-id="messageFilter"
-                            disabled={isDisabled}
-                            label="Message"
-                            onchange={handleFilterChange}
-                            placeholder="Message Contains"
-                            value={messageFilter}
-                        ></lightning-textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="slds-grow slds-m-left_small event-stream-container" style="max-height: 65vh">
-            <article style="height: 100%; width: 95%" data-id="event-stream-console" class="slds-card">
-                <div class="slds-card__header slds-grid">
-                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                        <div class="slds-media__body">
-                            <h2 class="slds-card__header-title slds-m-left_medium">
-                                <span>{title}</span>
-                            </h2>
-                        </div>
-                        <template if:true={isEnabled}>
-                            <lightning-progress-ring
-                                class="slds-m-right_medium"
-                                title={eventDeliveryUsageSummary}
-                                value={eventDeliveryPercent}
-                                variant={eventDeliveryProgressVariant}
-                            >
-                            </lightning-progress-ring>
-                            <div class="slds-no-flex">
-                                <lightning-button-group>
-                                    <lightning-button-stateful
-                                        data-id="toggle-stream"
-                                        icon-name-when-hover="utility:close"
-                                        icon-name-when-off="utility:pause_alt"
-                                        icon-name-when-on="utility:play"
-                                        label-when-hover="  Pause  "
-                                        label-when-off="Paused"
-                                        label-when-on="Streaming"
-                                        onclick={onToggleStream}
-                                        selected={isStreamEnabled}
-                                        variant={streamButtonVariant}
-                                    >
-                                    </lightning-button-stateful>
-                                    <lightning-button
-                                        data-id="clear"
-                                        label="Clear"
-                                        icon-name="utility:delete"
-                                        name="clear"
-                                        onclick={onClear}
-                                        variant="destructive"
-                                    ></lightning-button>
-                                    <lightning-button-stateful
-                                        data-id="expand-toggle"
-                                        icon-name-when-off="utility:expand"
-                                        icon-name-when-on="utility:contract"
-                                        label-when-off="Expand"
-                                        label-when-on="Contract"
-                                        onclick={onToggleExpand}
-                                        selected={isExpanded}
-                                        variant="brand"
-                                    >
-                                    </lightning-button-stateful>
-                                </lightning-button-group>
-                            </div>
-                            <lightning-button-menu
-                                class="slds-p-left_x-small"
-                                data-id="select-view-button"
-                                icon-name={selectViewMenuIcon}
-                                alternative-text="view as"
-                                onselect={onSelectView}
-                                variant="base"
-                                menu-alignment="auto"
-                            >
-                                <lightning-menu-subheader label="Display As"></lightning-menu-subheader>
-                                <template for:each={selectViewMenuOptions} for:item="action">
-                                    <lightning-menu-item
-                                        icon-name={action.iconName}
-                                        id={action.id}
-                                        data-id={action.id}
-                                        label={action.label}
-                                        value={action.value}
-                                        key={action.label}
-                                        checked={action.checked}
-                                    >
-                                    </lightning-menu-item
-                                ></template>
-                            </lightning-button-menu>
-                        </template>
-                    </header>
-                </div>
-                <div class="slds-p-around_small card-body">
-                    <template if:true={isConsoleViewEnabled}>
-                        <div data-id="event-stream-console" class="slds-p-horizontal_medium event-stream">
-                            <template for:each={logEntryEvents} for:item="logEntryEvent">
-                                <div key={logEntryEvent.key} class="event-stream-entry">
-                                    <span class="timestamp">{logEntryEvent.Timestamp__c}</span>
-                                    <span class="logged-by">{logEntryEvent.LoggedByUsername__c} - {logEntryEvent.key}</span>
-                                    <span class="origin">{logEntryEvent.OriginType__c}.{logEntryEvent.OriginLocation__c} </span>
-                                    <span class="logging-level">{logEntryEvent.LoggingLevel__c}</span>
-                                    <span class="message">{logEntryEvent.Message__c}</span>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-
-                    <template if:false={isConsoleViewEnabled}>
-                        <div class="slds-box slds-p-around_none slds-scrollable--y height-full">
-                            <lightning-datatable
-                                data-id="event-stream-datatable"
-                                class="height-full"
-                                hide-checkbox-column
-                                show-row-number-column
-                                key-field="id"
-                                data={logEntryEvents}
-                                columns={datatableColumns}
-                            >
-                            </lightning-datatable>
-                        </div>
-                    </template>
-                </div>
-            </article>
-        </div>
+      </div>
     </div>
+  </template>
+  <div class="main-container height-full slds-p-around_none">
+    <div class="slds-is-relative height-full">
+      <button
+        data-id="split-view-button"
+        class="slds-button slds-button_icon slds-button_icon slds-split-view__toggle-button slds-is-open"
+        title={splitViewLabel}
+        onclick={onToggleSplitView}
+      >
+        <lightning-icon class="slds-button__icon" icon-name="utility:left" size="xx-small" alternative-text="Event" title="Event"></lightning-icon>
+        <span class="slds-assistive-text">Close Split View</span>
+      </button>
+      <div data-id="split-view-container" class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false">
+        <div class="slds-panel__header">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure">
+              <lightning-icon icon-name="custom:custom27" alternative-text="settings" title="Stream Settings"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+              <h2 class="slds-card__header-title" aria-level="2"><span class="slds-text-heading_small slds-truncate">Stream Settings</span></h2>
+            </div>
+          </header>
+        </div>
+        <div class="slds-panel__body">
+          <div class="slds-p-horizontal_small">
+            <lightning-input
+              disabled={isDisabled}
+              field-level-help={maxEventsToStreamHelp}
+              label="Max Number of Events to Stream"
+              onchange={handleMaxEventsStreamedChange}
+              placeholder="Specify Max Events To Stream"
+              type="number"
+              value={maxEventsToStream}
+            ></lightning-input>
+            <lightning-input
+              disabled={isDisabled}
+              label="Max Number of Events to Display"
+              onchange={handleMaxEventsToDisplayChange}
+              placeholder="Specify Max Events"
+              type="number"
+              value={maxEventsToDisplay}
+            ></lightning-input>
+            <lightning-combobox
+              data-id="loggingLevelFilter"
+              disabled={isDisabled}
+              label="Minimum Logging Level"
+              onchange={handleFilterChange}
+              options={loggingLevelOptions}
+              placeholder="Select Logging Level"
+              value={loggingLevelFilter}
+            ></lightning-combobox>
+            <lightning-combobox
+              data-id="originTypeFilter"
+              disabled={isDisabled}
+              label="Origin Type"
+              onchange={handleFilterChange}
+              options={originTypeOptions}
+              placeholder="Select Origin Type"
+              value={originTypeFilter}
+            ></lightning-combobox>
+            <lightning-input
+              data-id="originLocationFilter"
+              disabled={isDisabled}
+              label="Origin Location"
+              onchange={handleFilterChange}
+              placeholder="Specify Origin Location"
+              value={originLocationFilter}
+            ></lightning-input>
+            <lightning-input
+              data-id="scenarioFilter"
+              disabled={isDisabled}
+              label="Scenario"
+              onchange={handleFilterChange}
+              placeholder="Specify Scenario"
+              value={scenarioFilter}
+            ></lightning-input>
+            <lightning-input
+              data-id="loggedByFilter"
+              disabled={isDisabled}
+              label="Logged By"
+              onchange={handleFilterChange}
+              placeholder="Specify Username"
+              value={loggedByFilter}
+            ></lightning-input>
+            <lightning-textarea
+              data-id="messageFilter"
+              disabled={isDisabled}
+              label="Message"
+              onchange={handleFilterChange}
+              placeholder="Message Contains"
+              value={messageFilter}
+            ></lightning-textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slds-grow slds-m-left_small event-stream-container" style="max-height: 65vh">
+      <article style="height: 100%; width: 95%" data-id="event-stream-console" class="slds-card">
+        <div class="slds-card__header slds-grid">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__body">
+              <h2 class="slds-card__header-title slds-m-left_medium">
+                <span>{title}</span>
+              </h2>
+            </div>
+            <template if:true={isEnabled}>
+              <lightning-progress-ring
+                class="slds-m-right_medium"
+                title={eventDeliveryUsageSummary}
+                value={eventDeliveryPercent}
+                variant={eventDeliveryProgressVariant}
+              >
+              </lightning-progress-ring>
+              <div class="slds-no-flex">
+                <lightning-button-group>
+                  <lightning-button-stateful
+                    data-id="toggle-stream"
+                    icon-name-when-hover="utility:close"
+                    icon-name-when-off="utility:pause_alt"
+                    icon-name-when-on="utility:play"
+                    label-when-hover="  Pause  "
+                    label-when-off="Paused"
+                    label-when-on="Streaming"
+                    onclick={onToggleStream}
+                    selected={isStreamEnabled}
+                    variant={streamButtonVariant}
+                  >
+                  </lightning-button-stateful>
+                  <lightning-button
+                    data-id="clear"
+                    label="Clear"
+                    icon-name="utility:delete"
+                    name="clear"
+                    onclick={onClear}
+                    variant="destructive"
+                  ></lightning-button>
+                  <lightning-button-stateful
+                    data-id="expand-toggle"
+                    icon-name-when-off="utility:expand"
+                    icon-name-when-on="utility:contract"
+                    label-when-off="Expand"
+                    label-when-on="Contract"
+                    onclick={onToggleExpand}
+                    selected={isExpanded}
+                    variant="brand"
+                  >
+                  </lightning-button-stateful>
+                </lightning-button-group>
+              </div>
+              <lightning-button-menu
+                class="slds-p-left_x-small"
+                data-id="select-view-button"
+                icon-name={selectViewMenuIcon}
+                alternative-text="view as"
+                onselect={onSelectView}
+                variant="base"
+                menu-alignment="auto"
+              >
+                <lightning-menu-subheader label="Display As"></lightning-menu-subheader>
+                <template for:each={selectViewMenuOptions} for:item="action">
+                  <lightning-menu-item
+                    icon-name={action.iconName}
+                    id={action.id}
+                    data-id={action.id}
+                    label={action.label}
+                    value={action.value}
+                    key={action.label}
+                    checked={action.checked}
+                  >
+                  </lightning-menu-item
+                ></template>
+              </lightning-button-menu>
+            </template>
+          </header>
+        </div>
+        <div class="slds-p-around_small card-body">
+          <template if:true={isConsoleViewEnabled}>
+            <div data-id="event-stream-console" class="slds-p-horizontal_medium event-stream">
+              <template for:each={logEntryEvents} for:item="logEntryEvent">
+                <div key={logEntryEvent.key} class="event-stream-entry">
+                  <span class="timestamp">{logEntryEvent.Timestamp__c}</span>
+                  <span class="logged-by">{logEntryEvent.LoggedByUsername__c} - {logEntryEvent.key}</span>
+                  <span class="origin">{logEntryEvent.OriginType__c}.{logEntryEvent.OriginLocation__c} </span>
+                  <span class="logging-level">{logEntryEvent.LoggingLevel__c}</span>
+                  <span class="message">{logEntryEvent.Message__c}</span>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <template if:false={isConsoleViewEnabled}>
+            <div class="slds-box slds-p-around_none slds-scrollable--y height-full">
+              <lightning-datatable
+                data-id="event-stream-datatable"
+                class="height-full"
+                hide-checkbox-column
+                show-row-number-column
+                key-field="id"
+                data={logEntryEvents}
+                columns={datatableColumns}
+              >
+              </lightning-datatable>
+            </div>
+          </template>
+        </div>
+      </article>
+    </div>
+  </div>
 </template>

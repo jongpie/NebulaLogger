@@ -2,11 +2,11 @@ name: Feature Request
 description: Suggest an enhancement for Nebula Logger
 labels: ['enhancement']
 body:
-    - type: textarea
-      attributes:
-          label: New Feature Summary
-          description: A description of what feature you'd like to be added to Nebula Logger.
-          placeholder: |
-              Example: I'd like to be able to [...]
-      validations:
-          required: true
+  - type: textarea
+    attributes:
+      label: New Feature Summary
+      description: A description of what feature you'd like to be added to Nebula Logger.
+      placeholder: |
+        Example: I'd like to be able to [...]
+    validations:
+      required: true

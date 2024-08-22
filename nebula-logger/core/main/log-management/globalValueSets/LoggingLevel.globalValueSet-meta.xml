@@ -1,20 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
         <fullName>ERROR</fullName>
-        <color>#FF5050</color>
         <default>false</default>
         <label>⛔ ERROR</label>
     </customValue>
     <customValue>
         <fullName>WARN</fullName>
-        <color>#FFCC00</color>
         <default>false</default>
         <label>⚠️ WARN</label>
     </customValue>
     <customValue>
         <fullName>INFO</fullName>
-        <color>#33CC33</color>
         <default>false</default>
         <label>ℹ️ INFO</label>
     </customValue>

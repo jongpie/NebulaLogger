@@ -3,5 +3,5 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 trigger LogEntryTag on LogEntryTag__c(before insert, before update, before delete, after insert, after update, after delete, after undelete) {
-    LoggerSObjectHandler.getHandler(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler()).execute();
+  LoggerSObjectHandler.getHandler(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler()).execute();
 }

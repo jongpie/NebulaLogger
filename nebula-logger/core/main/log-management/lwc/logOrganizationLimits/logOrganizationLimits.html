@@ -4,57 +4,57 @@
  **********************************************************************************************-->
 
 <template>
-    <c-logger-page-section>
-        <span slot="title">Organization Limits</span>
-        <span slot="content">
-            <template if:false={isLoaded}>
-                <div class="slds-is-relative" style="min-height: 12em">
-                    <lightning-spinner variant="brand"></lightning-spinner>
+  <c-logger-page-section>
+    <span slot="title">Organization Limits</span>
+    <span slot="content">
+      <template if:false={isLoaded}>
+        <div class="slds-is-relative" style="min-height: 12em">
+          <lightning-spinner variant="brand"></lightning-spinner>
+        </div>
+      </template>
+      <template if:true={isLoaded}>
+        <template if:false={isValidOrganizationLimitsJson}>
+          <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">warning</span>
+            <lightning-icon class="slds-m-right_x-small" icon-name="utility:warning" size="x-small" variant="inverse"></lightning-icon>
+            <h2>Could not parse Organization Limits JSON data, the current value is displayed below.</h2>
+          </div>
+          <lightning-layout>
+            <lightning-layout-item class="slds-col slds-p-horizontal_small slds-p-vertical_x-small" size="12">
+              <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">Organization Limits</span>
+                <div class="slds-form-element__control">
+                  <div class="slds-form-element__static">{organizationLimitsJson}</div>
                 </div>
-            </template>
-            <template if:true={isLoaded}>
-                <template if:false={isValidOrganizationLimitsJson}>
-                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
-                        <span class="slds-assistive-text">warning</span>
-                        <lightning-icon class="slds-m-right_x-small" icon-name="utility:warning" size="x-small" variant="inverse"></lightning-icon>
-                        <h2>Could not parse Organization Limits JSON data, the current value is displayed below.</h2>
-                    </div>
-                    <lightning-layout>
-                        <lightning-layout-item class="slds-col slds-p-horizontal_small slds-p-vertical_x-small" size="12">
-                            <div class="slds-form-element slds-form-element_readonly">
-                                <span class="slds-form-element__label">Organization Limits</span>
-                                <div class="slds-form-element__control">
-                                    <div class="slds-form-element__static">{organizationLimitsJson}</div>
-                                </div>
-                            </div>
-                        </lightning-layout-item>
-                    </lightning-layout>
-                </template>
-                <template if:true={isValidOrganizationLimitsJson}>
-                    <lightning-layout>
-                        <lightning-layout-item class="slds-col slds-p-horizontal_small slds-p-vertical_x-small" size="6">
-                            <template for:each={organizationLimitsLeft} for:item="limit">
-                                <div class="slds-form-element slds-form-element_readonly" data-id={limit.Name} key={limit.Name}>
-                                    <span class="slds-form-element__label">{limit.Name}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">{limit.Text}</div>
-                                    </div>
-                                </div>
-                            </template>
-                        </lightning-layout-item>
-                        <lightning-layout-item class="slds-col slds-p-horizontal_small slds-p-vertical_x-small" size="6">
-                            <template for:each={organizationLimitsRight} for:item="limit">
-                                <div class="slds-form-element slds-form-element_readonly" data-id={limit.Name} key={limit.Name}>
-                                    <span class="slds-form-element__label">{limit.Name}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">{limit.Text}</div>
-                                    </div>
-                                </div>
-                            </template>
-                        </lightning-layout-item>
-                    </lightning-layout>
-                </template>
-            </template>
-        </span>
-    </c-logger-page-section>
+              </div>
+            </lightning-layout-item>
+          </lightning-layout>
+        </template>
+        <template if:true={isValidOrganizationLimitsJson}>
+          <lightning-layout>
+            <lightning-layout-item class="slds-col slds-p-horizontal_small slds-p-vertical_x-small" size="6">
+              <template for:each={organizationLimitsLeft} for:item="limit">
+                <div class="slds-form-element slds-form-element_readonly" data-id={limit.Name} key={limit.Name}>
+                  <span class="slds-form-element__label">{limit.Name}</span>
+                  <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">{limit.Text}</div>
+                  </div>
+                </div>
+              </template>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-col slds-p-horizontal_small slds-p-vertical_x-small" size="6">
+              <template for:each={organizationLimitsRight} for:item="limit">
+                <div class="slds-form-element slds-form-element_readonly" data-id={limit.Name} key={limit.Name}>
+                  <span class="slds-form-element__label">{limit.Name}</span>
+                  <div class="slds-form-element__control">
+                    <div class="slds-form-element__static">{limit.Text}</div>
+                  </div>
+                </div>
+              </template>
+            </lightning-layout-item>
+          </lightning-layout>
+        </template>
+      </template>
+    </span>
+  </c-logger-page-section>
 </template>

@@ -17,3 +17,7 @@ nebula-logger/managed-package/**/*.testSuite-meta.xml
 # LWC Jest
 **/__tests__/**
 **/jest-mocks/**
+
+**/tsconfig.json
+
+**/*.ts

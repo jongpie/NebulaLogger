@@ -1,79 +1,79 @@
 {
-    "appPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
-    "componentName": "community_layout:sldsFlexibleLayout",
-    "dataProviders": [],
-    "id": "25be93bd-543f-4638-8ab4-5a555b0563a1",
-    "label": "Home",
-    "regions": [
+  "appPageId": "3772c2ec-1566-4ffa-9231-d5db8d42b47d",
+  "componentName": "community_layout:sldsFlexibleLayout",
+  "dataProviders": [],
+  "id": "25be93bd-543f-4638-8ab4-5a555b0563a1",
+  "label": "Home",
+  "regions": [
+    {
+      "components": [
         {
-            "components": [
+          "componentAttributes": {
+            "backgroundImageConfig": "",
+            "backgroundImageOverlay": "rgba(0,0,0,0)",
+            "sectionConfig": "{\"UUID\":\"0a8a4fb7-05e4-4a9c-9287-886811fa6626\",\"columns\":[{\"UUID\":\"81358368-a438-4c3a-9684-32bd6d5604e1\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
+          },
+          "componentName": "community_layout:section",
+          "id": "0a8a4fb7-05e4-4a9c-9287-886811fa6626",
+          "regions": [
+            {
+              "components": [
                 {
-                    "componentAttributes": {
-                        "backgroundImageConfig": "",
-                        "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"0a8a4fb7-05e4-4a9c-9287-886811fa6626\",\"columns\":[{\"UUID\":\"81358368-a438-4c3a-9684-32bd6d5604e1\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
-                    },
-                    "componentName": "community_layout:section",
-                    "id": "0a8a4fb7-05e4-4a9c-9287-886811fa6626",
-                    "regions": [
-                        {
-                            "components": [
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:loggerLWCImportDemo",
-                                    "id": "eb678e7a-f879-4166-9d05-c3287a523795",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:loggerLWCEmbedDemo",
-                                    "id": "79b7c818-6e4b-4125-b52b-77f177213044",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                }
-                            ],
-                            "id": "81358368-a438-4c3a-9684-32bd6d5604e1",
-                            "regionLabel": "Column 1",
-                            "regionName": "col1",
-                            "renditionMap": {},
-                            "type": "region"
-                        }
-                    ],
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "scopedBrandingSetId": null,
-                    "type": "component"
-                }
-            ],
-            "id": "c9f03750-3b5b-4a2a-b1ac-ad5c3b9f61cc",
-            "regionName": "content",
-            "type": "region"
-        },
-        {
-            "components": [
+                  "componentAttributes": {},
+                  "componentName": "c:loggerLWCImportDemo",
+                  "id": "eb678e7a-f879-4166-9d05-c3287a523795",
+                  "renderPriority": "NEUTRAL",
+                  "renditionMap": {},
+                  "type": "component"
+                },
                 {
-                    "componentAttributes": {
-                        "customHeadTags": "",
-                        "description": "",
-                        "pageTitle": "Home",
-                        "recordId": "{!recordId}"
-                    },
-                    "componentName": "community_builder:seoAssistant",
-                    "id": "2d1b0155-7674-4b62-b513-541f475c5f5c",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
+                  "componentAttributes": {},
+                  "componentName": "c:loggerLWCEmbedDemo",
+                  "id": "79b7c818-6e4b-4125-b52b-77f177213044",
+                  "renderPriority": "NEUTRAL",
+                  "renditionMap": {},
+                  "type": "component"
                 }
-            ],
-            "id": "deacd095-4684-44ed-bbc2-39ece9705191",
-            "regionName": "sfdcHiddenRegion",
-            "type": "region"
+              ],
+              "id": "81358368-a438-4c3a-9684-32bd6d5604e1",
+              "regionLabel": "Column 1",
+              "regionName": "col1",
+              "renditionMap": {},
+              "type": "region"
+            }
+          ],
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "scopedBrandingSetId": null,
+          "type": "component"
         }
-    ],
-    "themeLayoutType": "Inner",
-    "type": "view",
-    "viewType": "home"
+      ],
+      "id": "c9f03750-3b5b-4a2a-b1ac-ad5c3b9f61cc",
+      "regionName": "content",
+      "type": "region"
+    },
+    {
+      "components": [
+        {
+          "componentAttributes": {
+            "customHeadTags": "",
+            "description": "",
+            "pageTitle": "Home",
+            "recordId": "{!recordId}"
+          },
+          "componentName": "community_builder:seoAssistant",
+          "id": "2d1b0155-7674-4b62-b513-541f475c5f5c",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "deacd095-4684-44ed-bbc2-39ece9705191",
+      "regionName": "sfdcHiddenRegion",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "Inner",
+  "type": "view",
+  "viewType": "home"
 }

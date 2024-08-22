@@ -11,20 +11,20 @@
  */
 @SuppressWarnings('PMD.ApexDoc')
 public without sharing class LoggerBatchableContext {
-    @AuraEnabled
-    public Database.BatchableContext batchableContext;
-    public transient Schema.SObjectType sobjectType;
-    @AuraEnabled
-    public String sobjectTypeName;
+  @AuraEnabled
+  public Database.BatchableContext batchableContext;
+  public transient Schema.SObjectType sobjectType;
+  @AuraEnabled
+  public String sobjectTypeName;
 
-    /**
-     * @description Constructor used to set the 2 properties
-     * @param  batchableContext The instance of `Database.BatchableContextbatchableContext`, provided by the platform at run-time
-     * @param  sobjectType      The `SObjectType` that will be queried & purged
-     */
-    public LoggerBatchableContext(Database.BatchableContext batchableContext, Schema.SObjectType sobjectType) {
-        this.batchableContext = batchableContext;
-        this.sobjectType = sobjectType;
-        this.sobjectTypeName = sobjectType?.getDescribe().getName();
-    }
+  /**
+   * @description Constructor used to set the 2 properties
+   * @param  batchableContext The instance of `Database.BatchableContextbatchableContext`, provided by the platform at run-time
+   * @param  sobjectType      The `SObjectType` that will be queried & purged
+   */
+  public LoggerBatchableContext(Database.BatchableContext batchableContext, Schema.SObjectType sobjectType) {
+    this.batchableContext = batchableContext;
+    this.sobjectType = sobjectType;
+    this.sobjectTypeName = sobjectType?.getDescribe().getName();
+  }
 }

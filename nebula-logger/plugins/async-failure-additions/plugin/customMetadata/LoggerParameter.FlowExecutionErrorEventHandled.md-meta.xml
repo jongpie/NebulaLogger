@@ -1,16 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<CustomMetadata
-    xmlns="http://soap.sforce.com/2006/04/metadata"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
->
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <label>Is FlowExecutionErrorEvent Handled?</label>
     <protected>true</protected>
     <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Description__c</field>
-        <value
-            xsi:type="xsd:string"
-        >&quot;true&quot; if enabled, &quot;false&quot; if disabled. True values create Nebula Logger entries for unhandled flow errors.</value>
+        <value xsi:type="xsd:string">&quot;true&quot; if enabled, &quot;false&quot; if disabled. True values create Nebula Logger entries for unhandled flow errors.</value>
     </values>
     <values>
         <field>Value__c</field>

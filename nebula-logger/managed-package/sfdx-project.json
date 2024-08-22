@@ -1,37 +1,37 @@
 {
-    "namespace": "Nebula",
-    "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "61.0",
-    "packageDirectories": [
-        {
-            "package": "Nebula Logger - Managed Package",
-            "path": "./nebula-logger/managed-package/core",
-            "default": true,
-            "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
-            "postInstallScript": "LoggerInstallHandler",
-            "scopeProfiles": true,
-            "ancestorVersion": "HIGHEST",
-            "versionNumber": "4.14.0.NEXT",
-            "versionName": "Summer '24 Release",
-            "versionDescription": "View the v4.14.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/14?closed=1",
-            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases/tag/v4.14.0"
-        }
-    ],
-    "packageAliases": {
-        "Nebula Logger - Managed Package": "0Ho5Y000000XZCDSA4",
-        "Nebula Logger - Managed Package@4.0.0-managed-package-release": "04t5Y000000XJZ7QAO",
-        "Nebula Logger - Managed Package@4.2.0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
-        "Nebula Logger - Managed Package@4.3.0-logger-console-app": "04t5Y000000YLDLQA4",
-        "Nebula Logger - Managed Package@4.4.0-configurable-default-save-method": "04t5Y0000027FFgQAM",
-        "Nebula Logger - Managed Package@4.5.0-logger-plugin-framework": "04t5Y0000027FMhQAM",
-        "Nebula Logger - Managed Package@4.6.0-tagging-system-overhaul": "04t5Y0000015keOQAQ",
-        "Nebula Logger - Managed Package@4.7.0-spring-22-release": "04t5Y0000015lXNQAY",
-        "Nebula Logger - Managed Package@4.8.0-summer-22-release": "04t5Y0000015lsgQAA",
-        "Nebula Logger - Managed Package@4.9.0-winter-23-release": "04t5Y0000023R28QAE",
-        "Nebula Logger - Managed Package@4.10.0-spring-23-release": "04t5Y0000015nWeQAI",
-        "Nebula Logger - Managed Package@4.11.0-summer-23-release": "04t5Y0000023SI1QAM",
-        "Nebula Logger - Managed Package@4.12.0-winter-24-release": "04t5Y000001Mk21QAC",
-        "Nebula Logger - Managed Package@4.13.0-spring-24-release": "04t5Y000001Mk8YQAS",
-        "Nebula Logger - Managed Package@4.14.0-summer-24-release": "04t5Y0000015oPqQAI"
+  "namespace": "Nebula",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "61.0",
+  "packageDirectories": [
+    {
+      "package": "Nebula Logger - Managed Package",
+      "path": "./nebula-logger/managed-package/core",
+      "default": true,
+      "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
+      "postInstallScript": "LoggerInstallHandler",
+      "scopeProfiles": true,
+      "ancestorVersion": "HIGHEST",
+      "versionNumber": "4.15.0.NEXT",
+      "versionName": "Winter '25 Release",
+      "versionDescription": "View the v4.14.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/15?closed=1",
+      "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases/tag/v4.15.0"
     }
+  ],
+  "packageAliases": {
+    "Nebula Logger - Managed Package": "0Ho5Y000000XZCDSA4",
+    "Nebula Logger - Managed Package@4.0.0-managed-package-release": "04t5Y000000XJZ7QAO",
+    "Nebula Logger - Managed Package@4.2.0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
+    "Nebula Logger - Managed Package@4.3.0-logger-console-app": "04t5Y000000YLDLQA4",
+    "Nebula Logger - Managed Package@4.4.0-configurable-default-save-method": "04t5Y0000027FFgQAM",
+    "Nebula Logger - Managed Package@4.5.0-logger-plugin-framework": "04t5Y0000027FMhQAM",
+    "Nebula Logger - Managed Package@4.6.0-tagging-system-overhaul": "04t5Y0000015keOQAQ",
+    "Nebula Logger - Managed Package@4.7.0-spring-22-release": "04t5Y0000015lXNQAY",
+    "Nebula Logger - Managed Package@4.8.0-summer-22-release": "04t5Y0000015lsgQAA",
+    "Nebula Logger - Managed Package@4.9.0-winter-23-release": "04t5Y0000023R28QAE",
+    "Nebula Logger - Managed Package@4.10.0-spring-23-release": "04t5Y0000015nWeQAI",
+    "Nebula Logger - Managed Package@4.11.0-summer-23-release": "04t5Y0000023SI1QAM",
+    "Nebula Logger - Managed Package@4.12.0-winter-24-release": "04t5Y000001Mk21QAC",
+    "Nebula Logger - Managed Package@4.13.0-spring-24-release": "04t5Y000001Mk8YQAS",
+    "Nebula Logger - Managed Package@4.14.0-summer-24-release": "04t5Y0000015oPqQAI"
+  }
 }

@@ -1,173 +1,173 @@
 {
-    "apiName": "LoggerSettings__c",
-    "fields": {
-        "Id": {
-            "apiName": "Id",
-            "label": "Record ID",
-            "localApiName": "Id",
-            "type": "Id"
-        },
-        "IsDeleted": {
-            "apiName": "IsDeleted",
-            "label": "Deleted",
-            "localApiName": "IsDeleted",
-            "type": "Boolean"
-        },
-        "Name": {
-            "apiName": "Name",
-            "label": "Name",
-            "localApiName": "Name",
-            "type": "String"
-        },
-        "SetupOwnerId": {
-            "apiName": "SetupOwnerId",
-            "label": "Location",
-            "localApiName": "SetupOwnerId",
-            "type": "Reference"
-        },
-        "CreatedDate": {
-            "apiName": "CreatedDate",
-            "label": "Created Date",
-            "localApiName": "CreatedDate",
-            "type": "Datetime"
-        },
-        "CreatedById": {
-            "apiName": "CreatedById",
-            "label": "Created By ID",
-            "localApiName": "CreatedById",
-            "type": "Reference"
-        },
-        "LastModifiedDate": {
-            "apiName": "LastModifiedDate",
-            "label": "Last Modified Date",
-            "localApiName": "LastModifiedDate",
-            "type": "Datetime"
-        },
-        "LastModifiedById": {
-            "apiName": "LastModifiedById",
-            "label": "Last Modified By ID",
-            "localApiName": "LastModifiedById",
-            "type": "Reference"
-        },
-        "SystemModstamp": {
-            "apiName": "SystemModstamp",
-            "label": "System Modstamp",
-            "localApiName": "SystemModstamp",
-            "type": "Datetime"
-        },
-        "DefaultLogOwner__c": {
-            "apiName": "DefaultLogOwner__c",
-            "inlineHelpText": "Specifies the default owner for new Log__c records. This can be a user ID, a username, a queue ID, or a queue's developer name.",
-            "label": "Log Owner",
-            "localApiName": "DefaultLogOwner__c",
-            "type": "String"
-        },
-        "DefaultLogShareAccessLevel__c": {
-            "apiName": "DefaultLogShareAccessLevel__c",
-            "inlineHelpText": "Uses Apex managed sharing to grants users read or edit access to their log records (on insert only). When no access level is specified, no Apex sharing logic is executed. This only gives record-level access - users will still need to be granted access to the Log__c object using permission sets or profiles.",
-            "label": "Log Access Level",
-            "localApiName": "DefaultLogShareAccessLevel__c",
-            "type": "String"
-        },
-        "DefaultNumberOfDaysToRetainLogs__c": {
-            "apiName": "DefaultNumberOfDaysToRetainLogs__c",
-            "inlineHelpText": "This value is used to set the field Log__c.LogRetentionDate__c,  which is then used by LogBatchPurger to delete old logs. To keep  logs indefinitely, set this field to blank (null).",
-            "label": "Days to Retain Logs",
-            "localApiName": "DefaultNumberOfDaysToRetainLogs__c",
-            "type": "Double"
-        },
-        "DefaultPlatformEventStorageLocation__c": {
-            "apiName": "DefaultPlatformEventStorageLocation__c",
-            "inlineHelpText": "Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.",
-            "label": "Platform Event Storage Location",
-            "localApiName": "DefaultPlatformEventStorageLocation__c",
-            "type": "string"
-        },
-        "DefaultSaveMethod__c": {
-            "apiName": "DefaultSaveMethod__c",
-            "inlineHelpText": "Defaults to EVENT_BUS. This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.",
-            "label": "Save Method",
-            "localApiName": "DefaultSaveMethod__c",
-            "type": "String"
-        },
-        "DefaultScenario__c": {
-            "apiName": "DefaultScenario__c",
-            "inlineHelpText": "Sets a default scenario for the transaction",
-            "label": "Log Scenario",
-            "localApiName": "DefaultScenario__c",
-            "type": "String"
-        },
-        "EndTime__c": {
-            "apiName": "EndTime__c",
-            "inlineHelpText": "TODO",
-            "label": "End Time",
-            "localApiName": "EndTime__c",
-            "type": "Datetime"
-        },
-        "IsAnonymousModeEnabled__c": {
-            "apiName": "IsAnonymousModeEnabled__c",
-            "inlineHelpText": "When enabled, any logs generated will not have any user-specific details set - any fields related to the User, Profile, etc. will be null. Note: this feature only works properly when using the save method EVENT_BUS.",
-            "label": "Enable Anonymous Mode",
-            "localApiName": "IsAnonymousModeEnabled__c",
-            "type": "Boolean"
-        },
-        "IsApexSystemDebugLoggingEnabled__c": {
-            "apiName": "IsApexSystemDebugLoggingEnabled__c",
-            "inlineHelpText": "When enabled, Logger will automatically call Apex's System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.",
-            "label": "Enable Apex System.debug()",
-            "localApiName": "IsApexSystemDebugLoggingEnabled__c",
-            "type": "Boolean"
-        },
-        "IsDataMaskingEnabled__c": {
-            "apiName": "IsDataMaskingEnabled__c",
-            "inlineHelpText": "When enabled, any data-mask rules (configured in LogEntryDataMaskRule__mdt) will be automatically applied to log entry messages.",
-            "label": "Enable Data Masking",
-            "localApiName": "IsDataMaskingEnabled__c",
-            "type": "Boolean"
-        },
-        "IsEnabled__c": {
-            "apiName": "IsEnabled__c",
-            "inlineHelpText": "Controls if Logger is enabled for the specified level (organization, profile, or user)",
-            "label": "Enabled",
-            "localApiName": "IsEnabled__c",
-            "type": "Boolean"
-        },
-        "IsJavaScriptConsoleLoggingEnabled__c": {
-            "apiName": "IsJavaScriptConsoleLoggingEnabled__c",
-            "inlineHelpText": "When enabled, Logger will automatically call the browser's console.log() function when logging via lightning components. To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.",
-            "label": "Enable JavaScript console.log()",
-            "localApiName": "IsJavaScriptConsoleLoggingEnabled__c",
-            "type": "Boolean"
-        },
-        "IsRecordFieldStrippingEnabled__c": {
-            "apiName": "IsRecordFieldStrippingEnabled__c",
-            "inlineHelpText": "When enabled, any time an SObject record is logged, only fields that the current user can access will be included in the record's JSON.",
-            "label": "Strip Inaccessible Record Fields",
-            "localApiName": "IsRecordFieldStrippingEnabled__c",
-            "type": "Boolean"
-        },
-        "IsSavingEnabled__c": {
-            "apiName": "IsSavingEnabled__c",
-            "inlineHelpText": "Controls if saving is enabled - when disabled, any calls to saveLog() are ignored.",
-            "label": "Enable Saving",
-            "localApiName": "IsSavingEnabled__c",
-            "type": "Boolean"
-        },
-        "LoggingLevel__c": {
-            "apiName": "LoggingLevel__c",
-            "label": "Logging Level",
-            "localApiName": "LoggingLevel__c",
-            "type": "String"
-        },
-        "StartTime__c": {
-            "apiName": "StartTime__c",
-            "inlineHelpText": "TODO",
-            "label": "Start Time",
-            "localApiName": "StartTime__c",
-            "type": "Datetime"
-        }
+  "apiName": "LoggerSettings__c",
+  "fields": {
+    "Id": {
+      "apiName": "Id",
+      "label": "Record ID",
+      "localApiName": "Id",
+      "type": "Id"
     },
-    "label": "Logger Settings",
-    "labelPlural": "Logger Settings",
-    "localApiName": "LoggerSettings__c"
+    "IsDeleted": {
+      "apiName": "IsDeleted",
+      "label": "Deleted",
+      "localApiName": "IsDeleted",
+      "type": "Boolean"
+    },
+    "Name": {
+      "apiName": "Name",
+      "label": "Name",
+      "localApiName": "Name",
+      "type": "String"
+    },
+    "SetupOwnerId": {
+      "apiName": "SetupOwnerId",
+      "label": "Location",
+      "localApiName": "SetupOwnerId",
+      "type": "Reference"
+    },
+    "CreatedDate": {
+      "apiName": "CreatedDate",
+      "label": "Created Date",
+      "localApiName": "CreatedDate",
+      "type": "Datetime"
+    },
+    "CreatedById": {
+      "apiName": "CreatedById",
+      "label": "Created By ID",
+      "localApiName": "CreatedById",
+      "type": "Reference"
+    },
+    "LastModifiedDate": {
+      "apiName": "LastModifiedDate",
+      "label": "Last Modified Date",
+      "localApiName": "LastModifiedDate",
+      "type": "Datetime"
+    },
+    "LastModifiedById": {
+      "apiName": "LastModifiedById",
+      "label": "Last Modified By ID",
+      "localApiName": "LastModifiedById",
+      "type": "Reference"
+    },
+    "SystemModstamp": {
+      "apiName": "SystemModstamp",
+      "label": "System Modstamp",
+      "localApiName": "SystemModstamp",
+      "type": "Datetime"
+    },
+    "DefaultLogOwner__c": {
+      "apiName": "DefaultLogOwner__c",
+      "inlineHelpText": "Specifies the default owner for new Log__c records. This can be a user ID, a username, a queue ID, or a queue's developer name.",
+      "label": "Log Owner",
+      "localApiName": "DefaultLogOwner__c",
+      "type": "String"
+    },
+    "DefaultLogShareAccessLevel__c": {
+      "apiName": "DefaultLogShareAccessLevel__c",
+      "inlineHelpText": "Uses Apex managed sharing to grants users read or edit access to their log records (on insert only). When no access level is specified, no Apex sharing logic is executed. This only gives record-level access - users will still need to be granted access to the Log__c object using permission sets or profiles.",
+      "label": "Log Access Level",
+      "localApiName": "DefaultLogShareAccessLevel__c",
+      "type": "String"
+    },
+    "DefaultNumberOfDaysToRetainLogs__c": {
+      "apiName": "DefaultNumberOfDaysToRetainLogs__c",
+      "inlineHelpText": "This value is used to set the field Log__c.LogRetentionDate__c,  which is then used by LogBatchPurger to delete old logs. To keep  logs indefinitely, set this field to blank (null).",
+      "label": "Days to Retain Logs",
+      "localApiName": "DefaultNumberOfDaysToRetainLogs__c",
+      "type": "Double"
+    },
+    "DefaultPlatformEventStorageLocation__c": {
+      "apiName": "DefaultPlatformEventStorageLocation__c",
+      "inlineHelpText": "Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.",
+      "label": "Platform Event Storage Location",
+      "localApiName": "DefaultPlatformEventStorageLocation__c",
+      "type": "string"
+    },
+    "DefaultSaveMethod__c": {
+      "apiName": "DefaultSaveMethod__c",
+      "inlineHelpText": "Defaults to EVENT_BUS. This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.",
+      "label": "Save Method",
+      "localApiName": "DefaultSaveMethod__c",
+      "type": "String"
+    },
+    "DefaultScenario__c": {
+      "apiName": "DefaultScenario__c",
+      "inlineHelpText": "Sets a default scenario for the transaction",
+      "label": "Log Scenario",
+      "localApiName": "DefaultScenario__c",
+      "type": "String"
+    },
+    "EndTime__c": {
+      "apiName": "EndTime__c",
+      "inlineHelpText": "TODO",
+      "label": "End Time",
+      "localApiName": "EndTime__c",
+      "type": "Datetime"
+    },
+    "IsAnonymousModeEnabled__c": {
+      "apiName": "IsAnonymousModeEnabled__c",
+      "inlineHelpText": "When enabled, any logs generated will not have any user-specific details set - any fields related to the User, Profile, etc. will be null. Note: this feature only works properly when using the save method EVENT_BUS.",
+      "label": "Enable Anonymous Mode",
+      "localApiName": "IsAnonymousModeEnabled__c",
+      "type": "Boolean"
+    },
+    "IsApexSystemDebugLoggingEnabled__c": {
+      "apiName": "IsApexSystemDebugLoggingEnabled__c",
+      "inlineHelpText": "When enabled, Logger will automatically call Apex's System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.",
+      "label": "Enable Apex System.debug()",
+      "localApiName": "IsApexSystemDebugLoggingEnabled__c",
+      "type": "Boolean"
+    },
+    "IsDataMaskingEnabled__c": {
+      "apiName": "IsDataMaskingEnabled__c",
+      "inlineHelpText": "When enabled, any data-mask rules (configured in LogEntryDataMaskRule__mdt) will be automatically applied to log entry messages.",
+      "label": "Enable Data Masking",
+      "localApiName": "IsDataMaskingEnabled__c",
+      "type": "Boolean"
+    },
+    "IsEnabled__c": {
+      "apiName": "IsEnabled__c",
+      "inlineHelpText": "Controls if Logger is enabled for the specified level (organization, profile, or user)",
+      "label": "Enabled",
+      "localApiName": "IsEnabled__c",
+      "type": "Boolean"
+    },
+    "IsJavaScriptConsoleLoggingEnabled__c": {
+      "apiName": "IsJavaScriptConsoleLoggingEnabled__c",
+      "inlineHelpText": "When enabled, Logger will automatically call the browser's console.log() function when logging via lightning components. To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.",
+      "label": "Enable JavaScript console.log()",
+      "localApiName": "IsJavaScriptConsoleLoggingEnabled__c",
+      "type": "Boolean"
+    },
+    "IsRecordFieldStrippingEnabled__c": {
+      "apiName": "IsRecordFieldStrippingEnabled__c",
+      "inlineHelpText": "When enabled, any time an SObject record is logged, only fields that the current user can access will be included in the record's JSON.",
+      "label": "Strip Inaccessible Record Fields",
+      "localApiName": "IsRecordFieldStrippingEnabled__c",
+      "type": "Boolean"
+    },
+    "IsSavingEnabled__c": {
+      "apiName": "IsSavingEnabled__c",
+      "inlineHelpText": "Controls if saving is enabled - when disabled, any calls to saveLog() are ignored.",
+      "label": "Enable Saving",
+      "localApiName": "IsSavingEnabled__c",
+      "type": "Boolean"
+    },
+    "LoggingLevel__c": {
+      "apiName": "LoggingLevel__c",
+      "label": "Logging Level",
+      "localApiName": "LoggingLevel__c",
+      "type": "String"
+    },
+    "StartTime__c": {
+      "apiName": "StartTime__c",
+      "inlineHelpText": "TODO",
+      "label": "Start Time",
+      "localApiName": "StartTime__c",
+      "type": "Datetime"
+    }
+  },
+  "label": "Logger Settings",
+  "labelPlural": "Logger Settings",
+  "localApiName": "LoggerSettings__c"
 }

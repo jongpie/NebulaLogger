@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Report xmlns="http://soap.sforce.com/2006/04/metadata">
     <chart>
         <backgroundColor1>#FFFFFF</backgroundColor1>
@@ -34,9 +34,6 @@
     </columns>
     <columns>
         <field>LogEntry__c.OriginType__c</field>
-    </columns>
-    <columns>
-        <field>LogEntry__c.LoggingLevel__c</field>
     </columns>
     <columns>
         <field>LogEntry__c.LoggingLevel__c</field>

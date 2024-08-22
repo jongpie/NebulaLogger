@@ -1,16 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ApexInnerClassName__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <inlineHelpText
-    >When the log entry is created via an Apex inner class, this field is populated with the fully-qualified class name (e.g., MyClass.MyInnerClass)</inlineHelpText>
+    <inlineHelpText>When the log entry is created via an Apex inner class, this field is populated with the fully-qualified class name (e.g., MyClass.MyInnerClass)</inlineHelpText>
     <label>Apex Inner Class</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>

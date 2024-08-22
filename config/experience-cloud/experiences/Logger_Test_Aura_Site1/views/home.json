@@ -1,83 +1,83 @@
 {
-    "appPageId": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
-    "componentName": "siteforce:sldsOneColLayout",
-    "dataProviders": [],
-    "id": "e17beead-0c0d-4dd1-be27-4c671f65537c",
-    "label": "Home",
-    "regions": [
+  "appPageId": "8c9b08ff-a4e8-4d39-ae07-80b736990fa2",
+  "componentName": "siteforce:sldsOneColLayout",
+  "dataProviders": [],
+  "id": "e17beead-0c0d-4dd1-be27-4c671f65537c",
+  "label": "Home",
+  "regions": [
+    {
+      "components": [
         {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "richTextValue": "<h1>Aura Runtime Test Site</h1>"
-                    },
-                    "componentName": "forceCommunity:richTextInline",
-                    "id": "dfde8482-09f3-4738-9fdc-5267005962f6",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "953f92e1-e796-4bcf-b84b-d471cd9c6212",
-            "regionName": "header",
-            "type": "region"
-        },
-        {
-            "components": [
-                {
-                    "componentAttributes": {},
-                    "componentName": "c:loggerLWCImportDemo",
-                    "id": "ef2d20d3-acfe-49ec-935e-e08ea2c6ec85",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                },
-                {
-                    "componentAttributes": {},
-                    "componentName": "c:loggerLWCEmbedDemo",
-                    "id": "3917c868-191f-4aa3-82f3-5a588549b46f",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                },
-                {
-                    "componentAttributes": {},
-                    "componentName": "c:loggerAuraEmbedDemo",
-                    "id": "5a940415-be51-4e3c-8c61-09d3dae257d5",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "293b30de-8eef-4828-a45c-18cfa64a71ea",
-            "regionName": "content",
-            "type": "region"
-        },
-        {
-            "id": "77eb8665-8997-482a-a29e-d6ed14314218",
-            "regionName": "footer",
-            "type": "region"
-        },
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "customHeadTags": "",
-                        "description": "",
-                        "title": "Home"
-                    },
-                    "componentName": "forceCommunity:seoAssistant",
-                    "id": "bf861f87-d9ce-4aec-a6ae-d2d0d39c2f8a",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "096cd9c8-0b97-4c9e-96ff-4d70a3c0e6b7",
-            "regionName": "sfdcHiddenRegion",
-            "type": "region"
+          "componentAttributes": {
+            "richTextValue": "<h1>Aura Runtime Test Site</h1>"
+          },
+          "componentName": "forceCommunity:richTextInline",
+          "id": "dfde8482-09f3-4738-9fdc-5267005962f6",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
         }
-    ],
-    "themeLayoutType": "Inner",
-    "type": "view",
-    "viewType": "home"
+      ],
+      "id": "953f92e1-e796-4bcf-b84b-d471cd9c6212",
+      "regionName": "header",
+      "type": "region"
+    },
+    {
+      "components": [
+        {
+          "componentAttributes": {},
+          "componentName": "c:loggerLWCImportDemo",
+          "id": "ef2d20d3-acfe-49ec-935e-e08ea2c6ec85",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {},
+          "componentName": "c:loggerLWCEmbedDemo",
+          "id": "3917c868-191f-4aa3-82f3-5a588549b46f",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {},
+          "componentName": "c:loggerAuraEmbedDemo",
+          "id": "5a940415-be51-4e3c-8c61-09d3dae257d5",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "293b30de-8eef-4828-a45c-18cfa64a71ea",
+      "regionName": "content",
+      "type": "region"
+    },
+    {
+      "id": "77eb8665-8997-482a-a29e-d6ed14314218",
+      "regionName": "footer",
+      "type": "region"
+    },
+    {
+      "components": [
+        {
+          "componentAttributes": {
+            "customHeadTags": "",
+            "description": "",
+            "title": "Home"
+          },
+          "componentName": "forceCommunity:seoAssistant",
+          "id": "bf861f87-d9ce-4aec-a6ae-d2d0d39c2f8a",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "096cd9c8-0b97-4c9e-96ff-4d70a3c0e6b7",
+      "regionName": "sfdcHiddenRegion",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "Inner",
+  "type": "view",
+  "viewType": "home"
 }

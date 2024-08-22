@@ -4,5 +4,5 @@
  **********************************************************************************************-->
 
 <aura:component implements="force:hasRecordId,force:lightningQuickActionWithoutHeader">
-    This component has been deprecated - please instead use the lwc logViewer
+  This component has been deprecated - please instead use the lwc logViewer
 </aura:component>

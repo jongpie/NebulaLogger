@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>OriginSourceCreatedByLink__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <externalId>false</externalId>
     <formula>HYPERLINK(
-    '/' + OriginSourceCreatedById__c,
+    &apos;/&apos; + OriginSourceCreatedById__c,
     OriginSourceCreatedByUsername__c,
     &apos;_top&apos;
 )</formula>

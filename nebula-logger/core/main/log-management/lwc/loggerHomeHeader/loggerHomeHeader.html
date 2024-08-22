@@ -4,239 +4,235 @@
  **********************************************************************************************-->
 
 <template>
-    <div class="slds-page-header">
-        <div class="slds-page-header__row">
-            <div class="slds-page-header__col-title">
-                <div class="slds-media">
-                    <div class="slds-media__figure">
-                        <lightning-icon icon-name="standard:home" size="medium"></lightning-icon>
-                    </div>
-                    <div class="slds-media__body">
-                        <div class="slds-page-header__name">
-                            <div class="slds-page-header__name-title">
-                                <h1>
-                                    <span class="slds-page-header__title slds-p-top_xx-small" data-id="header-title" title={title}>{title}</span>
-                                </h1>
-                                <template if:true={enabledPluginsSummary}>
-                                    <p data-id="enabled-plugins-summary">{enabledPluginsSummary}</p>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="slds-page-header">
+    <div class="slds-page-header__row">
+      <div class="slds-page-header__col-title">
+        <div class="slds-media">
+          <div class="slds-media__figure">
+            <lightning-icon icon-name="standard:home" size="medium"></lightning-icon>
+          </div>
+          <div class="slds-media__body">
+            <div class="slds-page-header__name">
+              <div class="slds-page-header__name-title">
+                <h1>
+                  <span class="slds-page-header__title slds-p-top_xx-small" data-id="header-title" title={title}>{title}</span>
+                </h1>
+                <template if:true={enabledPluginsSummary}>
+                  <p data-id="enabled-plugins-summary">{enabledPluginsSummary}</p>
+                </template>
+              </div>
             </div>
-            <div class="slds-page-header__col-actions">
-                <div class="slds-page-header__controls">
-                    <div class="slds-page-header__control">
-                        <lightning-button-group>
-                            <lightning-button
-                                data-id="environment-details-button"
-                                icon-name="utility:info"
-                                label={environmentDetailsButtonLabel}
-                                onclick={handleViewEnvironmentDetails}
-                            ></lightning-button>
-                            <template if:true={showReleaseNotesButton}>
-                                <lightning-button
-                                    data-id="release-notes-button"
-                                    icon-name="utility:announcement"
-                                    label={releaseNotesButtonLabel}
-                                    onclick={handleViewReleaseNotes}
-                                ></lightning-button>
-                            </template>
-                        </lightning-button-group>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="slds-page-header__col-actions">
+        <div class="slds-page-header__controls">
+          <div class="slds-page-header__control">
+            <lightning-button-group>
+              <lightning-button
+                data-id="environment-details-button"
+                icon-name="utility:info"
+                label={environmentDetailsButtonLabel}
+                onclick={handleViewEnvironmentDetails}
+              ></lightning-button>
+              <template if:true={showReleaseNotesButton}>
+                <lightning-button
+                  data-id="release-notes-button"
+                  icon-name="utility:announcement"
+                  label={releaseNotesButtonLabel}
+                  onclick={handleViewReleaseNotes}
+                ></lightning-button>
+              </template>
+            </lightning-button-group>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Environment Details modal -->
-    <template if:true={showEnvironmentDetailsModal}>
-        <section class="slds-modal slds-fade-in-open" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
-            <div class="slds-modal__container" onkeydown={handleKeyDown}>
-                <!-- Modal header -->
-                <header class="slds-modal__header">
-                    <button
-                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                        title="Close"
-                        onclick={handleCloseEnvironmentDetailsModal}
-                    >
-                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
-                    </button>
-                    <h2 class="slds-text-heading_medium slds-hyphenate" data-id="environment-details-modal-title">Environment Details</h2>
-                </header>
+  <!-- Environment Details modal -->
+  <template if:true={showEnvironmentDetailsModal}>
+    <section class="slds-modal slds-fade-in-open" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
+      <div class="slds-modal__container" onkeydown={handleKeyDown}>
+        <!-- Modal header -->
+        <header class="slds-modal__header">
+          <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseEnvironmentDetailsModal}>
+            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+          </button>
+          <h2 class="slds-text-heading_medium slds-hyphenate" data-id="environment-details-modal-title">Environment Details</h2>
+        </header>
 
-                <!-- Modal body -->
-                <div class="slds-modal__content slds-p-around_medium">
-                    <!-- Logger details section -->
-                    <c-logger-page-section>
-                        <span slot="title">Nebula Logger</span>
-                        <span slot="content">
-                            <lightning-layout class="slds-p-around_small">
-                                <lightning-layout-item size="12">
-                                    <lightning-input
-                                        data-id="environment-loggerVersionNumber"
-                                        label="Version Number"
-                                        read-only
-                                        type="text"
-                                        value={environment.loggerVersionNumber}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-loggerNamespacePrefix"
-                                        label="Namespace Prefix"
-                                        read-only
-                                        type="text"
-                                        value={environment.loggerNamespacePrefix}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <template if:true={environment.loggerEnabledPlugins}>
-                                        <div class="slds-form-element slds-form-element_horizontal">
-                                            <label class="slds-form-element__label" for="logger-enabled-plugins-output">Enabled Plugins</label>
-                                            <div class="slds-form-element__control">
-                                                <lightning-formatted-rich-text
-                                                    data-id="environment-loggerEnabledPlugins"
-                                                    id="logger-enabled-plugins-output"
-                                                    value={environment.loggerEnabledPlugins}
-                                                ></lightning-formatted-rich-text>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </lightning-layout-item>
-                            </lightning-layout>
-                        </span>
-                    </c-logger-page-section>
+        <!-- Modal body -->
+        <div class="slds-modal__content slds-p-around_medium">
+          <!-- Logger details section -->
+          <c-logger-page-section>
+            <span slot="title">Nebula Logger</span>
+            <span slot="content">
+              <lightning-layout class="slds-p-around_small">
+                <lightning-layout-item size="12">
+                  <lightning-input
+                    data-id="environment-loggerVersionNumber"
+                    label="Version Number"
+                    read-only
+                    type="text"
+                    value={environment.loggerVersionNumber}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-loggerNamespacePrefix"
+                    label="Namespace Prefix"
+                    read-only
+                    type="text"
+                    value={environment.loggerNamespacePrefix}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <template if:true={environment.loggerEnabledPlugins}>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                      <label class="slds-form-element__label" for="logger-enabled-plugins-output">Enabled Plugins</label>
+                      <div class="slds-form-element__control">
+                        <lightning-formatted-rich-text
+                          data-id="environment-loggerEnabledPlugins"
+                          id="logger-enabled-plugins-output"
+                          value={environment.loggerEnabledPlugins}
+                        ></lightning-formatted-rich-text>
+                      </div>
+                    </div>
+                  </template>
+                </lightning-layout-item>
+              </lightning-layout>
+            </span>
+          </c-logger-page-section>
 
-                    <!-- Organization details section -->
-                    <c-logger-page-section>
-                        <span slot="title">Organization</span>
-                        <span slot="content">
-                            <lightning-layout class="slds-p-around_small">
-                                <lightning-layout-item size="12">
-                                    <lightning-input
-                                        data-id="environment-organizationId"
-                                        label="Organization ID"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationId}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationName"
-                                        label="Organization Name"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationName}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationType"
-                                        label="Type"
-                                        read-only
-                                        type="url"
-                                        value={environment.organizationType}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationInstanceName"
-                                        label="Instance Name"
-                                        read-only
-                                        type="url"
-                                        value={environment.organizationInstanceName}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <div class="slds-form-element slds-form-element_horizontal">
-                                        <label class="slds-form-element__label" for="organization-instance-products-output">Instance Products</label>
-                                        <div class="slds-form-element__control">
-                                            <lightning-formatted-rich-text
-                                                data-id="environment-organizationInstanceProducts"
-                                                id="organization-instance-products-output"
-                                                value={environment.organizationInstanceProducts}
-                                            ></lightning-formatted-rich-text>
-                                        </div>
-                                    </div>
-                                    <lightning-input
-                                        data-id="environment-organizationInstanceLocation"
-                                        label="Instance Location"
-                                        read-only
-                                        type="url"
-                                        value={environment.organizationInstanceLocation}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationApiVersion"
-                                        label="API Version"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationApiVersion}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationReleaseNumber"
-                                        label="Release Number"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationReleaseNumber}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationReleaseVersion"
-                                        label="Release Version"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationReleaseVersion}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationMaintenanceWindow"
-                                        label="Maintenance Window"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationMaintenanceWindow}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationCreatedByUsername"
-                                        label="Created By"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationCreatedByUsername}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                    <lightning-input
-                                        data-id="environment-organizationFormattedCreatedDate"
-                                        label="Created Date"
-                                        read-only
-                                        type="text"
-                                        value={environment.organizationFormattedCreatedDate}
-                                        variant="label-inline"
-                                    ></lightning-input>
-                                </lightning-layout-item>
-                            </lightning-layout>
-                        </span>
-                    </c-logger-page-section>
-                </div>
+          <!-- Organization details section -->
+          <c-logger-page-section>
+            <span slot="title">Organization</span>
+            <span slot="content">
+              <lightning-layout class="slds-p-around_small">
+                <lightning-layout-item size="12">
+                  <lightning-input
+                    data-id="environment-organizationId"
+                    label="Organization ID"
+                    read-only
+                    type="text"
+                    value={environment.organizationId}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationName"
+                    label="Organization Name"
+                    read-only
+                    type="text"
+                    value={environment.organizationName}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationType"
+                    label="Type"
+                    read-only
+                    type="url"
+                    value={environment.organizationType}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationInstanceName"
+                    label="Instance Name"
+                    read-only
+                    type="url"
+                    value={environment.organizationInstanceName}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <div class="slds-form-element slds-form-element_horizontal">
+                    <label class="slds-form-element__label" for="organization-instance-products-output">Instance Products</label>
+                    <div class="slds-form-element__control">
+                      <lightning-formatted-rich-text
+                        data-id="environment-organizationInstanceProducts"
+                        id="organization-instance-products-output"
+                        value={environment.organizationInstanceProducts}
+                      ></lightning-formatted-rich-text>
+                    </div>
+                  </div>
+                  <lightning-input
+                    data-id="environment-organizationInstanceLocation"
+                    label="Instance Location"
+                    read-only
+                    type="url"
+                    value={environment.organizationInstanceLocation}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationApiVersion"
+                    label="API Version"
+                    read-only
+                    type="text"
+                    value={environment.organizationApiVersion}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationReleaseNumber"
+                    label="Release Number"
+                    read-only
+                    type="text"
+                    value={environment.organizationReleaseNumber}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationReleaseVersion"
+                    label="Release Version"
+                    read-only
+                    type="text"
+                    value={environment.organizationReleaseVersion}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationMaintenanceWindow"
+                    label="Maintenance Window"
+                    read-only
+                    type="text"
+                    value={environment.organizationMaintenanceWindow}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationCreatedByUsername"
+                    label="Created By"
+                    read-only
+                    type="text"
+                    value={environment.organizationCreatedByUsername}
+                    variant="label-inline"
+                  ></lightning-input>
+                  <lightning-input
+                    data-id="environment-organizationFormattedCreatedDate"
+                    label="Created Date"
+                    read-only
+                    type="text"
+                    value={environment.organizationFormattedCreatedDate}
+                    variant="label-inline"
+                  ></lightning-input>
+                </lightning-layout-item>
+              </lightning-layout>
+            </span>
+          </c-logger-page-section>
+        </div>
 
-                <!-- Modal footer -->
-                <footer class="slds-modal__footer">
-                    <lightning-button
-                        class="slds-p-around--xx-small"
-                        data-id="close-btn"
-                        label="Close"
-                        onclick={handleCloseEnvironmentDetailsModal}
-                        title="Close"
-                    ></lightning-button>
-                    <lightning-button
-                        class="slds-p-around--xx-small"
-                        data-id="view-status-site-btn"
-                        label="Open Status Site"
-                        onclick={handleViewStatusSite}
-                        title="Open Status Site"
-                        variant="brand"
-                    ></lightning-button>
-                </footer>
-            </div>
-        </section>
-        <div class="slds-backdrop slds-backdrop_open" onkeydown={handleKeyDown}></div>
-    </template>
+        <!-- Modal footer -->
+        <footer class="slds-modal__footer">
+          <lightning-button
+            class="slds-p-around--xx-small"
+            data-id="close-btn"
+            label="Close"
+            onclick={handleCloseEnvironmentDetailsModal}
+            title="Close"
+          ></lightning-button>
+          <lightning-button
+            class="slds-p-around--xx-small"
+            data-id="view-status-site-btn"
+            label="Open Status Site"
+            onclick={handleViewStatusSite}
+            title="Open Status Site"
+            variant="brand"
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" onkeydown={handleKeyDown}></div>
+  </template>
 </template>
