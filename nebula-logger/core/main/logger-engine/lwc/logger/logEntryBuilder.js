@@ -5,7 +5,7 @@
 import FORM_FACTOR from '@salesforce/client/formFactor';
 import { LoggerStackTrace } from './loggerStackTrace';
 
-const CURRENT_VERSION_NUMBER = 'v4.14.1';
+const CURRENT_VERSION_NUMBER = 'v4.14.2';
 
 const LOGGING_LEVEL_EMOJIS = {
   ERROR: '⛔',
@@ -132,7 +132,7 @@ const LogEntryBuilder = class {
     this.#componentLogEntry.error = {};
     if (error.body) {
       this.#componentLogEntry.error.message = error.body.message;
-      this.#componentLogEntry.error.stack = error.body.stackTrace;
+      this.#componentLogEntry.error.stackTrace = error.body.stackTrace;
       this.#componentLogEntry.error.type = error.body.exceptionType;
     } else {
       this.#componentLogEntry.error.message = error.message;
