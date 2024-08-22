@@ -1103,7 +1103,7 @@
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection8</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 AND 2</booleanFilter>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HasRecordId__c}</leftValue>
                         <operator>EQUAL</operator>

@@ -5,7 +5,7 @@
 import FORM_FACTOR from '@salesforce/client/formFactor';
 import { LoggerStackTrace } from './loggerStackTrace';
 
-const CURRENT_VERSION_NUMBER = 'v4.14.2';
+const CURRENT_VERSION_NUMBER = 'v4.14.3';
 
 const LOGGING_LEVEL_EMOJIS = {
   ERROR: '⛔',
