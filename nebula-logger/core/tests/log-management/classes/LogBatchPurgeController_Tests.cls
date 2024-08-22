@@ -164,8 +164,8 @@ private class LogBatchPurgeController_Tests {
   private static void it_should_return_summary_for_logEntryTag_created_today() {
     Integer expectedRecordCountWithPurgeActionDelete = 5;
     Integer expectedRecordCountWithPurgeActionCustom = 4;
-    createLogEntryTagRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, System.now());
-    createLogEntryTagRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, System.now());
+    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, System.now());
+    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, System.now());
 
     List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('TODAY');
 
@@ -186,8 +186,8 @@ private class LogBatchPurgeController_Tests {
     Integer expectedRecordCountWithPurgeActionDelete = 5;
     Integer expectedRecordCountWithPurgeActionCustom = 4;
     Datetime createDate = DateTime.newInstance(Date.today().toStartOfWeek(), Datetime.now().time());
-    createLogEntryTagRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryTagRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
+    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
 
     List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('THIS_WEEK');
 
@@ -208,8 +208,8 @@ private class LogBatchPurgeController_Tests {
     Integer expectedRecordCountWithPurgeActionDelete = 5;
     Integer expectedRecordCountWithPurgeActionCustom = 4;
     Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-    createLogEntryTagRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryTagRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
+    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
 
     List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('THIS_MONTH');
 
@@ -230,8 +230,8 @@ private class LogBatchPurgeController_Tests {
     Integer expectedRecordCountWithPurgeActionDelete = 5;
     Integer expectedRecordCountWithPurgeActionCustom = 4;
     Datetime createDate = Datetime.now();
-    createLogEntryTagRecords('TXN1', 'Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryTagRecords('TXN2', 'Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
+    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
 
     Map<String, Object> metricsResult = LogBatchPurgeController.getMetrics('TODAY');
 
@@ -360,8 +360,8 @@ private class LogBatchPurgeController_Tests {
     }
   }
 
-  private static void createLogEntryTagRecords(String transactionIdPrefix, String purgeAction, Integer noOfRecords, Datetime createDate) {
-    Log__c log = new log__c(TransactionId__c = transactionIdPrefix);
+  private static void createLogEntryTagRecords(String purgeAction, Integer noOfRecords, Datetime createDate) {
+    Log__c log = new log__c(TransactionId__c = System.UUID.randomUUID().toString());
     log.LogPurgeAction__c = purgeAction;
     log.LogRetentionDate__c = System.today();
     insert log;
