@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.2.NEXT",
-      "versionName": "Jest Test Bugfixes",
-      "versionDescription": "Fixed some Jest test failures that weren't previously reported by the pipeline",
+      "versionNumber": "4.14.3.NEXT",
+      "versionName": "LogEntryRecordPage Tab Visibility Bugfixes",
+      "versionDescription": "Fixed an issue with the visibility for the tab 'Related Record Details' on LogEntryRecordPage",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
