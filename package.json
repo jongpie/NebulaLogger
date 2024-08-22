@@ -68,21 +68,20 @@
     "test:apex": "npm run test:apex:nocoverage -- --code-coverage --detailed-coverage",
     "test:apex:nocoverage": "npx sf apex run test --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
     "test:apex:suite": "npx sf apex run test --suite-names LoggerCore --wait 30 --result-format human --code-coverage --detailed-coverage --output-dir ./tests/apex",
-    "test:lwc": "sf force lightning lwc test run --coverage",
-    "test:lwc:nocoverage": "sf force lightning lwc test run",
-    "test:nocoverage": "npm run test:lwc && npm run test:apex"
+    "test:lwc": "sfdx-lwc-jest --skipApiVersionCheck --coverage",
+    "test:lwc:nocoverage": "sfdx-lwc-jest --skipApiVersionCheck",
+    "test:nocoverage": "npm run test:lwc:nocoverage && npm run test:apex:nocoverage"
   },
   "devDependencies": {
     "@babel/core": "7.24.4",
     "@babel/eslint-parser": "7.24.1",
     "@cparra/apexdocs": "1.13.7",
     "@jongpie/sfdx-bummer-plugin": "^0.0.20",
-    "@lwc/eslint-plugin-lwc": "^1.7.2",
-    "@prettier/plugin-xml": "^3.4.1",
-    "@salesforce/cli": "^2.38.7",
-    "@salesforce/eslint-config-lwc": "^3.5.3",
-    "@salesforce/sfdx-lwc-jest": "^5.0.0",
-    "@salesforce/sfdx-scanner": "^3.23.0",
+    "@lwc/eslint-plugin-lwc": "^1.8.2",
+    "@salesforce/cli": "^2.55.6",
+    "@salesforce/eslint-config-lwc": "^3.6.0",
+    "@salesforce/sfdx-lwc-jest": "^5.1.0",
+    "@salesforce/sfdx-scanner": "^4.4.0",
     "@types/jest-when": "^3.5.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -92,7 +91,7 @@
     "jsdoc-to-markdown": "^8.0.1",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
-    "prettier-plugin-apex": "^2.1.0",
+    "prettier-plugin-apex": "^2.1.4",
     "pwsh": "^0.3.0"
   }
 }
