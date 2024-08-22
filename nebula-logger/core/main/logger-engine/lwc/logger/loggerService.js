@@ -114,11 +114,12 @@ const LoggerService = class {
   }
 
   _newEntry(loggingLevel, message, originStackTraceError) {
-    const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled);
+    originStackTraceError = originStackTraceError ?? new Error();
+    const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled)
+      .parseStackTrace(originStackTraceError)
+      .setMessage(message)
+      .setScenario(this.#scenario);
     if (this._meetsUserLoggingLevel(loggingLevel)) {
-      originStackTraceError = originStackTraceError ?? new Error();
-      logEntryBuilder.parseStackTrace(originStackTraceError).setMessage(message);
-      logEntryBuilder.setScenario(this.#scenario);
       this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
     }
 
