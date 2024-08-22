@@ -6,5 +6,6 @@ module.exports = {
     '^lightning/empApi$': '<rootDir>/config/jest/mocks/lightning/empApi',
     '^lightning/navigation$': '<rootDir>/config/jest/mocks/lightning/navigation'
   },
-  modulePathIgnorePatterns: ['recipes']
+  modulePathIgnorePatterns: ['recipes'],
+  testPathIgnorePatterns: ['<rootDir>/temp/']
 };

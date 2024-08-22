@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.1.NEXT",
-      "versionName": "Reduced prettier tab width",
-      "versionDescription": "No functional changes - updated prettier to use 2 spaces (instead of 4) + reformatted all metadata",
+      "versionNumber": "4.14.2.NEXT",
+      "versionName": "Jest Test Bugfixes",
+      "versionDescription": "Fixed some Jest test failures that weren't previously reported by the pipeline",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -186,6 +186,7 @@
     "Nebula Logger - Core@4.13.17-overhauled-javascript-stack-trace-parsing": "04t5Y0000015oPCQAY",
     "Nebula Logger - Core@4.14.0-summer-'24-release": "04t5Y0000015oPvQAI",
     "Nebula Logger - Core@4.14.1-reduced-prettier-tab-width": "04t5Y0000015oQPQAY",
+    "Nebula Logger - Core@4.14.2-jest-test-bugfixes": "04t5Y0000015oQZQAY",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

@@ -1,5 +1,6 @@
 import { createElement } from 'lwc';
 import FORM_FACTOR from '@salesforce/client/formFactor';
+import { LoggerStackTrace } from '../loggerStackTrace';
 // Recommended approach
 import { createLogger } from 'c/logger';
 // Legacy approach
@@ -186,7 +187,7 @@ describe('logger lwc import tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.error.type).toEqual('JavaScript.TypeError');
   });
 
@@ -211,7 +212,7 @@ describe('logger lwc import tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.body.message);
-    expect(logEntry.error.stack).toEqual(error.body.stackTrace);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.error.type).toEqual(error.body.exceptionType);
   });
 
@@ -264,15 +265,15 @@ describe('logger lwc import tests', () => {
 
     await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('ERROR');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('ERROR');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
   it('still works for WARN logging level when disabled when using recommended import approach', async () => {
@@ -294,15 +295,15 @@ describe('logger lwc import tests', () => {
 
     await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('WARN');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('WARN');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
   it('still works for INFO logging level when disabled when using recommended import approach', async () => {
@@ -324,15 +325,15 @@ describe('logger lwc import tests', () => {
 
     await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('INFO');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('INFO');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
   it('still works for DEBUG logging level when disabled when using recommended import approach', async () => {
@@ -354,15 +355,15 @@ describe('logger lwc import tests', () => {
 
     await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('DEBUG');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('DEBUG');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
   it('still works for FINE logging level when disabled when using recommended import approach', async () => {
@@ -384,15 +385,15 @@ describe('logger lwc import tests', () => {
 
     await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('FINE');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('FINE');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
   it('still works for FINER logging level when disabled when using recommended import approach', async () => {
@@ -414,15 +415,15 @@ describe('logger lwc import tests', () => {
 
     await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('FINER');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('FINER');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
   it('still works for FINEST logging level when disabled when using recommended import approach', async () => {
@@ -444,15 +445,15 @@ describe('logger lwc import tests', () => {
 
     await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('FINEST');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('FINEST');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
   it('flushes buffer when using recommended import approach', async () => {
@@ -668,7 +669,7 @@ describe('logger lwc legacy markup tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.error.type).toEqual('JavaScript.TypeError');
   });
 
@@ -695,7 +696,7 @@ describe('logger lwc legacy markup tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.body.message);
-    expect(logEntry.error.stack).toEqual(error.body.stackTrace);
+    expect(logEntry.error.stackTrace).toEqual(error.body.stackTrace);
     expect(logEntry.error.type).toEqual(error.body.exceptionType);
   });
 
@@ -757,9 +758,9 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
     expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
+    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.timestamp).toBeTruthy();
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
   });
@@ -788,9 +789,9 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
     expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
+    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.timestamp).toBeTruthy();
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
   });
@@ -819,9 +820,9 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
     expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
+    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.timestamp).toBeTruthy();
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
   });
@@ -850,9 +851,9 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
     expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
+    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.timestamp).toBeTruthy();
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
   });
@@ -881,9 +882,9 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
     expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
+    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.timestamp).toBeTruthy();
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
   });
@@ -919,9 +920,9 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
     expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
+    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.timestamp).toBeTruthy();
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
   });
@@ -951,9 +952,9 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
     expect(logEntry.error).toBeTruthy();
-    expect(logEntry.stack).toBeTruthy();
+    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stack).toEqual(error.stack);
+    expect(logEntry.error.stackTrace).toBeTruthy();
     expect(logEntry.timestamp).toBeTruthy();
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
   });
