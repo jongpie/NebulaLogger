@@ -15,7 +15,11 @@ Logger.getUserSettings().IsDataMaskingEnabled__c = true;
 Schema.User currentUser = [SELECT Id, Name, Username, Profile.Name FROM User WHERE Id = :System.UserInfo.getUserId()];
 currentUser.AboutMe = 'I hope you dont leak my social, which is 400-11-9999, btw.';
 
-new ExampleClassWithComplexLogging().doSomething();
+try {
+    new ExampleClassWithLogging().doSomething();
+} catch(Exception ex) {
+    Logger.warn('Something broke', ex);
+}
 
 // Logger.error('Example ERROR entry', new DmlException('fake DML exception')).addTag('some important tag');
 Logger.error('Here is my fake Visa credit card 4000-1111-2222-0004, please don\'t steal it').addTag('data masking rule').addTag('credit card masking');
