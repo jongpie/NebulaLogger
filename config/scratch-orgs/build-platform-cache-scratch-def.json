@@ -3,7 +3,7 @@
   "edition": "Enterprise",
   "hasSampleData": true,
   "country": "JP",
-  "language": "jp",
+  "language": "ja",
   "features": ["PlatformCache"],
   "settings": {
     "chatterSettings": {

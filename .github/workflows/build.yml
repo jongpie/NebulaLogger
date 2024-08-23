@@ -164,7 +164,7 @@ jobs:
           DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Create Base Scratch Org'
+      - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-base-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Deploy Source to Scratch Org'
@@ -214,15 +214,19 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 'Authorize Demo Org'
+      - name: 'Authorize Dev Hub'
         shell: bash
         run: |
-          echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-          npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo --set-default-dev-hub
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
         env:
-          PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Create Base Scratch Org'
+      - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-chatter-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Deploy Source to Scratch Org'
@@ -252,7 +256,7 @@ jobs:
   event-monitoring-scratch-org-tests:
     environment: 'Event Monitoring Scratch Org'
     name: 'Run Event Monitoring Scratch Org Tests'
-    needs: [code-quality-tests]
+    needs: [code-quality-tests, base-scratch-org-tests]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -284,7 +288,7 @@ jobs:
           DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Create Base Scratch Org'
+      - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-event-monitoring-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Deploy Source to Scratch Org'
@@ -314,7 +318,7 @@ jobs:
   experience-cloud-scratch-org-tests:
     environment: 'Experience Cloud Scratch Org'
     name: 'Run Experience Cloud Scratch Org Tests'
-    needs: [code-quality-tests]
+    needs: [code-quality-tests, chatter-scratch-org-tests]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -334,15 +338,19 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 'Authorize Demo Org'
+      - name: 'Authorize Dev Hub'
         shell: bash
         run: |
-          echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-          npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo --set-default-dev-hub
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
         env:
-          PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Create Experience Cloud Scratch Org'
+      - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-experience-cloud-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Deploy Source to Scratch Org'
@@ -382,7 +390,7 @@ jobs:
   platform-cache-scratch-org-tests:
     environment: 'Platform Cache Scratch Org'
     name: 'Run Platform Cache Scratch Org Tests'
-    needs: [code-quality-tests]
+    needs: [code-quality-tests, experience-cloud-scratch-org-tests]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -402,15 +410,19 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 'Authorize Demo Org'
+      - name: 'Authorize Dev Hub'
         shell: bash
         run: |
-          echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-          npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo --set-default-dev-hub
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
         env:
-          PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Create Base Scratch Org'
+      - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-platform-cache-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Deploy Source to Scratch Org'
