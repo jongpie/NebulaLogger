@@ -7,7 +7,7 @@
 @IsTest(IsParallel=false)
 private class LoggerSettingsController_Tests_Security {
   private static final String CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME = 'CanModifyLoggerSettings';
-  private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
+  private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar', '標準ユーザー')];
 
   @IsTest
   static void it_should_permit_user_to_modify_logger_settings_when_custom_permission_is_assigned() {

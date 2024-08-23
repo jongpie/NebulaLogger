@@ -7,7 +7,7 @@
 @IsTest(IsParallel=false)
 private class LogBatchPurger_Tests_Database {
   private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
-  private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
+  private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar', '標準ユーザー')];
 
   @TestSetup
   static void setupData() {
