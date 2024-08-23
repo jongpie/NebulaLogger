@@ -13,6 +13,10 @@ const flushPromises = async () => {
   await new Promise(process.nextTick);
 };
 
+jest.mock('lightning/logger', () => ({ loadScript: jest.fn() }), {
+  virtual: true
+});
+
 jest.mock(
   '@salesforce/apex/ComponentLogger.getSettings',
   () => {

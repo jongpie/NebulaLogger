@@ -17,9 +17,6 @@
       "enableEventLogGeneration": false,
       "eventLogRetentionDuration": 0
     },
-    "experienceBundleSettings": {
-      "enableExperienceBundleMetadata": false
-    },
     "pathAssistantSettings": {
       "pathAssistantEnabled": false
     }

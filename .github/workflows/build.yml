@@ -348,7 +348,7 @@ jobs:
       - name: 'Deploy Source to Scratch Org'
         run: npx sf project deploy start --source-dir ./nebula-logger/
 
-      - name: 'Deploy Test Experience Site Metadata'
+      - name: 'Deploy Test Experience Sites Metadata'
         run: npm run experience:deploy
 
       - name: 'Assign Logger Admin Permission Set'
@@ -560,7 +560,15 @@ jobs:
 
   promote-package-versions:
     name: 'Promote Package Versions'
-    needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+    needs:
+      [
+        lwc-tests,
+        base-scratch-org-tests,
+        chatter-scratch-org-tests,
+        event-monitoring-scratch-org-tests,
+        experience-cloud-scratch-org-tests,
+        platform-cache-scratch-org-tests
+      ]
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
