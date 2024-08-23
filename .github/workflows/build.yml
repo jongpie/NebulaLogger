@@ -124,7 +124,7 @@ jobs:
         run: npm run test:lwc
 
       - name: 'Upload LWC code coverage to Codecov.io'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: LWC
@@ -316,7 +316,7 @@ jobs:
 
       # This is the only scratch org that's used for uploading code coverage
       - name: 'Upload Apex test code coverage to Codecov.io'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: Apex
