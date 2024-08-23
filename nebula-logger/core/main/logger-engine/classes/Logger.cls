@@ -3075,7 +3075,7 @@ global with sharing class Logger {
     orderedScenarios.add(scenario);
     // One of a few limited places in the codebase (except tests) that should use System.debug()
     // The rest of the codebase should use a method in Logger.cls
-    if (String.isNotBlank(transactionScenario)) {
+    if (String.isNotBlank(currentEntryScenario)) {
       System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Entry Scenario: ' + currentEntryScenario);
     }
     LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
