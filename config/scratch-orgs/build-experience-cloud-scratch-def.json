@@ -7,7 +7,7 @@
   "features": ["Communities"],
   "settings": {
     "chatterSettings": {
-      "enableChatter": true
+      "enableChatter": false
     },
     "communitiesSettings": {
       "enableNetworksEnabled": true
@@ -21,7 +21,7 @@
       "enableExperienceBundleMetadata": true
     },
     "pathAssistantSettings": {
-      "pathAssistantEnabled": true
+      "pathAssistantEnabled": false
     }
   }
 }

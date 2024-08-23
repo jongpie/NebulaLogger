@@ -19,7 +19,7 @@
       "eventLogRetentionDuration": 30
     },
     "pathAssistantSettings": {
-      "pathAssistantEnabled": false
+      "pathAssistantEnabled": true
     }
   }
 }
