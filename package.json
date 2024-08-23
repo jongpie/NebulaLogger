@@ -28,8 +28,8 @@
     "big objects"
   ],
   "engines": {
-    "node": ">= 12.18.0",
-    "npm": ">= 6.14.0"
+    "node": ">= 20.16.0",
+    "npm": ">= 10.3.0"
   },
   "scripts": {
     "apex:tail:log": "sf apex tail log --color",
@@ -66,8 +66,8 @@
     "sf:plugins:link:scanner": "npx sf plugins link ./node_modules/@salesforce/sfdx-scanner",
     "test": "npm run test:lwc && npm run test:apex",
     "test:apex": "npm run test:apex:nocoverage -- --code-coverage --detailed-coverage",
-    "test:apex:nocoverage": "npx sf apex run test --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
-    "test:apex:suite": "npx sf apex run test --suite-names LoggerCore --wait 30 --result-format human --code-coverage --detailed-coverage --output-dir ./tests/apex",
+    "test:apex:nocoverage": "npx sf apex run test --concise --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
+    "test:apex:suite": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --code-coverage --detailed-coverage --output-dir ./tests/apex",
     "test:lwc": "sfdx-lwc-jest --skipApiVersionCheck --coverage",
     "test:lwc:nocoverage": "sfdx-lwc-jest --skipApiVersionCheck",
     "test:nocoverage": "npm run test:lwc:nocoverage && npm run test:apex:nocoverage"
@@ -78,7 +78,7 @@
     "@cparra/apexdocs": "1.13.7",
     "@jongpie/sfdx-bummer-plugin": "^0.0.20",
     "@lwc/eslint-plugin-lwc": "^1.8.2",
-    "@salesforce/cli": "^2.55.6",
+    "@salesforce/cli": "^2.56.6",
     "@salesforce/eslint-config-lwc": "^3.6.0",
     "@salesforce/sfdx-lwc-jest": "^5.1.0",
     "@salesforce/sfdx-scanner": "^4.4.0",
