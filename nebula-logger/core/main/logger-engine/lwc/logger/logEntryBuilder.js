@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 import FORM_FACTOR from '@salesforce/client/formFactor';
+import { log as lightningLog } from 'lightning/logger';
 import { LoggerStackTrace } from './loggerStackTrace';
 
 const CURRENT_VERSION_NUMBER = 'v4.14.3';
@@ -64,16 +65,19 @@ const ComponentLogEntry = class {
 const LogEntryBuilder = class {
   #componentLogEntry;
   #isConsoleLoggingEnabled;
+  #isLightningLoggerEnabled;
 
   /**
    * @description Constructor used to generate each JavaScript-based log entry event
    *              This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
    * @param  {String} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
    * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
+   * @param  {Boolean} isLightningLoggerEnabled Determines if `lightning-logger` LWC is called
    */
-  constructor(loggingLevel, isConsoleLoggingEnabled) {
+  constructor(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled) {
     this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
     this.#isConsoleLoggingEnabled = isConsoleLoggingEnabled;
+    this.#isLightningLoggerEnabled = isLightningLoggerEnabled;
 
     this._setBrowserDetails();
   }
@@ -86,6 +90,7 @@ const LogEntryBuilder = class {
   setMessage(message) {
     this.#componentLogEntry.message = message;
     this._logToConsole();
+    this._logToLightningLogger();
     return this;
   }
 
@@ -238,6 +243,12 @@ const LogEntryBuilder = class {
     );
   }
 
+  _logToLightningLogger() {
+    if (this.#isLightningLoggerEnabled) {
+      lightningLog(this.#componentLogEntry);
+    }
+  }
+
   _setBrowserDetails() {
     const browser = new ComponentBrowser();
     this.#componentLogEntry.browserAddress = browser.address;
@@ -252,15 +263,15 @@ const LogEntryBuilder = class {
 };
 
 let hasInitialized = false;
-export function newLogEntry(loggingLevel, isConsoleLoggingEnabled) {
+export function newLogEntry(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled) {
   if (!hasInitialized) {
     const consoleMessagePrefix = `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `;
     const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
     const browserDetails = new ComponentBrowser();
     /* eslint-disable no-console */
-    console.info(consoleMessagePrefix, consoleFormatting, 'INFOℹ️: logger component initialized\n' + JSON.stringify(browserDetails, null, 2));
+    console.info(consoleMessagePrefix, consoleFormatting, 'ℹ️ INFO: logger component initialized\n' + JSON.stringify(browserDetails, null, 2));
 
     hasInitialized = true;
   }
-  return new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled);
+  return new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled);
 }

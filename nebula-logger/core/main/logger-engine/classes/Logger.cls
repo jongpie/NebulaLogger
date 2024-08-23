@@ -3098,6 +3098,9 @@ global with sharing class Logger {
       if (String.isNotBlank(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c)) {
         userSettings.IsJavaScriptConsoleLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c);
       }
+      if (String.isNotBlank(matchingScenarioRule.IsJavaScriptLightningLoggerEnabled__c)) {
+        userSettings.IsJavaScriptLightningLoggerEnabled__c = Boolean.valueOf(matchingScenarioRule.IsJavaScriptLightningLoggerEnabled__c);
+      }
       if (String.isNotBlank(matchingScenarioRule.IsRecordFieldStrippingEnabled__c)) {
         userSettings.IsRecordFieldStrippingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsRecordFieldStrippingEnabled__c);
       }

@@ -11,13 +11,17 @@ private class ComponentLogger_Tests {
   @IsTest
   static void it_should_return_logger_settings() {
     LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
-    loggerSettings.IsEnabled__c = true;
-    loggerSettings.LoggingLevel__c = 'FINEST';
+    loggerSettings.IsEnabled__c = !((Boolean) LoggerSettings__c.IsEnabled__c.getDescribe().getDefaultValue());
+    loggerSettings.IsJavaScriptConsoleLoggingEnabled__c = !((Boolean) LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c.getDescribe().getDefaultValue());
+    loggerSettings.IsJavaScriptLightningLoggerEnabled__c = !((Boolean) LoggerSettings__c.IsJavaScriptLightningLoggerEnabled__c.getDescribe().getDefaultValue());
+    loggerSettings.LoggingLevel__c = 'FINE';
     upsert loggerSettings;
 
     ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
 
     System.Assert.areEqual(loggerSettings.IsEnabled__c, componentLoggerSettings.isEnabled);
+    System.Assert.areEqual(loggerSettings.IsJavaScriptConsoleLoggingEnabled__c, componentLoggerSettings.isConsoleLoggingEnabled);
+    System.Assert.areEqual(loggerSettings.IsJavaScriptLightningLoggerEnabled__c, componentLoggerSettings.isLightningLoggerEnabled);
     System.Assert.areEqual(loggerSettings.LoggingLevel__c, componentLoggerSettings.userLoggingLevel.name);
     System.LoggingLevel userLoggingLevel = Logger.getLoggingLevel(loggerSettings.LoggingLevel__c);
     System.Assert.areEqual(userLoggingLevel.name(), componentLoggerSettings.userLoggingLevel.name);

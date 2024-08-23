@@ -193,10 +193,16 @@ public inherited sharing class ComponentLogger {
     public Boolean isEnabled { get; set; }
 
     /**
-     * @description Indicates if logging via the browser's `console.log()` is enabled for the current user, based on `Logger.IsJavaScriptConsoleLoggingEnabled__c`
+     * @description Indicates if logging via the browser's `console.log()` is enabled for the current user, based on `LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c`
      */
     @AuraEnabled
     public Boolean isConsoleLoggingEnabled { get; set; }
+
+    /**
+     * @description Indicates if logging via the standard LWC `lightning-logger` is enabled for the current user, based on `LoggerSettings__c.IsJavaScriptLightningLoggerEnabled__c`
+     */
+    @AuraEnabled
+    public Boolean isLightningLoggerEnabled { get; set; }
 
     /**
      * @description A map of the supported `LoggingLevel` enum values
@@ -211,9 +217,12 @@ public inherited sharing class ComponentLogger {
     public ComponentLoggingLevel userLoggingLevel { get; set; }
 
     private ComponentLoggerSettings() {
+      LoggerSettings__c userSettings = Logger.getUserSettings();
+
       this.defaultSaveMethodName = Logger.getSaveMethod().name();
-      this.isEnabled = Logger.getUserSettings().IsEnabled__c;
-      this.isConsoleLoggingEnabled = Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c;
+      this.isEnabled = userSettings.IsEnabled__c;
+      this.isConsoleLoggingEnabled = userSettings.IsJavaScriptConsoleLoggingEnabled__c;
+      this.isLightningLoggerEnabled = userSettings.IsJavaScriptLightningLoggerEnabled__c;
       this.supportedLoggingLevels = getSupportedLoggingLevels();
       this.userLoggingLevel = getUserLoggingLevel();
     }

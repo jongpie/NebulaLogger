@@ -73,6 +73,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>IsJavaScriptLightningLoggerEnabled__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>IsDataMaskingEnabled__c</field>
             </layoutItems>
             <layoutItems>

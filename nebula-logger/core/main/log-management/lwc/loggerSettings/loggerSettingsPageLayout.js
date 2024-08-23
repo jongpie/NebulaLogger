@@ -36,6 +36,7 @@ const PAGE_LAYOUT_CONFIG = {
           fieldApiNames: [
             'IsApexSystemDebugLoggingEnabled__c',
             'IsJavaScriptConsoleLoggingEnabled__c',
+            'IsJavaScriptLightningLoggerEnabled__c',
             'IsDataMaskingEnabled__c',
             'IsRecordFieldStrippingEnabled__c',
             'IsAnonymousModeEnabled__c'

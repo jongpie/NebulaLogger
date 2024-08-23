@@ -173,11 +173,15 @@ Indicates the save method that will be used by default if no other save method i
 
 ###### `isConsoleLoggingEnabled` → `Boolean`
 
-Indicates if logging via the browser&apos;s `console.log()` is enabled for the current user, based on `Logger.IsJavaScriptConsoleLoggingEnabled__c`
+Indicates if logging via the browser&apos;s `console.log()` is enabled for the current user, based on `LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c`
 
 ###### `isEnabled` → `Boolean`
 
 Indicates if logging is enabled for the current user, based on `LoggerSettings__c.IsEnabled__c`
+
+###### `isLightningLoggerEnabled` → `Boolean`
+
+Indicates if logging via the standard LWC `lightning-logger` is enabled for the current user, based on `LoggerSettings__c.IsJavaScriptLightningLoggerEnabled__c`
 
 ###### `supportedLoggingLevels` → `Map<String, Integer>`
 

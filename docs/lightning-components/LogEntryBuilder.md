@@ -5,7 +5,7 @@
 **Kind**: global class
 
 - [LogEntryBuilder](#LogEntryBuilder)
-  - [new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled)](#new_LogEntryBuilder_new)
+  - [new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled)](#new_LogEntryBuilder_new)
   - [.setMessage(message)](#LogEntryBuilder+setMessage) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
@@ -18,15 +18,16 @@
 
 <a name="new_LogEntryBuilder_new"></a>
 
-### new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled)
+### new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled)
 
 Constructor used to generate each JavaScript-based log entry event
 This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
 
-| Param                   | Type                 | Description                                                                     |
-| ----------------------- | -------------------- | ------------------------------------------------------------------------------- |
-| loggingLevel            | <code>String</code>  | The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e` |
-| isConsoleLoggingEnabled | <code>Boolean</code> | Determines if `console.log()` methods are execute                               |
+| Param                    | Type                 | Description                                                                     |
+| ------------------------ | -------------------- | ------------------------------------------------------------------------------- |
+| loggingLevel             | <code>String</code>  | The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e` |
+| isConsoleLoggingEnabled  | <code>Boolean</code> | Determines if `console.log()` methods are execute                               |
+| isLightningLoggerEnabled | <code>Boolean</code> | Determines if `lightning-logger` LWC is called                                  |
 
 <a name="LogEntryBuilder+setMessage"></a>
 
