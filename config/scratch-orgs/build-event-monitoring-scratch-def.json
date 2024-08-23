@@ -1,10 +1,10 @@
 {
-  "orgName": "Nebula Logger - Build - Base Scratch Org",
+  "orgName": "Nebula Logger - Build - Event Monitoring Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
-  "country": "US",
-  "language": "en_US",
-  "features": [],
+  "country": "AU",
+  "language": "en_AU",
+  "features": ["EventLogFile"],
   "settings": {
     "chatterSettings": {
       "enableChatter": false
@@ -13,9 +13,10 @@
       "enableNetworksEnabled": false
     },
     "eventSettings": {
-      "enableDeleteMonitoringData": false,
-      "enableEventLogGeneration": false,
-      "eventLogRetentionDuration": 0
+      "enableDeleteMonitoringData": true,
+      "enableEventLogGeneration": true,
+      "enableLightningLoggerEvents": true,
+      "eventLogRetentionDuration": 30
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": false

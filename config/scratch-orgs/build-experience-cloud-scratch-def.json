@@ -1,16 +1,21 @@
 {
   "orgName": "Nebula Logger - Build - Experience Cloud Scratch Org",
   "edition": "Enterprise",
-  "hasSampleData": false,
+  "hasSampleData": true,
   "country": "ES",
   "language": "es",
-  "features": ["Communities", "PlatformCache"],
+  "features": ["Communities"],
   "settings": {
     "chatterSettings": {
       "enableChatter": true
     },
     "communitiesSettings": {
       "enableNetworksEnabled": true
+    },
+    "eventSettings": {
+      "enableDeleteMonitoringData": false,
+      "enableEventLogGeneration": false,
+      "eventLogRetentionDuration": 0
     },
     "experienceBundleSettings": {
       "enableExperienceBundleMetadata": true
