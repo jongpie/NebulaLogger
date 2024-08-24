@@ -38,14 +38,7 @@ const ComponentBrowser = class {
 
 // JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
 const ComponentLogEntry = class {
-  browserAddress = null;
-  browserFormFactor = null;
-  browserLanguage = null;
-  browserScreenResolution = null;
-  // TODO Deprecated, remove in a future release
-  browserUrl = null;
-  browserUserAgent = null;
-  browserWindowResolution = null;
+  browser = new ComponentBrowser();
   error = null;
   loggingLevel = null;
   message = null;
@@ -78,8 +71,6 @@ const LogEntryBuilder = class {
     this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
     this.#isConsoleLoggingEnabled = isConsoleLoggingEnabled;
     this.#isLightningLoggerEnabled = isLightningLoggerEnabled;
-
-    this._setBrowserDetails();
   }
 
   /**
@@ -247,18 +238,6 @@ const LogEntryBuilder = class {
     if (this.#isLightningLoggerEnabled) {
       lightningLog(this.#componentLogEntry);
     }
-  }
-
-  _setBrowserDetails() {
-    const browser = new ComponentBrowser();
-    this.#componentLogEntry.browserAddress = browser.address;
-    this.#componentLogEntry.browserFormFactor = browser.formFactor;
-    this.#componentLogEntry.browserLanguage = browser.language;
-    this.#componentLogEntry.browserScreenResolution = browser.screenResolution;
-    // TODO Deprecated, remove in a future release
-    this.#componentLogEntry.browserUrl = browser.address;
-    this.#componentLogEntry.browserUserAgent = browser.userAgent;
-    this.#componentLogEntry.browserWindowResolution = browser.windowResolution;
   }
 };
 

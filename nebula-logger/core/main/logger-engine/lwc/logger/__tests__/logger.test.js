@@ -148,6 +148,21 @@ describe('logger lwc import tests', () => {
     expect(logEntry.message).toEqual(message);
   });
 
+  it('sets browser details when using recommended import approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = await createLogger();
+    await logger.getUserSettings();
+
+    const logEntry = logger.info('example log entry').getComponentLogEntry();
+
+    expect(logEntry.browser.address).toEqual(window.location.href);
+    expect(logEntry.browser.formFactor).toEqual(FORM_FACTOR);
+    expect(logEntry.browser.language).toEqual(window.navigator.language);
+    expect(logEntry.browser.screenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);
+    expect(logEntry.browser.userAgent).toEqual(window.navigator.userAgent);
+    expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
+  });
+
   it('sets recordId when using recommended import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = await createLogger();
@@ -627,6 +642,22 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.message).toEqual(message);
   });
 
+  it('sets browser details when using deprecated markup approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = createElement('c-logger', { is: Logger });
+    document.body.appendChild(logger);
+    await flushPromises();
+
+    const logEntry = await logger.info('example log entry').getComponentLogEntry();
+
+    expect(logEntry.browser.address).toEqual(window.location.href);
+    expect(logEntry.browser.formFactor).toEqual(FORM_FACTOR);
+    expect(logEntry.browser.language).toEqual(window.navigator.language);
+    expect(logEntry.browser.screenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);
+    expect(logEntry.browser.userAgent).toEqual(window.navigator.userAgent);
+    expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
+  });
+
   it('sets recordId when using deprecated markup approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = createElement('c-logger', { is: Logger });
@@ -913,13 +944,6 @@ describe('logger lwc legacy markup tests', () => {
       .getComponentLogEntry();
 
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.browserAddress).toEqual(window.location.href);
-    expect(logEntry.browserFormFactor).toEqual(FORM_FACTOR);
-    expect(logEntry.browserLanguage).toEqual(window.navigator.language);
-    expect(logEntry.browserScreenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);
-    expect(logEntry.browserUrl).toEqual(window.location.href);
-    expect(logEntry.browserUserAgent).toEqual(window.navigator.userAgent);
-    expect(logEntry.browserWindowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
     expect(logEntry.loggingLevel).toEqual('FINER');
     expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.record).toEqual({ Id: 'some_record_Id' });

@@ -55,6 +55,40 @@ return The transaction ID (based on `Logger.getTransactionId())`
 
 ### Inner Classes
 
+#### ComponentLogger.ComponentBrowser class
+
+A DTO object used to log details about the user&apos;s browser
+
+---
+
+##### Properties
+
+###### `address` → `String`
+
+The URL displayed in the user&apos;s browser
+
+###### `formFactor` → `String`
+
+The form factor of the user&apos;s browser
+
+###### `language` → `String`
+
+The language set in the user&apos;s browser
+
+###### `screenResolution` → `String`
+
+The resolution of the user&apos;s device
+
+###### `userAgent` → `String`
+
+The user agent of the user&apos;s browser
+
+###### `windowResolution` → `String`
+
+The resolution of the user&apos;s browser window
+
+---
+
 #### ComponentLogger.ComponentError class
 
 A DTO object used to log details about a JavaScript error
@@ -89,33 +123,9 @@ A DTO object used to create log entries for lightning components
 
 ##### Properties
 
-###### `browserAddress` → `String`
+###### `browser` → `ComponentBrowser`
 
-The URL displayed in the user&apos;s browser
-
-###### `browserFormFactor` → `String`
-
-The form factor of the user&apos;s browser
-
-###### `browserLanguage` → `String`
-
-The language set in the user&apos;s browser
-
-###### `browserScreenResolution` → `String`
-
-The resolution of the user&apos;s device
-
-###### `browserUrl` → `String`
-
-`DEPRECATED` Use `browserAddress` instead
-
-###### `browserUserAgent` → `String`
-
-The user agent of the user&apos;s browser
-
-###### `browserWindowResolution` → `String`
-
-The resolution of the user&apos;s browser window
+Context about the user&apos;s browser, automatically captured by Nebula Logger
 
 ###### `error` → `ComponentError`
 
