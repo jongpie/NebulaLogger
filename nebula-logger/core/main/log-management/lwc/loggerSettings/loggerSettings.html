@@ -28,7 +28,15 @@
       </template>
     </div>
     <div>
-      <lightning-datatable columns={columns} data={records} hide-checkbox-column key-field="Id" onrowaction={handleRowAction} show-row-number-column>
+      <lightning-datatable
+        columns={columns}
+        data={records}
+        hide-checkbox-column
+        key-field="Id"
+        onrowaction={handleRowAction}
+        show-row-number-column
+        wrap-table-header
+      >
       </lightning-datatable>
     </div>
   </lightning-card>
