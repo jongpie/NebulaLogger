@@ -22,7 +22,45 @@ Enum used to control how LogEntryEvent\_\_e records are inserted
 
 ---
 
+### Properties
+
+#### `Products` → `List<StatusApiResponseProduct>`
+
+#### `allOrNone` → `Boolean`
+
+Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
+
+#### `childJobId` → `String`
+
+#### `location` → `String`
+
+#### `maintenanceWindow` → `String`
+
+#### `parentJobId` → `String`
+
+#### `records` → `List<SObject>`
+
+List of records to save.
+
+#### `releaseNumber` → `String`
+
+#### `releaseVersion` → `String`
+
+#### `triggerId` → `String`
+
+#### `type` → `String`
+
+---
+
 ### Methods
+
+#### `AsyncContext(Database.BatchableContext batchableContext)` → `public`
+
+#### `AsyncContext(System.FinalizerContext finalizerContext)` → `public`
+
+#### `AsyncContext(System.QueueableContext queueableContext)` → `public`
+
+#### `AsyncContext(System.SchedulableContext schedulableContext)` → `public`
 
 #### `callStatusApi()` → `StatusApiResponse`
 
@@ -1585,6 +1623,16 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`, autom
 | `message`       | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `records`       | The list of `SObject` records to log                                      |
 | `apexException` | The instance of `System.Exception` to log and throw                       |
+
+#### `execute(System.QueueableContext queueableContext)` → `void`
+
+Asynchronoulsy publishes the list of `LogEntryEvent__e` records
+
+##### Parameters
+
+| Param              | Description                                                |
+| ------------------ | ---------------------------------------------------------- |
+| `queueableContext` | The context of the current queue, provided by the platform |
 
 #### `fine(LogMessage logMessage, Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
 
@@ -4306,6 +4354,16 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `insertRecords(List<SObject> records)` → `void`
+
+Inserts records via the REST api.
+
+##### Parameters
+
+| Param     | Description          |
+| --------- | -------------------- |
+| `records` | The records to save. |
+
 #### `isDebugEnabled()` → `Boolean`
 
 Indicates if logging level &apos;DEBUG&apos; is enabled for the current user, based on the custom setting LoggerSettings\_\_c
@@ -4474,7 +4532,7 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
-#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;LeadConvertResult&gt;` where `isSuccess() != true`
 
@@ -4672,7 +4730,7 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
-#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;UndeleteResult&gt;` where `isSuccess() != true`
 
@@ -5740,84 +5798,14 @@ Inner class for publishing log entries via the System.Queueable interface.
 
 ---
 
-##### Methods
-
-###### `execute(System.QueueableContext queueableContext)` → `void`
-
-Asynchronoulsy publishes the list of `LogEntryEvent__e` records
-
-####### Parameters
-
-| Param              | Description                                                |
-| ------------------ | ---------------------------------------------------------- |
-| `queueableContext` | The context of the current queue, provided by the platform |
-
----
-
-#### Logger.StatusApiResponse class
-
----
-
-##### Properties
-
-###### `Products` → `List<StatusApiResponseProduct>`
-
-###### `allOrNone` → `Boolean`
-
-Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
-
-###### `location` → `String`
-
-###### `maintenanceWindow` → `String`
-
-###### `records` → `List<SObject>`
-
-List of records to save.
-
-###### `releaseNumber` → `String`
-
-###### `releaseVersion` → `String`
-
----
-
 #### Logger.StatusApiResponseProduct class
 
 ---
 
 ##### Properties
 
-###### `childJobId` → `String`
-
 ###### `key` → `String`
 
 ###### `name` → `String`
-
-###### `parentJobId` → `String`
-
-###### `triggerId` → `String`
-
-###### `type` → `String`
-
----
-
-##### Methods
-
-###### `AsyncContext(Database.BatchableContext batchableContext)` → `public`
-
-###### `AsyncContext(System.FinalizerContext finalizerContext)` → `public`
-
-###### `AsyncContext(System.QueueableContext queueableContext)` → `public`
-
-###### `AsyncContext(System.SchedulableContext schedulableContext)` → `public`
-
-###### `insertRecords(List<SObject> records)` → `void`
-
-Inserts records via the REST api.
-
-####### Parameters
-
-| Param     | Description          |
-| --------- | -------------------- |
-| `records` | The records to save. |
 
 ---

@@ -1,24 +1,21 @@
 {
-  "orgName": "Nebula Logger - Build - Experience Cloud Scratch Org",
+  "orgName": "Nebula Logger - Build - Platform Cache Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
-  "country": "ES",
-  "language": "es",
-  "features": ["Communities"],
+  "country": "JP",
+  "language": "ja",
+  "features": ["PlatformCache"],
   "settings": {
     "chatterSettings": {
       "enableChatter": false
     },
     "communitiesSettings": {
-      "enableNetworksEnabled": true
+      "enableNetworksEnabled": false
     },
     "eventSettings": {
       "enableDeleteMonitoringData": false,
       "enableEventLogGeneration": false,
       "eventLogRetentionDuration": 0
-    },
-    "experienceBundleSettings": {
-      "enableExperienceBundleMetadata": true
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": false

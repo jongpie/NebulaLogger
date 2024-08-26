@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <defaultValue>true</defaultValue>
-    <inlineHelpText>When enabled, Logger will automatically call Apex&apos;s System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.</inlineHelpText>
+    <inlineHelpText>When enabled, Nebula Logger will automatically call Apex&apos;s System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.</inlineHelpText>
     <label>Enable Apex System.debug()</label>
     <securityClassification>Confidential</securityClassification>
     <trackTrending>false</trackTrending>

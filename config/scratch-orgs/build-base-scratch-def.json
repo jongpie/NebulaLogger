@@ -1,7 +1,7 @@
 {
   "orgName": "Nebula Logger - Build - Base Scratch Org",
   "edition": "Enterprise",
-  "hasSampleData": false,
+  "hasSampleData": true,
   "country": "US",
   "language": "en_US",
   "features": [],
@@ -11,6 +11,11 @@
     },
     "communitiesSettings": {
       "enableNetworksEnabled": false
+    },
+    "eventSettings": {
+      "enableDeleteMonitoringData": false,
+      "enableEventLogGeneration": false,
+      "eventLogRetentionDuration": 0
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": false

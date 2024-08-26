@@ -4,23 +4,29 @@
   "hasSampleData": true,
   "country": "US",
   "language": "en_US",
-  "features": ["EinsteinGPTPlatform"],
+  "features": ["EinsteinGPTPlatform", "EventLogFile", "PlatformCache"],
   "settings": {
     "apexSettings": {
       "enableAuraApexCtrlAuthUserAccessCheckPref": true,
       "enableAuraApexCtrlGuestUserAccessCheckPref": true,
-      "enableCompileOnDeploy": false,
+      "enableCompileOnDeploy": true,
       "enableRestrictCommunityExecAnon": true,
       "enableSecureNoArgConstructorPref": true
     },
     "chatterSettings": {
-      "enableChatter": false
+      "enableChatter": true
     },
     "communitiesSettings": {
-      "enableNetworksEnabled": false
+      "enableNetworksEnabled": true
+    },
+    "eventSettings": {
+      "enableDeleteMonitoringData": true,
+      "enableEventLogGeneration": true,
+      "enableLightningLoggerEvents": true,
+      "eventLogRetentionDuration": 30
     },
     "flowSettings": {
-      "canDebugFlowAsAnotherUser": false
+      "canDebugFlowAsAnotherUser": true
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": true

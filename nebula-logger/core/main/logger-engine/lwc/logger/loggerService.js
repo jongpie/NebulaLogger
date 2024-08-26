@@ -115,7 +115,7 @@ const LoggerService = class {
 
   _newEntry(loggingLevel, message, originStackTraceError) {
     originStackTraceError = originStackTraceError ?? new Error();
-    const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled)
+    const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled, this.#settings?.isLightningLoggerEnabled)
       .parseStackTrace(originStackTraceError)
       .setMessage(message)
       .setScenario(this.#scenario);

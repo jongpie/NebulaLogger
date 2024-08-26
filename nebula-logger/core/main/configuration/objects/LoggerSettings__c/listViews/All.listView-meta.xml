@@ -8,6 +8,7 @@
     <columns>DefaultSaveMethod__c</columns>
     <columns>IsApexSystemDebugLoggingEnabled__c</columns>
     <columns>IsJavaScriptConsoleLoggingEnabled__c</columns>
+    <columns>IsJavaScriptLightningLoggerEnabled__c</columns>
     <columns>IsDataMaskingEnabled__c</columns>
     <columns>IsRecordFieldStrippingEnabled__c</columns>
     <columns>IsAnonymousModeEnabled__c</columns>

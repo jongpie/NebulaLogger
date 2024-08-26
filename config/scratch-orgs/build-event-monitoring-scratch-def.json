@@ -1,0 +1,25 @@
+{
+  "orgName": "Nebula Logger - Build - Event Monitoring Scratch Org",
+  "edition": "Enterprise",
+  "hasSampleData": true,
+  "country": "AU",
+  "language": "en_AU",
+  "features": ["EventLogFile"],
+  "settings": {
+    "chatterSettings": {
+      "enableChatter": false
+    },
+    "communitiesSettings": {
+      "enableNetworksEnabled": false
+    },
+    "eventSettings": {
+      "enableDeleteMonitoringData": true,
+      "enableEventLogGeneration": true,
+      "enableLightningLoggerEvents": true,
+      "eventLogRetentionDuration": 30
+    },
+    "pathAssistantSettings": {
+      "pathAssistantEnabled": true
+    }
+  }
+}

@@ -1,6 +1,6 @@
 name: Feature Request
 description: Suggest an enhancement for Nebula Logger
-labels: ['enhancement']
+labels: ['Type: Enhancement']
 body:
   - type: textarea
     attributes:

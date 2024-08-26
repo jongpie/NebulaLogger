@@ -45,6 +45,7 @@ private class Logger_Tests {
     System.Assert.isNull(returnedSettings.Id);
     System.Assert.isTrue(returnedSettings.IsApexSystemDebugLoggingEnabled__c);
     System.Assert.isTrue(returnedSettings.IsJavaScriptConsoleLoggingEnabled__c);
+    System.Assert.isFalse(returnedSettings.IsJavaScriptLightningLoggerEnabled__c);
     System.Assert.areEqual(System.LoggingLevel.FINEST.name(), returnedSettings.LoggingLevel__c);
     System.Assert.isNull(returnedSettings.SetupOwnerId);
   }
@@ -54,6 +55,7 @@ private class Logger_Tests {
     LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
     expectedSettings.IsApexSystemDebugLoggingEnabled__c = true;
     expectedSettings.IsJavaScriptConsoleLoggingEnabled__c = true;
+    expectedSettings.IsJavaScriptLightningLoggerEnabled__c = false;
     expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
     expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
 
@@ -506,6 +508,7 @@ private class Logger_Tests {
     System.Assert.areEqual(originalUserSettings.IsApexSystemDebugLoggingEnabled__c, Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
     System.Assert.areEqual(originalUserSettings.IsDataMaskingEnabled__c, Logger.getUserSettings().IsDataMaskingEnabled__c);
     System.Assert.areEqual(originalUserSettings.IsJavaScriptConsoleLoggingEnabled__c, Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c);
+    System.Assert.areEqual(originalUserSettings.IsJavaScriptLightningLoggerEnabled__c, Logger.getUserSettings().IsJavaScriptLightningLoggerEnabled__c);
     System.Assert.areEqual(originalUserSettings.IsRecordFieldStrippingEnabled__c, Logger.getUserSettings().IsRecordFieldStrippingEnabled__c);
     System.Assert.areEqual(originalUserSettings.IsSavingEnabled__c, Logger.getUserSettings().IsSavingEnabled__c);
     System.Assert.areEqual(originalUserSettings.LoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
@@ -554,6 +557,7 @@ private class Logger_Tests {
     System.Assert.areEqual(originalUserSettings.IsApexSystemDebugLoggingEnabled__c, Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
     System.Assert.areEqual(originalUserSettings.IsDataMaskingEnabled__c, Logger.getUserSettings().IsDataMaskingEnabled__c);
     System.Assert.areEqual(originalUserSettings.IsJavaScriptConsoleLoggingEnabled__c, Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c);
+    System.Assert.areEqual(originalUserSettings.IsJavaScriptLightningLoggerEnabled__c, Logger.getUserSettings().IsJavaScriptLightningLoggerEnabled__c);
     System.Assert.areEqual(originalUserSettings.IsSavingEnabled__c, Logger.getUserSettings().IsSavingEnabled__c);
   }
 
@@ -675,6 +679,25 @@ private class Logger_Tests {
     Logger.setScenario(scenarioRule.Scenario__c);
 
     System.Assert.areEqual(Boolean.valueOf(scenarioRule.IsJavaScriptConsoleLoggingEnabled__c), Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c);
+  }
+
+  @IsTest
+  static void it_should_override_javascript_lightning_logger_setting_when_matching_logger_scenario_rule_is_configured() {
+    LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+      IsEnabled__c = true,
+      IsJavaScriptLightningLoggerEnabled__c = String.valueOf(!Logger.getUserSettings().IsJavaScriptLightningLoggerEnabled__c),
+      Scenario__c = 'Some scenario'
+    );
+    LoggerScenarioRule.setMock(scenarioRule);
+    System.Assert.isNotNull(LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+    System.Assert.areNotEqual(
+      Boolean.valueOf(scenarioRule.IsJavaScriptLightningLoggerEnabled__c),
+      Logger.getUserSettings().IsJavaScriptLightningLoggerEnabled__c
+    );
+
+    Logger.setScenario(scenarioRule.Scenario__c);
+
+    System.Assert.areEqual(Boolean.valueOf(scenarioRule.IsJavaScriptLightningLoggerEnabled__c), Logger.getUserSettings().IsJavaScriptLightningLoggerEnabled__c);
   }
 
   @IsTest

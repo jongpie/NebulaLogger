@@ -8,7 +8,7 @@ private class LogBatchPurgeController_Tests {
   private static final String CUSTOM_PURGE_ACTION = 'Custom';
   private static final String DEFAULT_PURGE_ACTION = 'Delete';
   private static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';
-  private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
+  private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar', '標準ユーザー')];
 
   @IsTest
   static void it_should_return_logPurgeAction_options() {

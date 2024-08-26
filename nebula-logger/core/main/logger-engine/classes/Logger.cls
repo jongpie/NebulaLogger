@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.14.3';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.14.4';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -3075,7 +3075,7 @@ global with sharing class Logger {
     orderedScenarios.add(scenario);
     // One of a few limited places in the codebase (except tests) that should use System.debug()
     // The rest of the codebase should use a method in Logger.cls
-    if (String.isNotBlank(transactionScenario)) {
+    if (String.isNotBlank(currentEntryScenario)) {
       System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Entry Scenario: ' + currentEntryScenario);
     }
     LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
@@ -3097,6 +3097,9 @@ global with sharing class Logger {
       }
       if (String.isNotBlank(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c)) {
         userSettings.IsJavaScriptConsoleLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c);
+      }
+      if (String.isNotBlank(matchingScenarioRule.IsJavaScriptLightningLoggerEnabled__c)) {
+        userSettings.IsJavaScriptLightningLoggerEnabled__c = Boolean.valueOf(matchingScenarioRule.IsJavaScriptLightningLoggerEnabled__c);
       }
       if (String.isNotBlank(matchingScenarioRule.IsRecordFieldStrippingEnabled__c)) {
         userSettings.IsRecordFieldStrippingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsRecordFieldStrippingEnabled__c);

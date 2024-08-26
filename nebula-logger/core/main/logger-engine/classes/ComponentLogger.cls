@@ -84,19 +84,22 @@ public inherited sharing class ComponentLogger {
   }
 
   private static void setBrowserDetails(LogEntryEvent__e logEntryEvent, ComponentLogEntry componentLogEntry) {
-    logEntryEvent.BrowserAddress__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserAddress__c, componentLogEntry.browserAddress);
-    logEntryEvent.BrowserFormFactor__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserFormFactor__c, componentLogEntry.browserFormFactor);
-    logEntryEvent.BrowserLanguage__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserLanguage__c, componentLogEntry.browserLanguage);
+    logEntryEvent.BrowserAddress__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserAddress__c, componentLogEntry.browser?.address);
+    logEntryEvent.BrowserFormFactor__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.BrowserFormFactor__c,
+      componentLogEntry.browser?.formFactor
+    );
+    logEntryEvent.BrowserLanguage__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserLanguage__c, componentLogEntry.browser?.language);
     logEntryEvent.BrowserScreenResolution__c = LoggerDataStore.truncateFieldValue(
       Schema.LogEntryEvent__e.BrowserScreenResolution__c,
-      componentLogEntry.browserScreenResolution
+      componentLogEntry.browser?.screenResolution
     );
     // TODO BrowserUrl__c is deprecated (replaced by BrowserAddress__c), but keep setting BrowserUrl__c for now so people have time to migrate to referencing BrowserAddress__c
-    logEntryEvent.BrowserUrl__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUrl__c, componentLogEntry.browserAddress);
-    logEntryEvent.BrowserUserAgent__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUserAgent__c, componentLogEntry.browserUserAgent);
+    logEntryEvent.BrowserUrl__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUrl__c, componentLogEntry.browser?.address);
+    logEntryEvent.BrowserUserAgent__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.BrowserUserAgent__c, componentLogEntry.browser?.userAgent);
     logEntryEvent.BrowserWindowResolution__c = LoggerDataStore.truncateFieldValue(
       Schema.LogEntryEvent__e.BrowserWindowResolution__c,
-      componentLogEntry.browserWindowResolution
+      componentLogEntry.browser?.windowResolution
     );
   }
 
@@ -193,10 +196,16 @@ public inherited sharing class ComponentLogger {
     public Boolean isEnabled { get; set; }
 
     /**
-     * @description Indicates if logging via the browser's `console.log()` is enabled for the current user, based on `Logger.IsJavaScriptConsoleLoggingEnabled__c`
+     * @description Indicates if logging via the browser's `console.log()` is enabled for the current user, based on `LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c`
      */
     @AuraEnabled
     public Boolean isConsoleLoggingEnabled { get; set; }
+
+    /**
+     * @description Indicates if logging via the standard LWC `lightning-logger` is enabled for the current user, based on `LoggerSettings__c.IsJavaScriptLightningLoggerEnabled__c`
+     */
+    @AuraEnabled
+    public Boolean isLightningLoggerEnabled { get; set; }
 
     /**
      * @description A map of the supported `LoggingLevel` enum values
@@ -211,9 +220,12 @@ public inherited sharing class ComponentLogger {
     public ComponentLoggingLevel userLoggingLevel { get; set; }
 
     private ComponentLoggerSettings() {
+      LoggerSettings__c userSettings = Logger.getUserSettings();
+
       this.defaultSaveMethodName = Logger.getSaveMethod().name();
-      this.isEnabled = Logger.getUserSettings().IsEnabled__c;
-      this.isConsoleLoggingEnabled = Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c;
+      this.isEnabled = userSettings.IsEnabled__c;
+      this.isConsoleLoggingEnabled = userSettings.IsJavaScriptConsoleLoggingEnabled__c;
+      this.isLightningLoggerEnabled = userSettings.IsJavaScriptLightningLoggerEnabled__c;
       this.supportedLoggingLevels = getSupportedLoggingLevels();
       this.userLoggingLevel = getUserLoggingLevel();
     }
@@ -262,46 +274,10 @@ public inherited sharing class ComponentLogger {
    */
   public class ComponentLogEntry {
     /**
-     * @description The URL displayed in the user's browser
+     * @description Context about the user's browser, automatically captured by Nebula Logger
      */
     @AuraEnabled
-    public String browserAddress { get; set; }
-
-    /**
-     * @description The form factor of the user's browser
-     */
-    @AuraEnabled
-    public String browserFormFactor { get; set; }
-
-    /**
-     * @description The language set in the user's browser
-     */
-    @AuraEnabled
-    public String browserLanguage { get; set; }
-
-    /**
-     * @description The resolution of the user's device
-     */
-    @AuraEnabled
-    public String browserScreenResolution { get; set; }
-
-    /**
-     * @description `DEPRECATED` Use `browserAddress` instead
-     */
-    @AuraEnabled
-    public String browserUrl { get; set; }
-
-    /**
-     * @description The user agent of the user's browser
-     */
-    @AuraEnabled
-    public String browserUserAgent { get; set; }
-
-    /**
-     * @description The resolution of the user's browser window
-     */
-    @AuraEnabled
-    public String browserWindowResolution { get; set; }
+    public ComponentBrowser browser { get; set; }
 
     /**
      * @description (Optional) A JavaScript Error to log
@@ -366,33 +342,44 @@ public inherited sharing class ComponentLogger {
   }
 
   /**
-   * @description A DTO object used to log details about the origin of a JavaScript log entry
+   * @description A DTO object used to log details about the user's browser
    */
-  public class ComponentStackTrace {
+  public class ComponentBrowser {
     /**
-     * @description The component that generated the log entry
+     * @description The URL displayed in the user's browser
      */
     @AuraEnabled
-    public String componentName { get; set; }
+    public String address { get; set; }
 
     /**
-     * @description The component's function that generated the log entry
+     * @description The form factor of the user's browser
      */
     @AuraEnabled
-    public String functionName { get; set; }
+    public String formFactor { get; set; }
 
     /**
-     * @description The metadata type of the component that generated the log entry
-     *              Possible values are `AuraDefinitionBundle` and `LightningComponentBundle`
+     * @description The language set in the user's browser
      */
     @AuraEnabled
-    public String metadataType { get; set; }
+    public String language { get; set; }
 
     /**
-     * @description The parsed stack trace used to determine the log entry origin
+     * @description The resolution of the user's device
      */
     @AuraEnabled
-    public String parsedStackTraceString { get; set; }
+    public String screenResolution { get; set; }
+
+    /**
+     * @description The user agent of the user's browser
+     */
+    @AuraEnabled
+    public String userAgent { get; set; }
+
+    /**
+     * @description The resolution of the user's browser window
+     */
+    @AuraEnabled
+    public String windowResolution { get; set; }
   }
 
   /**
@@ -423,5 +410,35 @@ public inherited sharing class ComponentLogger {
      */
     @AuraEnabled
     public String type { get; set; }
+  }
+
+  /**
+   * @description A DTO object used to log details about the origin of a JavaScript log entry
+   */
+  public class ComponentStackTrace {
+    /**
+     * @description The component that generated the log entry
+     */
+    @AuraEnabled
+    public String componentName { get; set; }
+
+    /**
+     * @description The component's function that generated the log entry
+     */
+    @AuraEnabled
+    public String functionName { get; set; }
+
+    /**
+     * @description The metadata type of the component that generated the log entry
+     *              Possible values are `AuraDefinitionBundle` and `LightningComponentBundle`
+     */
+    @AuraEnabled
+    public String metadataType { get; set; }
+
+    /**
+     * @description The parsed stack trace used to determine the log entry origin
+     */
+    @AuraEnabled
+    public String parsedStackTraceString { get; set; }
   }
 }

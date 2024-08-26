@@ -3,8 +3,8 @@ name: Build
 
 env:
   SF_DISABLE_AUTOUPDATE: true
-  SF_SKIP_NEW_VERSION_CHECK: true
   SF_LOG_LEVEL: debug
+  SF_SKIP_NEW_VERSION_CHECK: true
 
 on:
   push:
@@ -124,16 +124,16 @@ jobs:
         run: npm run test:lwc
 
       - name: 'Upload LWC code coverage to Codecov.io'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: LWC
 
   base-scratch-org-tests:
+    environment: 'Base Scratch Org'
     name: 'Run Base Scratch Org Tests'
     needs: [code-quality-tests]
     runs-on: ubuntu-latest
-    environment: 'Base Scratch Org'
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -164,7 +164,7 @@ jobs:
           DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Create Base Scratch Org'
+      - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-base-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Deploy Source to Scratch Org'
@@ -191,11 +191,11 @@ jobs:
         run: npx sf org delete scratch --no-prompt
         if: ${{ always() }}
 
-  experience-cloud-scratch-org-tests:
-    name: 'Run Experience Cloud Scratch Org Tests'
+  event-monitoring-scratch-org-tests:
+    environment: 'Event Monitoring Scratch Org'
+    name: 'Run Event Monitoring Scratch Org Tests'
     needs: [code-quality-tests]
     runs-on: ubuntu-latest
-    environment: 'Experience Cloud Scratch Org'
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -226,13 +226,75 @@ jobs:
           DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Create Experience Cloud Scratch Org'
+      - name: 'Create Scratch Org'
+        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-event-monitoring-scratch-def.json --wait 20 --set-default --json
+
+      - name: 'Deploy Source to Scratch Org'
+        run: npx sf project deploy start --source-dir ./nebula-logger/
+
+      - name: 'Assign Logger Admin Permission Set'
+        run: npm run permset:assign:admin
+
+      - name: 'Validate Custom Metadata Records'
+        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
+
+      # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+      # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+      # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
+
+      - name: 'Run Apex Tests Synchronously'
+        run: npm run test:apex:nocoverage -- --synchronous
+
+      - name: 'Delete Base Scratch Org'
+        run: npx sf org delete scratch --no-prompt
+        if: ${{ always() }}
+
+  experience-cloud-scratch-org-tests:
+    environment: 'Experience Cloud Scratch Org'
+    name: 'Run Experience Cloud Scratch Org Tests'
+    needs: [code-quality-tests, base-scratch-org-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
+
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
+
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: 'Authorize Dev Hub'
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+
+      - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-experience-cloud-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Deploy Source to Scratch Org'
         run: npx sf project deploy start --source-dir ./nebula-logger/
 
-      - name: 'Deploy Test Experience Site Metadata'
+      - name: 'Deploy Test Experience Sites Metadata'
         run: npm run experience:deploy
 
       - name: 'Assign Logger Admin Permission Set'
@@ -252,8 +314,9 @@ jobs:
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex -- --synchronous
 
+      # This is the only scratch org that's used for uploading code coverage
       - name: 'Upload Apex test code coverage to Codecov.io'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: Apex
@@ -262,9 +325,71 @@ jobs:
         run: npx sf org delete scratch --no-prompt
         if: ${{ always() }}
 
+  platform-cache-scratch-org-tests:
+    environment: 'Platform Cache Scratch Org'
+    name: 'Run Platform Cache Scratch Org Tests'
+    needs: [code-quality-tests, event-monitoring-scratch-org-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
+
+      - name: 'Restore node_modules cache'
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ env.cache-name }}-
+            npm-
+
+      - name: 'Install npm dependencies'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: 'Authorize Dev Hub'
+        shell: bash
+        run: |
+          npx sf version
+          echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+          npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
+        env:
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+
+      - name: 'Create Scratch Org'
+        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/build-platform-cache-scratch-def.json --wait 20 --set-default --json
+
+      - name: 'Deploy Source to Scratch Org'
+        run: npx sf project deploy start --source-dir ./nebula-logger/
+
+      - name: 'Assign Logger Admin Permission Set'
+        run: npm run permset:assign:admin
+
+      - name: 'Validate Custom Metadata Records'
+        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
+
+      # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+      # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+      # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
+
+      - name: 'Run Apex Tests Synchronously'
+        run: npm run test:apex:nocoverage -- --synchronous
+
+      - name: 'Delete Base Scratch Org'
+        run: npx sf org delete scratch --no-prompt
+        if: ${{ always() }}
+
   create-managed-package-beta:
     name: 'Create Managed Package Beta'
-    needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+    needs: [lwc-tests, base-scratch-org-tests, event-monitoring-scratch-org-tests, experience-cloud-scratch-org-tests, platform-cache-scratch-org-tests]
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     environment: 'Demo Org'
@@ -377,7 +502,7 @@ jobs:
 
   promote-package-versions:
     name: 'Promote Package Versions'
-    needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+    needs: [lwc-tests, base-scratch-org-tests, event-monitoring-scratch-org-tests, experience-cloud-scratch-org-tests, platform-cache-scratch-org-tests]
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
