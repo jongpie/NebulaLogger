@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.4.NEXT",
-      "versionName": "Optionally Auto-Call lightning-logger LWC",
-      "versionDescription": "Added the optional ability to automatically call Salesforce's lightning-logger LWC when logging via lightning components. This then creates a \"Lightning Logger\" event in Event Monitoring",
+      "versionNumber": "4.14.5.NEXT",
+      "versionName": "Added Logger Settings to Utility Bar",
+      "versionDescription": "Added the loggerSettings LWC to the LoggerConsole app's utility bar flexipage so settings can be easily viewed/edited from anywhere in the console app",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
