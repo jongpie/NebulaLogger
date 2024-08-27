@@ -43,7 +43,11 @@ export default class LoggerLWCEmbedDemo extends LightningElement {
       .catch(error => {
         console.log('apex error', error);
         console.log('and a stack trace', new Error().stack);
-        const entry = logger.error(this.message).setError(error).addTag('lwc logging demo');
+        const entry = logger
+          .error(this.message)
+          .setError(error)
+          .setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' })
+          .addTags(this.tagsString.split(','));
         console.log('entry==', JSON.parse(JSON.stringify(entry)));
       });
   }
@@ -53,42 +57,42 @@ export default class LoggerLWCEmbedDemo extends LightningElement {
     const logger = this.template.querySelector(LOGGER_NAME);
     console.log(logger);
     const someError = new TypeError('oops');
-    logger.error(this.message).setError(someError).addTag('lwc logging demo');
+    logger.error(this.message).setError(someError).setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' }).addTags(this.tagsString.split(','));
   }
 
   logWarnExample() {
     console.log('running logWarn for btn');
     const logger = this.template.querySelector(LOGGER_NAME);
     console.log(logger);
-    logger.warn(this.message).addTags(this.tagsString.split(','));
+    logger.warn(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' }).addTags(this.tagsString.split(','));
   }
 
   logInfoExample() {
     console.log('running logInfo for btn');
     const logger = this.template.querySelector(LOGGER_NAME);
     console.log(logger);
-    logger.info(this.message).addTags(this.tagsString.split(','));
+    logger.info(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' }).addTags(this.tagsString.split(','));
   }
 
   logDebugExample() {
     console.log('running logDebug for btn');
     const logger = this.template.querySelector(LOGGER_NAME);
     console.log(logger);
-    logger.debug(this.message).addTags(this.tagsString.split(','));
+    logger.debug(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' }).addTags(this.tagsString.split(','));
   }
 
   logFineExample() {
     console.log('running logFine for btn');
     const logger = this.template.querySelector(LOGGER_NAME);
     console.log(logger);
-    logger.fine(this.message).addTags(this.tagsString.split(','));
+    logger.fine(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' }).addTags(this.tagsString.split(','));
   }
 
   logFinerExample() {
     console.log('running logFiner for btn');
     const logger = this.template.querySelector(LOGGER_NAME);
     console.log(logger);
-    logger.finer(this.message).addTags(this.tagsString.split(','));
+    logger.finer(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' }).addTags(this.tagsString.split(','));
   }
 
   logFinestExample() {
