@@ -6,5 +6,6 @@
     <targets>
         <target>lightning__HomePage</target>
         <target>lightning__Tab</target>
+        <target>lightning__UtilityBar</target>
     </targets>
 </LightningComponentBundle>

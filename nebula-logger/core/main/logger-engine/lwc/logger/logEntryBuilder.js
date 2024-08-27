@@ -6,7 +6,7 @@ import FORM_FACTOR from '@salesforce/client/formFactor';
 import { log as lightningLog } from 'lightning/logger';
 import { LoggerStackTrace } from './loggerStackTrace';
 
-const CURRENT_VERSION_NUMBER = 'v4.14.4';
+const CURRENT_VERSION_NUMBER = 'v4.14.5';
 
 const LOGGING_LEVEL_EMOJIS = {
   ERROR: '⛔',
