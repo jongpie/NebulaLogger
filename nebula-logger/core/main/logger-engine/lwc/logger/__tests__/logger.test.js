@@ -163,6 +163,28 @@ describe('logger lwc import tests', () => {
     expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
   });
 
+  it('sets multiple custom fields when using recommended import approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = await createLogger();
+    await logger.getUserSettings();
+    const logEntryBuilder = logger.info('example log entry');
+    const logEntry = logEntryBuilder.getComponentLogEntry();
+    const firstFakeFieldName = 'SomeField__c';
+    const firstFieldMockValue = 'something';
+    const secondFakeFieldName = 'AnotherField__c';
+    const secondFieldMockValue = 'another value';
+    expect(logEntry.fieldToValue[firstFakeFieldName]).toBeFalsy();
+    expect(logEntry.fieldToValue[secondFakeFieldName]).toBeFalsy();
+
+    logEntryBuilder.setField({
+      [firstFakeFieldName]: firstFieldMockValue,
+      [secondFakeFieldName]: secondFieldMockValue
+    });
+
+    expect(logEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
+    expect(logEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
+  });
+
   it('sets recordId when using recommended import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = await createLogger();
@@ -656,6 +678,29 @@ describe('logger lwc legacy markup tests', () => {
     expect(logEntry.browser.screenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);
     expect(logEntry.browser.userAgent).toEqual(window.navigator.userAgent);
     expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
+  });
+
+  it('sets multiple custom fields when using deprecated markup approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = createElement('c-logger', { is: Logger });
+    document.body.appendChild(logger);
+    await flushPromises();
+    const logEntryBuilder = await logger.info('example log entry');
+    const logEntry = logEntryBuilder.getComponentLogEntry();
+    const firstFakeFieldName = 'SomeField__c';
+    const firstFieldMockValue = 'something';
+    const secondFakeFieldName = 'AnotherField__c';
+    const secondFieldMockValue = 'another value';
+    expect(logEntry.fieldToValue[firstFakeFieldName]).toBeFalsy();
+    expect(logEntry.fieldToValue[secondFakeFieldName]).toBeFalsy();
+
+    logEntryBuilder.setField({
+      [firstFakeFieldName]: firstFieldMockValue,
+      [secondFakeFieldName]: secondFieldMockValue
+    });
+
+    expect(logEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
+    expect(logEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
   });
 
   it('sets recordId when using deprecated markup approach', async () => {

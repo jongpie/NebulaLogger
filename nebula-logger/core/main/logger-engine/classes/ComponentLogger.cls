@@ -57,7 +57,11 @@ public inherited sharing class ComponentLogger {
           continue;
         }
 
-        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.setTimestamp(componentLogEntry.timestamp).addTags(componentLogEntry.tags).getLogEntryEvent();
+        Map<Schema.SObjectField, Object> customFieldToFieldValue = getCustomFieldToFieldValue(componentLogEntry.fieldToValue);
+        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.setTimestamp(componentLogEntry.timestamp)
+          .setField(customFieldToFieldValue)
+          .addTags(componentLogEntry.tags)
+          .getLogEntryEvent();
 
         if (componentLogEntry.recordId != null) {
           logEntryEventBuilder.setRecord(componentLogEntry.recordId);
@@ -81,6 +85,23 @@ public inherited sharing class ComponentLogger {
       auraException.setMessage(errorMessage);
       throw auraException;
     }
+  }
+
+  private static Map<Schema.SObjectField, Object> getCustomFieldToFieldValue(Map<String, Object> fieldNameToValue) {
+    Map<Schema.SObjectField, Object> resolvedFieldToFieldValue = new Map<Schema.SObjectField, Object>();
+
+    if (fieldNameToValue == null || fieldNameToValue.isEmpty()) {
+      return resolvedFieldToFieldValue;
+    }
+
+    Map<String, Schema.SObjectField> fieldNameToField = Schema.LogEntryEvent__e.SObjectType.getDescribe().fields.getMap();
+    for (String fieldName : fieldNameToValue.keySet()) {
+      Schema.SObjectField field = fieldNameToField.get(fieldName);
+      if (field != null) {
+        resolvedFieldToFieldValue.put(field, fieldNameToValue.get(fieldName));
+      }
+    }
+    return resolvedFieldToFieldValue;
   }
 
   private static void setBrowserDetails(LogEntryEvent__e logEntryEvent, ComponentLogEntry componentLogEntry) {
@@ -285,6 +306,11 @@ public inherited sharing class ComponentLogger {
     @AuraEnabled
     public ComponentError error { get; set; }
 
+    /**
+     * @description (Optional) A map containing key-value pairs of fields to set on `LogEntryEvent__e`
+     */
+    @AuraEnabled
+    public Map<String, Object> fieldToValue { get; set; }
     /**
      * @description The name of the `LoggingLevel` enum value
      */
