@@ -1,3 +1,13 @@
+// Option 0: strings, strings everywhere!
+System.debug(System.JSON.serializePretty((LogEntryEventBuilder) new CallableLogger().call('newEntry', new Map<String, Object>{
+    'exception' => new System.DmlException('whoops'),
+    'loggingLevel' => System.LoggingLevel.INFO,
+    'message' => 'Some log entry message',
+    'recordId' => '001220000000SOMEID',
+    'record' => new Schema.Contact(LastName = 'Test Contact'),
+    'tags' => new List<String>{ 'tag1', 'tag2' }
+})));
+
 // Option 1: string constants, using convention of prefixes "ACTION_" and "ARGUMENT_"
 System.debug(System.JSON.serializePretty((LogEntryEventBuilder) new CallableLogger().call(CallableLogger.ACTION_ERROR, new Map<String, Object>{
     CallableLogger.ARGUMENT_MESSAGE => 'Some error message',
