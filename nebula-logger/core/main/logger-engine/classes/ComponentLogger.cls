@@ -23,6 +23,16 @@ public inherited sharing class ComponentLogger {
     set;
   }
 
+  private static final Map<String, Schema.SObjectField> LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD {
+    get {
+      if (LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD == null) {
+        LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD = Schema.LogEntryEvent__e.SObjectType.getDescribe().fields.getMap();
+      }
+      return LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD;
+    }
+    set;
+  }
+
   static {
     LoggerStackTrace.ignoreOrigin(ComponentLogger.class);
     LoggerStackTrace.ignoreOrigin(LoggerStackTrace.SourceLanguage.JavaScript, LOGGER_COMPONENT_NAME);
@@ -94,9 +104,8 @@ public inherited sharing class ComponentLogger {
       return resolvedFieldToFieldValue;
     }
 
-    Map<String, Schema.SObjectField> fieldNameToField = Schema.LogEntryEvent__e.SObjectType.getDescribe().fields.getMap();
     for (String fieldName : fieldNameToValue.keySet()) {
-      Schema.SObjectField field = fieldNameToField.get(fieldName);
+      Schema.SObjectField field = LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD.get(fieldName);
       if (field != null) {
         resolvedFieldToFieldValue.put(field, fieldNameToValue.get(fieldName));
       }

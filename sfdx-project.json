@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.6.NEXT",
-      "versionName": "Custom Field Mappings Support for Lightning Components",
-      "versionDescription": "Added the ability to set custom fields in JavaScript via a new function setField() in logEntryBuilder.js. This is equivalent to the Apex method overloads setField() in LogEntryEventBuilder.cls that were introduced in v4.13.14.",
+      "versionNumber": "4.14.7.NEXT",
+      "versionName": "Bugfix: US Social Security Number Data Mask Rule",
+      "versionDescription": "Corrected the regular expressions used in data mask rule 'SocialSecurityNumber' to be stricter to avoid incorrectly masking credit card numbers as social security numbers",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -191,6 +191,7 @@
     "Nebula Logger - Core@4.14.4-optionally-auto-call-lightning-logger-lwc": "04t5Y0000015oRNQAY",
     "Nebula Logger - Core@4.14.5-added-logger-settings-to-utility-bar": "04t5Y0000015oRXQAY",
     "Nebula Logger - Core@4.14.6-custom-field-mappings-support-for-lightning-components": "04t5Y0000015oRhQAI",
+    "Nebula Logger - Core@4.14.7-bugfix:-us-social-security-number-data-mask-rule": "04t5Y0000015oRrQAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

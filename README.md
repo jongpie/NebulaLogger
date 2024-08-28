@@ -5,15 +5,15 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, Process Builder & integrations.
 
-## Unlocked Package - v4.14.6
+## Unlocked Package - v4.14.7
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRhQAI)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRhQAI)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRrQAI)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRrQAI)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oRhQAI`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oRrQAI`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oRhQAI`
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oRrQAI`
 
 ---
 
