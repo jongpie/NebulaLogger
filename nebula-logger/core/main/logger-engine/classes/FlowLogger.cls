@@ -57,6 +57,11 @@ public inherited sharing class FlowLogger {
     public String faultMessage;
 
     /**
+     * @description Optionally specify the trnasction ID of the parent log for the current transaction
+     */
+    public String parentLogTransactionId;
+
+    /**
      * @description Optionally throws an exception when value is set to True (Use it on Fault connectors of your flow).
      */
     public Boolean shouldThrowFaultMessageException = false;
@@ -64,7 +69,6 @@ public inherited sharing class FlowLogger {
     /**
      * @description Optionally specify the scenario to use for the current transaction
      */
-    @InvocableVariable(required=false label='(Optional) Scenario')
     public String scenario;
 
     /**
@@ -172,6 +176,10 @@ public inherited sharing class FlowLogger {
     String faultMessage = FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
 
     for (LogEntry flowEntry : flowEntries) {
+      if (String.isNotBlank(flowEntry.parentLogTransactionId)) {
+        Logger.setParentLogTransactionId(flowEntry.parentLogTransactionId);
+      }
+
       flowEntry.addToLoggerBuffer();
 
       if (flowEntry.saveLog) {

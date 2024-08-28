@@ -50,10 +50,23 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  static void it_should_set_parent_log_transaction_id_when_provided() {
+    FlowLogger.LogEntry flowEntry = new FlowLogger.LogEntry();
+    flowEntry.message = 'hello from Flow';
+    flowEntry.loggingLevelName = System.LoggingLevel.INFO.name();
+    flowEntry.parentLogTransactionId = 'some value';
+    flowEntry.timestamp = System.now();
+    System.Assert.isNull(Logger.getParentLogTransactionId());
+
+    FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
+
+    System.Assert.areEqual(flowEntry.parentLogTransactionId, Logger.getParentLogTransactionId());
+  }
+
+  @IsTest
   static void it_should_auto_save_entry_when_saveLog_is_true() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.LoggingLevel entryLoggingLevel = System.LoggingLevel.DEBUG;
-    System.Test.startTest();
     Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     System.Assert.areEqual(0, Logger.getBufferSize());
