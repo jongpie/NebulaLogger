@@ -21,3 +21,17 @@ System.debug(System.JSON.serializePretty((LogEntryEventBuilder) new CallableLogg
 System.debug(System.JSON.serializePretty((LogEntryEventBuilder) new CallableLogger().call(CallableLogger.ACTIONS.endScenario, new Map<String, Object>{
     CallableLogger.ARGUMENTS.scenario => 'some scenario'
 })));
+
+// Option 3: object constants, with action-specific properties for supported arguments
+System.debug(System.JSON.serializePretty((LogEntryEventBuilder) new CallableLogger().call(CallableLogger.ACTION_SET_TRANSACTION_ID.name, new Map<String, Object>{
+    CallableLogger.ACTION_SET_TRANSACTION_ID.argumentParentLogTransactionId.name => 'some transaction id'
+})));
+
+System.debug(System.JSON.serializePretty((LogEntryEventBuilder) new CallableLogger().call(CallableLogger.ACTION_NEW_ENTRY.name, new Map<String, Object>{
+    CallableLogger.ACTION_NEW_ENTRY.argumentException.name => new System.DmlException('whoops'),
+    CallableLogger.ACTION_NEW_ENTRY.argumentLoggingLevel.name => System.LoggingLevel.INFO,
+    CallableLogger.ACTION_NEW_ENTRY.argumentMessage.name => 'Some log entry message',
+    CallableLogger.ACTION_NEW_ENTRY.argumentRecordId.name => '001220000000SOMEID',
+    CallableLogger.ACTION_NEW_ENTRY.argumentRecord.name => new Schema.Contact(LastName = 'Test Contact'),
+    CallableLogger.ACTION_NEW_ENTRY.argumentTags.name => new List<String>{ 'tag1', 'tag2' }
+})));

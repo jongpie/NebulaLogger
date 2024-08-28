@@ -6,6 +6,9 @@ public without sharing class CallableLogger implements System.Callable {
   public static final Actions ACTIONS = new Actions();
   public static final Arguments ARGUMENTS = new Arguments();
 
+  public static final ActionSetParentLogTransactionId ACTION_SET_TRANSACTION_ID = new ActionSetParentLogTransactionId();
+  public static final ActionNewEntry ACTION_NEW_ENTRY = new ActionNewEntry();
+
   private static final Map<String, Object> supportedLoggingArguments = new Map<String, Object>{
     'exception' => System.Exception.class,
     'message' => String.class,
@@ -20,6 +23,32 @@ public without sharing class CallableLogger implements System.Callable {
     public final Map<String, Map<String, System.Type>> actionNameToArgumentTypes = new Map<String, Map<String, System.Type>>{
       'saveLog' => new Map<String, System.Type>{ ARGUMENT_PARENT_LOG_TRANSACTION_ID => String.class }
     };
+  }
+
+  public class Argument {
+    public final String name;
+    public final System.Type dataType;
+
+    private Argument(String name, System.Type dataType) {
+        this.name = name;
+        this.dataType = dataType;
+    }
+  }
+
+  public class ActionSetParentLogTransactionId {
+    public final String name = 'setParentLogTransactionId';
+    public final Argument argumentParentLogTransactionId = new Argument('parentLogTransactionId', String.class);
+  }
+
+
+  public class ActionNewEntry {
+    public final String name = 'newEntry';
+    public final Argument argumentException = new Argument('exception', System.Exception.class);
+    public final Argument argumentLoggingLevel = new Argument('loggingLevel', System.LoggingLevel.class);
+    public final Argument argumentMessage = new Argument('message', String.class);
+    public final Argument argumentRecordId = new Argument('recordId', String.class);
+    public final Argument argumentRecord = new Argument('record', SObject.class);
+    public final Argument argumentTags = new Argument('tags', List<String>.class);
   }
 
   public class Actions {
@@ -90,6 +119,9 @@ public without sharing class CallableLogger implements System.Callable {
       when 'error', 'warn', 'info', 'debug', 'fine', 'finer', 'finest' {
         return newEntry(action, arguments);
       }
+      when 'newEntry' {
+        return newEntry(arguments);
+      }
       when 'saveLog' {
         // TODO decide if there should be support for specifying a save method
         // If so, need to handle using EVENT_BUS as fallback
@@ -109,6 +141,7 @@ public without sharing class CallableLogger implements System.Callable {
     return null;
   }
 
+  // Old
   private LogEntryEventBuilder newEntry(String loggingLevelName, Map<String, Object> arguments) {
     System.LoggingLevel loggingLevel = Logger.getLoggingLevel(loggingLevelName);
     String message = (String) arguments.get(ARGUMENT_MESSAGE);
@@ -142,5 +175,17 @@ public without sharing class CallableLogger implements System.Callable {
     // }
 
     // return logEntryEventBuilder;
+  }
+
+  // New
+  private LogEntryEventBuilder newEntry(Map<String, Object> arguments) {
+    System.LoggingLevel loggingLevel = (System.LoggingLevel) arguments.get(ACTION_NEW_ENTRY.argumentLoggingLevel.name);
+    String message = (String) arguments.get(ACTION_NEW_ENTRY.argumentMessage.name);
+
+    return Logger.newEntry(loggingLevel, message)
+      .setExceptionDetails((System.Exception) arguments.get(ACTION_NEW_ENTRY.argumentException.name))
+      .setRecordId((String) arguments.get(ACTION_NEW_ENTRY.argumentRecordId.name))
+      .setRecord((SObject) arguments.get(ACTION_NEW_ENTRY.argumentRecord.name))
+      .addTags((List<String>) arguments.get(ACTION_NEW_ENTRY.argumentTags.name));
   }
 }
