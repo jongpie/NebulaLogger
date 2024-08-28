@@ -24,6 +24,21 @@
         <apexClass>LoggerLWCDemoController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.SomeLogField__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.SomeLogEntryField__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LoggerScenario__c.SomeLoggerScenarioField__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Logger Recipes Admin</label>
     <license>Salesforce</license>

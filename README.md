@@ -5,15 +5,15 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, Process Builder & integrations.
 
-## Unlocked Package - v4.14.5
+## Unlocked Package - v4.14.6
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRXQAY)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRXQAY)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRhQAI)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRhQAI)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oRXQAY`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oRhQAI`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oRXQAY`
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oRhQAI`
 
 ---
 
@@ -590,9 +590,12 @@ Once you've implementing log entry tagging within Apex or Flow, you can choose h
 
 ## Adding Custom Fields to Nebula Logger's Data Model
 
-As of `v4.13.14`, Nebula Logger supports defining, setting, and mapping custom fields within Nebula Logger's data model. This is helpful in orgs that want to extend Nebula Logger's included data model by creating their own org/project-specific fields.
+Nebula Logger supports defining, setting, and mapping custom fields within Nebula Logger's data model. This is helpful in orgs that want to extend Nebula Logger's included data model by creating their own org/project-specific fields.
 
-This feature requires that you populate your custom fields yourself, and is only available in Apex currently. The plan is to add in a future release the ability to also set custom fields via JavaScript & Flow.
+This feature requires that you populate your custom fields yourself, and is only available in Apex & JavaScript currently. The plan is to add in a future release the ability to also set custom fields via Flow.
+
+- `v4.13.14` added this functionality for Apex
+- `v4.14.6` added this functionality for JavaScript (lightning components)
 
 ### Adding Custom Fields to the Platform Event `LogEntryEvent__e`
 
@@ -604,17 +607,33 @@ The first step is to add a field to the platform event `LogEntryEvent__e`
 
     ![Custom Field on LogEntryEvent__e](./images/custom-field-log-entry-event.png)
 
-- Populate your field(s) in Apex by calling the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
+- In Apex, populate your field(s) by calling the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
 
   ```apex
   Logger.info('hello, world')
       // Set a single field
       .setField(LogEntryEvent__e.SomeCustomTextField__c, 'some text value')
       // Set multiple fields
-      .setFields(new Map<Schema.SObjectField, Object>{
+      .setField(new Map<Schema.SObjectField, Object>{
           LogEntryEvent__e.AnotherCustomTextField__c => 'another text value',
           LogEntryEvent__e.SomeCustomDatetimeField__c => System.now()
       });
+  ```
+
+- In JavaScript, populate your field(s) by calling the instance function `LogEntryEventBuilder.setField(Object fieldToValue)`
+
+  ```javascript
+  import { createLogger } from 'c/logger';
+
+  export default class LoggerLWCImportDemo extends LightningElement {
+    logger;
+
+    async connectedCallback() {
+      this.logger = await createLogger();
+      this.logger.info('Hello, world').setField({ SomeCustomTextField__c: 'some text value', SomeCustomNumbertimeField__c: 123 });
+      this.logger.saveLog();
+    }
+  }
   ```
 
 ### Adding Custom Fields to the Custom Objects `Log__c`, `LogEntry__c`, and `LoggerScenario__c`

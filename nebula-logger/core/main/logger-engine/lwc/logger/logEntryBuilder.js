@@ -6,7 +6,7 @@ import FORM_FACTOR from '@salesforce/client/formFactor';
 import { log as lightningLog } from 'lightning/logger';
 import { LoggerStackTrace } from './loggerStackTrace';
 
-const CURRENT_VERSION_NUMBER = 'v4.14.5';
+const CURRENT_VERSION_NUMBER = 'v4.14.6';
 
 const LOGGING_LEVEL_EMOJIS = {
   ERROR: '⛔',
@@ -19,27 +19,19 @@ const LOGGING_LEVEL_EMOJIS = {
 };
 
 const ComponentBrowser = class {
-  address = null;
-  formFactor = null;
-  language = null;
-  screenResolution = null;
-  userAgent = null;
-  windowResolution = null;
-
-  constructor() {
-    this.address = window.location.href;
-    this.formFactor = FORM_FACTOR;
-    this.language = window.navigator.language;
-    this.screenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
-    this.userAgent = window.navigator.userAgent;
-    this.windowResolution = window.innerWidth + ' x ' + window.innerHeight;
-  }
+  address = window.location.href;
+  formFactor = FORM_FACTOR;
+  language = window.navigator.language;
+  screenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
+  userAgent = window.navigator.userAgent;
+  windowResolution = window.innerWidth + ' x ' + window.innerHeight;
 };
 
 // JavaScript equivalent to the Apex class ComponentLogger.ComponentLogEntry
 const ComponentLogEntry = class {
   browser = new ComponentBrowser();
   error = null;
+  fieldToValue = {};
   loggingLevel = null;
   message = null;
   originStackTrace = null;
@@ -135,6 +127,24 @@ const LogEntryBuilder = class {
       this.#componentLogEntry.error.stackTrace = new LoggerStackTrace().parse(error);
       this.#componentLogEntry.error.type = 'JavaScript.' + error.name;
     }
+    return this;
+  }
+
+  /**
+   * @description Sets multiple field values on the builder's `LogEntryEvent__e` record
+   * @param  {Object} fieldToValue An object containing the custom field name as a key, with the corresponding value to store.
+   *                      Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}`
+   * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
+   */
+  setField(fieldToValue) {
+    if (!fieldToValue) {
+      return this;
+    }
+
+    Object.keys(fieldToValue).forEach(fieldName => {
+      this.#componentLogEntry.fieldToValue[fieldName] = fieldToValue[fieldName];
+    });
+
     return this;
   }
 

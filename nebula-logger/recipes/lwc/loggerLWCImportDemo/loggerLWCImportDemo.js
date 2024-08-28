@@ -23,16 +23,19 @@ export default class LoggerLWCImportDemo extends LightningElement {
     this.logger = await createLogger();
     console.log('>>> start of connectedCallback()');
     try {
-      this.logger.error('test error entry');
-      this.logger.warn('test warn entry');
-      this.logger.info('test info entry');
-      this.logger.debug('test debug entry');
-      this.logger.fine('test fine entry');
-      this.logger.finer('test finer entry');
-      this.logger.finest('test finest entry');
+      this.logger.error('test error entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+      this.logger.warn('test warn entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+      this.logger.info('test info entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+      this.logger.debug('test debug entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+      this.logger.fine('test fine entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+      this.logger.finer('test finer entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+      this.logger.finest('test finest entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
       throw new Error('A bad thing happened here');
     } catch (error) {
-      this.logger.error('>>> connectedCallback error: ' + error.message).setError(error);
+      this.logger
+        .error('>>> connectedCallback error: ' + error.message)
+        .setError(error)
+        .setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
       this.logger.saveLog().then(() => {
         console.log('done with async save');
       });
@@ -41,25 +44,25 @@ export default class LoggerLWCImportDemo extends LightningElement {
 
   disconnectedCallback() {
     console.log('>>> start of disconnectedCallback()');
-    this.logger.info('>>> running disconnectedCallback(), using createLogger()');
-    this.logger.info('>>> adding an extra log entry');
+    this.logger.info('>>> running disconnectedCallback(), using createLogger()').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+    this.logger.info('>>> adding an extra log entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
     this.logger.saveLog();
     console.log('>>> done with disconnectedCallback()');
   }
 
   renderedCallback() {
     console.log('>>> start of renderedCallback()');
-    this.logger?.info('>>> running renderedCallback(), using createLogger()');
-    this.logger?.info('>>> adding an extra log entry');
+    this.logger?.info('>>> running renderedCallback(), using createLogger()').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
+    this.logger?.info('>>> adding an extra log entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
     this.logger?.saveLog();
     console.log('>>> done with renderedCallback()');
   }
 
   @wire(returnSomeString)
   wiredReturnSomeString({ error, data }) {
-    this.logger?.info('>>> logging inside a wire function');
+    this.logger?.info('>>> logging inside a wire function').setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
     if (data) {
-      this.logger?.info('>>> wire function return value: ' + data);
+      this.logger?.info('>>> wire function return value: ' + data).setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' });
     }
     if (error) {
       this.logger?.error('>>> wire function error: ' + JSON.stringify(error));
@@ -92,7 +95,11 @@ export default class LoggerLWCImportDemo extends LightningElement {
       .catch(error => {
         console.log('apex error', error);
         console.log('and a stack trace', new Error().stack);
-        const entry = this.logger.error(this.message).setError(error).addTag('lwc logging demo');
+        const entry = this.logger
+          .error(this.message)
+          .setError(error)
+          .setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' })
+          .addTags(this.tagsString.split(','));
         console.log('entry==', JSON.parse(JSON.stringify(entry)));
       });
   }
@@ -101,37 +108,41 @@ export default class LoggerLWCImportDemo extends LightningElement {
     console.log('running logError for btn');
     console.log(this.logger);
     const someError = new TypeError('oops');
-    this.logger.error(this.message).setError(someError).addTag('lwc logging demo');
+    this.logger
+      .error(this.message)
+      .setError(someError)
+      .setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' })
+      .addTags(this.tagsString.split(','));
   }
 
   logWarnExample() {
     console.log('running logWarn for btn');
     console.log(this.logger);
-    this.logger.warn(this.message).addTags(this.tagsString.split(','));
+    this.logger.warn(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' }).addTags(this.tagsString.split(','));
   }
 
   logInfoExample() {
     console.log('running logInfo for btn');
     console.log(this.logger);
-    this.logger.info(this.message).addTags(this.tagsString.split(','));
+    this.logger.info(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' }).addTags(this.tagsString.split(','));
   }
 
   logDebugExample() {
     console.log('running logDebug for btn');
     console.log(this.logger);
-    this.logger.debug(this.message).addTags(this.tagsString.split(','));
+    this.logger.debug(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' }).addTags(this.tagsString.split(','));
   }
 
   logFineExample() {
     console.log('running logFine for btn');
     console.log(this.logger);
-    this.logger.fine(this.message).addTags(this.tagsString.split(','));
+    this.logger.fine(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' }).addTags(this.tagsString.split(','));
   }
 
   logFinerExample() {
     console.log('running logFiner for btn');
     console.log(this.logger);
-    this.logger.finer(this.message).addTags(this.tagsString.split(','));
+    this.logger.finer(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCImportDemo' }).addTags(this.tagsString.split(','));
   }
 
   logFinestExample() {

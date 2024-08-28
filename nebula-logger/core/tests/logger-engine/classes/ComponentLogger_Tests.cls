@@ -120,6 +120,60 @@ private class ComponentLogger_Tests {
   }
 
   @IsTest
+  static void it_should_save_component_log_entry_with_valid_custom_fields() {
+    LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+    // Realistically, people shouldn't/wouldn't set fields like HttpRequestBody__c or HttpRequestMethod__c...
+    // But to avoid adding an extra field just for test purposes, we'll use some existing fields
+    componentLogEntry.fieldToValue = new Map<String, Object>{
+      Schema.LogEntryEvent__e.HttpRequestBody__c.getDescribe().getName() => 'some value',
+      Schema.LogEntryEvent__e.HttpRequestMethod__c.getDescribe().getName() => 'another value'
+    };
+    System.Assert.areEqual(0, Logger.saveLogCallCount);
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+    LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+    System.Assert.areEqual('some value', publishedLogEntryEvent.HttpRequestBody__c);
+    System.Assert.areEqual('another value', publishedLogEntryEvent.HttpRequestMethod__c);
+  }
+
+  @IsTest
+  static void it_should_save_component_log_entry_with_invalid_custom_fields() {
+    LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+    componentLogEntry.fieldToValue = new Map<String, Object>{ 'Some Fake Field That Definitely Will Never Exist' => 'some value' };
+    System.Assert.areEqual(0, Logger.saveLogCallCount);
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+    LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+    System.Assert.isNotNull(publishedLogEntryEvent);
+  }
+
+  @IsTest
+  static void it_should_save_component_log_entry_without_custom_fields() {
+    LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    ComponentLogger.ComponentLogEntry componentLogEntry = createMockComponentLogEntry();
+    componentLogEntry.fieldToValue = null;
+    System.Assert.areEqual(0, Logger.saveLogCallCount);
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+    LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+    System.Assert.isNotNull(publishedLogEntryEvent);
+  }
+
+  @IsTest
   static void it_should_save_component_log_entry_with_queueable_job() {
     LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());

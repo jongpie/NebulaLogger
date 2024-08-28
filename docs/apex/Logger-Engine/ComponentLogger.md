@@ -131,6 +131,10 @@ Context about the user&apos;s browser, automatically captured by Nebula Logger
 
 (Optional) A JavaScript Error to log
 
+###### `fieldToValue` → `Map<String, Object>`
+
+(Optional) A map containing key-value pairs of fields to set on `LogEntryEvent__e`
+
 ###### `loggingLevel` → `String`
 
 The name of the `LoggingLevel` enum value

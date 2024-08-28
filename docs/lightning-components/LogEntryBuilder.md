@@ -11,6 +11,7 @@
   - [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setScenario(scenario)](#LogEntryBuilder+setScenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.setField(fieldToValue)](#LogEntryBuilder+setField) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.parseStackTrace(error)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
@@ -93,6 +94,19 @@ Sets the log entry event's exception fields
 | Param | Type               | Description                                                                      |
 | ----- | ------------------ | -------------------------------------------------------------------------------- |
 | error | <code>Error</code> | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
+
+<a name="LogEntryBuilder+setField"></a>
+
+### logEntryBuilder.setField(fieldToValue) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+
+Sets multiple field values on the builder's `LogEntryEvent__e` record
+
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+
+| Param        | Type                | Description                                                                                                                                                               |
+| ------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fieldToValue | <code>Object</code> | An object containing the custom field name as a key, with the corresponding value to store. Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}` |
 
 <a name="LogEntryBuilder+parseStackTrace"></a>
 
