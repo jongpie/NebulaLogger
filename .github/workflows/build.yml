@@ -126,8 +126,9 @@ jobs:
       - name: 'Upload LWC code coverage to Codecov.io'
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
           flags: LWC
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   base-scratch-org-tests:
     environment: 'Base Scratch Org'
@@ -318,8 +319,9 @@ jobs:
       - name: 'Upload Apex test code coverage to Codecov.io'
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
           flags: Apex
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: 'Delete Experience Cloud Scratch Org'
         run: npx sf org delete scratch --no-prompt
