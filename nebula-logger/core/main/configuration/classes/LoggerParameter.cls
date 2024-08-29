@@ -387,7 +387,7 @@ public class LoggerParameter {
   /**
    * @description Indicates if Nebula Logger will store the header values when logging an instance of `System.HttpRequest`.
    *              Controlled by the custom metadata record `LoggerParameter.StoreHttpRequestHeaderValues`, or `true` as the default.
-   *              Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of
+   *              Regardless of how this parameter is configured, Nebula Logger will still log the specified list of header keys of any instance of
    *              `System.HttpRequest` that is logged - this parameter only controls if the header values are stored.
    */
   public static final Boolean STORE_HTTP_REQUEST_HEADER_VALUES {
@@ -401,7 +401,7 @@ public class LoggerParameter {
   }
 
   /**
-   * @description Indicates if Nebula Logger will store the header values when logging an instance of `System.HttpRequest`.
+   * @description Indicates if Nebula Logger will store the header values when logging an instance of `System.HttpResponse`.
    *              Controlled by the custom metadata record `LoggerParameter.StoreHttpResponseHeaderValues`, or `true` as the default.
    *              Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of
    *              `System.HttpResponse` that is logged - this parameter only controls if the header values are stored.

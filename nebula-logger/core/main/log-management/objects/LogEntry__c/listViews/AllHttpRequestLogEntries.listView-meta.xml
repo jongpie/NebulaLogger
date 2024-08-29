@@ -9,6 +9,7 @@
     <columns>Origin__c</columns>
     <columns>HttpRequestEndpoint__c</columns>
     <columns>HttpRequestMethod__c</columns>
+    <columns>HttpRequestHeaderKeys__c</columns>
     <columns>HttpRequestBody__c</columns>
     <columns>Timestamp__c</columns>
     <filterScope>Everything</filterScope>

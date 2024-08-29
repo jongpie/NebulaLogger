@@ -9,6 +9,7 @@
     <columns>Origin__c</columns>
     <columns>RestRequestUri__c</columns>
     <columns>RestRequestMethod__c</columns>
+    <columns>RestRequestHeaderKeys__c</columns>
     <columns>RestRequestBody__c</columns>
     <columns>Timestamp__c</columns>
     <filterScope>Everything</filterScope>

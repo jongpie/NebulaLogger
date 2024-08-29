@@ -302,6 +302,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
       logEntry.HasExceptionSourceSnippet__c = logEntry.ExceptionSourceSnippet__c != null;
       logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
       logEntry.HasHttpRequestBody__c = logEntry.HttpRequestBody__c != null;
+      logEntry.HasHttpRequestHeaderKeys__c = logEntry.HttpRequestHeaderKeys__c != null;
+      logEntry.HasHttpRequestHeaders__c = logEntry.HttpRequestHeaders__c != null;
       logEntry.HasHttpResponseBody__c = logEntry.HttpResponseBody__c != null;
       logEntry.HasHttpResponseHeaderKeys__c = logEntry.HttpResponseHeaderKeys__c != null;
       logEntry.HasHttpResponseHeaders__c = logEntry.HttpResponseHeaders__c != null;

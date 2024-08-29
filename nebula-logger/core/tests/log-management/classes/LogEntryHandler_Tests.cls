@@ -239,6 +239,87 @@ private class LogEntryHandler_Tests {
   }
 
   @IsTest
+  static void it_should_set_hasHttpRequestHeaderKeys_on_before_insert() {
+    LogEntry__c matchingLogEntry = new LogEntry__c(HttpRequestHeaderKeys__c = 'some value');
+    LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpRequestHeaderKeys__c = null);
+    System.Assert.isNotNull(matchingLogEntry.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(nonMatchingLogEntry.HttpRequestHeaderKeys__c);
+
+    LoggerTriggerableContext context = new LoggerTriggerableContext(
+      Schema.LogEntry__c.SObjectType,
+      System.TriggerOperation.BEFORE_INSERT,
+      new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
+    );
+    new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+    System.Assert.isTrue(matchingLogEntry.HasHttpRequestHeaderKeys__c);
+    System.Assert.isFalse(nonMatchingLogEntry.HasHttpRequestHeaderKeys__c);
+  }
+
+  @IsTest
+  static void it_should_set_hasHttpRequestHeaderKeys_on_before_update() {
+    LogEntry__c matchingLogEntry = new LogEntry__c(
+      HttpRequestHeaderKeys__c = 'some value',
+      Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType)
+    );
+    LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpRequestHeaderKeys__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+    List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+    System.Assert.isNotNull(matchingLogEntry.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(nonMatchingLogEntry.HttpRequestHeaderKeys__c);
+
+    LoggerTriggerableContext context = new LoggerTriggerableContext(
+      Schema.LogEntry__c.SObjectType,
+      System.TriggerOperation.BEFORE_UPDATE,
+      updatedRecords,
+      new Map<Id, SObject>(updatedRecords),
+      null
+    );
+    new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+    System.Assert.isTrue(matchingLogEntry.HasHttpRequestHeaderKeys__c);
+    System.Assert.isFalse(nonMatchingLogEntry.HasHttpRequestHeaderKeys__c);
+  }
+
+  @IsTest
+  static void it_should_set_hasHttpRequestHeaders_on_before_insert() {
+    LogEntry__c matchingLogEntry = new LogEntry__c(HttpRequestHeaders__c = 'some value');
+    LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpRequestHeaders__c = null);
+    System.Assert.isNotNull(matchingLogEntry.HttpRequestHeaders__c);
+    System.Assert.isNull(nonMatchingLogEntry.HttpRequestHeaders__c);
+
+    LoggerTriggerableContext context = new LoggerTriggerableContext(
+      Schema.LogEntry__c.SObjectType,
+      System.TriggerOperation.BEFORE_INSERT,
+      new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry }
+    );
+    new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+    System.Assert.isTrue(matchingLogEntry.HasHttpRequestHeaders__c);
+    System.Assert.isFalse(nonMatchingLogEntry.HasHttpRequestHeaders__c);
+  }
+
+  @IsTest
+  static void it_should_set_hasHttpRequestHeaders_on_before_update() {
+    LogEntry__c matchingLogEntry = new LogEntry__c(HttpRequestHeaders__c = 'some value', Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+    LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpRequestHeaders__c = null, Id = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType));
+    List<LogEntry__c> updatedRecords = new List<LogEntry__c>{ matchingLogEntry, nonMatchingLogEntry };
+    System.Assert.isNotNull(matchingLogEntry.HttpRequestHeaders__c);
+    System.Assert.isNull(nonMatchingLogEntry.HttpRequestHeaders__c);
+
+    LoggerTriggerableContext context = new LoggerTriggerableContext(
+      Schema.LogEntry__c.SObjectType,
+      System.TriggerOperation.BEFORE_UPDATE,
+      updatedRecords,
+      new Map<Id, SObject>(updatedRecords),
+      null
+    );
+    new LogEntryHandler().overrideTriggerableContext(context).execute();
+
+    System.Assert.isTrue(matchingLogEntry.HasHttpRequestHeaders__c);
+    System.Assert.isFalse(nonMatchingLogEntry.HasHttpRequestHeaders__c);
+  }
+
+  @IsTest
   static void it_should_set_hasHttpResponseBody_on_before_insert() {
     LogEntry__c matchingLogEntry = new LogEntry__c(HttpResponseBody__c = 'some value');
     LogEntry__c nonMatchingLogEntry = new LogEntry__c(HttpResponseBody__c = null);
