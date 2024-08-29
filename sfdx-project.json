@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.7.NEXT",
-      "versionName": "Bugfix: US Social Security Number Data Mask Rule",
-      "versionDescription": "Corrected the regular expressions used in data mask rule 'SocialSecurityNumber' to be stricter to avoid incorrectly masking credit card numbers as social security numbers",
+      "versionNumber": "4.14.8.NEXT",
+      "versionName": " Store HttpRequest header keys & values",
+      "versionDescription": "Added method overload setHttpRequestDetails(HttpRequest request, List<String> headersToLog) in LogEntryEventBuilder to capture the specified list of header keys & values when logging an instance of HttpRequest",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
