@@ -45,6 +45,21 @@ private class FlowLogEntry_Tests {
     System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
   }
 
+
+  @IsTest
+  static void it_should_set_parent_log_transaction_id_when_provided() {
+    FlowLogEntry flowEntry = new FlowLogEntry();
+    flowEntry.message = 'hello from Flow';
+    flowEntry.loggingLevelName = System.LoggingLevel.INFO.name();
+    flowEntry.parentLogTransactionId = 'some value';
+    flowEntry.timestamp = System.now();
+    System.Assert.isNull(Logger.getParentLogTransactionId());
+
+    FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
+
+    System.Assert.areEqual(flowEntry.parentLogTransactionId, Logger.getParentLogTransactionId());
+  }
+
   @IsTest
   static void it_should_auto_save_entry_when_saveLog_is_true() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());

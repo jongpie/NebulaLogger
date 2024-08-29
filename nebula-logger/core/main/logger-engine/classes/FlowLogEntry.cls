@@ -40,6 +40,12 @@ global inherited sharing class FlowLogEntry {
   global String faultMessage;
 
   /**
+   * @description Optionally specify the trnasction ID of the parent log for the current transaction
+   */
+  @InvocableVariable(required=false label='(Optional) Flow Fault Error Message')
+  global String parentLogTransactionId;
+
+  /**
    * @description Optionally rollback Database operations executed until Apex action was called and save the log entry.
    */
   @InvocableVariable(required=false label='(Optional) Throw FlowException for Fault Error Message')
