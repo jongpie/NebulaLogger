@@ -7,13 +7,13 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 ## Unlocked Package - v4.14.8
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRrQAI)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oRrQAI)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oS1QAI)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oS1QAI)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oRrQAI`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oS1QAI`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oRrQAI`
+`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015oS1QAI`
 
 ---
 
