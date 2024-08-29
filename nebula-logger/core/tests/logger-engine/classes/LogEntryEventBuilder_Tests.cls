@@ -1271,9 +1271,12 @@ private class LogEntryEventBuilder_Tests {
   @IsTest
   static void it_should_set_http_request_fields_when_request_is_populated() {
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
-    System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
-    System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
-    System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
+    LogEntryEvent__e event = builder.getLogEntryEvent();
+    System.Assert.isNull(event.HttpRequestBody__c);
+    System.Assert.isNull(event.HttpRequestEndpoint__c);
+    System.Assert.isNull(event.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(event.HttpRequestHeaders__c);
+    System.Assert.isNull(event.HttpRequestMethod__c);
     System.HttpRequest request = new System.HttpRequest();
     request.setBody('Hello, world!');
     request.setCompressed(true);
@@ -1282,10 +1285,76 @@ private class LogEntryEventBuilder_Tests {
 
     builder.setHttpRequestDetails(request);
 
-    System.Assert.areEqual(request.getBody(), builder.getLogEntryEvent().HttpRequestBody__c);
-    System.Assert.areEqual(request.getCompressed(), builder.getLogEntryEvent().HttpRequestCompressed__c);
-    System.Assert.areEqual(request.getEndpoint(), builder.getLogEntryEvent().HttpRequestEndpoint__c);
-    System.Assert.areEqual(request.getMethod(), builder.getLogEntryEvent().HttpRequestMethod__c);
+    System.Assert.areEqual(request.getBody(), event.HttpRequestBody__c);
+    System.Assert.areEqual(request.getCompressed(), event.HttpRequestCompressed__c);
+    System.Assert.areEqual(request.getEndpoint(), event.HttpRequestEndpoint__c);
+    System.Assert.isNull(event.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(event.HttpRequestHeaders__c);
+    System.Assert.areEqual(request.getMethod(), event.HttpRequestMethod__c);
+  }
+
+  @IsTest
+  static void it_should_set_http_request_fields_when_header_keys_are_provided_and_storing_header_values_is_enabled() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpRequestHeaderValues', Value__c = String.valueOf(true));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isTrue(LoggerParameter.STORE_HTTP_REQUEST_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    LogEntryEvent__e event = builder.getLogEntryEvent();
+    System.Assert.isNull(event.HttpRequestBody__c);
+    System.Assert.isNull(event.HttpRequestEndpoint__c);
+    System.Assert.isNull(event.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(event.HttpRequestHeaders__c);
+    System.Assert.isNull(event.HttpRequestMethod__c);
+    System.HttpRequest request = new System.HttpRequest();
+    request.setBody('Hello, world!');
+    request.setCompressed(true);
+    request.setEndpoint('https://fake.salesforce.com');
+    request.setHeader('header-1-to-log', 'some value to log');
+    request.setHeader('a-header-to-ignore', 'ignore this value, it won\'t be logged');
+    request.setHeader('header-2-to-log', 'another value to log');
+    request.setHeader('another-header-to-ignore', 'ignore this too');
+    request.setMethod('GET');
+
+    builder.setHttpRequestDetails(request, new List<String>{ 'header-1-to-log', 'header-2-to-log' });
+
+    System.Assert.areEqual(request.getBody(), event.HttpRequestBody__c);
+    System.Assert.areEqual(request.getCompressed(), event.HttpRequestCompressed__c);
+    System.Assert.areEqual(request.getEndpoint(), event.HttpRequestEndpoint__c);
+    System.Assert.areEqual('header-1-to-log\nheader-2-to-log', event.HttpRequestHeaderKeys__c);
+    System.Assert.areEqual('header-1-to-log: some value to log\nheader-2-to-log: another value to log', event.HttpRequestHeaders__c);
+    System.Assert.areEqual(request.getMethod(), event.HttpRequestMethod__c);
+  }
+
+  @IsTest
+  static void it_should_set_http_request_fields_when_header_keys_are_provided_and_storing_header_values_is_disabled() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpRequestHeaderValues', Value__c = String.valueOf(false));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isFalse(LoggerParameter.STORE_HTTP_REQUEST_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    LogEntryEvent__e event = builder.getLogEntryEvent();
+    System.Assert.isNull(event.HttpRequestBody__c);
+    System.Assert.isNull(event.HttpRequestEndpoint__c);
+    System.Assert.isNull(event.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(event.HttpRequestHeaders__c);
+    System.Assert.isNull(event.HttpRequestMethod__c);
+    System.HttpRequest request = new System.HttpRequest();
+    request.setBody('Hello, world!');
+    request.setCompressed(true);
+    request.setEndpoint('https://fake.salesforce.com');
+    request.setHeader('header-1-to-log', 'some value to log');
+    request.setHeader('a-header-to-ignore', 'ignore this value, it won\'t be logged');
+    request.setHeader('header-2-to-log', 'another value to log');
+    request.setHeader('another-header-to-ignore', 'ignore this too');
+    request.setMethod('GET');
+
+    builder.setHttpRequestDetails(request, new List<String>{ 'header-1-to-log', 'header-2-to-log' });
+
+    System.Assert.areEqual(request.getBody(), event.HttpRequestBody__c);
+    System.Assert.areEqual(request.getCompressed(), event.HttpRequestCompressed__c);
+    System.Assert.areEqual(request.getEndpoint(), event.HttpRequestEndpoint__c);
+    System.Assert.areEqual('header-1-to-log\nheader-2-to-log', event.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(event.HttpRequestHeaders__c);
+    System.Assert.areEqual(request.getMethod(), event.HttpRequestMethod__c);
   }
 
   @IsTest
