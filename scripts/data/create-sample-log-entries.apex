@@ -38,8 +38,10 @@ Logger.finest('Example FINEST entry');
 System.HttpRequest httpRequest = new System.HttpRequest();
 httpRequest.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');
 httpRequest.setEndpoint('https://fake.salesforce.com');
+httpRequest.setHeader('some-header', 'some value');
+httpRequest.setHeader('another-header', 'another value');
 httpRequest.setMethod('GET');
-Logger.info('logging an HTTP request').setHttpRequestDetails(httpRequest);
+Logger.info('logging an HTTP request').setHttpRequestDetails(httpRequest, new List<String>{ 'some-header' });
 
 System.HttpResponse httpResponse = new System.HttpResponse();
 httpResponse.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');

@@ -465,9 +465,19 @@ global with sharing class LogEntryEventBuilder {
   /**
    * @description Sets the log entry event's HTTP Request fields
    * @param  request The instance of `HttpRequest` to log
-   * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setHttpRequestDetails(System.HttpRequest request) {
+    return this.setHttpRequestDetails(request, new List<String>());
+  }
+
+  /**
+   * @description Sets the log entry event's HTTP Request fields
+   * @param  request The instance of `HttpRequest` to log
+   * @param  headersToLog An instance of `List<String>` containing the header keys to log
+   * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setHttpRequestDetails(System.HttpRequest request, List<String> headersToLog) {
     if (this.shouldSave() == false || request == null) {
       return this;
     }
@@ -476,10 +486,25 @@ global with sharing class LogEntryEventBuilder {
     String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
     Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
 
+    String formattedHeaderKeysString;
+    String formattedHeadersString;
+    if (headersToLog != null & headersToLog.isEmpty() == false) {
+      formattedHeaderKeysString = String.join(headersToLog, NEW_LINE_DELIMITER);
+      if (LoggerParameter.STORE_HTTP_REQUEST_HEADER_VALUES) {
+        List<String> headers = new List<String>();
+        for (String headerKey : headersToLog) {
+          headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, request.getHeader(headerKey) }));
+        }
+        formattedHeadersString = String.join(headers, NEW_LINE_DELIMITER);
+      }
+    }
+
     this.logEntryEvent.HttpRequestBody__c = cleanedRequestBody;
     this.logEntryEvent.HttpRequestBodyMasked__c = requestBodyMasked;
     this.logEntryEvent.HttpRequestCompressed__c = request.getCompressed();
     this.logEntryEvent.HttpRequestEndpoint__c = request.getEndpoint();
+    this.logEntryEvent.HttpRequestHeaderKeys__c = formattedHeaderKeysString;
+    this.logEntryEvent.HttpRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestHeaders__c, formattedHeadersString);
     this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
     return this;
   }

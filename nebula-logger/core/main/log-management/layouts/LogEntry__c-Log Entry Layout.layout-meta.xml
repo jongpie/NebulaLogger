@@ -358,6 +358,14 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>HttpRequestHeaderKeys__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HttpRequestHeaders__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>HttpRequestCompressed__c</field>
             </layoutItems>
             <layoutItems>

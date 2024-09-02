@@ -461,6 +461,27 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `setHttpRequestDetails(System.HttpRequest request, List<String> headersToLog)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s HTTP Request fields
+
+##### Parameters
+
+| Param          | Description                                                           |
+| -------------- | --------------------------------------------------------------------- |
+| `request`      | The instance of `HttpRequest` to log                                  |
+| `headersToLog` | An instance of `List&lt;String&gt;` containing the header keys to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `setHttpResponseDetails(System.HttpResponse response)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s HTTP Response fields

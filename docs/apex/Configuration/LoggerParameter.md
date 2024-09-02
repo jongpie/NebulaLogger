@@ -106,6 +106,10 @@ Indicates if Nebula Logger will send an error email notification if any internal
 
 Indicates if Nebula Logger will store the transaction heap limits on `LogEntry__c`, retrieved from the class `System.Limits`. Controlled by the custom metadata record `LoggerParameter.StoreApexHeapSizeLimit`, or `true` as the default. Relies on `LoggerParameter.StoreTransactionLimits` to be true, as well.
 
+#### `STORE_HTTP_REQUEST_HEADER_VALUES` → `Boolean`
+
+Indicates if Nebula Logger will store the header values when logging an instance of `System.HttpRequest`. Controlled by the custom metadata record `LoggerParameter.StoreHttpRequestHeaderValues`, or `true` as the default. Regardless of how this parameter is configured, Nebula Logger will still log the specified list of header keys of any instance of `System.HttpRequest` that is logged - this parameter only controls if the header values are stored.
+
 #### `STORE_HTTP_RESPONSE_HEADER_VALUES` → `Boolean`
 
 Indicates if Nebula Logger will store the header values when logging an instance of `System.HttpResponse`. Controlled by the custom metadata record `LoggerParameter.StoreHttpResponseHeaderValues`, or `true` as the default. Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of `System.HttpResponse` that is logged - this parameter only controls if the header values are stored.

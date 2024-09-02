@@ -311,6 +311,17 @@ private class LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_should_return_constant_value_for_store_http_request_header_values() {
+    Boolean mockValue = false;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpRequestHeaderValues', Value__c = System.JSON.serialize(mockValue));
+    LoggerParameter.setMock(mockParameter);
+
+    Boolean returnedValue = LoggerParameter.STORE_HTTP_REQUEST_HEADER_VALUES;
+
+    System.Assert.areEqual(mockValue, returnedValue);
+  }
+
+  @IsTest
   static void it_should_return_constant_value_for_store_http_response_header_values() {
     Boolean mockValue = false;
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = System.JSON.serialize(mockValue));

@@ -1386,6 +1386,8 @@ private class LogEntryEventHandler_Tests {
             HttpRequestBodyMasked__c,
             HttpRequestCompressed__c,
             HttpRequestEndpoint__c,
+            HttpRequestHeaderKeys__c,
+            HttpRequestHeaders__c,
             HttpRequestMethod__c,
             HttpResponseBody__c,
             HttpResponseBodyMasked__c,
@@ -1613,6 +1615,8 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.HttpRequestBodyMasked__c, logEntry.HttpRequestBodyMasked__c, 'logEntry.HttpRequestBodyMasked__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestCompressed__c, logEntry.HttpRequestCompressed__c, 'logEntry.HttpRequestCompressed__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestEndpoint__c, logEntry.HttpRequestEndpoint__c, 'logEntry.HttpRequestEndpoint__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.HttpRequestHeaderKeys__c, logEntry.HttpRequestHeaderKeys__c, 'logEntry.HttpRequestHeaderKeys__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.HttpRequestHeaders__c, logEntry.HttpRequestHeaders__c, 'logEntry.HttpRequestHeaders__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestMethod__c, logEntry.HttpRequestMethod__c, 'logEntry.HttpRequestMethod__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpResponseBody__c, logEntry.HttpResponseBody__c, 'logEntry.HttpResponseBody__c was not properly set');
     System.Assert.areEqual(
