@@ -431,11 +431,15 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
       this.StackTrace = stackTrace;
 
       List<String> allCodeLines = sourceCode.split('\n');
-      this.setLineNumbers(stackTrace.Source.LineNumber, allCodeLines);
+      this.setLineNumbers(stackTrace.Source?.LineNumber, allCodeLines);
       this.setCode(allCodeLines);
     }
 
-    private List<String> setLineNumbers(Integer targetLineNumber, List<String> allCodeLines) {
+    private void setLineNumbers(Integer targetLineNumber, List<String> allCodeLines) {
+      if (targetLineNumber == null) {
+        return;
+      }
+
       Integer numberOfCodeLines = allCodeLines.size();
 
       // TODO consider making these values configurable with 2 new LoggerParameter__mdt records
@@ -456,8 +460,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
       this.StartingLineNumber = calculcatedStartingLineNumber;
       this.TargetLineNumber = targetLineNumber;
       this.EndingLineNumber = calculatedEndingLineNumber;
-
-      return allCodeLines;
     }
 
     private void setCode(List<String> allCodeLines) {
@@ -468,7 +470,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         snippetCodeLines.add(allCodeLines.get(targetLineNumberIndex));
       }
 
-      this.Code = String.join(snippetCodeLines, '\n');
+      // The field length for OriginSourceSnippet__c and ExceptionSourceSnippet__c is set to 2,000 - but that includes storing
+      // both the code itself, as well as other JSON data. Using left(1500) should leave room for the other JSON data
+      // while still avoiding exceeding the field's max length.
+      this.Code = String.join(snippetCodeLines, '\n').left(1500);
     }
   }
 
@@ -540,7 +545,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
       }
 
       // Newer, general-purpose 'origin source' fields
-      logEntry.OriginSourceActionName__c = originStackTrace.Source.ActionName;
       logEntry.OriginSourceApiVersion__c = 'v' + apexClass.ApiVersion;
       logEntry.OriginSourceCreatedById__c = apexClass.CreatedById;
       logEntry.OriginSourceCreatedByUsername__c = apexClass.CreatedBy.Username;
