@@ -27,6 +27,7 @@ private class CallableLogger_Tests {
 
     Object returnedValue = new CallableLogger().call('getTransactionId', null);
 
+    System.Assert.isNotNull(returnedValue);
     System.Assert.areEqual(Logger.getTransactionId(), returnedValue);
   }
 
@@ -38,6 +39,7 @@ private class CallableLogger_Tests {
 
     Object returnedValue = new CallableLogger().call('getParentLogTransactionId', null);
 
+    System.Assert.isNotNull(returnedValue);
     System.Assert.areEqual(mockParentLogTransactionId, returnedValue);
   }
 
@@ -61,37 +63,97 @@ private class CallableLogger_Tests {
 
     Object returnedValue = new CallableLogger().call('getScenario', null);
 
-    System.Assert.areEqual(mockScenario, returnedValue);
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.areEqual(Logger.getScenario(), returnedValue);
   }
 
   @IsTest
   static void it_sets_scenario() {
-    System.Assert.fail('TODO');
+    System.Assert.isNull(Logger.getScenario(), 'Test has started under the wrong conditions');
+    String mockScenario = 'some scenario';
+
+    Object returnedValue = new CallableLogger().call('setScenario', new Map<String, Object>{ 'scenario' => mockScenario });
+
+    System.Assert.isNull(returnedValue);
+    System.Assert.areEqual(mockScenario, Logger.getScenario());
   }
 
   @IsTest
   static void it_ends_scenario() {
-    System.Assert.fail('TODO');
+    String mockScenario = 'some scenario';
+    Logger.setScenario(mockScenario);
+    System.Assert.areEqual(mockScenario, Logger.getScenario(), 'Test has started under the wrong conditions');
+
+    Object returnedValue = new CallableLogger().call('endScenario', null);
+
+    System.Assert.isNull(returnedValue);
+    System.Assert.isNull(Logger.getScenario());
   }
 
   @IsTest
   static void it_adds_new_entry() {
-    System.Assert.fail('TODO');
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+
+    Object returnedValue = new CallableLogger().call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
   }
 
   @IsTest
   static void it_adds_new_entry_with_exception() {
-    System.Assert.fail('TODO');
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    System.Exception apexException = new System.DmlException('whoops');
+
+    Object returnedValue = new CallableLogger()
+      .call('newEntry', new Map<String, Object>{ 'exception' => apexException, 'loggingLevel' => loggingLevel, 'message' => message });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(apexException.getMessage(), logEntryEvent.ExceptionMessage__c);
+    System.Assert.areEqual(apexException.getTypeName(), logEntryEvent.ExceptionType__c);
   }
 
   @IsTest
   static void it_adds_new_entry_with_record_id() {
-    System.Assert.fail('TODO');
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    Id recordId = System.UserInfo.getUserId();
+
+    Object returnedValue = new CallableLogger()
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'recordId' => recordId });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(recordId, logEntryEvent.RecordId__c);
   }
 
   @IsTest
   static void it_adds_new_entry_with_record() {
-    System.Assert.fail('TODO');
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    SObject record = new Schema.User(Id = System.UserInfo.getUserId());
+
+    Object returnedValue = new CallableLogger()
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'record' => record });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(record), logEntryEvent.RecordJson__c);
   }
 
   @IsTest
@@ -106,12 +168,35 @@ private class CallableLogger_Tests {
 
   @IsTest
   static void it_adds_new_entry_with_tags() {
-    System.Assert.fail('TODO');
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    List<String> tags = new List<String>{ 'some-tag', 'another-tag' };
+
+    Object returnedValue = new CallableLogger()
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'tags' => tags });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    tags.sort(); // Tags are auto-sorted by LogEntryEventBuilder
+    System.Assert.areEqual(String.join(tags, '\n'), logEntryEvent.Tags__c);
   }
 
   @IsTest
   static void it_saves_log() {
-    System.Assert.fail('TODO');
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LogEntryEvent__e createdLogEntryEvent = Logger.info('some log entry that will be saved using EVENT_BUS by default').getLogEntryEvent();
+    System.Assert.areEqual(1, Logger.getBufferSize());
+
+    Object returnedValue = new CallableLogger().call('saveLog', null);
+
+    System.Assert.isNull(returnedValue);
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+    System.Assert.areEqual(createdLogEntryEvent, publishedLogEntryEvent);
   }
 
   @IsTest
