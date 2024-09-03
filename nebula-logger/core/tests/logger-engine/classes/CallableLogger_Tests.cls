@@ -12,7 +12,8 @@ private class CallableLogger_Tests {
     System.IllegalArgumentException thrownException;
 
     try {
-      ((System.Callable) System.Type.forName('CallableLogger').newInstance()).call(fakeActionName, null);
+      System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+      callableLoggerInstance.call(fakeActionName, null);
     } catch (System.IllegalArgumentException ex) {
       thrownException = ex;
     }
@@ -25,7 +26,8 @@ private class CallableLogger_Tests {
   static void it_gets_transaction_id() {
     System.Assert.isNotNull(Logger.getTransactionId(), 'Test has started under the wrong conditions');
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance()).call('getTransactionId', null);
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('getTransactionId', null);
 
     System.Assert.isNotNull(returnedValue);
     System.Assert.areEqual(Logger.getTransactionId(), returnedValue);
@@ -37,7 +39,8 @@ private class CallableLogger_Tests {
     Logger.setParentLogTransactionId(mockParentLogTransactionId);
     System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId(), 'Test has started under the wrong conditions');
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance()).call('getParentLogTransactionId', null);
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('getParentLogTransactionId', null);
 
     System.Assert.isNotNull(returnedValue);
     System.Assert.areEqual(mockParentLogTransactionId, returnedValue);
@@ -48,10 +51,11 @@ private class CallableLogger_Tests {
     System.Assert.isNull(Logger.getParentLogTransactionId(), 'Test has started under the wrong conditions');
     String mockParentLogTransactionId = 'some transaction id';
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
       .call('setParentLogTransactionId', new Map<String, Object>{ 'parentLogTransactionId' => mockParentLogTransactionId });
 
-    System.Assert.isNull(returnedValue, 'No return value expected for Logger.getParentLogTransactionId()');
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.getParentLogTransactionId(), received ' + returnedValue);
     System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId());
   }
 
@@ -61,7 +65,8 @@ private class CallableLogger_Tests {
     Logger.setScenario(mockScenario);
     System.Assert.areEqual(mockScenario, Logger.getScenario(), 'Test has started under the wrong conditions');
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance()).call('getScenario', null);
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('getScenario', null);
 
     System.Assert.isNotNull(returnedValue);
     System.Assert.areEqual(Logger.getScenario(), returnedValue);
@@ -72,10 +77,10 @@ private class CallableLogger_Tests {
     System.Assert.isNull(Logger.getScenario(), 'Test has started under the wrong conditions');
     String mockScenario = 'some scenario';
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
-      .call('setScenario', new Map<String, Object>{ 'scenario' => mockScenario });
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('setScenario', new Map<String, Object>{ 'scenario' => mockScenario });
 
-    System.Assert.isNull(returnedValue);
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.setScenario(), received ' + returnedValue);
     System.Assert.areEqual(mockScenario, Logger.getScenario());
   }
 
@@ -85,10 +90,10 @@ private class CallableLogger_Tests {
     Logger.setScenario(mockScenario);
     System.Assert.areEqual(mockScenario, Logger.getScenario(), 'Test has started under the wrong conditions');
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
-      .call('endScenario', new Map<String, Object>{ 'scenario' => mockScenario });
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('endScenario', new Map<String, Object>{ 'scenario' => mockScenario });
 
-    System.Assert.isNull(returnedValue);
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.endScenario(), received ' + returnedValue);
     System.Assert.isNull(Logger.getScenario());
   }
 
@@ -97,8 +102,8 @@ private class CallableLogger_Tests {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     String message = 'some log entry message';
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
-      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message });
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message });
 
     System.Assert.isNotNull(returnedValue);
     System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
@@ -113,7 +118,8 @@ private class CallableLogger_Tests {
     String message = 'some log entry message';
     System.Exception apexException = new System.DmlException('whoops');
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'exception' => apexException, 'loggingLevel' => loggingLevel, 'message' => message });
 
     System.Assert.isNotNull(returnedValue);
@@ -131,7 +137,8 @@ private class CallableLogger_Tests {
     String message = 'some log entry message';
     Id recordId = System.UserInfo.getUserId();
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'recordId' => recordId });
 
     System.Assert.isNotNull(returnedValue);
@@ -148,7 +155,8 @@ private class CallableLogger_Tests {
     String message = 'some log entry message';
     SObject record = new Schema.User(Id = System.UserInfo.getUserId());
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'record' => record });
 
     System.Assert.isNotNull(returnedValue);
@@ -175,7 +183,8 @@ private class CallableLogger_Tests {
     String message = 'some log entry message';
     List<String> tags = new List<String>{ 'some-tag', 'another-tag' };
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance())
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'tags' => tags });
 
     System.Assert.isNotNull(returnedValue);
@@ -193,10 +202,12 @@ private class CallableLogger_Tests {
     LogEntryEvent__e createdLogEntryEvent = Logger.info('some log entry that will be saved using EVENT_BUS by default').getLogEntryEvent();
     System.Assert.areEqual(1, Logger.getBufferSize());
 
-    Object returnedValue = ((System.Callable) System.Type.forName('CallableLogger').newInstance()).call('saveLog', null);
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('saveLog', null);
 
-    System.Assert.isNull(returnedValue);
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
     System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(Logger.SaveMethod.EVENT_BUS.name(), Logger.lastSaveMethodNameUsed);
     System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
     System.Assert.areEqual(createdLogEntryEvent, publishedLogEntryEvent);
@@ -204,6 +215,15 @@ private class CallableLogger_Tests {
 
   @IsTest
   static void it_saves_log_with_specified_save_method() {
-    System.Assert.fail('TODO');
+    LogEntryEvent__e createdLogEntryEvent = Logger.info('some log entry that will be saved using the specified save method').getLogEntryEvent();
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    String targetSaveMethodName = Logger.SaveMethod.SYNCHRONOUS_DML.name();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName });
+
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
   }
 }
