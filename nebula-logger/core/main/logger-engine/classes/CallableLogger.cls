@@ -18,6 +18,8 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String ARGUMENT_SCENARIO = 'scenario';
   private static final String ARGUMENT_RECORD_ID = 'recordId';
   private static final String ARGUMENT_RECORD = 'record';
+  private static final String ARGUMENT_RECORD_LIST = 'recordList';
+  private static final String ARGUMENT_RECORD_MAP = 'recordMap';
   private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName';
   private static final String ARGUMENT_TAGS = 'tags';
 
@@ -67,11 +69,28 @@ global without sharing class CallableLogger implements System.Callable {
     System.LoggingLevel loggingLevel = (System.LoggingLevel) arguments.get(ARGUMENT_LOGGING_LEVEL);
     String message = (String) arguments.get(ARGUMENT_MESSAGE);
 
-    return Logger.newEntry(loggingLevel, message)
-      .setExceptionDetails((System.Exception) arguments.get(ARGUMENT_EXCEPTION))
-      .setRecordId((String) arguments.get(ARGUMENT_RECORD_ID))
-      .setRecord((SObject) arguments.get(ARGUMENT_RECORD))
-      .addTags((List<String>) arguments.get(ARGUMENT_TAGS));
+    logEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, message);
+
+    if (arguments.containsKey(ARGUMENT_EXCEPTION)) {
+      logEntryEventBuilder.setExceptionDetails((System.Exception) arguments.get(ARGUMENT_EXCEPTION));
+    }
+    if (arguments.containsKey(ARGUMENT_RECORD_ID)) {
+      logEntryEventBuilder.setRecord((String) arguments.get(ARGUMENT_RECORD_ID));
+    }
+    if (arguments.containsKey(ARGUMENT_RECORD)) {
+      logEntryEventBuilder.setRecord((SObject) arguments.get(ARGUMENT_RECORD));
+    }
+    if (arguments.containsKey(ARGUMENT_RECORD_LIST)) {
+      logEntryEventBuilder.setRecord((List<SObject>) arguments.get(ARGUMENT_RECORD_LIST));
+    }
+    if (arguments.containsKey(ARGUMENT_RECORD_MAP)) {
+      logEntryEventBuilder.setRecord((Map<Id, SObject>) arguments.get(ARGUMENT_RECORD_MAP));
+    }
+    if (arguments.containsKey(ARGUMENT_TAGS)) {
+      logEntryEventBuilder.addTags((List<String>) arguments.get(ARGUMENT_TAGS));
+    }
+
+    return logEntryEventBuilder;
   }
 
   private void saveLog(Map<String, Object> arguments) {

@@ -169,12 +169,38 @@ private class CallableLogger_Tests {
 
   @IsTest
   static void it_adds_new_entry_with_record_list() {
-    System.Assert.fail('TODO');
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    List<Schema.User> recordList = new List<Schema.User>{ new Schema.User(Id = System.UserInfo.getUserId()) };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'recordList' => recordList });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(recordList), logEntryEvent.RecordJson__c);
   }
 
   @IsTest
   static void it_adds_new_entry_with_record_map() {
-    System.Assert.fail('TODO');
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    Map<Id, Schema.User> recordMap = new Map<Id, Schema.User>{ System.UserInfo.getUserId() => new Schema.User(Id = System.UserInfo.getUserId()) };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'recordMap' => recordMap });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(recordMap), logEntryEvent.RecordJson__c);
   }
 
   @IsTest
