@@ -5,7 +5,9 @@
 
 /**
  * @group Logger Engine
- * @description Callable class used that can be used for loosely-couple dependencies & for OmniStudio
+ * @description A class that implements the standard interface `System.Callable` to provide a loosely-coupled way
+ *              to interact with Nebula Logger. This can be used for OmniStudio, as well as for optionally & dynamically
+ *              integrating other packages/code with Nebula Logger's code (when available).
  * @see Logger
  * @see LogEntryEventBuilder
  */
@@ -23,6 +25,12 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName';
   private static final String ARGUMENT_TAGS = 'tags';
 
+  /**
+   * @description The one method required by the interface `System.Callable` description. It provides a `String`-based way to dynamically call Nebula Logger's code.
+   * @param  action    The `String` name of the `Logger` method to call. The supported actions are
+   * @param  arguments An instance of `Map<String, Object>` containing any named arguments expected by the `Logger` method being called
+   * @return           The value returned by the `Logger` method called as an `Object` instance, or `null` if the method being called does not have a return value
+   */
   global Object call(String action, Map<String, Object> arguments) {
     arguments = arguments ?? new Map<String, Object>();
 
@@ -69,7 +77,7 @@ global without sharing class CallableLogger implements System.Callable {
     System.LoggingLevel loggingLevel = (System.LoggingLevel) arguments.get(ARGUMENT_LOGGING_LEVEL);
     String message = (String) arguments.get(ARGUMENT_MESSAGE);
 
-    logEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, message);
+    LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, message);
 
     if (arguments.containsKey(ARGUMENT_EXCEPTION)) {
       logEntryEventBuilder.setExceptionDetails((System.Exception) arguments.get(ARGUMENT_EXCEPTION));
