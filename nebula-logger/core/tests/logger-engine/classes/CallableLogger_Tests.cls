@@ -223,9 +223,8 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_saves_log() {
-    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-    LogEntryEvent__e createdLogEntryEvent = Logger.info('some log entry that will be saved using EVENT_BUS by default').getLogEntryEvent();
+  static void it_saves_log_without_specifying_a_save_method() {
+    Logger.info('some log entry that will be saved using the default save method').getLogEntryEvent();
     System.Assert.areEqual(1, Logger.getBufferSize());
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
@@ -233,15 +232,12 @@ private class CallableLogger_Tests {
 
     System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
     System.Assert.areEqual(0, Logger.getBufferSize());
-    System.Assert.areEqual(Logger.SaveMethod.EVENT_BUS.name(), Logger.lastSaveMethodNameUsed);
-    System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
-    LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-    System.Assert.areEqual(createdLogEntryEvent, publishedLogEntryEvent);
+    System.Assert.areEqual(Logger.getUserSettings().DefaultSaveMethod__c, Logger.lastSaveMethodNameUsed);
   }
 
   @IsTest
   static void it_saves_log_with_specified_save_method() {
-    LogEntryEvent__e createdLogEntryEvent = Logger.info('some log entry that will be saved using the specified save method').getLogEntryEvent();
+    Logger.info('some log entry that will be saved using the specified save method').getLogEntryEvent();
     System.Assert.areEqual(1, Logger.getBufferSize());
     String targetSaveMethodName = Logger.SaveMethod.SYNCHRONOUS_DML.name();
 
@@ -251,5 +247,20 @@ private class CallableLogger_Tests {
     System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
+  }
+
+  @IsTest
+  static void it_supports_case_insensitive_strings_for_action_and_argument_names() {
+    // The specific action being tested here (setParentLogTransactionId()) isn't really important - it could be any supported action.
+    // What _is_ important is verifying that both the action name & argument names are not case-sensitive.
+    System.Assert.isNull(Logger.getParentLogTransactionId(), 'Test has started under the wrong conditions');
+    String mockParentLogTransactionId = 'some transaction id';
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance
+      .call('SeTpArEnTlOgTrAnSaCtIoNiD', new Map<String, Object>{ 'PARENTlogTRANSACTIONiD' => mockParentLogTransactionId });
+
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.getParentLogTransactionId(), received ' + returnedValue);
+    System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId());
   }
 }

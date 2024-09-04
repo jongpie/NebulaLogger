@@ -13,17 +13,17 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global without sharing class CallableLogger implements System.Callable {
-  private static final String ARGUMENT_EXCEPTION = 'exception';
-  private static final String ARGUMENT_LOGGING_LEVEL = 'loggingLevel';
-  private static final String ARGUMENT_MESSAGE = 'message';
-  private static final String ARGUMENT_PARENT_LOG_TRANSACTION_ID = 'parentLogTransactionId';
-  private static final String ARGUMENT_SCENARIO = 'scenario';
-  private static final String ARGUMENT_RECORD_ID = 'recordId';
-  private static final String ARGUMENT_RECORD = 'record';
-  private static final String ARGUMENT_RECORD_LIST = 'recordList';
-  private static final String ARGUMENT_RECORD_MAP = 'recordMap';
-  private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName';
-  private static final String ARGUMENT_TAGS = 'tags';
+  private static final String ARGUMENT_EXCEPTION = 'exception'.toLowerCase();
+  private static final String ARGUMENT_LOGGING_LEVEL = 'loggingLevel'.toLowerCase();
+  private static final String ARGUMENT_MESSAGE = 'message'.toLowerCase();
+  private static final String ARGUMENT_PARENT_LOG_TRANSACTION_ID = 'parentLogTransactionId'.toLowerCase();
+  private static final String ARGUMENT_SCENARIO = 'scenario'.toLowerCase();
+  private static final String ARGUMENT_RECORD_ID = 'recordId'.toLowerCase();
+  private static final String ARGUMENT_RECORD = 'record'.toLowerCase();
+  private static final String ARGUMENT_RECORD_LIST = 'recordList'.toLowerCase();
+  private static final String ARGUMENT_RECORD_MAP = 'recordMap'.toLowerCase();
+  private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName'.toLowerCase();
+  private static final String ARGUMENT_TAGS = 'tags'.toLowerCase();
 
   /**
    * @description The one method required by the interface `System.Callable` description. It provides a `String`-based way to dynamically call Nebula Logger's code.
@@ -32,38 +32,37 @@ global without sharing class CallableLogger implements System.Callable {
    * @return           The value returned by the `Logger` method called as an `Object` instance, or `null` if the method being called does not have a return value
    */
   global Object call(String action, Map<String, Object> arguments) {
-    arguments = arguments ?? new Map<String, Object>();
+    arguments = getCleansedArguments(arguments);
 
-    // TODO consider using .toLowerCase() to avoid casing bugs
-    switch on action {
-      // Transaction ID-related methods
-      when 'getTransactionId' {
+    switch on action?.toLowerCase() {
+      // Methods for transaction IDs / parent transaction IDs
+      when 'gettransactionid' {
         return Logger.getTransactionId();
       }
-      when 'getParentLogTransactionId' {
+      when 'getparentlogtransactionid' {
         return Logger.getParentLogTransactionId();
       }
-      when 'setParentLogTransactionId' {
+      when 'setparentlogtransactionid' {
         Logger.setParentLogTransactionId((String) arguments.get(ARGUMENT_PARENT_LOG_TRANSACTION_ID));
         return null;
       }
-      // Scenario-based logging methods
-      when 'getScenario' {
+      // Methods for scenario-based logging
+      when 'getscenario' {
         return Logger.getScenario();
       }
-      when 'setScenario' {
+      when 'setscenario' {
         Logger.setScenario((String) arguments.get('scenario'));
         return null;
       }
-      when 'endScenario' {
+      when 'endscenario' {
         Logger.endScenario((String) arguments.get('scenario'));
         return null;
       }
-      // Logging & save methods
-      when 'newEntry' {
+      // Methods for adding entries & saving
+      when 'newentry' {
         return newEntry(arguments);
       }
-      when 'saveLog' {
+      when 'savelog' {
         saveLog(arguments);
         return null;
       }
@@ -71,6 +70,17 @@ global without sharing class CallableLogger implements System.Callable {
         throw new System.IllegalArgumentException('Unsupported action: ' + action);
       }
     }
+  }
+
+  private Map<String, Object> getCleansedArguments(Map<String, Object> originalArguments) {
+    originalArguments = originalArguments ?? new Map<String, Object>();
+    originalArguments.remove(null);
+
+    Map<String, Object> cleansedArguments = new Map<String, Object>();
+    for (String key : originalArguments.keySet()) {
+      cleansedArguments.put(key.toLowerCase(), originalArguments.get(key));
+    }
+    return cleansedArguments;
   }
 
   private LogEntryEventBuilder newEntry(Map<String, Object> arguments) {
