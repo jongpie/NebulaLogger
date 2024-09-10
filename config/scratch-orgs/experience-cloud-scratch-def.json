@@ -12,6 +12,9 @@
     "communitiesSettings": {
       "enableNetworksEnabled": true
     },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": false
+    },
     "eventSettings": {
       "enableDeleteMonitoringData": false,
       "enableEventLogGeneration": false,

@@ -4,13 +4,16 @@
   "hasSampleData": true,
   "country": "US",
   "language": "en_US",
-  "features": ["OmniStudioDesigner", "OmniStudioMetadata", "OmniStudioRuntime"],
+  "features": ["EnhancedEmail", "OmniStudioDesigner", "OmniStudioMetadata", "OmniStudioRuntime"],
   "settings": {
     "chatterSettings": {
       "enableChatter": false
     },
     "communitiesSettings": {
       "enableNetworksEnabled": false
+    },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": true
     },
     "eventSettings": {
       "enableDeleteMonitoringData": false,
