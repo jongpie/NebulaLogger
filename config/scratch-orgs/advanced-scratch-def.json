@@ -1,10 +1,10 @@
 {
-  "orgName": "Nebula Logger - Advaned Scratch Org",
+  "orgName": "Nebula Logger - Advanced Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
   "country": "US",
   "language": "en_US",
-  "features": ["EinsteinGPTPlatform", "EventLogFile", "PlatformCache"],
+  "features": ["Communities", "EinsteinGPTPlatform", "EventLogFile", "PlatformCache"],
   "settings": {
     "apexSettings": {
       "enableAuraApexCtrlAuthUserAccessCheckPref": true,
