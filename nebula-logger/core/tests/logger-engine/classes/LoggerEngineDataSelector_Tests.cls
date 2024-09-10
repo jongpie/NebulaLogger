@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerEngineDataSelector_Tests {
+  private static final String EXPERIENCE_CLOUD_GUEST_PROFILE_NAME = 'Logger Test LWR Site Guest Profile';
+  private static final String EXPERIENCE_CLOUD_NETWORK_NAME = 'Logger Test LWR Site';
+  private static final String EXPERIENCE_CLOUD_GUEST_USER_TYPE = 'Guest';
+
   @IsTest
   static void it_loads_mock_instance() {
     MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
@@ -87,6 +91,76 @@ private class LoggerEngineDataSelector_Tests {
     LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
     System.Assert.areEqual(0, System.Limits.getQueries(), 'Query results should have been cached');
     System.Assert.areEqual(expectedSObjectHandlers, returnedSObjectHandlers);
+  }
+
+  @IsTest
+  static void it_returns_cached_network() {
+    if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false || System.Type.forName('Schema.Network') == null) {
+      return;
+    }
+
+    Id expectedNetworkId = (Id) getExperienceCloudNetwork().get('Id');
+    System.Assert.isNotNull(expectedNetworkId);
+    System.Assert.areEqual(1, System.Limits.getQueries());
+    Integer expectedQueryCount = System.Limits.getQueries() + 1;
+
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
+
+    System.Assert.isNotNull(returnedNetworkProxy);
+    System.Assert.areEqual(expectedQueryCount, System.Limits.getQueries());
+    LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
+    System.Assert.areEqual(expectedQueryCount, System.Limits.getQueries(), 'Query results should have been cached');
+    System.Assert.areEqual(expectedNetworkId, returnedNetworkProxy?.Id);
+  }
+
+  @IsTest
+  static void it_returns_null_when_network_id_is_null() {
+    if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false || System.Type.forName('Schema.Network') == null) {
+      return;
+    }
+
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_NETWORK_DATA);
+    Id expectedNetworkId = null;
+    System.Assert.areEqual(0, System.Limits.getQueries());
+
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
+
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    System.Assert.isNull(returnedNetworkProxy);
+  }
+
+  @IsTest
+  static void it_returns_null_when_network_id_has_no_matches() {
+    if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false || System.Type.forName('Schema.Network') == null) {
+      return;
+    }
+
+    // A user ID isn't a network ID, but it is a valid instance of Id, so we can query with it & expect 0 results/no errors
+    Id invalidNetworkId = System.UserInfo.getUserId();
+    System.Assert.areEqual(0, System.Limits.getQueries());
+
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(invalidNetworkId);
+
+    System.Assert.areEqual(1, System.Limits.getQueries());
+    System.Assert.isNull(returnedNetworkProxy);
+  }
+
+  @IsTest
+  static void it_returns_null_when_querying_network_is_disabled() {
+    if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false || System.Type.forName('Schema.Network') == null) {
+      return;
+    }
+
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_NETWORK_DATA);
+    Id expectedNetworkId = (Id) getExperienceCloudNetwork().get('Id');
+    System.Assert.areEqual(1, System.Limits.getQueries());
+
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
+
+    System.Assert.areEqual(1, System.Limits.getQueries());
+    System.Assert.isNull(returnedNetworkProxy);
   }
 
   @IsTest
@@ -183,6 +257,10 @@ private class LoggerEngineDataSelector_Tests {
 
     System.Assert.areEqual(0, System.Limits.getQueries());
     System.Assert.isNull(returnedUser);
+  }
+
+  private static SObject getExperienceCloudNetwork() {
+    return System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME');
   }
 
   private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {

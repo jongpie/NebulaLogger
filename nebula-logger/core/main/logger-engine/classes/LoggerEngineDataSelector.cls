@@ -10,7 +10,7 @@
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
 public without sharing virtual class LoggerEngineDataSelector {
   @TestVisible
-  private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('NetworkMember') != null;
+  private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('Schema.Network') != null;
 
   private static LoggerEngineDataSelector instance = new LoggerEngineDataSelector();
 
