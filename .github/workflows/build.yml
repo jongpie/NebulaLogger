@@ -199,7 +199,7 @@ jobs:
         run: npm run test:apex:nocoverage
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex:nocoverage -- --synchronous
+        run: npm run test:apex -- --synchronous
 
       # This is the only scratch org that's used for uploading code coverage
       - name: 'Upload Apex test code coverage to Codecov.io'
@@ -414,7 +414,7 @@ jobs:
         run: npm run test:apex:nocoverage
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex -- --synchronous
+        run: npm run test:apex:nocoverage -- --synchronous
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
