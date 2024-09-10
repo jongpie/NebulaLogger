@@ -646,10 +646,7 @@ jobs:
 
   create-unlocked-package-release-candidate:
     name: 'Create Core Package Release Candidate'
-    needs:
-      [
-        create-managed-package-beta
-      ]
+    needs: [create-managed-package-beta]
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     environment: 'Demo Org'
