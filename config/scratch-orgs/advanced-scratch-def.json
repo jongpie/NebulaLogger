@@ -4,7 +4,7 @@
   "hasSampleData": true,
   "country": "US",
   "language": "en_US",
-  "features": ["Communities", "EinsteinGPTPlatform", "EventLogFile", "PlatformCache"],
+  "features": ["Communities", "EinsteinGPTPlatform", "EventLogFile", "OmniStudioDesigner", "OmniStudioMetadata", "OmniStudioRuntime", "PlatformCache"],
   "settings": {
     "apexSettings": {
       "enableAuraApexCtrlAuthUserAccessCheckPref": true,

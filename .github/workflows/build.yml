@@ -314,7 +314,7 @@ jobs:
   event-monitoring-scratch-org-tests:
     environment: 'Event Monitoring Scratch Org'
     name: 'Run Event Monitoring Scratch Org Tests'
-    needs: [advanced-scratch-org-tests]
+    needs: [code-quality-tests]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -382,7 +382,7 @@ jobs:
   experience-cloud-scratch-org-tests:
     environment: 'Experience Cloud Scratch Org'
     name: 'Run Experience Cloud Scratch Org Tests'
-    needs: [code-quality-tests, base-scratch-org-tests]
+    needs: [code-quality-tests, advanced-scratch-org-tests]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -453,7 +453,7 @@ jobs:
   omnistudio-scratch-org-tests:
     environment: 'OmniStudio Scratch Org'
     name: 'Run OmniStudio Scratch Org Tests'
-    needs: [code-quality-tests, event-monitoring-scratch-org-tests]
+    needs: [code-quality-tests, base-scratch-org-tests]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -484,7 +484,6 @@ jobs:
           DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
           DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
-
 
       - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/platform-cache-scratch-def.json --wait 20 --set-default --json
@@ -529,7 +528,7 @@ jobs:
   platform-cache-scratch-org-tests:
     environment: 'Platform Cache Scratch Org'
     name: 'Run Platform Cache Scratch Org Tests'
-    needs: [code-quality-tests, experience-cloud-scratch-org-tests]
+    needs: [code-quality-tests, event-monitoring-scratch-org-tests]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
@@ -596,7 +595,16 @@ jobs:
 
   create-managed-package-beta:
     name: 'Create Managed Package Beta'
-    needs: [lwc-tests, base-scratch-org-tests, event-monitoring-scratch-org-tests, experience-cloud-scratch-org-tests, platform-cache-scratch-org-tests]
+    needs:
+      [
+        lwc-tests,
+        advanced-scratch-org-tests,
+        base-scratch-org-tests,
+        event-monitoring-scratch-org-tests,
+        experience-cloud-scratch-org-tests,
+        omnistudio-scratch-org-tests,
+        platform-cache-scratch-org-tests
+      ]
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     environment: 'Demo Org'
