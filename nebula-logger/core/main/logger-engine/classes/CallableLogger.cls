@@ -84,7 +84,10 @@ global without sharing class CallableLogger implements System.Callable {
   }
 
   private LogEntryEventBuilder newEntry(Map<String, Object> arguments) {
-    System.LoggingLevel loggingLevel = (System.LoggingLevel) arguments.get(ARGUMENT_LOGGING_LEVEL);
+    // The value of loggingLevel could be either a string name or enum value,
+    // so coerce it to a string for consistency
+    String loggingLevelName = '' + arguments.get(ARGUMENT_LOGGING_LEVEL);
+    System.LoggingLevel loggingLevel = Logger.getLoggingLevel(loggingLevelName);
     String message = (String) arguments.get(ARGUMENT_MESSAGE);
 
     LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, message);
