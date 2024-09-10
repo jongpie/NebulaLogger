@@ -130,10 +130,9 @@ jobs:
           flags: LWC
           token: ${{ secrets.CODECOV_TOKEN }}
 
-
   advanced-scratch-org-tests:
-    environment: 'Base Scratch Org'
-    name: 'Run Base Scratch Org Tests'
+    environment: 'Advanced Scratch Org'
+    name: 'Run Advanced Scratch Org Tests'
     needs: [code-quality-tests]
     runs-on: ubuntu-latest
     steps:
@@ -452,8 +451,8 @@ jobs:
         if: ${{ always() }}
 
   omnistudio-scratch-org-tests:
-    environment: 'Platform Cache Scratch Org'
-    name: 'Run Platform Cache Scratch Org Tests'
+    environment: 'OmniStudio Scratch Org'
+    name: 'Run OmniStudio Scratch Org Tests'
     needs: [code-quality-tests, event-monitoring-scratch-org-tests]
     runs-on: ubuntu-latest
     steps:
