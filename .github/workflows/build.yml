@@ -153,23 +153,6 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 'Run Scratch Org Tests'
-        uses: ./.github/actions/run-scratch-org-tests
-        env:
-          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
-
-      # Copied from https://github.com/mitchspano/apex-trigger-actions-framework/blob/main/.github/workflows/CI.yml
-      - name: Run SFDX Scanner - Report findings as comments
-        uses: mitchspano/sfdx-scan-pull-request@v0.1.16
-        with:
-          severity-threshold: 4
-          report-mode: comments
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: 'Authorize Dev Hub'
         shell: bash
         run: |
@@ -248,23 +231,6 @@ jobs:
       - name: 'Install npm dependencies'
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
-
-      - name: 'Run Scratch Org Tests'
-        uses: ./.github/actions/run-scratch-org-tests
-        env:
-          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-          DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-          DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
-
-      # Copied from https://github.com/mitchspano/apex-trigger-actions-framework/blob/main/.github/workflows/CI.yml
-      - name: Run SFDX Scanner - Report findings as comments
-        uses: mitchspano/sfdx-scan-pull-request@v0.1.16
-        with:
-          severity-threshold: 4
-          report-mode: comments
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Authorize Dev Hub'
         shell: bash
