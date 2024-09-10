@@ -28,6 +28,9 @@
       "enableLightningLoggerEvents": true,
       "eventLogRetentionDuration": 30
     },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
+    },
     "flowSettings": {
       "canDebugFlowAsAnotherUser": true
     },
