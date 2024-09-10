@@ -166,19 +166,23 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
+
+      # https://help.salesforce.com/s/articleView?id=000394906&type=1
+      - name: 'Install OmniStudio managed package v250.7.1 (Summer ‘24 release)'
+        run: npx sf package install --package 04t4W000002Z6oC --security-type AdminsOnly --wait 30 --no-prompt
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Deploy Core Source to Scratch Org'
-        run: npx sf project deploy validate --ignore-conflicts --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./nebula-logger/
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
       - name: 'Deploy Test Metadata'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./config/scratch-orgs/
+        run: npx sf project deploy start --source-dir ./config/scratch-orgs/
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
@@ -245,16 +249,16 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Deploy Core Source to Scratch Org'
-        run: npx sf project deploy validate --ignore-conflicts --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./nebula-logger/
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
@@ -313,16 +317,16 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/event-monitoring-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/event-monitoring-scratch-def.json --wait 20 --set-default --json
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory with --Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy Core Source to Scratch Org'
-        run: npx sf project deploy validate --ignore-conflicts --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./nebula-logger/
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
@@ -381,19 +385,19 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --set-default --json
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory with --Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy Core Source to Scratch Org'
-        run: npx sf project deploy validate --ignore-conflicts --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./nebula-logger/
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
       - name: 'Deploy Test Experience Sites Metadata'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./config/scratch-orgs/experience-cloud/
+        run: npx sf project deploy start --source-dir ./config/scratch-orgs/experience-cloud/
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
@@ -452,23 +456,23 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/platform-cache-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/platform-cache-scratch-def.json --wait 20 --set-default --json
 
       # https://help.salesforce.com/s/articleView?id=000394906&type=1
-      - name: 'Install OmniStudio manage package v250.7.1'
-        run: npx sf package install --package 04t4W000002Z6oC --wait 30 --no-prompt
+      - name: 'Install OmniStudio managed package v250.7.1 (Summer ‘24 release)'
+        run: npx sf package install --package 04t4W000002Z6oC --security-type AdminsOnly --wait 30 --no-prompt
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory with --Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy Core Source to Scratch Org'
-        run: npx sf project deploy validate --ignore-conflicts --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./nebula-logger/
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
       - name: 'Deploy Test OmniStudio Metadata'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./config/scratch-orgs/omnistudio/
+        run: npx sf project deploy start --source-dir ./config/scratch-orgs/omnistudio/
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
@@ -527,16 +531,16 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --duration-days 1 --definition-file ./config/scratch-orgs/platform-cache-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/platform-cache-scratch-def.json --wait 20 --set-default --json
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory with --Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy Core Source to Scratch Org'
-        run: npx sf project deploy validate --ignore-conflicts --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
-        run: npx sf project deploy start --ignore-conflicts --source-dir ./nebula-logger/
+        run: npx sf project deploy start --source-dir ./nebula-logger/
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
