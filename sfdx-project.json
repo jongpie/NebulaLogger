@@ -7,7 +7,7 @@
     {
       "package": "Nebula Logger - Core",
       "path": "./nebula-logger/core",
-      "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
+      "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
       "versionNumber": "4.14.9.NEXT",
       "versionName": "Bugfix: Apex Code Snippets Auto-Truncated",
