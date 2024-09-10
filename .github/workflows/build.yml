@@ -166,7 +166,7 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/advanced-scratch-def.json --wait 20 --set-default --json
 
       # https://help.salesforce.com/s/articleView?id=000394906&type=1
       - name: 'Install OmniStudio managed package v250.7.1 (Summer ‘24 release)'
@@ -456,7 +456,7 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/platform-cache-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/omnistudio-scratch-def.json --wait 20 --set-default --json
 
       # https://help.salesforce.com/s/articleView?id=000394906&type=1
       - name: 'Install OmniStudio managed package v250.7.1 (Summer ‘24 release)'
