@@ -31,8 +31,8 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String OMNISTUDIO_ARGUMENT_INPUT = 'input';
   private static final String OMNISTUDIO_ARGUMENT_OUTPUT = 'output';
   // Names of arguments only used for output
-  private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE = 'errorMessage';
-  private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE = 'errorType';
+  private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE = 'exceptionMessage';
+  private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE = 'exceptionType';
   private static final String OUTPUT_ARGUMENT_CALL_IS_SUCCESS = 'isSuccess';
 
   /**
@@ -50,7 +50,7 @@ global without sharing class CallableLogger implements System.Callable {
     try {
       output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
       new CallableHandler().handleCall(action, input, output);
-    } catch(System.Exception thrownException) {
+    } catch (System.Exception thrownException) {
       output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, false);
       output.put(OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE, thrownException.getMessage());
       output.put(OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE, thrownException.getTypeName());
