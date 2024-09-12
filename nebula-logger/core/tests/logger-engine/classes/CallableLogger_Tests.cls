@@ -7,7 +7,7 @@
 @IsTest(IsParallel=true)
 private class CallableLogger_Tests {
   @IsTest
-  static void it_returns_error_message_for_unsupported_action_when_using_standard_approach() {
+  static void it_returns_exception_message_for_unsupported_action_when_using_standard_approach() {
     String fakeActionName = 'some-action-that-will-never-exist-i-hope';
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
@@ -20,7 +20,7 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_returns_error_message_for_unsupported_action_when_using_omnistudio_approach() {
+  static void it_returns_exception_message_for_unsupported_action_when_using_omnistudio_approach() {
     String fakeActionName = 'some-action-that-will-never-exist-i-hope';
     Map<String, Object> omnistudioOutput = new Map<String, Object>();
 
