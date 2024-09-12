@@ -89,7 +89,7 @@ global without sharing class CallableLogger implements System.Callable {
         }
         when else {
           isSuccess = false;
-          errorMessage = 'Unsupported action: ' + action;
+          errorMessage = 'Unknown action: ' + action;
         }
       }
 
@@ -148,11 +148,6 @@ global without sharing class CallableLogger implements System.Callable {
           output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
         }
         when 'saveLog' {
-          // System.debug('>>> action: ' + action);
-          // System.debug('>>> input: ' + System.JSON.serializePretty(input));
-          // String stuff = '>>> action: ' + action + '\n' + '>>> input: ' + System.JSON.serializePretty(input);
-          // System.Assert.fail('>>> stuff: ' + stuff);
-
           this.saveLog(input);
           output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
         }

@@ -15,7 +15,7 @@ private class CallableLogger_Tests {
 
     System.Assert.areEqual(2, returnedOutput.size());
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
-    System.Assert.areEqual('Unsupported action: ' + fakeActionName, returnedOutput.get('errorMessage'));
+    System.Assert.areEqual('Unknown action: ' + fakeActionName, returnedOutput.get('errorMessage'));
   }
 
   @IsTest
@@ -28,7 +28,22 @@ private class CallableLogger_Tests {
 
     System.Assert.areEqual(2, omnistudioOutput.size());
     System.Assert.areEqual(false, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + omnistudioOutput);
-    System.Assert.areEqual('Unsupported action: ' + fakeActionName, omnistudioOutput.get('errorMessage'));
+    System.Assert.areEqual('Unknown action: ' + fakeActionName, omnistudioOutput.get('errorMessage'));
+  }
+
+  @IsTest
+  static void it_requires_case_sensitive_string_values_for_action_name() {
+    // The specific action being tested here (setParentLogTransactionId()) isn't really important - it could be any supported action.
+    // What _is_ important is verifying that the action name is case-sensitive.
+    String correctlyCasedActionName = 'getParentLogTransactionId';
+    String incorrectlyCasedActionName = correctlyCasedActionName.toUpperCase();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(incorrectlyCasedActionName, null);
+
+    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
+    System.Assert.areEqual('Unknown action: ' + incorrectlyCasedActionName, returnedOutput.get('errorMessage'));
   }
 
   @IsTest
@@ -107,7 +122,7 @@ private class CallableLogger_Tests {
     Map<String, Object> omnistudioOutput = new Map<String, Object>();
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    callableLoggerInstance.call('setParentLogTransactionId', new Map<String, Object>{ 'input' => omnistudioInput, 'returnedOutput' => omnistudioOutput });
+    callableLoggerInstance.call('setParentLogTransactionId', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
 
     System.Assert.areEqual(1, omnistudioOutput.size());
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
@@ -349,6 +364,7 @@ private class CallableLogger_Tests {
 
   @IsTest
   static void it_adds_new_entry_when_using_omnistudio_approach() {
+    // TODO revisit / delete?
     String loggingLevelName = System.LoggingLevel.FINE.name();
     String message = 'some log entry message';
     Map<String, Object> omnistudioInput = new Map<String, Object>{ 'loggingLevel' => loggingLevelName, 'message' => message };
@@ -364,36 +380,69 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_saves_log_without_specifying_a_save_method() {
+  static void it_saves_log_without_specifying_a_save_method_when_using_standard_approach() {
     Logger.info('some log entry that will be saved using the default save method').getLogEntryEvent();
     System.Assert.areEqual(1, Logger.getBufferSize());
     System.Assert.isNull(Logger.lastSaveMethodNameUsed);
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance.call('saveLog', null);
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('saveLog', null);
 
-    System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
-    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
     System.Assert.areEqual(Logger.getUserSettings().DefaultSaveMethod__c, Logger.lastSaveMethodNameUsed);
   }
 
   @IsTest
-  static void it_saves_log_with_specified_save_method() {
+  static void it_saves_log_without_specifying_a_save_method_when_using_omnistudio_approach() {
+    Logger.info('some log entry that will be saved using the default save method').getLogEntryEvent();
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isNull(Logger.lastSaveMethodNameUsed);
+    Map<String, Object> omnistudioOutput = new Map<String, Object>();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    callableLoggerInstance.call('saveLog',  new Map<String, Object>{ 'output' => omnistudioOutput });
+
+    System.Assert.areEqual(1, omnistudioOutput.size(), omnistudioOutput.toString());
+    System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getUserSettings().DefaultSaveMethod__c, Logger.lastSaveMethodNameUsed);
+  }
+
+  @IsTest
+  static void it_saves_log_with_specified_save_method_when_using_standard_approach() {
     Logger.info('some log entry that will be saved using the specified save method').getLogEntryEvent();
     System.Assert.areEqual(1, Logger.getBufferSize());
     System.Assert.isNull(Logger.lastSaveMethodNameUsed);
     String targetSaveMethodName = Logger.SaveMethod.SYNCHRONOUS_DML.name();
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName });
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName });
 
-    System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
+    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
+  }
+
+  @IsTest
+  static void it_saves_log_with_specified_save_method_when_using_omnistudio_approach() {
+    Logger.info('some log entry that will be saved using the specified save method').getLogEntryEvent();
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isNull(Logger.lastSaveMethodNameUsed);
+    String targetSaveMethodName = Logger.SaveMethod.SYNCHRONOUS_DML.name();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName });
+
+    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
   }
 
   @IsTest
   static void it_adds_and_saves_new_entry_when_using_omnistudio_approach() {
+    // TODO revisit / delete?
     System.Assert.isNull(Logger.lastSaveMethodNameUsed);
     String loggingLevelName = System.LoggingLevel.FINE.name();
     String message = 'some log entry message';
@@ -405,20 +454,5 @@ private class CallableLogger_Tests {
     System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(Logger.getUserSettings().DefaultSaveMethod__c, Logger.lastSaveMethodNameUsed);
-  }
-
-  @IsTest
-  static void it_supports_case_insensitive_strings_for_action_and_argument_names() {
-    // The specific action being tested here (setParentLogTransactionId()) isn't really important - it could be any supported action.
-    // What _is_ important is verifying that both the action name & argument names are not case-sensitive.
-    System.Assert.isNull(Logger.getParentLogTransactionId(), 'Test has started under the wrong conditions');
-    String mockParentLogTransactionId = 'some transaction id';
-
-    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance
-      .call('SeTpArEnTlOgTrAnSaCtIoNiD', new Map<String, Object>{ 'PARENTlogTRANSACTIONiD' => mockParentLogTransactionId });
-
-    System.Assert.isNull(returnedValue, 'No return value expected for Logger.getParentLogTransactionId(), received ' + returnedValue);
-    System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId());
   }
 }
