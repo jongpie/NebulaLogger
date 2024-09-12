@@ -226,16 +226,19 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_adds_new_entry_using_logging_level_enum() {
+  static void it_adds_new_entry_using_standard_approach() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     String message = 'some log entry message';
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message });
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(
+      'newEntry',
+      new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message }
+    );
 
-    System.Assert.isNotNull(returnedValue);
-    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
-    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
   }

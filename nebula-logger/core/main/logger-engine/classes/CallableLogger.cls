@@ -15,6 +15,7 @@
 global without sharing class CallableLogger implements System.Callable {
   // Names of arguments used for both input & output (depending on which action is called)
   private static final String ARGUMENT_EXCEPTION = 'exception';
+  private static final String ARGUMENT_LOG_ENTRY_EVENT_BUILDER = 'logEntryEventBuilder';
   private static final String ARGUMENT_LOGGING_LEVEL = 'loggingLevel';
   private static final String ARGUMENT_MESSAGE = 'message';
   private static final String ARGUMENT_PARENT_LOG_TRANSACTION_ID = 'parentLogTransactionId';
@@ -42,8 +43,9 @@ global without sharing class CallableLogger implements System.Callable {
    * @return           The value returned by the `Logger` method called as an `Object` instance, or `null` if the method being called does not have a return value
    */
   global Object call(String action, Map<String, Object> arguments) {
-    arguments = arguments ?? new Map<String, Object>();
+    LoggerStackTrace.ignoreOrigin(CallableLogger.class);
 
+    arguments = arguments ?? new Map<String, Object>();
     Map<String, Object> input = (Map<String, Object>) arguments.get(OMNISTUDIO_ARGUMENT_INPUT) ?? arguments;
     Map<String, Object> output = (Map<String, Object>) arguments.get(OMNISTUDIO_ARGUMENT_OUTPUT) ?? new Map<String, Object>();
 
@@ -85,12 +87,10 @@ global without sharing class CallableLogger implements System.Callable {
         }
         // Methods for adding & saving log entries
         when 'newEntry' {
-          this.newEntry(input);
-          output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
+          output.put(ARGUMENT_LOG_ENTRY_EVENT_BUILDER, this.newEntry(input));
         }
         when 'saveLog' {
           this.saveLog(input);
-          output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
         }
         when else {
           throw new System.IllegalArgumentException('Unknown action: ' + action);
@@ -98,7 +98,7 @@ global without sharing class CallableLogger implements System.Callable {
       }
     }
 
-    private void newEntry(Map<String, Object> input) {
+    private LogEntryEventBuilder newEntry(Map<String, Object> input) {
       // The value of loggingLevel could be either a string name or an enum value from System.LoggingLevel,
       // so always first convert it to a string for consistency
       String loggingLevelName = input.get(ARGUMENT_LOGGING_LEVEL)?.toString();
@@ -125,6 +125,8 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(ARGUMENT_TAGS)) {
         logEntryEventBuilder.addTags((List<String>) input.get(ARGUMENT_TAGS));
       }
+
+      return logEntryEventBuilder;
     }
 
     private void saveLog(Map<String, Object> input) {
