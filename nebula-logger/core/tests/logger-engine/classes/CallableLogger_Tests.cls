@@ -15,8 +15,8 @@ private class CallableLogger_Tests {
 
     System.Assert.areEqual(3, returnedOutput.size());
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
-    System.Assert.areEqual('Unknown action: ' + fakeActionName, returnedOutput.get('errorMessage'));
-    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('errorType'));
+    System.Assert.areEqual('Unknown action: ' + fakeActionName, returnedOutput.get('exceptionMessage'));
+    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('exceptionType'));
   }
 
   @IsTest
@@ -29,8 +29,8 @@ private class CallableLogger_Tests {
 
     System.Assert.areEqual(3, omnistudioOutput.size());
     System.Assert.areEqual(false, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + omnistudioOutput);
-    System.Assert.areEqual('Unknown action: ' + fakeActionName, omnistudioOutput.get('errorMessage'));
-    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), omnistudioOutput.get('errorType'));
+    System.Assert.areEqual('Unknown action: ' + fakeActionName, omnistudioOutput.get('exceptionMessage'));
+    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), omnistudioOutput.get('exceptionType'));
   }
 
   @IsTest
@@ -45,8 +45,8 @@ private class CallableLogger_Tests {
 
     System.Assert.areEqual(3, returnedOutput.size());
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
-    System.Assert.areEqual('Unknown action: ' + incorrectlyCasedActionName, returnedOutput.get('errorMessage'));
-    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('errorType'));
+    System.Assert.areEqual('Unknown action: ' + incorrectlyCasedActionName, returnedOutput.get('exceptionMessage'));
+    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('exceptionType'));
   }
 
   @IsTest

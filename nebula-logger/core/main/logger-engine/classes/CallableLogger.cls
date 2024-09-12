@@ -13,6 +13,7 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global without sharing class CallableLogger implements System.Callable {
+  // Names of arguments used for both input & output (depending on which action is called)
   private static final String ARGUMENT_EXCEPTION = 'exception';
   private static final String ARGUMENT_LOGGING_LEVEL = 'loggingLevel';
   private static final String ARGUMENT_MESSAGE = 'message';
@@ -25,11 +26,13 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName';
   private static final String ARGUMENT_TAGS = 'tags';
   private static final String ARGUMENT_TRANSACTION_ID = 'transactionId';
+  // Names of arguments used by OmniStudio when calling an instance of System.Callable
+  // Relevant OmniStudio docs: https://help.salesforce.com/s/articleView?id=sf.os_callable_implementations.htm&type=5
   private static final String OMNISTUDIO_ARGUMENT_INPUT = 'input';
   private static final String OMNISTUDIO_ARGUMENT_OUTPUT = 'output';
-  private static final String OMNISTUDIO_ARGUMENT_OPTIONS = 'options';
-  private static final String OUTPUT_ARGUMENT_CALL_ERROR_MESSAGE = 'errorMessage';
-  private static final String OUTPUT_ARGUMENT_CALL_ERROR_TYPE = 'errorType';
+  // Names of arguments only used for output
+  private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE = 'errorMessage';
+  private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE = 'errorType';
   private static final String OUTPUT_ARGUMENT_CALL_IS_SUCCESS = 'isSuccess';
 
   /**
@@ -41,17 +44,16 @@ global without sharing class CallableLogger implements System.Callable {
   global Object call(String action, Map<String, Object> arguments) {
     arguments = arguments ?? new Map<String, Object>();
 
-    // Relevant OmniStudio docs for using the Callable interface: https://help.salesforce.com/s/articleView?id=sf.os_callable_implementations.htm&type=5
     Map<String, Object> input = (Map<String, Object>) arguments.get(OMNISTUDIO_ARGUMENT_INPUT) ?? arguments;
     Map<String, Object> output = (Map<String, Object>) arguments.get(OMNISTUDIO_ARGUMENT_OUTPUT) ?? new Map<String, Object>();
-// System.Assert.fail(input.toString());
+
     try {
       output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
       new CallableHandler().handleCall(action, input, output);
     } catch(System.Exception thrownException) {
       output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, false);
-      output.put(OUTPUT_ARGUMENT_CALL_ERROR_MESSAGE, thrownException.getMessage());
-      output.put(OUTPUT_ARGUMENT_CALL_ERROR_TYPE, thrownException.getTypeName());
+      output.put(OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE, thrownException.getMessage());
+      output.put(OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE, thrownException.getTypeName());
     }
 
     return output;
