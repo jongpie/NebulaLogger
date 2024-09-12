@@ -126,6 +126,13 @@ global without sharing class CallableLogger implements System.Callable {
         logEntryEventBuilder.addTags((List<String>) input.get(ARGUMENT_TAGS));
       }
 
+      // TODO consider overriding some fields like to be OmniStudio specific:
+      // - OriginType__c
+      // - OriginLocation__c
+      // - OriginSourceApiName__c
+      // - OriginSourceMetadataType__c
+      // etc....
+
       return logEntryEventBuilder;
     }
 

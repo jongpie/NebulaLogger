@@ -244,16 +244,18 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_adds_new_entry_using_logging_level_name() {
+  static void it_adds_new_entry_using_omnistudio_approach() {
     String loggingLevelName = System.LoggingLevel.FINE.name();
     String message = 'some log entry message';
+    Map<String, Object> omnistudioInput = new Map<String, Object>{ 'loggingLevel' => loggingLevelName, 'message' => message };
+    Map<String, Object> omnistudioOutput = new Map<String, Object>();
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevelName, 'message' => message });
+    callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
 
-    System.Assert.isNotNull(returnedValue);
-    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
-    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(2, omnistudioOutput.size());
+    System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) omnistudioOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevelName, logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
   }
