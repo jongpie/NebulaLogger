@@ -7,19 +7,28 @@
 @IsTest(IsParallel=true)
 private class CallableLogger_Tests {
   @IsTest
-  static void it_throws_illegal_argument_exception_for_unsupported_action() {
+  static void it_returns_error_message_for_unsupported_action() {
     String fakeActionName = 'some-action-that-will-never-exist-i-hope';
-    System.IllegalArgumentException thrownException;
 
-    try {
-      System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-      callableLoggerInstance.call(fakeActionName, null);
-    } catch (System.IllegalArgumentException ex) {
-      thrownException = ex;
-    }
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(fakeActionName, null);
 
-    System.Assert.isNotNull(thrownException);
-    System.Assert.areEqual('Unsupported action: ' + fakeActionName, thrownException.getMessage());
+    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
+    System.Assert.areEqual('Unsupported action: ' + fakeActionName, returnedOutput.get('errorMessage'));
+  }
+
+  @IsTest
+  static void it_returns_error_message_for_unsupported_action_when_running_in_omnistudio() {
+    String fakeActionName = 'some-action-that-will-never-exist-i-hope';
+    Map<String, Object> omnistudioOutput = new Map<String, Object>();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    callableLoggerInstance.call(fakeActionName, new Map<String, Object>{ 'output' => omnistudioOutput });
+
+    System.Assert.areEqual(2, omnistudioOutput.size());
+    System.Assert.areEqual(false, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual('Unsupported action: ' + fakeActionName, omnistudioOutput.get('errorMessage'));
   }
 
   @IsTest
@@ -27,10 +36,24 @@ private class CallableLogger_Tests {
     System.Assert.isNotNull(Logger.getTransactionId(), 'Test has started under the wrong conditions');
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance.call('getTransactionId', null);
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('getTransactionId', null);
 
-    System.Assert.isNotNull(returnedValue);
-    System.Assert.areEqual(Logger.getTransactionId(), returnedValue);
+    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+  }
+
+  @IsTest
+  static void it_gets_transaction_id_when_running_in_omnistudio() {
+    System.Assert.isNotNull(Logger.getTransactionId(), 'Test has started under the wrong conditions');
+    Map<String, Object> omnistudioOutput = new Map<String, Object>();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    callableLoggerInstance.call('getTransactionId', new Map<String, Object>{ 'output' => omnistudioOutput });
+
+    System.Assert.areEqual(2, omnistudioOutput.size());
+    System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
   }
 
   @IsTest
@@ -40,20 +63,36 @@ private class CallableLogger_Tests {
     System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId(), 'Test has started under the wrong conditions');
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance.call('getParentLogTransactionId', null);
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('getParentLogTransactionId', null);
 
-    System.Assert.isNotNull(returnedValue);
-    System.Assert.areEqual(mockParentLogTransactionId, returnedValue);
+    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(mockParentLogTransactionId, returnedOutput.get('parentLogTransactionId'));
   }
 
+  // TODO refactor below tests + add omnistudio equivalent for all of them
   @IsTest
   static void it_sets_parent_log_transaction_id() {
     System.Assert.isNull(Logger.getParentLogTransactionId(), 'Test has started under the wrong conditions');
     String mockParentLogTransactionId = 'some transaction id';
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Object returnedValue = callableLoggerInstance
+    Map<String, Object> output = (Map<String, Object>) callableLoggerInstance
       .call('setParentLogTransactionId', new Map<String, Object>{ 'parentLogTransactionId' => mockParentLogTransactionId });
+
+    System.Assert.areEqual(1, output.size());
+    System.Assert.areEqual(true, output.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + output);
+    System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId());
+  }
+
+  @IsTest
+  static void it_sets_parent_log_transaction_id_when_running_in_omnistudio() {
+    System.Assert.isNull(Logger.getParentLogTransactionId(), 'Test has started under the wrong conditions');
+    String mockParentLogTransactionId = 'some transaction id';
+    Map<String, Object> omnistudioInput = new Map<String, Object>{ 'parentLogTransactionId' => mockParentLogTransactionId };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('setParentLogTransactionId', new Map<String, Object>{ 'input' => omnistudioInput });
 
     System.Assert.isNull(returnedValue, 'No return value expected for Logger.getParentLogTransactionId(), received ' + returnedValue);
     System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId());
@@ -85,6 +124,19 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
+  static void it_sets_scenario_when_running_in_omnistudio() {
+    System.Assert.isNull(Logger.getScenario(), 'Test has started under the wrong conditions');
+    String mockScenario = 'some scenario';
+    Map<String, Object> omnistudioInput = new Map<String, Object>{ 'scenario' => mockScenario };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('setScenario', new Map<String, Object>{ 'input' => omnistudioInput });
+
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.setScenario(), received ' + returnedValue);
+    System.Assert.areEqual(mockScenario, Logger.getScenario());
+  }
+
+  @IsTest
   static void it_ends_scenario() {
     String mockScenario = 'some scenario';
     Logger.setScenario(mockScenario);
@@ -92,6 +144,20 @@ private class CallableLogger_Tests {
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Object returnedValue = callableLoggerInstance.call('endScenario', new Map<String, Object>{ 'scenario' => mockScenario });
+
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.endScenario(), received ' + returnedValue);
+    System.Assert.isNull(Logger.getScenario());
+  }
+
+  @IsTest
+  static void it_ends_scenario_when_running_in_omnistudio() {
+    String mockScenario = 'some scenario';
+    Logger.setScenario(mockScenario);
+    System.Assert.areEqual(mockScenario, Logger.getScenario(), 'Test has started under the wrong conditions');
+    Map<String, Object> omnistudioInput = new Map<String, Object>{ 'scenario' => mockScenario };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('endScenario', new Map<String, Object>{ 'input' => omnistudioInput });
 
     System.Assert.isNull(returnedValue, 'No return value expected for Logger.endScenario(), received ' + returnedValue);
     System.Assert.isNull(Logger.getScenario());
@@ -238,9 +304,26 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
+  static void it_adds_new_entry_when_running_in_omnistudio() {
+    String loggingLevelName = System.LoggingLevel.FINE.name();
+    String message = 'some log entry message';
+    Map<String, Object> omnistudioInput = new Map<String, Object>{ 'loggingLevel' => loggingLevelName, 'message' => message };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'input' => omnistudioInput });
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.isInstanceOfType(returnedValue, LogEntryEventBuilder.class);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedValue).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevelName, logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+  }
+
+  @IsTest
   static void it_saves_log_without_specifying_a_save_method() {
     Logger.info('some log entry that will be saved using the default save method').getLogEntryEvent();
     System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isNull(Logger.lastSaveMethodNameUsed);
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Object returnedValue = callableLoggerInstance.call('saveLog', null);
@@ -254,6 +337,7 @@ private class CallableLogger_Tests {
   static void it_saves_log_with_specified_save_method() {
     Logger.info('some log entry that will be saved using the specified save method').getLogEntryEvent();
     System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isNull(Logger.lastSaveMethodNameUsed);
     String targetSaveMethodName = Logger.SaveMethod.SYNCHRONOUS_DML.name();
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
@@ -262,6 +346,21 @@ private class CallableLogger_Tests {
     System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
+  }
+
+  @IsTest
+  static void it_adds_and_saves_new_entry_when_running_in_omnistudio() {
+    System.Assert.isNull(Logger.lastSaveMethodNameUsed);
+    String loggingLevelName = System.LoggingLevel.FINE.name();
+    String message = 'some log entry message';
+    Map<String, Object> omnistudioInput = new Map<String, Object>{ 'loggingLevel' => loggingLevelName, 'message' => message, 'saveLog' => true };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Object returnedValue = callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'input' => omnistudioInput });
+
+    System.Assert.isNull(returnedValue, 'No return value expected for Logger.saveLog(), received ' + returnedValue);
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(Logger.getUserSettings().DefaultSaveMethod__c, Logger.lastSaveMethodNameUsed);
   }
 
   @IsTest
