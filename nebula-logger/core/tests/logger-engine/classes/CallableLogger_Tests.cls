@@ -13,9 +13,10 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(fakeActionName, null);
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(3, returnedOutput.size());
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
     System.Assert.areEqual('Unknown action: ' + fakeActionName, returnedOutput.get('errorMessage'));
+    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('errorType'));
   }
 
   @IsTest
@@ -26,9 +27,10 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call(fakeActionName, new Map<String, Object>{ 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(2, omnistudioOutput.size());
+    System.Assert.areEqual(3, omnistudioOutput.size());
     System.Assert.areEqual(false, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + omnistudioOutput);
     System.Assert.areEqual('Unknown action: ' + fakeActionName, omnistudioOutput.get('errorMessage'));
+    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), omnistudioOutput.get('errorType'));
   }
 
   @IsTest
@@ -41,9 +43,10 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(incorrectlyCasedActionName, null);
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(3, returnedOutput.size());
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
     System.Assert.areEqual('Unknown action: ' + incorrectlyCasedActionName, returnedOutput.get('errorMessage'));
+    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('errorType'));
   }
 
   @IsTest
@@ -401,7 +404,7 @@ private class CallableLogger_Tests {
     Map<String, Object> omnistudioOutput = new Map<String, Object>();
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    callableLoggerInstance.call('saveLog',  new Map<String, Object>{ 'output' => omnistudioOutput });
+    callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'output' => omnistudioOutput });
 
     System.Assert.areEqual(1, omnistudioOutput.size(), omnistudioOutput.toString());
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
@@ -416,7 +419,10 @@ private class CallableLogger_Tests {
     String targetSaveMethodName = Logger.SaveMethod.SYNCHRONOUS_DML.name();
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName });
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(
+      'saveLog',
+      new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName }
+    );
 
     System.Assert.areEqual(1, returnedOutput.size());
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
@@ -432,7 +438,10 @@ private class CallableLogger_Tests {
     String targetSaveMethodName = Logger.SaveMethod.SYNCHRONOUS_DML.name();
 
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName });
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(
+      'saveLog',
+      new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName }
+    );
 
     System.Assert.areEqual(1, returnedOutput.size());
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
