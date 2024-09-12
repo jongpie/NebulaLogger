@@ -44,27 +44,25 @@ global without sharing class CallableLogger implements System.Callable {
     CallableHandler handler;
     Map<String, Object> input;
     Map<String, Object> output;
-    if (isOmniStudioCall(arguments)) {
+    // if (isOmniStudioCall(arguments)) {
+    if (arguments.containsKey(OMNISTUDIO_ARGUMENT_INPUT) || arguments.containsKey(OMNISTUDIO_ARGUMENT_OUTPUT)) {
       handler = new OmniStudioCallableHandler();
       input = (Map<String, Object>) arguments.get(OMNISTUDIO_ARGUMENT_INPUT);
       output = (Map<String, Object>) arguments.get(OMNISTUDIO_ARGUMENT_OUTPUT);
     } else {
-      handler = new BaseCallableHandler();
-      input = new Map<String, Object>();
+      handler = new StandardCallableHandler();
+      input = arguments;
       output = new Map<String, Object>();
     }
-    return handler.handleCall(action, input, output);
+
+    handler.handleCall(action, input, output);
+
+    return output;
   }
 
+  @SuppressWarnings('PMD.ApexDoc')
   private abstract class CallableHandler {
-    public virtual Object handleCall(String action, Map<String, Object> input, Map<String, Object> output) {
-      return 'TODO';
-    }
-
-    public virtual Object handleCall(String action, Map<String, Object> arguments) {
-      // TODO consider always returning a Map<String, Object> for all methods
-      // And in the case of OmniStudio, its `output` Map would be the return value
-      Map<String, Object> output = new Map<String, Object>();
+    public virtual void handleCall(String action, Map<String, Object> input, Map<String, Object> output) {
       Boolean isSuccess = true;
       String errorMessage;
 
@@ -76,23 +74,22 @@ global without sharing class CallableLogger implements System.Callable {
         when 'getParentLogTransactionId' {
           output.put(ARGUMENT_PARENT_LOG_TRANSACTION_ID, Logger.getParentLogTransactionId());
         }
-        when 'setparentlogTransactionId' {
-          Logger.setParentLogTransactionId((String) arguments.get(ARGUMENT_PARENT_LOG_TRANSACTION_ID));
+        when 'setParentLogTransactionId' {
+          Logger.setParentLogTransactionId((String) input.get(ARGUMENT_PARENT_LOG_TRANSACTION_ID));
         }
         // Methods for scenario-based logging
         when 'getScenario' {
           output.put(ARGUMENT_SCENARIO, Logger.getScenario());
         }
         when 'setScenario' {
-          Logger.setScenario((String) arguments.get(ARGUMENT_SCENARIO));
+          Logger.setScenario((String) input.get(ARGUMENT_SCENARIO));
         }
         when 'endScenario' {
-          Logger.endScenario((String) arguments.get(ARGUMENT_SCENARIO));
+          Logger.endScenario((String) input.get(ARGUMENT_SCENARIO));
         }
         when else {
           isSuccess = false;
           errorMessage = 'Unsupported action: ' + action;
-          // throw new System.IllegalArgumentException('Unsupported action: ' + action);
         }
       }
 
@@ -100,22 +97,6 @@ global without sharing class CallableLogger implements System.Callable {
       if (String.isNotBlank(errorMessage)) {
         output.put(OUTPUT_ARGUMENT_CALL_ERROR_MESSAGE, errorMessage);
       }
-
-      return output;
-    }
-
-    public virtual void getCleansedArguments(Map<String, Object> originalArguments) {
-      // TODO figure out how to convert/parse OmniStudio parameters
-      // https://help.salesforce.com/s/articleView?id=sf.os_callable_implementations.htm&type=5
-
-      originalArguments = originalArguments ?? new Map<String, Object>();
-      originalArguments.remove(null);
-
-      Map<String, Object> cleansedArguments = new Map<String, Object>();
-      for (String key : originalArguments.keySet()) {
-        cleansedArguments.put(key, originalArguments.get(key));
-      }
-      // return cleansedArguments;
     }
 
     protected LogEntryEventBuilder newEntry(Map<String, Object> arguments) {
@@ -157,51 +138,35 @@ global without sharing class CallableLogger implements System.Callable {
 
   // Handler used when Apex developers/ISVs/package creators are directly creating
   // interacting with `CallableLogger` (i.e., anyone not using this for OmniStudio)
-  private class BaseCallableHandler extends CallableHandler {
-    public override void getCleansedArguments(Map<String, Object> originalArguments) {
-      // return null;
-    }
-
-    public override Object handleCall(String action, Map<String, Object> arguments) {
-      this.getCleansedArguments(arguments);
-      // arguments = this.getCleansedArguments(arguments);
-
-      Map<String, Object> output;
+  @SuppressWarnings('PMD.ApexDoc')
+  private class StandardCallableHandler extends CallableHandler {
+    public override void handleCall(String action, Map<String, Object> input, Map<String, Object> output) {
       switch on action {
         // Methods for adding entries & saving
         when 'newEntry' {
-          return this.newEntry(arguments);
+          this.newEntry(input);
+          output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
         }
         when 'saveLog' {
           // System.debug('>>> action: ' + action);
-          // System.debug('>>> arguments: ' + System.JSON.serializePretty(arguments));
-          // String stuff = '>>> action: ' + action + '\n' + '>>> arguments: ' + System.JSON.serializePretty(arguments);
+          // System.debug('>>> input: ' + System.JSON.serializePretty(input));
+          // String stuff = '>>> action: ' + action + '\n' + '>>> input: ' + System.JSON.serializePretty(input);
           // System.Assert.fail('>>> stuff: ' + stuff);
 
-          this.saveLog(arguments);
-          return new Map<String, Object>{ OUTPUT_ARGUMENT_CALL_IS_SUCCESS => true };
+          this.saveLog(input);
+          output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
         }
         when else {
-          return super.handleCall(action, arguments);
+          super.handleCall(action, input, output);
         }
       }
     }
   }
 
   // Handler used when OmniStudio designers & developers are using `CallableLogger` for logging in OmniStudio
+  @SuppressWarnings('PMD.ApexDoc')
   private class OmniStudioCallableHandler extends CallableHandler {
-    public override void getCleansedArguments(Map<String, Object> originalArguments) {
-      // return null;
-    }
-
-    public override Object handleCall(String action, Map<String, Object> originalArguments) {
-      Map<String, Object> input = (Map<String, Object>) originalArguments.get(OMNISTUDIO_ARGUMENT_INPUT);
-      Map<String, Object> output = (Map<String, Object>) originalArguments.get(OMNISTUDIO_ARGUMENT_OUTPUT);
-      // Map<String, Object> options = (Map<String, Object>) originalArguments.get(OMNISTUDIO_ARGUMENT_OPTIONS);
-
-      input = input ?? new Map<String, Object>();
-      output = output ?? new Map<String, Object>();
-
+    public override void handleCall(String action, Map<String, Object> input, Map<String, Object> output) {
       switch on action {
         // TODO revisit if using 'addnewentry' and ''addnewentry' is the best approach for OmniStudio:
         //  - For omniscripts, there's no state, so calling saveLog() doesn't make sense
@@ -216,24 +181,9 @@ global without sharing class CallableLogger implements System.Callable {
           output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, true);
         }
         when else {
-          System.Assert.fail();
-          output.putAll((Map<String, Object>) super.handleCall(action, input));
+          super.handleCall(action, input, output);
         }
       }
-
-      Map<String, Object> convertedArguments = new Map<String, Object>();
-
-      return output;
-    }
-
-    private Map<String, Object> convertOmniScriptArguments(Map<String, Object> originalArguments) {
-      Map<String, Object> convertedArguments = new Map<String, Object>();
-
-      Map<String, Object> input = (Map<String, Object>) originalArguments.get(OMNISTUDIO_ARGUMENT_INPUT);
-      Map<String, Object> output = (Map<String, Object>) originalArguments.get(OMNISTUDIO_ARGUMENT_OUTPUT);
-      Map<String, Object> options = (Map<String, Object>) originalArguments.get(OMNISTUDIO_ARGUMENT_OPTIONS);
-
-      return null;
     }
   }
 
@@ -241,54 +191,4 @@ global without sharing class CallableLogger implements System.Callable {
   private Boolean isOmniStudioCall(Map<String, Object> arguments) {
     return arguments.containsKey(OMNISTUDIO_ARGUMENT_INPUT) || arguments.containsKey(OMNISTUDIO_ARGUMENT_OUTPUT);
   }
-
-  private Map<String, Object> getCleansedArguments(Map<String, Object> originalArguments) {
-    // TODO figure out how to convert/parse OmniStudio parameters
-    // https://help.salesforce.com/s/articleView?id=sf.os_callable_implementations.htm&type=5
-
-    originalArguments = originalArguments ?? new Map<String, Object>();
-    originalArguments.remove(null);
-
-    Map<String, Object> cleansedArguments = new Map<String, Object>();
-    for (String key : originalArguments.keySet()) {
-      cleansedArguments.put(key, originalArguments.get(key));
-    }
-    return cleansedArguments;
-  }
-
-  // private LogEntryEventBuilder newEntry(Map<String, Object> arguments) {
-  //   // The value of loggingLevel could be either a string name or enum value,
-  //   // so coerce it to a string for consistency
-  //   String loggingLevelName = '' + arguments.get(ARGUMENT_LOGGING_LEVEL);
-  //   System.LoggingLevel loggingLevel = Logger.getLoggingLevel(loggingLevelName);
-  //   String message = (String) arguments.get(ARGUMENT_MESSAGE);
-
-  //   LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, message);
-
-  //   if (arguments.containsKey(ARGUMENT_EXCEPTION)) {
-  //     logEntryEventBuilder.setExceptionDetails((System.Exception) arguments.get(ARGUMENT_EXCEPTION));
-  //   }
-  //   if (arguments.containsKey(ARGUMENT_RECORD_ID)) {
-  //     logEntryEventBuilder.setRecord((String) arguments.get(ARGUMENT_RECORD_ID));
-  //   }
-  //   if (arguments.containsKey(ARGUMENT_RECORD)) {
-  //     logEntryEventBuilder.setRecord((SObject) arguments.get(ARGUMENT_RECORD));
-  //   }
-  //   if (arguments.containsKey(ARGUMENT_RECORD_LIST)) {
-  //     logEntryEventBuilder.setRecord((List<SObject>) arguments.get(ARGUMENT_RECORD_LIST));
-  //   }
-  //   if (arguments.containsKey(ARGUMENT_RECORD_MAP)) {
-  //     logEntryEventBuilder.setRecord((Map<Id, SObject>) arguments.get(ARGUMENT_RECORD_MAP));
-  //   }
-  //   if (arguments.containsKey(ARGUMENT_TAGS)) {
-  //     logEntryEventBuilder.addTags((List<String>) arguments.get(ARGUMENT_TAGS));
-  //   }
-
-  //   return logEntryEventBuilder;
-  // }
-
-  // private void saveLog(Map<String, Object> arguments) {
-  //   String saveMethodName = ((String) arguments.get(ARGUMENT_SAVE_METHOD_NAME)) ?? Logger.getUserSettings().DefaultSaveMethod__c;
-  //   Logger.saveLog(saveMethodName);
-  // }
 }
