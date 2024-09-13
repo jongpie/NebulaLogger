@@ -14,7 +14,7 @@ public with sharing class EventMonitoringDataSelector {
     return instance;
   }
 
-  public virtual Database.QueryLocator getEventLogFileQueryLocator() {
+  public virtual Database.QueryLocator getEventLogFileQueryLocator(List<String> eventTypeNames) {
     return System.Database.getQueryLocator(
       // TODO move SOQL query to a selector class (new EventMonitoringDataSelector class?)
       [
@@ -36,6 +36,8 @@ public with sharing class EventMonitoringDataSelector {
           LogFileLength,
           Sequence
         FROM EventLogFile
+        WHERE EventType IN :eventTypeNames
+        ORDER BY LogDate DESC, CreatedDate DESC, Sequence DESC
       ]
     );
   }
