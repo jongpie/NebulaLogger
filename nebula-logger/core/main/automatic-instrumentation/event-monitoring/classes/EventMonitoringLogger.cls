@@ -24,10 +24,21 @@ global without sharing class EventMonitoringLogger implements Database.Batchable
     for (Schema.EventLogFile eventLogFile : eventLogFiles) {
       // Map<String, Object> untypedEventLogFile = getEventLogFileAsMap(eventLogFile);
       String untypedEventLogFile = convertCsvToJson(eventLogFile.LogFIle.toString());
-      // Map<String, Object> untypedEventLogFile = convertCsvToJson(eventLogFile.LogFIle.toString());
-      Logger.debug('untypedEventLogFile: ' + untypedEventLogFile.toString());
 
-      Logger.debug('EventLogFile: ' + eventLogFile.LogFile.toString());
+      List<Map<String, Object>> untypedEventLogFiles = (List<Map<String, Object>>) System.JSON.deserializeUntyped(untypedEventLogFile.toString());
+      for (Map<String, Object> eventLogFileMap : untypedEventLogFiles) {
+        LogEntryEventBuilder builder = Logger.info('Event log file: ' + eventLogFileMap, eventLogFile.Id);
+        // builder.setTimestamp(timestamp);
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+        logEntryEvent.RequestId__c = eventLogFileMap.get('REQUEST_ID').toString();
+        // TODO figure out how to handle populating TransactionId__c
+        // TODO figure out how to handle populating LoggedBy__c
+
+        // Map<String, Object> untypedEventLogFile = convertCsvToJson(eventLogFile.LogFIle.toString());
+      }
+
+      // Logger.debug('EventLogFile: ' + eventLogFile.LogFile.toString());
       // Logger.info('EventLogFile: ' + untypedEventLogFile);
       // Logger.info('EventLogFile:
     }
