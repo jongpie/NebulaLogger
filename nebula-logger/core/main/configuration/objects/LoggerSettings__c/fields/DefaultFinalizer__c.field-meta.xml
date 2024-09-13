@@ -3,10 +3,10 @@
     <fullName>DefaultFinalizer__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
-    <defaultValue>&apos;Delete&apos;</defaultValue>
+    <defaultValue>&apos;LoggerFinalizer&apos;</defaultValue>
     <externalId>false</externalId>
-    <inlineHelpText>Sets the value of Log__c.LogPurgeAction__c, which is used by the batch job LogBatchPurger to indicate the action that should be taken for a Log__c record when LogRetentionDate__c &lt; TODAY.</inlineHelpText>
-    <label>Log Purge Action</label>
+    <inlineHelpText>TODO</inlineHelpText>
+    <label>Queueable Finalizer</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
