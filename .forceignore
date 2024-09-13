@@ -21,3 +21,6 @@ nebula-logger/managed-package/**/*.testSuite-meta.xml
 **/tsconfig.json
 
 **/*.ts
+
+
+**/platform-monitoring/**

@@ -11,10 +11,15 @@
 */
 global without sharing class EventMonitoringLogger implements Database.Batchable<SObject> {
   global Database.QueryLocator start(Database.BatchableContext batchableContext) {
-    return EventMonitoringDataSelector.getInstance().getEventLogFileQueryLocator();
+    // TODO add a LoggerParameter__mdt record to store the list of EventType values to query in EventLogFile
+    List<String> eventTypeNames = new List<String>{ 'API', 'BulkApi', 'RestApi', 'ApexSoap' };
+
+    return EventMonitoringDataSelector.getInstance().getEventLogFileQueryLocator(eventTypeNames);
   }
 
   global void execute(Database.BatchableContext batchableContext, List<SObject> scopeRecords) {
+    Logger.fine('Available fields on EventLogFile\n\n' + String.join(Schema.EventLogFile.SObjectType.getDescribe().fields.getMap().keySet(), '\n'));
+
     List<Schema.EventLogFile> eventLogFiles = (List<Schema.EventLogFile>) scopeRecords;
     for (Schema.EventLogFile eventLogFile : eventLogFiles) {
       // Map<String, Object> untypedEventLogFile = getEventLogFileAsMap(eventLogFile);
