@@ -3,8 +3,8 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 trigger LoggerPlatformStatusAlertEvent on PlatformStatusAlertEvent(after insert) {
-    for (PlatformStatusAlertEvent event : Trigger.new) {
-        Logger.info('Found a PlatformStatusAlertEvent record', event);
-    }
-    Logger.saveLog();
+  for (PlatformStatusAlertEvent event : Trigger.new) {
+    Logger.info('Found a PlatformStatusAlertEvent record', event);
+  }
+  Logger.saveLog();
 }
