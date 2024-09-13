@@ -12,7 +12,8 @@
 global without sharing class EventMonitoringLogger implements Database.Batchable<SObject> {
   global Database.QueryLocator start(Database.BatchableContext batchableContext) {
     // TODO add a LoggerParameter__mdt record to store the list of EventType values to query in EventLogFile
-    List<String> eventTypeNames = new List<String>{ 'API', 'BulkApi', 'RestApi', 'ApexSoap' };
+    // List<String> eventTypeNames = new List<String>{ 'API', 'BulkApi', 'RestApi', 'ApexSoap' };
+    List<String> eventTypeNames = new List<String>{ 'ApexExecution' };
 
     return EventMonitoringDataSelector.getInstance().getEventLogFileQueryLocator(eventTypeNames);
   }
@@ -25,13 +26,15 @@ global without sharing class EventMonitoringLogger implements Database.Batchable
       // Map<String, Object> untypedEventLogFile = getEventLogFileAsMap(eventLogFile);
       String untypedEventLogFile = convertCsvToJson(eventLogFile.LogFIle.toString());
 
-      List<Map<String, Object>> untypedEventLogFiles = (List<Map<String, Object>>) System.JSON.deserializeUntyped(untypedEventLogFile.toString());
-      for (Map<String, Object> eventLogFileMap : untypedEventLogFiles) {
-        LogEntryEventBuilder builder = Logger.info('Event log file: ' + eventLogFileMap, eventLogFile.Id);
+      // List<Map<String, Object>> untypedEventLogFiles = (List<Map<String, Object>>) System.JSON.deserializeUntyped(untypedEventLogFile.toString());
+      List<Object> untypedEventLogFiles = (List<Object>) System.JSON.deserializeUntyped(untypedEventLogFile.toString());
+      // for (Map<String, Object> eventLogFileMap : untypedEventLogFiles) {
+      for (Object eventLogFileMap : untypedEventLogFiles) {
+        LogEntryEventBuilder builder = Logger.info('Event log file type ' + eventLogFile.EventType + ': ' + eventLogFileMap, eventLogFile.Id);
         // builder.setTimestamp(timestamp);
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-        logEntryEvent.RequestId__c = eventLogFileMap.get('REQUEST_ID').toString();
+        // logEntryEvent.RequestId__c = eventLogFileMap.get('REQUEST_ID').toString();
         // TODO figure out how to handle populating TransactionId__c
         // TODO figure out how to handle populating LoggedBy__c
 
