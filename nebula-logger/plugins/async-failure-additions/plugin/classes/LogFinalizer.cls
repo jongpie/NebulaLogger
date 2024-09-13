@@ -11,9 +11,6 @@ public without sharing virtual class LogFinalizer implements System.Finalizer {
    * @description Is called by any `System.Queueable` where the finalizer is attached after the System.Queueable's `execute` method finishes
    * @param finalizerContext The `System.FinalizerContext` associated with the finalizer
    */
-  public void execute(LoggerFinalizerContext loggerFinalizerContext) {
-  }
-
   public void execute(System.FinalizerContext finalizerContext) {
     Logger.setAsyncContext(finalizerContext);
     switch on finalizerContext.getResult() {
@@ -27,7 +24,7 @@ public without sharing virtual class LogFinalizer implements System.Finalizer {
   }
 
   /**
-   * @description `DEPRECATED`: Subscribers can optionally override this method with their own implementation to do further processing/re-queueing
+   * @description Subscribers can optionally override this method with their own implementation to do further processing/re-queueing
    * @param finalizerContext The `System.FinalizerContext` associated with the finalizer
    */
   @SuppressWarnings('PMD.EmptyStatementBlock')

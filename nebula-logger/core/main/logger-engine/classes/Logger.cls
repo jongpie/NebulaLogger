@@ -3370,7 +3370,8 @@ global with sharing class Logger {
     // TODO add logerParameter__mdt record or LoggerSettings__c field to enable auto-attaching a finalizer class
     Boolean isAutoAttachingFinalizerEnabled = true;
     // TODO add logerParameter__mdt record or LoggerSettings__c field to specify the class name of the finalizer to use (LogFinalizer by default/ootb)
-    String finalizerClassName = LogFinalizer.class.getName();
+    // String finalizerClassName = LogFinalizer.class.getName();
+    String finalizerClassName = Logger.getUserSettings().DefaultFinalizer__c;
     if (isAutoAttachingFinalizerEnabled && System.isQueueable()) {
       System.Finalizer finalizerInstance = (System.Finalizer) System.Type.forName(finalizerClassName)?.newInstance();
       System.attachFinalizer(finalizerInstance);
