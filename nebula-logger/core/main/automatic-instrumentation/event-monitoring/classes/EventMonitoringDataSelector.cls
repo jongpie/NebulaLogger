@@ -36,7 +36,7 @@ public with sharing class EventMonitoringDataSelector {
           LogFileLength,
           Sequence
         FROM EventLogFile
-        WHERE EventType IN :eventTypeNames
+        // WHERE EventType IN :eventTypeNames
         ORDER BY LogDate DESC, CreatedDate DESC, Sequence DESC
       ]
     );

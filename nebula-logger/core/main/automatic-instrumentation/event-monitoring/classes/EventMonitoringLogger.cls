@@ -28,8 +28,12 @@ global without sharing class EventMonitoringLogger implements Database.Batchable
 
       // List<Map<String, Object>> untypedEventLogFiles = (List<Map<String, Object>>) System.JSON.deserializeUntyped(untypedEventLogFile.toString());
       List<Object> untypedEventLogFiles = (List<Object>) System.JSON.deserializeUntyped(untypedEventLogFile.toString());
+      // List<ApexUnexpectedExceptionEvent> untypedEventLogFiles = (List<ApexUnexpectedExceptionEvent>) System.JSON.deserializeUntyped(
+      // untypedEventLogFile.toString()
+      // );
       // for (Map<String, Object> eventLogFileMap : untypedEventLogFiles) {
       for (Object eventLogFileMap : untypedEventLogFiles) {
+        // for (ApexUnexpectedExceptionEvent eventLogFileMap : untypedEventLogFiles) {
         LogEntryEventBuilder builder = Logger.info('Event log file type ' + eventLogFile.EventType + ': ' + eventLogFileMap, eventLogFile.Id);
         // builder.setTimestamp(timestamp);
 
@@ -62,4 +66,17 @@ global without sharing class EventMonitoringLogger implements Database.Batchable
 
   //   return untypedEventLogFile;
   // }
+
+  private class ApexUnexpectedExceptionEvent {
+    public String EVENT_TYPE;
+    public String EXCEPTION_CATEGORY;
+    public String EXCEPTION_MESSAGE;
+    public String EXCEPTION_TYPE;
+    public String ORGANIZATION_ID;
+    public String REQUEST_ID;
+    public String STACK_TRACE;
+    public String TIMESTAMP;
+    public String TIMESTAMP_DERIVED;
+    public String USER_ID;
+  }
 }
