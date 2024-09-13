@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flexiPage>LoggerRecipesOmniStudio</flexiPage>
+    <label>Logger OmniStudio Demo</label>
+    <motif>Custom56: Bottle</motif>
+</CustomTab>

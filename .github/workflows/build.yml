@@ -10,7 +10,7 @@ on:
   push:
     branches:
       - main
-      - 'wip/feature/callable-logger'
+      - 'feature/callable-logger'
     paths-ignore:
       - 'content/**'
       - 'docs/**'
