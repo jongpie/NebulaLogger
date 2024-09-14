@@ -29,6 +29,12 @@
                 <default>false</default>
                 <label>Flow</label>
             </value>
+            <value>
+                <fullName>OmniStudio</fullName>
+                <color>#FFCC33</color>
+                <default>false</default>
+                <label>OmniStudio</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

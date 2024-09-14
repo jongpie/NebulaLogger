@@ -27,7 +27,7 @@
   },
   &quot;additionalOutput&quot; : { },
   &quot;failureResponse&quot; : { },
-  &quot;sendOnlyAdditionalInput&quot; : true,
+  &quot;sendOnlyAdditionalInput&quot; : false,
   &quot;returnOnlyAdditionalOutput&quot; : false,
   &quot;returnOnlyFailureResponse&quot; : false,
   &quot;responseJSONPath&quot; : &quot;&quot;,

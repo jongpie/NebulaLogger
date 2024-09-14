@@ -23,7 +23,6 @@ global with sharing class Logger {
   private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
   private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
   private static final String TRANSACTION_ID = System.UUID.randomUUID().toString();
-  private static final System.Quiddity TRANSACTION_QUIDDITY = loadTransactionQuiddity();
 
   private static AsyncContext currentAsyncContext;
   private static String currentEntryScenario;
@@ -35,6 +34,8 @@ global with sharing class Logger {
   @TestVisible
   private static Integer saveLogCallCount = 0;
   private static Boolean suspendSaving = false;
+  @TestVisible
+  private static System.Quiddity transactionQuiddity = loadTransactionQuiddity();
   private static String transactionScenario;
 
   private static final List<String> CLASSES_TO_IGNORE {
@@ -187,7 +188,7 @@ global with sharing class Logger {
    * @return System.Quiddity - The value of System.Request.getCurrent().getQuiddity()
    */
   global static System.Quiddity getCurrentQuiddity() {
-    return TRANSACTION_QUIDDITY;
+    return transactionQuiddity;
   }
 
   /**

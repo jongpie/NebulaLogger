@@ -193,6 +193,17 @@ private class LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_should_return_constant_value_for_query_omni_process_data() {
+    Boolean mockValue = false;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOmniProcessData', Value__c = System.JSON.serialize(mockValue));
+    LoggerParameter.setMock(mockParameter);
+
+    Boolean returnedValue = LoggerParameter.QUERY_OMNI_PROCESS_DATA;
+
+    System.Assert.areEqual(mockValue, returnedValue);
+  }
+
+  @IsTest
   static void it_should_return_constant_value_for_query_network_data() {
     Boolean mockValue = false;
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = System.JSON.serialize(mockValue));

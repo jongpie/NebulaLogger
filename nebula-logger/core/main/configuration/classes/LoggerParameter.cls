@@ -228,6 +228,21 @@ public class LoggerParameter {
   }
 
   /**
+   * @description Controls if Nebula Logger queries `Schema.OmniProcess` data.
+   *              When set to `false`, any `Schema.OmniProcess` fields on `LogEntry__c` will not be populated
+   *              Controlled by the custom metadata record `LoggerParameter.QueryOmniProcessData`, or `true` as the default
+   */
+  public static final Boolean QUERY_OMNI_PROCESS_DATA {
+    get {
+      if (QUERY_OMNI_PROCESS_DATA == null) {
+        QUERY_OMNI_PROCESS_DATA = getBoolean('QueryOmniProcessData', true);
+      }
+      return QUERY_OMNI_PROCESS_DATA;
+    }
+    private set;
+  }
+
+  /**
    * @description Controls if Nebula Logger queries `Schema.Network` data.
    *              When set to `false`, any `Schema.Network` fields on `LogEntryEvent__e` and `Log__c` will not be populated
    *              Controlled by the custom metadata record `LoggerParameter.QueryNetworkData`, or `true` as the default

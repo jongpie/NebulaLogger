@@ -1,6 +1,5 @@
 import { createElement } from 'lwc';
 import FORM_FACTOR from '@salesforce/client/formFactor';
-import { LoggerStackTrace } from '../loggerStackTrace';
 // Recommended approach
 import { createLogger } from 'c/logger';
 // Legacy approach
@@ -13,7 +12,7 @@ const flushPromises = async () => {
   await new Promise(process.nextTick);
 };
 
-jest.mock('lightning/logger', () => ({ loadScript: jest.fn() }), {
+jest.mock('lightning/logger', () => ({ log: jest.fn() }), {
   virtual: true
 });
 

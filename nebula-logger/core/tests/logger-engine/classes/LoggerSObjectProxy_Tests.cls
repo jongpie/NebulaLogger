@@ -6,7 +6,8 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerSObjectProxy_Tests {
-  private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('NetworkMember') != null;
+  private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('Schema.Network') != null;
+  private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 
   @IsTest
   static void it_converts_auth_session_record_to_proxy() {
@@ -93,5 +94,26 @@ private class LoggerSObjectProxy_Tests {
     System.Assert.areEqual((Id) mockNetworkRecord.get(idFieldName), networkProxy.Id);
     System.Assert.areEqual((String) mockNetworkRecord.get(nameFieldName), networkProxy.Name);
     System.Assert.areEqual((String) mockNetworkRecord.get(urlPathPrefixFieldName), networkProxy.UrlPathPrefix);
+  }
+
+  @IsTest
+  static void it_converts_omni_process_record_to_proxy() {
+    // No need to fail the test if it's running in an org that does not have OmniStudio enabled
+    if (IS_OMNISTUDIO_ENABLED == false) {
+      return;
+    }
+    String idFieldName = 'Id';
+    String isIntegrationProcedureFieldName = 'IsIntegrationProcedure';
+    String uniqueFieldName = 'UniqueName';
+    SObject mockOmniProcessRecord = (SObject) (System.Type.forName('Schema.OmniProcess').newInstance());
+    mockOmniProcessRecord.put(idFieldName, LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType()));
+    mockOmniProcessRecord.put(isIntegrationProcedureFieldName, false);
+    mockOmniProcessRecord.put(uniqueFieldName, 'Mock_OmniScript_English_1');
+
+    LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
+
+    System.Assert.areEqual((Id) mockOmniProcessRecord.get(idFieldName), omniProcessProxy.Id);
+    System.Assert.areEqual((Boolean) mockOmniProcessRecord.get(isIntegrationProcedureFieldName), omniProcessProxy.IsIntegrationProcedure);
+    System.Assert.areEqual((String) mockOmniProcessRecord.get(uniqueFieldName), omniProcessProxy.UniqueName);
   }
 }

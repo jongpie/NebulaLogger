@@ -8,35 +8,27 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>direction</name>
+                    <name>dir</name>
                     <value>ltr</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
-                    <name>display</name>
-                    <value>Display OmniScript on page</value>
+                    <name>inline</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>inlineLabel</name>
+                    <value>Launch undefined/undefined</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>inlineVariant</name>
                     <value>brand</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
-                    <name>language</name>
-                    <value>English</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>subType</name>
-                    <value>Logging</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>theme</name>
+                    <name>layout</name>
                     <value>lightning</value>
                 </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>type</name>
-                    <value>demo</value>
-                </componentInstanceProperties>
-                <componentName>runtime_omnistudio:omniscript</componentName>
-                <identifier>runtime_omnistudio_omniscript</identifier>
+                <componentName>demoLoggingEnglish</componentName>
+                <identifier>c_demoLoggingEnglish</identifier>
             </componentInstance>
         </itemInstances>
         <name>region2</name>

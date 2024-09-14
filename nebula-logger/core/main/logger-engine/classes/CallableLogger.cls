@@ -31,9 +31,11 @@ global without sharing class CallableLogger implements System.Callable {
   // Names of arguments used by OmniStudio when calling an instance of System.Callable
   // Relevant OmniStudio docs: https://help.salesforce.com/s/articleView?id=sf.os_callable_implementations.htm&type=5
   private static final String OMNISTUDIO_ARGUMENT_INPUT = 'input';
+  private static final String OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID = 'omniProcessId';
   private static final String OMNISTUDIO_ARGUMENT_OUTPUT = 'output';
   // Names of arguments only used for output
   private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE = 'exceptionMessage';
+  private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_STACK_TRACE = 'exceptionStackTrace';
   private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE = 'exceptionType';
   private static final String OUTPUT_ARGUMENT_CALL_IS_SUCCESS = 'isSuccess';
 
@@ -59,6 +61,7 @@ global without sharing class CallableLogger implements System.Callable {
     } catch (System.Exception thrownException) {
       output.put(OUTPUT_ARGUMENT_CALL_IS_SUCCESS, false);
       output.put(OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE, thrownException.getMessage());
+      output.put(OUTPUT_ARGUMENT_CALL_EXCEPTION_STACK_TRACE, thrownException.getStackTraceString());
       output.put(OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE, thrownException.getTypeName());
     }
 
@@ -108,6 +111,7 @@ global without sharing class CallableLogger implements System.Callable {
       }
     }
 
+    @SuppressWarnings('PMD.NcssMethodCount')
     private LogEntryEventBuilder newEntry(Map<String, Object> input) {
       // The value of loggingLevel could be either a string name or an enum value from System.LoggingLevel,
       // so always first convert it to a string for consistency
@@ -135,13 +139,11 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(ARGUMENT_TAGS)) {
         logEntryEventBuilder.addTags((List<String>) input.get(ARGUMENT_TAGS));
       }
-
-      // TODO consider overriding some fields like to be OmniStudio specific:
-      // - OriginType__c
-      // - OriginLocation__c
-      // - OriginSourceApiName__c
-      // - OriginSourceMetadataType__c
-      // etc....
+      if (input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
+        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+        logEntryEvent.OriginSourceId__c = (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID);
+        logEntryEvent.OriginType__c = 'OmniStudio';
+      }
 
       return logEntryEventBuilder;
     }
