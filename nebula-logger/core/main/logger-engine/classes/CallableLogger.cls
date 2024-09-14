@@ -24,6 +24,7 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String ARGUMENT_RECORD = 'record';
   private static final String ARGUMENT_RECORD_LIST = 'recordList';
   private static final String ARGUMENT_RECORD_MAP = 'recordMap';
+  private static final String ARGUMENT_SAVE_LOG = 'saveLog';
   private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName';
   private static final String ARGUMENT_TAGS = 'tags';
   private static final String ARGUMENT_TRANSACTION_ID = 'transactionId';
@@ -35,6 +36,9 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_MESSAGE = 'exceptionMessage';
   private static final String OUTPUT_ARGUMENT_CALL_EXCEPTION_TYPE = 'exceptionType';
   private static final String OUTPUT_ARGUMENT_CALL_IS_SUCCESS = 'isSuccess';
+
+  @TestVisible
+  private static Boolean returnLogEntryEventBuilderInOutput = false;
 
   /**
    * @description The one method required by the interface `System.Callable` description. It provides a `String`-based way to dynamically call Nebula Logger's code.
@@ -87,7 +91,13 @@ global without sharing class CallableLogger implements System.Callable {
         }
         // Methods for adding & saving log entries
         when 'newEntry' {
-          output.put(ARGUMENT_LOG_ENTRY_EVENT_BUILDER, this.newEntry(input));
+          LogEntryEventBuilder builder = this.newEntry(input);
+          if (returnLogEntryEventBuilderInOutput) {
+            output.put(ARGUMENT_LOG_ENTRY_EVENT_BUILDER, builder);
+          }
+          if (input.get(ARGUMENT_SAVE_LOG) == true) {
+            this.saveLog(input);
+          }
         }
         when 'saveLog' {
           this.saveLog(input);
