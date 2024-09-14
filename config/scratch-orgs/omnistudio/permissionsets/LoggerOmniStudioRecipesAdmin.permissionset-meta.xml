@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Logger OmniStudio Recipes Admin</label>
+    <license>Salesforce</license>
+    <tabSettings>
+        <tab>Logger_OmniStudio_Demo</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

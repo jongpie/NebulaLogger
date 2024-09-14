@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.9.NEXT",
-      "versionName": "Bugfix: Apex Code Snippets Auto-Truncated",
-      "versionDescription": "Updated LogEntryHandler to automatically truncate the code snippets stored in OriginSourceSnippet__c and ExceptionSourceSnippet__c",
+      "versionNumber": "4.14.10.NEXT",
+      "versionName": "New CallableLogger Apex class",
+      "versionDescription": "Added a new CallableLogger class that provides support for both OmniStudio logging, as well as the ability to loosely-couple/depend on Nebula Logger in Apex",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"

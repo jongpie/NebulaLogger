@@ -5,7 +5,7 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, Process Builder & integrations.
 
-## Unlocked Package - v4.14.9
+## Unlocked Package - v4.14.10
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oSQQAY)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oSQQAY)
@@ -31,7 +31,7 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 ## Features
 
-1. Easily add log entries via Apex, Lightning Components (lightning web components (LWCs) & aura components), Flow & Process Builder to generate 1 consolidated, unified log
+1. A unified logging tool that supports easily adding log entries via Apex, Lightning Components (lightning web components (LWCs) & aura components), Flow & Process Builder, and OmniStudio's OmniScripts
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
