@@ -4,7 +4,7 @@ layout: default
 
 ## CallableLogger class
 
-A class that implements the standard interface `System.Callable` to provide a loosely-coupled way to interact with Nebula Logger. This can be used for OmniStudio, as well as for optionally &amp; dynamically integrating other packages/code with Nebula Logger&apos;s code (when available).
+A class that implements the standard interface `System.Callable`. This provides 2 benefits: 1. A loosely-coupled way to optionally integrate with Nebula Logger (useful for ISVs/package developers). 2. The ability to log in OmniStudio&apos;s OmniScripts &amp; Integration Procedures.
 
 ### Related
 
@@ -36,5 +36,7 @@ Object
 **Description**
 
 The value returned by the `Logger` method called as an `Object` instance, or `null` if the method being called does not have a return value
+
+#### `handleCall(String action, Map<String, Object> input, Map<String, Object> output)` → `void`
 
 ---

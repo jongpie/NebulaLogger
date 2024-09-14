@@ -111,7 +111,7 @@ global without sharing class CallableLogger implements System.Callable {
       }
     }
 
-    @SuppressWarnings('PMD.NcssMethodCount')
+    @SuppressWarnings('PMD.CognitiveComplexity, PMD.NcssMethodCount')
     private LogEntryEventBuilder newEntry(Map<String, Object> input) {
       // The value of loggingLevel could be either a string name or an enum value from System.LoggingLevel,
       // so always first convert it to a string for consistency

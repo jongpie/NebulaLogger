@@ -8,7 +8,7 @@ layout: default
 
 ### [CallableLogger](Logger-Engine/CallableLogger)
 
-A class that implements the standard interface `System.Callable` to provide a loosely-coupled way to interact with Nebula Logger. This can be used for OmniStudio, as well as for optionally &amp; dynamically integrating other packages/code with Nebula Logger&apos;s code (when available).
+A class that implements the standard interface `System.Callable`. This provides 2 benefits: 1. A loosely-coupled way to optionally integrate with Nebula Logger (useful for ISVs/package developers). 2. The ability to log in OmniStudio&apos;s OmniScripts &amp; Integration Procedures.
 
 ### [ComponentLogger](Logger-Engine/ComponentLogger)
 

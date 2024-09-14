@@ -3,10 +3,10 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
+@SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.AvoidHardcodingId, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class CallableLogger_Tests {
-  // Not all orgs have OmniStudio, so not all orgs will have the OmniProcess SObject
+  // Not all orgs have OmniStudio, so not all orgs will have the OmniProcess SObject.
   // Instead of trying to create an actual ID, this test ID can be used. It was the ID
   // of an actual record in a scratch org with OmniStudio enabled.
   private static final String TEST_OMNI_PROCESS_ID = '0jNDL000000Cbac2AC';
