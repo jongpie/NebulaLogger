@@ -382,7 +382,7 @@ private class LogManagementDataSelector_Tests {
   static void it_returns_omni_processes_for_specified_ids() {
     // No need to fail the test if it's running in an org that does not have OmniStudio enabled
     if (IS_OMNISTUDIO_ENABLED == false) {
-      // return;
+      return;
     }
     // Fun fact: in an anonymous Apex script, you can easily create an OmniProcess record...
     // ...but when you create one in a test class, you get a gack error 🥲
