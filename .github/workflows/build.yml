@@ -8,41 +8,14 @@ env:
 
 on:
   push:
-    branches:
-      - main
-      - 'feature/callable-logger'
-    paths-ignore:
-      - 'content/**'
-      - 'docs/**'
-      - 'examples/**'
-      - 'packages/**'
-      - '.forceignore'
-      - '.gitignore'
-      - '.prettierignore'
-      - '.prettierrc'
-      - 'CONTRIBUTING.md'
-      - 'LICENSE'
-      - 'package.json'
-      - 'README.md'
-      - './**/README.md'
-      - 'sfdx-project.json'
+    paths:
+      - core/scratch-orgs/**
+      - nebula-logger/**
   pull_request:
     types: [opened, synchronize, reopened]
-    paths-ignore:
-      - 'content/**'
-      - 'docs/**'
-      - 'examples/**'
-      - 'packages/**'
-      - '.forceignore'
-      - '.gitignore'
-      - '.prettierignore'
-      - '.prettierrc'
-      - 'CONTRIBUTING.md'
-      - 'LICENSE'
-      - 'package.json'
-      - 'README.md'
-      - './**/README.md'
-      - 'sfdx-project.json'
+    paths:
+      - core/scratch-orgs/**
+      - nebula-logger/**
 
 jobs:
   code-quality-tests:
@@ -66,8 +39,16 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: 'Check for changes in core directory'
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            core:
+              - './nebula-logger/core/**'
+
       - name: 'Authorize Dev Hub'
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ (github.event_name == 'pull_request') && (steps.changes.outputs.core == 'true') }}
         shell: bash
         run: |
           npx sf version
@@ -80,7 +61,7 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Verify package version number is updated'
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ (github.event_name == 'pull_request') && (steps.changes.outputs.core == 'true') }}
         run: npm run package:version:number:verify
 
       - name: 'Verify LWC with ESLint'

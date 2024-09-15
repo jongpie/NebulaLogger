@@ -1299,7 +1299,8 @@ private class LogEntryHandler_Tests {
         OriginSourceId__c,
         OriginSourceLastModifiedById__c,
         OriginSourceLastModifiedByUsername__c,
-        OriginSourceLastModifiedDate__c
+        OriginSourceLastModifiedDate__c,
+        OriginType__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
     ];

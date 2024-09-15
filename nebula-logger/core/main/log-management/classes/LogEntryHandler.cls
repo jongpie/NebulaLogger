@@ -221,13 +221,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
   }
 
   private void setOmniProcessFields() {
-    // TODO consider overriding some fields like to be OmniStudio specific:
-    // - OriginType__c
-    // - OriginLocation__c
-    // - OriginSourceApiName__c
-    // - OriginSourceMetadataType__c
-    // etc....
-    // TODO need to figure if/when to query, and if strongly-typed references are available in all orgs (if not, new Proxy?)
     List<String> omniProcessIds = new List<String>();
     List<LogEntry__c> omniProcessLogEntries = new List<LogEntry__c>();
     for (LogEntry__c logEntry : this.logEntries) {
