@@ -1289,6 +1289,7 @@ private class LogEntryHandler_Tests {
     logEntry = [
       SELECT
         Id,
+        OriginLocation__c,
         OriginSourceActionName__c,
         OriginSourceApiName__c,
         OriginSourceApiVersion__c,
@@ -1302,6 +1303,8 @@ private class LogEntryHandler_Tests {
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
     ];
+    System.Assert.areEqual('OmniStudio', logEntry.OriginType__c);
+    System.Assert.isNull(logEntry.OriginLocation__c);
     System.Assert.isNull(logEntry.OriginSourceActionName__c);
     System.Assert.areEqual(mockOmniProcessProxy.UniqueName, logEntry.OriginSourceApiName__c);
     System.Assert.isNull(logEntry.OriginSourceApiVersion__c);
@@ -1315,8 +1318,48 @@ private class LogEntryHandler_Tests {
   }
 
   @IsTest
-  static void it_should_set_skip_setting_origin_process_details_when_origin_source_id_is_null() {
-    System.Assert.fail('TODO');
+  static void it_should_set_skip_setting_origin_omni_process_details_when_origin_source_id_is_null() {
+    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceId__c = null, OriginType__c = 'OmniStudio');
+    LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+    System.Assert.areEqual(
+      2,
+      LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+      'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+    );
+    logEntry = [
+      SELECT
+        Id,
+        OriginLocation__c,
+        OriginSourceActionName__c,
+        OriginSourceApiName__c,
+        OriginSourceApiVersion__c,
+        OriginSourceCreatedById__c,
+        OriginSourceCreatedByUsername__c,
+        OriginSourceCreatedDate__c,
+        OriginSourceId__c,
+        OriginSourceLastModifiedById__c,
+        OriginSourceLastModifiedByUsername__c,
+        OriginSourceLastModifiedDate__c,
+        OriginType__c
+      FROM LogEntry__c
+      WHERE Id = :logEntry.Id
+    ];
+    System.Assert.areEqual('OmniStudio', logEntry.OriginType__c);
+    System.Assert.isNull(logEntry.OriginLocation__c);
+    System.Assert.isNull(logEntry.OriginSourceActionName__c);
+    System.Assert.isNull(logEntry.OriginSourceApiName__c);
+    System.Assert.isNull(logEntry.OriginSourceApiVersion__c);
+    System.Assert.isNull(logEntry.OriginSourceCreatedById__c);
+    System.Assert.isNull(logEntry.OriginSourceCreatedByUsername__c);
+    System.Assert.isNull(logEntry.OriginSourceCreatedDate__c);
+    System.Assert.isNull(logEntry.OriginSourceId__c);
+    System.Assert.isNull(logEntry.OriginSourceLastModifiedById__c);
+    System.Assert.isNull(logEntry.OriginSourceLastModifiedByUsername__c);
+    System.Assert.isNull(logEntry.OriginSourceLastModifiedDate__c);
   }
 
   private static String getNamespacePrefix() {

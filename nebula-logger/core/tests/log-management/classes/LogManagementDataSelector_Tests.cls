@@ -368,6 +368,7 @@ private class LogManagementDataSelector_Tests {
         .populateRequiredFields()
         .getRecord();
       loggerScenario.Name = 'some fake scenario ' + i;
+      loggerScenario.UniqueId__c = 'some fake scenario ' + i;
       loggerScenarios.add(loggerScenario);
     }
     insert loggerScenarios;

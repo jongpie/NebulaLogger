@@ -9,7 +9,6 @@
     "apexSettings": {
       "enableAuraApexCtrlAuthUserAccessCheckPref": true,
       "enableAuraApexCtrlGuestUserAccessCheckPref": true,
-      "enableCompileOnDeploy": true,
       "enableRestrictCommunityExecAnon": true,
       "enableSecureNoArgConstructorPref": true
     },
