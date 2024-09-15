@@ -9,12 +9,12 @@ env:
 on:
   push:
     paths:
-      - core/scratch-orgs/**
+      - config/scratch-orgs/**
       - nebula-logger/**
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - core/scratch-orgs/**
+      - config/scratch-orgs/**
       - nebula-logger/**
 
 jobs:
