@@ -32,7 +32,7 @@ The most robust observability solution for Salesforce experts. Built 100% native
 ## Features
 
 1. A unified logging tool that supports easily adding log entries via Apex, Lightning Components (lightning web components (LWCs) & aura components), Flow & Process Builder, and OmniStudio's OmniScripts
-2. For ISVs: loosely couple Nebula Logger into your own packages - when it's available in a subscriber's org - using [Apex's `Callable` interface](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_interface_System_Callable.htm#apex_interface_System_Callable_Example) and Nebula Logger's included implementation `CallableLogger`
+2. For ISVs: optionally leverage Nebula Logger in your own packages - when it's available in a subscriber's org - using [Apex's `Callable` interface](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_interface_System_Callable.htm) and Nebula Logger's included implementation `CallableLogger`
 3. Manage & report on logging data using the 5 included custom objects `Log__c`, `LogEntry__c`, `LogEntryTag__c`, `LoggerTag__c`, and `LoggerScenario__c`
 4. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 5. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
@@ -186,9 +186,7 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ### Logger for OmniStudio: Quick Start
 
-For OmniStudio builders, the included Apex class `CallableLogger` provides access to Nebula Logger's core features, directly in omniscripts and omni integration procedures. Simply use the `CallableLogger` class as a remote action within OmniStudio, and provide any inputs needed for the logging action. For more details (including what actions are available, and their required inputs), see [the section on the `CallableLogger` Apex class](#isvs-&-package-developers:-loosely-couple-your-2gp-with-nebula-logger)
-
-`TODO` Add omnistudio screenshots for script & IP
+For OmniStudio builders, the included Apex class `CallableLogger` provides access to Nebula Logger's core features, directly in omniscripts and omni integration procedures. Simply use the `CallableLogger` class as a remote action within OmniStudio, and provide any inputs needed for the logging action. For more details (including what actions are available, and their required inputs), see [the section on the `CallableLogger` Apex class](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Logger). For more details on logging in OmniStudio, [see the OmniStudio wiki page](https://github.com/jongpie/NebulaLogger/wiki/Nebula-Logger-for-OmniStudio)
 
 ---
 
@@ -364,7 +362,7 @@ The class `LogMessage` provides the ability to generate string messages on deman
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/LogMessage).
 
-### ISVs & Package Developers: CallableLogger to Loosely-Couple Your Packages with Nebula Logger
+### ISVs & Package Developers: Dynamically Call Nebula Logger in Your Packages with `CallableLogger`
 
 As of `v4.14.10`, Nebula Logger includes the Apex class `CallableLogger`, which implements [Apex's `Callable` interface](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_interface_System_Callable.htm).
 
@@ -881,19 +879,6 @@ Once you've added logger to your markup, you can call it in your aura component'
 ## Features for Flow Builders
 
 Within Flow (and Process Builder), there are 4 invocable actions that you can use to leverage Nebula Logger
-
-1. 'Add Log Entry' - uses the class `FlowLogEntry` to add a log entry with a specified message
-2. 'Add Log Entry for an SObject Record' - uses the class `FlowRecordLogEntry` to add a log entry with a specified message for a particular SObject record
-3. 'Add Log Entry for an SObject Record Collection' - uses the class `FlowCollectionLogEntry` to add a log entry with a specified message for an SObject record collection
-4. 'Save Log' - uses the class `Logger` to save any pending logs
-
-![Flow Builder: Logging Invocable Actions](./images/flow-builder-logging-invocable-actions.png)
-
----
-
-## Features for OmniStudio
-
-Within OmniStudio, you can use Nebula Logger within OmniScripts and Omni Integration Procedures. Both can leverage the included `CallableLogger` Apex class as a remote action to add log entries, save the log, and leverage other parts of Nebula Logger's functionality.
 
 1. 'Add Log Entry' - uses the class `FlowLogEntry` to add a log entry with a specified message
 2. 'Add Log Entry for an SObject Record' - uses the class `FlowRecordLogEntry` to add a log entry with a specified message for a particular SObject record
