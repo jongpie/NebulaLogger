@@ -1,16 +1,19 @@
 {
-  "orgName": "Nebula Logger - Build - Platform Cache Scratch Org",
+  "orgName": "Nebula Logger - Base Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
-  "country": "JP",
-  "language": "ja",
-  "features": ["PlatformCache"],
+  "country": "US",
+  "language": "en_US",
+  "features": [],
   "settings": {
     "chatterSettings": {
       "enableChatter": false
     },
     "communitiesSettings": {
       "enableNetworksEnabled": false
+    },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": false
     },
     "eventSettings": {
       "enableDeleteMonitoringData": false,

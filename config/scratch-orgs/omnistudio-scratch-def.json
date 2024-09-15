@@ -1,24 +1,24 @@
 {
-  "orgName": "Nebula Logger - Build - Experience Cloud Scratch Org",
+  "orgName": "Nebula Logger - OmniStudio Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
-  "country": "ES",
-  "language": "es",
-  "features": ["Communities"],
+  "country": "US",
+  "language": "en_US",
+  "features": ["OmniStudioDesigner", "OmniStudioMetadata", "OmniStudioRuntime"],
   "settings": {
     "chatterSettings": {
       "enableChatter": false
     },
     "communitiesSettings": {
-      "enableNetworksEnabled": true
+      "enableNetworksEnabled": false
+    },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": true
     },
     "eventSettings": {
       "enableDeleteMonitoringData": false,
       "enableEventLogGeneration": false,
       "eventLogRetentionDuration": 0
-    },
-    "experienceBundleSettings": {
-      "enableExperienceBundleMetadata": true
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": false

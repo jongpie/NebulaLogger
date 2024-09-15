@@ -1,21 +1,27 @@
 {
-  "orgName": "Nebula Logger - Build - Base Scratch Org",
+  "orgName": "Nebula Logger - Experience Cloud Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
-  "country": "US",
-  "language": "en_US",
-  "features": [],
+  "country": "ES",
+  "language": "es",
+  "features": ["Communities"],
   "settings": {
     "chatterSettings": {
       "enableChatter": false
     },
     "communitiesSettings": {
-      "enableNetworksEnabled": false
+      "enableNetworksEnabled": true
+    },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": false
     },
     "eventSettings": {
       "enableDeleteMonitoringData": false,
       "enableEventLogGeneration": false,
       "eventLogRetentionDuration": 0
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": false
