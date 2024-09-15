@@ -41,6 +41,16 @@
                 <default>false</default>
                 <label>LightningComponentBundle</label>
             </value>
+            <value>
+                <fullName>OmniIntegrationProcedure</fullName>
+                <default>false</default>
+                <label>OmniIntegrationProcedure</label>
+            </value>
+            <value>
+                <fullName>OmniScript</fullName>
+                <default>false</default>
+                <label>OmniScript</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

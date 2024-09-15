@@ -74,6 +74,10 @@ Controls if Nebula Logger queries `Schema.Network` data. When set to `false`, an
 
 Controls if Nebula Logger queries `Schema.Network` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Schema.Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record `LoggerParameter.QueryNetworkDataSynchronously`, or `true` as the default
 
+#### `QUERY_OMNI_PROCESS_DATA` → `Boolean`
+
+Controls if Nebula Logger queries `Schema.OmniProcess` data. When set to `false`, any `Schema.OmniProcess` fields on `LogEntry__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryOmniProcessData`, or `true` as the default
+
 #### `QUERY_ORGANIZATION_DATA` → `Boolean`
 
 Controls if Nebula Logger queries `Schema.Organization` data. When set to `false`, any `Schema.Organization` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryOrganizationData`, or `true` as the default

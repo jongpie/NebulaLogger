@@ -5,7 +5,7 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, Process Builder & integrations.
 
-## Unlocked Package - v4.14.9
+## Unlocked Package - v4.14.10
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oSQQAY)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oSQQAY)
@@ -31,16 +31,17 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 ## Features
 
-1. Easily add log entries via Apex, Lightning Components (lightning web components (LWCs) & aura components), Flow & Process Builder to generate 1 consolidated, unified log
-2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
-3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
-4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
+1. A unified logging tool that supports easily adding log entries via Apex, Lightning Components (lightning web components (LWCs) & aura components), Flow & Process Builder, and OmniStudio's OmniScripts
+2. For ISVs: optionally leverage Nebula Logger in your own packages - when it's available in a subscriber's org - using [Apex's `Callable` interface](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_interface_System_Callable.htm) and Nebula Logger's included implementation `CallableLogger`
+3. Manage & report on logging data using the 5 included custom objects `Log__c`, `LogEntry__c`, `LogEntryTag__c`, `LoggerTag__c`, and `LoggerScenario__c`
+4. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
+5. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
    - In addition to the required fields on this Custom Setting record, `LoggerSettings__c` ships with `SystemLogMessageFormat__c`, which uses Handlebars-esque syntax to refer to fields on the `LogEntryEvent__e` Platform Event. You can use curly braces to denote merge field logic, eg: `{OriginLocation__c}\n{Message__c}` - this will output the contents of `LogEntryEvent__e.OriginLocation__c`, a line break, and then the contents of `LogEntryEvent__e.Message__c`
-5. Automatically mask sensitive data by configuring `LogEntryDataMaskRule__mdt` custom metadata rules
-6. View related log entries on any Lightning SObject flexipage by adding the 'Related Log Entries' component in App Builder
-7. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs
-8. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow (not currently available in the managed package)
-9. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
+6. Automatically mask sensitive data by configuring `LogEntryDataMaskRule__mdt` custom metadata rules
+7. View related log entries on any Lightning SObject flexipage by adding the 'Related Log Entries' component in App Builder
+8. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs
+9. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow (not currently available in the managed package)
+10. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
 
@@ -111,8 +112,7 @@ After installing Nebula Logger in your org, there are a few additional configura
 
 For Apex developers, the `Logger` class has several methods that can be used to add entries with different logging levels. Each logging level's method has several overloads to support multiple parameters.
 
-```java
-// This will generate a debug statement within developer console
+```apex// This will generate a debug statement within developer console
 System.debug('Debug statement using native Apex');
 
 // This will create a new `Log__c` record with multiple related `LogEntry__c` records
@@ -183,25 +183,9 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ---
 
-### All Together: Apex, Lightning Components & Flow in One Log
+### Logger for OmniStudio: Quick Start
 
-After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
-
-```java
-Case currentCase = [SELECT Id, CaseNumber, Type, Status, IsClosed FROM Case LIMIT 1];
-
-Logger.info('First, log the case through Apex', currentCase);
-
-Logger.debug('Now, we update the case in Apex to cause our record-triggered Flow to run');
-update currentCase;
-
-Logger.info('Last, save our log');
-Logger.saveLog();
-```
-
-This generates 1 consolidated `Log__c`, containing `LogEntry__c` records from both Apex and Flow
-
-![Flow Log Results](./images/combined-apex-flow-log.png)
+For OmniStudio builders, the included Apex class `CallableLogger` provides access to Nebula Logger's core features, directly in omniscripts and omni integration procedures. Simply use the `CallableLogger` class as a remote action within OmniStudio, and provide any inputs needed for the logging action. For more details (including what actions are available, and their required inputs), see [the section on the `CallableLogger` Apex class](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Logger). For more details on logging in OmniStudio, [see the OmniStudio wiki page](https://github.com/jongpie/NebulaLogger/wiki/Nebula-Logger-for-OmniStudio)
 
 ---
 
@@ -232,8 +216,7 @@ This example batchable class shows how you can leverage this feature to relate a
 
 > :information_source: If you deploy this example class to your org,you can run it using `Database.executeBatch(new BatchableLoggerExample());`
 
-```java
-public with sharing class BatchableLoggerExample implements Database.Batchable<SObject>, Database.Stateful {
+```apexpublic with sharing class BatchableLoggerExample implements Database.Batchable<SObject>, Database.Stateful {
     private String originalTransactionId;
 
     public Database.QueryLocator start(Database.BatchableContext batchableContext) {
@@ -276,8 +259,7 @@ Queueable jobs can also leverage the parent transaction ID to relate logs togeth
 
 > :information_source: If you deploy this example class to your org,you can run it using `System.enqueueJob(new QueueableLoggerExample(3));`
 
-```java
-public with sharing class QueueableLoggerExample implements Queueable {
+```apexpublic with sharing class QueueableLoggerExample implements Queueable {
     private Integer numberOfJobsToChain;
     private String parentLogTransactionId;
 
@@ -332,8 +314,7 @@ To see the full list of overloads, check out the `Logger` class [documentation](
 
 Each of the logging methods in `Logger` returns an instance of the class `LogEntryEventBuilder`. This class provides several additional methods together to further customize each log entry - each of the builder methods can be chained together. In this example Apex, 3 log entries are created using different approaches for calling `Logger` - all 3 approaches result in identical log entries.
 
-```java
-// Get the current user so we can log it (just as an example of logging an SObject)
+```apex// Get the current user so we can log it (just as an example of logging an SObject)
 User currentUser = [SELECT Id, Name, Username, Email FROM User WHERE Id = :UserInfo.getUserId()];
 
 // Using static Logger method overloads
@@ -356,8 +337,7 @@ The class `LogMessage` provides the ability to generate string messages on deman
 
 1. Improved CPU usage by skipping unnecessary calls to `String.format()`
 
-   ```java
-   // Without using LogMessage, String.format() is always called, even if the FINE logging level is not enabled for a user
+   ```apex // Without using LogMessage, String.format() is always called, even if the FINE logging level is not enabled for a user
    String formattedString = String.format('my example with input: {0}', List<Object>{'myString'});
    Logger.fine(formattedString);
 
@@ -367,8 +347,7 @@ The class `LogMessage` provides the ability to generate string messages on deman
    ```
 
 2. Easily build complex strings
-   ```java
-    // There are several constructors for LogMessage to support different numbers of parameters for the formatted string
+   ```apex // There are several constructors for LogMessage to support different numbers of parameters for the formatted string
     String unformattedMessage = 'my string with 3 inputs: {0} and then {1} and finally {2}';
     String formattedMessage = new LogMessage(unformattedMessage, 'something', 'something else', 'one more').getMessage();
     String expectedMessage = 'my string with 3 inputs: something and then something else and finally one more';
@@ -376,6 +355,417 @@ The class `LogMessage` provides the ability to generate string messages on deman
    ```
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/LogMessage).
+
+### ISVs & Package Developers: Dynamically Call Nebula Logger in Your Packages with `CallableLogger`
+
+As of `v4.14.10`, Nebula Logger includes the Apex class `CallableLogger`, which implements [Apex's `Callable` interface](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_interface_System_Callable.htm).
+
+- The `Callable` interface only has 1 method: `Object call(String action, Map<String,Object> args)`. It leverages string values and generic `Object` values as a mechanism to provide loose coupling on Apex classes that may or may not exist in a Salesforce org.
+- This can be used by ISVs & package developers to optionally leverage Nebula Logger for logging, when it's available in a customer's org. And when it's not available, your package can still be installed, and still be used.
+
+Using the provided `CallableLogger` class, a subset of Nebula Logger's features can be called dynamically in Apex. For example, this sample Apex class
+
+```apex// Check for both the managed package (Nebula namespace) and the unlocked package to see if either is available
+Type nebulaLoggerType = Type.forName('Nebula', 'CallableLogger') ?? Type.forName('CallableLogger');
+Callable nebulaLoggerInstance = (Callable) nebulaLoggerType?.newInstance();
+if (nebulaLoggerInstance == null) {
+  // If it's null, then neither of Nebula Logger's packages is available in the org 🥲
+  return;
+}
+
+// Example: Add a basic "hello, world!" INFO extry
+Map<String, Object> newEntryInput = new Map<String, Object>{
+  'loggingLevel' => System.LoggingLevel.INFO,
+  'message' => 'hello, world!'
+};
+nebulaLoggerInstance.call('newEntry', newEntryInput);
+
+// Example: Add an ERROR extry with an Apex exception
+Exception someException = new DmlException('oops');
+Map<String, Object> newEntryInput = new Map<String, Object>{
+  'exception' => someException,
+  'loggingLevel' => LoggingLevel.ERROR,
+  'message' => 'An unexpected exception was thrown'
+};
+nebulaLoggerInstance.call('newEntry', newEntryInput);
+
+// Example: Save any pending log entries
+nebulaLoggerInstance.call('saveLog', null);
+```
+
+#### Available Actions
+
+There are currently 8 actions supported by `CallablerLogger` - each action (discussed below) essentially corresponds to a similar method in the core `Logger` Apex class.
+
+All actions return an instance of `Map<String, Object>` as the output. The `call()` method always returns an `Object`, so the returned value will have to be cast to `Map<String, Object>` if you wish to inspect the returned information.
+
+- When the `call()` method finishes successfully, the map contains the key `isSuccess`, with a value of `true`
+- When the `call()` method fails due to some catchable exception, the map contains the key `isSuccess`, with a value of `false`. It also includes 3 `String` values for the exception that was thrown:
+  1. `exceptionMessage` - the value of `thrownException.getMessage()`
+  1. `exceptionStackTrace` - the value of `thrownException.getStackTraceString()`
+  1. `exceptionType` - the value of `thrownException.getTypeName()`
+
+##### Example
+
+```apex// An example of verifying that the action call was successful
+Callable nebulaLoggerInstance = (Callable) System.Type.forName('CallableLogger')?.newInstance();
+if (nebulaLoggerInstance == null) {
+  // If it's null, then Nebula Logger isn't available in the org 🥲
+  return;
+}
+Map<String, Object> output = (Map<String, Object>) nebulaLoggerInstance.call('saveLog', null);
+Boolean savedSuccessfully = ouput.get('isSuccess') == true;
+System.debug('Log entries were successfully saved in Nebula Logger: ' + savedSuccessfully);
+```
+
+#### `newEntry` Action
+
+This action is used to add new log entries in Nebula Logger. It is the equivalent of using these methods (and their overloads) available in `Logger`:
+
+- `error()` overloads, like `Logger.error('hello, world');`
+- `warn()` overloads, like `Logger.warn('hello, world');`
+- `info()` overloads, like `Logger.info('hello, world');`
+- `debug()` overloads, like `Logger.debug('hello, world');`
+- `fine()` overloads, like `Logger.fine('hello, world');`
+- `finer()` overloads, like `Logger.fine('rhello, world');`
+- `finest()` overloads, like `Logger.finest('hello, world');`
+- `newEntry()` overloads, like `Logger.newEntry(LoggingLevel.INFO, 'hello, world');`
+
+##### Input Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Input Map Key</strong></th>
+      <th><strong>Required</strong></th>
+      <th>Expected Datatype</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>loggingLevel</code></td>
+      <td>Required</td>
+      <td><code>String</code> or <code>System.LoggingLevel</code></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>message</code></td>
+      <td>Required</td>
+      <td><code>String</code></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>exception</code></td>
+      <td>Optional</td>
+      <td><code>System.Exception</code></td>
+      <td>When provided, Nebula Logger automatically stores details about the provided exception the log entry to the specified SObject record ID.<br /><br />Cannot be used at the same time as <code>record</code>, <code>recordList</code>, or </code>recordMap</code></td>
+    </tr>
+    <tr>
+      <td><code>recordId</code></td>
+      <td>Optional</td>
+      <td><code>Id</code></td>
+      <td>When provided, Nebula Logger automatically ties the log entry to the specified SObject record ID.<br /><br />Cannot be used at the same time as <code>record</code>, <code>recordList</code>, or </code>recordMap</code></td>
+    </tr>
+    <tr>
+      <td><code>record</code></td>
+      <td>Optional</td>
+      <td><code>SObject</code></td>
+      <td>When provided, Nebula Logger automatically ties the log entry to the specified SObject record, and stores a JSON copy of the provided SObject record.<br /><br />Cannot be used at the same time as <code>recordId</code>, <code>recordList</code>, or </code>recordMap</code></td>
+    </tr>
+    <tr>
+      <td><code>recordList</code></td>
+      <td>Optional</td>
+      <td><code>List<SObject></code></td>
+      <td>When provided, Nebula Logger automatically stores a JSON copy of the provided list of SObject records.<br /><br />Cannot be used at the same time as <code>recordId</code>, <code>record</code>, or </code>recordMap</code></td>
+    </tr>
+    <tr>
+      <td><code>recordMap</code></td>
+      <td>Optional</td>
+      <td><code>Map<Id, SObject></code></td>
+      <td>When provided, Nebula Logger automatically stores a JSON copy of the provided map of SObject records.<br /><br />Cannot be used at the same time as <code>recordId</code>, <code>record</code>, or </code>recordList</code></td>
+    </tr>
+    <tr>
+      <td><code>saveLog</code></td>
+      <td>Optional</td>
+      <td><code>Boolean</code></td>
+      <td>When set to <code>true</code>, Nebula Logger automatically saves any pending log entries. By default, log entries are <b>not</b> automatically saved.</td>
+    </tr>
+    <tr>
+      <td><code>tags</code></td>
+      <td>Optional</td>
+      <td><code>List<String></code></td>
+      <td>When provided, Nebula Logger stores the provided strings as tags associated with the log entry.</td>
+    </tr>
+  </tbody>
+</table>
+
+##### Output Values
+
+No additional output values are returned for this action.
+
+##### Example Usage
+
+```apexAccount someAccount = [SELECT Id, Name ]
+Exception someException = new DmlException('oops');
+
+// Add a new entry with an account & an exception as supporting context/data
+Map<String, Object> newEntryInput = new Map<String, Object>{
+  'exception' => someException,
+  'loggingLevel' => LoggingLevel.ERROR,
+  'message' => 'An unexpected exception was thrown'
+  'record' => someAccount
+};
+Callable nebulaLoggerInstance = (Callable) System.Type.forName('CallableLogger')?.newInstance();
+nebulaLoggerInstance?.call('newEntry', newEntryInput);
+```
+
+#### `saveLog` Action
+
+This action is used to save any pending new log entries in Nebula Logger. It is the equivalent to using `Logger.saveLog()`
+
+##### Input Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Input Map Key</strong></th>
+      <th><strong>Required</strong></th>
+      <th>Expected Datatype</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>saveMethodName</code></td>
+      <td>Optional</td>
+      <td><code>String</code></td>
+      <td>When provided, the specified save method will be used by Nebula Logger to save any pending log entries. By default, log entries are saved using the save method configured in <code>LoggerSettings__c.DefaultSaveMethod__c</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+##### Output Values
+
+No additional output values are returned for this action.
+
+##### Example Usage
+
+```apexSystem.Callable nebulaLoggerInstance = (System.Callable) System.Type.forName('CallableLogger')?.newInstance();
+
+// Save using the default save method
+nebulaLoggerInstance?.call('saveLog', null);
+
+// Save using a specific save method
+nebulaLoggerInstance?.call('saveLog', new Map<String, Object>{ 'saveMethodName' => 'SYNCHRONOUS_DML' });
+```
+
+#### `getTransactionId` Action
+
+This action is used to return Nebula Logger's unique identifier for the current transaction. It is the equivalent to using `Logger.getTransactionId()`
+
+##### Input Values
+
+No input values are used for this action.
+
+##### Output Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Output Map Key</strong></th>
+      <th>Datatype</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>`transactionId`</code></td>
+      <td><code>String</code></td>
+    </tr>
+  </tbody>
+</table>
+
+##### Example Usage
+
+```apexCallable nebulaLoggerInstance = (Callable) Type.forName('CallableLogger')?.newInstance();
+
+Map<String, Object> output = (Map<String, Object>) nebulaLoggerInstance?.call('getTransactionId', null);
+System.debug('Current transaction ID: ' + (String) output.get('transactionId'));
+```
+
+#### `getParentLogTransactionId` Action
+
+This action is used to return Nebula Logger's unique identifier for the parent log of the current transaction (if one has been set). It is the equivalent to using `Logger.getParentLogTransactionId()`
+
+##### Input Values
+
+No input values are used for this action.
+
+##### Output Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Output Map Key</strong></th>
+      <th>Datatype</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>parentLogTransactionId</code></td>
+      <td><code>String</code></td>
+    </tr>
+  </tbody>
+</table>
+
+##### Example Usage
+
+```apexCallable nebulaLoggerInstance = (Callable) Type.forName('CallableLogger')?.newInstance();
+
+Map<String, Object> output = (Map<String, Object>) nebulaLoggerInstance?.call('getParentLogTransactionId', null);
+System.debug('Current parent log transaction ID: ' + (String) output.get('parentLogTransactionId'));
+```
+
+#### `setParentLogTransactionId` Action
+
+This action is used to set Nebula Logger's the unique identifier for the parent log of the current transaction. It is the equivalent to using `Logger.setParentLogTransactionId(String)`
+
+##### Input Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Input Map Key</strong></th>
+      <th><strong>Required</strong></th>
+      <th>Expected Datatype</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>parentLogTransactionId</code></td>
+      <td>Required</td>
+      <td><code>String</code></td>
+    </tr>
+  </tbody>
+</table>
+
+##### Output Values
+
+No output values are used for this action.
+
+##### Example Usage
+
+```apexCallable nebulaLoggerInstance = (Callable) Type.forName('CallableLogger')?.newInstance();
+
+Map<String, Object> output = (Map<String, Object>) nebulaLoggerInstance?.call('getParentLogTransactionId', null);
+System.debug('Current parent log transaction ID: ' + (String) output.get('parentLogTransactionId'));
+```
+
+#### `getScenario` Action
+
+This action is used to return Nebula Logger's current scenario for scenario-based-logging (if one has been set). It is the equivalent to using `Logger.getScenario()`.
+
+##### Input Values
+
+No input values are used for this action.
+
+##### Output Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Output Map Key</strong></th>
+      <th>Datatype</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>scenario</code></td>
+      <td><code>String</code></td>
+    </tr>
+  </tbody>
+</table>
+
+##### Example Usage
+
+```apexCallable nebulaLoggerInstance = (Callable) Type.forName('CallableLogger')?.newInstance();
+
+Map<String, Object> output = (Map<String, Object>) nebulaLoggerInstance?.call('getScenario', null);
+System.debug('Current scenario: ' + (String) output.get('scenario'));
+```
+
+#### `setScenario` Action
+
+This action is used to set Nebula Logger's current scenario for scenario-based-logging. It is the equivalent to using `Logger.setScenario(String)`
+
+##### Input Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Input Map Key</strong></th>
+      <th><strong>Required</strong></th>
+      <th>Expected Datatype</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>scenario</code></td>
+      <td>Required</td>
+      <td><code>String</code></td>
+    </tr>
+  </tbody>
+</table>
+
+##### Output Values
+
+No additional output values are used for this action.
+
+##### Example Usage
+
+```apexCallable nebulaLoggerInstance = (Callable) Type.forName('CallableLogger')?.newInstance();
+
+Map<String, Object> input = new Map<String, Object>{ 'scenario' => 'some scenario' };
+nebulaLoggerInstance?.call('setScenario', input);
+```
+
+#### `endScenario` Action
+
+This action is used to set Nebula Logger's current scenario for scenario-based-logging. It is the equivalent to using `Logger.endScenario(String)`
+
+##### Input Values
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Input Map Key</strong></th>
+      <th><strong>Required</strong></th>
+      <th>Expected Datatype</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>scenario</code></td>
+      <td>Required</td>
+      <td><code>String</code></td>
+    </tr>
+  </tbody>
+</table>
+
+##### Output Values
+
+No additional output values are used for this action.
+
+##### Example Usage
+
+```apexCallable nebulaLoggerInstance = (Callable) Type.forName('CallableLogger')?.newInstance();
+
+Map<String, Object> input = new Map<String, Object>{ 'scenario' => 'some scenario' };
+nebulaLoggerInstance?.call('endScenario', input);
+```
 
 ---
 
@@ -491,8 +881,7 @@ Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records v
 
 Apex developers can use 2 new methods in `LogEntryBuilder` to add tags - `LogEntryEventBuilder.addTag(String)` and `LogEntryEventBuilder.addTags(List<String>)`.
 
-```java
-// Use addTag(String tagName) for adding 1 tag at a time
+```apex// Use addTag(String tagName) for adding 1 tag at a time
 Logger.debug('my log message').addTag('some tag').addTag('another tag');
 
 // Use addTags(List<String> tagNames) for adding a list of tags in 1 method call
@@ -609,8 +998,7 @@ The first step is to add a field to the platform event `LogEntryEvent__e`
 
 - In Apex, populate your field(s) by calling the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
 
-  ```apex
-  Logger.info('hello, world')
+  ```apex Logger.info('hello, world')
       // Set a single field
       .setField(LogEntryEvent__e.SomeCustomTextField__c, 'some text value')
       // Set multiple fields
@@ -752,8 +1140,7 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
 
 - Apex plugins: your Apex class should extend the abstract class `LoggerSObjectHandlerPlugin`. For example:
 
-  ```java
-  public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
+  ```apex public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
       public override void execute(
           TriggerOperation triggerOperationType,
           List<SObject> triggerNew,

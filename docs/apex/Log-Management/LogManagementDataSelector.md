@@ -377,6 +377,26 @@ List&lt;Log\_\_c&gt;
 
 The list of matching `Log__c` records
 
+#### `getOmniProcessProxies(List<Id> omniProcessIds)` → `Map<Id, LoggerSObjectProxy.OmniProcess>`
+
+Returns a list of matching `Schema.OmniProcess` records based on the provided list of OmniProcess IDs
+
+##### Parameters
+
+| Param            | Description                                   |
+| ---------------- | --------------------------------------------- |
+| `omniProcessIds` | The list of `Schema.OmniProcess` IDs to query |
+
+##### Return
+
+**Type**
+
+Map&lt;Id, LoggerSObjectProxy.OmniProcess&gt;
+
+**Description**
+
+The instance of `Map&lt;Id, SObject&gt;` containing any matching `Schema.OmniProcess` records
+
 #### `getProfilesById(List<Id> profileIds)` → `List<Schema.Profile>`
 
 Returns a `List&lt;Schema.Profile&gt;` of records with the specified profile IDs
