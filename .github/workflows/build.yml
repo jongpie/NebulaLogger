@@ -9,13 +9,13 @@ env:
 on:
   push:
     paths:
-      - github/workflows/**
+      - .github/workflows/**
       - config/scratch-orgs/**
       - nebula-logger/**
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - github/workflows/**
+      - .github/workflows/**
       - config/scratch-orgs/**
       - nebula-logger/**
 
