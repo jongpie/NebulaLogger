@@ -34,9 +34,6 @@
     "flowSettings": {
       "canDebugFlowAsAnotherUser": true
     },
-    "lightningExperienceSettings": {
-      "enableLightningPreviewPref": true
-    },
     "pathAssistantSettings": {
       "pathAssistantEnabled": true
     },

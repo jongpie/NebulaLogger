@@ -296,6 +296,29 @@ public without sharing virtual class LogManagementDataSelector {
   }
 
   /**
+   * @description Returns a list of matching `Schema.OmniProcess` records based on the provided list of OmniProcess IDs
+   * @param  omniProcessIds The list of `Schema.OmniProcess` IDs to query
+   * @return            The instance of `Map<Id, SObject>` containing any matching `Schema.OmniProcess` records
+   */
+  public virtual Map<Id, LoggerSObjectProxy.OmniProcess> getOmniProcessProxies(List<Id> omniProcessIds) {
+    if (LoggerParameter.QUERY_OMNI_PROCESS_DATA == false) {
+      return new Map<Id, LoggerSObjectProxy.OmniProcess>();
+    }
+
+    // OmniStudio may not be enabled in the org, and the Schema.OmniProcess object may not exist,
+    // so run everything dynamically
+    Map<Id, LoggerSObjectProxy.OmniProcess> omniProcessIdToOmniProcessProxy = new Map<Id, LoggerSObjectProxy.OmniProcess>();
+    String query =
+      'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username, LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
+      ' FROM OmniProcess WHERE Id IN :omniProcessIds';
+    for (SObject omniProcessRecord : System.Database.query(String.escapeSingleQuotes(query))) {
+      LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(omniProcessRecord);
+      omniProcessIdToOmniProcessProxy.put(omniProcessProxy.Id, omniProcessProxy);
+    }
+    return omniProcessIdToOmniProcessProxy;
+  }
+
+  /**
    * @description Returns a `List<Schema.Profile>` of records with the specified profile IDs
    * @param  profileIds The list of `ID` of the `Schema.Profile` records to query
    * @return            The list of matching `Schema.Profile` records

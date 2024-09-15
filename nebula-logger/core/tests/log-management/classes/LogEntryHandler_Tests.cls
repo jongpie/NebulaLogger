@@ -1258,11 +1258,84 @@ private class LogEntryHandler_Tests {
     System.Assert.isNull(logEntry.OriginSourceSnippet__c);
   }
 
+  @IsTest
+  static void it_should_set_origin_omni_process_details() {
+    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+    SObject mockOmniProcessRecord = (SObject) (System.Type.forName('Schema.OmniProcess').newInstance());
+    LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
+    mockOmniProcessProxy.CreatedById = System.UserInfo.getUserId();
+    mockOmniProcessProxy.CreatedBy = currentUser;
+    mockOmniProcessProxy.CreatedDate = System.now().addDays(-7);
+    mockOmniProcessProxy.Id = LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType());
+    mockOmniProcessProxy.LastModifiedById = currentUser.Id;
+    mockOmniProcessProxy.LastModifiedBy = currentUser;
+    mockOmniProcessProxy.LastModifiedDate = System.now().addDays(-1);
+    mockOmniProcessProxy.OmniProcessType = 'Integration Procedure';
+    mockOmniProcessProxy.UniqueName = 'Mock_OmniScript_English_1';
+    MockLogManagementDataSelector mockSelector = new MockLogManagementDataSelector();
+    mockSelector.setMockOmniProcess(mockOmniProcessProxy);
+    LogManagementDataSelector.setMock(mockSelector);
+    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceId__c = mockOmniProcessProxy.Id, OriginType__c = 'OmniStudio');
+    LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+    System.Assert.areEqual(
+      2,
+      LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+      'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+    );
+    logEntry = [
+      SELECT
+        Id,
+        OriginSourceActionName__c,
+        OriginSourceApiName__c,
+        OriginSourceApiVersion__c,
+        OriginSourceCreatedById__c,
+        OriginSourceCreatedByUsername__c,
+        OriginSourceCreatedDate__c,
+        OriginSourceId__c,
+        OriginSourceLastModifiedById__c,
+        OriginSourceLastModifiedByUsername__c,
+        OriginSourceLastModifiedDate__c
+      FROM LogEntry__c
+      WHERE Id = :logEntry.Id
+    ];
+    System.Assert.isNull(logEntry.OriginSourceActionName__c);
+    System.Assert.areEqual(mockOmniProcessProxy.UniqueName, logEntry.OriginSourceApiName__c);
+    System.Assert.isNull(logEntry.OriginSourceApiVersion__c);
+    System.Assert.areEqual(mockOmniProcessProxy.CreatedById, logEntry.OriginSourceCreatedById__c);
+    System.Assert.areEqual(mockOmniProcessProxy.CreatedBy.Username, logEntry.OriginSourceCreatedByUsername__c);
+    System.Assert.areEqual(mockOmniProcessProxy.CreatedDate, logEntry.OriginSourceCreatedDate__c);
+    System.Assert.areEqual(mockOmniProcessProxy.Id, logEntry.OriginSourceId__c);
+    System.Assert.areEqual(mockOmniProcessProxy.LastModifiedById, logEntry.OriginSourceLastModifiedById__c);
+    System.Assert.areEqual(mockOmniProcessProxy.LastModifiedBy.Username, logEntry.OriginSourceLastModifiedByUsername__c);
+    System.Assert.areEqual(mockOmniProcessProxy.LastModifiedDate, logEntry.OriginSourceLastModifiedDate__c);
+  }
+
+  @IsTest
+  static void it_should_set_skip_setting_origin_process_details_when_origin_source_id_is_null() {
+    System.Assert.fail('TODO');
+  }
+
   private static String getNamespacePrefix() {
     String className = LogEntryHandler_Tests.class.getName();
     String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
 
     return namespacePrefix;
+  }
+
+  private class MockLogManagementDataSelector extends LogManagementDataSelector {
+    private LoggerSObjectProxy.OmniProcess mockOmniProcessProxy;
+
+    public override Map<Id, LoggerSObjectProxy.OmniProcess> getOmniProcessProxies(List<Id> omniProcessIds) {
+      return new Map<Id, LoggerSObjectProxy.OmniProcess>{ mockOmniProcessProxy.Id => mockOmniProcessProxy };
+    }
+
+    public void setMockOmniProcess(LoggerSObjectProxy.OmniProcess omniProcessProxy) {
+      this.mockOmniProcessProxy = omniProcessProxy;
+    }
   }
 
   // Helper class for testing stack trace parsing & Schema.ApexClass querying for an inner class

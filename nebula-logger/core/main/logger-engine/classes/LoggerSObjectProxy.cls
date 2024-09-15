@@ -99,15 +99,27 @@ public without sharing class LoggerSObjectProxy {
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
   public class OmniProcess {
+    public Id CreatedById;
+    public Schema.User CreatedBy;
+    public Datetime CreatedDate;
     public String Id;
-    public Boolean IsIntegrationProcedure;
+    public Id LastModifiedById;
+    public Schema.User LastModifiedBy;
+    public Datetime LastModifiedDate;
+    public String OmniProcessType;
     public String UniqueName;
 
     @SuppressWarnings('PMD.ApexDoc')
     public OmniProcess(SObject omniProcess) {
       if (omniProcess != null) {
+        this.CreatedById = (String) omniProcess.get('CreatedById');
+        this.CreatedBy = (Schema.User) omniProcess.getSObject('CreatedBy');
+        this.CreatedDate = (Datetime) omniProcess.get('CreatedDate');
         this.Id = (String) omniProcess.get('Id');
-        this.IsIntegrationProcedure = (Boolean) omniProcess.get('IsIntegrationProcedure');
+        this.LastModifiedById = (String) omniProcess.get('LastModifiedById');
+        this.LastModifiedBy = (Schema.User) omniProcess.getSObject('LastModifiedBy');
+        this.LastModifiedDate = (Datetime) omniProcess.get('LastModifiedDate');
+        this.OmniProcessType = (String) omniProcess.get('OmniProcessType');
         this.UniqueName = (String) omniProcess.get('UniqueName');
       }
     }

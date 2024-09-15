@@ -102,18 +102,37 @@ private class LoggerSObjectProxy_Tests {
     if (IS_OMNISTUDIO_ENABLED == false) {
       return;
     }
+    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+    String createdByFieldName = 'CreatedBy';
+    String createdByIdFieldName = 'CreatedById';
+    String createdDateFieldName = 'CreatedDate';
     String idFieldName = 'Id';
-    String isIntegrationProcedureFieldName = 'IsIntegrationProcedure';
+    String lastModifiedByFieldName = 'LastModifiedBy';
+    String lastModifiedByIdFieldName = 'LastModifiedById';
+    String lastModifiedDateFieldName = 'LastModifiedDate';
+    String omniProcessTypeFieldName = 'OmniProcessType';
     String uniqueFieldName = 'UniqueName';
     SObject mockOmniProcessRecord = (SObject) (System.Type.forName('Schema.OmniProcess').newInstance());
+    mockOmniProcessRecord.put(createdByIdFieldName, currentUser.Id);
+    mockOmniProcessRecord.putSObject(createdByFieldName, currentUser);
+    mockOmniProcessRecord.put(createdDateFieldName, System.now().addDays(-7));
     mockOmniProcessRecord.put(idFieldName, LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType()));
-    mockOmniProcessRecord.put(isIntegrationProcedureFieldName, false);
+    mockOmniProcessRecord.put(lastModifiedByIdFieldName, currentUser.Id);
+    mockOmniProcessRecord.putSObject(lastModifiedByFieldName, currentUser);
+    mockOmniProcessRecord.put(lastModifiedDateFieldName, System.now().addDays(-1));
+    mockOmniProcessRecord.put(omniProcessTypeFieldName, 'Integration Procedure');
     mockOmniProcessRecord.put(uniqueFieldName, 'Mock_OmniScript_English_1');
 
     LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
 
+    System.Assert.areEqual((Schema.User) mockOmniProcessRecord.get(createdByFieldName), omniProcessProxy.CreatedBy);
+    System.Assert.areEqual((String) mockOmniProcessRecord.get(createdByIdFieldName), omniProcessProxy.CreatedById);
+    System.Assert.areEqual((Datetime) mockOmniProcessRecord.get(createdDateFieldName), omniProcessProxy.CreatedDate);
     System.Assert.areEqual((Id) mockOmniProcessRecord.get(idFieldName), omniProcessProxy.Id);
-    System.Assert.areEqual((Boolean) mockOmniProcessRecord.get(isIntegrationProcedureFieldName), omniProcessProxy.IsIntegrationProcedure);
+    System.Assert.areEqual((Schema.User) mockOmniProcessRecord.get(lastModifiedByFieldName), omniProcessProxy.LastModifiedBy);
+    System.Assert.areEqual((String) mockOmniProcessRecord.get(lastModifiedByIdFieldName), omniProcessProxy.LastModifiedById);
+    System.Assert.areEqual((Datetime) mockOmniProcessRecord.get(lastModifiedByFieldName), omniProcessProxy.LastModifiedDate);
+    System.Assert.areEqual((String) mockOmniProcessRecord.get(omniProcessTypeFieldName), omniProcessProxy.OmniProcessType);
     System.Assert.areEqual((String) mockOmniProcessRecord.get(uniqueFieldName), omniProcessProxy.UniqueName);
   }
 }
