@@ -142,7 +142,9 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
         LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
         logEntryEvent.OriginLocation__c = null;
+        logEntryEvent.OriginSourceApiName__c = null;
         logEntryEvent.OriginSourceId__c = (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID);
+        logEntryEvent.OriginSourceMetadataType__c = null;
         logEntryEvent.OriginType__c = 'OmniStudio';
       }
 
