@@ -6,6 +6,8 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LogEntryHandler_Tests {
+  private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
+
   @TestSetup
   static void setupData() {
     LoggerSObjectHandler.shouldExecute(false);
@@ -1260,6 +1262,10 @@ private class LogEntryHandler_Tests {
 
   @IsTest
   static void it_should_set_origin_omni_process_details() {
+    // No need to fail the test if it's running in an org that does not have OmniStudio enabled
+    if (IS_OMNISTUDIO_ENABLED == false) {
+      return;
+    }
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     SObject mockOmniProcessRecord = (SObject) (System.Type.forName('Schema.OmniProcess').newInstance());
     LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
