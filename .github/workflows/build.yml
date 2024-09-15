@@ -658,6 +658,7 @@ jobs:
         run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo --synchronous
 
       - name: 'Commit New Package Version'
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
