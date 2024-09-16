@@ -9,7 +9,7 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oSQQAY)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oSQQAY)
-[![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
+[![View Documentation](./images/btn-view-documentation.png)](https://github.com/jongpie/NebulaLogger/wiki)
 
 `sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015oSQQAY`
 
@@ -29,19 +29,39 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 ---
 
+> [!NOTE]
+> Starting in September 2024, Nebula Logger's documentation is being rewritten & consolidated into [the wiki](https://github.com/jongpie/NebulaLogger/wiki). Most of the content show below will eventually be migrated to the wiki instead.
+
 ## Features
 
-1. A unified logging tool that supports easily adding log entries via Apex, Lightning Components (lightning web components (LWCs) & aura components), Flow & Process Builder, and OmniStudio's OmniScripts
-2. For ISVs: optionally leverage Nebula Logger in your own packages - when it's available in a subscriber's org - using [Apex's `Callable` interface](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_interface_System_Callable.htm) and Nebula Logger's included implementation `CallableLogger`
-3. Manage & report on logging data using the 5 included custom objects `Log__c`, `LogEntry__c`, `LogEntryTag__c`, `LoggerTag__c`, and `LoggerScenario__c`
-4. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
-5. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
-   - In addition to the required fields on this Custom Setting record, `LoggerSettings__c` ships with `SystemLogMessageFormat__c`, which uses Handlebars-esque syntax to refer to fields on the `LogEntryEvent__e` Platform Event. You can use curly braces to denote merge field logic, eg: `{OriginLocation__c}\n{Message__c}` - this will output the contents of `LogEntryEvent__e.OriginLocation__c`, a line break, and then the contents of `LogEntryEvent__e.Message__c`
-6. Automatically mask sensitive data by configuring `LogEntryDataMaskRule__mdt` custom metadata rules
-7. View related log entries on any Lightning SObject flexipage by adding the 'Related Log Entries' component in App Builder
+1. A unified logging tool that supports easily adding log entries across the Salesforce platform, using:
+
+   - [Apex](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-Apex): classes, triggers, and anonymous Apex scripts
+   - [Lightning Components](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-Components): lightning web components (LWCs) & aura components
+   - [Flow & Process Builder](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-Flow): any Flow type that supports invocable actions
+   - [OmniStudio](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-OmniStudio): omniscripts and omni integration procedures
+
+2. Built with an event-driven pub/sub messaging architecture, using `LogEntryEvent__e` [platform events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm). For more details on leveraging platform events, see [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
+
+3. Actionable observability data about your Salesforce org, available directly in your Salesforce org via the 5 included custom objects
+
+   - `Log__c`
+   - `LogEntry__c`
+   - `LogEntryTag__c`
+   - `LoggerTag__c`
+   - `LoggerScenario__c`
+
+4. Customizable logging settings for different users & profiles, using the included `LoggerSettings__c` custom hierarchy settings object
+5. Easily scales in highly complex Salesforce orgs with large data volumes, using global feature flags in `LoggerParameter__mdt`
+6. Automatic data masking of sensitive data, using rules configured in the `LogEntryDataMaskRule__mdt` custom metadata type object
+7. View related `LogEntry__c` records on any Lightning record page in App Builder by adding the 'Related Log Entries' component (`relatedLogEntries` LWC)
 8. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs
-9. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow (not currently available in the managed package)
-10. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
+9. Extendable with a built-in plugin framework: easily build or install plugins that enhance Nebula Logger, using Apex or Flow (not currently available in the managed package)
+10. ISVs & package developers have several options for leveraging Nebula Logger in your own packages
+
+    - **Optional Dependency**: dynamically leverage Nebula Logger in your own packages - when it's available in a subscriber's org - using [Apex's `Callable` interface](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_interface_System_Callable.htm) and Nebula Logger's included implementation `CallableLogger` (requires `v4.14.10` of Nebula Logger or newer)
+    - **Hard Dependency**: add either Nebula Logger's unlocked (no namespace) package or its managed package (`Nebula` namespace) as a dependency for your package to ensure customers always have a version of Nebula Logger installed
+    - **No Dependency**: Bundle Nebula Logger's metadata into your own project - all of Nebula Logger's metadata is fully open source & freely available. This approach provides with full control of what's included in your own app/project.
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
 
@@ -185,7 +205,7 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ### Logger for OmniStudio: Quick Start
 
-For OmniStudio builders, the included Apex class `CallableLogger` provides access to Nebula Logger's core features, directly in omniscripts and omni integration procedures. Simply use the `CallableLogger` class as a remote action within OmniStudio, and provide any inputs needed for the logging action. For more details (including what actions are available, and their required inputs), see [the section on the `CallableLogger` Apex class](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Logger). For more details on logging in OmniStudio, [see the OmniStudio wiki page](https://github.com/jongpie/NebulaLogger/wiki/Nebula-Logger-for-OmniStudio)
+For OmniStudio builders, the included Apex class `CallableLogger` provides access to Nebula Logger's core features, directly in omniscripts and omni integration procedures. Simply use the `CallableLogger` class as a remote action within OmniStudio, and provide any inputs needed for the logging action. For more details (including what actions are available, and their required inputs), see [the section on the `CallableLogger` Apex class](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Logger). For more details on logging in OmniStudio, [see the OmniStudio wiki page](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-OmniStudio)
 
 ---
 

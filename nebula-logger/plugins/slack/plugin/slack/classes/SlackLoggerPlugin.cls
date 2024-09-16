@@ -275,7 +275,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
 
     String stringValue = String.valueOf(fieldValue);
     Integer maxShortLength = 255;
-    fieldDto.isShort = stringValue.contains('\n') == false || stringValue.length() <= maxShortLength;
+    fieldDto.isShort = stringValue.contains('\n') == false && stringValue.length() <= maxShortLength;
     String valueWrapper = fieldDto.isShort ? '`' : '\n```\n';
     fieldDto.value = valueWrapper + stringValue + valueWrapper;
     return fieldDto;

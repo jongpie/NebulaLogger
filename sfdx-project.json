@@ -65,9 +65,9 @@
           "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
         }
       ],
-      "versionNumber": "1.5.3.NEXT",
-      "versionName": "Removed ApiVersion__c in Field Set",
-      "versionDescription": "Removed the deprecated field Log__c.ApiVersion__c from the field set Log__c.SlackNotificationFields",
+      "versionNumber": "1.5.4.NEXT",
+      "versionName": "Fixed Formatting Text Fields with Line Breaks",
+      "versionDescription": "Corrected the logic used in SlackLoggerPlugin so that text fields with line breaks are formatted as code blocks",
       "default": false
     },
     {
@@ -212,6 +212,7 @@
     "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
     "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE",
     "Nebula Logger - Core Plugin - Slack@1.5.2": "04t5Y0000015nDJQAY",
-    "Nebula Logger - Core Plugin - Slack@1.5.3": "04t5Y0000015oERQAY"
+    "Nebula Logger - Core Plugin - Slack@1.5.3": "04t5Y0000015oERQAY",
+    "Nebula Logger - Core Plugin - Slack@1.5.4": "04t5Y0000015oTTQAY"
   }
 }
