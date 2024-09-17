@@ -30,6 +30,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     this.setComponentFields();
     this.setFlowDefinitionFields();
     this.setFlowVersionFields();
+    this.setOmniProcessFields();
     this.setRecordNames();
     this.setCheckboxFields();
   }
@@ -216,6 +217,49 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
       // Newer, general-purpose 'origin source' fields
       logEntry.OriginSourceApiVersion__c = 'v' + flowVersionView.ApiVersionRuntime + '.0';
+    }
+  }
+
+  private void setOmniProcessFields() {
+    List<String> omniProcessIds = new List<String>();
+    List<LogEntry__c> omniProcessLogEntries = new List<LogEntry__c>();
+    for (LogEntry__c logEntry : this.logEntries) {
+      if (logEntry.OriginType__c == 'OmniStudio' && String.isNotBlank(logEntry.OriginSourceId__c)) {
+        omniProcessIds.add(logEntry.OriginSourceId__c);
+        omniProcessLogEntries.add(logEntry);
+      }
+    }
+
+    if (omniProcessIds.isEmpty()) {
+      return;
+    }
+
+    Map<Id, LoggerSObjectProxy.OmniProcess> omniProcessIdToProxy = LogManagementDataSelector.getInstance().getOmniProcessProxies(omniProcessIds);
+    for (LogEntry__c logEntry : omniProcessLogEntries) {
+      LoggerSObjectProxy.OmniProcess omniProcessProxy = omniProcessIdToProxy.get(logEntry.OriginSourceId__c);
+
+      if (omniProcessProxy == null) {
+        continue;
+      }
+
+      String originSourceMetadataType;
+      switch on omniProcessProxy.OmniProcessType {
+        when 'Integration Procedure' {
+          originSourceMetadataType = 'OmniIntegrationProcedure';
+        }
+        when 'OmniScript' {
+          originSourceMetadataType = 'OmniScript';
+        }
+      }
+
+      logEntry.OriginSourceApiName__c = omniProcessProxy.UniqueName;
+      logEntry.OriginSourceCreatedById__c = omniProcessProxy.CreatedById;
+      logEntry.OriginSourceCreatedByUsername__c = omniProcessProxy.CreatedBy?.Username;
+      logEntry.OriginSourceCreatedDate__c = omniProcessProxy.CreatedDate;
+      logEntry.OriginSourceLastModifiedById__c = omniProcessProxy.LastModifiedById;
+      logEntry.OriginSourceLastModifiedByUsername__c = omniProcessProxy.LastModifiedBy?.Username;
+      logEntry.OriginSourceLastModifiedDate__c = omniProcessProxy.LastModifiedDate;
+      logEntry.OriginSourceMetadataType__c = originSourceMetadataType;
     }
   }
 

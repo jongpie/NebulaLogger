@@ -225,6 +225,18 @@ private class LoggerStackTrace_Tests {
     System.Assert.isNull(stackTrace.Source);
   }
 
+  @IsTest
+  static void it_should_not_set_details_for_system_code_stack_trace_string() {
+    String namespacedPparenthesisStackTrace = '(System Code)';
+
+    LoggerStackTrace stackTrace = new LoggerStackTrace(namespacedPparenthesisStackTrace);
+
+    System.Assert.areEqual(LoggerStackTrace.SourceLanguage.Apex, stackTrace.Language);
+    System.Assert.isNull(stackTrace.Location);
+    System.Assert.isNull(stackTrace.ParsedStackTraceString);
+    System.Assert.isNull(stackTrace.Source);
+  }
+
   private class DebugStringExample {
     private System.Exception constructorStackTraceGenerator;
     private System.Exception methodStackTraceGenerator;

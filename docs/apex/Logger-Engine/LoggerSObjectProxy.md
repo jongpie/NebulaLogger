@@ -91,3 +91,37 @@ Not all orgs have the SObject `Schema.Network` - it is only present in orgs that
 ###### `UrlPathPrefix` → `String`
 
 ---
+
+#### LoggerSObjectProxy.OmniProcess class
+
+Not all orgs have the SObject `Schema.OmniProcess` - it is only present in orgs that have enabled OmniStudio, so `Schema.OmniProcess` has to be referenced dynamically, including using hardcoded `String` values for field API names. The `LoggerSObjectProxy.OmniProcess` class acts as a substitute for a `Schema.OmniProcess` record so that the rest of the codebase can rely on strongly-typed references to fields (properties).
+
+---
+
+##### Constructors
+
+###### `OmniProcess(SObject omniProcess)`
+
+---
+
+##### Properties
+
+###### `CreatedBy` → `Schema.User`
+
+###### `CreatedById` → `Id`
+
+###### `CreatedDate` → `Datetime`
+
+###### `Id` → `String`
+
+###### `LastModifiedBy` → `Schema.User`
+
+###### `LastModifiedById` → `Id`
+
+###### `LastModifiedDate` → `Datetime`
+
+###### `OmniProcessType` → `String`
+
+###### `UniqueName` → `String`
+
+---

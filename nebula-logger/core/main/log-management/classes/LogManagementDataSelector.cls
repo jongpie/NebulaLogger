@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Selector class used for all queries that are specific to the log management layer
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing virtual class LogManagementDataSelector {
   private static LogManagementDataSelector instance = new LogManagementDataSelector();
 
@@ -293,6 +293,29 @@ public without sharing virtual class LogManagementDataSelector {
    */
   public virtual List<LoggerScenario__c> getLoggerScenariosById(List<Id> logScenarioIds) {
     return [SELECT Id, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :logScenarioIds];
+  }
+
+  /**
+   * @description Returns a list of matching `Schema.OmniProcess` records based on the provided list of OmniProcess IDs
+   * @param  omniProcessIds The list of `Schema.OmniProcess` IDs to query
+   * @return            The instance of `Map<Id, SObject>` containing any matching `Schema.OmniProcess` records
+   */
+  public virtual Map<Id, LoggerSObjectProxy.OmniProcess> getOmniProcessProxies(List<Id> omniProcessIds) {
+    if (LoggerParameter.QUERY_OMNI_PROCESS_DATA == false) {
+      return new Map<Id, LoggerSObjectProxy.OmniProcess>();
+    }
+
+    // OmniStudio may not be enabled in the org, and the Schema.OmniProcess object may not exist,
+    // so run everything dynamically
+    Map<Id, LoggerSObjectProxy.OmniProcess> omniProcessIdToOmniProcessProxy = new Map<Id, LoggerSObjectProxy.OmniProcess>();
+    String query =
+      'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username, LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
+      ' FROM OmniProcess WHERE Id IN :omniProcessIds';
+    for (SObject omniProcessRecord : System.Database.query(String.escapeSingleQuotes(query))) {
+      LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(omniProcessRecord);
+      omniProcessIdToOmniProcessProxy.put(omniProcessProxy.Id, omniProcessProxy);
+    }
+    return omniProcessIdToOmniProcessProxy;
   }
 
   /**

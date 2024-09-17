@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.14.9';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.14.10';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -23,7 +23,6 @@ global with sharing class Logger {
   private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
   private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
   private static final String TRANSACTION_ID = System.UUID.randomUUID().toString();
-  private static final System.Quiddity TRANSACTION_QUIDDITY = loadTransactionQuiddity();
 
   private static AsyncContext currentAsyncContext;
   private static String currentEntryScenario;
@@ -35,6 +34,8 @@ global with sharing class Logger {
   @TestVisible
   private static Integer saveLogCallCount = 0;
   private static Boolean suspendSaving = false;
+  @TestVisible
+  private static System.Quiddity transactionQuiddity = loadTransactionQuiddity();
   private static String transactionScenario;
 
   private static final List<String> CLASSES_TO_IGNORE {
@@ -187,7 +188,7 @@ global with sharing class Logger {
    * @return System.Quiddity - The value of System.Request.getCurrent().getQuiddity()
    */
   global static System.Quiddity getCurrentQuiddity() {
-    return TRANSACTION_QUIDDITY;
+    return transactionQuiddity;
   }
 
   /**
