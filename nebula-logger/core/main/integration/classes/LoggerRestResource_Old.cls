@@ -811,7 +811,7 @@ global with sharing class LoggerRestResource_Old {
         System.LoggingLevel loggingLevel = Nebula.Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel);
         Nebula.Logger.newEntry(loggingLevel, logEntryCreateRequest.message)
           // FIXME The managed package currently doesn't have a way to set the value
-          // of OriginType__c = 'Integration'
+          // of OriginType__c = 'API'
           .setRecord(logEntryCreateRequest.relatedRecordId)
           // FIXME The managed package currently doesn't have the .setTimestamp() builder method,
           // so there's not a great way to correctly set the Timestamp__c field yet
