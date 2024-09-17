@@ -18,13 +18,13 @@
     <testClassName>LoggerBatchableContext_Tests</testClassName>
     <testClassName>LoggerCache_Tests</testClassName>
     <testClassName>LoggerDataStore_Tests</testClassName>
-    <testClassName>LoggerEmail
+    <testClassName>LoggerEmailSender_Tests</testClassName>
     <testClassName>LoggerEngineDataSelector_Tests</testClassName>
     <testClassName>LoggerFieldMapper_Tests</testClassName>
     <testClassName>LoggerHomeHeaderController_Tests</testClassName>
-    <testClassName>LoggerOpenTelemetryConverter_Tests</testClassName>
     <testClassName>LoggerParameter_Tests</testClassName>
     <testClassName>LoggerPlugin_Tests</testClassName>
+    <testClassName>LoggerRestResource_Tests</testClassName>
     <testClassName>LoggerScenarioHandler_Tests</testClassName>
     <testClassName>LoggerScenarioRule_Tests</testClassName>
     <testClassName>LoggerSettingsController_Tests</testClassName>

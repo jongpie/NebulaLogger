@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Integration
+ * @group Log Management
  * @description REST Resource class for external integrations to create & retrieve logging data
  */
 
