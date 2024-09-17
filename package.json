@@ -1,6 +1,6 @@
 {
   "name": "nebula-logger",
-  "version": "4.14.9",
+  "version": "4.14.10",
   "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
   "author": "Jonathan Gillespie",
   "license": "MIT",
@@ -38,7 +38,6 @@
     "docs:fix:apex": "pwsh ./scripts/build/generate-apex-docs.ps1 && git add ./docs/apex",
     "docs:fix:lwc": "pwsh ./scripts/build/generate-lwc-docs.ps1 && git add ./docs/lightning-components",
     "docs:verify": "pwsh ./scripts/build/verify-docs-up-to-date.ps1",
-    "experience:deploy": "sf project deploy start --source-dir ./config/experience-cloud --wait 30",
     "husky:pre-commit": "lint-staged --config ./config/linters/lint-staged.config.js",
     "package:version:create:managed": "pwsh ./scripts/build/create-managed-package-beta-version.ps1",
     "package:version:create:unlocked": "sf package version create --json --package \"Nebula Logger - Core\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",

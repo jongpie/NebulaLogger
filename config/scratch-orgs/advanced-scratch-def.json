@@ -1,15 +1,14 @@
 {
-  "orgName": "Nebula Logger - Dev Scratch Org",
+  "orgName": "Nebula Logger - Advanced Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
   "country": "US",
   "language": "en_US",
-  "features": ["EinsteinGPTPlatform", "EventLogFile", "PlatformCache"],
+  "features": ["Communities", "EinsteinGPTPlatform", "EventLogFile", "OmniStudioDesigner", "OmniStudioMetadata", "OmniStudioRuntime", "PlatformCache"],
   "settings": {
     "apexSettings": {
       "enableAuraApexCtrlAuthUserAccessCheckPref": true,
       "enableAuraApexCtrlGuestUserAccessCheckPref": true,
-      "enableCompileOnDeploy": true,
       "enableRestrictCommunityExecAnon": true,
       "enableSecureNoArgConstructorPref": true
     },
@@ -19,11 +18,17 @@
     "communitiesSettings": {
       "enableNetworksEnabled": true
     },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": true
+    },
     "eventSettings": {
       "enableDeleteMonitoringData": true,
       "enableEventLogGeneration": true,
       "enableLightningLoggerEvents": true,
       "eventLogRetentionDuration": 30
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
     },
     "flowSettings": {
       "canDebugFlowAsAnotherUser": true

@@ -13,27 +13,33 @@
             <sorted>false</sorted>
             <value>
                 <fullName>Apex</fullName>
-                <color>#333333</color>
+                <color>#FF595E</color>
                 <default>false</default>
                 <label>Apex</label>
             </value>
             <value>
+                <fullName>API</fullName>
+                <color>#FFCA3A</color>
+                <default>false</default>
+                <label>API</label>
+            </value>
+            <value>
                 <fullName>Component</fullName>
-                <color>#A845DC</color>
+                <color>#8AC926</color>
                 <default>false</default>
                 <label>Component</label>
             </value>
             <value>
                 <fullName>Flow</fullName>
-                <color>#FFCC33</color>
+                <color>#1982C4</color>
                 <default>false</default>
                 <label>Flow</label>
             </value>
             <value>
-                <fullName>Integration</fullName>
-                <color>#4974A5</color>
+                <fullName>OmniStudio</fullName>
+                <color>#6A4C93</color>
                 <default>false</default>
-                <label>Integration</label>
+                <label>OmniStudio</label>
             </value>
         </valueSetDefinition>
     </valueSet>

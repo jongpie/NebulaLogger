@@ -1437,6 +1437,7 @@ private class LogEntryEventHandler_Tests {
             OriginLocation__c,
             OriginSourceActionName__c,
             OriginSourceApiName__c,
+            OriginSourceId__c,
             OriginSourceMetadataType__c,
             OriginType__c,
             RecordCollectionSize__c,
@@ -1748,6 +1749,7 @@ private class LogEntryEventHandler_Tests {
       'logEntry.OriginSourceActionName__c was not properly set'
     );
     System.Assert.areEqual(logEntryEvent.OriginSourceApiName__c, logEntry.OriginSourceApiName__c, 'logEntry.OriginSourceApiName__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.OriginSourceId__c, logEntry.OriginSourceId__c, 'logEntry.OriginSourceId__c was not properly set');
     System.Assert.areEqual(
       logEntryEvent.OriginSourceMetadataType__c,
       logEntry.OriginSourceMetadataType__c,

@@ -6,6 +6,8 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogManagementDataSelector_Tests {
+  private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
+
   @IsTest
   static void it_dynamically_queries_all_records_for_specified_sobject_type_and_fields() {
     Schema.SObjectType targetSObjectType = Schema.Organization.SObjectType;
@@ -355,6 +357,58 @@ private class LogManagementDataSelector_Tests {
     List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsByTransactionId(logTransactionIds);
 
     System.Assert.areEqual(logs.size(), returnedResults.size());
+  }
+
+  @IsTest
+  static void it_returns_logger_scenarios_for_specified_ids() {
+    LoggerSObjectHandler.shouldExecute(false);
+    List<LoggerScenario__c> loggerScenarios = new List<LoggerScenario__c>();
+    for (Integer i = 0; i < 5; i++) {
+      LoggerScenario__c loggerScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerScenario__c.SObjectType)
+        .populateRequiredFields()
+        .getRecord();
+      loggerScenario.Name = 'some fake scenario ' + i;
+      loggerScenario.UniqueId__c = 'some fake scenario ' + i;
+      loggerScenarios.add(loggerScenario);
+    }
+    insert loggerScenarios;
+    List<String> loggerScenarioIds = new List<Id>(new Map<Id, SObject>(loggerScenarios).keySet());
+
+    List<LoggerScenario__c> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(loggerScenarioIds);
+
+    System.Assert.areEqual(loggerScenarios.size(), returnedResults.size());
+  }
+
+  @IsTest
+  static void it_returns_omni_processes_for_specified_ids() {
+    // No need to fail the test if it's running in an org that does not have OmniStudio enabled
+    if (IS_OMNISTUDIO_ENABLED == false) {
+      return;
+    }
+    // Fun fact: in an anonymous Apex script, you can easily create an OmniProcess record...
+    // ...but when you create one in a test class, you get a gack error 🥲
+    // Because of this platform limitation, this test is not great - it doesn't create records (because it can't),
+    // and thus, it can't validate that only the correct records are returned. But, it does validate that the the
+    // query string is valid & can successfully be executed.
+    // TODO revisit to see if there is any other way to create OmniProcess records to improve this test.
+    List<String> omniProcessIds = new List<Id>();
+
+    List<SObject> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(omniProcessIds);
+
+    System.Assert.isNotNull(returnedResults);
+  }
+
+  @IsTest
+  static void it_does_not_query_omni_processes_when_disabled_via_logger_parameter() {
+    // The IDs used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
+    List<Id> targetOmniProcessIds = new List<Id>{ System.UserInfo.getUserId() };
+    Integer originalQueryCount = System.Limits.getQueries();
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOmniProcessData', Value__c = String.valueOf(false)));
+
+    Map<Id, LoggerSObjectProxy.OmniProcess> returnedResults = LogManagementDataSelector.getInstance().getOmniProcessProxies(targetOmniProcessIds);
+
+    System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
+    System.Assert.areEqual(0, returnedResults.size());
   }
 
   @IsTest

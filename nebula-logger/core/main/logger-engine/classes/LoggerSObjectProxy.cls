@@ -90,4 +90,38 @@ public without sharing class LoggerSObjectProxy {
       }
     }
   }
+
+  /**
+   * @description Not all orgs have the SObject `Schema.OmniProcess` - it is only present in orgs that have enabled OmniStudio,
+   *              so `Schema.OmniProcess` has to be referenced dynamically, including using hardcoded `String` values for field API names. The
+   *              `LoggerSObjectProxy.OmniProcess` class acts as a substitute for a `Schema.OmniProcess` record so that the rest of the codebase can rely on
+   *              strongly-typed references to fields (properties).
+   */
+  @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
+  public class OmniProcess {
+    public Id CreatedById;
+    public Schema.User CreatedBy;
+    public Datetime CreatedDate;
+    public String Id;
+    public Id LastModifiedById;
+    public Schema.User LastModifiedBy;
+    public Datetime LastModifiedDate;
+    public String OmniProcessType;
+    public String UniqueName;
+
+    @SuppressWarnings('PMD.ApexDoc')
+    public OmniProcess(SObject omniProcess) {
+      if (omniProcess != null) {
+        this.CreatedById = (String) omniProcess.get('CreatedById');
+        this.CreatedBy = (Schema.User) omniProcess.getSObject('CreatedBy');
+        this.CreatedDate = (Datetime) omniProcess.get('CreatedDate');
+        this.Id = (String) omniProcess.get('Id');
+        this.LastModifiedById = (String) omniProcess.get('LastModifiedById');
+        this.LastModifiedBy = (Schema.User) omniProcess.getSObject('LastModifiedBy');
+        this.LastModifiedDate = (Datetime) omniProcess.get('LastModifiedDate');
+        this.OmniProcessType = (String) omniProcess.get('OmniProcessType');
+        this.UniqueName = (String) omniProcess.get('UniqueName');
+      }
+    }
+  }
 }

@@ -7,11 +7,11 @@
     {
       "package": "Nebula Logger - Core",
       "path": "./nebula-logger/core",
-      "definitionFile": "./config/scratch-orgs/build-base-scratch-def.json",
+      "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.9.NEXT",
-      "versionName": "Bugfix: Apex Code Snippets Auto-Truncated",
-      "versionDescription": "Updated LogEntryHandler to automatically truncate the code snippets stored in OriginSourceSnippet__c and ExceptionSourceSnippet__c",
+      "versionNumber": "4.14.10.NEXT",
+      "versionName": "New CallableLogger Apex class",
+      "versionDescription": "Added a new CallableLogger class that provides support for both OmniStudio logging, as well as the ability to dynamically call Nebula Logger in Apex when it's available",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -65,9 +65,9 @@
           "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
         }
       ],
-      "versionNumber": "1.5.3.NEXT",
-      "versionName": "Removed ApiVersion__c in Field Set",
-      "versionDescription": "Removed the deprecated field Log__c.ApiVersion__c from the field set Log__c.SlackNotificationFields",
+      "versionNumber": "1.5.4.NEXT",
+      "versionName": "Fixed Formatting Text Fields with Line Breaks",
+      "versionDescription": "Corrected the logic used in SlackLoggerPlugin so that text fields with line breaks are formatted as code blocks",
       "default": false
     },
     {
@@ -194,6 +194,7 @@
     "Nebula Logger - Core@4.14.7-bugfix:-us-social-security-number-data-mask-rule": "04t5Y0000015oRrQAI",
     "Nebula Logger - Core@4.14.8-store-httprequest-header-keys-&-values": "04t5Y0000015oS1QAI",
     "Nebula Logger - Core@4.14.9-bugfix:-apex-code-snippets-auto-truncated": "04t5Y0000015oSQQAY",
+    "Nebula Logger - Core@4.14.10-new-callablelogger-apex-class": "04t5Y0000015oTdQAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
@@ -212,6 +213,7 @@
     "Nebula Logger - Core Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
     "Nebula Logger - Core Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE",
     "Nebula Logger - Core Plugin - Slack@1.5.2": "04t5Y0000015nDJQAY",
-    "Nebula Logger - Core Plugin - Slack@1.5.3": "04t5Y0000015oERQAY"
+    "Nebula Logger - Core Plugin - Slack@1.5.3": "04t5Y0000015oERQAY",
+    "Nebula Logger - Core Plugin - Slack@1.5.4": "04t5Y0000015oTTQAY"
   }
 }

@@ -20,7 +20,7 @@ public without sharing class LoggerStackTrace {
   private static final System.Pattern INVALID_NAMESPACED_STACK_TRACE_PATTERN {
     get {
       if (INVALID_NAMESPACED_STACK_TRACE_PATTERN == null) {
-        INVALID_NAMESPACED_STACK_TRACE_PATTERN = System.Pattern.compile('^\\([0-9A-Za-z_]+\\)$');
+        INVALID_NAMESPACED_STACK_TRACE_PATTERN = System.Pattern.compile('^\\([0-9A-Za-z_ ]+\\)$');
       }
       return INVALID_NAMESPACED_STACK_TRACE_PATTERN;
     }

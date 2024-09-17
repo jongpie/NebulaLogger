@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Query OmniProcess Data</label>
+    <protected>false</protected>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Note: this parameter only applies to orgs that are using OmniStudio.
+
+        When set to &apos;true&apos; (default), the OmniProcess object will be queried to track additional details about the OmniScript or OmniIntegrationProcedure that generated a log entry - the queried data is stored in fields on LogEntry__c.
+
+When set to &apos;false&apos;, the OmniProcess object will not be queried, and the related fields will be null.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">true</value>
+    </values>
+</CustomMetadata>

@@ -1,5 +1,5 @@
 {
-  "orgName": "Nebula Logger - Build - Event Monitoring Scratch Org",
+  "orgName": "Nebula Logger - Event Monitoring Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
   "country": "AU",
@@ -11,6 +11,9 @@
     },
     "communitiesSettings": {
       "enableNetworksEnabled": false
+    },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": false
     },
     "eventSettings": {
       "enableDeleteMonitoringData": true,

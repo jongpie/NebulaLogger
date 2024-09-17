@@ -6,6 +6,10 @@ layout: default
 
 ## Logger Engine
 
+### [CallableLogger](Logger-Engine/CallableLogger)
+
+A class that implements the standard interface `System.Callable`. This provides 2 benefits: 1. A loosely-coupled way to optionally integrate with Nebula Logger (useful for ISVs/package developers). 2. The ability to log in OmniStudio&apos;s OmniScripts &amp; Integration Procedures.
+
 ### [ComponentLogger](Logger-Engine/ComponentLogger)
 
 Controller class used by the lightning web component `logger`

@@ -3,10 +3,6 @@
     <label>Slack Notification Logging Level Name</label>
     <protected>false</protected>
     <values>
-        <field>Comments__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">The logging level name that triggers a Slack notification to be sent. Possible logging levels are: ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST</value>
     </values>

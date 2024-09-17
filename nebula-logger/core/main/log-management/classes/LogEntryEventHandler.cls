@@ -336,6 +336,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         OriginLocation__c = logEntryEvent.OriginLocation__c,
         OriginSourceActionName__c = logEntryEvent.OriginSourceActionName__c,
         OriginSourceApiName__c = logEntryEvent.OriginSourceApiName__c,
+        OriginSourceId__c = logEntryEvent.OriginSourceId__c,
         OriginSourceMetadataType__c = logEntryEvent.OriginSourceMetadataType__c,
         OriginType__c = logEntryEvent.OriginType__c,
         RecordCollectionSize__c = logEntryEvent.RecordCollectionSize__c,
