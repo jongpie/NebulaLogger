@@ -5,7 +5,7 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
 
-## Unlocked Package - v4.15.3
+## Unlocked Package - v4.15.4
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015ok2QAA)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015ok2QAA)
@@ -36,6 +36,7 @@ The most robust observability solution for Salesforce experts. Built 100% native
    - [Lightning Components](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-Components): lightning web components (LWCs) & aura components
    - [Flow & Process Builder](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-Flow): any Flow type that supports invocable actions
    - [OmniStudio](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-OmniStudio): omniscripts and omni integration procedures
+   - [OpenTelemetry (OTel) REST API](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-OpenTelemetry-REST-API): inbound integrations, using HTTP and [OTel's JSON format for logs](https://github.com/open-telemetry/opentelemetry-proto/blob/main/examples/logs.json)
 
 2. Built with an event-driven pub/sub messaging architecture, using `LogEntryEvent__e` [platform events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm). For more details on leveraging platform events, see [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
 

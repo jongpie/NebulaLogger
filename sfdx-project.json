@@ -9,10 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.3.NEXT",
-      "versionName": "Improved Testability of Queries",
-      "versionDescription": "Enhanced the internals of the existing selector classes LoggerEngineDataSelector and LogManagementDataSelector + introducted a new class LoggerConfigurationSelector to provide improve testability of queries",
-      "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
+      "versionNumber": "4.15.4.NEXT",
+      "versionName": "OpenTelemetry (OTel) REST Resource",
+      "versionDescription": "Added a new LoggerRestResource class that provides an OTel-compatible endpoint for external integrations to store logging data in Salesforce",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
