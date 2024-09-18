@@ -62,7 +62,7 @@ global with sharing class LoggerRestResource {
   }
 
   // TODO revisit - this is probably too many parameters...?
-  @SupresesWarnings('PMD.ExcessiveParameterList')
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   private static void logErrors(
     EndpointRequest endpointRequest,
     EndpointResponse endpointResponse,
