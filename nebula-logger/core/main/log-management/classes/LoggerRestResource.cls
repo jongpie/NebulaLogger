@@ -155,12 +155,7 @@ global with sharing class LoggerRestResource {
 
   @TestVisible
   private class EndpointResponse {
-    public final EndpointRequest endpointRequest;
-    // public final EndpointRequestContext endpointRequestContext;
     public final List<EndpointError> errors = new List<EndpointError>();
-    // public final EndpointLoggerContext logger;
-    // public final EndpointOrganizationContext organization;
-    // public final EndpointUserContext user;
 
     // The status code doesn't need to be returned in the RestResponse body
     // since the RestResponse headers will include the status code, so use
@@ -230,20 +225,7 @@ global with sharing class LoggerRestResource {
         throw new System.IllegalArgumentException('No data provided');
       }
 
-      OTelLogsPayload logPayload = (OTelLogsPayload) System.JSON.deserialize(jsonBody, OTelLogsPayload.class);
-
-      // TODO add support for adding these as errors in logToCreate.errors
-      // (instead of only bubbling up 1 via throwing an exception)
-      // if (String.isBlank(logToCreate.originSystemName)) {
-      // if (String.isBlank(logPayload.resourceLogs)) {
-      //   throw new System.IllegalArgumentException('No data provided for required property "originSystemName"');
-      // }
-
-      // if (logToCreate.logEntries == null || logToCreate.logEntries.isEmpty()) {
-      //   throw new System.IllegalArgumentException('No data provided for required property "logEntries"');
-      // }
-
-      return logPayload;
+      return (OTelLogsPayload) System.JSON.deserialize(jsonBody, OTelLogsPayload.class);
     }
   }
 
@@ -401,38 +383,39 @@ global with sharing class LoggerRestResource {
         Datetime entryTimestamp = Datetime.newInstance(entryEpochTimestamp);
 
         this.convertedLogEntryEvent = Logger.newEntry(entryLoggingLevel, this.body?.stringValue).setTimestamp(entryTimestamp).getLogEntryEvent();
+        // Since the log entries originate off-platform, tracking the limits usage isn't really relevant here
         this.convertedLogEntryEvent.LimitsAggregateQueriesMax__c = null;
-        this.convertedLogEntryEvent.LimitsAsyncCallsMax__c = null;
-        this.convertedLogEntryEvent.LimitsCalloutsMax__c = null;
-        this.convertedLogEntryEvent.LimitsCpuTimeMax__c = null;
-        this.convertedLogEntryEvent.LimitsDmlRowsMax__c = null;
-        this.convertedLogEntryEvent.LimitsDmlStatementsMax__c = null;
-        this.convertedLogEntryEvent.LimitsEmailInvocationsMax__c = null;
-        this.convertedLogEntryEvent.LimitsFutureCallsMax__c = null;
-        this.convertedLogEntryEvent.LimitsHeapSizeMax__c = null;
-        this.convertedLogEntryEvent.LimitsMobilePushApexCallsMax__c = null;
-        this.convertedLogEntryEvent.LimitsPublishImmediateDmlStatementsMax__c = null;
-        this.convertedLogEntryEvent.LimitsQueueableJobsMax__c = null;
-        this.convertedLogEntryEvent.LimitsSoqlQueriesMax__c = null;
-        this.convertedLogEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = null;
-        this.convertedLogEntryEvent.LimitsSoqlQueryRowsMax__c = null;
-        this.convertedLogEntryEvent.LimitsSoslSearchesMax__c = null;
         this.convertedLogEntryEvent.LimitsAggregateQueriesUsed__c = null;
+        this.convertedLogEntryEvent.LimitsAsyncCallsMax__c = null;
         this.convertedLogEntryEvent.LimitsAsyncCallsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsCalloutsMax__c = null;
         this.convertedLogEntryEvent.LimitsCalloutsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsCpuTimeMax__c = null;
         this.convertedLogEntryEvent.LimitsCpuTimeUsed__c = null;
+        this.convertedLogEntryEvent.LimitsDmlRowsMax__c = null;
         this.convertedLogEntryEvent.LimitsDmlRowsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsDmlStatementsMax__c = null;
         this.convertedLogEntryEvent.LimitsDmlStatementsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsEmailInvocationsMax__c = null;
         this.convertedLogEntryEvent.LimitsEmailInvocationsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsFutureCallsMax__c = null;
         this.convertedLogEntryEvent.LimitsFutureCallsUsed__c = null;
-        this.convertedLogEntryEvent.LimitsMobilePushApexCallsUsed__c = null;
-        this.convertedLogEntryEvent.LimitsQueueableJobsUsed__c = null;
-        this.convertedLogEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c = null;
-        this.convertedLogEntryEvent.LimitsSoqlQueriesUsed__c = null;
-        this.convertedLogEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c = null;
-        this.convertedLogEntryEvent.LimitsSoqlQueryRowsUsed__c = null;
-        this.convertedLogEntryEvent.LimitsSoslSearchesUsed__c = null;
+        this.convertedLogEntryEvent.LimitsHeapSizeMax__c = null;
         this.convertedLogEntryEvent.LimitsHeapSizeUsed__c = null;
+        this.convertedLogEntryEvent.LimitsMobilePushApexCallsMax__c = null;
+        this.convertedLogEntryEvent.LimitsMobilePushApexCallsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsPublishImmediateDmlStatementsMax__c = null;
+        this.convertedLogEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsQueueableJobsMax__c = null;
+        this.convertedLogEntryEvent.LimitsQueueableJobsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueriesMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueriesUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryRowsMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryRowsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoslSearchesMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoslSearchesUsed__c = null;
         this.convertedLogEntryEvent.OriginLocation__c = null;
         this.convertedLogEntryEvent.OriginSourceActionName__c = null;
         this.convertedLogEntryEvent.OriginSourceApiName__c = null;
@@ -451,26 +434,26 @@ global with sharing class LoggerRestResource {
     }
 
     private System.LoggingLevel getLoggingLevel() {
-      switch on this.severityText?.toUpperCase() {
-        when 'ERROR' {
+      switch on this.severityText?.toLowerCase() {
+        when 'error' {
           return System.LoggingLevel.ERROR;
         }
-        when 'WARN' {
+        when 'warn' {
           return System.LoggingLevel.WARN;
         }
-        when 'INFO' {
+        when 'info' {
           return System.LoggingLevel.INFO;
         }
-        when 'DEBUG' {
+        when 'debug' {
           return System.LoggingLevel.DEBUG;
         }
-        when 'TRACE3' {
+        when 'trace3' {
           return System.LoggingLevel.FINE;
         }
-        when 'TRACE2' {
+        when 'trace2' {
           return System.LoggingLevel.FINER;
         }
-        when 'TRACE' {
+        when 'trace' {
           return System.LoggingLevel.FINEST;
         }
         when else {
@@ -507,54 +490,4 @@ global with sharing class LoggerRestResource {
       return supplementalFieldToValue;
     }
   }
-
-  /*
-    {
-        "resourceLogs": [
-            {
-                "resource": {
-                    "attributes": [
-                        {
-                            "key": "resource-attr",
-                            "value": { "stringValue": "resource-attr-val-1" }
-                        }
-                    ]
-                },
-                "scopeLogs": [
-                    {
-                        "scope": {},
-                        "logRecords": [
-                            {
-                                "timeUnixNano": "1581452773000000789",
-                                "severityNumber": 9,
-                                "severityText": "Info",
-                                "body": { "stringValue": "This is a log message" },
-                                "attributes": [
-                                    { "key": "app", "value": { "stringValue": "server" } },
-                                    { "key": "instance_num", "value": { "intValue": "1" } }
-                                ],
-                                "droppedAttributesCount": 1,
-                                "traceId": "08040201000000000000000000000000",
-                                "spanId": "0102040800000000"
-                            },
-                            {
-                                "timeUnixNano": "1581452773000000789",
-                                "severityNumber": 9,
-                                "severityText": "Info",
-                                "body": { "stringValue": "something happened" },
-                                "attributes": [
-                                    { "key": "customer", "value": { "stringValue": "acme" } },
-                                    { "key": "env", "value": { "stringValue": "dev" } }
-                                ],
-                                "droppedAttributesCount": 1,
-                                "traceId": "",
-                                "spanId": ""
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-    */
 }
