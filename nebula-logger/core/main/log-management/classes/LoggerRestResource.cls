@@ -5,7 +5,7 @@
 
 /**
  * @group Log Management
- * @description REST Resource class for external integrations to create & retrieve logging data
+ * @description REST Resource class for external integrations to interact with Nebula Logger
  */
 
 @RestResource(urlMapping='/logger/*')

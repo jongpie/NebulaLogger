@@ -4,7 +4,7 @@ layout: default
 
 ## LoggerRestResource class
 
-REST Resource class for external integrations to create &amp; retrieve logging data
+REST Resource class for external integrations to interact with Nebula Logger
 
 ---
 
