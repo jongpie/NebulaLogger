@@ -163,6 +163,8 @@ private class LoggerRestResource_Tests {
       System.RestContext.response.responseBody.toString(),
       LoggerRestResource.EndpointResponse.class
     );
+    System.Assert.isTrue(endpointResponse.isSuccess);
+    System.Assert.areEqual(0, endpointResponse.errors.size());
     System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
