@@ -9,7 +9,7 @@
  */
 
 @RestResource(urlMapping='/logger/*')
-@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier')
+@SuppressWarnings('PMD.ApexDoc, PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity')
 global with sharing class LoggerRestResource {
   @TestVisible
   private static final String REQUEST_URI_BASE = '/logger';
@@ -62,6 +62,7 @@ global with sharing class LoggerRestResource {
   }
 
   // TODO revisit - this is probably too many parameters...?
+  @SupresesWarnings('PMD.ExcessiveParameterList')
   private static void logErrors(
     EndpointRequest endpointRequest,
     EndpointResponse endpointResponse,
@@ -114,22 +115,22 @@ global with sharing class LoggerRestResource {
     private String getEndpointName(String restRequestUri) {
       // FIXME the comments below are no longer accurate - endpoints like /logs/<some-uuid> are now used
       /*
-                Endpoint names will (at least for now) only have one layer, using formats like:
-                /logger/logs
-                /logger/logs/?some-url-parameter=true&and-another=true
-                /logger/something
-                /logger/something?another-url-parameter=something
-                /Nebula/logger/logs
-                /Nebula/logger/logs/?some-url-parameter=true&and-another=true
-                /Nebula/logger/something
-                /Nebula/logger/something?another-url-parameter=something
+        Endpoint names will (at least for now) only have one layer, using formats like:
+        /logger/logs
+        /logger/logs/?some-url-parameter=true&and-another=true
+        /logger/something
+        /logger/something?another-url-parameter=something
+        /Nebula/logger/logs
+        /Nebula/logger/logs/?some-url-parameter=true&and-another=true
+        /Nebula/logger/something
+        /Nebula/logger/something?another-url-parameter=something
 
-                The endpoint name will be just the last bit of the URL, without any parameters or '/' slashes.
-                So if the URL is:
-                    /logger/something?some-url-parameter=true&and-another=true
-                then the endpoint name will be 'something'
+        The endpoint name will be just the last bit of the URL, without any parameters or '/' slashes.
+        So if the URL is:
+            /logger/something?some-url-parameter=true&and-another=true
+        then the endpoint name will be 'something'
+      */
 
-            */
       String parsedEndpointName = restRequestUri.substringAfter(REQUEST_URI_BASE);
       if (parsedEndpointName.contains('?')) {
         parsedEndpointName = parsedEndpointName.substringBefore('?');
