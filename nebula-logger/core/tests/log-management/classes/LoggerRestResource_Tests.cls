@@ -77,26 +77,26 @@ private class LoggerRestResource_Tests {
   //   System.Assert.areEqual('Unknown endpoint provided: ' + unknownEndpoint, endpointResponse.errors.get(0).message);
   // }
 
-  // @IsTest
-  // static void unknown_endpoint_post_throws_an_exception() {
-  //   String unknownEndpoint = 'some-endpoint-that-definitely-should-not-exist';
-  //   String someParameters = '/?i-hope=true';
-  //   System.RestContext.request = new System.RestRequest();
-  //   System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + unknownEndpoint + someParameters;
+  @IsTest
+  static void unknown_endpoint_post_throws_an_exception() {
+    String unknownEndpoint = 'some-endpoint-that-definitely-should-not-exist';
+    String someParameters = '/?i-hope=true';
+    System.RestContext.request = new System.RestRequest();
+    System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/' + unknownEndpoint + someParameters;
 
-  //   LoggerRestResource.handlePost();
+    LoggerRestResource.handlePost();
 
-  //   System.Assert.areEqual(404, System.RestContext.response.statusCode);
-  //   System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
-  //   System.Assert.isNotNull(System.RestContext.response.responseBody);
-  //   LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
-  //     System.RestContext.response.responseBody.toString(),
-  //     LoggerRestResource.EndpointResponse.class
-  //   );
-  //   System.Assert.isFalse(endpointResponse.isSuccess);
-  //   System.Assert.areEqual(1, endpointResponse.errors.size());
-  //   System.Assert.areEqual('Unknown endpoint provided: ' + unknownEndpoint, endpointResponse.errors.get(0).message);
-  // }
+    System.Assert.areEqual(404, System.RestContext.response.statusCode);
+    System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
+    System.Assert.isNotNull(System.RestContext.response.responseBody);
+    LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
+      System.RestContext.response.responseBody.toString(),
+      LoggerRestResource.EndpointResponse.class
+    );
+    System.Assert.isFalse(endpointResponse.isSuccess);
+    System.Assert.areEqual(1, endpointResponse.errors.size());
+    System.Assert.areEqual('Unknown endpoint provided: ' + unknownEndpoint, endpointResponse.errors.get(0).message);
+  }
 
   // @IsTest
   // static void base_response_excludes_system_context_in_endpoint_response_on_post_when_verbose_parameter_is_excluded() {
@@ -325,64 +325,62 @@ private class LoggerRestResource_Tests {
   //   // System.Assert.isNull(endpointResponse.result);
   // }
 
-  // @IsTest
-  // static void logs_endpoint_post_successsfully_saves_otel_log_when_log_entries_are_provided() {
-  //   LoggerRestResource.LogEntryDTO firstLogEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
-  //   firstLogEntryCreateRequest.loggingLevel = System.LoggingLevel.INFO.name();
-  //   firstLogEntryCreateRequest.message = 'some message for INFO';
-  //   firstLogEntryCreateRequest.timestamp = System.now().addDays(-1);
-  //   LoggerRestResource.LogEntryDTO secondLogEntryCreateRequest = new LoggerRestResource.LogEntryDTO();
-  //   secondLogEntryCreateRequest.loggingLevel = System.LoggingLevel.WARN.name();
-  //   secondLogEntryCreateRequest.message = 'some message for WARN';
-  //   secondLogEntryCreateRequest.timestamp = System.now().addDays(-1);
-  //   LoggerRestResource.LogDTO logCreateRequest = new LoggerRestResource.LogDTO();
-  //   logCreateRequest.originSystemName = 'some source system';
-  //   logCreateRequest.logEntries = new List<LoggerRestResource.LogEntryDTO>();
-  //   logCreateRequest.logEntries.add(firstLogEntryCreateRequest);
-  //   logCreateRequest.logEntries.add(secondLogEntryCreateRequest);
-  //   System.RestContext.request = new System.RestRequest();
-  //   System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logCreateRequest));
-  //   System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
+  @IsTest
+  static void logs_endpoint_post_successsfully_saves_otel_log_when_data_is_provided() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    LoggerRestResource.OTelLogRecord otelLogEntry = new LoggerRestResource.OTelLogRecord();
+    otelLogEntry.body = new LoggerRestResource.OTelAttributeValue('some message');
+    otelLogEntry.severityText = 'Info';
+    otelLogEntry.timeUnixNano = '1581452773000000789';
+    LoggerRestResource.OTelAttribute httpResponseBodyMaskedAttribute = new LoggerRestResource.OTelAttribute('http_response.body_masked', true);
+    otelLogEntry.attributes.add(httpResponseBodyMaskedAttribute);
+    LoggerRestResource.OTelAttribute httpResponseStatusCodeAttribute = new LoggerRestResource.OTelAttribute('http_response.status_code', 404);
+    otelLogEntry.attributes.add(httpResponseStatusCodeAttribute);
+    LoggerRestResource.OTelAttribute parentLogTransactionIdAttribute = new LoggerRestResource.OTelAttribute('parent_log.transaction_id', '123-abc');
+    otelLogEntry.attributes.add(parentLogTransactionIdAttribute);
+    LoggerRestResource.OTelScopeLog scopeLog = new LoggerRestResource.OTelScopeLog();
+    scopeLog.logRecords.add(otelLogEntry);
+    LoggerRestResource.OTelResourceLog resourceLog = new LoggerRestResource.OTelResourceLog();
+    resourceLog.scopeLogs.add(scopeLog);
+    LoggerRestResource.OTelLogsPayload logsPayload = new LoggerRestResource.OTelLogsPayload();
+    logsPayload.resourceLogs.add(resourceLog);
+    System.RestContext.request = new System.RestRequest();
+    System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logsPayload));
+    System.RestContext.request.requestUri = LoggerRestResource.REQUEST_URI_BASE + '/logs';
 
-  //   LoggerRestResource.handlePost();
-  //   System.Test.getEventBus().deliver();
+    LoggerRestResource.handlePost();
 
-  //   System.Assert.areEqual(LoggerRestResource.STATUS_CODE_201_CREATED, System.RestContext.response.statusCode);
-  //   System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
-  //   System.Assert.isNotNull(System.RestContext.response.responseBody);
-  //   LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
-  //     System.RestContext.response.responseBody.toString(),
-  //     LoggerRestResource.EndpointResponse.class
-  //   );
-  //   System.Assert.isTrue(endpointResponse.isSuccess);
-  //   System.Assert.areEqual(0, endpointResponse.errors.size());
-  //   System.Assert.areEqual(System.Request.getCurrent().getRequestId(), endpointResponse.requestId);
-  //   System.Assert.areEqual(Logger.getTransactionId(), endpointResponse.transactionId);
-  //   // System.Assert.isNotNull(endpointResponse.result);
-  //   // TODO Revisit to add a specific count of log entries saved
-  //   // System.Assert.isNotNull(endpointResponse.result.logEntriesSaved);
-  //   // System.Assert.areEqual(logCreateRequest.logEntries.size(), endpointResponse.result.logEntriesSent);
-  //   Log__c log = [SELECT Id, TransactionId__c FROM Log__c];
-  //   System.Assert.areEqual(Logger.getTransactionId(), log.TransactionId__c);
-  //   LogEntry__c firstLogEntry = [
-  //     SELECT Id, LoggingLevel__c, Message__c, Timestamp__c, TransactionEntryNumber__c
-  //     FROM LogEntry__c
-  //     WHERE Log__c = :log.Id AND LoggingLevel__c = :firstLogEntryCreateRequest.loggingLevel
-  //   ];
-  //   System.Assert.areEqual(firstLogEntryCreateRequest.loggingLevel, firstLogEntry.LoggingLevel__c);
-  //   System.Assert.areEqual(firstLogEntryCreateRequest.message, firstLogEntry.Message__c);
-  //   // System.Assert.areEqual(firstLogEntryCreateRequest.timestamp, firstLogEntry.Timestamp__c);
-  //   System.Assert.areEqual(1, firstLogEntry.TransactionEntryNumber__c);
-  //   LogEntry__c secondLogEntry = [
-  //     SELECT Id, LoggingLevel__c, Message__c, Timestamp__c, TransactionEntryNumber__c
-  //     FROM LogEntry__c
-  //     WHERE Log__c = :log.Id AND LoggingLevel__c = :secondLogEntryCreateRequest.loggingLevel
-  //   ];
-  //   System.Assert.areEqual(secondLogEntryCreateRequest.loggingLevel, secondLogEntry.LoggingLevel__c);
-  //   System.Assert.areEqual(secondLogEntryCreateRequest.message, secondLogEntry.Message__c);
-  //   // System.Assert.areEqual(secondLogEntryCreateRequest.timestamp, secondLogEntry.Timestamp__c);
-  //   System.Assert.areEqual(2, secondLogEntry.TransactionEntryNumber__c);
-  // }
+    System.Assert.areEqual(
+      LoggerRestResource.STATUS_CODE_201_CREATED,
+      System.RestContext.response.statusCode,
+      System.RestContext.response.responseBody.toString()
+    );
+    System.Assert.areEqual('application/json', System.RestContext.response.headers.get('Content-Type'));
+    System.Assert.isNotNull(System.RestContext.response.responseBody);
+    LoggerRestResource.EndpointResponse endpointResponse = (LoggerRestResource.EndpointResponse) System.JSON.deserialize(
+      System.RestContext.response.responseBody.toString(),
+      LoggerRestResource.EndpointResponse.class
+    );
+    System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+    System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+    System.Assert.isNull(publishedLogEntryEvent.OriginLocation__c);
+    System.Assert.isNull(publishedLogEntryEvent.OriginSourceActionName__c);
+    System.Assert.isNull(publishedLogEntryEvent.OriginSourceApiName__c);
+    System.Assert.isNull(publishedLogEntryEvent.OriginSourceId__c);
+    System.Assert.isNull(publishedLogEntryEvent.OriginSourceMetadataType__c);
+    System.Assert.areEqual('API', publishedLogEntryEvent.OriginType__c);
+    System.Assert.areEqual(otelLogEntry.severityText.toUpperCase(), publishedLogEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(otelLogEntry.body.stringValue, publishedLogEntryEvent.Message__c);
+    System.Assert.areEqual(httpResponseBodyMaskedAttribute.value.boolValue, publishedLogEntryEvent.HttpResponseBodyMasked__c);
+    System.Assert.areEqual(httpResponseStatusCodeAttribute.value.intValue, publishedLogEntryEvent.HttpResponseStatusCode__c);
+    System.Assert.areEqual(parentLogTransactionIdAttribute.value.stringValue, publishedLogEntryEvent.ParentLogTransactionId__c);
+    System.Assert.isNull(publishedLogEntryEvent.StackTrace__c);
+    Datetime expectedTimestamp = Datetime.newInstance(Long.valueOf(otelLogEntry.timeUnixNano) / 1000000);
+    System.Assert.areEqual(expectedTimestamp, publishedLogEntryEvent.Timestamp__c);
+  }
 
   // @IsTest
   // static void logs_endpoint_post_successsfully_saves_when_log_entries_are_provided() {

@@ -276,7 +276,8 @@ global with sharing class LoggerRestResource {
       EndpointResponse postResponse = new EndpointResponse(endpointRequest);
       try {
         // LogDTO logToCreate = this.deserializeLog(endpointRequest.body);
-        OpenTelemetryLogPayload logsPayload = this.deserializeLog(endpointRequest.body);
+        OTelLogsPayload logsPayload = this.deserializeLog(endpointRequest.body);
+        this.saveLog(logsPayload);
         // this.saveLog(logToCreate);
         postResponse.setStatusCode(STATUS_CODE_201_CREATED);
         return postResponse;
@@ -284,6 +285,13 @@ global with sharing class LoggerRestResource {
         postResponse.setStatusCode(STATUS_CODE_400_BAD_REQUEST).addError(apexException);
         return postResponse;
       }
+    }
+    private void saveLog(OTelLogsPayload logsPayload) {
+      // TODO add implementation
+      // System.Assert.fail(System.JSON.serializePretty(logsPayload.getLogEntryEvents()));
+      LoggerDataStore.getEventBus().publishRecords(logsPayload.addLogEntries());
+      // logsPayload.addLogEntries();
+      // Logger.saveLog();
     }
 
     /* private void saveLog(LogDTO logCreateRequest) {
@@ -328,12 +336,12 @@ global with sharing class LoggerRestResource {
 
     //   return logToCreate;
     // }
-    private OpenTelemetryLogPayload deserializeLog(String jsonBody) {
+    private OTelLogsPayload deserializeLog(String jsonBody) {
       if (String.isBlank(jsonBody)) {
         throw new System.IllegalArgumentException('No data provided');
       }
 
-      OpenTelemetryLogPayload logPayload = (OpenTelemetryLogPayload) System.JSON.deserialize(jsonBody, OpenTelemetryLogPayload.class);
+      OTelLogsPayload logPayload = (OTelLogsPayload) System.JSON.deserialize(jsonBody, OTelLogsPayload.class);
 
       // TODO add support for adding these as errors in logToCreate.errors
       // (instead of only bubbling up 1 via throwing an exception)
@@ -364,7 +372,7 @@ global with sharing class LoggerRestResource {
       if (endpointRequest.name == null) {
         errorMessage = 'Calling root endpoint /logger is not supported, please provide a specific endpoint';
       } else {
-        errorMessage = 'Unknown endpoint provided: ' + endpointRequest.uri;
+        errorMessage = 'Unknown endpoint provided: ' + endpointRequest.name;
       }
       return new EndpointResponse(endpointRequest).setStatusCode(STATUS_CODE_404_NOT_FOUND).addError(new EndpointError(errorMessage));
     }
@@ -374,13 +382,13 @@ global with sharing class LoggerRestResource {
   // https://opentelemetry.io/docs/specs/otel/logs/data-model/
   // https://opentelemetry.io/docs/specs/otel/protocol/file-exporter/#examples
   // https://github.com/open-telemetry/opentelemetry-proto/blob/main/examples/logs.json
-  public class OpenTelemetryLogPayload {
-    public List<ResourceLog> resourceLogs = new List<ResourceLog>();
+  public class OTelLogsPayload {
+    public final List<OTelResourceLog> resourceLogs = new List<OTelResourceLog>();
 
-    public List<LogEntryEvent__e> getLogEntryEvents() {
+    public List<LogEntryEvent__e> addLogEntries() {
       List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
-      for (ResourceLog resourceLog : this.resourceLogs) {
+      for (OTelResourceLog resourceLog : this.resourceLogs) {
         logEntryEvents.addAll(resourceLog.getLogEntryEvents());
       }
 
@@ -388,9 +396,9 @@ global with sharing class LoggerRestResource {
     }
   }
 
-  public class ResourceLog {
-    public OTelResource resource = new OTelResource();
-    public List<OTelScopeLog> scopeLogs = new List<OTelScopeLog>();
+  public class OTelResourceLog {
+    public final OTelResource resource = new OTelResource();
+    public final List<OTelScopeLog> scopeLogs = new List<OTelScopeLog>();
 
     public List<LogEntryEvent__e> getLogEntryEvents() {
       List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
@@ -411,15 +419,53 @@ global with sharing class LoggerRestResource {
   }
 
   public class OTelAttribute {
-    public String key;
-    public OTelAttributeValue value = new OTelAttributeValue();
+    public final String key;
+    public final OTelAttributeValue value;
+
+    public OTelAttribute(String key, Boolean value) {
+      this.key = key;
+      this.value = new OTelAttributeValue(value);
+    }
+
+    // public OTelAttribute(String key, Decimal value) {
+    //   this.key = key;
+    //   this.value = new OTelAttributeValue(value);
+    // }
+
+    public OTelAttribute(String key, Integer value) {
+      this.key = key;
+      this.value = new OTelAttributeValue(value);
+    }
+
+    public OTelAttribute(String key, String value) {
+      this.key = key;
+      this.value = new OTelAttributeValue(value);
+    }
   }
 
   public class OTelAttributeValue {
-    public Boolean boolValue;
-    public Decimal float64Value;
-    public Integer intValue;
-    public String stringValue;
+    public final Boolean boolValue;
+    // float64Value is supported by OTel, but there's not currently a float/decimal
+    // field in Nebula Logger's data model, so there's currently no need for it
+    // public final Decimal float64Value;
+    public final Integer intValue;
+    public final String stringValue;
+
+    public OTelAttributeValue(Boolean value) {
+      this.boolValue = value;
+    }
+
+    // public OTelAttributeValue(Decimal value) {
+    //   this.float64Value = value;
+    // }
+
+    public OTelAttributeValue(Integer value) {
+      this.intValue = value;
+    }
+
+    public OTelAttributeValue(String value) {
+      this.stringValue = value;
+    }
   }
 
   public class OTelResource {
@@ -454,29 +500,70 @@ global with sharing class LoggerRestResource {
   }
 
   public class OTelLogRecord {
-    public String timeUnixNano;
-    public String severityText;
-    public OTelAttributeValue body;
     public List<OTelAttribute> attributes = new List<OTelAttribute>();
-    // TODO revisit mappings for traceId and spanId
-    // public String traceId;
+    public OTelAttributeValue body;
+    public String severityText;
+    public String timeUnixNano;
+    // TODO revisit mappings for spanId and traceId
     // public String spanId;
+    // public String traceId;
 
     private transient LogEntryEvent__e convertedLogEntryEvent;
 
     public LogEntryEvent__e getLogEntryEvent() {
       if (this.convertedLogEntryEvent == null) {
         System.LoggingLevel entryLoggingLevel = this.getLoggingLevel();
-        Long entryEpochTimestamp = Long.valueOf(this.timeUnixNano) / 1000;
+        Long entryEpochTimestamp = Long.valueOf(this.timeUnixNano) / 1000000;
+        Datetime entryTimestamp = Datetime.newInstance(entryEpochTimestamp);
 
-        this.convertedLogEntryEvent = new LogEntryEvent__e(
-          EpochTimestamp__c = entryEpochTimestamp,
-          LoggingLevel__c = entryLoggingLevel.name(),
-          LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
-          Message__c = this.body?.stringValue,
-          Timestamp__c = Datetime.newInstance(entryEpochTimestamp),
-          TimestampString__c = '' + entryEpochTimestamp
-        );
+        this.convertedLogEntryEvent = Logger.newEntry(entryLoggingLevel, this.body?.stringValue).setTimestamp(entryTimestamp).getLogEntryEvent();
+        this.convertedLogEntryEvent.LimitsAggregateQueriesMax__c = null;
+        this.convertedLogEntryEvent.LimitsAsyncCallsMax__c = null;
+        this.convertedLogEntryEvent.LimitsCalloutsMax__c = null;
+        this.convertedLogEntryEvent.LimitsCpuTimeMax__c = null;
+        this.convertedLogEntryEvent.LimitsDmlRowsMax__c = null;
+        this.convertedLogEntryEvent.LimitsDmlStatementsMax__c = null;
+        this.convertedLogEntryEvent.LimitsEmailInvocationsMax__c = null;
+        this.convertedLogEntryEvent.LimitsFutureCallsMax__c = null;
+        this.convertedLogEntryEvent.LimitsHeapSizeMax__c = null;
+        this.convertedLogEntryEvent.LimitsMobilePushApexCallsMax__c = null;
+        this.convertedLogEntryEvent.LimitsPublishImmediateDmlStatementsMax__c = null;
+        this.convertedLogEntryEvent.LimitsQueueableJobsMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueriesMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryRowsMax__c = null;
+        this.convertedLogEntryEvent.LimitsSoslSearchesMax__c = null;
+        this.convertedLogEntryEvent.LimitsAggregateQueriesUsed__c = null;
+        this.convertedLogEntryEvent.LimitsAsyncCallsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsCalloutsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsCpuTimeUsed__c = null;
+        this.convertedLogEntryEvent.LimitsDmlRowsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsDmlStatementsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsEmailInvocationsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsFutureCallsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsMobilePushApexCallsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsQueueableJobsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueriesUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoqlQueryRowsUsed__c = null;
+        this.convertedLogEntryEvent.LimitsSoslSearchesUsed__c = null;
+        this.convertedLogEntryEvent.LimitsHeapSizeUsed__c = null;
+        this.convertedLogEntryEvent.OriginLocation__c = null;
+        this.convertedLogEntryEvent.OriginSourceActionName__c = null;
+        this.convertedLogEntryEvent.OriginSourceApiName__c = null;
+        this.convertedLogEntryEvent.OriginSourceId__c = null;
+        this.convertedLogEntryEvent.OriginSourceMetadataType__c = null;
+        this.convertedLogEntryEvent.OriginType__c = 'API';
+        this.convertedLogEntryEvent.StackTrace__c = null;
+        // this.convertedLogEntryEvent = new LogEntryEvent__e(
+        //   EpochTimestamp__c = entryEpochTimestamp,
+        //   LoggingLevel__c = entryLoggingLevel.name(),
+        //   LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
+        //   Message__c = this.body?.stringValue,
+        //   Timestamp__c = Datetime.newInstance(entryEpochTimestamp),
+        //   TimestampString__c = '' + entryEpochTimestamp
+        // );
         Map<Schema.SObjectField, Object> supplementalFieldToValue = this.convertAttributes();
         for (Schema.SObjectField field : supplementalFieldToValue.keySet()) {
           this.convertedLogEntryEvent.put(field, supplementalFieldToValue.get(field));
@@ -487,7 +574,7 @@ global with sharing class LoggerRestResource {
     }
 
     private System.LoggingLevel getLoggingLevel() {
-      switch on this.severityText {
+      switch on this.severityText?.toUpperCase() {
         when 'ERROR' {
           return System.LoggingLevel.ERROR;
         }
@@ -551,7 +638,7 @@ global with sharing class LoggerRestResource {
             supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseBody__c, entryAttribute.value?.stringValue);
           }
           when 'http_response.body_masked' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseBodyMasked__c, entryAttribute.value?.stringValue);
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseBodyMasked__c, entryAttribute.value?.boolValue);
           }
           when 'http_response.header_keys' {
             supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseHeaderKeys__c, entryAttribute.value?.stringValue);
@@ -563,12 +650,12 @@ global with sharing class LoggerRestResource {
             supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseStatus__c, entryAttribute.value?.stringValue);
           }
           when 'http_response.status_code' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseStatusCode__c, entryAttribute.value?.stringValue);
-          }
-          when 'logged_by.username' {
-            supplementalFieldToValue.put(LogEntryEvent__e.LoggedByUsername__c, entryAttribute.value?.stringValue);
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseStatusCode__c, entryAttribute.value?.intValue);
           }
           when 'parent_log.transaction_id' {
+            supplementalFieldToValue.put(LogEntryEvent__e.ParentLogTransactionId__c, entryAttribute.value?.stringValue);
+          }
+          when 'stack_trace' {
             supplementalFieldToValue.put(LogEntryEvent__e.ParentLogTransactionId__c, entryAttribute.value?.stringValue);
           }
         }
