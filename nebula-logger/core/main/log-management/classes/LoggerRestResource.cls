@@ -9,15 +9,8 @@
  */
 
 @RestResource(urlMapping='/logger/*')
-@SuppressWarnings('PMD.AvoidGlobalModifier')
+@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier')
 global with sharing class LoggerRestResource {
-  // TODO revisit REQUEST_URI_BASE value / add tests to make it work with a namespace
-  /*
-    From the Apex Dev docs (https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_rest_resource.htm):
-      "The URL for a namespaced class contains the namespace. For example, if your class is in namespace abc and the class is
-       mapped to your_url, then the API URL is modified as follows: https://instance.salesforce.com/services/apexrest/abc/your_url/.
-       In the case of a URL collision, the namespaced class is always used."
-    */
   @TestVisible
   private static final String REQUEST_URI_BASE = '/logger';
   @TestVisible
@@ -88,22 +81,7 @@ global with sharing class LoggerRestResource {
 
   /* Base classes that act as the building blocks for all endpoints */
   private abstract class Endpoint {
-    // For now, only is used by Nebula Logger, so there's no need to have methods
-    // for the other HTTP verbs DELETE, PATCH, and PUT.
-    public virtual EndpointResponse handleGet(EndpointRequest endpointRequest) {
-      return this.getDefaultResponse(endpointRequest, 'GET');
-    }
-
-    public virtual EndpointResponse handlePost(EndpointRequest endpointRequest) {
-      return this.getDefaultResponse(endpointRequest, 'POST');
-    }
-
-    private EndpointResponse getDefaultResponse(EndpointRequest endpointRequest, String httpMethod) {
-      System.Exception unsupportedOperationException = new System.IllegalArgumentException(
-        REQUEST_URI_BASE + '/' + endpointRequest.name + ' endpoint does not support ' + httpMethod + ' requests'
-      );
-      return new EndpointResponse(endpointRequest).setStatusCode(STATUS_CODE_405_METHOD_NOT_ALLOWED).addError(unsupportedOperationException);
-    }
+    public abstract EndpointResponse handlePost(EndpointRequest endpointRequest);
   }
 
   @TestVisible
@@ -157,10 +135,7 @@ global with sharing class LoggerRestResource {
       if (parsedEndpointName.contains('/')) {
         parsedEndpointName = parsedEndpointName.substringBefore('/');
       }
-      if (String.isBlank(parsedEndpointName)) {
-        parsedEndpointName = null;
-      }
-      return parsedEndpointName;
+      return String.isNotBlank(parsedEndpointName) ? parsedEndpointName : null;
     }
 
     private String getEndpointParticle(String restRequestUri, String endpointName) {
@@ -194,17 +169,6 @@ global with sharing class LoggerRestResource {
       }
     }
 
-    public EndpointResponse(EndpointRequest endpointRequest) {
-      if (this.isTruthy(endpointRequest.parameters, 'verbose')) {
-        // TODO revisit to decide if/what endpoint info should be returned in the reponse
-        this.endpointRequest = endpointRequest;
-        // this.endpointRequest.context = new EndpointRequestContext();
-        // this.logger = new EndpointLoggerContext();
-        // this.organization = new EndpointOrganizationContext();
-        // this.user = new EndpointUserContext();
-      }
-    }
-
     public EndpointResponse addError(System.Exception apexException) {
       return this.addError(new EndpointError(apexException));
     }
@@ -217,28 +181,6 @@ global with sharing class LoggerRestResource {
     public EndpointResponse setStatusCode(Integer statusCode) {
       this.statusCode = statusCode;
       return this;
-    }
-
-    private Boolean isTruthy(Map<String, String> parameters, String targetParameterName) {
-      /*
-                If 'some-parameter' is not in the map of parameters, it will be interpreted as false.
-                All of these example URL parameters should return true for 'some-parameter':
-                    - /services/apexrest/logger/some-endpoint?some-parameter
-                    - /services/apexrest/logger/some-endpoint?some-parameter=true
-                    - /services/apexrest/logger/some-endpoint?some-parameter=TRUE
-                    - /services/apexrest/logger/some-endpoint?some-parameter=True
-                    - /services/apexrest/logger/some-endpoint?some-parameter=1
-                Any other provided value will be interpreted as false for 'some-parameter'.
-                    - /services/apexrest/logger/some-endpoint?some-parameter=false
-                    - /services/apexrest/logger/some-endpoint?some-parameter=FALSE
-                    - /services/apexrest/logger/some-endpoint?some-parameter=False
-                    - /services/apexrest/logger/some-endpoint?some-parameter=0
-                    - /services/apexrest/logger/some-endpoint?some-parameter=anything-else
-            */
-      String parameterStringValue = parameters.get(targetParameterName);
-      return (parameters.containsKey(targetParameterName) && String.isBlank(parameterStringValue)) ||
-        parameterStringValue?.toLowerCase() == 'true' ||
-        parameterStringValue == '1';
     }
   }
 
@@ -261,24 +203,13 @@ global with sharing class LoggerRestResource {
     }
   }
 
-  /* Endpoints */
+  /* Endpoint implementations */
   private class LogsEndpoint extends Endpoint {
-    // public override EndpointResponse handleGet(EndpointRequest endpointRequest) {
-    //   String possibleTransactionId = endpointRequest.particle;
-    //   if (possibleTransactionId != null) {
-    //     return this.queryLog(endpointRequest);
-    //   } else {
-    //     return this.searchLogs(endpointRequest);
-    //   }
-    // }
-
     public override EndpointResponse handlePost(EndpointRequest endpointRequest) {
-      EndpointResponse postResponse = new EndpointResponse(endpointRequest);
+      EndpointResponse postResponse = new EndpointResponse();
       try {
-        // LogDTO logToCreate = this.deserializeLog(endpointRequest.body);
         OTelLogsPayload logsPayload = this.deserializeLog(endpointRequest.body);
         this.saveLog(logsPayload);
-        // this.saveLog(logToCreate);
         postResponse.setStatusCode(STATUS_CODE_201_CREATED);
         return postResponse;
       } catch (Exception apexException) {
@@ -287,55 +218,9 @@ global with sharing class LoggerRestResource {
       }
     }
     private void saveLog(OTelLogsPayload logsPayload) {
-      // TODO add implementation
-      // System.Assert.fail(System.JSON.serializePretty(logsPayload.getLogEntryEvents()));
-      LoggerDataStore.getEventBus().publishRecords(logsPayload.addLogEntries());
-      // logsPayload.addLogEntries();
-      // Logger.saveLog();
+      LoggerDataStore.getEventBus().publishRecords(logsPayload.getConvertedLogEntryEvents());
     }
 
-    /* private void saveLog(LogDTO logCreateRequest) {
-      Logger.setParentLogTransactionId(logCreateRequest.parentLogTransactionId);
-      Logger.setScenario(logCreateRequest.transactionScenario);
-
-      for (LogEntryDTO logEntryCreateRequest : logCreateRequest.logEntries) {
-        // TODO need to revisit the shape of loggingLevel - should it be a string, or a Map/inner class?
-        // For inbound requests to create a log, it's easier for developers to just pass a string
-        // For responses, having loggingLevel as a Mapl/inner class might make the JSON more readable...?
-        // System.LoggingLevel loggingLevel = Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel.get('name'));
-        System.LoggingLevel loggingLevel = Logger.getLoggingLevel(logEntryCreateRequest.loggingLevel);
-        Logger.newEntry(loggingLevel, logEntryCreateRequest.message)
-          // FIXME The managed package currently doesn't have a way to set the value
-          // of OriginType__c = 'API'
-          .setRecord(logEntryCreateRequest.relatedRecordId)
-          // FIXME The managed package currently doesn't have the .setTimestamp() builder method,
-          // so there's not a great way to correctly set the Timestamp__c field yet
-          // .setTimestamp(logEntryCreateRequest.timestamp)
-          .addTags(logEntryCreateRequest.tags);
-      }
-
-      Logger.saveLog();
-    } */
-
-    // private LogDTO deserializeLog(String jsonBody) {
-    //   if (String.isBlank(jsonBody)) {
-    //     throw new System.IllegalArgumentException('No data provided');
-    //   }
-
-    //   LogDTO logToCreate = (LogDTO) System.JSON.deserialize(jsonBody, LogDTO.class);
-
-    //   // TODO add support for adding these as errors in logToCreate.errors
-    //   // (instead of only bubbling up 1 via throwing an exception)
-    //   if (String.isBlank(logToCreate.originSystemName)) {
-    //     throw new System.IllegalArgumentException('No data provided for required property "originSystemName"');
-    //   }
-
-    //   if (logToCreate.logEntries == null || logToCreate.logEntries.isEmpty()) {
-    //     throw new System.IllegalArgumentException('No data provided for required property "logEntries"');
-    //   }
-
-    //   return logToCreate;
-    // }
     private OTelLogsPayload deserializeLog(String jsonBody) {
       if (String.isBlank(jsonBody)) {
         throw new System.IllegalArgumentException('No data provided');
@@ -359,22 +244,16 @@ global with sharing class LoggerRestResource {
   }
 
   private class UnknownEndpointResponder extends Endpoint {
-    public override EndpointResponse handleGet(EndpointRequest endpointRequest) {
-      return this.handleResponse(endpointRequest);
-    }
-
     public override EndpointResponse handlePost(EndpointRequest endpointRequest) {
       return this.handleResponse(endpointRequest);
     }
 
     private EndpointResponse handleResponse(EndpointRequest endpointRequest) {
-      String errorMessage;
-      if (endpointRequest.name == null) {
-        errorMessage = 'Calling root endpoint /logger is not supported, please provide a specific endpoint';
-      } else {
+      String errorMessage = 'Calling root endpoint /logger is not supported, please provide a specific endpoint';
+      if (endpointRequest.name != null) {
         errorMessage = 'Unknown endpoint provided: ' + endpointRequest.name;
       }
-      return new EndpointResponse(endpointRequest).setStatusCode(STATUS_CODE_404_NOT_FOUND).addError(new EndpointError(errorMessage));
+      return new EndpointResponse().setStatusCode(STATUS_CODE_404_NOT_FOUND).addError(new EndpointError(errorMessage));
     }
   }
 
@@ -385,7 +264,7 @@ global with sharing class LoggerRestResource {
   public class OTelLogsPayload {
     public final List<OTelResourceLog> resourceLogs = new List<OTelResourceLog>();
 
-    public List<LogEntryEvent__e> addLogEntries() {
+    public List<LogEntryEvent__e> getConvertedLogEntryEvents() {
       List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
       for (OTelResourceLog resourceLog : this.resourceLogs) {
@@ -418,24 +297,27 @@ global with sharing class LoggerRestResource {
     }
   }
 
+  // OTel supports additional types boolValue, float64Value, and intValue
+  // but there's not currently a need for them in Nebula Logger's data model
+  // As more mappings are added, these types will be re-added when needed
   public class OTelAttribute {
     public final String key;
     public final OTelAttributeValue value;
 
-    public OTelAttribute(String key, Boolean value) {
-      this.key = key;
-      this.value = new OTelAttributeValue(value);
-    }
+    // public OTelAttribute(String key, Boolean value) {
+    //   this.key = key;
+    //   this.value = new OTelAttributeValue(value);
+    // }
 
     // public OTelAttribute(String key, Decimal value) {
     //   this.key = key;
     //   this.value = new OTelAttributeValue(value);
     // }
 
-    public OTelAttribute(String key, Integer value) {
-      this.key = key;
-      this.value = new OTelAttributeValue(value);
-    }
+    // public OTelAttribute(String key, Integer value) {
+    //   this.key = key;
+    //   this.value = new OTelAttributeValue(value);
+    // }
 
     public OTelAttribute(String key, String value) {
       this.key = key;
@@ -444,24 +326,22 @@ global with sharing class LoggerRestResource {
   }
 
   public class OTelAttributeValue {
-    public final Boolean boolValue;
-    // float64Value is supported by OTel, but there's not currently a float/decimal
-    // field in Nebula Logger's data model, so there's currently no need for it
+    // public final Boolean boolValue;
     // public final Decimal float64Value;
-    public final Integer intValue;
+    // public final Integer intValue;
     public final String stringValue;
 
-    public OTelAttributeValue(Boolean value) {
-      this.boolValue = value;
-    }
+    // public OTelAttributeValue(Boolean value) {
+    //   this.boolValue = value;
+    // }
 
     // public OTelAttributeValue(Decimal value) {
     //   this.float64Value = value;
     // }
 
-    public OTelAttributeValue(Integer value) {
-      this.intValue = value;
-    }
+    // public OTelAttributeValue(Integer value) {
+    //   this.intValue = value;
+    // }
 
     public OTelAttributeValue(String value) {
       this.stringValue = value;
@@ -479,9 +359,9 @@ global with sharing class LoggerRestResource {
           when 'service.name' {
             supplementalFieldToValue.put(LogEntryEvent__e.OriginSystemName__c, entryAttribute.value?.stringValue);
           }
-          when 'service.version' {
-            // TODO
-          }
+          // TODO
+          // when 'service.version' {
+          // }
         }
       }
 
@@ -503,7 +383,7 @@ global with sharing class LoggerRestResource {
     public List<OTelAttribute> attributes = new List<OTelAttribute>();
     public OTelAttributeValue body;
     public String severityText;
-    public String timeUnixNano;
+    public String timeUnixNano = (System.now().getTime() * 1000000).toString();
     // TODO revisit mappings for spanId and traceId
     // public String spanId;
     // public String traceId;
@@ -556,14 +436,7 @@ global with sharing class LoggerRestResource {
         this.convertedLogEntryEvent.OriginSourceMetadataType__c = null;
         this.convertedLogEntryEvent.OriginType__c = 'API';
         this.convertedLogEntryEvent.StackTrace__c = null;
-        // this.convertedLogEntryEvent = new LogEntryEvent__e(
-        //   EpochTimestamp__c = entryEpochTimestamp,
-        //   LoggingLevel__c = entryLoggingLevel.name(),
-        //   LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
-        //   Message__c = this.body?.stringValue,
-        //   Timestamp__c = Datetime.newInstance(entryEpochTimestamp),
-        //   TimestampString__c = '' + entryEpochTimestamp
-        // );
+
         Map<Schema.SObjectField, Object> supplementalFieldToValue = this.convertAttributes();
         for (Schema.SObjectField field : supplementalFieldToValue.keySet()) {
           this.convertedLogEntryEvent.put(field, supplementalFieldToValue.get(field));
@@ -597,7 +470,9 @@ global with sharing class LoggerRestResource {
           return System.LoggingLevel.FINEST;
         }
         when else {
-          return null;
+          // Use DEBUG as a fallback value, similar to how it's done in Logger
+          System.debug(System.LoggingLevel.DEBUG, 'Unable to convert severity text to logging level: ' + this.severityText);
+          return System.LoggingLevel.DEBUG;
         }
       }
     }
@@ -610,52 +485,16 @@ global with sharing class LoggerRestResource {
           when 'exception.message' {
             supplementalFieldToValue.put(LogEntryEvent__e.ExceptionMessage__c, entryAttribute.value?.stringValue);
           }
+          when 'exception.stack_trace' {
+            supplementalFieldToValue.put(LogEntryEvent__e.ExceptionStackTrace__c, entryAttribute.value?.stringValue);
+          }
           when 'exception.type' {
             supplementalFieldToValue.put(LogEntryEvent__e.ExceptionType__c, entryAttribute.value?.stringValue);
           }
-          when 'http_request.body' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestBody__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_request.body_masked' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestBodyMasked__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_request.compressed' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestCompressed__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_request.endpoint' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestEndpoint__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_request.header_keys' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestHeaderKeys__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_request.headers' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestHeaders__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_request.method' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestMethod__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_response.body' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseBody__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_response.body_masked' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseBodyMasked__c, entryAttribute.value?.boolValue);
-          }
-          when 'http_response.header_keys' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseHeaderKeys__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_response.headers' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseHeaders__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_response.status' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseStatus__c, entryAttribute.value?.stringValue);
-          }
-          when 'http_response.status_code' {
-            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseStatusCode__c, entryAttribute.value?.intValue);
+          when 'origin.stack_trace' {
+            supplementalFieldToValue.put(LogEntryEvent__e.StackTrace__c, entryAttribute.value?.stringValue);
           }
           when 'parent_log.transaction_id' {
-            supplementalFieldToValue.put(LogEntryEvent__e.ParentLogTransactionId__c, entryAttribute.value?.stringValue);
-          }
-          when 'stack_trace' {
             supplementalFieldToValue.put(LogEntryEvent__e.ParentLogTransactionId__c, entryAttribute.value?.stringValue);
           }
         }
