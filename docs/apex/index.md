@@ -124,6 +124,10 @@ Builds and sends email notifications when internal exceptions occur within the l
 
 Controller class for the LWC `loggerHomeHeader`
 
+### [LoggerRestResource](Log-Management/LoggerRestResource)
+
+REST Resource class for external integrations to create &amp; retrieve logging data
+
 ### [LoggerSObjectMetadata](Log-Management/LoggerSObjectMetadata)
 
 Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties

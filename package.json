@@ -58,7 +58,7 @@
     "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "scan:fix:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/** --fix",
     "scan": "npm run scan:apex && npm run scan:lwc",
-    "scan:apex": "sf scanner:run --pmdconfig ./config/linters/pmd-ruleset.xml --target ./nebula-logger/ --engine pmd --severity-threshold 3",
+    "scan:apex": "sf scanner run --pmdconfig ./config/linters/pmd-ruleset.xml --target ./nebula-logger/ --engine pmd --severity-threshold 3",
     "scan:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/**",
     "sf:plugins:link:bummer": "npx sf plugins link ./node_modules/@jongpie/sfdx-bummer-plugin",
     "sf:plugins:link:prettier": "npx sf plugins link ./node_modules/@jayree/sfdx-plugin-prettier",

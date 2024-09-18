@@ -27,6 +27,9 @@ global with sharing class LoggerRestResource {
   private static final Integer STATUS_CODE_405_METHOD_NOT_ALLOWED = 405;
   private static final Boolean SUPPRESS_NULLS_IN_JSON_SERIALIZATION = true;
 
+  /**
+   * @description Processes any HTTP POST requests sent
+   */
   @HttpPost
   global static void handlePost() {
     // TODO wrap everything in a try-catch block
