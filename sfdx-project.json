@@ -9,10 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.16.0.NEXT",
-      "versionName": "Spring '25 Release",
-      "versionDescription": "Updated all metadata to API v63.0, made some bugfixes & improvements to CallableLogger",
-      "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
+      "versionNumber": "4.16.1.NEXT",
+      "versionName": "OpenTelemetry (OTel) REST Resource",
+      "versionDescription": "Added a new LoggerRestResource class that provides an OTel-compatible endpoint for external integrations to store logging data in Salesforce",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
