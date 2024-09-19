@@ -1436,11 +1436,11 @@ private class LogEntryEventHandler_Tests {
             Id,
             Name,
             OriginLocation__c,
+            OriginServiceName__c,
             OriginSourceActionName__c,
             OriginSourceApiName__c,
             OriginSourceId__c,
             OriginSourceMetadataType__c,
-            OriginSystemName__c,
             OriginType__c,
             RecordCollectionSize__c,
             RecordCollectionType__c,
@@ -1762,7 +1762,7 @@ private class LogEntryEventHandler_Tests {
       logEntry.OriginSourceMetadataType__c,
       'logEntry.OriginSourceMetadataType__c was not properly set'
     );
-    System.Assert.areEqual(logEntryEvent.OriginSystemName__c, logEntry.OriginSystemName__c, 'logEntry.OriginSystemName__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.OriginServiceName__c, logEntry.OriginServiceName__c, 'logEntry.OriginServiceName__c was not properly set');
     System.Assert.areEqual(logEntryEvent.OriginType__c, logEntry.OriginType__c, 'logEntry.OriginType__c was not properly set');
     System.Assert.areEqual(logEntryEvent.RecordCollectionSize__c, logEntry.RecordCollectionSize__c, 'logEntry.RecordCollectionSize__c was not properly set');
     System.Assert.areEqual(logEntryEvent.RecordCollectionType__c, logEntry.RecordCollectionType__c, 'logEntry.RecordCollectionType__c was not properly set');
