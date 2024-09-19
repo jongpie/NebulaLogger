@@ -580,7 +580,7 @@ private class LogManagementDataSelector_Tests {
     List<Schema.User> expectedResults = [
       SELECT Id, Name, Username, SmallPhotoUrl
       FROM User
-      WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
+      WHERE IsActive = TRUE AND (Name LIKE :searchTerm OR Username LIKE :searchTerm)
     ];
 
     List<Schema.User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm);

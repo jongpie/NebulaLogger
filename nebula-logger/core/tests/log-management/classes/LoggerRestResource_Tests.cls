@@ -169,11 +169,11 @@ private class LoggerRestResource_Tests {
     System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
     System.Assert.isNull(publishedLogEntryEvent.OriginLocation__c);
+    System.Assert.areEqual(resourceServiceNameAttribute.value.stringValue, publishedLogEntryEvent.OriginServiceName__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceActionName__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceApiName__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceId__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceMetadataType__c);
-    System.Assert.areEqual(resourceServiceNameAttribute.value.stringValue, publishedLogEntryEvent.OriginSystemName__c);
     System.Assert.areEqual('API', publishedLogEntryEvent.OriginType__c);
     System.Assert.areEqual(otelLogEntry.severityText.toUpperCase(), publishedLogEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(otelLogEntry.body.stringValue, publishedLogEntryEvent.Message__c);

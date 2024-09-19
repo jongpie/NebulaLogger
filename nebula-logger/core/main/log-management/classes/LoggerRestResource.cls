@@ -343,7 +343,7 @@ global with sharing class LoggerRestResource {
       for (OTelAttribute entryAttribute : this.attributes) {
         switch on entryAttribute.key {
           when 'service.name' {
-            supplementalFieldToValue.put(LogEntryEvent__e.OriginSystemName__c, entryAttribute.value?.stringValue);
+            supplementalFieldToValue.put(LogEntryEvent__e.OriginServiceName__c, entryAttribute.value?.stringValue);
           }
           // TODO
           // when 'service.version' {

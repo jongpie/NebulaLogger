@@ -6,7 +6,7 @@
     <columns>LoggingLevel__c</columns>
     <columns>LoggedByUsernameLink__c</columns>
     <columns>Message__c</columns>
-    <columns>OriginSystemName__c</columns>
+    <columns>OriginServiceName__c</columns>
     <columns>Timestamp__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
