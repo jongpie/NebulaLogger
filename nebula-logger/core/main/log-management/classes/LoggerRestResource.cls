@@ -216,6 +216,7 @@ global with sharing class LoggerRestResource {
         return postResponse;
       }
     }
+
     private void saveLog(OTelLogsPayload logsPayload) {
       LoggerDataStore.getEventBus().publishRecords(logsPayload.getConvertedLogEntryEvents());
     }
@@ -269,8 +270,10 @@ global with sharing class LoggerRestResource {
       List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
       for (OTelScopeLog scopeLog : this.scopeLogs) {
+        Integer transactionEntryNumber = 1;
         for (OTelLogRecord otelLogEntry : scopeLog.logRecords) {
           LogEntryEvent__e convertedLogEntryEvent = otelLogEntry.getLogEntryEvent();
+          convertedLogEntryEvent.TransactionEntryNumber__c = transactionEntryNumber++;
           Map<Schema.SObjectField, Object> supplementalFieldToValue = this.resource.convertAttributes();
           for (Schema.SObjectField field : supplementalFieldToValue.keySet()) {
             convertedLogEntryEvent.put(field, supplementalFieldToValue.get(field));
@@ -283,27 +286,26 @@ global with sharing class LoggerRestResource {
     }
   }
 
-  // OTel supports additional types boolValue, float64Value, and intValue
+  // OTel supports an additional type float64Value
   // but there's not currently a need for them in Nebula Logger's data model
-  // As more mappings are added, these types will be re-added when needed
   public class OTelAttribute {
     public final String key;
     public final OTelAttributeValue value;
 
-    // public OTelAttribute(String key, Boolean value) {
-    //   this.key = key;
-    //   this.value = new OTelAttributeValue(value);
-    // }
+    public OTelAttribute(String key, Boolean value) {
+      this.key = key;
+      this.value = new OTelAttributeValue(value);
+    }
 
     // public OTelAttribute(String key, Decimal value) {
     //   this.key = key;
     //   this.value = new OTelAttributeValue(value);
     // }
 
-    // public OTelAttribute(String key, Integer value) {
-    //   this.key = key;
-    //   this.value = new OTelAttributeValue(value);
-    // }
+    public OTelAttribute(String key, Integer value) {
+      this.key = key;
+      this.value = new OTelAttributeValue(value);
+    }
 
     public OTelAttribute(String key, String value) {
       this.key = key;
@@ -312,22 +314,22 @@ global with sharing class LoggerRestResource {
   }
 
   public class OTelAttributeValue {
-    // public final Boolean boolValue;
+    public final Boolean boolValue;
     // public final Decimal float64Value;
-    // public final Integer intValue;
+    public final Integer intValue;
     public final String stringValue;
 
-    // public OTelAttributeValue(Boolean value) {
-    //   this.boolValue = value;
-    // }
+    public OTelAttributeValue(Boolean value) {
+      this.boolValue = value;
+    }
 
     // public OTelAttributeValue(Decimal value) {
     //   this.float64Value = value;
     // }
 
-    // public OTelAttributeValue(Integer value) {
-    //   this.intValue = value;
-    // }
+    public OTelAttributeValue(Integer value) {
+      this.intValue = value;
+    }
 
     public OTelAttributeValue(String value) {
       this.stringValue = value;
@@ -368,21 +370,32 @@ global with sharing class LoggerRestResource {
   public class OTelLogRecord {
     public List<OTelAttribute> attributes = new List<OTelAttribute>();
     public OTelAttributeValue body;
+    public String name;
+    public Integer severityNumber;
     public String severityText;
-    public String timeUnixNano = (System.now().getTime() * 1000000).toString();
-    // TODO revisit mappings for spanId and traceId
-    // public String spanId;
-    // public String traceId;
+    // TODO revisit mapping for spanId
+    public String spanId;
+    public String timeUnixNano;
+    public String traceId;
 
     private transient LogEntryEvent__e convertedLogEntryEvent;
 
     public LogEntryEvent__e getLogEntryEvent() {
       if (this.convertedLogEntryEvent == null) {
         System.LoggingLevel entryLoggingLevel = this.getLoggingLevel();
-        Long entryEpochTimestamp = Long.valueOf(this.timeUnixNano) / 1000000;
-        Datetime entryTimestamp = Datetime.newInstance(entryEpochTimestamp);
+        Long entryEpochTimestamp = timeUnixNano == null ? null : Long.valueOf(this.timeUnixNano) / 1000000;
+        Datetime entryTimestamp = timeUnixNano == null ? null : Datetime.newInstance(entryEpochTimestamp);
+        String convertedTraceId = this.convertTraceId();
 
-        this.convertedLogEntryEvent = Logger.newEntry(entryLoggingLevel, this.body?.stringValue).setTimestamp(entryTimestamp).getLogEntryEvent();
+        LogEntryEventBuilder builder = Logger.newEntry(entryLoggingLevel, this.body?.stringValue);
+        if (entryTimestamp != null) {
+          builder.setTimestamp(entryTimestamp);
+        }
+        this.convertedLogEntryEvent = builder.getLogEntryEvent();
+        this.convertedLogEntryEvent.EntryScenario__c = this.name;
+        this.convertedLogEntryEvent.OriginType__c = 'API';
+        this.convertedLogEntryEvent.TransactionId__c = convertedTraceId;
+
         // Since the log entries originate off-platform, tracking the limits usage isn't really relevant here
         this.convertedLogEntryEvent.LimitsAggregateQueriesMax__c = null;
         this.convertedLogEntryEvent.LimitsAggregateQueriesUsed__c = null;
@@ -416,12 +429,28 @@ global with sharing class LoggerRestResource {
         this.convertedLogEntryEvent.LimitsSoqlQueryRowsUsed__c = null;
         this.convertedLogEntryEvent.LimitsSoslSearchesMax__c = null;
         this.convertedLogEntryEvent.LimitsSoslSearchesUsed__c = null;
+
+        // Since the log entries originate off-platform, the loggedBy user
+        // may not be the API user creating the logs, so clear the related fields
+        this.convertedLogEntryEvent.Locale__c = null;
+        this.convertedLogEntryEvent.LoggedById__c = null;
+        this.convertedLogEntryEvent.ProfileId__c = null;
+        this.convertedLogEntryEvent.ThemeDisplayed__c = null;
+        this.convertedLogEntryEvent.TimeZoneId__c = null;
+        this.convertedLogEntryEvent.TimeZoneName__c = null;
+        this.convertedLogEntryEvent.UserLicenseDefinitionKey__c = null;
+        this.convertedLogEntryEvent.UserLicenseId__c = null;
+        this.convertedLogEntryEvent.UserLicenseName__c = null;
+        this.convertedLogEntryEvent.UserRoleId__c = null;
+        this.convertedLogEntryEvent.UserRoleName__c = null;
+        this.convertedLogEntryEvent.UserType__c = null;
+
+        // Clear irrelevant origin fields
         this.convertedLogEntryEvent.OriginLocation__c = null;
         this.convertedLogEntryEvent.OriginSourceActionName__c = null;
         this.convertedLogEntryEvent.OriginSourceApiName__c = null;
         this.convertedLogEntryEvent.OriginSourceId__c = null;
         this.convertedLogEntryEvent.OriginSourceMetadataType__c = null;
-        this.convertedLogEntryEvent.OriginType__c = 'API';
         this.convertedLogEntryEvent.StackTrace__c = null;
 
         Map<Schema.SObjectField, Object> supplementalFieldToValue = this.convertAttributes();
@@ -433,27 +462,58 @@ global with sharing class LoggerRestResource {
       return this.convertedLogEntryEvent;
     }
 
+    private Map<Integer, String> getSeverityNumberToTextMapping() {
+      return new Map<Integer, String>{
+        1 => 'TRACE',
+        2 => 'TRACE2',
+        3 => 'TRACE3',
+        4 => 'TRACE4',
+        5 => 'DEBUG',
+        6 => 'DEBUG2',
+        7 => 'DEBUG3',
+        8 => 'DEBUG4',
+        9 => 'INFO',
+        10 => 'INFO2',
+        11 => 'INFO3',
+        12 => 'INFO4',
+        13 => 'WARN',
+        14 => 'WARN2',
+        15 => 'WARN3',
+        16 => 'WARN4',
+        17 => 'ERROR',
+        18 => 'ERROR2',
+        19 => 'ERROR3',
+        20 => 'ERROR4',
+        21 => 'FATAL',
+        22 => 'FATAL2',
+        23 => 'FATAL3',
+        24 => 'FATAL4'
+      };
+    }
+
     private System.LoggingLevel getLoggingLevel() {
-      switch on this.severityText?.toLowerCase() {
-        when 'error' {
+      String severityText = this.severityText ?? this.getSeverityNumberToTextMapping().get(this.severityNumber);
+      // Docs: https://opentelemetry.io/docs/specs/otel/logs/data-model/#field-severitytext
+      switch on severityText?.toUpperCase() {
+        when 'FATAL4', 'FATAL3', 'FATAL2', 'FATAL', 'ERROR4', 'ERROR3', 'ERROR2', 'ERROR' {
           return System.LoggingLevel.ERROR;
         }
-        when 'warn' {
+        when 'WARN4', 'WARN3', 'WARN2', 'WARN' {
           return System.LoggingLevel.WARN;
         }
-        when 'info' {
+        when 'INFO4', 'INFO3', 'INFO2', 'INFO' {
           return System.LoggingLevel.INFO;
         }
-        when 'debug' {
+        when 'DEBUG4', 'DEBUG3', 'DEBUG2', 'DEBUG' {
           return System.LoggingLevel.DEBUG;
         }
-        when 'trace3' {
+        when 'TRACE4', 'TRACE3' {
           return System.LoggingLevel.FINE;
         }
-        when 'trace2' {
+        when 'TRACE2' {
           return System.LoggingLevel.FINER;
         }
-        when 'trace' {
+        when 'TRACE' {
           return System.LoggingLevel.FINEST;
         }
         when else {
@@ -469,6 +529,24 @@ global with sharing class LoggerRestResource {
 
       for (OTelAttribute entryAttribute : this.attributes) {
         switch on entryAttribute.key {
+          when 'browser.address' {
+            supplementalFieldToValue.put(LogEntryEvent__e.BrowserAddress__c, entryAttribute.value?.stringValue);
+          }
+          when 'browser.form_factor' {
+            supplementalFieldToValue.put(LogEntryEvent__e.BrowserFormFactor__c, entryAttribute.value?.stringValue);
+          }
+          when 'browser.language' {
+            supplementalFieldToValue.put(LogEntryEvent__e.BrowserLanguage__c, entryAttribute.value?.stringValue);
+          }
+          when 'browser.screen_resolution' {
+            supplementalFieldToValue.put(LogEntryEvent__e.BrowserScreenResolution__c, entryAttribute.value?.stringValue);
+          }
+          when 'browser.user_agent' {
+            supplementalFieldToValue.put(LogEntryEvent__e.BrowserUserAgent__c, entryAttribute.value?.stringValue);
+          }
+          when 'browser.window_resolution' {
+            supplementalFieldToValue.put(LogEntryEvent__e.BrowserWindowResolution__c, entryAttribute.value?.stringValue);
+          }
           when 'exception.message' {
             supplementalFieldToValue.put(LogEntryEvent__e.ExceptionMessage__c, entryAttribute.value?.stringValue);
           }
@@ -477,6 +555,54 @@ global with sharing class LoggerRestResource {
           }
           when 'exception.type' {
             supplementalFieldToValue.put(LogEntryEvent__e.ExceptionType__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_request.body' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestBody__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_request.body_masked' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestBodyMasked__c, entryAttribute.value?.boolValue);
+          }
+          when 'http_request.compressed' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestCompressed__c, entryAttribute.value?.boolValue);
+          }
+          when 'http_request.endpoint' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestEndpoint__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_request.header_keys' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestHeaderKeys__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_request.headers' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestHeaders__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_request.method' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpRequestMethod__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_response.body' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseBody__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_response.body_masked' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseBodyMasked__c, entryAttribute.value?.boolValue);
+          }
+          when 'http_response.header_keys' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseHeaderKeys__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_response.headers' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseHeaders__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_response.status' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseStatus__c, entryAttribute.value?.stringValue);
+          }
+          when 'http_response.status_code' {
+            supplementalFieldToValue.put(LogEntryEvent__e.HttpResponseStatusCode__c, entryAttribute.value?.intValue);
+          }
+          when 'logged_by.federation_identifier' {
+            supplementalFieldToValue.put(LogEntryEvent__e.LoggedByFederationIdentifier__c, entryAttribute.value?.stringValue);
+          }
+          when 'logged_by.id' {
+            supplementalFieldToValue.put(LogEntryEvent__e.LoggedById__c, entryAttribute.value?.stringValue);
+          }
+          when 'logged_by.username' {
+            supplementalFieldToValue.put(LogEntryEvent__e.LoggedByUsername__c, entryAttribute.value?.stringValue);
           }
           when 'origin.stack_trace' {
             supplementalFieldToValue.put(LogEntryEvent__e.StackTrace__c, entryAttribute.value?.stringValue);
@@ -488,6 +614,25 @@ global with sharing class LoggerRestResource {
       }
 
       return supplementalFieldToValue;
+    }
+
+    private String convertTraceId() {
+      if (String.isBlank(this.traceId)) {
+        return null;
+      }
+
+      String hyphenatedUuid =
+        this.traceId.substring(0, 8) +
+        '-' +
+        this.traceId.substring(8, 12) +
+        '-' +
+        this.traceId.substring(12, 16) +
+        '-' +
+        this.traceId.substring(16, 20) +
+        '-' +
+        this.traceId.substring(20, 32);
+
+      return hyphenatedUuid;
     }
   }
 }
