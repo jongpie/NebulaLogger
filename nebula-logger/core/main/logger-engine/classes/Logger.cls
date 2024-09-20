@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.14.10';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.14.11';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -196,7 +196,9 @@ global with sharing class Logger {
    * @param  batchableContext - The instance of `Database.BatchableContext` to track
    */
   global static void setAsyncContext(Database.BatchableContext batchableContext) {
-    setAsyncContext(new AsyncContext(batchableContext));
+    if (batchableContext != null) {
+      setAsyncContext(new AsyncContext(batchableContext));
+    }
   }
 
   /**
@@ -204,7 +206,9 @@ global with sharing class Logger {
    * @param  finalizerContext - The instance of `System.FinalizerContext` to track
    */
   global static void setAsyncContext(System.FinalizerContext finalizerContext) {
-    setAsyncContext(new AsyncContext(finalizerContext));
+    if (finalizerContext != null) {
+      setAsyncContext(new AsyncContext(finalizerContext));
+    }
   }
 
   /**
@@ -212,7 +216,9 @@ global with sharing class Logger {
    * @param  queueableContext - The instance of `System.QueueableContext` to track
    */
   global static void setAsyncContext(System.QueueableContext queueableContext) {
-    setAsyncContext(new AsyncContext(queueableContext));
+    if (queueableContext != null) {
+      setAsyncContext(new AsyncContext(queueableContext));
+    }
   }
 
   /**
@@ -220,7 +226,9 @@ global with sharing class Logger {
    * @param  schedulableContext - The instance of `System.SchedulableContext` to track
    */
   global static void setAsyncContext(System.SchedulableContext schedulableContext) {
-    setAsyncContext(new AsyncContext(schedulableContext));
+    if (schedulableContext != null) {
+      setAsyncContext(new AsyncContext(schedulableContext));
+    }
   }
 
   /**
@@ -3415,8 +3423,13 @@ global with sharing class Logger {
   }
 
   private static void setAsyncContext(AsyncContext asyncContext) {
-    currentAsyncContext = asyncContext;
-    System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext));
+    // Only set the async context the first time that a non-null value is provided
+    // Previous versions of Nebula Logger would always set it, but that wasn't the
+    // intended behavior
+    if (currentAsyncContext == null) {
+      currentAsyncContext = asyncContext;
+      System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext));
+    }
   }
 
   private static SaveMethod getSaveMethod(String saveMethodName) {
