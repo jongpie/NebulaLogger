@@ -828,6 +828,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.OriginServiceName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.OriginSourceActionName__c</field>
         <readable>true</readable>
     </fieldPermissions>
