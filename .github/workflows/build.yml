@@ -8,16 +8,20 @@ env:
 
 on:
   push:
+    branches:
+      - main
     paths:
       - .github/workflows/**
       - config/scratch-orgs/**
       - nebula-logger/**
+      - sfdx-project.json
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - .github/workflows/**
       - config/scratch-orgs/**
       - nebula-logger/**
+      - sfdx-project.json
 
 jobs:
   code-quality-tests:
@@ -50,7 +54,7 @@ jobs:
               - './nebula-logger/core/**'
 
       - name: 'Authorize Dev Hub'
-        if: ${{ (github.event_name == 'pull_request') && (steps.changes.outputs.core == 'true') }}
+        if: ${{ (github.event_name == 'pull_request') && (github.event.pull_request.draft == false) && (steps.changes.outputs.core == 'true') }}
         shell: bash
         run: |
           npx sf version
@@ -63,7 +67,7 @@ jobs:
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
       - name: 'Verify package version number is updated'
-        if: ${{ (github.event_name == 'pull_request') && (steps.changes.outputs.core == 'true') }}
+        if: ${{ (github.event_name == 'pull_request') && (github.event.pull_request.draft == false) && (steps.changes.outputs.core == 'true') }}
         run: npm run package:version:number:verify
 
       - name: 'Verify LWC with ESLint'
