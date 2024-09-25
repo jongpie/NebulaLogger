@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.10.NEXT",
-      "versionName": "New CallableLogger Apex class",
-      "versionDescription": "Added a new CallableLogger class that provides support for both OmniStudio logging, as well as the ability to dynamically call Nebula Logger in Apex when it's available",
+      "versionNumber": "4.14.11.NEXT",
+      "versionName": "Updated Behavior of Logger.setAsyncContext()",
+      "versionDescription": "Updated the behavior of Logger.setAsyncContext() to only set the context the first time a non-null context value is provided. Previously, subsequent calls would overwrite the context value, which wasn't really the intended behaviour.",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -195,6 +195,7 @@
     "Nebula Logger - Core@4.14.8-store-httprequest-header-keys-&-values": "04t5Y0000015oS1QAI",
     "Nebula Logger - Core@4.14.9-bugfix:-apex-code-snippets-auto-truncated": "04t5Y0000015oSQQAY",
     "Nebula Logger - Core@4.14.10-new-callablelogger-apex-class": "04t5Y0000015oTdQAI",
+    "Nebula Logger - Core@4.14.11-updated-behavior-of-logger.setasynccontext()": "04t5Y0000015oUgQAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
