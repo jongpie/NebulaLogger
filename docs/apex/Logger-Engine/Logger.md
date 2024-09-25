@@ -4948,6 +4948,27 @@ Stores additional details about the current transacation&apos;s async context
 | -------------------- | ------------------------------------------------------ |
 | `schedulableContext` | - The instance of `System.SchedulableContext` to track |
 
+#### `setField(Schema.SObjectField field, Object fieldValue)` → `void`
+
+Sets a field value on every generated `LogEntryEvent__e` record
+
+##### Parameters
+
+| Param        | Description                                              |
+| ------------ | -------------------------------------------------------- |
+| `field`      | The `Schema.SObjectField` token of the field to populate |
+| `fieldValue` | The `Object` value to populate in the provided field     |
+
+#### `setField(Map<Schema.SObjectField, Object> fieldToValue)` → `void`
+
+Sets multiple field values oon every generated `LogEntryEvent__e` record
+
+##### Parameters
+
+| Param          | Description                                                            |
+| -------------- | ---------------------------------------------------------------------- |
+| `fieldToValue` | An instance of `Map&lt;Schema.SObjectField, Object&gt;` containing the |
+
 #### `setParentLogTransactionId(String parentTransactionId)` → `void`
 
 Relates the current transaction&apos;s log to a parent log via the field Log**c.ParentLog**c This is useful for relating multiple asynchronous operations together, such as batch &amp; queueable jobs.

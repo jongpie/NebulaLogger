@@ -22,6 +22,7 @@ global with sharing class Logger {
   private static final String ORGANIZATION_DOMAIN_URL = System.URL.getOrgDomainUrl()?.toExternalForm();
   private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
   private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
+  private static final Map<Schema.SObjectField, Object> TRANSACTION_FIELD_TO_VALUE = new Map<Schema.SObjectField, Object>();
   private static final String TRANSACTION_ID = System.UUID.randomUUID().toString();
 
   private static AsyncContext currentAsyncContext;
@@ -248,6 +249,30 @@ global with sharing class Logger {
    */
   global static String getParentLogTransactionId() {
     return parentLogTransactionId;
+  }
+
+  /**
+   * @description Sets a field value on every generated `LogEntryEvent__e` record
+   * @param  field      The `Schema.SObjectField` token of the field to populate
+   *                    on each `LogEntryEvent__e` record in the current transaction
+   * @param  fieldValue The `Object` value to populate in the provided field
+   */
+  global static void setField(Schema.SObjectField field, Object fieldValue) {
+    setField(new Map<Schema.SObjectField, Object>{ field => fieldValue });
+  }
+
+  /**
+   * @description Sets multiple field values oon every generated `LogEntryEvent__e` record
+   * @param  fieldToValue An instance of `Map<Schema.SObjectField, Object>` containing the
+   *                      the fields & values to populate on each `LogEntryEvent__e` record in the current transaction
+   */
+  global static void setField(Map<Schema.SObjectField, Object> fieldToValue) {
+    if (getUserSettings().IsEnabled__c == false) {
+      return;
+    }
+
+    TRANSACTION_FIELD_TO_VALUE.putAll(fieldToValue);
+    TRANSACTION_FIELD_TO_VALUE.remove(null);
   }
 
   /**
@@ -3390,8 +3415,9 @@ global with sharing class Logger {
 
     return logEntryEventBuilder;
   }
-
   private static void finalizeEntry(LogEntryEvent__e logEntryEvent) {
+    setTransactionFields(logEntryEvent);
+
     logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
     logEntryEvent.TransactionScenario__c = transactionScenario;
 
@@ -3400,6 +3426,25 @@ global with sharing class Logger {
       logEntryEvent.AsyncContextParentJobId__c = currentAsyncContext.parentJobId;
       logEntryEvent.AsyncContextTriggerId__c = currentAsyncContext.triggerId;
       logEntryEvent.AsyncContextType__c = currentAsyncContext.type;
+    }
+  }
+
+  @SuppressWarnings('PMD.AvoidDebugStatements')
+  private static void setTransactionFields(LogEntryEvent__e logEntryEvent) {
+    for (Schema.SObjectField field : TRANSACTION_FIELD_TO_VALUE.keySet()) {
+      Object value = TRANSACTION_FIELD_TO_VALUE.get(field);
+
+      try {
+        Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+        if (fieldDescribe.getSoapType() == Schema.SoapType.STRING) {
+          value = LoggerDataStore.truncateFieldValue(field, (String) value);
+        }
+
+        logEntryEvent.put(field, value);
+      } catch (System.Exception ex) {
+        LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
+        System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
+      }
     }
   }
 
