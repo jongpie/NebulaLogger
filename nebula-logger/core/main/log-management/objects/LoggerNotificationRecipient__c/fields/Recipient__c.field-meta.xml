@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Recipient__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(
+  TEXT(Type__c),
+  &apos;Email&apos;, &apos;eeeeemail&apos;,
+  &apos;Slack&apos;, CASE(
+    TEXT(SlackConnectionType__c),
+    &apos;Named Credential&apos;, SlackChannel__c + &apos; (&apos; +  SlackNamedCredential__c + &apos; Named Credential)&apos;,
+    &apos;Webhook&apos;, &apos;Webhook &apos; + SlackWebhookUrl__c,
+    &apos;Unknown&apos;
+  ),
+  &apos;Unknown&apos;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Recipient</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

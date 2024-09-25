@@ -11,8 +11,12 @@
 public without sharing class LoggerPlugin {
   private static final Map<String, LoggerPlugin__mdt> DEVELOPER_NAME_TO_RECORD = loadEnabledRecords();
 
+  // TODO before making plugins global/available in the managed package,
+  // consider replacing LoggerBatchableContext, LoggerNotifiableContext, and LoggerTriggerableContext
+  // with new inner classes in a new LoggerContext parent class (e.g., LoggerContext.Triggerable or LoggerContext.TriggerableContext?)
+
   /**
-   * @description Interface used to create plugins that can be used within Logger's batch job `LogBatchPurger`
+   * @description Interface used to create plugins that can be used within Nebula Logger's batch job `LogBatchPurger`
    */
   @SuppressWarnings('PMD.ApexDoc')
   public interface Batchable {
@@ -22,7 +26,19 @@ public without sharing class LoggerPlugin {
   }
 
   /**
-   * @description Interface used to create plugins that can be used within Logger's trigger handler framework `LoggerSObjectHandler`
+   * @description Interface used to create plugins that can be used within Nebula Logger's notification system `LoggerNotifier`
+   */
+  @SuppressWarnings('PMD.ApexDoc')
+  public interface Notifiable {
+    void sendNotification(LoggerPlugin__mdt configuration, LoggerNotifiableContext input);
+  }
+
+  public interface OpenTelemetrySendable {
+    void send(Object openTelemetryLogsPayload);
+  }
+
+  /**
+   * @description Interface used to create plugins that can be used within Nebula Logger's trigger handler framework `LoggerSObjectHandler`
    */
   @SuppressWarnings('PMD.ApexDoc')
   public interface Triggerable {
@@ -72,7 +88,7 @@ public without sharing class LoggerPlugin {
    * @description Creates an instance of the class `LoggerPlugin.Batchable` based on the provided `LoggerPlugin__mdt` configuration
    * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Batchable`
    * @return                     The dynamically created instance of `LoggerPlugin.Batchable`,
-   *                             or null if an instance could not be created based on the provided configuration
+   *                             or `null` if an instance could not be created based on the provided configuration
    */
   public static Batchable newBatchableInstance(String apexClassTypeName) {
     Object pluginInstance = newPluginInstance(apexClassTypeName);
@@ -84,10 +100,25 @@ public without sharing class LoggerPlugin {
   }
 
   /**
+   * @description Creates an instance of the class `LoggerPlugin.Notifiable` based on the provided `LoggerPlugin__mdt` configuration
+   * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Notifiable`
+   * @return                     The dynamically created instance of `LoggerPlugin.Notifiable`,
+   *                             or `null` if an instance could not be created based on the provided configuration
+   */
+  public static Notifiable newNotifiableInstance(String apexClassTypeName) {
+    Object pluginInstance = newPluginInstance(apexClassTypeName);
+    Boolean isValidInstance = pluginInstance instanceof Notifiable;
+    if (isValidInstance == false) {
+      pluginInstance = null;
+    }
+    return (Notifiable) pluginInstance;
+  }
+
+  /**
    * @description Creates an instance of the class `LoggerPlugin.Triggerable` based on the provided `LoggerPlugin__mdt` configuration
    * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Triggerable`
    * @return                     The dynamically created instance of `LoggerPlugin.Triggerable`,
-   *                             or null if an instance could not be created based on the provided configuration
+   *                             or `null` if an instance could not be created based on the provided configuration
    */
   public static Triggerable newTriggerableInstance(String apexClassTypeName) {
     Object pluginInstance = newPluginInstance(apexClassTypeName);
