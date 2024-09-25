@@ -27,6 +27,11 @@
                 <label>Elastic</label>
             </value>
             <value>
+                <fullName>Loggly</fullName>
+                <default>false</default>
+                <label>Loggly</label>
+            </value>
+            <value>
                 <fullName>Honeycomb</fullName>
                 <default>false</default>
                 <label>Honeycomb</label>
