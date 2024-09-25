@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LoggerNotificationCompactLayout</fullName>
     <fields>Name</fields>
+    <fields>IsEnabled__c</fields>
+    <fields>ExecutionOrder__c</fields>
     <fields>OwnerId</fields>
-    <fields>TotalMatches__c</fields>
-    <fields>IsMatchingThresholdEnabled__c</fields>
-    <fields>MatchingThresholdTimePeriodIncrement__c</fields>
-    <fields>MatchingThresholdTimePeriodUnit__c</fields>
+    <fields>ConditionLogicType__c</fields>
+    <fields>CustomConditionLogic__c</fields>
     <fields>CreatedById</fields>
     <fields>LastModifiedById</fields>
     <label>Logger Notification Compact Layout</label>
