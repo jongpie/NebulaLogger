@@ -81,6 +81,8 @@ public without sharing class LoggerNotifier {
   }
   private class ElasticOpenTelemetryProvider extends OpenTelemetryProvider {
   }
+  private class LogglyOpenTelemetryProvider extends OpenTelemetryProvider {
+  }
   private class HoneycombOpenTelemetryProvider extends OpenTelemetryProvider {
   }
   private class SplunkOpenTelemetryProvider extends OpenTelemetryProvider {
@@ -97,6 +99,9 @@ public without sharing class LoggerNotifier {
       }
       when 'Elastic' {
         otelProvider = new ElasticOpenTelemetryProvider();
+      }
+      when 'Loggly' {
+        otelProvider = new LogglyOpenTelemetryProvider();
       }
       when 'Honeycomb' {
         otelProvider = new HoneycombOpenTelemetryProvider();
