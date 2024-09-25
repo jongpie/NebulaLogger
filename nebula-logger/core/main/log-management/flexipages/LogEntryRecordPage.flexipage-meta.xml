@@ -1137,6 +1137,16 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.HttpRequestEndpointAddress__c</fieldItem>
+                <identifier>RecordHttpRequestEndpointAddress_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.HttpRequestMethod__c</fieldItem>
                 <identifier>RecordHttpRequestMethod_cField1</identifier>
             </fieldInstance>

@@ -221,6 +221,12 @@
       "localApiName": "HttpRequestEndpoint__c",
       "type": "string"
     },
+    "HttpRequestEndpointAddress__c": {
+      "apiName": "HttpRequestEndpointAddress__c",
+      "label": "HTTP Request Endpoint Address",
+      "localApiName": "HttpRequestEndpointAddress__c",
+      "type": "string"
+    },
     "HttpRequestMethod__c": {
       "apiName": "HttpRequestMethod__c",
       "label": "HTTP Request Method",

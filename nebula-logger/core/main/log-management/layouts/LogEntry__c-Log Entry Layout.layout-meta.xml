@@ -354,6 +354,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>HttpRequestEndpointAddress__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>HttpRequestMethod__c</field>
             </layoutItems>
             <layoutItems>

@@ -1280,14 +1280,20 @@ private class LogEntryEventBuilder_Tests {
     System.HttpRequest request = new System.HttpRequest();
     request.setBody('Hello, world!');
     request.setCompressed(true);
-    request.setEndpoint('https://fake.salesforce.com');
+
+    String reallyLongEndpointAddress = 'https://fake.salesforce.com/' + 'A'.repeat(LogEntryEvent__e.HttpRequestEndpoint__c.getDescribe().getLength() + 1);
+    request.setEndpoint(reallyLongEndpointAddress);
     request.setMethod('GET');
 
     builder.setHttpRequestDetails(request);
 
     System.Assert.areEqual(request.getBody(), event.HttpRequestBody__c);
     System.Assert.areEqual(request.getCompressed(), event.HttpRequestCompressed__c);
-    System.Assert.areEqual(request.getEndpoint(), event.HttpRequestEndpoint__c);
+    System.Assert.areEqual(reallyLongEndpointAddress.left(LogEntryEvent__e.HttpRequestEndpoint__c.getDescribe().getLength()), event.HttpRequestEndpoint__c);
+    System.Assert.areEqual(
+      reallyLongEndpointAddress.left(LogEntryEvent__e.HttpRequestEndpointAddress__c.getDescribe().getLength()),
+      event.HttpRequestEndpointAddress__c
+    );
     System.Assert.isNull(event.HttpRequestHeaderKeys__c);
     System.Assert.isNull(event.HttpRequestHeaders__c);
     System.Assert.areEqual(request.getMethod(), event.HttpRequestMethod__c);
