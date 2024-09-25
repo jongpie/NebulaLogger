@@ -1663,6 +1663,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerNotificationCondition__c.SortOrder__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerNotificationCondition__c.Value__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1718,12 +1723,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotification__c.CustomConditionLogic__c</field>
+        <field>LoggerNotification__c.Comments__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotification__c.ExecutionOrder__c</field>
+        <field>LoggerNotification__c.CustomConditionLogic__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1774,11 +1779,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LoggerNotification__c.OriginOrganizationId__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerNotification__c.SourceSObjectType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
