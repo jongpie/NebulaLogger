@@ -7,7 +7,7 @@
     <inlineHelpText>The specific order to execute the retention rules in the org. Rules are executed in order by sorting by execution order, then rule name (ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName). In the event that multiple rules apply to a record, the first matching rule is used to set the log retention date.</inlineHelpText>
     <label>Execution Order</label>
     <precision>3</precision>
-    <required>false</required>
+    <required>true</required>
     <scale>0</scale>
     <securityClassification>Confidential</securityClassification>
     <type>Number</type>
