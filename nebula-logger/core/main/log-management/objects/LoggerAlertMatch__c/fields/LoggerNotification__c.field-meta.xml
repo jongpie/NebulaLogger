@@ -4,8 +4,8 @@
     <externalId>false</externalId>
     <label>Logger Notification</label>
     <referenceTo>LoggerNotification__c</referenceTo>
-    <relationshipLabel>Logger Notification Matching Log Entries</relationshipLabel>
-    <relationshipName>LoggerNotificationMatchingLogEntries</relationshipName>
+    <relationshipLabel>Logger Notification Matches</relationshipLabel>
+    <relationshipName>LoggerAlertMatches</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
     <trackHistory>false</trackHistory>

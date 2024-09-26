@@ -1879,7 +1879,7 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
-        <object>LoggerNotificationMatchingLogEntry__c</object>
+        <object>LoggerAlertMatch__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>

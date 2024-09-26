@@ -347,7 +347,7 @@
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Logger Notification Matching Log Entry Record Page</masterLabel>
-    <sobjectType>LoggerNotificationMatchingLogEntry__c</sobjectType>
+    <sobjectType>LoggerAlertMatch__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSimpleViewTemplate</name>
     </template>
