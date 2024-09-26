@@ -1703,52 +1703,52 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.CustomNotifierApexClass__c</field>
+        <field>LoggerAlertAction__c.CustomActionApexClass__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.EmailAddressRecipient__c</field>
+        <field>LoggerAlertAction__c.EmailAddressRecipient__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.EmailRecipientType__c</field>
+        <field>LoggerAlertAction__c.EmailRecipientType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.EmailUserRecipient__c</field>
+        <field>LoggerAlertAction__c.EmailUserRecipient__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.OpenTelemetryProvider__c</field>
+        <field>LoggerAlertAction__c.OpenTelemetryProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerNotificationRecipient__c.Recipient__c</field>
+        <field>LoggerAlertAction__c.ActionSummary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.SlackChannel__c</field>
+        <field>LoggerAlertAction__c.SlackChannel__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.SlackConnectionType__c</field>
+        <field>LoggerAlertAction__c.SlackConnectionType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.SlackNamedCredential__c</field>
+        <field>LoggerAlertAction__c.SlackNamedCredential__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationRecipient__c.SlackWebhookUrl__c</field>
+        <field>LoggerAlertAction__c.SlackWebhookUrl__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1888,7 +1888,7 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
-        <object>LoggerNotificationRecipient__c</object>
+        <object>LoggerAlertAction__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>

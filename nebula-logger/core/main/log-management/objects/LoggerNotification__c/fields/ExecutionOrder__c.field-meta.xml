@@ -10,6 +10,8 @@
     <required>true</required>
     <scale>0</scale>
     <securityClassification>Confidential</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Number</type>
     <unique>false</unique>
 </CustomField>

@@ -186,7 +186,7 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.CustomNotifierApexClass__c</fieldItem>
+                <fieldItem>Record.CustomActionApexClass__c</fieldItem>
                 <identifier>RecordCustomNotifierApexClass_cField</identifier>
                 <visibilityRule>
                     <criteria>
@@ -520,7 +520,7 @@
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Logger Notification Recipient Record Page</masterLabel>
-    <sobjectType>LoggerNotificationRecipient__c</sobjectType>
+    <sobjectType>LoggerAlertAction__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSimpleViewTemplate</name>
     </template>
