@@ -37,7 +37,7 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.LoggerNotification__c</fieldItem>
+                <fieldItem>Record.LoggerAlert__c</fieldItem>
                 <identifier>RecordLoggerNotification_cField</identifier>
             </fieldInstance>
         </itemInstances>
@@ -519,7 +519,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Logger Notification Recipient Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Logger Alert Action Record Page</masterLabel>
     <sobjectType>LoggerAlertAction__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSimpleViewTemplate</name>

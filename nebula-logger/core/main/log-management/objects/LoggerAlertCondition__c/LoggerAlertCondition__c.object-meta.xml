@@ -129,7 +129,7 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>LoggerNotificationConditionRecordPage</content>
+        <content>LoggerAlertConditionRecordPage</content>
         <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
@@ -137,7 +137,7 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>LoggerNotificationConditionRecordPage</content>
+        <content>LoggerAlertConditionRecordPage</content>
         <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
@@ -159,14 +159,14 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>ControlledByParent</externalSharingModel>
-    <label>Logger Notification Condition</label>
+    <label>Logger Alert Condition</label>
     <nameField>
         <displayFormat>{000000}</displayFormat>
-        <label>Logger Notification Condition Name</label>
+        <label>Logger Alert Condition Name</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Logger Notification Conditions</pluralLabel>
+    <pluralLabel>Logger Alert Conditions</pluralLabel>
     <searchLayouts />
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
