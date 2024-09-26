@@ -22,7 +22,7 @@
     <label>Nebula Logger</label>
     <navType>Console</navType>
     <tabs>standard-home</tabs>
-    <tabs>LoggerNotification__c</tabs>
+    <tabs>LoggerAlert__c</tabs>
     <tabs>LoggerScenario__c</tabs>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
@@ -46,7 +46,7 @@
             <tab>Log__c</tab>
         </mappings>
         <mappings>
-            <tab>LoggerNotification__c</tab>
+            <tab>LoggerAlert__c</tab>
         </mappings>
         <mappings>
             <tab>LoggerScenario__c</tab>

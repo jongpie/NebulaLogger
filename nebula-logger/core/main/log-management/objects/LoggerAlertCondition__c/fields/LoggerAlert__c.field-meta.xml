@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LoggerNotification__c</fullName>
+    <fullName>LoggerAlert__c</fullName>
     <externalId>false</externalId>
-    <label>Logger Notification</label>
-    <referenceTo>LoggerNotification__c</referenceTo>
-    <relationshipLabel>Logger Notification Matches</relationshipLabel>
-    <relationshipName>LoggerAlertMatches</relationshipName>
+    <label>Logger Alert</label>
+    <referenceTo>LoggerAlert__c</referenceTo>
+    <relationshipLabel>Logger Alert Conditions</relationshipLabel>
+    <relationshipName>LoggerAlertConditions</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
     <trackHistory>false</trackHistory>

@@ -252,11 +252,11 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
-                    <value>LoggerNotification__c.Id</value>
+                    <value>LoggerAlert__c.Id</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
-                    <value>LoggerNotificationConditions__r</value>
+                    <value>LoggerAlertConditions__r</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListDisplayType</name>
@@ -287,7 +287,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListLabel</name>
-                    <value>Notification Conditions</value>
+                    <value>Alert Conditions</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showActionBar</name>
@@ -433,7 +433,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
-                    <value>LoggerNotification__c.Id</value>
+                    <value>LoggerAlert__c.Id</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
@@ -449,7 +449,7 @@
                         <valueListItems>
                             <value>NAME</value>
                         </valueListItems>
-                        <valueListItems>
+                        <!-- <valueListItems>
                             <value>LogEntry__c.NAME</value>
                         </valueListItems>
                         <valueListItems>
@@ -463,12 +463,12 @@
                         </valueListItems>
                         <valueListItems>
                             <value>LogEntry__c.Timestamp__c</value>
-                        </valueListItems>
+                        </valueListItems> -->
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListLabel</name>
-                    <value>Logger Notification Matching Log Entries</value>
+                    <value>Logger Alert Matches</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showActionBar</name>
@@ -476,7 +476,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>sortFieldAlias</name>
-                    <value>LogEntry__c.Timestamp__c</value>
+                    <value>NAME</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>sortFieldOrder</name>
@@ -513,7 +513,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
-                    <value>LoggerNotification__c.Id</value>
+                    <value>LoggerAlert__c.Id</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
@@ -536,7 +536,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListLabel</name>
-                    <value>Logger Notification Recipients</value>
+                    <value>Logger Alert Actions</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showActionBar</name>
@@ -621,8 +621,8 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Nebula Logger: Logger Notification Record Page</masterLabel>
-    <sobjectType>LoggerNotification__c</sobjectType>
+    <masterLabel>Nebula Logger: Logger Alert Record Page</masterLabel>
+    <sobjectType>LoggerAlert__c</sobjectType>
     <template>
         <name>flexipage:recordHomeLeftSidebarTemplateDesktop</name>
     </template>

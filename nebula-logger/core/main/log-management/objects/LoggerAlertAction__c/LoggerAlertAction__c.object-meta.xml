@@ -159,14 +159,14 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>ControlledByParent</externalSharingModel>
-    <label>Logger Notification Recipient</label>
+    <label>Logger Alert Recipient</label>
     <nameField>
         <displayFormat>{000000}</displayFormat>
-        <label>Logger Notification Recipient</label>
+        <label>Logger Alert Recipient</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Logger Notification Recipients</pluralLabel>
+    <pluralLabel>Logger Alert Recipients</pluralLabel>
     <searchLayouts />
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>

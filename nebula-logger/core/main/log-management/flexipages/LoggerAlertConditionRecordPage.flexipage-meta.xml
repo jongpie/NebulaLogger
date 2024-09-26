@@ -52,8 +52,8 @@
         <name>sidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>LoggerNotificationConditionRecordPage</masterLabel>
-    <sobjectType>LoggerNotificationCondition__c</sobjectType>
+    <masterLabel>Nebula Logger: Logger Alert Condition Record Page</masterLabel>
+    <sobjectType>LoggerAlertCondition__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>
         <properties>

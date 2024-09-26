@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TotalMatches__c</fullName>
     <label>Total Matches</label>
-    <summaryForeignKey>LoggerAlertMatch__c.LoggerNotification__c</summaryForeignKey>
+    <summaryForeignKey>LoggerAlertMatch__c.LoggerAlert__c</summaryForeignKey>
     <summaryOperation>count</summaryOperation>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
