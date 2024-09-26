@@ -3,11 +3,11 @@
     <fullName>MatchingThresholdSummary__c</fullName>
     <externalId>false</externalId>
     <formula>IF(
-  IsMatchingThresholdEnabled__c,
-  &apos;Send a notification if there are &apos; 
-    + TEXT(MatchingThresholdRecordCount__c) + &apos; or more matches within a &apos; 
+  ISPICKVAL(Type__c, 'Threshold Match'),
+  &apos;Fire alert if there are &apos;
+    + TEXT(MatchingThresholdRecordCount__c) + &apos; or more matches within a &apos;
     + TEXT(MatchingThresholdTimePeriodIncrement__c) + &apos; &apos; + LOWER(TEXT(MatchingThresholdTimePeriodUnit__c)) + &apos; time period&apos;,
-  &apos;Send a notification for any matches&apos;
+  &apos;Fire alert for any matches&apos;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Matching Threshold Summary</label>
