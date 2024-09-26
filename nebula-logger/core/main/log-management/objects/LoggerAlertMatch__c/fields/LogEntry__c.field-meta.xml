@@ -5,7 +5,7 @@
     <label>Log Entry</label>
     <referenceTo>LogEntry__c</referenceTo>
     <relationshipLabel>Logger Notification Matching Log Entries</relationshipLabel>
-    <relationshipName>LoggerNotificationMatchingLogEntries</relationshipName>
+    <relationshipName>LoggerAlertMatchingLogEntries</relationshipName>
     <relationshipOrder>1</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
     <trackHistory>false</trackHistory>
