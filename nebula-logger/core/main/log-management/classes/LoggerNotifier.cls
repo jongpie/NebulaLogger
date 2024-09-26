@@ -6,12 +6,12 @@
 /**
  * @group Log Management
  * @description Service class used for orchestrating & sending notifications for logging data,
- *              based on org-specific rules configured in `LoggerNotification__c`
+ *              based on org-specific rules configured in `LoggerAlert__c`
  */
 public without sharing class LoggerNotifier {
   private static final LoggerNotifier INSTANCE = new LoggerNotifier();
 
-  private final List<LoggerNotification__c> notificationRules;
+  private final List<LoggerAlert__c> notificationRules;
   private final List<LoggerPlugin__mdt> pluginConfigurations;
 
   public static LoggerNotifier getInstance() {
@@ -20,7 +20,7 @@ public without sharing class LoggerNotifier {
 
   private LoggerNotifier() {
     // TODO improve where/how querying works, etc.
-    this.notificationRules = [SELECT Id FROM LoggerNotification__c WHERE IsEnabled__c = TRUE];
+    this.notificationRules = [SELECT Id FROM LoggerAlert__c WHERE IsEnabled__c = TRUE];
 
     // TODO add new fields on LoggerPlugin__mdt for notification Apex & Flow & NotificationExecutionOrder__c?
     this.pluginConfigurations = LoggerPlugin.getFilteredPluginConfigurations(
@@ -30,12 +30,12 @@ public without sharing class LoggerNotifier {
   }
 
   public void sendNotifications(List<SObject> loggingRecords) {
-    for (LoggerNotification__c notificationRule : this.notificationRules) {
+    for (LoggerAlert__c notificationRule : this.notificationRules) {
       this.executePlugins(notificationRule, loggingRecords);
     }
   }
 
-  private void executePlugins(LoggerNotification__c notificationRule, List<SObject> loggingRecords) {
+  private void executePlugins(LoggerAlert__c notificationRule, List<SObject> loggingRecords) {
     if (this.pluginConfigurations == null || this.pluginConfigurations.isEmpty()) {
       return;
     }
@@ -52,7 +52,7 @@ public without sharing class LoggerNotifier {
     // }
   }
 
-  private List<LoggerPlugin.Notifiable> getNotificationPlugin(LoggerNotification__c notificationRule) {
+  private List<LoggerPlugin.Notifiable> getNotificationPlugin(LoggerAlert__c notificationRule) {
     List<LoggerPlugin.Notifiable> notifiers = new List<LoggerPlugin.Notifiable>();
     for (LoggerAlertAction__c action : notificationRule.LoggerAlertActions__r) {
       String apexClassName;
@@ -152,10 +152,10 @@ public without sharing class LoggerNotifier {
   private class NotificationRuleEvaluator {
     private final List<NotificationCondition> parsedConditions;
 
-    public NotificationRuleEvaluator(LoggerNotification__c notificationRule, List<LoggerNotificationCondition__c> configuredConditions) {
+    public NotificationRuleEvaluator(LoggerAlert__c notificationRule, List<LoggerAlertCondition__c> configuredConditions) {
       this.parsedConditions = new List<NotificationCondition>();
 
-      for (LoggerNotificationCondition__c configuredCondition : configuredConditions) {
+      for (LoggerAlertCondition__c configuredCondition : configuredConditions) {
         NotificationCondition condition = new NotificationCondition(configuredCondition);
       }
     }
@@ -181,7 +181,7 @@ public without sharing class LoggerNotifier {
   }
 
   private class NotificationCondition {
-    public NotificationCondition(LoggerNotificationCondition__c configuredCondition) {
+    public NotificationCondition(LoggerAlertCondition__c configuredCondition) {
       // TODO
     }
 

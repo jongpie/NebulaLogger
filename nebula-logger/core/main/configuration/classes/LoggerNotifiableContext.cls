@@ -12,7 +12,7 @@
 @SuppressWarnings('PMD.ApexDoc')
 public without sharing class LoggerNotifiableContext {
   public List<SObject> loggingRecords;
-  public LoggerNotification__c notificationRule;
+  public LoggerAlert__c notificationRule;
   public transient Schema.SObjectType sobjectType;
   public String sobjectTypeName;
 
@@ -20,7 +20,7 @@ public without sharing class LoggerNotifiableContext {
    * @description Constructor used to set the details of the SObject Type & records for a notification
    * @param  loggingRecords      The `List<SObject>` of records that triggered the notification
    */
-  public LoggerNotifiableContext(LoggerNotification__c notificationRule, List<SObject> loggingRecords) {
+  public LoggerNotifiableContext(LoggerAlert__c notificationRule, List<SObject> loggingRecords) {
     this.loggingRecords = loggingRecords;
     this.notificationRule = notificationRule;
     this.sobjectType = loggingRecords.getSObjectType();
