@@ -437,7 +437,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
-                    <value>LoggerNotificationMatchingLogEntries__r</value>
+                    <value>LoggerAlertMatches__r</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListDisplayType</name>
