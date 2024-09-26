@@ -6,8 +6,11 @@
     <label>Type</label>
     <required>true</required>
     <securityClassification>Confidential</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
+        <controllingField>SourceSObjectType__c</controllingField>
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
@@ -22,5 +25,14 @@
                 <label>Threshold Match</label>
             </value>
         </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>LogEntryEvent__e</controllingFieldValue>
+            <controllingFieldValue>LogEntry__c</controllingFieldValue>
+            <valueName>Immediate Match</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>LogEntry__c</controllingFieldValue>
+            <valueName>Threshold Match</valueName>
+        </valueSettings>
     </valueSet>
 </CustomField>

@@ -6,6 +6,8 @@
     <label>Source SObject Type</label>
     <required>true</required>
     <securityClassification>Confidential</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>

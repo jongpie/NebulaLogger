@@ -54,9 +54,9 @@ public without sharing class LoggerNotifier {
 
   private List<LoggerPlugin.Notifiable> getNotificationPlugin(LoggerNotification__c notificationRule) {
     List<LoggerPlugin.Notifiable> notifiers = new List<LoggerPlugin.Notifiable>();
-    for (LoggerNotificationRecipient__c recipient : notificationRule.LoggerNotificationRecipients__r) {
+    for (LoggerAlertAction__c action : notificationRule.LoggerAlertActions__r) {
       String apexClassName;
-      switch on recipient.Type__c {
+      switch on action.Type__c {
         when 'Email' {
           apexClassName = 'TODO Email';
         }
