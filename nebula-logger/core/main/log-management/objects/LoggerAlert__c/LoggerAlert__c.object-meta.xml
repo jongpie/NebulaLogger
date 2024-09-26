@@ -129,7 +129,7 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>LoggerNotificationRecordPage</content>
+        <content>LoggerAlertRecordPage</content>
         <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
@@ -137,7 +137,7 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>LoggerNotificationRecordPage</content>
+        <content>LoggerAlertRecordPage</content>
         <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
@@ -147,7 +147,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment>LoggerNotificationCompactLayout</compactLayoutAssignment>
+    <compactLayoutAssignment>LoggerAlertCompactLayout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
@@ -159,13 +159,13 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <label>Logger Notification</label>
+    <label>Logger Alert</label>
     <nameField>
-        <label>Logger Notification Name</label>
+        <label>Logger Alert Name</label>
         <trackHistory>true</trackHistory>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Logger Notifications</pluralLabel>
+    <pluralLabel>Logger Alerts</pluralLabel>
     <searchLayouts>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>

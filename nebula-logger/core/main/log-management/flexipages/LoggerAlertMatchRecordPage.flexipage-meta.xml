@@ -67,14 +67,14 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.LoggerNotification__c</fieldItem>
-                <identifier>RecordLoggerNotification_cField</identifier>
+                <fieldItem>Record.LoggerAlert__c</fieldItem>
+                <identifier>RecordLoggerAlert_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.LoggerNotification__r.OwnerId</fieldItem>
-                <identifier>RecordLoggerNotification_rOwnerIdField</identifier>
+                <fieldItem>Record.LoggerAlert__r.OwnerId</fieldItem>
+                <identifier>RecordLoggerAlert_rOwnerIdField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-6275a71a-f032-4ac2-b93d-14d34d2a0d46</name>
@@ -245,7 +245,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Notification Details</value>
+                    <value>Alert Details</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection</identifier>
@@ -346,7 +346,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Nebula Logger: Alert Match Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Logger Alert Match Record Page</masterLabel>
     <sobjectType>LoggerAlertMatch__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSimpleViewTemplate</name>

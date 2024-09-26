@@ -5,31 +5,31 @@
 
 /**
  * @group Log Management
- * @description Handles trigger events for the `LoggerNotification__c` object
+ * @description Handles trigger events for the `LoggerAlert__c` object
  */
-public without sharing class LoggerNotificationHandler extends LoggerSObjectHandler {
+public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
   /**
    * @description Returns SObject Type that the handler is responsible for processing
    * @return      The instance of `SObjectType`
    */
   public override Schema.SObjectType getSObjectType() {
-    return Schema.LoggerNotification__c.SObjectType;
+    return Schema.LoggerAlert__c.SObjectType;
   }
 
   protected override void executeBeforeInsert(List<SObject> triggerNew) {
-    List<LoggerNotification__c> loggerNotifications = (List<LoggerNotification__c>) triggerNew;
+    List<LoggerAlert__c> loggerNotifications = (List<LoggerAlert__c>) triggerNew;
 
     setOrganizationId(loggerNotifications);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
-    List<LoggerNotification__c> loggerNotifications = (List<LoggerNotification__c>) triggerNewMap.values();
+    List<LoggerAlert__c> loggerNotifications = (List<LoggerAlert__c>) triggerNewMap.values();
 
     setOrganizationId(loggerNotifications);
   }
 
-  private static void setOrganizationId(List<LoggerNotification__c> loggerNotifications) {
-    for (LoggerNotification__c loggerNotification : loggerNotifications) {
+  private static void setOrganizationId(List<LoggerAlert__c> loggerNotifications) {
+    for (LoggerAlert__c loggerNotification : loggerNotifications) {
       loggerNotification.OriginOrganizationId__c = System.UserInfo.getOrganizationId();
     }
   }
