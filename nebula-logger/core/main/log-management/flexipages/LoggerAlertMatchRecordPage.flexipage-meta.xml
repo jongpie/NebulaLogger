@@ -346,7 +346,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Logger Notification Matching Log Entry Record Page</masterLabel>
+    <masterLabel>Nebula Logger: Alert Match Record Page</masterLabel>
     <sobjectType>LoggerAlertMatch__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSimpleViewTemplate</name>

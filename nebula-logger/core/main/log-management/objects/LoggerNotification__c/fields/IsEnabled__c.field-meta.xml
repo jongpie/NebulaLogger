@@ -6,5 +6,7 @@
     <defaultValue>true</defaultValue>
     <label>Is Enabled</label>
     <securityClassification>Confidential</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
