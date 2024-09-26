@@ -1663,11 +1663,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerNotificationCondition__c.SortOrder__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>LoggerNotificationCondition__c.Value__c</field>
         <readable>true</readable>
     </fieldPermissions>
