@@ -2,11 +2,11 @@
 <CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LoggerAlertCompactLayout </fullName>
     <fields>Name</fields>
+    <fields>SourceSObjectType__c</fields>
+    <fields>Type__c</fields>
     <fields>IsEnabled__c</fields>
     <fields>ExecutionOrder__c</fields>
     <fields>OwnerId</fields>
-    <fields>ConditionLogicType__c</fields>
-    <fields>CustomConditionLogic__c</fields>
     <fields>CreatedById</fields>
     <fields>LastModifiedById</fields>
     <label>Logger Alert Compact Layout</label>
