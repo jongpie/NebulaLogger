@@ -20,17 +20,28 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
     List<LoggerAlert__c> loggerNotifications = (List<LoggerAlert__c>) triggerNew;
 
     setOrganizationId(loggerNotifications);
+    clearThresholdFields(loggerNotifications);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
     List<LoggerAlert__c> loggerNotifications = (List<LoggerAlert__c>) triggerNewMap.values();
 
     setOrganizationId(loggerNotifications);
+    clearThresholdFields(loggerNotifications);
   }
 
   private static void setOrganizationId(List<LoggerAlert__c> loggerNotifications) {
     for (LoggerAlert__c loggerNotification : loggerNotifications) {
       loggerNotification.OriginOrganizationId__c = System.UserInfo.getOrganizationId();
+    }
+  }
+  private static void clearThresholdFields(List<LoggerAlert__c> loggerNotifications) {
+    for (LoggerAlert__c loggerNotification : loggerNotifications) {
+      if (loggerNotification.Type__c != 'Threshold Match') {
+        loggerNotification.MatchingThresholdRecordCount__c = null;
+        loggerNotification.MatchingThresholdTimePeriodIncrement__c = null;
+        loggerNotification.MatchingThresholdTimePeriodUnit__c = null;
+      }
     }
   }
 }
