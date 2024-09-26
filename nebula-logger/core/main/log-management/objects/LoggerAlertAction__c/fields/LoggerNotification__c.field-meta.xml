@@ -5,7 +5,7 @@
     <label>Logger Notification</label>
     <referenceTo>LoggerNotification__c</referenceTo>
     <relationshipLabel>Logger Notification Recipients</relationshipLabel>
-    <relationshipName>LoggerNotificationRecipients</relationshipName>
+    <relationshipName>LoggerAlertActions</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
     <trackHistory>false</trackHistory>
