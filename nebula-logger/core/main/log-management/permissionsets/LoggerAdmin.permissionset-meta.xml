@@ -573,6 +573,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.HttpRequestEndpointAddress__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.HttpRequestHeaderKeys__c</field>
         <readable>true</readable>
     </fieldPermissions>

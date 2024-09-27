@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.11.NEXT",
-      "versionName": "Updated Behavior of Logger.setAsyncContext()",
-      "versionDescription": "Updated the behavior of Logger.setAsyncContext() to only set the context the first time a non-null context value is provided. Previously, subsequent calls would overwrite the context value, which wasn't really the intended behaviour.",
+      "versionNumber": "4.14.12.NEXT",
+      "versionName": "Replaced HttpRequestEndpoint__c with HttpRequestEndpointAddress__c",
+      "versionDescription": "Deprecated the HttpRequestEndpoint__c fields on LogEntryEvent__e and LogEntry__c, and replaced them with new HttpRequestEndpointAddress__c fields that have a much longer max length (2,000 vs 255)",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -196,6 +196,7 @@
     "Nebula Logger - Core@4.14.9-bugfix:-apex-code-snippets-auto-truncated": "04t5Y0000015oSQQAY",
     "Nebula Logger - Core@4.14.10-new-callablelogger-apex-class": "04t5Y0000015oTdQAI",
     "Nebula Logger - Core@4.14.11-updated-behavior-of-logger.setasynccontext()": "04t5Y0000015oUgQAI",
+    "Nebula Logger - Core@4.14.12-replaced-httprequestendpoint__c-with-httprequestendpointaddress__c": "04t5Y0000015oV0QAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

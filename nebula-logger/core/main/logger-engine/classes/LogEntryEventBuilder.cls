@@ -502,7 +502,11 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.HttpRequestBody__c = cleanedRequestBody;
     this.logEntryEvent.HttpRequestBodyMasked__c = requestBodyMasked;
     this.logEntryEvent.HttpRequestCompressed__c = request.getCompressed();
-    this.logEntryEvent.HttpRequestEndpoint__c = request.getEndpoint();
+    this.logEntryEvent.HttpRequestEndpoint__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestEndpoint__c, request.getEndpoint());
+    this.logEntryEvent.HttpRequestEndpointAddress__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.HttpRequestEndpointAddress__c,
+      request.getEndpoint()
+    );
     this.logEntryEvent.HttpRequestHeaderKeys__c = formattedHeaderKeysString;
     this.logEntryEvent.HttpRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestHeaders__c, formattedHeadersString);
     this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
