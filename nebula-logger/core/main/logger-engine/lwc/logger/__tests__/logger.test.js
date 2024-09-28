@@ -162,7 +162,31 @@ describe('logger lwc import tests', () => {
     expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
   });
 
-  it('sets multiple custom fields when using recommended import approach', async () => {
+  it('sets multiple custom component fields on all entries when using recommended import approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = await createLogger();
+    await logger.getUserSettings();
+    const logEntryBuilder = logger.info('example log entry');
+    const logEntry = logEntryBuilder.getComponentLogEntry();
+    const firstFakeFieldName = 'SomeField__c';
+    const firstFieldMockValue = 'something';
+    const secondFakeFieldName = 'AnotherField__c';
+    const secondFieldMockValue = 'another value';
+    expect(logEntry.fieldToValue[firstFakeFieldName]).toBeFalsy();
+    expect(logEntry.fieldToValue[secondFakeFieldName]).toBeFalsy();
+
+    logger.setField({
+      [firstFakeFieldName]: firstFieldMockValue,
+      [secondFakeFieldName]: secondFieldMockValue
+    });
+    logger.saveLog();
+    await Promise.resolve('save logs');
+
+    expect(logEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
+    expect(logEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
+  });
+
+  it('sets multiple custom entry fields on a single entry when using recommended import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = await createLogger();
     await logger.getUserSettings();

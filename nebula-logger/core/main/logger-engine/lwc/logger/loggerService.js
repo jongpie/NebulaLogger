@@ -12,9 +12,21 @@ const LoggerService = class {
   #componentLogEntries = [];
   #settings;
   #scenario;
+  #componentFieldToValue = {};
 
   getUserSettings() {
     return this.#settings;
+  }
+
+  /**
+   * @description Sets multiple field values on every generated `LogEntryEvent__e` record
+   * @param  {Object} fieldToValue An object containing the custom field name as a key, with the corresponding value to store.
+   *                      Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}`
+   */
+  setField(fieldToValue) {
+    if (!!fieldToValue && typeof fieldToValue === 'object' && !Array.isArray(fieldToValue)) {
+      Object.assign(this.#componentFieldToValue, fieldToValue);
+    }
   }
 
   setScenario(scenario) {
@@ -76,6 +88,9 @@ const LoggerService = class {
 
     try {
       const logEntriesToSave = [...this.#componentLogEntries];
+      logEntriesToSave.forEach(logEntry => {
+        Object.assign(logEntry.fieldToValue, this.#componentFieldToValue);
+      });
       // this is an attempt to only flush the buffer for log entries that we are sending to Apex
       // rather than any that could be added if the saveLog call isn't awaited properly
       this.flushBuffer();
