@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.12.NEXT",
-      "versionName": "Replaced HttpRequestEndpoint__c with HttpRequestEndpointAddress__c",
-      "versionDescription": "Deprecated the HttpRequestEndpoint__c fields on LogEntryEvent__e and LogEntry__c, and replaced them with new HttpRequestEndpointAddress__c fields that have a much longer max length (2,000 vs 255)",
+      "versionNumber": "4.14.13.NEXT",
+      "versionName": "New getLogger() JS Function",
+      "versionDescription": "Added a new function getLogger() in c/logger that can be called synchronously (createLogger() was async). This simplifies how developers use it, and avoids some lingering JS stack trace issues that occur in async functions.",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"

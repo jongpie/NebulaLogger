@@ -4,13 +4,13 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, api } from 'lwc';
-import { createLoggerService } from './loggerService';
+import { createLoggerService, getLoggerService } from './loggerService';
 
 export default class Logger extends LightningElement {
   #loggerService;
 
-  async connectedCallback() {
-    this.#loggerService = await createLoggerService();
+  connectedCallback() {
+    this.#loggerService = getLoggerService();
   }
 
   /**
@@ -145,8 +145,22 @@ export default class Logger extends LightningElement {
 }
 
 /**
- * @return {Promise<LoggerService>} a LoggerService instance
+ * @description Deprecated - use `getLogger()` instead
+ *              Async function that returns a fully-loaded logger service.
+ *              Requires some code to be executed async, so the service is not immediately available.
+ *              Example: `const logger = await createLogger();`
+ * @return {Promise<LoggerService>} A Promise that resolves an instance of `LoggerService`
  */
 const createLogger = createLoggerService;
 
-export { createLogger };
+/**
+ * @description Recommended approach
+ *              Synchronous function that returns a ready-to-use logger service.
+ *              Internally, some code is still executed async, but the service can immediately
+ *              be used, without awaiting a Promise
+ *              Example: `const logger = getLogger();`
+ * @return {LoggerService} An instance of `LoggerService`
+ */
+const getLogger = getLoggerService;
+
+export { createLogger, getLogger };

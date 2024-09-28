@@ -5,7 +5,7 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, Process Builder & integrations.
 
-## Unlocked Package - v4.14.12
+## Unlocked Package - v4.14.13
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oV0QAI)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oV0QAI)
@@ -157,14 +157,13 @@ This results in 1 `Log__c` record with several related `LogEntry__c` records.
 For lightning component developers, the `logger` LWC provides very similar functionality that is offered in Apex. Simply incorporate the `logger` LWC into your component, and call the desired logging methods within your code.
 
 ```javascript
-// For LWC, import logger's createLogger() function into your component
-import { createLogger } from 'c/logger';
+// For LWC, import logger's getLogger() function into your component
+import { getLogger } from 'c/logger';
 
-export default class LoggerLWCImportDemo extends LightningElement {
-  logger;
+export default class LoggerDemo extends LightningElement {
+  logger = getLogger();
 
-  async connectedCallback() {
-    this.logger = await createLogger();
+  connectedCallback() {
     this.logger.info('Hello, world');
     this.logger.saveLog();
   }
@@ -432,21 +431,31 @@ Each `LogEntry__c` record automatically stores the component's type ('Aura' or '
 
 #### Example LWC Usage
 
-For lightning component developers, the `logger` LWC provides very similar functionality that is offered in Apex. Simply import the `logger` LWC in your component, and call the desired logging methods within your code.
+For lightning component developers, the `logger` LWC provides very similar functionality that is offered in Apex. Simply import the `getLogger` function in your component, use it to initialize an instance once per component, and call the desired logging methods within your code.
 
 ```javascript
 // For LWC, import logger's createLogger() function into your component
-import { createLogger } from 'c/logger';
+import { getLogger } from 'c/logger';
+import callSomeApexMethod from '@salesforce/apex/LoggerLWCDemoController.callSomeApexMethod';
 
-export default class LoggerLWCImportDemo extends LightningElement {
-  logger;
+export default class LoggerDemo extends LightningElement {
+  // Call getLogger() once per component
+  logger = getLogger();
 
   async connectedCallback() {
-    // Call createLogger() once per component
-    this.logger = await createLogger();
-
     this.logger.setScenario('some scenario');
-    this.logger.finer('initialized demo LWC');
+    this.logger.finer('initialized demo LWC, using async connectedCallback');
+  }
+
+  @wire(callSomeApexMethod)
+  wiredCallSomeApexMethod({ error, data }) {
+    this.logger.info('logging inside a wire function');
+    if (data) {
+      this.logger.info('wire function return value: ' + data);
+    }
+    if (error) {
+      this.logger.error('wire function error: ' + JSON.stringify(error));
+    }
   }
 
   logSomeStuff() {
@@ -467,7 +476,10 @@ export default class LoggerLWCImportDemo extends LightningElement {
       this.logger.debug('TODO - finishing implementation of doSomething()').addTag('another tag');
       // TODO add the function's implementation below
     } catch (thrownError) {
-      this.logger.error('An unexpected error log entry using Nebula Logger with logging level == ERROR').setError(thrownError).addTag('some important tag');
+      this.logger
+        .error('An unexpected error log entry using Nebula Logger with logging level == ERROR')
+        .setExceptionDetails(thrownError)
+        .addTag('some important tag');
     } finally {
       this.logger.saveLog();
     }
@@ -660,13 +672,12 @@ The first step is to add a field to the platform event `LogEntryEvent__e`
 - In JavaScript, populate your field(s) by calling the instance function `LogEntryEventBuilder.setField(Object fieldToValue)`
 
   ```javascript
-  import { createLogger } from 'c/logger';
+  import { getLogger } from 'c/logger';
 
-  export default class LoggerLWCImportDemo extends LightningElement {
-    logger;
+  export default class loggerLWCGetLoggerImportDemo extends LightningElement {
+    logger = getLogger();
 
     async connectedCallback() {
-      this.logger = await createLogger();
       this.logger.info('Hello, world').setField({ SomeCustomTextField__c: 'some text value', SomeCustomNumbertimeField__c: 123 });
       this.logger.saveLog();
     }

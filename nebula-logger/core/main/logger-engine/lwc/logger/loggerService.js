@@ -6,13 +6,16 @@
 import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
+import { TaskQueue } from './taskQueue';
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LoggerService = class {
   #componentLogEntries = [];
   #settings;
   #scenario;
+  #taskQueue = new TaskQueue();
 
+  // TODO deprecate? Or make it async?
   getUserSettings() {
     return this.#settings;
   }
@@ -22,6 +25,12 @@ const LoggerService = class {
     this.#componentLogEntries.forEach(logEntry => {
       logEntry.scenario = this.#scenario;
     });
+  }
+
+  exception(message, exception, originStackTraceError) {
+    this.error(message, originStackTraceError).setExceptionDetails(exception);
+    this.saveLog();
+    throw exception;
   }
 
   error(message, originStackTraceError) {
@@ -66,71 +75,97 @@ const LoggerService = class {
    * on subsequent saveLog() calls
    */
   async saveLog(saveMethodName) {
-    if (this.#componentLogEntries.length === 0) {
-      return;
-    }
-
-    if (!saveMethodName && this.#settings?.defaultSaveMethodName) {
-      saveMethodName = this.#settings.defaultSaveMethodName;
-    }
-
-    try {
-      const logEntriesToSave = [...this.#componentLogEntries];
-      // this is an attempt to only flush the buffer for log entries that we are sending to Apex
-      // rather than any that could be added if the saveLog call isn't awaited properly
-      this.flushBuffer();
-      await saveComponentLogEntries({
-        componentLogEntries: logEntriesToSave,
-        saveMethodName
-      });
-    } catch (error) {
-      if (this.#settings.isConsoleLoggingEnabled === true) {
-        /* eslint-disable-next-line no-console */
-        console.error(error);
-        /* eslint-disable-next-line no-console */
-        console.error(this.#componentLogEntries);
+    const saveLogTask = async providedSaveMethodName => {
+      if (this.#componentLogEntries.length === 0) {
+        return;
       }
-      throw error;
-    }
+
+      if (!providedSaveMethodName && this.#settings?.defaultSaveMethodName) {
+        providedSaveMethodName = this.#settings.defaultSaveMethodName;
+      }
+
+      try {
+        const logEntriesToSave = [...this.#componentLogEntries];
+        // this is an attempt to only flush the buffer for log entries that we are sending to Apex
+        // rather than any that could be added if the saveLog call isn't awaited properly
+        this.flushBuffer();
+        await saveComponentLogEntries({
+          componentLogEntries: logEntriesToSave,
+          providedSaveMethodName
+        });
+      } catch (error) {
+        if (this.#settings.isConsoleLoggingEnabled === true) {
+          /* eslint-disable-next-line no-console */
+          console.error(error);
+          /* eslint-disable-next-line no-console */
+          console.error(this.#componentLogEntries);
+        }
+        throw error;
+      }
+    };
+    this.#taskQueue.enqueueTask(saveLogTask, saveMethodName);
+    this.#taskQueue.executeTasks();
   }
 
   async _loadSettingsFromServer() {
-    try {
-      const settings = await getSettings();
-      this.#settings = Object.freeze({
-        ...settings,
-        supportedLoggingLevels: Object.freeze(settings.supportedLoggingLevels),
-        userLoggingLevel: Object.freeze(settings.userLoggingLevel)
-      });
-    } catch (error) {
-      /* eslint-disable-next-line no-console */
-      console.error(error);
-      throw error;
-    }
-  }
-
-  _meetsUserLoggingLevel(logEntryLoggingLevel) {
-    return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings?.supportedLoggingLevels[logEntryLoggingLevel];
+    const loadSettingsTask = async () => {
+      try {
+        const retrievedSettings = await getSettings();
+        this.#settings = Object.freeze({
+          ...retrievedSettings,
+          supportedLoggingLevels: Object.freeze(retrievedSettings.supportedLoggingLevels),
+          userLoggingLevel: Object.freeze(retrievedSettings.userLoggingLevel)
+        });
+      } catch (error) {
+        /* eslint-disable-next-line no-console */
+        console.error(error);
+        throw error;
+      }
+    };
+    this.#taskQueue.enqueueTask(loadSettingsTask);
+    await this.#taskQueue.executeTasks();
   }
 
   _newEntry(loggingLevel, message, originStackTraceError) {
     originStackTraceError = originStackTraceError ?? new Error();
-    const logEntryBuilder = newLogEntry(loggingLevel, this.#settings?.isConsoleLoggingEnabled, this.#settings?.isLightningLoggerEnabled)
-      .parseStackTrace(originStackTraceError)
-      .setMessage(message)
-      .setScenario(this.#scenario);
-    if (this._meetsUserLoggingLevel(loggingLevel)) {
-      this.#componentLogEntries.push(logEntryBuilder.getComponentLogEntry());
-    }
+    const logEntryBuilder = newLogEntry(loggingLevel).parseStackTrace(originStackTraceError).setMessage(message).setScenario(this.#scenario);
+    const logEntry = logEntryBuilder.getComponentLogEntry();
+    logEntry.scenario = this.#scenario;
+
+    const loggingLevelCheckTask = providedLoggingLevel => {
+      if (this._meetsUserLoggingLevel(providedLoggingLevel)) {
+        this.#componentLogEntries.push(logEntry);
+
+        if (this.#settings.isConsoleLoggingEnabled) {
+          logEntryBuilder.logToConsole();
+        }
+        if (this.#settings.isLightningLoggerEnabled) {
+          logEntryBuilder.logToLightningLogger();
+        }
+      }
+    };
+    this.#taskQueue.enqueueTask(loggingLevelCheckTask, loggingLevel);
+    this.#taskQueue.executeTasks();
 
     return logEntryBuilder;
   }
+
+  _meetsUserLoggingLevel(logEntryLoggingLevel) {
+    return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings.supportedLoggingLevels[logEntryLoggingLevel];
+  }
+};
+
+const getLoggerService = function () {
+  const service = new LoggerService();
+  service._loadSettingsFromServer();
+  return service;
 };
 
 const createLoggerService = async function () {
   const service = new LoggerService();
   await service._loadSettingsFromServer();
+  await Promise.resolve();
   return service;
 };
 
-export { createLoggerService };
+export { createLoggerService, getLoggerService };

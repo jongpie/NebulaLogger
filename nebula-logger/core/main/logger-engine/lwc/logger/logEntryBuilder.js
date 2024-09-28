@@ -2,11 +2,12 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
+
 import FORM_FACTOR from '@salesforce/client/formFactor';
 import { log as lightningLog } from 'lightning/logger';
 import { LoggerStackTrace } from './loggerStackTrace';
 
-const CURRENT_VERSION_NUMBER = 'v4.14.12';
+const CURRENT_VERSION_NUMBER = 'v4.14.13';
 
 const LOGGING_LEVEL_EMOJIS = {
   ERROR: '⛔',
@@ -49,20 +50,14 @@ const ComponentLogEntry = class {
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 const LogEntryBuilder = class {
   #componentLogEntry;
-  #isConsoleLoggingEnabled;
-  #isLightningLoggerEnabled;
 
   /**
    * @description Constructor used to generate each JavaScript-based log entry event
    *              This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
    * @param  {String} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
-   * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
-   * @param  {Boolean} isLightningLoggerEnabled Determines if `lightning-logger` LWC is called
    */
-  constructor(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled) {
+  constructor(loggingLevel) {
     this.#componentLogEntry = new ComponentLogEntry(loggingLevel);
-    this.#isConsoleLoggingEnabled = isConsoleLoggingEnabled;
-    this.#isLightningLoggerEnabled = isLightningLoggerEnabled;
   }
 
   /**
@@ -72,8 +67,6 @@ const LogEntryBuilder = class {
    */
   setMessage(message) {
     this.#componentLogEntry.message = message;
-    this._logToConsole();
-    this._logToLightningLogger();
     return this;
   }
 
@@ -108,24 +101,38 @@ const LogEntryBuilder = class {
   }
 
   /**
-   * @description Sets the log entry event's exception fields
+   * @description Deprecated - use `setExceptionDetails(exception)` instead
+   *              The name of this method is very similar to the logger function logger.error(),
+   *              resulting in confusion when used together:
+   *                `logger.error('Unexpected error').setError(someErrorObject);`
+   *              The new `setExceptionDetails(exception)` function provides the exact same functionality,
+   *              but aligns with the Apex builder's method name, and helps reduce the confusion with `logger.error()`
    * @param {Error} error The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use
    * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
    */
   setError(error) {
-    if (!error) {
+    return this.setExceptionDetails(error);
+  }
+
+  /**
+   * @description Sets the log entry event's exception fields
+   * @param {Error} exception The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use
+   * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
+   */
+  setExceptionDetails(exception) {
+    if (!exception) {
       return this;
     }
 
     this.#componentLogEntry.error = {};
-    if (error.body) {
-      this.#componentLogEntry.error.message = error.body.message;
-      this.#componentLogEntry.error.stackTrace = error.body.stackTrace;
-      this.#componentLogEntry.error.type = error.body.exceptionType;
+    if (exception.body) {
+      this.#componentLogEntry.error.message = exception.body.message;
+      this.#componentLogEntry.error.stackTrace = exception.body.stackTrace;
+      this.#componentLogEntry.error.type = exception.body.exceptionType;
     } else {
-      this.#componentLogEntry.error.message = error.message;
-      this.#componentLogEntry.error.stackTrace = new LoggerStackTrace().parse(error);
-      this.#componentLogEntry.error.type = 'JavaScript.' + error.name;
+      this.#componentLogEntry.error.message = exception.message;
+      this.#componentLogEntry.error.stackTrace = new LoggerStackTrace().parse(exception);
+      this.#componentLogEntry.error.type = 'JavaScript.' + exception.name;
     }
     return this;
   }
@@ -195,11 +202,7 @@ const LogEntryBuilder = class {
   }
 
   /* eslint-disable no-console */
-  _logToConsole() {
-    if (!this.#isConsoleLoggingEnabled) {
-      return;
-    }
-
+  logToConsole() {
     const consoleMessagePrefix = `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `;
     const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
     let consoleLoggingFunction;
@@ -244,15 +247,13 @@ const LogEntryBuilder = class {
     );
   }
 
-  _logToLightningLogger() {
-    if (this.#isLightningLoggerEnabled) {
-      lightningLog(this.#componentLogEntry);
-    }
+  logToLightningLogger() {
+    lightningLog(this.#componentLogEntry);
   }
 };
 
 let hasInitialized = false;
-export function newLogEntry(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled) {
+export function newLogEntry(loggingLevel) {
   if (!hasInitialized) {
     const consoleMessagePrefix = `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `;
     const consoleFormatting = 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;';
@@ -262,5 +263,5 @@ export function newLogEntry(loggingLevel, isConsoleLoggingEnabled, isLightningLo
 
     hasInitialized = true;
   }
-  return new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled);
+  return new LogEntryBuilder(loggingLevel);
 }

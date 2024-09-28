@@ -5,12 +5,13 @@
 **Kind**: global class
 
 - [LogEntryBuilder](#LogEntryBuilder)
-  - [new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled)](#new_LogEntryBuilder_new)
+  - [new LogEntryBuilder(loggingLevel)](#new_LogEntryBuilder_new)
   - [.setMessage(message)](#LogEntryBuilder+setMessage) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setScenario(scenario)](#LogEntryBuilder+setScenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.setExceptionDetails(exception)](#LogEntryBuilder+setExceptionDetails) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setField(fieldToValue)](#LogEntryBuilder+setField) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.parseStackTrace(error)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
@@ -19,16 +20,14 @@
 
 <a name="new_LogEntryBuilder_new"></a>
 
-### new LogEntryBuilder(loggingLevel, isConsoleLoggingEnabled, isLightningLoggerEnabled)
+### new LogEntryBuilder(loggingLevel)
 
 Constructor used to generate each JavaScript-based log entry event
 This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
 
-| Param                    | Type                 | Description                                                                     |
-| ------------------------ | -------------------- | ------------------------------------------------------------------------------- |
-| loggingLevel             | <code>String</code>  | The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e` |
-| isConsoleLoggingEnabled  | <code>Boolean</code> | Determines if `console.log()` methods are execute                               |
-| isLightningLoggerEnabled | <code>Boolean</code> | Determines if `lightning-logger` LWC is called                                  |
+| Param        | Type                | Description                                                                     |
+| ------------ | ------------------- | ------------------------------------------------------------------------------- |
+| loggingLevel | <code>String</code> | The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e` |
 
 <a name="LogEntryBuilder+setMessage"></a>
 
@@ -86,7 +85,12 @@ Sets the log entry event's scenario field
 
 ### logEntryBuilder.setError(error) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
-Sets the log entry event's exception fields
+Deprecated - use `setExceptionDetails(exception)` instead
+The name of this method is very similar to the logger function logger.error(),
+resulting in confusion when used together:
+`logger.error('Unexpected error').setError(someErrorObject);`
+The new `setExceptionDetails(exception)` function provides the exact same functionality,
+but aligns with the Apex builder's method name, and helps reduce the confusion with `logger.error()`
 
 **Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
@@ -94,6 +98,19 @@ Sets the log entry event's exception fields
 | Param | Type               | Description                                                                      |
 | ----- | ------------------ | -------------------------------------------------------------------------------- |
 | error | <code>Error</code> | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
+
+<a name="LogEntryBuilder+setExceptionDetails"></a>
+
+### logEntryBuilder.setExceptionDetails(exception) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+
+Sets the log entry event's exception fields
+
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+
+| Param     | Type               | Description                                                                      |
+| --------- | ------------------ | -------------------------------------------------------------------------------- |
+| exception | <code>Error</code> | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
 
 <a name="LogEntryBuilder+setField"></a>
 
