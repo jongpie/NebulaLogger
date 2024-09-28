@@ -45,7 +45,7 @@ export default class LoggerLWCEmbedDemo extends LightningElement {
         console.log('and a stack trace', new Error().stack);
         const entry = logger
           .error(this.message)
-          .setError(error)
+          .setExceptionDetails(error)
           .setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' })
           .addTags(this.tagsString.split(','));
         console.log('entry==', JSON.parse(JSON.stringify(entry)));
@@ -57,7 +57,11 @@ export default class LoggerLWCEmbedDemo extends LightningElement {
     const logger = this.template.querySelector(LOGGER_NAME);
     console.log(logger);
     const someError = new TypeError('oops');
-    logger.error(this.message).setError(someError).setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' }).addTags(this.tagsString.split(','));
+    logger
+      .error(this.message)
+      .setExceptionDetails(someError)
+      .setField({ SomeLogEntryField__c: 'some text from loggerLWCEmbedDemo' })
+      .addTags(this.tagsString.split(','));
   }
 
   logWarnExample() {
