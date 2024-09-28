@@ -1019,6 +1019,66 @@ private class Logger_Tests {
     System.Assert.isNull(Logger.getParentLogTransactionId());
   }
 
+  // Start setField() test methods
+  @IsTest
+  static void it_should_set_single_transaction_field_on_all_entries_when_events_published() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    // HttpRequestBody__c is used as an example here since it's provided out of the box, and doesn't
+    // have a default value set.
+    // But realisticially, this functionality is intended to be used with custom fields that are added to
+    // Nebula Logger's data model.
+    Schema.SObjectField field = Schema.LogEntryEvent__e.HttpRequestBody__c;
+    String fieldValue = 'Some_value';
+    Integer countOfEntriesToAdd = 3;
+
+    for (Integer i = 0; i < countOfEntriesToAdd; i++) {
+      LogEntryEventBuilder builder = Logger.info('hello, world');
+      System.Assert.isNull(builder.getLogEntryEvent().get(field), 'Field ' + field + ' should be null until the event is published');
+      // Call setField() after some entries have been added (and before other entries are added)
+      // to ensure that all entries have the fields populated on publish
+      if (i == 1) {
+        Logger.setField(field, fieldValue);
+      }
+    }
+    Logger.saveLog();
+
+    System.Assert.areEqual(countOfEntriesToAdd, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    for (LogEntryEvent__e publishedLogEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
+      System.Assert.areEqual(fieldValue, publishedLogEntryEvent.get(field));
+    }
+  }
+
+  @IsTest
+  static void it_should_set_map_of_transaction_fields_on_all_entries_when_events_published() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    // HttpRequestBody__c is used as an example here since it's provided out of the box, and doesn't
+    // have a default value set.
+    // But realisticially, this functionality is intended to be used with custom fields that are added to
+    // Nebula Logger's data model.
+    Schema.SObjectField field = Schema.LogEntryEvent__e.HttpRequestBody__c;
+    String fieldValue = 'Some_value';
+    Integer countOfEntriesToAdd = 3;
+
+    for (Integer i = 0; i < countOfEntriesToAdd; i++) {
+      LogEntryEventBuilder builder = Logger.info('hello, world');
+      System.Assert.isNull(builder.getLogEntryEvent().get(field), 'Field ' + field + ' should be null until the event is published');
+      // Call setField() after some entries have been added (and before other entries are added)
+      // to ensure that all entries have the fields populated on publish
+      if (i == 1) {
+        Logger.setField(new Map<Schema.SObjectField, Object>{ field => fieldValue });
+      }
+    }
+    Logger.saveLog();
+
+    System.Assert.areEqual(countOfEntriesToAdd, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    for (LogEntryEvent__e publishedLogEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
+      System.Assert.areEqual(fieldValue, publishedLogEntryEvent.get(field));
+    }
+  }
+  // End setField() test methods
+
   @IsTest
   static void it_should_return_quiddity_level() {
     List<System.Quiddity> acceptableDefaultQuidditiesForTests = new List<System.Quiddity>{
