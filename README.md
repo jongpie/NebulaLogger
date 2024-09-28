@@ -5,7 +5,7 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
 
-## Unlocked Package - v4.14.13
+## Unlocked Package - v4.14.14
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oW3QAI)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015oW3QAI)
@@ -657,28 +657,55 @@ The first step is to add a field to the platform event `LogEntryEvent__e`
 
     ![Custom Field on LogEntryEvent__e](./images/custom-field-log-entry-event.png)
 
-- In Apex, populate your field(s) by calling the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
+- In Apex, you have 2 ways to populate your custom fields
 
-  ```apex Logger.info('hello, world')
-      // Set a single field
-      .setField(LogEntryEvent__e.SomeCustomTextField__c, 'some text value')
-      // Set multiple fields
-      .setField(new Map<Schema.SObjectField, Object>{
-          LogEntryEvent__e.AnotherCustomTextField__c => 'another text value',
-          LogEntryEvent__e.SomeCustomDatetimeField__c => System.now()
-      });
+  1. Set the field once per transaction - every `LogEntryEvent__e` logged in the transaction will then automatically have the specified field populated with the same value.
+     - This is typically used for fields that are mapped to an equivalent `Log__c` or `LoggerScenario__c` field.
+
+  - How: call the static method overloads `Logger.setField(Schema.SObjectField field, Object fieldValue)` or `Logger.setField(Map<Schema.SObjectField, Object> fieldToValue)`
+
+  2. Set the field on a specific `LogEntryEvent__e` record - other records will not have the field automatically set.
+     - This is typically used for fields that are mapped to an equivalent `LogEntry__c` field.
+     - How: call the instance method overloads `LogEntryEventBuilder.setField(Schema.SObjectField field, Object fieldValue)` or `LogEntryEventBuilder.setField(Map<Schema.SObjectField, Object> fieldToValue)`
+
+  ```apex
+  // Set My_Field__c on every log entry event created in this transaction with the same value
+  Logger.setField(LogEntryEvent__e.My_Field__c, 'some value that applies to the whole Apex transaction');
+
+  // Set fields on specific entries
+  Logger.warn('hello, world - "a value" set for Some_Other_Field__c').setField(LogEntryEvent__e.Some_Other_Field__c, 'a value')
+  Logger.warn('hello, world - "different value" set for Some_Other_Field__c').setField(LogEntryEvent__e.Some_Other_Field__c, 'different value')
+  Logger.info('hello, world - no value set for Some_Other_Field__c');
+
+  Logger.saveLog();
   ```
 
-- In JavaScript, populate your field(s) by calling the instance function `LogEntryEventBuilder.setField(Object fieldToValue)`
+- In JavaScript, you have 2 ways to populate your custom fields. These are very similar to the 2 ways available in Apex (above).
+
+  1. Set the field once per component - every `LogEntryEvent__e` logged in your component will then automatically have the specified field populated with the same value.
+     - This is typically used for fields that are mapped to an equivalent `Log__c` or `LoggerScenario__c` field.
+
+  - How: call the `logger` LWC function `logger.setField(Object fieldToValue)`
+
+  2. Set the field on a specific `LogEntryEvent__e` record - other records will not have the field automatically set.
+     - This is typically used for fields that are mapped to an equivalent `LogEntry__c` field.
+     - How: call the instance function `LogEntryEventBuilder.setField(Object fieldToValue)`
 
   ```javascript
   import { getLogger } from 'c/logger';
 
-  export default class loggerLWCGetLoggerImportDemo extends LightningElement {
+  export default class LoggerLWCImportDemo extends LightningElement {
     logger = getLogger();
 
-    async connectedCallback() {
-      this.logger.info('Hello, world').setField({ SomeCustomTextField__c: 'some text value', SomeCustomNumbertimeField__c: 123 });
+    connectedCallback() {
+      // Set My_Field__c on every log entry event created in this component with the same value
+      this.logger.setField(LogEntryEvent__e.My_Field__c, 'some value that applies to any subsequent entry');
+
+      // Set fields on specific entries
+      this.logger.warn('hello, world - "a value" set for Some_Other_Field__c').setField({ Some_Other_Field__c: 'a value' });
+      this.logger.warn('hello, world - "different value" set for Some_Other_Field__c').setField({ Some_Other_Field__c: 'different value' });
+      this.logger.info('hello, world - no value set for Some_Other_Field__c');
+
       this.logger.saveLog();
     }
   }

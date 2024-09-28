@@ -4,18 +4,18 @@
 //------------------------------------------------------------------------------------------------//
 
 /* eslint-disable no-console */
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import returnSomeString from '@salesforce/apex/LoggerLWCDemoController.returnSomeString';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
 import { getLogger } from 'c/logger';
 
 export default class LoggerLWCGetLoggerImportDemo extends LightningElement {
-  someBoolean = false;
+  @api logger = getLogger();
 
   message = 'Hello, world!';
   scenario = 'Some demo scenario';
+  someBoolean = false;
   tagsString = 'Tag-one, Another tag here';
-  logger = getLogger();
 
   connectedCallback() {
     try {

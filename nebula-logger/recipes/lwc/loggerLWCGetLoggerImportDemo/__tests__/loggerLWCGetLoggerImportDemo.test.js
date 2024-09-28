@@ -15,6 +15,10 @@ const MOCK_GET_SETTINGS = {
   userLoggingLevel: { ordinal: 2, name: 'FINEST' }
 };
 
+jest.mock('lightning/logger', () => ({ log: jest.fn() }), {
+  virtual: true
+});
+
 jest.mock(
   '@salesforce/apex/ComponentLogger.getSettings',
   () => {
@@ -36,10 +40,11 @@ describe('logger demo tests', () => {
   it('mounts and saves log correctly in one go', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const demo = createElement('c-logger-demo', { is: loggerLWCGetLoggerImportDemo });
+
     document.body.appendChild(demo);
+    await flushPromises('Resolve async tasks from mounting component');
 
-    await flushPromises();
-
-    expect(demo.logger?.getBufferSize()).toBe(0);
+    expect(demo.logger).toBeDefined();
+    expect(demo.logger.getBufferSize()).toBe(0);
   });
 });

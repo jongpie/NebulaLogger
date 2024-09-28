@@ -10,8 +10,8 @@
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
       "versionNumber": "4.14.14.NEXT",
-      "versionName": "New Apex Static Method Logger.setField()",
-      "versionDescription": "Added a new Apex static method Logger.setField() so custom fields can be set once per transaction --> auto-populated on all LogEntryEvent__e records",
+      "versionName": "New Apex Static Method & JavaScript Function Logger.setField()",
+      "versionDescription": "Added a new Apex static method Logger.setField() and LWC function logger.setField() so custom fields can be set once --> auto-populated on all subsequent LogEntryEvent__e records",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"

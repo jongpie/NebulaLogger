@@ -23,6 +23,15 @@ export default class Logger extends LightningElement {
   }
 
   /**
+   * @description Sets multiple field values on the builder's `LogEntryEvent__e` record
+   * @param  {Object} fieldToValue An object containing the custom field name as a key, with the corresponding value to store.
+   *                      Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}`
+   */
+  setField(fieldToValue) {
+    this.#loggerService.setField(fieldToValue);
+  }
+
+  /**
    * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
    *              and `Log__c.Scenario__c`, and can be used to filter & group logs
    * @param  {String} scenario The name to use for the current transaction's scenario
