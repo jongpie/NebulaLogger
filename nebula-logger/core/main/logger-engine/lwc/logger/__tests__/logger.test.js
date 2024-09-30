@@ -5,6 +5,7 @@ import { getLogger, createLogger } from 'c/logger';
 // Legacy markup-based approach
 import Logger from 'c/logger';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
+import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
 const MOCK_GET_SETTINGS = require('./data/getLoggerSettings.json');
 
@@ -26,6 +27,16 @@ jest.mock(
   { virtual: true }
 );
 
+jest.mock(
+  '@salesforce/apex/ComponentLogger.saveComponentLogEntries',
+  () => {
+    return {
+      default: jest.fn()
+    };
+  },
+  { virtual: true }
+);
+
 describe('logger lwc recommended sync getLogger() import approach tests', () => {
   beforeEach(() => {
     // One of logger's features (when enabled) is to auto-call the browser's console
@@ -33,7 +44,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     // console statements is... a bit overwhelming, so the global console functions
     // are overwritten with an empty function so they're no-ops / they don't show up
     // in the test logs
-    const emptyFunction = () => '';
+    const emptyFunction = () => {
+      throw new Error('TODO!');
+    };
     console.error = emptyFunction;
     console.warn = emptyFunction;
     console.info = emptyFunction;
@@ -591,15 +604,22 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     await logger.getUserSettings({ forceReload: true });
-    logger.info('example INFO log entry');
-    logger.debug('example DEBUG log entry');
+    const firstEntryBuilder = logger.info('example INFO log entry added BEFORE saveLog()');
+    const secondEntryBuilder = logger.debug('example DEBUG log entry added BEFORE saveLog()');
     await flushPromises();
     expect(logger.getBufferSize()).toBe(2);
 
     logger.saveLog();
+    logger.warn('example WARN log entry added AFTER saveLog()');
 
     await flushPromises('Resolve async task queue');
-    expect(logger.getBufferSize()).toBe(0);
+    expect(logger.getBufferSize()).toBe(1);
+    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
+    const expectedApexParameter = {
+      componentLogEntries: [firstEntryBuilder.getComponentLogEntry(), secondEntryBuilder.getComponentLogEntry()],
+      saveMethodName: undefined
+    };
+    expect(saveComponentLogEntries.mock.calls[0][0]).toEqual(expectedApexParameter);
   });
 });
 
@@ -1107,16 +1127,22 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
   it('saves log entries and flushes buffer when using deprecated async createLogger() import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = await createLogger();
-    await logger.getUserSettings({ forceReload: true });
-    logger.info('example INFO log entry');
-    logger.debug('example DEBUG log entry');
+    const firstEntryBuilder = logger.info('example INFO log entry added BEFORE saveLog()');
+    const secondEntryBuilder = logger.debug('example DEBUG log entry added BEFORE saveLog()');
     await flushPromises();
     expect(logger.getBufferSize()).toBe(2);
 
     logger.saveLog();
+    logger.warn('example WARN log entry added AFTER saveLog()');
 
-    await flushPromises();
-    expect(logger.getBufferSize()).toBe(0);
+    await flushPromises('Resolve async task queue');
+    expect(logger.getBufferSize()).toBe(1);
+    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
+    const expectedApexParameter = {
+      componentLogEntries: [firstEntryBuilder.getComponentLogEntry(), secondEntryBuilder.getComponentLogEntry()],
+      saveMethodName: undefined
+    };
+    expect(saveComponentLogEntries.mock.calls[0][0]).toEqual(expectedApexParameter);
   });
 });
 
@@ -1647,17 +1673,23 @@ describe('logger lwc legacy markup tests', () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = createElement('c-logger', { is: Logger });
     document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(true);
-    logger.info('example INFO log entry');
-    logger.debug('example DEBUG log entry');
+    await flushPromises('Resolve async task queue');
+    await logger.getUserSettings({ forceReload: true });
+    const firstEntryBuilder = logger.info('example INFO log entry added BEFORE saveLog()');
+    const secondEntryBuilder = logger.debug('example DEBUG log entry added BEFORE saveLog()');
     await flushPromises();
     expect(logger.getBufferSize()).toBe(2);
 
     logger.saveLog();
+    logger.warn('example WARN log entry added AFTER saveLog()');
 
-    await flushPromises();
-    expect(logger.getBufferSize()).toBe(0);
+    await flushPromises('Resolve async task queue');
+    expect(logger.getBufferSize()).toBe(1);
+    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
+    const expectedApexParameter = {
+      componentLogEntries: [firstEntryBuilder.getComponentLogEntry(), secondEntryBuilder.getComponentLogEntry()],
+      saveMethodName: undefined
+    };
+    expect(saveComponentLogEntries.mock.calls[0][0]).toEqual(expectedApexParameter);
   });
 });

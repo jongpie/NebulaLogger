@@ -80,18 +80,13 @@ const LoggerService = class {
         return;
       }
 
-      if (!providedSaveMethodName && this.#settings?.defaultSaveMethodName) {
-        providedSaveMethodName = this.#settings.defaultSaveMethodName;
-      }
-
+      const logEntriesToSave = [...this.#componentLogEntries];
+      this.flushBuffer();
+      providedSaveMethodName = providedSaveMethodName ?? this.#settings.defaultSaveMethodName;
       try {
-        const logEntriesToSave = [...this.#componentLogEntries];
-        // this is an attempt to only flush the buffer for log entries that we are sending to Apex
-        // rather than any that could be added if the saveLog call isn't awaited properly
-        this.flushBuffer();
         await saveComponentLogEntries({
           componentLogEntries: logEntriesToSave,
-          providedSaveMethodName
+          saveMethodName: providedSaveMethodName
         });
       } catch (error) {
         if (this.#settings.isConsoleLoggingEnabled === true) {
@@ -103,8 +98,9 @@ const LoggerService = class {
         throw error;
       }
     };
+
     this.#taskQueue.enqueueTask(saveLogTask, saveMethodName);
-    this.#taskQueue.executeTasks();
+    await this.#taskQueue.executeTasks();
   }
 
   async _loadSettingsFromServer() {
@@ -122,6 +118,7 @@ const LoggerService = class {
         throw error;
       }
     };
+
     this.#taskQueue.enqueueTask(loadSettingsTask);
     await this.#taskQueue.executeTasks();
   }
@@ -144,6 +141,7 @@ const LoggerService = class {
         }
       }
     };
+
     this.#taskQueue.enqueueTask(loggingLevelCheckTask, loggingLevel);
     this.#taskQueue.executeTasks();
 
