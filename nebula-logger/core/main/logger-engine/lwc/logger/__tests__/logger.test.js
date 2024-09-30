@@ -355,6 +355,32 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.tags.length).toEqual(1);
   });
 
+  it('auto-saves log & throws exception when using recommended sync getLogger() import approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'some message';
+    const mockError = new TypeError('oops');
+    let thrownError;
+
+    try {
+      logger.exception(message, mockError);
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toBe(mockError);
+    await flushPromises('Resolve async task queue');
+    expect(logger.getBufferSize()).toBe(0);
+    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
+    expect(saveComponentLogEntries.mock.calls[0][0].componentLogEntries.length).toEqual(1);
+    const savedComponentLogEntry = saveComponentLogEntries.mock.calls[0][0].componentLogEntries[0];
+    expect(savedComponentLogEntry.loggingLevel).toEqual('ERROR');
+    expect(savedComponentLogEntry.message).toEqual(message);
+  });
+
   it('still works for ERROR logging level when disabled when using recommended sync getLogger() import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
@@ -898,6 +924,29 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
     expect(logEntry.tags.length).toEqual(1);
   });
 
+  it('auto-saves log & throws exception when using deprecated async createLogger() import approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = await createLogger();
+    const message = 'some message';
+    const mockError = new TypeError('oops');
+    let thrownError;
+
+    try {
+      logger.exception(message, mockError);
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toBe(mockError);
+    await flushPromises('Resolve async task queue');
+    expect(logger.getBufferSize()).toBe(0);
+    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
+    expect(saveComponentLogEntries.mock.calls[0][0].componentLogEntries.length).toEqual(1);
+    const savedComponentLogEntry = saveComponentLogEntries.mock.calls[0][0].componentLogEntries[0];
+    expect(savedComponentLogEntry.loggingLevel).toEqual('ERROR');
+    expect(savedComponentLogEntry.message).toEqual(message);
+  });
+
   it('still works for ERROR logging level when disabled when using deprecated async createLogger() import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = await createLogger();
@@ -1429,6 +1478,31 @@ describe('logger lwc legacy markup tests', () => {
     }
 
     expect(logEntry.tags.length).toEqual(1);
+  });
+
+  it('auto-saves log & throws exception when using deprecated markup approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = createElement('c-logger', { is: Logger });
+    document.body.appendChild(logger);
+    await flushPromises();
+    const message = 'some message';
+    const mockError = new TypeError('oops');
+    let thrownError;
+
+    try {
+      logger.exception(message, mockError);
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toBe(mockError);
+    await flushPromises('Resolve async task queue');
+    expect(logger.getBufferSize()).toBe(0);
+    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
+    expect(saveComponentLogEntries.mock.calls[0][0].componentLogEntries.length).toEqual(1);
+    const savedComponentLogEntry = saveComponentLogEntries.mock.calls[0][0].componentLogEntries[0];
+    expect(savedComponentLogEntry.loggingLevel).toEqual('ERROR');
+    expect(savedComponentLogEntry.message).toEqual(message);
   });
 
   it('still works for ERROR logging level when disabled when using deprecated markup approach', async () => {

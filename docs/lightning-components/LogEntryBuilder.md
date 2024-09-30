@@ -13,7 +13,7 @@
   - [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setExceptionDetails(exception)](#LogEntryBuilder+setExceptionDetails) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.setField(fieldToValue)](#LogEntryBuilder+setField) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.parseStackTrace(error)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+  - [.parseStackTrace(originStackTraceError)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
   - [.getComponentLogEntry()](#LogEntryBuilder+getComponentLogEntry) <code>ComponentLogEntry</code>
@@ -127,16 +127,16 @@ Sets multiple field values on the builder's `LogEntryEvent__e` record
 
 <a name="LogEntryBuilder+parseStackTrace"></a>
 
-### logEntryBuilder.parseStackTrace(error) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+### logEntryBuilder.parseStackTrace(originStackTraceError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 Parses the provided error's stack trace and sets the log entry's origin & stack trace fields
 
 **Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
-| Param | Type               | Description                                                             |
-| ----- | ------------------ | ----------------------------------------------------------------------- |
-| error | <code>Error</code> | The instance of a JavaScript `Error` object with a stack trace to parse |
+| Param                 | Type               | Description                                                             |
+| --------------------- | ------------------ | ----------------------------------------------------------------------- |
+| originStackTraceError | <code>Error</code> | The instance of a JavaScript `Error` object with a stack trace to parse |
 
 <a name="LogEntryBuilder+addTag"></a>
 

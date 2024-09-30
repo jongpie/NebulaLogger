@@ -33,6 +33,20 @@ export default class Logger extends LightningElement {
   }
 
   /**
+   * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`,
+   *              automatically saves the log, and then throws the provided exception
+   * @param {String} message The string to use to set the entry's message field
+   * @param {Error} exception The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use
+   * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  @api
+  exception(message, exception) {
+    // An error has to be initialized here (in logger.js, not loggerService.js) to use for stack trace parsing
+    // so that the stack trace is accurate/has full context when the logger LWC is embedded in a component's markup
+    this.#loggerService.exception(message, exception, new Error());
+  }
+
+  /**
    * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
    * @param {String} message The string to use to set the entry's message field
    * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods

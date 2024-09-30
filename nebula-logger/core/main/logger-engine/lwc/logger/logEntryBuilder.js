@@ -157,7 +157,7 @@ const LogEntryBuilder = class {
 
   /**
    * @description Parses the provided error's stack trace and sets the log entry's origin & stack trace fields
-   * @param {Error} error The instance of a JavaScript `Error` object with a stack trace to parse
+   * @param {Error} originStackTraceError The instance of a JavaScript `Error` object with a stack trace to parse
    * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
    */
   parseStackTrace(originStackTraceError) {
