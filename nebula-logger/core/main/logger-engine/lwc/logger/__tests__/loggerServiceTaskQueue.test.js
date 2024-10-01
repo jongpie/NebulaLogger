@@ -1,4 +1,4 @@
-import { TaskQueue } from '../taskQueue';
+import LoggerServiceTaskQueue from '../loggerServiceTaskQueue';
 
 describe('logger task queue tests', () => {
   afterEach(async () => {
@@ -12,7 +12,7 @@ describe('logger task queue tests', () => {
       const output = `Sync firstInput was "${firstInput}", secondInput was "${secondInput}"`;
       return output;
     };
-    const taskQueue = new TaskQueue();
+    const taskQueue = new LoggerServiceTaskQueue();
 
     taskQueue.enqueueTask(syncActionFunction, firstInput, secondInput);
     const processedTasks = await taskQueue.executeTasks();
@@ -31,7 +31,7 @@ describe('logger task queue tests', () => {
       const output = 'Async input was: ' + input;
       return output;
     };
-    const taskQueue = new TaskQueue();
+    const taskQueue = new LoggerServiceTaskQueue();
 
     taskQueue.enqueueTask(asyncActionFunction, input);
     const processedTasks = await taskQueue.executeTasks();
@@ -62,7 +62,7 @@ describe('logger task queue tests', () => {
       }
       pendingTasks.push(task);
     }
-    const taskQueue = new TaskQueue();
+    const taskQueue = new LoggerServiceTaskQueue();
 
     // taskQueue.disableAutoProcessing();
     pendingTasks.forEach(task => {

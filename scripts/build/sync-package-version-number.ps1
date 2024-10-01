@@ -5,7 +5,7 @@ $sfdxProjectJsonPath = "./sfdx-project.json"
 $packageJsonPath = "./package.json"
 $readmeClassPath = "./README.md"
 $loggerClassPath = "./nebula-logger/core/main/logger-engine/classes/Logger.cls"
-$loggerComponentPath = "./nebula-logger/core/main/logger-engine/lwc/logger/logEntryBuilder.js"
+$loggerComponentPath = "./nebula-logger/core/main/logger-engine/lwc/logger/loggerService.js"
 
 function Get-SFDX-Project-JSON {
     Get-Content -Path $sfdxProjectJsonPath | ConvertFrom-Json
@@ -83,7 +83,7 @@ function Update-Logger-Component {
     )
     $versionNumber = "v" + $versionNumber
     $loggerComponentContents = Get-Logger-Component
-    Write-Output "Bumping logEntryBuilder.js version number to: $versionNumber"
+    Write-Output "Bumping loggerService.js version number to: $versionNumber"
 
     $targetRegEx = "(.+CURRENT_VERSION_NUMBER = ')(.+)(';)"
     $replacementRegEx = '$1' + $versionNumber + '$3'

@@ -24,7 +24,7 @@ Using a queue that execute tasks in the specified order ensures that a few areas
 */
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
-export class TaskQueue {
+export default class LoggerServiceTaskQueue {
   #isProcessing = false;
   #taskQueue = [];
 

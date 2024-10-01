@@ -4,13 +4,13 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, api } from 'lwc';
-import { createLoggerService, getLoggerService } from './loggerService';
+import LoggerService from './loggerService';
 
 export default class Logger extends LightningElement {
   #loggerService;
 
   connectedCallback() {
-    this.#loggerService = getLoggerService();
+    this.#loggerService = new LoggerService();
   }
 
   /**
@@ -165,7 +165,11 @@ export default class Logger extends LightningElement {
  *              Example: `const logger = await createLogger();`
  * @return {Promise<LoggerService>} A Promise that resolves an instance of `LoggerService`
  */
-const createLogger = createLoggerService;
+export async function createLogger() {
+  const service = getLogger();
+  await Promise.resolve('Resolve Apex call for user settings');
+  return service;
+}
 
 /**
  * @description Recommended approach
@@ -175,6 +179,6 @@ const createLogger = createLoggerService;
  *              Example: `const logger = getLogger();`
  * @return {LoggerService} An instance of `LoggerService`
  */
-const getLogger = getLoggerService;
-
-export { createLogger, getLogger };
+export function getLogger() {
+  return new LoggerService();
+}

@@ -1,11 +1,13 @@
 import { createElement } from 'lwc';
 import FORM_FACTOR from '@salesforce/client/formFactor';
+import { BrowserContext, enableSystemMessages, disableSystemMessages } from '../loggerService';
 // Recommended import getLogger & deprecated import createLogger
 import { getLogger, createLogger } from 'c/logger';
 // Legacy markup-based approach
 import Logger from 'c/logger';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
+import { log as lightningLog } from 'lightning/logger';
 
 const MOCK_GET_SETTINGS = require('./data/getLoggerSettings.json');
 
@@ -39,24 +41,23 @@ jest.mock(
 
 describe('logger lwc recommended sync getLogger() import approach tests', () => {
   beforeEach(() => {
+    disableSystemMessages();
     // One of logger's features (when enabled) is to auto-call the browser's console
     // so devs can see a log entry easily. But during Jest tests, seeing all of the
     // console statements is... a bit overwhelming, so the global console functions
     // are overwritten with an empty function so they're no-ops / they don't show up
     // in the test logs
-    const emptyFunction = () => {
-      throw new Error('TODO!');
-    };
-    console.error = emptyFunction;
-    console.warn = emptyFunction;
-    console.info = emptyFunction;
-    console.debug = emptyFunction;
+    console.error = jest.fn();
+    console.warn = jest.fn();
+    console.info = jest.fn();
+    console.debug = jest.fn();
+    console.log = jest.fn();
   });
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('returns user settings when using recommended sync getLogger() import approach', async () => {
+  it('returns user settings', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -67,10 +68,11 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
 
     expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
     expect(userSettings.isEnabled).toEqual(true);
-    expect(userSettings.isConsoleLoggingEnabled).toEqual(true);
+    expect(userSettings.isConsoleLoggingEnabled).toEqual(false);
+    expect(userSettings.isLightningLoggerEnabled).toEqual(false);
   });
 
-  it('sets a log scenario on all entries when using recommended sync getLogger() import approach', async () => {
+  it('sets a scenario on all subsequent entries', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -83,11 +85,34 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     logger.setScenario(scenario);
     const secondLogEntry = logger.info(message).getComponentLogEntry();
 
-    expect(firstLogEntry.scenario).toEqual(scenario);
+    expect(firstLogEntry.scenario).toBeUndefined();
     expect(secondLogEntry.scenario).toEqual(scenario);
   });
 
-  it('logs an ERROR entry when using recommended sync getLogger() import approach', async () => {
+  it('calls console.info a single time on initialization', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    enableSystemMessages();
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+
+    logger.error('some message');
+    logger.warn('some message');
+    logger.info('some message');
+    logger.debug('some message');
+    logger.fine('some message');
+    logger.finer('some message');
+    logger.finest('some message');
+
+    await flushPromises('Resolve async task queue');
+    expect(console.info).toHaveBeenCalledTimes(1);
+    const expectedInitializationMessage = 'ℹ️ INFO: logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.info.mock.calls[0][2]).toBe(expectedInitializationMessage);
+  });
+
+  it('logs an ERROR entry', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -97,12 +122,57 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
 
     const logEntry = logger.error(message).getComponentLogEntry();
 
+    await flushPromises('Resolve async task queue');
     expect(logger.getBufferSize()).toEqual(1);
     expect(logEntry.loggingLevel).toEqual('ERROR');
     expect(logEntry.message).toEqual(message);
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('logs a WARN entry when using recommended sync getLogger() import approach', async () => {
+  it('calls console.error for an ERROR entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel ERROR';
+
+    const componentLogEntry = logger.error(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(1);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.error.mock.calls[0][2]).toBe('⛔ ERROR: ' + componentLogEntry.message);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls lightning/logger.log for an ERROR entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel ERROR';
+
+    const componentLogEntry = logger.error(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(1);
+    expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
+  });
+
+  it('logs a WARN entry', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -115,9 +185,54 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logger.getBufferSize()).toEqual(1);
     expect(logEntry.loggingLevel).toEqual('WARN');
     expect(logEntry.message).toEqual(message);
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('logs an INFO entry when using recommended sync getLogger() import approach', async () => {
+  it('calls console.warn for an WARN entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel WARN';
+
+    const componentLogEntry = logger.warn(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.warn.mock.calls[0][2]).toBe('⚠️ WARN: ' + componentLogEntry.message);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls lightning/logger.log for an WARN entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel WARN';
+
+    const componentLogEntry = logger.warn(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(1);
+    expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
+  });
+
+  it('logs an INFO entry', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -127,12 +242,62 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
 
     const logEntry = logger.info(message).getComponentLogEntry();
 
+    await flushPromises('Resolve async task queue');
     expect(logger.getBufferSize()).toEqual(1);
     expect(logEntry.loggingLevel).toEqual('INFO');
     expect(logEntry.message).toEqual(message);
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('logs a DEBUG entry when using recommended sync getLogger() import approach', async () => {
+  it('calls console.info for an INFO entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel INFO';
+
+    const componentLogEntry = logger.info(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(logger.getBufferSize()).toEqual(1);
+    expect(componentLogEntry.loggingLevel).toEqual('INFO');
+    expect(componentLogEntry.message).toEqual(message);
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    // console.info is always called once when c/logger is initialized,
+    // so in this case, we check for 2 calls / index 1
+    expect(console.info).toHaveBeenCalledTimes(1);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.info.mock.calls[0][2]).toBe('ℹ️ INFO: ' + componentLogEntry.message);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls lightning/logger.log for an INFO entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel INFO';
+
+    const componentLogEntry = logger.info(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(1);
+    expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
+  });
+
+  it('logs a DEBUG entry', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -145,9 +310,54 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logger.getBufferSize()).toEqual(1);
     expect(logEntry.loggingLevel).toEqual('DEBUG');
     expect(logEntry.message).toEqual(message);
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('logs a FINE entry when using recommended sync getLogger() import approach', async () => {
+  it('calls console.debug for an DEBUG entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel DEBUG';
+
+    const componentLogEntry = logger.debug(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(1);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.debug.mock.calls[0][2]).toBe('🐞 DEBUG: ' + componentLogEntry.message);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls lightning/logger.log for an DEBUG entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel DEBUG';
+
+    const componentLogEntry = logger.warn(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(1);
+    expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
+  });
+
+  it('logs a FINE entry', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -160,9 +370,54 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logger.getBufferSize()).toEqual(1);
     expect(logEntry.loggingLevel).toEqual('FINE');
     expect(logEntry.message).toEqual(message);
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('logs a FINER entry when using recommended sync getLogger() import approach', async () => {
+  it('calls console.debug for an FINE entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel FINE';
+
+    const componentLogEntry = logger.fine(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(1);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.debug.mock.calls[0][2]).toBe('👍 FINE: ' + componentLogEntry.message);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls lightning/logger.log for an FINE entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel FINE';
+
+    const componentLogEntry = logger.fine(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(1);
+    expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
+  });
+
+  it('logs a FINER entry', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -175,9 +430,54 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logger.getBufferSize()).toEqual(1);
     expect(logEntry.loggingLevel).toEqual('FINER');
     expect(logEntry.message).toEqual(message);
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('logs a FINEST entry when using recommended sync getLogger() import approach', async () => {
+  it('calls console.debug for an FINER entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel FINER';
+
+    const componentLogEntry = logger.finer(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(1);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.debug.mock.calls[0][2]).toBe('👌 FINER: ' + componentLogEntry.message);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls lightning/logger.log for an FINER entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel FINER';
+
+    const componentLogEntry = logger.finer(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(1);
+    expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
+  });
+
+  it('logs a FINEST entry', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -190,9 +490,54 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logger.getBufferSize()).toEqual(1);
     expect(logEntry.loggingLevel).toEqual('FINEST');
     expect(logEntry.message).toEqual(message);
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('sets browser details when using recommended sync getLogger() import approach', async () => {
+  it('calls console.debug for an FINEST entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel FINEST';
+
+    const componentLogEntry = logger.finest(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(1);
+    // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
+    expect(console.debug.mock.calls[0][2]).toBe('🌟 FINEST: ' + componentLogEntry.message);
+    expect(lightningLog).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls lightning/logger.log for an FINEST entry when enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
+    const message = 'component log entry with loggingLevel FINEST';
+
+    const componentLogEntry = logger.finest(message).getComponentLogEntry();
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(lightningLog).toHaveBeenCalledTimes(1);
+    expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
+  });
+
+  it('sets browser details', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -210,7 +555,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
   });
 
-  it('sets multiple custom fields when using recommended sync getLogger() import approach', async () => {
+  it('sets multiple custom fields', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -235,7 +580,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
   });
 
-  it('sets recordId when using recommended sync getLogger() import approach', async () => {
+  it('sets recordId', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -252,7 +597,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.recordId).toEqual(mockUserId);
   });
 
-  it('sets record when using recommended sync getLogger() import approach', async () => {
+  it('sets record', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -269,7 +614,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.record).toEqual(mockUserRecord);
   });
 
-  it('sets JavaScript error details when using recommended sync getLogger() import approach', async () => {
+  it('sets JavaScript error details', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -291,7 +636,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.error.type).toEqual('JavaScript.TypeError');
   });
 
-  it('sets Apex error details when using recommended sync getLogger() import approach', async () => {
+  it('sets Apex error details', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -319,7 +664,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.error.type).toEqual(error.body.exceptionType);
   });
 
-  it('adds tags when using recommended sync getLogger() import approach', async () => {
+  it('adds tags', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -335,7 +680,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.tags.length).toEqual(mockTags.length);
   });
 
-  it('deduplicates tags when using recommended sync getLogger() import approach', async () => {
+  it('deduplicates tags', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -355,7 +700,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.tags.length).toEqual(1);
   });
 
-  it('auto-saves log & throws exception when using recommended sync getLogger() import approach', async () => {
+  it('auto-saves log & throws exception', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -381,7 +726,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(savedComponentLogEntry.message).toEqual(message);
   });
 
-  it('still works for ERROR logging level when disabled when using recommended sync getLogger() import approach', async () => {
+  it('still works for ERROR logging level when disabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -413,7 +758,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for WARN logging level when disabled when using recommended sync getLogger() import approach', async () => {
+  it('still works for WARN logging level when disabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -445,7 +790,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for INFO logging level when disabled when using recommended sync getLogger() import approach', async () => {
+  it('still works for INFO logging level when disabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -477,7 +822,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for DEBUG logging level when disabled when using recommended sync getLogger() import approach', async () => {
+  it('still works for DEBUG logging level when disabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -509,7 +854,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for FINE logging level when disabled when using recommended sync getLogger() import approach', async () => {
+  it('still works for FINE logging level when disabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -541,7 +886,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for FINER logging level when disabled when using recommended sync getLogger() import approach', async () => {
+  it('still works for FINER logging level when disabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -573,7 +918,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for FINEST logging level when disabled when using recommended sync getLogger() import approach', async () => {
+  it('still works for FINEST logging level when disabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -605,7 +950,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('flushes buffer when using recommended sync getLogger() import approach', async () => {
+  it('flushes buffer', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -623,7 +968,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logger.getBufferSize()).toEqual(0);
   });
 
-  it('saves log entries and flushes buffer when using recommended sync getLogger() import approach', async () => {
+  it('saves log entries and flushes buffer', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -651,6 +996,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
 
 describe('logger lwc deprecated async createLogger() import tests', () => {
   beforeEach(() => {
+    disableSystemMessages();
     // One of logger's features (when enabled) is to auto-call the browser's console
     // so devs can see a log entry easily. But during Jest tests, seeing all of the
     // console statements is... a bit overwhelming, so the global console functions
@@ -674,10 +1020,11 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
 
     expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
     expect(userSettings.isEnabled).toEqual(true);
-    expect(userSettings.isConsoleLoggingEnabled).toEqual(true);
+    expect(userSettings.isConsoleLoggingEnabled).toEqual(false);
+    expect(userSettings.isLightningLoggerEnabled).toEqual(false);
   });
 
-  it('sets a log scenario on all entries when using deprecated async createLogger() import approach', async () => {
+  it('sets a scenario on all subsequent entries when using deprecated async createLogger() import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     // const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
@@ -691,7 +1038,7 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
     logger.setScenario(scenario);
     const secondLogEntry = logger.info(message).getComponentLogEntry();
 
-    expect(firstLogEntry.scenario).toEqual(scenario);
+    expect(firstLogEntry.scenario).toBeUndefined();
     expect(secondLogEntry.scenario).toEqual(scenario);
   });
 
@@ -1196,6 +1543,19 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
 });
 
 describe('logger lwc legacy markup tests', () => {
+  beforeEach(() => {
+    disableSystemMessages();
+    // One of logger's features (when enabled) is to auto-call the browser's console
+    // so devs can see a log entry easily. But during Jest tests, seeing all of the
+    // console statements is... a bit overwhelming, so the global console functions
+    // are overwritten with an empty function so they're no-ops / they don't show up
+    // in the test logs
+    const emptyFunction = () => '';
+    console.error = emptyFunction;
+    console.warn = emptyFunction;
+    console.info = emptyFunction;
+    console.debug = emptyFunction;
+  });
   afterEach(async () => {
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
@@ -1213,10 +1573,11 @@ describe('logger lwc legacy markup tests', () => {
 
     expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
     expect(userSettings.isEnabled).toEqual(true);
-    expect(userSettings.isConsoleLoggingEnabled).toEqual(true);
+    expect(userSettings.isConsoleLoggingEnabled).toEqual(false);
+    expect(userSettings.isLightningLoggerEnabled).toEqual(false);
   });
 
-  it('sets a log scenario on all entries when using deprecated markup approach', async () => {
+  it('sets a scenario on all subsequent entries when using deprecated markup approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = createElement('c-logger', { is: Logger });
     document.body.appendChild(logger);
@@ -1228,7 +1589,7 @@ describe('logger lwc legacy markup tests', () => {
     logger.setScenario(scenario);
     const secondLogEntry = logger.info(message).getComponentLogEntry();
 
-    expect(firstLogEntry.scenario).toEqual(scenario);
+    expect(firstLogEntry.scenario).toBeUndefined();
     expect(secondLogEntry.scenario).toEqual(scenario);
   });
 

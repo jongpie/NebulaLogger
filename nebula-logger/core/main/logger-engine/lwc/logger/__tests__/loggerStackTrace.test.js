@@ -1,4 +1,4 @@
-import { LoggerStackTrace } from '../loggerStackTrace';
+import LoggerStackTrace from '../loggerStackTrace';
 
 const CHROME_BROWSER_ERROR = require('./data/chromeBrowserError.json');
 const EDGE_BROWSER_ERROR = require('./data/edgeBrowserError.json');

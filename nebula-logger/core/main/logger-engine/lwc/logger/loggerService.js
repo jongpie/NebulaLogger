@@ -3,17 +3,66 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-import { newLogEntry } from './logEntryBuilder';
+import FORM_FACTOR from '@salesforce/client/formFactor';
+import { log as lightningLog } from 'lightning/logger';
+import LogEntryEventBuilder from './logEntryBuilder';
+import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
-import { TaskQueue } from './taskQueue';
+
+const CURRENT_VERSION_NUMBER = 'v4.14.13';
+
+const CONSOLE_OUTPUT_CONFIG = {
+  messagePrefix: `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `,
+  messageFormatting: 'background: #0c598d; color: #fff; font-size: 12px; font-weight:bold;'
+};
+const LOGGING_LEVEL_EMOJIS = {
+  ERROR: '⛔',
+  WARN: '⚠️',
+  INFO: 'ℹ️',
+  DEBUG: '🐞',
+  FINE: '👍',
+  FINER: '👌',
+  FINEST: '🌟'
+};
+
+let areSystemMessagesEnabled = true;
+
+export function enableSystemMessages() {
+  areSystemMessagesEnabled = true;
+}
+
+export function disableSystemMessages() {
+  areSystemMessagesEnabled = false;
+}
+
+export class BrowserContext {
+  address = window.location.href;
+  formFactor = FORM_FACTOR;
+  language = window.navigator.language;
+  screenResolution = window.screen.availWidth + ' x ' + window.screen.availHeight;
+  userAgent = window.navigator.userAgent;
+  windowResolution = window.innerWidth + ' x ' + window.innerHeight;
+}
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
-const LoggerService = class {
+export default class LoggerService {
+  static hasInitialized = false;
+
   #componentLogEntries = [];
   #settings;
   #scenario;
-  #taskQueue = new TaskQueue();
+  #taskQueue = new LoggerServiceTaskQueue();
+
+  constructor() {
+    this._loadSettingsFromServer();
+
+    if (areSystemMessagesEnabled && !LoggerService.hasInitialized) {
+      this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));
+
+      LoggerService.hasInitialized = true;
+    }
+  }
 
   // TODO deprecate? Or make it async?
   getUserSettings() {
@@ -22,9 +71,6 @@ const LoggerService = class {
 
   setScenario(scenario) {
     this.#scenario = scenario;
-    this.#componentLogEntries.forEach(logEntry => {
-      logEntry.scenario = this.#scenario;
-    });
   }
 
   exception(message, exception, originStackTraceError) {
@@ -125,19 +171,21 @@ const LoggerService = class {
 
   _newEntry(loggingLevel, message, originStackTraceError) {
     originStackTraceError = originStackTraceError ?? new Error();
-    const logEntryBuilder = newLogEntry(loggingLevel).parseStackTrace(originStackTraceError).setMessage(message).setScenario(this.#scenario);
+    const logEntryBuilder = new LogEntryEventBuilder(loggingLevel, new BrowserContext())
+      .parseStackTrace(originStackTraceError)
+      .setMessage(message)
+      .setScenario(this.#scenario);
     const logEntry = logEntryBuilder.getComponentLogEntry();
-    logEntry.scenario = this.#scenario;
 
     const loggingLevelCheckTask = providedLoggingLevel => {
       if (this._meetsUserLoggingLevel(providedLoggingLevel)) {
         this.#componentLogEntries.push(logEntry);
 
         if (this.#settings.isConsoleLoggingEnabled) {
-          logEntryBuilder.logToConsole();
+          this._logToConsole(logEntry.loggingLevel, logEntry.message, logEntry);
         }
         if (this.#settings.isLightningLoggerEnabled) {
-          logEntryBuilder.logToLightningLogger();
+          lightningLog(logEntry);
         }
       }
     };
@@ -151,19 +199,47 @@ const LoggerService = class {
   _meetsUserLoggingLevel(logEntryLoggingLevel) {
     return this.#settings.isEnabled === true && this.#settings.userLoggingLevel.ordinal <= this.#settings.supportedLoggingLevels[logEntryLoggingLevel];
   }
-};
 
-const getLoggerService = function () {
-  const service = new LoggerService();
-  service._loadSettingsFromServer();
-  return service;
-};
+  /* eslint-disable no-console */
+  _logToConsole(loggingLevel, message, componentLogEntry) {
+    let consoleLoggingFunction;
+    switch (loggingLevel) {
+      case 'ERROR':
+        consoleLoggingFunction = console.error;
+        break;
+      case 'WARN':
+        consoleLoggingFunction = console.warn;
+        break;
+      case 'INFO':
+        consoleLoggingFunction = console.info;
+        break;
+      default:
+        consoleLoggingFunction = console.debug;
+        break;
+    }
 
-const createLoggerService = async function () {
-  const service = new LoggerService();
-  await service._loadSettingsFromServer();
-  await Promise.resolve();
-  return service;
-};
+    const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[loggingLevel];
+    const qualifiedMessage = `${loggingLevelEmoji} ${loggingLevel}: ${message}`;
+    // Some JS stack traces are huuuuge, so don't print it in the browser console.
+    // The stack trace will still be saved on the backend.
+    // '\n' + JSON.stringify(this.#componentLogEntry, replacer, 2)
+    const formattedComponentLogEntryString = !componentLogEntry
+      ? ''
+      : '\n' +
+        JSON.stringify(
+          {
+            origin: {
+              component: componentLogEntry.originStackTrace?.componentName,
+              function: componentLogEntry.originStackTrace?.functionName,
+              metadataType: componentLogEntry.originStackTrace?.metadataType
+            },
+            scenario: componentLogEntry.scenario,
+            timestamp: componentLogEntry.timestamp
+          },
+          (_, value) => value ?? undefined,
+          2
+        );
 
-export { createLoggerService, getLoggerService };
+    consoleLoggingFunction(CONSOLE_OUTPUT_CONFIG.messagePrefix, CONSOLE_OUTPUT_CONFIG.messageFormatting, qualifiedMessage, formattedComponentLogEntryString);
+  }
+}

@@ -229,7 +229,7 @@ class ErrorStackParser {
 The code below is specific to Nebula Logger - it leverages stacktrace.js plus some
 additional parsing logic to handle Salesforce-specific stack traces in LWC & Aura components
 */
-export class LoggerStackTrace {
+export default class LoggerStackTrace {
   parse(originStackTraceError) {
     if (!originStackTraceError) {
       return this;
