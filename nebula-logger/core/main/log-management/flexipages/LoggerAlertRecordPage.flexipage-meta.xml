@@ -80,26 +80,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.SourceSObjectType__c</fieldItem>
-                <identifier>RecordSourceSObjectType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Type__c</fieldItem>
-                <identifier>RecordType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.ExecutionOrder__c</fieldItem>
                 <identifier>RecordExecutionOrder_cField</identifier>
             </fieldInstance>
@@ -216,6 +196,54 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.SourceSObjectType__c</fieldItem>
+                <identifier>RecordSourceSObjectType_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SourceSObjectFilter__c</fieldItem>
+                <identifier>RecordSourceSObjectFilter_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-e1be7252-a5c7-486f-82fa-6f9803d64c95</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-e1be7252-a5c7-486f-82fa-6f9803d64c95</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column2</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-bf42d9c8-cf4a-436c-8641-1575b843e753</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.MatchingType__c</fieldItem>
+                <identifier>RecordMatchingType_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.MatchingThresholdSummary__c</fieldItem>
                 <identifier>RecordMatchingThresholdSummary_cField</identifier>
             </fieldInstance>
@@ -230,7 +258,7 @@
                 <identifier>RecordMatchingThresholdRecordCount_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
+                        <leftValue>{!Record.MatchingType__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Threshold Match</rightValue>
                     </criteria>
@@ -247,7 +275,7 @@
                 <identifier>RecordMatchingThresholdTimePeriodIncrement_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
+                        <leftValue>{!Record.MatchingType__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Threshold Match</rightValue>
                     </criteria>
@@ -264,7 +292,7 @@
                 <identifier>RecordMatchingThresholdTimePeriodUnit_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
+                        <leftValue>{!Record.MatchingType__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Threshold Match</rightValue>
                     </criteria>
@@ -290,33 +318,23 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ConditionLogicType__c</fieldItem>
-                <identifier>RecordConditionLogicType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-e1be7252-a5c7-486f-82fa-6f9803d64c95</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-e1be7252-a5c7-486f-82fa-6f9803d64c95</value>
+                    <name>columns</name>
+                    <value>Facet-bf42d9c8-cf4a-436c-8641-1575b843e753</value>
                 </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column2</identifier>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Source Record Settings</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection3</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-bf42d9c8-cf4a-436c-8641-1575b843e753</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -333,93 +351,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection6</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-bf42d9c8-cf4a-436c-8641-1575b843e753</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Condition Settings</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>actionNames</name>
-                    <valueList>
-                        <valueListItems>
-                            <value>New</value>
-                        </valueListItems>
-                    </valueList>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>maxRecordsToDisplay</name>
-                    <value>30</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>parentFieldApiName</name>
-                    <value>LoggerAlert__c.Id</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListApiName</name>
-                    <value>LoggerAlertConditions__r</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListDisplayType</name>
-                    <value>ADVGRID</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListFieldAliases</name>
-                    <valueList>
-                        <valueListItems>
-                            <value>SortOrder__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>NAME</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>FieldPath__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Operator__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>ValueType__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Value__c</value>
-                        </valueListItems>
-                    </valueList>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListLabel</name>
-                    <value>Alert Conditions</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>showActionBar</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>sortFieldAlias</name>
-                    <value>SortOrder__c</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>sortFieldOrder</name>
-                    <value>Ascending</value>
-                </componentInstanceProperties>
-                <componentName>lst:dynamicRelatedList</componentName>
-                <identifier>lst_dynamicRelatedList3</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -598,7 +529,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>Conditions</value>
+                    <value>Settings</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>detailTab</identifier>

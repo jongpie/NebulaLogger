@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>SourceSObjectType__c</fullName>
+    <fullName>MatchingType__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <label>Source SObject Type</label>
+    <label>Matching Type</label>
     <required>true</required>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>true</trackHistory>
@@ -14,19 +14,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>LogEntryEvent__e</fullName>
+                <fullName>Immediate Match</fullName>
                 <default>false</default>
-                <label>LogEntryEvent__e</label>
+                <label>Immediate Match</label>
             </value>
             <value>
-                <fullName>LogEntry__c</fullName>
+                <fullName>Threshold Match</fullName>
                 <default>false</default>
-                <label>LogEntry__c</label>
-            </value>
-            <value>
-                <fullName>LogEntryTag__c</fullName>
-                <default>false</default>
-                <label>LogEntryTag__c</label>
+                <label>Threshold Match</label>
             </value>
         </valueSetDefinition>
     </valueSet>
