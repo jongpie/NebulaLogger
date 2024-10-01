@@ -1813,6 +1813,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LoggerAlert__c.SourceSObjectFilter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LoggerAlert__c.TotalMatches__c</field>
         <readable>true</readable>
     </fieldPermissions>

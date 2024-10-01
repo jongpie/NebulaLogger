@@ -17,31 +17,82 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
   }
 
   protected override void executeBeforeInsert(List<SObject> triggerNew) {
-    List<LoggerAlert__c> loggerNotifications = (List<LoggerAlert__c>) triggerNew;
+    List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNew;
 
-    setOrganizationId(loggerNotifications);
-    clearThresholdFields(loggerNotifications);
+    setOrganizationId(loggerAlerts);
+    validateFilters(loggerAlerts);
+    clearThresholdFields(loggerAlerts);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
-    List<LoggerAlert__c> loggerNotifications = (List<LoggerAlert__c>) triggerNewMap.values();
+    List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNewMap.values();
+    Map<Id, LoggerAlert__c> idToOldLoggerAlert = (Map<Id, LoggerAlert__c>) triggerOldMap;
 
-    setOrganizationId(loggerNotifications);
-    clearThresholdFields(loggerNotifications);
+    setOrganizationId(loggerAlerts);
+    validateFilters(loggerAlerts, idToOldLoggerAlert);
+    clearThresholdFields(loggerAlerts);
   }
 
-  private static void setOrganizationId(List<LoggerAlert__c> loggerNotifications) {
-    for (LoggerAlert__c loggerNotification : loggerNotifications) {
-      loggerNotification.OriginOrganizationId__c = System.UserInfo.getOrganizationId();
-    }
-  }
-  private static void clearThresholdFields(List<LoggerAlert__c> loggerNotifications) {
-    for (LoggerAlert__c loggerNotification : loggerNotifications) {
-      if (loggerNotification.Type__c != 'Threshold Match') {
-        loggerNotification.MatchingThresholdRecordCount__c = null;
-        loggerNotification.MatchingThresholdTimePeriodIncrement__c = null;
-        loggerNotification.MatchingThresholdTimePeriodUnit__c = null;
+  private static void clearThresholdFields(List<LoggerAlert__c> loggerAlerts) {
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      if (loggerAlert.MatchingType__c != 'Threshold Match') {
+        loggerAlert.MatchingThresholdRecordCount__c = null;
+        loggerAlert.MatchingThresholdTimePeriodIncrement__c = null;
+        loggerAlert.MatchingThresholdTimePeriodUnit__c = null;
       }
     }
+  }
+
+  private static Schema.SObjectType getSObjectType(String sobjectApiName) {
+    switch on sobjectApiName {
+      when 'LogEntryEvent__e' {
+        return LogEntryEvent__e.SObjectType;
+      }
+      when 'LogEntry__c' {
+        return LogEntry__c.SObjectType;
+      }
+      when 'LogEntryTag__c' {
+        return LogEntryTag__c.SObjectType;
+      }
+      when else {
+        throw new System.IllegalArgumentException('Unsupported SObject Type ' + sobjectApiName);
+      }
+    }
+  }
+
+  private static void setOrganizationId(List<LoggerAlert__c> loggerAlerts) {
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      loggerAlert.OriginOrganizationId__c = System.UserInfo.getOrganizationId();
+    }
+  }
+
+  private static void validateFilters(List<LoggerAlert__c> loggerAlerts) {
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      if (String.isBlank(loggerAlert.SourceSObjectFilter__c)) {
+        return;
+      }
+
+      Schema.SObjectType sourceSObjectType = getSObjectType(loggerAlert.SourceSObjectType__c);
+      System.Formula.builder()
+        .withReturnType(FormulaEval.FormulaReturnType.Boolean)
+        .withType(sourceSObjectType)
+        .withFormula(loggerAlert.SourceSObjectFilter__c)
+        .build();
+    }
+  }
+
+  private void validateFilters(List<LoggerAlert__c> loggerAlerts, Map<Id, LoggerAlert__c> loggerAlertIdToOldLoggerAlert) {
+    List<LoggerAlert__c> changedLoggerAlerts = new List<LoggerAlert__c>();
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      LoggerAlert__c oldLoggerAlert = loggerAlertIdToOldLoggerAlert.get(loggerAlert.Id);
+      if (
+        loggerAlert.SourceSObjectType__c != oldLoggerAlert.SourceSObjectType__c ||
+        loggerAlert.SourceSObjectFilter__c != oldLoggerAlert.SourceSObjectFilter__c
+      ) {
+        changedLoggerAlerts.add(loggerAlert);
+      }
+    }
+
+    validateFilters(changedLoggerAlerts);
   }
 }
