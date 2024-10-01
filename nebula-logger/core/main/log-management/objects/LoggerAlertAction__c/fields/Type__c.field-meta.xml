@@ -26,6 +26,11 @@
                 <default>false</default>
                 <label>Slack</label>
             </value>
+            <value>
+                <fullName>Webhook</fullName>
+                <default>false</default>
+                <label>Webhook</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
