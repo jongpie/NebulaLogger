@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsMatchingThresholdEnabled__c</fullName>
     <defaultValue>false</defaultValue>
-    <label>Enable Record Matching Threshold</label>
+    <label>RENAME FIELD: Store Matches</label>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

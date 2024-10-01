@@ -3,7 +3,7 @@
     <fullName>MatchingType__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <label>Matching Type</label>
+    <label>RENAME FIELD: Matching Type</label>
     <required>true</required>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>true</trackHistory>
