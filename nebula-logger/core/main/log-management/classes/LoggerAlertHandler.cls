@@ -19,18 +19,20 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
   protected override void executeBeforeInsert(List<SObject> triggerNew) {
     List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNew;
 
+    clearThresholdFields(loggerAlerts);
+    setIsMatchingThresholdEnabled(loggerAlerts);
     setOrganizationId(loggerAlerts);
     validateFilters(loggerAlerts);
-    clearThresholdFields(loggerAlerts);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
     List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNewMap.values();
     Map<Id, LoggerAlert__c> idToOldLoggerAlert = (Map<Id, LoggerAlert__c>) triggerOldMap;
 
+    clearThresholdFields(loggerAlerts);
+    setIsMatchingThresholdEnabled(loggerAlerts);
     setOrganizationId(loggerAlerts);
     validateFilters(loggerAlerts, idToOldLoggerAlert);
-    clearThresholdFields(loggerAlerts);
   }
 
   private static void clearThresholdFields(List<LoggerAlert__c> loggerAlerts) {
@@ -56,6 +58,14 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
       }
       when else {
         throw new System.IllegalArgumentException('Unsupported SObject Type ' + sobjectApiName);
+      }
+    }
+  }
+
+  private static void setIsMatchingThresholdEnabled(List<LoggerAlert__c> loggerAlerts) {
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      if (loggerAlert.MatchingType__c == 'Threshold Match') {
+        loggerAlert.IsMatchingThresholdEnabled__c = true;
       }
     }
   }
