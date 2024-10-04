@@ -23,38 +23,63 @@ public class LoggerAlertService_gpt {
       return;
     }
 
-    // Create executors for each alert and pass to ActionsProcessor
-    List<AbstractActionExecutor> executors = new List<AbstractActionExecutor>();
-    for (SObject record : records) {
-      AbstractActionExecutor executor = createActionExecutorForCallout(record);
-      if (executor != null) {
-        executors.add(executor);
-      }
-    }
+    List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
+    for (LoggerAlert__c alert : todoAlertsVariable) {
+      List<SObject> matchingRecords = this.getMatchingRecords(alert, records);
 
-    // Always pass executors to the processor to handle execution or re-enqueue
-    if (!executors.isEmpty()) {
-      System.debug('Passing executors to the ActionsProcessor.');
-      new ActionsProcessor(executors).execute();
+      if (matchingRecords.isEmpty()) {
+        continue;
+      }
+
+      // Create executors for each alert and pass to ActionsProcessor
+      List<AbstractActionExecutor> executors = new List<AbstractActionExecutor>();
+      for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
+        AbstractActionExecutor executor = createActionExecutorForCallout(action, matchingRecords);
+        if (executor != null) {
+          executors.add(executor);
+        }
+      }
+
+      // Always pass executors to the processor to handle execution or re-enqueue
+      if (!executors.isEmpty()) {
+        System.debug('Passing executors to the ActionsProcessor.');
+        new ActionsProcessor(executors).execute();
+      }
     }
   }
 
-  // Factory method to create the appropriate action executor for Callout
-  private AbstractActionExecutor createActionExecutorForCallout(SObject record) {
-    String actionType = 'Callout'; // Updated from 'Webhook'
+  private List<SObject> getMatchingRecords(LoggerAlert__c alert, List<SObject> records) {
+    FormulaEval.FormulaInstance formulaEvaluator = System.Formula.builder()
+      .withReturnType(FormulaEval.FormulaReturnType.Boolean)
+      .withType(records.getSObjectType())
+      .withFormula(alert.SourceSObjectFilter__c)
+      .build();
 
-    switch on actionType {
+    List<SObject> matchingRecords = new List<SObject>();
+    for (SObject inputRecord : records) {
+      Boolean matchesFilter = (Boolean) formulaEvaluator.evaluate(inputRecord);
+      if (matchesFilter) {
+        matchingRecords.add(inputRecord);
+      }
+    }
+
+    return matchingRecords;
+  }
+
+  // Factory method to create the appropriate action executor for Callout
+  private AbstractActionExecutor createActionExecutorForCallout(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+    switch on action.Type__c {
+      when 'Callout' {
+        return new CalloutActionExecutor(action, matchingRecords);
+      }
       when 'Email' {
-        return new EmailActionExecutor(record);
+        return new EmailActionExecutor(action, matchingRecords);
       }
       when 'Slack' {
-        return new SlackActionExecutor(record);
-      }
-      when 'Callout' {
-        return new CalloutActionExecutor(record); // Regular instantiation for CalloutActionExecutor
+        return new SlackActionExecutor(action, matchingRecords);
       }
       when else {
-        System.debug('Unknown action type: ' + actionType);
+        System.debug('Unknown action type \'' + action.Type__c + '\' on alert action ' + action.Id);
         return null;
       }
     }
@@ -62,7 +87,7 @@ public class LoggerAlertService_gpt {
 
   // Private Queueable class to handle executing or re-enqueuing the actions
   private class ActionsProcessor implements System.Queueable {
-    private List<AbstractActionExecutor> executors;
+    private final List<AbstractActionExecutor> executors;
 
     // Constructor
     public ActionsProcessor(List<AbstractActionExecutor> executors) {
@@ -74,6 +99,7 @@ public class LoggerAlertService_gpt {
       System.debug('Running executors in ActionsProcessor.');
       List<AbstractActionExecutor> remainingExecutors = new List<AbstractActionExecutor>();
 
+      List<SObject> matchingRecords = new List<SObject>();
       for (AbstractActionExecutor executor : executors) {
         if (hasSufficientLimits(executor.getExpectedLimitsUsage())) {
           executor.execute();
@@ -86,6 +112,7 @@ public class LoggerAlertService_gpt {
       // If there are remaining executors, enqueue the job for later execution
       if (!remainingExecutors.isEmpty()) {
         System.debug('Enqueuing remaining actions due to insufficient limits.');
+        // TODO consider use the same instance, but processed executors would need to be remove from the list
         System.enqueueJob(new ActionsProcessor(remainingExecutors));
       }
     }
@@ -117,52 +144,14 @@ public class LoggerAlertService_gpt {
     }
   }
 
-  // TransactionLimitsUsage class with fluent API
-  public class TransactionLimitsUsage {
-    public Integer expectedCallouts = 0;
-    public Integer expectedDmlStatements = 0;
-    public Integer expectedEmails = 0;
-    public Integer expectedQueries = 0;
-    public Integer expectedCalloutTime = 0; // Tracking expected callout time in seconds
-    public Integer expectedQueueableJobs = 0; // Tracking queueable jobs
-
-    public TransactionLimitsUsage setExpectedCallouts(Integer callouts) {
-      this.expectedCallouts = callouts;
-      return this;
-    }
-
-    public TransactionLimitsUsage setExpectedDmlStatements(Integer dmlStatements) {
-      this.expectedDmlStatements = dmlStatements;
-      return this;
-    }
-
-    public TransactionLimitsUsage setExpectedEmails(Integer emails) {
-      this.expectedEmails = emails;
-      return this;
-    }
-
-    public TransactionLimitsUsage setExpectedQueries(Integer queries) {
-      this.expectedQueries = queries;
-      return this;
-    }
-
-    public TransactionLimitsUsage setExpectedCalloutTime(Integer calloutTime) {
-      this.expectedCalloutTime = calloutTime;
-      return this;
-    }
-
-    public TransactionLimitsUsage setExpectedQueueableJobs(Integer queueableJobs) {
-      this.expectedQueueableJobs = queueableJobs;
-      return this;
-    }
-  }
-
   // AbstractActionExecutor class that contains common logic for all executors
   private abstract class AbstractActionExecutor {
-    protected SObject record;
+    protected final LoggerAlertAction__c action;
+    protected final List<SObject> matchingRecords;
 
-    public AbstractActionExecutor(SObject record) {
-      this.record = record;
+    public AbstractActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+      this.action = action;
+      this.matchingRecords = matchingRecords;
     }
 
     public abstract void execute();
@@ -197,8 +186,8 @@ public class LoggerAlertService_gpt {
     private Datetime lastCalloutTime;
     private Integer calloutsInCurrentWindow = 0;
 
-    public CalloutActionExecutor(SObject record) {
-      super(record);
+    public CalloutActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+      super(action, matchingRecords);
     }
 
     public override TransactionLimitsUsage getExpectedLimitsUsage() {
@@ -246,20 +235,24 @@ public class LoggerAlertService_gpt {
     }
 
     private void sendServiceCallout(String url) {
+      Long startTime = Datetime.now().getTime();
       System.Http http = new System.Http();
       System.HttpRequest request = new System.HttpRequest();
       request.setEndpoint(url);
       request.setMethod('GET');
 
       System.HttpResponse response = http.send(request);
+      Long endTime = Datetime.now().getTime();
+      // TODO verify if this needs to be multipled by 1,000 milliseconds
+      calloutTimeUsed += (endTime - startTime).intValue();
       System.debug('Callout successful: ' + response.getBody());
     }
   }
 
   // Inner class for EmailActionExecutor
   private class EmailActionExecutor extends AbstractActionExecutor {
-    public EmailActionExecutor(SObject record) {
-      super(record);
+    public EmailActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+      super(action, matchingRecords);
     }
 
     public override void execute() {
@@ -284,8 +277,8 @@ public class LoggerAlertService_gpt {
 
   // Inner class for SlackActionExecutor
   private class SlackActionExecutor extends AbstractActionExecutor {
-    public SlackActionExecutor(SObject record) {
-      super(record);
+    public SlackActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+      super(action, matchingRecords);
     }
 
     public override void execute() {
@@ -308,6 +301,47 @@ public class LoggerAlertService_gpt {
     }
   }
 
+  // TransactionLimitsUsage class with fluent API
+  public class TransactionLimitsUsage {
+    public Integer expectedCallouts = 0;
+    public Integer expectedDmlStatements = 0;
+    public Integer expectedEmails = 0;
+    public Integer expectedQueries = 0;
+    public Integer expectedCalloutTime = 0; // Tracking expected callout time in seconds
+    public Integer expectedQueueableJobs = 0; // Tracking queueable jobs
+
+    public TransactionLimitsUsage setExpectedCallouts(Integer callouts) {
+      this.expectedCallouts = callouts;
+      return this;
+    }
+
+    public TransactionLimitsUsage setExpectedDmlStatements(Integer dmlStatements) {
+      this.expectedDmlStatements = dmlStatements;
+      return this;
+    }
+
+    public TransactionLimitsUsage setExpectedEmails(Integer emails) {
+      this.expectedEmails = emails;
+      return this;
+    }
+
+    public TransactionLimitsUsage setExpectedQueries(Integer queries) {
+      this.expectedQueries = queries;
+      return this;
+    }
+
+    public TransactionLimitsUsage setExpectedCalloutTime(Integer calloutTime) {
+      this.expectedCalloutTime = calloutTime;
+      return this;
+    }
+
+    public TransactionLimitsUsage setExpectedQueueableJobs(Integer queueableJobs) {
+      this.expectedQueueableJobs = queueableJobs;
+      return this;
+    }
+  }
+
+  // TODO remove this??
   // Queueable job to handle delayed callouts (throttling)
   private class DelayedCalloutJob implements System.Queueable, Database.AllowsCallouts {
     private Integer delayMs;
