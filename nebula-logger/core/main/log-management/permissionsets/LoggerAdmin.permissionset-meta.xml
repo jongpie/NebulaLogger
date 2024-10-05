@@ -1703,6 +1703,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerAlertAction__c.CalloutNamedCredential__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerAlertAction__c.CustomActionApexClass__c</field>
         <readable>true</readable>
     </fieldPermissions>
