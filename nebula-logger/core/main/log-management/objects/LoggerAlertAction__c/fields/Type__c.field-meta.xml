@@ -17,19 +17,9 @@
                 <label>Email</label>
             </value>
             <value>
-                <fullName>OpenTelemetry Provider</fullName>
-                <default>false</default>
-                <label>OpenTelemetry</label>
-            </value>
-            <value>
                 <fullName>Slack</fullName>
                 <default>false</default>
                 <label>Slack</label>
-            </value>
-            <value>
-                <fullName>Webhook</fullName>
-                <default>false</default>
-                <label>Webhook</label>
             </value>
         </valueSetDefinition>
     </valueSet>
