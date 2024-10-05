@@ -568,12 +568,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestEndpoint__c</field>
+        <field>LogEntry__c.HttpRequestEndpointAddress__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestEndpointAddress__c</field>
+        <field>LogEntry__c.HttpRequestEndpoint__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1719,6 +1719,26 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LoggerAlertCondition__c.Value__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlertMatch__c.LogEntryEventUuid__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlertMatch__c.LogEntryTag__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlertMatch__c.LogEntry__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlertMatch__c.Log__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
