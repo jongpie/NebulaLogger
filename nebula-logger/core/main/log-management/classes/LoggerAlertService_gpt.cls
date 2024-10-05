@@ -76,17 +76,17 @@ public class LoggerAlertService_gpt {
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
 
     for (SObject record : records) {
-      LogEntryEvent__e logEntryEvent = record.getSObjectType() == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
-      LogEntry__c logEntry = record.getSObjectType() == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
-      LogEntryTag__c logEntryTag = record.getSObjectType() == LogEntryTag__c.SObjectType ? (LogEntryTag__c) record : null;
       Log__c log = record.getSObjectType() == Log__c.SObjectType ? (Log__c) record : null;
+      LogEntry__c logEntry = record.getSObjectType() == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
+      LogEntryEvent__e logEntryEvent = record.getSObjectType() == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
+      LogEntryTag__c logEntryTag = record.getSObjectType() == LogEntryTag__c.SObjectType ? (LogEntryTag__c) record : null;
 
       LoggerAlertMatch__c alertMatch = new LoggerAlertMatch__c(
-        LoggerAlert__c = alert.Id,
-        LogEntryEventUuid__c = logEntryEvent?.EventUuid,
+        Log__c = log?.Id,
         LogEntry__c = logEntry?.Id,
+        LogEntryEventUuid__c = logEntryEvent?.EventUuid,
         LogEntryTag__c = logEntryTag?.Id,
-        Log__c = log?.Id
+        LoggerAlert__c = alert.Id
       );
       alertMatches.add(alertMatch);
     }
