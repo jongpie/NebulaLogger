@@ -19,6 +19,11 @@
                 <label>LogEntryEvent__e</label>
             </value>
             <value>
+                <fullName>Log__c</fullName>
+                <default>false</default>
+                <label>Log__c</label>
+            </value>
+            <value>
                 <fullName>LogEntry__c</fullName>
                 <default>false</default>
                 <label>LogEntry__c</label>
