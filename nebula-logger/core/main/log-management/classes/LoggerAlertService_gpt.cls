@@ -23,60 +23,85 @@ public class LoggerAlertService_gpt {
       return;
     }
 
+    List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
+    List<ActionDispatcher> dispatchers = new List<ActionDispatcher>();
     List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
     for (LoggerAlert__c alert : todoAlertsVariable) {
-      List<SObject> matchingRecords = this.getMatchingRecords(alert, records);
+      List<SObject> filteredRecords = this.getFilteredRecords(alert, records);
 
-      if (matchingRecords.isEmpty()) {
+      if (filteredRecords.isEmpty()) {
         continue;
       }
 
-      // Create executors for each alert and pass to ActionsProcessor
-      List<AbstractActionExecutor> executors = new List<AbstractActionExecutor>();
-      for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
-        AbstractActionExecutor executor = createActionExecutorForCallout(action, matchingRecords);
-        if (executor != null) {
-          executors.add(executor);
-        }
+      if (alert.IsMatchingThresholdEnabled__c) {
+        // TODO add records to alertMatches
+        alertMatches.addAll(this.generateAlertMatches(alert, filteredRecords));
       }
 
-      // Always pass executors to the processor to handle execution or re-enqueue
-      if (!executors.isEmpty()) {
-        System.debug('Passing executors to the ActionsProcessor.');
-        new ActionsProcessor(executors).execute();
+      for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
+        ActionDispatcher dispatcher = createActionDispatcher(action, filteredRecords);
+        if (dispatcher != null) {
+          dispatchers.add(dispatcher);
+        }
       }
+    }
+
+    LoggerDataStore.getDatabase().insertRecords(alertMatches);
+
+    if (dispatchers.isEmpty() == false) {
+      System.debug('Passing dispatchers to the ActionsProcessor.');
+      System.enqueueJob(new ActionsProcessor(dispatchers));
     }
   }
 
-  private List<SObject> getMatchingRecords(LoggerAlert__c alert, List<SObject> records) {
+  private List<SObject> getFilteredRecords(LoggerAlert__c alert, List<SObject> records) {
     FormulaEval.FormulaInstance formulaEvaluator = System.Formula.builder()
+      .withFormula(alert.SourceSObjectFilter__c)
       .withReturnType(FormulaEval.FormulaReturnType.Boolean)
       .withType(records.getSObjectType())
-      .withFormula(alert.SourceSObjectFilter__c)
       .build();
 
-    List<SObject> matchingRecords = new List<SObject>();
+    List<SObject> filteredRecords = new List<SObject>();
     for (SObject inputRecord : records) {
       Boolean matchesFilter = (Boolean) formulaEvaluator.evaluate(inputRecord);
       if (matchesFilter) {
-        matchingRecords.add(inputRecord);
+        filteredRecords.add(inputRecord);
       }
     }
 
-    return matchingRecords;
+    return filteredRecords;
   }
 
-  // Factory method to create the appropriate action executor for Callout
-  private AbstractActionExecutor createActionExecutorForCallout(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+  private List<LoggerAlertMatch__c> generateAlertMatches(LoggerAlert__c alert, List<SObject> records) {
+    List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
+
+    for (SObject record : records) {
+      LogEntryEvent__e logEntryEvent = record.getSObjectType() == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
+      LogEntry__c logEntry = record.getSObjectType() == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
+      LogEntryTag__c logEntryTag = record.getSObjectType() == LogEntryTag__c.SObjectType ? (LogEntryTag__c) record : null;
+      Log__c log = record.getSObjectType() == Log__c.SObjectType ? (Log__c) record : null;
+
+      LoggerAlertMatch__c alertMatch = new LoggerAlertMatch__c(
+        LoggerAlert__c = alert.Id,
+        LogEntryEventUuid__c = logEntryEvent?.EventUuid,
+        LogEntry__c = logEntry?.Id,
+        LogEntryTag__c = logEntryTag?.Id,
+        Log__c = log?.Id
+      );
+      alertMatches.add(alertMatch);
+    }
+
+    return alertMatches;
+  }
+
+  // Factory method to create the appropriate action dispatcher for Callout
+  private ActionDispatcher createActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
     switch on action.Type__c {
-      when 'Callout' {
-        return new CalloutActionExecutor(action, matchingRecords);
-      }
       when 'Email' {
-        return new EmailActionExecutor(action, matchingRecords);
+        return new EmailActionDispatcher(action, filteredRecords);
       }
       when 'Slack' {
-        return new SlackActionExecutor(action, matchingRecords);
+        return new SlackActionDispatcher(action, filteredRecords);
       }
       when else {
         System.debug('Unknown action type \'' + action.Type__c + '\' on alert action ' + action.Id);
@@ -87,39 +112,33 @@ public class LoggerAlertService_gpt {
 
   // Private Queueable class to handle executing or re-enqueuing the actions
   private class ActionsProcessor implements System.Queueable {
-    private final List<AbstractActionExecutor> executors;
+    private final List<ActionDispatcher> dispatchers;
 
     // Constructor
-    public ActionsProcessor(List<AbstractActionExecutor> executors) {
-      this.executors = executors;
+    public ActionsProcessor(List<ActionDispatcher> dispatchers) {
+      this.dispatchers = dispatchers;
     }
 
-    // Synchronous execution method
-    public void execute() {
-      System.debug('Running executors in ActionsProcessor.');
-      List<AbstractActionExecutor> remainingExecutors = new List<AbstractActionExecutor>();
+    public void execute(System.QueueableContext context) {
+      System.debug('Running dispatchers in ActionsProcessor.');
+      List<ActionDispatcher> remainingDispatchers = new List<ActionDispatcher>();
 
-      List<SObject> matchingRecords = new List<SObject>();
-      for (AbstractActionExecutor executor : executors) {
-        if (hasSufficientLimits(executor.getExpectedLimitsUsage())) {
-          executor.execute();
+      List<SObject> filteredRecords = new List<SObject>();
+      for (ActionDispatcher dispatcher : dispatchers) {
+        if (hasSufficientLimits(dispatcher.getExpectedLimitsUsage())) {
+          dispatcher.dispatch();
         } else {
-          System.debug('Insufficient limits for executor, adding to remainingExecutors.');
-          remainingExecutors.add(executor);
+          System.debug('Insufficient limits for dispatcher, adding to remainingDispatchers.');
+          remainingDispatchers.add(dispatcher);
         }
       }
 
-      // If there are remaining executors, enqueue the job for later execution
-      if (!remainingExecutors.isEmpty()) {
+      // If there are remaining dispatchers, enqueue the job for later execution
+      if (!remainingDispatchers.isEmpty()) {
         System.debug('Enqueuing remaining actions due to insufficient limits.');
-        // TODO consider use the same instance, but processed executors would need to be remove from the list
-        System.enqueueJob(new ActionsProcessor(remainingExecutors));
+        // TODO consider use the same instance, but processed dispatchers would need to be remove from the list
+        System.enqueueJob(new ActionsProcessor(remainingDispatchers));
       }
-    }
-
-    // Required Queueable execute method
-    public void execute(System.QueueableContext context) {
-      execute(); // Call the synchronous method
     }
 
     // Method to check if there are enough remaining limits
@@ -144,17 +163,17 @@ public class LoggerAlertService_gpt {
     }
   }
 
-  // AbstractActionExecutor class that contains common logic for all executors
-  private abstract class AbstractActionExecutor {
+  // ActionDispatcher class that contains common logic for all dispatchers
+  private abstract class ActionDispatcher {
     protected final LoggerAlertAction__c action;
-    protected final List<SObject> matchingRecords;
+    protected final List<SObject> filteredRecords;
 
-    public AbstractActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+    public ActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
       this.action = action;
-      this.matchingRecords = matchingRecords;
+      this.filteredRecords = filteredRecords;
     }
 
-    public abstract void execute();
+    public abstract void dispatch();
 
     public abstract TransactionLimitsUsage getExpectedLimitsUsage();
 
@@ -177,8 +196,8 @@ public class LoggerAlertService_gpt {
     }
   }
 
-  // Class for CalloutActionExecutor with Rate Limiting and Throttling
-  private class CalloutActionExecutor extends AbstractActionExecutor {
+  // Class for CalloutActionDispatcher with Rate Limiting and Throttling
+  private abstract class CalloutActionDispatcher extends ActionDispatcher {
     private final Integer RATE_LIMIT = 10; // Max number of callouts allowed in a window
     private final Integer TIME_WINDOW_SECONDS = 60; // Time window for rate limiting (e.g., 60 seconds)
     private final Integer THROTTLE_DELAY_MS = 2000; // Delay between callouts (e.g., 2 seconds)
@@ -186,15 +205,12 @@ public class LoggerAlertService_gpt {
     private Datetime lastCalloutTime;
     private Integer calloutsInCurrentWindow = 0;
 
-    public CalloutActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
-      super(action, matchingRecords);
+    public CalloutActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
+      super(action, filteredRecords);
     }
 
-    public override TransactionLimitsUsage getExpectedLimitsUsage() {
-      return null;
-    }
-
-    public override void execute() {
+    // TODO decide if this should have a default implementation, or if subclasses should fully handle implementation
+    public virtual override void dispatch() {
       if (!canMakeCallout()) {
         System.debug('Rate limit exceeded, queuing the job with delay.');
         enqueueJobWithDelay(); // Throttling the callout
@@ -249,13 +265,13 @@ public class LoggerAlertService_gpt {
     }
   }
 
-  // Inner class for EmailActionExecutor
-  private class EmailActionExecutor extends AbstractActionExecutor {
-    public EmailActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
-      super(action, matchingRecords);
+  // Inner class for EmailActionDispatcher
+  private class EmailActionDispatcher extends ActionDispatcher {
+    public EmailActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
+      super(action, filteredRecords);
     }
 
-    public override void execute() {
+    public override void dispatch() {
       System.debug('Executing Email alert...');
       if (checkCalloutLimits()) {
         return;
@@ -275,13 +291,13 @@ public class LoggerAlertService_gpt {
     }
   }
 
-  // Inner class for SlackActionExecutor
-  private class SlackActionExecutor extends AbstractActionExecutor {
-    public SlackActionExecutor(LoggerAlertAction__c action, List<SObject> matchingRecords) {
-      super(action, matchingRecords);
+  // Inner class for SlackActionDispatcher
+  private class SlackActionDispatcher extends CalloutActionDispatcher {
+    public SlackActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
+      super(action, filteredRecords);
     }
 
-    public override void execute() {
+    public override void dispatch() {
       System.debug('Executing Slack alert...');
       if (checkCalloutLimits()) {
         return;
@@ -297,7 +313,7 @@ public class LoggerAlertService_gpt {
     }
 
     public override TransactionLimitsUsage getExpectedLimitsUsage() {
-      return new TransactionLimitsUsage().setExpectedCallouts(1).setExpectedDmlStatements(0).setExpectedEmails(0); // No emails for Slack actions
+      return new TransactionLimitsUsage().setExpectedCallouts(this.filteredRecords.size()).setExpectedDmlStatements(0).setExpectedEmails(0);
     }
   }
 
@@ -356,7 +372,7 @@ public class LoggerAlertService_gpt {
     }
 
     private void makeRateLimitedCallout() {
-      //   CalloutActionExecutor.this.execute();
+      //   CalloutActionDispatcher.this.dispatch();
     }
   }
 }
