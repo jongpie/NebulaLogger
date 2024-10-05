@@ -227,6 +227,8 @@ public class LoggerAlertService_gpt {
       }
     }
 
+    public abstract List<System.HttpRequest> getHttpRequests();
+
     // Method to determine if a callout can be made (rate limiting logic)
     private Boolean canMakeCallout() {
       Datetime now = Datetime.now();
@@ -291,8 +293,10 @@ public class LoggerAlertService_gpt {
     }
   }
 
-  // Inner class for SlackActionDispatcher
+  /* Start of Slack classes */
   private class SlackActionDispatcher extends CalloutActionDispatcher {
+    private final Integer requestTimeout = 10;
+
     public SlackActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
       super(action, filteredRecords);
     }
@@ -308,26 +312,70 @@ public class LoggerAlertService_gpt {
       sendSlackMessage(channel);
     }
 
+    public override List<System.HttpRequest> getHttpRequests() {
+      // TODO requery the data
+      // TODO create 1 request per match
+      // TODO (dynamically?) use a field set for the current SObject Type
+      List<System.HttpRequest> requests = new List<System.HttpRequest>();
+
+      for (SObject record : this.filteredRecords) {
+        String endpoint = this.action.CalloutNamedCredential__c;
+        SlackPayload payload = new SlackPayload();
+
+        System.HttpRequest request = new System.HttpRequest();
+        request.setBody(System.JSON.serialize(payload));
+        request.setEndpoint(endpoint);
+        request.setHeader('Content-Type', 'application/json');
+        request.setMethod('POST');
+        request.setTimeout(this.requestTimeout);
+
+        requests.add(request);
+      }
+
+      return requests;
+    }
+
     private void sendSlackMessage(String channel) {
       System.debug('Sending message to Slack channel: ' + channel);
     }
 
     public override TransactionLimitsUsage getExpectedLimitsUsage() {
-      return new TransactionLimitsUsage().setExpectedCallouts(this.filteredRecords.size()).setExpectedDmlStatements(0).setExpectedEmails(0);
+      return new TransactionLimitsUsage()
+        .setExpectedCallouts(this.filteredRecords.size())
+        .setExpectedCalloutTime(this.requestTimeout * this.filteredRecords.size())
+        .setExpectedQueries(1)
+        .setExpectedQueryRows(this.filteredRecords.size());
     }
   }
+
+  private class SlackPayload {
+    public String channel;
+    public List<SlackBlock> blocks = new List<SlackBlock>();
+  }
+
+  // Examples:https://medium.com/trabe/build-and-post-messages-to-slack-using-javascript-and-the-slack-api-55c9b4f43ae7
+  private class SlackBlock {
+    public String type;
+  }
+  /* End of Slack classes */
 
   // TransactionLimitsUsage class with fluent API
   public class TransactionLimitsUsage {
     public Integer expectedCallouts = 0;
+    public Integer expectedCalloutTime = 0; // Tracking expected callout time in seconds
     public Integer expectedDmlStatements = 0;
     public Integer expectedEmails = 0;
     public Integer expectedQueries = 0;
-    public Integer expectedCalloutTime = 0; // Tracking expected callout time in seconds
+    public Integer expectedQueryRows = 0;
     public Integer expectedQueueableJobs = 0; // Tracking queueable jobs
 
     public TransactionLimitsUsage setExpectedCallouts(Integer callouts) {
       this.expectedCallouts = callouts;
+      return this;
+    }
+
+    public TransactionLimitsUsage setExpectedCalloutTime(Integer calloutTime) {
+      this.expectedCalloutTime = calloutTime;
       return this;
     }
 
@@ -346,8 +394,8 @@ public class LoggerAlertService_gpt {
       return this;
     }
 
-    public TransactionLimitsUsage setExpectedCalloutTime(Integer calloutTime) {
-      this.expectedCalloutTime = calloutTime;
+    public TransactionLimitsUsage setExpectedQueryRows(Integer queryRows) {
+      this.expectedQueryRows = queryRows;
       return this;
     }
 
