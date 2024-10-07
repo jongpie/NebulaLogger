@@ -24,7 +24,7 @@ public class LoggerAlertService_gpt {
     }
 
     if (records.getSObjectType() != LogEntry__c.SObjectType) {
-      System.debug('TEMP! Only testing with LogEntry__c for now');
+      System.debug('⛔⚠️TEMP! Only testing with LogEntry__c for now');
       return;
     }
 
@@ -62,7 +62,7 @@ public class LoggerAlertService_gpt {
         Type__c,
         (SELECT Id, Type__c FROM LoggerAlertActions__r)
       FROM LoggerAlert__c
-      WHERE IsEnabled__c = TRUE
+      WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE
     ];
     // List<LoggerAlert__c>
     for (LoggerAlert__c alert : todoAlertsVariable) {
@@ -89,6 +89,7 @@ public class LoggerAlertService_gpt {
 
     if (dispatchers.isEmpty() == false) {
       System.debug('Passing dispatchers to the ActionsProcessor.');
+      // TODO make this run sync & self re-enqueue so that some sync limits (like emails) can be processed
       System.enqueueJob(new ActionsProcessor(dispatchers));
     }
   }
@@ -115,10 +116,13 @@ public class LoggerAlertService_gpt {
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
 
     for (SObject record : records) {
-      Log__c log = record.getSObjectType() == Log__c.SObjectType ? (Log__c) record : null;
-      LogEntry__c logEntry = record.getSObjectType() == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
-      LogEntryEvent__e logEntryEvent = record.getSObjectType() == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
-      LogEntryTag__c logEntryTag = record.getSObjectType() == LogEntryTag__c.SObjectType ? (LogEntryTag__c) record : null;
+      Schema.SObjectType recordSObjectType = record.getSObjectType();
+
+      // Option 1:
+      Log__c log = recordSObjectType == Log__c.SObjectType ? (Log__c) record : null;
+      LogEntry__c logEntry = recordSObjectType == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
+      LogEntryEvent__e logEntryEvent = recordSObjectType == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
+      LogEntryTag__c logEntryTag = recordSObjectType == LogEntryTag__c.SObjectType ? (LogEntryTag__c) record : null;
 
       LoggerAlertMatch__c alertMatch = new LoggerAlertMatch__c(
         Log__c = log?.Id,
@@ -127,6 +131,7 @@ public class LoggerAlertService_gpt {
         LogEntryTag__c = logEntryTag?.Id,
         LoggerAlert__c = alert.Id
       );
+
       alertMatches.add(alertMatch);
     }
 
@@ -150,7 +155,7 @@ public class LoggerAlertService_gpt {
   }
 
   // Private Queueable class to handle executing or re-enqueuing the actions
-  private class ActionsProcessor implements System.Queueable {
+  private class ActionsProcessor implements Database.AllowsCallouts, System.Queueable {
     private final List<ActionDispatcher> dispatchers;
 
     // Constructor
@@ -313,7 +318,7 @@ public class LoggerAlertService_gpt {
     }
 
     public override void dispatch() {
-      System.debug('Executing Email alert...');
+      System.debug('Executing Email alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.filteredRecords));
       if (checkCalloutLimits()) {
         return;
       }
@@ -341,7 +346,7 @@ public class LoggerAlertService_gpt {
     }
 
     public override void dispatch() {
-      System.debug('Executing Slack alert...');
+      System.debug('Executing Slack alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.filteredRecords));
       if (checkCalloutLimits()) {
         return;
       }
