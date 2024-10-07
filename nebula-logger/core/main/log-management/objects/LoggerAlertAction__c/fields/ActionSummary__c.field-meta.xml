@@ -4,12 +4,8 @@
     <externalId>false</externalId>
     <formula>CASE(
   TEXT(Type__c),
-  &apos;Email&apos;, &apos;eeeeemail&apos;,
-  &apos;Slack&apos;, CASE(
-    TEXT(SlackConnectionType__c),
-    &apos;Named Credential&apos;, SlackChannel__c + &apos; (&apos; +  CalloutNamedCredential__c + &apos; Named Credential)&apos;,
-    &apos;Unknown&apos;
-  ),
+  &apos;Email&apos;, &apos;Send email to &apos; + IF( NOT(ISBLANK(EmailUserRecipient__c)), &apos;username &apos; + EmailUserRecipient__r.Username,  &apos;email address &apos; + EmailAddressRecipient__c ),
+  &apos;Slack&apos;, &apos;Send Slack message to &apos; + IF( NOT(ISBLANK(SlackChannel__c)), &apos;channel &apos; + SlackChannel__c,  &apos;webhook&apos;) + &apos; with &apos; + CalloutNamedCredential__c + &apos; named credential&apos;,
   &apos;Unknown&apos;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>

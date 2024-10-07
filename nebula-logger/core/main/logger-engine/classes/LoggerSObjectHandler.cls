@@ -125,7 +125,7 @@ public without sharing abstract class LoggerSObjectHandler {
         this.executeAfterInsert(this.input.triggerNew);
         this.executeAfterInsert(this.input.triggerNewMap);
 
-        LoggerAlertService.getInstance().process(this.input.triggerNew);
+        LoggerAlertService_gpt.getInstance().process(this.input.triggerNew);
       }
       when AFTER_UPDATE {
         this.executeAfterUpdate(this.input.triggerNewMap, this.input.triggerOldMap);
