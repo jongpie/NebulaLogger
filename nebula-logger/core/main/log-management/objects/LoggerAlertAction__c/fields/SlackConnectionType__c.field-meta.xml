@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SlackConnectionType__c</fullName>
-    <externalId>false</externalId>
     <label>Slack Connection Type</label>
     <required>false</required>
     <trackHistory>true</trackHistory>
@@ -20,6 +19,12 @@
                 <fullName>Webhook</fullName>
                 <default>false</default>
                 <label>Webhook</label>
+            </value>
+            <value>
+                <fullName>Named Credential</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Named Credential</label>
             </value>
         </valueSetDefinition>
     </valueSet>

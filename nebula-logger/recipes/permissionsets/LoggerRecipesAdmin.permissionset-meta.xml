@@ -24,14 +24,18 @@
         <apexClass>LoggerLWCDemoController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>Example_Slack_External_Credential-ExamplePrincipal</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.SomeLogField__c</field>
+        <field>LogEntry__c.SomeLogEntryField__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.SomeLogEntryField__c</field>
+        <field>Log__c.SomeLogField__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

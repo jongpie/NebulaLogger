@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Type__c</fullName>
-    <externalId>false</externalId>
     <label>Type</label>
     <required>true</required>
     <trackHistory>true</trackHistory>
@@ -20,6 +19,18 @@
                 <fullName>Slack</fullName>
                 <default>false</default>
                 <label>Slack</label>
+            </value>
+            <value>
+                <fullName>OpenTelemetry Provider</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>OpenTelemetry Provider</label>
+            </value>
+            <value>
+                <fullName>Webhook</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Webhook</label>
             </value>
         </valueSetDefinition>
     </valueSet>
