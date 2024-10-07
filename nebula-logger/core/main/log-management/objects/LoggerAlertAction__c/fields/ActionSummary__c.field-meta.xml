@@ -7,8 +7,7 @@
   &apos;Email&apos;, &apos;eeeeemail&apos;,
   &apos;Slack&apos;, CASE(
     TEXT(SlackConnectionType__c),
-    &apos;Named Credential&apos;, SlackChannel__c + &apos; (&apos; +  SlackNamedCredential__c + &apos; Named Credential)&apos;,
-    &apos;Webhook&apos;, &apos;Webhook &apos; + SlackWebhookUrl__c,
+    &apos;Named Credential&apos;, SlackChannel__c + &apos; (&apos; +  CalloutNamedCredential__c + &apos; Named Credential)&apos;,
     &apos;Unknown&apos;
   ),
   &apos;Unknown&apos;
