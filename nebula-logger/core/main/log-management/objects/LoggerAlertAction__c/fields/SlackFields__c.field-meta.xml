@@ -6,6 +6,7 @@
     <label>Slack Fields</label>
     <length>2000</length>
     <securityClassification>Confidential</securityClassification>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
     <visibleLines>10</visibleLines>
