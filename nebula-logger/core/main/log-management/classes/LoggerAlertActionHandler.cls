@@ -146,15 +146,19 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
    * @param  loggerAlertActions The action records to validate
    */
   private static void validateSlackFields(List<LoggerAlertAction__c> loggerAlertActions) {
-    for (LoggerAlertAction__c action : loggerAlertActions) {
-      if (String.isBlank(action.SlackFields__c)) {
-        action.SlackFields__c.addError('1 or more ' + action.SourceSObjectType__c + ' fields must be specified for Slack action');
+    for (LoggerAlertAction__c loggerAlertAction : loggerAlertActions) {
+      if (loggerAlertAction.Type__c != TYPE_SLACK) {
         continue;
       }
 
-      Schema.SObjectType sourceSObjectType = getSObjectType(action.SourceSObjectType__c);
-      Map<String, Schema.SObjectField> sourceSObjectFieldNameToField = getSourceFieldMap(action.SourceSObjectType__c);
-      List<String> slackFieldNames = action.SlackFields__c.split('[ ,\\n]');
+      if (String.isBlank(loggerAlertAction.SlackFields__c)) {
+        loggerAlertAction.SlackFields__c.addError('1 or more ' + loggerAlertAction.SourceSObjectType__c + ' fields must be specified for Slack action');
+        continue;
+      }
+
+      Schema.SObjectType sourceSObjectType = getSObjectType(loggerAlertAction.SourceSObjectType__c);
+      Map<String, Schema.SObjectField> sourceSObjectFieldNameToField = getSourceFieldMap(loggerAlertAction.SourceSObjectType__c);
+      List<String> slackFieldNames = loggerAlertAction.SlackFields__c.split('[ ,\\n]');
       List<String> cleanedSlackFieldNames = new List<String>();
       List<String> invalidFieldPathStrings = new List<String>();
       for (String slackFieldName : slackFieldNames) {
@@ -179,11 +183,11 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
           invalidFieldPathStrings.size() == 1 ? '' : 's',
           String.join(invalidFieldPathStrings, ', ')
         };
-        action.SlackFields__c.addError(String.format(errorMessageTemplate, errorMessageTemplateParameters));
+        loggerAlertAction.SlackFields__c.addError(String.format(errorMessageTemplate, errorMessageTemplateParameters));
       } else {
         cleanedSlackFieldNames.sort();
         Set<String> deduplicatedSlackFieldNames = new Set<String>(cleanedSlackFieldNames);
-        action.SlackFields__c = String.join(deduplicatedSlackFieldNames, '\n');
+        loggerAlertAction.SlackFields__c = String.join(deduplicatedSlackFieldNames, '\n');
       }
     }
   }

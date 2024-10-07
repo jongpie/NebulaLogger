@@ -23,9 +23,48 @@ public class LoggerAlertService_gpt {
       return;
     }
 
+    if (records.getSObjectType() != LogEntry__c.SObjectType) {
+      System.debug('TEMP! Only testing with LogEntry__c for now');
+      return;
+    }
+
+    /*
+      TODO things to add
+        1. If 1 or more Slack actions are setup, combine the lists in SlackFields__c together use to requery records
+        2. Decide if email alerts will be supported for all Source SObject Types, and if so, can fields be customized (like Slack)?
+        3. If 1 or more OTel actions are setup, query all fields on Log__c, LogEntry__c, LogEntryTag__c, LoggerTag__c, and LoggerScenario__c
+    */
+
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
     List<ActionDispatcher> dispatchers = new List<ActionDispatcher>();
-    List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
+    // List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
+    List<LoggerAlert__c> todoAlertsVariable = [
+      SELECT
+        Id,
+        Comments__c,
+        ConditionLogicType__c,
+        CustomConditionLogic__c,
+        ExecutionOrder__c,
+        IsEnabled__c,
+        IsMatchingThresholdEnabled__c,
+        IsOriginOrganizationIdValid__c,
+        MatchingCountThreshold__c,
+        MatchingThresholdRecordCount__c,
+        MatchingThresholdSummary__c,
+        MatchingThresholdTimePeriodIncrement__c,
+        MatchingThresholdTimePeriodUnit__c,
+        MatchingType__c,
+        NumberOfDaysToRetainLogs__c,
+        OriginOrganizationId__c,
+        SourceSObjectFilter__c,
+        SourceSObjectType__c,
+        TotalMatches__c,
+        Type__c,
+        (SELECT Id, Type__c FROM LoggerAlertActions__r)
+      FROM LoggerAlert__c
+      WHERE IsEnabled__c = TRUE
+    ];
+    // List<LoggerAlert__c>
     for (LoggerAlert__c alert : todoAlertsVariable) {
       List<SObject> filteredRecords = this.getFilteredRecords(alert, records);
 
