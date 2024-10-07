@@ -41,10 +41,6 @@
                 <identifier>RecordLoggerNotification_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-6204f362-34b8-45c7-be6d-fa92847cf95b</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -55,34 +51,6 @@
                 <identifier>RecordType_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-cbdb4110-9df7-4fa9-9cb9-ba7e15e709c9</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-6204f362-34b8-45c7-be6d-fa92847cf95b</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-cbdb4110-9df7-4fa9-9cb9-ba7e15e709c9</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column2</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-cf5631b5-048c-4af6-be7d-21c504cb94bd</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -134,44 +102,6 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-3c2f56f0-1eb2-4db5-a44d-88b3e61f5a39</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.EmailAddressRecipient__c</fieldItem>
-                <identifier>RecordEmailAddressRecipient_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.EmailRecipientType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Email Address</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.EmailUserRecipient__c</fieldItem>
-                <identifier>RecordEmailUserRecipient_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.EmailRecipientType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>User</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -206,7 +136,41 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-791de1c1-3e35-4476-9e0f-5dcb1f5f4109</name>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.EmailAddressRecipient__c</fieldItem>
+                <identifier>RecordEmailAddressRecipient_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.EmailRecipientType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Email Address</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.EmailUserRecipient__c</fieldItem>
+                <identifier>RecordEmailUserRecipient_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.EmailRecipientType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>User</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-6204f362-34b8-45c7-be6d-fa92847cf95b</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -214,23 +178,13 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-3c2f56f0-1eb2-4db5-a44d-88b3e61f5a39</value>
+                    <value>Facet-6204f362-34b8-45c7-be6d-fa92847cf95b</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column5</identifier>
+                <identifier>flexipage_column</identifier>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-791de1c1-3e35-4476-9e0f-5dcb1f5f4109</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column6</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-a04a4008-564d-4b78-a601-8437c827c884</name>
+        <name>Facet-cf5631b5-048c-4af6-be7d-21c504cb94bd</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -302,24 +256,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-a04a4008-564d-4b78-a601-8437c827c884</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Settings</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection3</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
