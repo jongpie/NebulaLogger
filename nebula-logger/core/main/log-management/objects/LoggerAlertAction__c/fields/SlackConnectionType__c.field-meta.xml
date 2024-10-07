@@ -12,9 +12,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Named Credential</fullName>
+                <fullName>Chat Post Message</fullName>
                 <default>false</default>
-                <label>Named Credential</label>
+                <label>Chat Post Message</label>
             </value>
             <value>
                 <fullName>Webhook</fullName>
