@@ -1748,21 +1748,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerAlertAction__c.SlackNamedCredential__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerAlertAction__c.SlackWebhookUrl__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerAlertCondition__c.Value__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>LoggerAlertMatch__c.LogEntryEventUuid__c</field>
         <readable>true</readable>
     </fieldPermissions>
