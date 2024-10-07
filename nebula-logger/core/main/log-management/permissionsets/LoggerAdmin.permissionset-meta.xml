@@ -1743,6 +1743,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerAlertAction__c.SlackFields__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerAlertAction__c.SlackNamedCredential__c</field>
         <readable>true</readable>
     </fieldPermissions>

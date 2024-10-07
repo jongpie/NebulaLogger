@@ -319,12 +319,17 @@ public class LoggerAlertService_gpt {
       List<System.HttpRequest> requests = new List<System.HttpRequest>();
 
       for (SObject record : this.filteredRecords) {
+        SlackMessage slackMessage = new SlackMessage();
         String endpoint = this.action.CalloutNamedCredential__c;
-        SlackPayload payload = new SlackPayload();
+        if (this.action.SlackConnectionType__c == 'Chat Post Message') {
+          endpoint += this.action.CalloutNamedCredential__c + '/api/chat.postMessage' + this.action.SlackChannel__c;
+        }
 
+        // TODO figure out exact steps/metadata needed to setup named credentials
+        // https://unofficialsf.com/authorizing-salesforce-access-to-slack/
         System.HttpRequest request = new System.HttpRequest();
-        request.setBody(System.JSON.serialize(payload));
-        request.setEndpoint(endpoint);
+        request.setBody(System.JSON.serializePretty(slackMessage));
+        request.setEndpoint(slackMessage.namedCredentialDeveloperName + endpoint);
         request.setHeader('Content-Type', 'application/json');
         request.setMethod('POST');
         request.setTimeout(this.requestTimeout);
@@ -348,13 +353,60 @@ public class LoggerAlertService_gpt {
     }
   }
 
-  private class SlackPayload {
+  // Examples:https://medium.com/trabe/build-and-post-messages-to-slack-using-javascript-and-the-slack-api-55c9b4f43ae7
+
+  // TODO scenarios to (try to) support:
+  //      1. Sending Slack notifications using a webhook
+  //      2. Sending Slack notifications using a named credential & Slack app
+  // TODO implementation goals:
+  //      1. If possible, don't use a (datetime) field for tracking if Slack notification was sent (something that the plugin does)
+  //          - This might be needed to avoid sending duplicate Slack notifications across different EventBus transactions (for the same log transaction ID)
+  //      2. Assume that multiple channels are supported, but only 1 workspace per org
+  //      3. Multiple Salesforce orgs should be able to send notifications to the same Slack workspace (if desired)
+  //      4. Assume the user has already created a Slack app (and the user's team has already been added to the Slack app)
+  //      5. Assume the user has already created a Slack channel (and the user has already joined the Slack channel)
+  //      6. Have a retry mechanism, but for each notification, have a max number of retry attempts
+  //      7. Concepts & implementations should align with the Apex Slack SDK (https://developer.salesforce.com/docs/platform/salesforce-slack-sdk/overview)
+  //         It's won't be used until it's GA (currently still in beta), but using it is a long-term goal
+
+  /* Block kit DTOs */
+  /* https://api.slack.com/reference/block-kit/blocks */
+  /* https://api.slack.com/methods/chat.postMessage */
+  public class SlackMessage {
+    public List<SlackBlock> blocks;
     public String channel;
-    public List<SlackBlock> blocks = new List<SlackBlock>();
+    public String icon_emoji;
+    public String icon_url;
+
+    // Internal-use only, not used by Slack
+    public transient String namedCredentialDeveloperName;
   }
 
-  // Examples:https://medium.com/trabe/build-and-post-messages-to-slack-using-javascript-and-the-slack-api-55c9b4f43ae7
-  private class SlackBlock {
+  public class SlackBlock {
+    public SlackBlockAccessory accessory;
+    public List<SlackBlockAction> elements;
+    public List<SlackBlockField> fields;
+    public SlackBlockField text;
+    public String type;
+  }
+
+  public class SlackBlockAccessory {
+    public String alt_text;
+    public String image_url;
+    public SlackBlockField text;
+    public String type;
+  }
+
+  public class SlackBlockAction {
+    public String style;
+    public SlackBlockField text;
+    public String type;
+    public String value;
+  }
+
+  public class SlackBlockField {
+    public Boolean emoji;
+    public String text;
     public String type;
   }
   /* End of Slack classes */
