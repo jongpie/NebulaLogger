@@ -91,6 +91,47 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.EmailRecipientType__c</fieldItem>
                 <identifier>RecordEmailRecipientType_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Email</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.CalloutNamedCredential__c</fieldItem>
+                <identifier>RecordCalloutNamedCredential_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Slack</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SlackConnectionType__c</fieldItem>
+                <identifier>RecordSlackConnectionType_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Slack</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-3c2f56f0-1eb2-4db5-a44d-88b3e61f5a39</name>
@@ -131,6 +172,40 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SlackChannel__c</fieldItem>
+                <identifier>RecordSlackChannel_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.SlackConnectionType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Chat Post Message</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SlackFields__c</fieldItem>
+                <identifier>RecordSlackFields_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Slack</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-791de1c1-3e35-4476-9e0f-5dcb1f5f4109</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -156,165 +231,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-a04a4008-564d-4b78-a601-8437c827c884</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.OpenTelemetryProvider__c</fieldItem>
-                <identifier>RecordOpenTelemetryProvider_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>OpenTelemetry Provider</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-1b2e89ee-fb6e-41cf-9ffa-ec1c6d74fea7</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.CustomActionApexClass__c</fieldItem>
-                <identifier>RecordCustomNotifierApexClass_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.OpenTelemetryProvider__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Custom</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-421de5c5-6718-4d6f-bee7-34199f59b4dd</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-1b2e89ee-fb6e-41cf-9ffa-ec1c6d74fea7</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column9</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-421de5c5-6718-4d6f-bee7-34199f59b4dd</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column10</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-6ed7d5ce-9d03-4a41-8d1f-242212935c3e</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.SlackConnectionType__c</fieldItem>
-                <identifier>RecordSlackConnectionType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-9e607a09-5abe-444c-998a-aac0060fac2a</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.SlackNamedCredential__c</fieldItem>
-                <identifier>RecordSlackNamedCredential_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.SlackConnectionType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Named Credential</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.SlackChannel__c</fieldItem>
-                <identifier>RecordSlackChannel_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.SlackConnectionType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Named Credential</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.SlackWebhookUrl__c</fieldItem>
-                <identifier>RecordSlackWebhookUrl_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.SlackConnectionType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Webhook</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-52329034-9fc9-4b04-a04c-784905dc4763</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-9e607a09-5abe-444c-998a-aac0060fac2a</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column7</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-52329034-9fc9-4b04-a04c-784905dc4763</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column8</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-50bcf204-f8ab-4d8b-9e0c-fcb02d46ff27</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -400,60 +316,10 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Email Recipient</value>
+                    <value>Settings</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection3</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Email</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-6ed7d5ce-9d03-4a41-8d1f-242212935c3e</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>OpenTelemetry Endpoint</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection5</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-50bcf204-f8ab-4d8b-9e0c-fcb02d46ff27</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Slack Message Recipient</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection4</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Slack</rightValue>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
