@@ -4,6 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <defaultValue>false</defaultValue>
+    <inlineHelpText>When enabled, the value specified in NumberOfDaysToRetainLogs__c (including null) will override the value in Log__c.LogRetentionDate__c of any matches.</inlineHelpText>
     <label>Override Log Retention Date</label>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>true</trackHistory>

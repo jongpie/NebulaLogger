@@ -5,7 +5,7 @@
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText>This value is used to set the field Log__c.LogRetentionDate__c,  which is then used by LogBatchPurger to delete old logs. To keep  logs indefinitely, set this field to blank (null).</inlineHelpText>
+    <inlineHelpText>This value is used to set the field Log__c.LogRetentionDate__c,  which is then used by LogBatchPurger to delete old logs. To keep logs indefinitely, set this field to blank (null).</inlineHelpText>
     <label>Number of Days to Retain Logs</label>
     <precision>18</precision>
     <required>false</required>
