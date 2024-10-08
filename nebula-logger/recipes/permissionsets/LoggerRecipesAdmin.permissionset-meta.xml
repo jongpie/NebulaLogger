@@ -26,7 +26,11 @@
     </classAccesses>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
-        <externalCredentialPrincipal>Example_Slack_External_Credential-ExamplePrincipal</externalCredentialPrincipal>
+        <externalCredentialPrincipal>Example_Slack_OAuth_External_Credential-ExamplePrincipal</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>Example_Slack_Webhook_External_Credential-ExamplePrincipal</externalCredentialPrincipal>
     </externalCredentialPrincipalAccesses>
     <fieldPermissions>
         <editable>false</editable>

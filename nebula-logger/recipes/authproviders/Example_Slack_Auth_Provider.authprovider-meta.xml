@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <authorizeUrl>https://slack.com/oauth/v2/authorize</authorizeUrl>
+    <consumerKey>212799517236.388412852212</consumerKey>
+    <consumerSecret>Placeholder_Value</consumerSecret>
+    <defaultScopes>chat:write</defaultScopes>
+    <friendlyName>Example Slack Auth Provider</friendlyName>
+    <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
+    <isPkceEnabled>false</isPkceEnabled>
+    <providerType>Slack</providerType>
+    <requireMfa>false</requireMfa>
+    <sendAccessTokenInHeader>true</sendAccessTokenInHeader>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <sendSecretInApis>true</sendSecretInApis>
+    <tokenUrl>https://slack.com/api/oauth.v2.access</tokenUrl>
+</AuthProvider>

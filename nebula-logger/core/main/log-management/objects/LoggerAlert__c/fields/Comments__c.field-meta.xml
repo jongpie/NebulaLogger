@@ -3,6 +3,7 @@
     <fullName>Comments__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
+    <inlineHelpText>A place to store any comments or notes about this alert. This is purely for documentation purposes.</inlineHelpText>
     <label>Comments</label>
     <length>4000</length>
     <securityClassification>Confidential</securityClassification>
