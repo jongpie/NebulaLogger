@@ -97,6 +97,43 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.IsMatchStorageEnabled__c</fieldItem>
+                <identifier>RecordIsMatchStorageEnabled_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.IsLogRetentionOverrideEnabled__c</fieldItem>
+                <identifier>RecordIsLogRetentionOverrideEnabled_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.NumberOfDaysToRetainLogs__c</fieldItem>
+                <identifier>RecordNumberOfDaysToRetainLogs_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.IsLogRetentionOverrideEnabled__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Comments__c</fieldItem>
                 <identifier>RecordComments_cField</identifier>
             </fieldInstance>
@@ -418,6 +455,9 @@
                         <valueListItems>
                             <value>ActionSummary__c</value>
                         </valueListItems>
+                        <valueListItems>
+                            <value>LAST_UPDATE</value>
+                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -582,7 +622,7 @@
                 <identifier>flexipage_tab3</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.IsMatchingThresholdEnabled__c}</leftValue>
+                        <leftValue>{!Record.IsMatchStorageEnabled__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>

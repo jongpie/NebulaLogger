@@ -7,7 +7,7 @@
     <description>The UUID of the LogEntryEvent__e platform event that created this match record.
 
 For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_event_uuid.htm</description>
-    <externalId>true</externalId>
+    <externalId>false</externalId>
     <inlineHelpText>The UUID of the LogEntryEvent__e platform event that created this match record.
 
 For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_event_uuid.htm</inlineHelpText>
@@ -18,5 +18,5 @@ For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.pla
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
-    <unique>true</unique>
+    <unique>false</unique>
 </CustomField>

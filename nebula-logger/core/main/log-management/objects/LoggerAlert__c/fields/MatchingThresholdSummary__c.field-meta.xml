@@ -3,7 +3,7 @@
     <fullName>MatchingThresholdSummary__c</fullName>
     <externalId>false</externalId>
     <formula>IF(
-  ISPICKVAL(MatchingType__c, 'Threshold Match'),
+  ISPICKVAL(MatchingType__c, &apos;Threshold Match&apos;),
   &apos;Trigger alert if there are &apos;
     + TEXT(MatchingThresholdRecordCount__c) + &apos; or more matches within a &apos;
     + TEXT(MatchingThresholdTimePeriodIncrement__c) + &apos; &apos; + LOWER(TEXT(MatchingThresholdTimePeriodUnit__c)) + &apos; time period&apos;,

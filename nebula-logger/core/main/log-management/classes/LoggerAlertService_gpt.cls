@@ -38,6 +38,7 @@ public class LoggerAlertService_gpt {
         1. If 1 or more Slack actions are setup, combine the lists in SlackFields__c together use to requery records
         2. Decide if email alerts will be supported for all Source SObject Types, and if so, can fields be customized (like Slack)?
         3. If 1 or more OTel actions are setup, query all fields on Log__c, LogEntry__c, LogEntryTag__c, LoggerTag__c, and LoggerScenario__c
+        4. Based on IsLogRetentionOverrideEnabled__c, update the  field Log__c.LogRetentionDate__c
     */
 
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
@@ -47,12 +48,7 @@ public class LoggerAlertService_gpt {
       SELECT
         Id,
         Comments__c,
-        ConditionLogicType__c,
-        CustomConditionLogic__c,
-        ExecutionOrder__c,
-        IsEnabled__c,
         IsMatchingThresholdEnabled__c,
-        IsOriginOrganizationIdValid__c,
         MatchingCountThreshold__c,
         MatchingThresholdRecordCount__c,
         MatchingThresholdSummary__c,

@@ -211,6 +211,21 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     Database.QueryLocator queryLocator;
 
     switch on sobjectType.newSObject() {
+      when LoggerAlertMatch__c loggerAlertMatch {
+        queryLocator = System.Database.getQueryLocator(
+          [
+            SELECT Id
+            FROM LoggerAlertMatch__c
+            WHERE
+              (LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+              AND LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+              OR (LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+              AND LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+              OR (Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+              AND Log__r.LogRetentionDate__c != NULL)
+          ]
+        );
+      }
       when LogEntryTag__c logEntryTag {
         queryLocator = System.Database.getQueryLocator(
           [

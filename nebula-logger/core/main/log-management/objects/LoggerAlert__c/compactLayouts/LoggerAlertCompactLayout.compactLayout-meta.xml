@@ -5,7 +5,6 @@
     <fields>SourceSObjectType__c</fields>
     <fields>Type__c</fields>
     <fields>IsEnabled__c</fields>
-    <fields>ExecutionOrder__c</fields>
     <fields>OwnerId</fields>
     <fields>CreatedById</fields>
     <fields>LastModifiedById</fields>
