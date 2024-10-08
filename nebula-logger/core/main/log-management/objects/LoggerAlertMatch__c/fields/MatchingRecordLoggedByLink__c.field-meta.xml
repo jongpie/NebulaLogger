@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MatchingRecordLoggedByLink__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(
+  TEXT(LoggerAlert__r.SourceSObjectType__c),
+  &apos;LogEntryEvent__e&apos;, &apos;TODO&apos;,
+  &apos;Log__c&apos;, HYPERLINK(Log__r.LoggedBy__r.Username, Log__r.LoggedBy__r.Username, &apos;_top&apos;),
+  &apos;LogEntry__c&apos;, HYPERLINK(LogEntry__r.Log__r.LoggedBy__c, LogEntry__r.Log__r.LoggedBy__r.Username, &apos;_top&apos;),
+  &apos;LogEntryTag__c&apos;, HYPERLINK(LogEntryTag__r.LogEntry__r.Log__r.LoggedBy__c, LogEntryTag__r.LogEntry__r.Log__r.LoggedBy__r.Username, &apos;_top&apos;),
+  &apos;Unknown&apos;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Logged By</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

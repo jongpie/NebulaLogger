@@ -61,16 +61,16 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
   protected override void executeBeforeInsert(List<SObject> triggerNew) {
     List<LoggerAlertAction__c> loggerAlertActions = (List<LoggerAlertAction__c>) triggerNew;
 
-    validateNamedCredentials(loggerAlertActions);
-    validateSlackFields(loggerAlertActions);
+    LoggerAlertActionHandler.validateNamedCredentials(loggerAlertActions);
+    LoggerAlertActionHandler.validateSlackFields(loggerAlertActions);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
     List<LoggerAlertAction__c> loggerAlertActions = (List<LoggerAlertAction__c>) triggerNewMap.values();
     Map<Id, LoggerAlertAction__c> idToOldLoggerAlertAction = (Map<Id, LoggerAlertAction__c>) triggerOldMap;
 
-    validateNamedCredentials(loggerAlertActions, idToOldLoggerAlertAction);
-    validateSlackFields(loggerAlertActions, idToOldLoggerAlertAction);
+    LoggerAlertActionHandler.validateNamedCredentials(loggerAlertActions, idToOldLoggerAlertAction);
+    LoggerAlertActionHandler.validateSlackFields(loggerAlertActions, idToOldLoggerAlertAction);
   }
 
   private static void validateNamedCredentials(
@@ -88,7 +88,7 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
       }
     }
 
-    validateNamedCredentials(changedLoggerAlertActions);
+    LoggerAlertActionHandler.validateNamedCredentials(changedLoggerAlertActions);
   }
 
   /**
@@ -137,7 +137,7 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
       }
     }
 
-    validateSlackFields(changedLoggerAlertActions);
+    LoggerAlertActionHandler.validateSlackFields(changedLoggerAlertActions);
   }
 
   /**

@@ -15,6 +15,7 @@ For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.pla
     <length>36</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>true</unique>

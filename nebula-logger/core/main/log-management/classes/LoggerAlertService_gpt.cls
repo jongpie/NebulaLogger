@@ -18,6 +18,11 @@ public class LoggerAlertService_gpt {
 
   // Method to process records and execute alert actions by passing them to the ActionsProcessor
   public void process(List<SObject> records) {
+    // TODO add a new LoggerParameter__mdt record to globally enable/disable alerts
+    // if (LoggerParameter.ENABLE_ALERTING == false) {
+    //   return;
+    // }
+
     if (records.isEmpty()) {
       System.debug('No records to process.');
       return;
@@ -60,25 +65,24 @@ public class LoggerAlertService_gpt {
         SourceSObjectType__c,
         TotalMatches__c,
         Type__c,
-        (SELECT Id, Type__c FROM LoggerAlertActions__r)
+        (SELECT Id, CalloutNamedCredential__c, SlackChannel__c, SlackConnectionType__c, SlackFields__c, Type__c FROM LoggerAlertActions__r)
       FROM LoggerAlert__c
       WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE
     ];
-    // List<LoggerAlert__c>
     for (LoggerAlert__c alert : todoAlertsVariable) {
-      List<SObject> filteredRecords = this.getFilteredRecords(alert, records);
+      List<SObject> matchingRecords = this.getMatchingRecords(alert, records);
 
-      if (filteredRecords.isEmpty()) {
+      if (matchingRecords.isEmpty()) {
         continue;
       }
 
       if (alert.IsMatchingThresholdEnabled__c) {
         // TODO add records to alertMatches
-        alertMatches.addAll(this.generateAlertMatches(alert, filteredRecords));
+        alertMatches.addAll(this.generateLoggerAlertMatchRecords(alert, matchingRecords));
       }
 
       for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
-        ActionDispatcher dispatcher = createActionDispatcher(action, filteredRecords);
+        ActionDispatcher dispatcher = createActionDispatcher(action, matchingRecords);
         if (dispatcher != null) {
           dispatchers.add(dispatcher);
         }
@@ -90,35 +94,35 @@ public class LoggerAlertService_gpt {
     if (dispatchers.isEmpty() == false) {
       System.debug('Passing dispatchers to the ActionsProcessor.');
       // TODO make this run sync & self re-enqueue so that some sync limits (like emails) can be processed
-      System.enqueueJob(new ActionsProcessor(dispatchers));
+      new ActionsProcessor(dispatchers).execute();
+      // System.enqueueJob(new ActionsProcessor(dispatchers));
     }
   }
 
-  private List<SObject> getFilteredRecords(LoggerAlert__c alert, List<SObject> records) {
+  private List<SObject> getMatchingRecords(LoggerAlert__c alert, List<SObject> records) {
     FormulaEval.FormulaInstance formulaEvaluator = System.Formula.builder()
       .withFormula(alert.SourceSObjectFilter__c)
       .withReturnType(FormulaEval.FormulaReturnType.Boolean)
       .withType(records.getSObjectType())
       .build();
 
-    List<SObject> filteredRecords = new List<SObject>();
+    List<SObject> matchingRecords = new List<SObject>();
     for (SObject inputRecord : records) {
       Boolean matchesFilter = (Boolean) formulaEvaluator.evaluate(inputRecord);
       if (matchesFilter) {
-        filteredRecords.add(inputRecord);
+        matchingRecords.add(inputRecord);
       }
     }
 
-    return filteredRecords;
+    return matchingRecords;
   }
 
-  private List<LoggerAlertMatch__c> generateAlertMatches(LoggerAlert__c alert, List<SObject> records) {
+  private List<LoggerAlertMatch__c> generateLoggerAlertMatchRecords(LoggerAlert__c alert, List<SObject> records) {
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
 
     for (SObject record : records) {
       Schema.SObjectType recordSObjectType = record.getSObjectType();
 
-      // Option 1:
       Log__c log = recordSObjectType == Log__c.SObjectType ? (Log__c) record : null;
       LogEntry__c logEntry = recordSObjectType == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
       LogEntryEvent__e logEntryEvent = recordSObjectType == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
@@ -139,13 +143,13 @@ public class LoggerAlertService_gpt {
   }
 
   // Factory method to create the appropriate action dispatcher for Callout
-  private ActionDispatcher createActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
+  private ActionDispatcher createActionDispatcher(LoggerAlertAction__c action, List<SObject> matchingRecords) {
     switch on action.Type__c {
       when 'Email' {
-        return new EmailActionDispatcher(action, filteredRecords);
+        return new EmailActionDispatcher(action, matchingRecords);
       }
       when 'Slack' {
-        return new SlackActionDispatcher(action, filteredRecords);
+        return new SlackActionDispatcher(action, matchingRecords);
       }
       when else {
         System.debug('Unknown action type \'' + action.Type__c + '\' on alert action ' + action.Id);
@@ -164,10 +168,14 @@ public class LoggerAlertService_gpt {
     }
 
     public void execute(System.QueueableContext context) {
+      this.execute();
+    }
+
+    public void execute() {
       System.debug('Running dispatchers in ActionsProcessor.');
       List<ActionDispatcher> remainingDispatchers = new List<ActionDispatcher>();
 
-      List<SObject> filteredRecords = new List<SObject>();
+      List<SObject> matchingRecords = new List<SObject>();
       for (ActionDispatcher dispatcher : dispatchers) {
         if (hasSufficientLimits(dispatcher.getExpectedLimitsUsage())) {
           dispatcher.dispatch();
@@ -178,16 +186,16 @@ public class LoggerAlertService_gpt {
       }
 
       // If there are remaining dispatchers, enqueue the job for later execution
-      if (!remainingDispatchers.isEmpty()) {
+      if (remainingDispatchers.isEmpty() == false) {
         System.debug('Enqueuing remaining actions due to insufficient limits.');
         // TODO consider use the same instance, but processed dispatchers would need to be remove from the list
-        System.enqueueJob(new ActionsProcessor(remainingDispatchers));
+        LoggerDataStore.getJobQueue().enqueueJob(new ActionsProcessor(remainingDispatchers));
       }
     }
 
     // Method to check if there are enough remaining limits
     private Boolean hasSufficientLimits(TransactionLimitsUsage usage) {
-      Integer remainingCallouts = System.Limits.getLimitCallouts() - System.Limits.getCallouts();
+      Integer remainingCallouts = Trigger.isExecuting ? 0 : System.Limits.getLimitCallouts() - System.Limits.getCallouts();
       Integer remainingDmlStatements = System.Limits.getLimitDmlStatements() - System.Limits.getDmlStatements();
       Integer remainingEmails = System.Limits.getLimitEmailInvocations() - System.Limits.getEmailInvocations();
       Integer remainingQueries = System.Limits.getLimitQueries() - System.Limits.getQueries();
@@ -210,11 +218,11 @@ public class LoggerAlertService_gpt {
   // ActionDispatcher class that contains common logic for all dispatchers
   private abstract class ActionDispatcher {
     protected final LoggerAlertAction__c action;
-    protected final List<SObject> filteredRecords;
+    protected final List<SObject> matchingRecords;
 
-    public ActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
+    public ActionDispatcher(LoggerAlertAction__c action, List<SObject> matchingRecords) {
       this.action = action;
-      this.filteredRecords = filteredRecords;
+      this.matchingRecords = matchingRecords;
     }
 
     public abstract void dispatch();
@@ -249,8 +257,8 @@ public class LoggerAlertService_gpt {
     private Datetime lastCalloutTime;
     private Integer calloutsInCurrentWindow = 0;
 
-    public CalloutActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
-      super(action, filteredRecords);
+    public CalloutActionDispatcher(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+      super(action, matchingRecords);
     }
 
     // TODO decide if this should have a default implementation, or if subclasses should fully handle implementation
@@ -313,12 +321,12 @@ public class LoggerAlertService_gpt {
 
   // Inner class for EmailActionDispatcher
   private class EmailActionDispatcher extends ActionDispatcher {
-    public EmailActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
-      super(action, filteredRecords);
+    public EmailActionDispatcher(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+      super(action, matchingRecords);
     }
 
     public override void dispatch() {
-      System.debug('Executing Email alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.filteredRecords));
+      System.debug('Executing Email alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.matchingRecords));
       if (checkCalloutLimits()) {
         return;
       }
@@ -341,19 +349,29 @@ public class LoggerAlertService_gpt {
   private class SlackActionDispatcher extends CalloutActionDispatcher {
     private final Integer requestTimeout = 10;
 
-    public SlackActionDispatcher(LoggerAlertAction__c action, List<SObject> filteredRecords) {
-      super(action, filteredRecords);
+    public SlackActionDispatcher(LoggerAlertAction__c action, List<SObject> matchingRecords) {
+      super(action, matchingRecords);
     }
 
     public override void dispatch() {
-      System.debug('Executing Slack alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.filteredRecords));
+      System.debug('Executing Slack alert...\n' + System.JSON.serializePretty(this.action));
+      // System.debug('Executing Slack alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.matchingRecords));
       if (checkCalloutLimits()) {
         return;
       }
 
-      authenticate();
-      String channel = getConfigValue('SlackChannel');
-      sendSlackMessage(channel);
+      System.Http httpClient = new System.Http();
+      for (System.HttpRequest request : this.getHttpRequests()) {
+        System.debug('Sending Slack ' + action.SlackConnectionType__c + ' request to ' + action.SlackChannel__c);
+        System.debug('Sending Slack, Trigger.isExecuting ' + Trigger.isExecuting);
+        System.debug('Sending Slack, Limits.getLimitCallouts ' + System.Limits.getLimitCallouts());
+        System.HttpResponse response = httpClient.send(request);
+        System.debug('Received Slack response\n\n' + System.JSON.serializePretty(response));
+      }
+
+      // authenticate();
+      // String channel = getConfigValue('SlackChannel');
+      // sendSlackMessage(channel);
     }
 
     public override List<System.HttpRequest> getHttpRequests() {
@@ -362,18 +380,19 @@ public class LoggerAlertService_gpt {
       // TODO (dynamically?) use a field set for the current SObject Type
       List<System.HttpRequest> requests = new List<System.HttpRequest>();
 
-      for (SObject record : this.filteredRecords) {
+      for (SObject record : this.matchingRecords) {
         SlackMessage slackMessage = new SlackMessage();
-        String endpoint = this.action.CalloutNamedCredential__c;
+        String endpoint = 'callout:' + this.action.CalloutNamedCredential__c;
         if (this.action.SlackConnectionType__c == 'Chat Post Message') {
           endpoint += this.action.CalloutNamedCredential__c + '/api/chat.postMessage' + this.action.SlackChannel__c;
         }
+        System.debug('>>> Slack endpoint: ' + endpoint);
 
         // TODO figure out exact steps/metadata needed to setup named credentials
         // https://unofficialsf.com/authorizing-salesforce-access-to-slack/
         System.HttpRequest request = new System.HttpRequest();
         request.setBody(System.JSON.serializePretty(slackMessage));
-        request.setEndpoint(slackMessage.namedCredentialDeveloperName + endpoint);
+        request.setEndpoint(endpoint);
         request.setHeader('Content-Type', 'application/json');
         request.setMethod('POST');
         request.setTimeout(this.requestTimeout);
@@ -390,10 +409,10 @@ public class LoggerAlertService_gpt {
 
     public override TransactionLimitsUsage getExpectedLimitsUsage() {
       return new TransactionLimitsUsage()
-        .setExpectedCallouts(this.filteredRecords.size())
-        .setExpectedCalloutTime(this.requestTimeout * this.filteredRecords.size())
+        .setExpectedCallouts(this.matchingRecords.size())
+        .setExpectedCalloutTime(this.requestTimeout * this.matchingRecords.size())
         .setExpectedQueries(1)
-        .setExpectedQueryRows(this.filteredRecords.size());
+        .setExpectedQueryRows(this.matchingRecords.size());
     }
   }
 

@@ -19,20 +19,20 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
   protected override void executeBeforeInsert(List<SObject> triggerNew) {
     List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNew;
 
-    clearThresholdFields(loggerAlerts);
-    setIsMatchingThresholdEnabled(loggerAlerts);
-    setOrganizationId(loggerAlerts);
-    validateFilters(loggerAlerts);
+    LoggerAlertHandler.clearThresholdFields(loggerAlerts);
+    LoggerAlertHandler.setIsMatchingThresholdEnabled(loggerAlerts);
+    LoggerAlertHandler.setOrganizationId(loggerAlerts);
+    LoggerAlertHandler.validateFilters(loggerAlerts);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
     List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNewMap.values();
     Map<Id, LoggerAlert__c> idToOldLoggerAlert = (Map<Id, LoggerAlert__c>) triggerOldMap;
 
-    clearThresholdFields(loggerAlerts);
-    setIsMatchingThresholdEnabled(loggerAlerts);
-    setOrganizationId(loggerAlerts);
-    validateFilters(loggerAlerts, idToOldLoggerAlert);
+    LoggerAlertHandler.clearThresholdFields(loggerAlerts);
+    LoggerAlertHandler.setIsMatchingThresholdEnabled(loggerAlerts);
+    LoggerAlertHandler.setOrganizationId(loggerAlerts);
+    LoggerAlertHandler.validateFilters(loggerAlerts, idToOldLoggerAlert);
   }
 
   private static void clearThresholdFields(List<LoggerAlert__c> loggerAlerts) {
@@ -76,6 +76,21 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
     }
   }
 
+  private static void validateFilters(List<LoggerAlert__c> loggerAlerts, Map<Id, LoggerAlert__c> loggerAlertIdToOldLoggerAlert) {
+    List<LoggerAlert__c> changedLoggerAlerts = new List<LoggerAlert__c>();
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      LoggerAlert__c oldLoggerAlert = loggerAlertIdToOldLoggerAlert.get(loggerAlert.Id);
+      if (
+        loggerAlert.SourceSObjectType__c != oldLoggerAlert.SourceSObjectType__c ||
+        loggerAlert.SourceSObjectFilter__c != oldLoggerAlert.SourceSObjectFilter__c
+      ) {
+        changedLoggerAlerts.add(loggerAlert);
+      }
+    }
+
+    LoggerAlertHandler.validateFilters(changedLoggerAlerts);
+  }
+
   private static void validateFilters(List<LoggerAlert__c> loggerAlerts) {
     for (LoggerAlert__c loggerAlert : loggerAlerts) {
       if (String.isBlank(loggerAlert.SourceSObjectFilter__c)) {
@@ -89,20 +104,5 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
         .withFormula(loggerAlert.SourceSObjectFilter__c)
         .build();
     }
-  }
-
-  private void validateFilters(List<LoggerAlert__c> loggerAlerts, Map<Id, LoggerAlert__c> loggerAlertIdToOldLoggerAlert) {
-    List<LoggerAlert__c> changedLoggerAlerts = new List<LoggerAlert__c>();
-    for (LoggerAlert__c loggerAlert : loggerAlerts) {
-      LoggerAlert__c oldLoggerAlert = loggerAlertIdToOldLoggerAlert.get(loggerAlert.Id);
-      if (
-        loggerAlert.SourceSObjectType__c != oldLoggerAlert.SourceSObjectType__c ||
-        loggerAlert.SourceSObjectFilter__c != oldLoggerAlert.SourceSObjectFilter__c
-      ) {
-        changedLoggerAlerts.add(loggerAlert);
-      }
-    }
-
-    validateFilters(changedLoggerAlerts);
   }
 }
