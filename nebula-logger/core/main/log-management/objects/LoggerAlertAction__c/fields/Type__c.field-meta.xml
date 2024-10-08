@@ -13,24 +13,17 @@
             <value>
                 <fullName>Email</fullName>
                 <default>false</default>
-                <label>Email</label>
+                <label>Send Email Notification</label>
             </value>
             <value>
                 <fullName>Slack</fullName>
                 <default>false</default>
-                <label>Slack</label>
+                <label>Send Slack Notification</label>
             </value>
             <value>
-                <fullName>OpenTelemetry Provider</fullName>
+                <fullName>Observability Platform</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
-                <label>OpenTelemetry Provider</label>
-            </value>
-            <value>
-                <fullName>Webhook</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Webhook</label>
+                <label>Send to Observability Platform</label>
             </value>
         </valueSetDefinition>
     </valueSet>
