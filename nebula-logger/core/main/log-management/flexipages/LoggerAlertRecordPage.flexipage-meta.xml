@@ -456,6 +456,9 @@
                             <value>ActionSummary__c</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>IsEnabled__c</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>LAST_UPDATE</value>
                         </valueListItems>
                     </valueList>
