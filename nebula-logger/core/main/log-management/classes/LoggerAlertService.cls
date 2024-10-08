@@ -427,6 +427,15 @@ public class LoggerAlertService {
       Logger.saveLog();
     }
 
+    public override TransactionLimitsUsage getExpectedLimitsUsage() {
+      return new TransactionLimitsUsage()
+        .setExpectedCallouts(this.matchingRecords.size())
+        // TODO revisit the expected callout time approach/concept
+        .setExpectedCalloutTime(this.requestTimeoutInSeconds * this.matchingRecords.size())
+        .setExpectedQueries(1)
+        .setExpectedQueryRows(this.matchingRecords.size());
+    }
+
     private List<System.HttpRequest> getHttpRequests() {
       // TODO requery the data
       // TODO create 1 request per match
@@ -434,7 +443,7 @@ public class LoggerAlertService {
       List<System.HttpRequest> requests = new List<System.HttpRequest>();
 
       for (SObject record : this.matchingRecords) {
-        SlackMessage slackMessage = new SlackMessage();
+        SlackMessage slackMessage = this.buildSlackMessage(record);
         String endpoint = 'callout:' + this.action.CalloutNamedCredential__c;
         if (this.action.SlackConnectionType__c == 'Chat Post Message') {
           endpoint += this.action.CalloutNamedCredential__c + '/api/chat.postMessage' + this.action.SlackChannel__c;
@@ -445,9 +454,7 @@ public class LoggerAlertService {
         // https://unofficialsf.com/authorizing-salesforce-access-to-slack/
         System.HttpRequest request = new System.HttpRequest();
         // request.setBody(System.JSON.serializePretty(slackMessage));
-        request.setBody(
-          '{"text":"Salesforce Log Alert","attachments":[{"title_link":"https://gus.my.salesforce.com/aEqEE000000ZGI90AO","title":"Log-357713","text":"Last Log Entry Message\n```WARN: Error(s) performing DML for ADM_Scrum_Team__c:\nunable to obtain exclusive access to this record```","pretext":null,"footer":null,"fields":[{"value":"\n```\nClass.AHI_CloudMediator.logErrorsAndGetLockedRows: line 214, column 1\nClass.AHI_CloudMediator.performDML: line 139, column 1\nClass.AHI_CloudMediator.aggregateClouds: line 85, column 1\nClass.AHI_CloudAggregator.processCloudsAndTeamsAsync: line 200, column 1\nClass.AHI_CloudAggregator.finish: line 176, column 1\n```\n","title":"Stack Trace","short":false,"fieldPath":"StackTrace__c"},{"value":"`4070`","title":"Total CPU","short":true,"fieldPath":"TotalLimitsCpuTimeUsed__c"},{"value":"`Medium`","title":"Priority","short":true,"fieldPath":"Priority__c"},{"value":"`005B0000005cpyJIAQ`","title":"Owner ID","short":true,"fieldPath":"OwnerId"},{"value":"`New`","title":"Status","short":true,"fieldPath":"Status__c"},{"value":"`00DT0000000DpvcMAC`","title":"Organization ID","short":true,"fieldPath":"OrganizationId__c"},{"value":"`GUS`","title":"Organization Name","short":true,"fieldPath":"OrganizationName__c"},{"value":"`Unlimited Edition`","title":"Organization Type","short":true,"fieldPath":"OrganizationType__c"},{"value":"`USA12`","title":"Instance Name","short":true,"fieldPath":"OrganizationInstanceName__c"},{"value":"`9`","title":"Total Entries","short":true,"fieldPath":"TotalLogEntries__c"},{"value":"`0`","title":"Total ERROR Entries","short":true,"fieldPath":"TotalERRORLogEntries__c"},{"value":"`8`","title":"Total WARN Entries","short":true,"fieldPath":"TotalWARNLogEntries__c"},{"value":"`Log-357713`","title":"Log Number","short":true,"fieldPath":"Name"},{"value":"`3421de85-07f4-4657-9638-947b228057d5`","title":"Transaction ID","short":true,"fieldPath":"TransactionId__c"},{"value":"`ohanaeng.maint@gus.com`","title":"Username","short":true,"fieldPath":"LoggedBy__r.Username"}],"color":"#FFC873","author_name":"ohanaeng.maint@gus.com","author_link":"https://gus.my.salesforce.com/005B0000005cpyJIAQ"}]}'
-        );
+        request.setBody(System.JSON.serializePretty(slackMessage, true));
         request.setEndpoint(endpoint);
         request.setHeader('Content-Type', 'application/json');
         request.setMethod('POST');
@@ -459,13 +466,45 @@ public class LoggerAlertService {
       return requests;
     }
 
-    public override TransactionLimitsUsage getExpectedLimitsUsage() {
-      return new TransactionLimitsUsage()
-        .setExpectedCallouts(this.matchingRecords.size())
-        // TODO revisit the expected callout time approach/concept
-        .setExpectedCalloutTime(this.requestTimeoutInSeconds * this.matchingRecords.size())
-        .setExpectedQueries(1)
-        .setExpectedQueryRows(this.matchingRecords.size());
+    private SlackMessage buildSlackMessage(SObject record) {
+      SlackMessage message = new SlackMessage();
+
+      String recordLink = System.URL.getOrgDomainUrl().toExternalForm() + '/' + record.Id;
+      String headerText = 'Salesforce Alert: New ' + record.getSObjectType() + ' Record';
+      headerText += '\n*<' + recordLink + '|' + record.get('Name') + '>*';
+      SlackBlock headerBlock = new SlackBlock('section', new SlackBlockField('mrkdwn', headerText));
+      message.blocks.add(headerBlock);
+
+      SlackBlock wideMessageBlock = new SlackBlock(
+        'section',
+        new SlackBlockField('mrkdwn', '*Full-width field*\n\n```Nice, this field spans the full width.\n```\n' + record.Id)
+      );
+      message.blocks.add(wideMessageBlock);
+
+      SlackBlock multiColumnBlock = new SlackBlock(
+        'section',
+        new List<SlackBlockField>{
+          new SlackBlockField('mrkdwn', '*Half-width field 1:* Value 1'),
+          new SlackBlockField('mrkdwn', '*Half-width field 2:* Value 2')
+        }
+      );
+      // multiColumnBlock.accessory = new SlackBlockAccessory();
+      // multiColumnBlock.accessory.text = new SlackBlockField('plain_text', 'View Record');
+      // multiColumnBlock.accessory.type = 'button';
+      // multiColumnBlock.accessory.url = System.URL.getOrgDomainUrl().toExternalForm() + '/' + record.Id;
+      message.blocks.add(multiColumnBlock);
+
+      SlackBlockAction viewRecordButton = new SlackBlockAction();
+      viewRecordButton.style = 'primary';
+      viewRecordButton.text = new SlackBlockField('plain_text', 'zzzView Record');
+      viewRecordButton.type = 'button';
+      viewRecordButton.value = System.URL.getOrgDomainUrl().toExternalForm() + '/' + record.Id;
+      SlackBlock footerBlock = new SlackBlock('actions');
+      footerBlock.elements = new List<SlackBlockAction>{ viewRecordButton };
+      // TODO revisit this, causes an invalid_blocks error
+      // message.blocks.add(footerBlock);
+
+      return message;
     }
   }
 
@@ -489,7 +528,7 @@ public class LoggerAlertService {
   /* https://api.slack.com/reference/block-kit/blocks */
   /* https://api.slack.com/methods/chat.postMessage */
   public class SlackMessage {
-    public List<SlackBlock> blocks;
+    public List<SlackBlock> blocks = new List<SlackBlock>();
     public String channel;
     public String icon_emoji;
     public String icon_url;
@@ -498,9 +537,22 @@ public class LoggerAlertService {
   public class SlackBlock {
     public SlackBlockAccessory accessory;
     public List<SlackBlockAction> elements;
-    public List<SlackBlockField> fields;
+    public List<SlackBlockField> fields = new List<SlackBlockField>();
     public SlackBlockField text;
     public String type;
+
+    public SlackBlock(String type, SlackBlockField field) {
+      this(type, new List<SlackBlockField>{ field });
+    }
+
+    public SlackBlock(String type, List<SlackBlockField> fields) {
+      this(type);
+      this.fields = fields;
+    }
+
+    public SlackBlock(String type) {
+      this.type = type;
+    }
   }
 
   public class SlackBlockAccessory {
@@ -508,6 +560,7 @@ public class LoggerAlertService {
     public String image_url;
     public SlackBlockField text;
     public String type;
+    public String url;
   }
 
   public class SlackBlockAction {
@@ -521,6 +574,11 @@ public class LoggerAlertService {
     public Boolean emoji;
     public String text;
     public String type;
+
+    public SlackBlockField(String type, String text) {
+      this.type = type;
+      this.text = text;
+    }
   }
   /* End of Slack classes */
 

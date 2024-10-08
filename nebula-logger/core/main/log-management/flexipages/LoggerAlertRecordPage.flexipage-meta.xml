@@ -107,6 +107,23 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.TotalMatches__c</fieldItem>
+                <identifier>RecordTotalMatches_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.IsMatchStorageEnabled__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.IsLogRetentionOverrideEnabled__c</fieldItem>
                 <identifier>RecordIsLogRetentionOverrideEnabled_cField</identifier>
             </fieldInstance>
@@ -450,13 +467,13 @@
                             <value>NAME</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>IsEnabled__c</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Type__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>ActionSummary__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>IsEnabled__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>LAST_UPDATE</value>
