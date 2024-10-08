@@ -53,6 +53,10 @@ public class LoggerAlertService {
         4. Based on IsLogRetentionOverrideEnabled__c, update the  field Log__c.LogRetentionDate__c
     */
 
+    // TODO add re-query step here. It should query some base fields (Id, TransactionId__c, etc.),
+    // as well as any fields specified in LoggerAlert__c.SlackFields__c (which will possible be renamed
+    // to something more generic, like "Display Fields", "Action Fields", "Output Fields", etc.)
+
     BulkRecordCreationDispatcher bulkRecordCreationDispatcher = new BulkRecordCreationDispatcher();
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
     List<ActionDispatcher> dispatchers = new List<ActionDispatcher>{ bulkRecordCreationDispatcher };
@@ -98,16 +102,20 @@ public class LoggerAlertService {
       WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE
     ];
     for (LoggerAlert__c alert : todoAlertsVariable) {
+      // The list of matches is initialized here, but it's passed to multiple actions below.
+      // Every action should have a deep clone of the list (instead of the original reference)
+      // passed so that the action can freely do things like clear or remove items from the list,
+      // without interfering with other actions running for the same records.
       List<SObject> matchingRecords = this.getMatchingRecords(alert, records);
 
       if (matchingRecords.isEmpty()) {
         continue;
       }
 
-      bulkRecordCreationDispatcher.addMatches(alert, matchingRecords);
+      bulkRecordCreationDispatcher.addMatches(alert, matchingRecords.deepClone());
 
       for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
-        ActionDispatcher dispatcher = createActionDispatcher(action, matchingRecords);
+        ActionDispatcher dispatcher = createActionDispatcher(action, matchingRecords.deepClone());
         if (dispatcher != null) {
           dispatchers.add(dispatcher);
         }
@@ -405,24 +413,31 @@ public class LoggerAlertService {
     }
 
     public override void dispatch() {
-      String recipient;
+      System.debug('>>> preparing to send email for action:\n\n' + System.JSON.serializePretty(this.action));
+
+      // Docs: https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_classes_email_outbound_single.htm
+      Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+      email.setSaveAsActivity(false);
+      email.setSenderDisplayName('Nebula Logger');
+      email.setSubject('Email to Users and External Recipients');
+      email.setPlainTextBody('This email is sent to internal users and external recipients.');
       switch on action.EmailRecipientType__c {
         when 'Email Address' {
-          recipient = action.EmailAddressRecipient__c;
+          email.setToAddresses(action.EmailAddressRecipient__c.split(','));
         }
         when 'User' {
-          recipient = action.EmailUserRecipient__c;
+          email.setTargetObjectId(action.EmailUserRecipient__c);
         }
       }
-      this.sendEmail(recipient);
-    }
 
-    private void sendEmail(String recipient) {
-      System.debug('Sending email to: ' + recipient);
+      System.Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ email });
+      System.debug('>>> sent email: ' + email);
+
+      this.hasPendingWork = false;
     }
 
     public override TransactionLimitsUsage getExpectedLimitsUsage() {
-      return new TransactionLimitsUsage().setExpectedEmails(1);
+      return new TransactionLimitsUsage().setExpectedEmails(this.matchingRecords.size());
     }
   }
 
