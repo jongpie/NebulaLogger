@@ -3,6 +3,7 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>IsEnabled__c</columns>
+    <columns>TotalEnabledActions__c</columns>
     <columns>IsMatchStorageEnabled__c</columns>
     <columns>TotalMatches__c</columns>
     <columns>Comments__c</columns>

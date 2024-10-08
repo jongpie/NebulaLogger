@@ -1792,6 +1792,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>LoggerAlert__c.LastMatchDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>LoggerAlert__c.MatchingCountThreshold__c</field>
         <readable>true</readable>
@@ -1829,6 +1834,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LoggerAlert__c.SourceSObjectFilter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LoggerAlert__c.TotalEnabledActions__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
