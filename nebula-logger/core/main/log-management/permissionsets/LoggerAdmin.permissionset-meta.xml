@@ -1748,6 +1748,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerAlertMatch__c.LogEntryEventLoggedById__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlertMatch__c.LogEntryEventLoggedByUsername__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerAlertMatch__c.LogEntryEventUuid__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1783,12 +1793,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerAlert__c.CustomConditionLogic__c</field>
+        <field>LoggerAlert__c.IsEnabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerAlert__c.IsEnabled__c</field>
+        <field>LoggerAlert__c.IsLogRetentionOverrideEnabled__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlert__c.IsMatchStorageEnabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1837,7 +1852,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>LoggerAlert__c.SourceSObjectFilter__c</field>
         <readable>true</readable>
     </fieldPermissions>
