@@ -3,7 +3,7 @@
     <fullName>SlackFields__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <label>Slack Fields</label>
+    <label>TODO: Rename to ContextFields__c</label>
     <length>2000</length>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>false</trackHistory>
