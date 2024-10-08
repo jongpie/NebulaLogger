@@ -89,7 +89,7 @@ public class LoggerAlertService {
             EmailUserRecipient__c,
             LoggerAlert__c,
             Name,
-            OpenTelemetryProvider__c,
+            ObservabilityPlatform__c,
             SlackChannel__c,
             SlackConnectionType__c,
             SlackFields__c,
