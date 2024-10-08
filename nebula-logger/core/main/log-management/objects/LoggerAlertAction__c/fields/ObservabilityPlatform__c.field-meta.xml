@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>OpenTelemetryProvider__c</fullName>
-    <label>OpenTelemetry Provider</label>
+    <fullName>ObservabilityPlatform__c</fullName>
+    <label>Observability Platform</label>
     <required>false</required>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
@@ -10,11 +10,6 @@
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
-            <value>
-                <fullName>Custom</fullName>
-                <default>false</default>
-                <label>Custom</label>
-            </value>
             <value>
                 <fullName>Datadog</fullName>
                 <default>false</default>
@@ -26,14 +21,14 @@
                 <label>Elastic</label>
             </value>
             <value>
-                <fullName>Loggly</fullName>
-                <default>false</default>
-                <label>Loggly</label>
-            </value>
-            <value>
                 <fullName>Honeycomb</fullName>
                 <default>false</default>
                 <label>Honeycomb</label>
+            </value>
+            <value>
+                <fullName>Loggly</fullName>
+                <default>false</default>
+                <label>Loggly</label>
             </value>
             <value>
                 <fullName>Splunk</fullName>

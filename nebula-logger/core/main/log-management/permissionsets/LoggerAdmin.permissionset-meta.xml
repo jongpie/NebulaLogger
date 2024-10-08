@@ -1728,7 +1728,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerAlertAction__c.OpenTelemetryProvider__c</field>
+        <field>LoggerAlertAction__c.ObservabilityPlatform__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
