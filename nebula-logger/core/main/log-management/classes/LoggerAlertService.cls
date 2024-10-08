@@ -53,14 +53,16 @@ public class LoggerAlertService {
         4. Based on IsLogRetentionOverrideEnabled__c, update the  field Log__c.LogRetentionDate__c
     */
 
+    BulkRecordCreationDispatcher bulkRecordCreationDispatcher = new BulkRecordCreationDispatcher();
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
-    List<ActionDispatcher> dispatchers = new List<ActionDispatcher>();
+    List<ActionDispatcher> dispatchers = new List<ActionDispatcher>{ bulkRecordCreationDispatcher };
     // List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
     List<LoggerAlert__c> todoAlertsVariable = [
       SELECT
         Id,
         Comments__c,
         IsMatchingThresholdEnabled__c,
+        IsMatchStorageEnabled__c,
         MatchingCountThreshold__c,
         MatchingThresholdRecordCount__c,
         MatchingThresholdSummary__c,
@@ -102,10 +104,7 @@ public class LoggerAlertService {
         continue;
       }
 
-      if (alert.IsMatchingThresholdEnabled__c) {
-        // TODO add records to alertMatches
-        alertMatches.addAll(this.generateLoggerAlertMatchRecords(alert, matchingRecords));
-      }
+      bulkRecordCreationDispatcher.addMatches(alert, matchingRecords);
 
       for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
         ActionDispatcher dispatcher = createActionDispatcher(action, matchingRecords);
@@ -118,10 +117,7 @@ public class LoggerAlertService {
     LoggerDataStore.getDatabase().insertRecords(alertMatches);
 
     if (dispatchers.isEmpty() == false) {
-      System.debug('Passing dispatchers to the ActionsProcessor.');
-      // TODO make this run sync & self re-enqueue so that some sync limits (like emails) can be processed
       new ActionsProcessor(dispatchers).execute();
-      // System.enqueueJob(new ActionsProcessor(dispatchers));
     }
   }
 
@@ -141,31 +137,6 @@ public class LoggerAlertService {
     }
 
     return matchingRecords;
-  }
-
-  private List<LoggerAlertMatch__c> generateLoggerAlertMatchRecords(LoggerAlert__c alert, List<SObject> records) {
-    List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
-
-    for (SObject record : records) {
-      Schema.SObjectType recordSObjectType = record.getSObjectType();
-
-      Log__c log = recordSObjectType == Log__c.SObjectType ? (Log__c) record : null;
-      LogEntry__c logEntry = recordSObjectType == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
-      LogEntryEvent__e logEntryEvent = recordSObjectType == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
-      LogEntryTag__c logEntryTag = recordSObjectType == LogEntryTag__c.SObjectType ? (LogEntryTag__c) record : null;
-
-      LoggerAlertMatch__c alertMatch = new LoggerAlertMatch__c(
-        Log__c = log?.Id,
-        LogEntry__c = logEntry?.Id,
-        LogEntryEventUuid__c = logEntryEvent?.EventUuid,
-        LogEntryTag__c = logEntryTag?.Id,
-        LoggerAlert__c = alert.Id
-      );
-
-      alertMatches.add(alertMatch);
-    }
-
-    return alertMatches;
   }
 
   // Factory method to create the appropriate action dispatcher for Callout
@@ -271,6 +242,10 @@ public class LoggerAlertService {
       this.matchingRecords = matchingRecords;
     }
 
+    protected ActionDispatcher() {
+      // No-op
+    }
+
     public void incrementAttempts() {
       this.attemptCount++;
     }
@@ -289,6 +264,56 @@ public class LoggerAlertService {
 
     protected void authenticate() {
       System.debug('Authenticating...');
+    }
+  }
+
+  private class BulkRecordCreationDispatcher extends ActionDispatcher {
+    private List<LoggerAlertMatch__c> loggerAlertMatches = new List<LoggerAlertMatch__c>();
+
+    public BulkRecordCreationDispatcher() {
+      super();
+    }
+
+    public void addMatches(LoggerAlert__c alert, List<SObject> matchingRecords) {
+      if (alert.IsMatchStorageEnabled__c) {
+        this.loggerAlertMatches.addAll(this.generateLoggerAlertMatchRecords(alert, matchingRecords));
+        this.hasPendingWork = true;
+      }
+    }
+
+    public override void dispatch() {
+      LoggerDataStore.getDatabase().insertRecords(this.loggerAlertMatches);
+      this.loggerAlertMatches.clear();
+      this.hasPendingWork = false;
+    }
+
+    public override TransactionLimitsUsage getExpectedLimitsUsage() {
+      return new TransactionLimitsUsage().setExpectedDmlStatements(1);
+    }
+
+    private List<LoggerAlertMatch__c> generateLoggerAlertMatchRecords(LoggerAlert__c alert, List<SObject> records) {
+      List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
+
+      for (SObject record : records) {
+        Schema.SObjectType recordSObjectType = record.getSObjectType();
+
+        Log__c log = recordSObjectType == Log__c.SObjectType ? (Log__c) record : null;
+        LogEntry__c logEntry = recordSObjectType == LogEntry__c.SObjectType ? (LogEntry__c) record : null;
+        LogEntryEvent__e logEntryEvent = recordSObjectType == LogEntryEvent__e.SObjectType ? (LogEntryEvent__e) record : null;
+        LogEntryTag__c logEntryTag = recordSObjectType == LogEntryTag__c.SObjectType ? (LogEntryTag__c) record : null;
+
+        LoggerAlertMatch__c alertMatch = new LoggerAlertMatch__c(
+          Log__c = log?.Id,
+          LogEntry__c = logEntry?.Id,
+          LogEntryEventUuid__c = logEntryEvent?.EventUuid,
+          LogEntryTag__c = logEntryTag?.Id,
+          LoggerAlert__c = alert.Id
+        );
+
+        alertMatches.add(alertMatch);
+      }
+
+      return alertMatches;
     }
   }
 
@@ -477,7 +502,7 @@ public class LoggerAlertService {
 
       SlackBlock wideMessageBlock = new SlackBlock(
         'section',
-        new SlackBlockField('mrkdwn', '*Full-width field*\n\n```Nice, this field spans the full width.\n```\n' + record.Id)
+        new SlackBlockField('mrkdwn', '*Full-width field*\n\n```this field spans the full width.\n```\n' + record.Id)
       );
       message.blocks.add(wideMessageBlock);
 
@@ -590,7 +615,7 @@ public class LoggerAlertService {
     public Integer expectedEmails = 0;
     public Integer expectedQueries = 0;
     public Integer expectedQueryRows = 0;
-    public Integer expectedQueueableJobs = 0; // Tracking queueable jobs
+    public Integer expectedQueueableJobs = 0;
 
     public TransactionLimitsUsage setExpectedCallouts(Integer callouts) {
       this.expectedCallouts = callouts;
