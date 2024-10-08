@@ -9,6 +9,8 @@
  *              based on org-specific rules configured in `LoggerAlert__c`
  */
 public class LoggerAlertService {
+  private static final Integer MAX_ACTION_RETRY_COUNT = 3;
+
   // Static variable to hold the singleton instance
   private static LoggerAlertService instance;
   private static Integer calloutTimeUsed = 0;
@@ -71,7 +73,25 @@ public class LoggerAlertService {
         SourceSObjectType__c,
         TotalMatches__c,
         Type__c,
-        (SELECT Id, CalloutNamedCredential__c, SlackChannel__c, SlackConnectionType__c, SlackFields__c, Type__c FROM LoggerAlertActions__r)
+        (
+          SELECT
+            Id,
+            ActionSummary__c,
+            CalloutNamedCredential__c,
+            EmailAddressRecipient__c,
+            EmailRecipientType__c,
+            EmailUserRecipient__c,
+            LoggerAlert__c,
+            Name,
+            OpenTelemetryProvider__c,
+            SlackChannel__c,
+            SlackConnectionType__c,
+            SlackFields__c,
+            SourceSObjectType__c,
+            Type__c
+          FROM LoggerAlertActions__r
+          WHERE IsEnabled__c = TRUE
+        )
       FROM LoggerAlert__c
       WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE
     ];
@@ -178,15 +198,22 @@ public class LoggerAlertService {
     }
 
     public void execute() {
-      System.debug('Running dispatchers in ActionsProcessor.');
+      System.debug('Running ' + dispatchers.size() + ' dispatchers in ActionsProcessor.');
       List<ActionDispatcher> remainingDispatchers = new List<ActionDispatcher>();
 
       List<SObject> matchingRecords = new List<SObject>();
       for (ActionDispatcher dispatcher : dispatchers) {
-        if (hasSufficientLimits(dispatcher.getExpectedLimitsUsage())) {
+        System.debug('Processing dispatcher for action ' + dispatcher.action.Name + '\n\n' + System.JSON.serializePretty(dispatcher.action));
+        if (dispatcher.hasPendingWork() && this.hasSufficientLimits(dispatcher.getExpectedLimitsUsage())) {
+          System.debug('Running action ' + dispatcher.action.Name);
+          dispatcher.incrementAttempts();
           dispatcher.dispatch();
-        } else {
-          System.debug('Insufficient limits for dispatcher, adding to remainingDispatchers.');
+        }
+
+        System.debug('>>> dispatcher.hasPendingWork(): ' + dispatcher.hasPendingWork());
+        System.debug('>>> dispatcher.getAttempts(): ' + dispatcher.getAttempts());
+        if (dispatcher.hasPendingWork() && dispatcher.getAttempts() < MAX_ACTION_RETRY_COUNT) {
+          System.debug('Re-enqueuing action ' + dispatcher.action.Name);
           remainingDispatchers.add(dispatcher);
         }
       }
@@ -213,22 +240,47 @@ public class LoggerAlertService {
       System.debug('Remaining queries: ' + remainingQueries);
       System.debug('Remaining callout time: ' + remainingCalloutTime + ' seconds');
 
-      return remainingCallouts >= usage.expectedCallouts &&
+      System.debug('>>>> remainingCallouts >= usage.expectedCallouts: ' + (remainingCallouts >= usage.expectedCallouts));
+      System.debug('>>>> remainingDmlStatements >= usage.expectedDmlStatements: ' + (remainingDmlStatements >= usage.expectedDmlStatements));
+      System.debug('>>>> remainingEmails >= usage.expectedEmails: ' + (remainingEmails >= usage.expectedEmails));
+      System.debug('>>>> remainingQueries >= usage.expectedQueries: ' + (remainingQueries >= usage.expectedQueries));
+      System.debug('>>>> remainingCalloutTime >= usage.expectedCalloutTime: ' + (remainingCalloutTime >= usage.expectedCalloutTime));
+      Boolean hasSufficientLimits =
+        remainingCallouts >= usage.expectedCallouts &&
         remainingDmlStatements >= usage.expectedDmlStatements &&
         remainingEmails >= usage.expectedEmails &&
-        remainingQueries >= usage.expectedQueries &&
-        remainingCalloutTime >= usage.expectedCalloutTime;
+        // remainingQueries >= usage.expectedQueries &&
+        // remainingCalloutTime >= usage.expectedCalloutTime;
+        remainingQueries >= usage.expectedQueries;
+
+      System.debug('>>>> hasSufficientLimits: ' + hasSufficientLimits);
+      return hasSufficientLimits;
     }
   }
 
   // ActionDispatcher class that contains common logic for all dispatchers
   private abstract class ActionDispatcher {
     protected final LoggerAlertAction__c action;
+    protected Boolean hasPendingWork = true;
     protected final List<SObject> matchingRecords;
+
+    private Integer attemptCount = 0;
 
     public ActionDispatcher(LoggerAlertAction__c action, List<SObject> matchingRecords) {
       this.action = action;
       this.matchingRecords = matchingRecords;
+    }
+
+    public void incrementAttempts() {
+      this.attemptCount++;
+    }
+
+    public Integer getAttempts() {
+      return this.attemptCount;
+    }
+
+    public Boolean hasPendingWork() {
+      return this.hasPendingWork;
     }
 
     public abstract void dispatch();
@@ -237,20 +289,6 @@ public class LoggerAlertService {
 
     protected void authenticate() {
       System.debug('Authenticating...');
-    }
-
-    protected Boolean checkCalloutLimits() {
-      Integer remainingCallouts = System.Limits.getLimitCallouts() - System.Limits.getCallouts();
-      if (remainingCallouts < 5) {
-        System.debug('Re-enqueuing due to nearing callout limit.');
-        return true;
-      }
-      return false;
-    }
-
-    protected String getConfigValue(String key) {
-      System.debug('Fetching config value for: ' + key);
-      return 'ConfigValue';
     }
   }
 
@@ -268,24 +306,34 @@ public class LoggerAlertService {
     }
 
     // TODO decide if this should have a default implementation, or if subclasses should fully handle implementation
-    public virtual override void dispatch() {
-      if (!canMakeCallout()) {
-        System.debug('Rate limit exceeded, queuing the job with delay.');
-        enqueueJobWithDelay(); // Throttling the callout
-        return;
-      }
+    // public override abstract void dispatch();
+    // public virtual override void dispatch() {
+    //   if (!canMakeCallout()) {
+    //     System.debug('Rate limit exceeded, queuing the job with delay.');
+    //     enqueueJobWithDelay(); // Throttling the callout
+    //     return;
+    //   }
 
-      try {
-        authenticate();
-        String serviceUrl = getConfigValue('ServiceCalloutURL');
-        sendServiceCallout(serviceUrl);
-        trackCallout();
-      } catch (Exception e) {
-        System.debug('Callout failed: ' + e.getMessage());
+    //   try {
+    //     authenticate();
+    //     String serviceUrl = getConfigValue('ServiceCalloutURL');
+    //     sendServiceCallout(serviceUrl);
+    //     trackCallout();
+    //   } catch (Exception e) {
+    //     System.debug('Callout failed: ' + e.getMessage());
+    //   }
+    // }
+
+    // public abstract List<System.HttpRequest> getHttpRequests();
+
+    protected Boolean checkCalloutLimits() {
+      Integer remainingCallouts = System.Limits.getLimitCallouts() - System.Limits.getCallouts();
+      if (remainingCallouts < 5) {
+        System.debug('Re-enqueuing due to nearing callout limit.');
+        return true;
       }
+      return false;
     }
-
-    public abstract List<System.HttpRequest> getHttpRequests();
 
     // Method to determine if a callout can be made (rate limiting logic)
     private Boolean canMakeCallout() {
@@ -332,14 +380,16 @@ public class LoggerAlertService {
     }
 
     public override void dispatch() {
-      System.debug('Executing Email alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.matchingRecords));
-      if (checkCalloutLimits()) {
-        return;
+      String recipient;
+      switch on action.EmailRecipientType__c {
+        when 'Email Address' {
+          recipient = action.EmailAddressRecipient__c;
+        }
+        when 'User' {
+          recipient = action.EmailUserRecipient__c;
+        }
       }
-
-      authenticate();
-      String recipient = getConfigValue('EmailRecipient');
-      sendEmail(recipient);
+      this.sendEmail(recipient);
     }
 
     private void sendEmail(String recipient) {
@@ -347,40 +397,37 @@ public class LoggerAlertService {
     }
 
     public override TransactionLimitsUsage getExpectedLimitsUsage() {
-      return new TransactionLimitsUsage().setExpectedCallouts(0).setExpectedDmlStatements(0).setExpectedEmails(1); // Assuming 1 email is sent per execution
+      return new TransactionLimitsUsage().setExpectedEmails(1);
     }
   }
 
   /* Start of Slack classes */
   private class SlackActionDispatcher extends CalloutActionDispatcher {
-    private final Integer requestTimeout = 10;
+    private final Integer requestTimeoutInSeconds = 10 * 1000;
 
     public SlackActionDispatcher(LoggerAlertAction__c action, List<SObject> matchingRecords) {
       super(action, matchingRecords);
     }
 
     public override void dispatch() {
-      System.debug('Executing Slack alert...\n' + System.JSON.serializePretty(this.action));
-      // System.debug('Executing Slack alert...\n' + System.JSON.serializePretty(this.action) + '\n\n\n' + System.JSON.serializePretty(this.matchingRecords));
-      if (checkCalloutLimits()) {
-        return;
-      }
+      // System.debug('Executing Slack alert...\n' + System.JSON.serializePretty(this.action));
+      Logger.debug('Executing Slack alert');
 
       System.Http httpClient = new System.Http();
       for (System.HttpRequest request : this.getHttpRequests()) {
-        System.debug('Sending Slack ' + action.SlackConnectionType__c + ' request to ' + action.SlackChannel__c);
-        System.debug('Sending Slack, Trigger.isExecuting ' + Trigger.isExecuting);
-        System.debug('Sending Slack, Limits.getLimitCallouts ' + System.Limits.getLimitCallouts());
+        // System.debug('Sending Slack ' + action.SlackConnectionType__c + ' request to ' + action.SlackChannel__c);
+        // System.debug('Sending Slack, Trigger.isExecuting ' + Trigger.isExecuting);
+        // System.debug('Sending Slack, Limits.getLimitCallouts ' + System.Limits.getLimitCallouts());
         System.HttpResponse response = httpClient.send(request);
-        System.debug('Received Slack response\n\n' + System.JSON.serializePretty(response));
+        Logger.debug('Received Slack response').setHttpRequestDetails(request).setHttpResponseDetails(response);
       }
 
-      // authenticate();
-      // String channel = getConfigValue('SlackChannel');
-      // sendSlackMessage(channel);
+      this.hasPendingWork = false;
+      Logger.debug('Finished Slack alert');
+      Logger.saveLog();
     }
 
-    public override List<System.HttpRequest> getHttpRequests() {
+    private List<System.HttpRequest> getHttpRequests() {
       // TODO requery the data
       // TODO create 1 request per match
       // TODO (dynamically?) use a field set for the current SObject Type
@@ -397,11 +444,14 @@ public class LoggerAlertService {
         // TODO figure out exact steps/metadata needed to setup named credentials
         // https://unofficialsf.com/authorizing-salesforce-access-to-slack/
         System.HttpRequest request = new System.HttpRequest();
-        request.setBody(System.JSON.serializePretty(slackMessage));
+        // request.setBody(System.JSON.serializePretty(slackMessage));
+        request.setBody(
+          '{"text":"Salesforce Log Alert","attachments":[{"title_link":"https://gus.my.salesforce.com/aEqEE000000ZGI90AO","title":"Log-357713","text":"Last Log Entry Message\n```WARN: Error(s) performing DML for ADM_Scrum_Team__c:\nunable to obtain exclusive access to this record```","pretext":null,"footer":null,"fields":[{"value":"\n```\nClass.AHI_CloudMediator.logErrorsAndGetLockedRows: line 214, column 1\nClass.AHI_CloudMediator.performDML: line 139, column 1\nClass.AHI_CloudMediator.aggregateClouds: line 85, column 1\nClass.AHI_CloudAggregator.processCloudsAndTeamsAsync: line 200, column 1\nClass.AHI_CloudAggregator.finish: line 176, column 1\n```\n","title":"Stack Trace","short":false,"fieldPath":"StackTrace__c"},{"value":"`4070`","title":"Total CPU","short":true,"fieldPath":"TotalLimitsCpuTimeUsed__c"},{"value":"`Medium`","title":"Priority","short":true,"fieldPath":"Priority__c"},{"value":"`005B0000005cpyJIAQ`","title":"Owner ID","short":true,"fieldPath":"OwnerId"},{"value":"`New`","title":"Status","short":true,"fieldPath":"Status__c"},{"value":"`00DT0000000DpvcMAC`","title":"Organization ID","short":true,"fieldPath":"OrganizationId__c"},{"value":"`GUS`","title":"Organization Name","short":true,"fieldPath":"OrganizationName__c"},{"value":"`Unlimited Edition`","title":"Organization Type","short":true,"fieldPath":"OrganizationType__c"},{"value":"`USA12`","title":"Instance Name","short":true,"fieldPath":"OrganizationInstanceName__c"},{"value":"`9`","title":"Total Entries","short":true,"fieldPath":"TotalLogEntries__c"},{"value":"`0`","title":"Total ERROR Entries","short":true,"fieldPath":"TotalERRORLogEntries__c"},{"value":"`8`","title":"Total WARN Entries","short":true,"fieldPath":"TotalWARNLogEntries__c"},{"value":"`Log-357713`","title":"Log Number","short":true,"fieldPath":"Name"},{"value":"`3421de85-07f4-4657-9638-947b228057d5`","title":"Transaction ID","short":true,"fieldPath":"TransactionId__c"},{"value":"`ohanaeng.maint@gus.com`","title":"Username","short":true,"fieldPath":"LoggedBy__r.Username"}],"color":"#FFC873","author_name":"ohanaeng.maint@gus.com","author_link":"https://gus.my.salesforce.com/005B0000005cpyJIAQ"}]}'
+        );
         request.setEndpoint(endpoint);
         request.setHeader('Content-Type', 'application/json');
         request.setMethod('POST');
-        request.setTimeout(this.requestTimeout);
+        request.setTimeout(this.requestTimeoutInSeconds);
 
         requests.add(request);
       }
@@ -409,14 +459,11 @@ public class LoggerAlertService {
       return requests;
     }
 
-    private void sendSlackMessage(String channel) {
-      System.debug('Sending message to Slack channel: ' + channel);
-    }
-
     public override TransactionLimitsUsage getExpectedLimitsUsage() {
       return new TransactionLimitsUsage()
         .setExpectedCallouts(this.matchingRecords.size())
-        .setExpectedCalloutTime(this.requestTimeout * this.matchingRecords.size())
+        // TODO revisit the expected callout time approach/concept
+        .setExpectedCalloutTime(this.requestTimeoutInSeconds * this.matchingRecords.size())
         .setExpectedQueries(1)
         .setExpectedQueryRows(this.matchingRecords.size());
     }
@@ -446,9 +493,6 @@ public class LoggerAlertService {
     public String channel;
     public String icon_emoji;
     public String icon_url;
-
-    // Internal-use only, not used by Slack
-    public transient String namedCredentialDeveloperName;
   }
 
   public class SlackBlock {

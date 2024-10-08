@@ -1723,6 +1723,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerAlertAction__c.IsEnabled__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerAlertAction__c.OpenTelemetryProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
