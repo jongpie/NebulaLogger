@@ -4,8 +4,8 @@
     <externalId>false</externalId>
     <formula>CASE(
   TEXT(LoggerAlert__r.SourceSObjectType__c),
-  &apos;LogEntryEvent__e&apos;, &apos;TODO&apos;,
-  &apos;Log__c&apos;, HYPERLINK(Log__r.LoggedBy__r.Username, Log__r.LoggedBy__r.Username, &apos;_top&apos;),
+  &apos;LogEntryEvent__e&apos;, HYPERLINK(LogEntryEventLoggedById__c, LogEntryEventLoggedByUsername__c, &apos;_top&apos;),
+  &apos;Log__c&apos;, HYPERLINK(Log__r.LoggedBy__c, Log__r.LoggedBy__r.Username, &apos;_top&apos;),
   &apos;LogEntry__c&apos;, HYPERLINK(LogEntry__r.Log__r.LoggedBy__c, LogEntry__r.Log__r.LoggedBy__r.Username, &apos;_top&apos;),
   &apos;LogEntryTag__c&apos;, HYPERLINK(LogEntryTag__r.LogEntry__r.Log__r.LoggedBy__c, LogEntryTag__r.LogEntry__r.Log__r.LoggedBy__r.Username, &apos;_top&apos;),
   &apos;Unknown&apos;
