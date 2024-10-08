@@ -80,8 +80,15 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ExecutionOrder__c</fieldItem>
-                <identifier>RecordExecutionOrder_cField</identifier>
+                <fieldItem>Record.IsOriginOrganizationIdValid__c</fieldItem>
+                <identifier>RecordIsOriginOrganizationIdValid_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.IsOriginOrganizationIdValid__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -464,6 +471,15 @@
                         <valueListItems>
                             <value>NAME</value>
                         </valueListItems>
+                        <valueListItems>
+                            <value>MatchingRecordNameLink__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>MatchingRecordLoggedByLink__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>CREATED_DATE</value>
+                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -476,7 +492,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>sortFieldAlias</name>
-                    <value>NAME</value>
+                    <value>CREATED_DATE</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>sortFieldOrder</name>
