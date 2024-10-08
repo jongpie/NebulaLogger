@@ -4,6 +4,7 @@
     <fields>Name</fields>
     <fields>SourceSObjectType__c</fields>
     <fields>IsEnabled__c</fields>
+    <fields>TotalEnabledActions__c</fields>
     <fields>OwnerId</fields>
     <fields>CreatedById</fields>
     <fields>LastModifiedById</fields>
