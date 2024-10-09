@@ -6,6 +6,7 @@
     <columns>TotalEnabledActions__c</columns>
     <columns>IsMatchStorageEnabled__c</columns>
     <columns>TotalMatches__c</columns>
+    <columns>LastMatchDate__c</columns>
     <columns>Comments__c</columns>
     <columns>OWNER.ALIAS</columns>
     <columns>UPDATEDBY_USER</columns>

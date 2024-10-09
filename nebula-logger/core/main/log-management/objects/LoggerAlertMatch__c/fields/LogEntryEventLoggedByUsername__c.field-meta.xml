@@ -2,7 +2,6 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LogEntryEventLoggedByUsername__c</fullName>
     <businessStatus>Active</businessStatus>
-    <caseSensitive>false</caseSensitive>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <label>Log Entry Event Logged By Username</label>

@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <defaultValue>true</defaultValue>
-    <inlineHelpText>When enabled, Nebula Logger will automatically compare the alert's filter to any new records in the source SObject type - for any matches found, the alert's actions will automatically run.</inlineHelpText>
+    <inlineHelpText>When enabled, Nebula Logger will automatically compare the alert&apos;s filter to any new records in the source SObject type - for any matches found, the alert&apos;s actions will automatically run.</inlineHelpText>
     <label>Is Enabled</label>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>true</trackHistory>

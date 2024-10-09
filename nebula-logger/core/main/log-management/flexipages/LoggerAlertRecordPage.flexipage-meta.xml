@@ -83,10 +83,15 @@
                 <fieldItem>Record.IsOriginOrganizationIdValid__c</fieldItem>
                 <identifier>RecordIsOriginOrganizationIdValid_cField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.IsOriginOrganizationIdValid__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>false</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.OriginOrganizationId__c}</leftValue>
+                        <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -245,6 +250,12 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.OriginOrganizationId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>sidebar</name>
@@ -271,6 +282,34 @@
                 <identifier>RecordSourceSObjectFilter_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SourceSObjectFilterFields__c</fieldItem>
+                <identifier>RecordSourceSObjectFilterFields_cField</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.SourceSObjectType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Log__c</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.SourceSObjectType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>LogEntry__c</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.SourceSObjectType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>LogEntryTag__c</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-e1be7252-a5c7-486f-82fa-6f9803d64c95</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -290,105 +329,6 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.IsMatchingThresholdEnabled__c</fieldItem>
-                <identifier>RecordIsMatchingThresholdEnabled_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchingType__c</fieldItem>
-                <identifier>RecordMatchingType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchingThresholdSummary__c</fieldItem>
-                <identifier>RecordMatchingThresholdSummary_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchingThresholdRecordCount__c</fieldItem>
-                <identifier>RecordMatchingThresholdRecordCount_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.MatchingType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Threshold Match</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchingThresholdTimePeriodIncrement__c</fieldItem>
-                <identifier>RecordMatchingThresholdTimePeriodIncrement_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.MatchingType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Threshold Match</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchingThresholdTimePeriodUnit__c</fieldItem>
-                <identifier>RecordMatchingThresholdTimePeriodUnit_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.MatchingType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Threshold Match</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-e939ce42-7d32-4d57-96cf-00c6ae0ba7e7</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-e939ce42-7d32-4d57-96cf-00c6ae0ba7e7</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column6</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-a8cb40e6-ab6d-4b31-99dd-cb752206b5ee</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
@@ -404,24 +344,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-a8cb40e6-ab6d-4b31-99dd-cb752206b5ee</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Match Settings</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection6</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
