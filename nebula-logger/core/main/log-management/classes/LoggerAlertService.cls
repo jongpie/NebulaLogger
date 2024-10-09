@@ -10,6 +10,7 @@
  */
 public class LoggerAlertService {
   private static final Integer MAX_ACTION_RETRY_COUNT = 3;
+  private static final Map<String, List<LoggerAlert__c>> SOBJECT_API_NAME_TO_ALERTS = new Map<String, List<LoggerAlert__c>>();
 
   // Static variable to hold the singleton instance
   private static Integer calloutTimeUsed = 0;
@@ -18,7 +19,7 @@ public class LoggerAlertService {
 
   // Private constructor to prevent direct instantiation
   private LoggerAlertService() {
-    // Initialization logic, if necessary
+    // No-op
   }
 
   // Static method to get the singleton instance of LoggerAlertService
@@ -41,91 +42,33 @@ public class LoggerAlertService {
       return;
     }
 
-    if (records.getSObjectType() != LogEntry__c.SObjectType) {
+    Schema.SObjectType sourceSObjectType = records.getSObjectType();
+    if (sourceSObjectType != LogEntry__c.SObjectType) {
       System.debug('⛔⚠️TEMP! Only testing with LogEntry__c for now');
       return;
     }
 
     /*
       TODO things to add
-        1. If 1 or more Slack actions are setup, combine the lists in DisplayFields__c together use to requery records
+        1. If 1 or more Slack actions are setup, combine the lists in OutputFields__c together use to requery records
         2. Decide if email alerts will be supported for all Source SObject Types, and if so, can fields be customized (like Slack)?
         3. If 1 or more OTel actions are setup, query all fields on Log__c, LogEntry__c, LogEntryTag__c, LoggerTag__c, and LoggerScenario__c
         4. Based on IsLogRetentionOverrideEnabled__c, update the  field Log__c.LogRetentionDate__c
     */
-    List<LoggerAlert__c> todoAlertsVariable = [
-      SELECT
-        Id,
-        Comments__c,
-        IsMatchingThresholdEnabled__c,
-        IsMatchStorageEnabled__c,
-        MatchingCountThreshold__c,
-        MatchingThresholdRecordCount__c,
-        MatchingThresholdSummary__c,
-        MatchingThresholdTimePeriodIncrement__c,
-        MatchingThresholdTimePeriodUnit__c,
-        MatchingType__c,
-        NumberOfDaysToRetainLogs__c,
-        OriginOrganizationId__c,
-        SourceSObjectFilter__c,
-        SourceSObjectType__c,
-        TotalMatches__c,
-        Type__c,
-        (
-          SELECT
-            Id,
-            CalloutConnectionType__c,
-            CalloutNamedCredential__c,
-            DisplayFields__c,
-            EmailAddressRecipient__c,
-            EmailRecipientType__c,
-            EmailUserRecipient__c,
-            LoggerAlert__c,
-            ObservabilityPlatform__c,
-            SlackChannel__c,
-            SourceSObjectType__c,
-            Type__c
-          FROM LoggerAlertActions__r
-          WHERE IsEnabled__c = TRUE
-        )
-      FROM LoggerAlert__c
-      WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE
-    ];
 
     // TODO add re-query step here. It should query some base fields (Id, TransactionId__c, etc.),
-    // as well as any fields specified in LoggerAlert__c.DisplayFields__c (which will possible be renamed
+    // as well as any fields specified in LoggerAlert__c.OutputFields__c (which will possible be renamed
     // to something more generic, like "Display Fields", "Action Fields", "Output Fields", etc.)
-    Set<String> fieldPathStrings = new Set<String>();
-    for (LoggerAlert__c alert : todoAlertsVariable) {
-      for (LoggerAlertAction__c alertAction : alert.LoggerAlertActions__r) {
-        if (String.isBlank(alertAction.DisplayFields__c)) {
-          continue;
-        }
 
-        for (String fieldName : alertAction.DisplayFields__c.split('[ ,\\n]')) {
-          if (String.isBlank(fieldName)) {
-            continue;
-          }
-          fieldPathStrings.add(fieldName.trim().toLowerCase());
-        }
-      }
-
-      Set<String> cleanedFieldNames = new Set<String>();
-      for (String fieldName : fieldPathStrings) {
-        LoggerSObjectMetadata.FieldPath fieldPath = new LoggerSObjectMetadata.FieldPath(records.getSObjectType(), fieldName);
-        if (fieldPath.isValid()) {
-          cleanedFieldNames.add(fieldPath.getFormattedFieldPath());
-        }
-      }
-    }
-    // TODO use cleanedFieldNames to dynamically requery data (need to also include base fields?)
+    List<LoggerAlert__c> sourceSObjectTypeAlerts = this.getAlerts(sourceSObjectType);
+    Set<String> contextFieldNames = this.getContextFields(sourceSObjectType, sourceSObjectTypeAlerts);
+    // TODO use contextFieldNames to dynamically requery scope records (need to also include base fields?)
 
     BulkRecordCreateActionDispatcher bulkRecordCreateActionDispatcher = new BulkRecordCreateActionDispatcher();
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
     List<ActionDispatcher> dispatchers = new List<ActionDispatcher>{ bulkRecordCreateActionDispatcher };
-    // List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
 
-    for (LoggerAlert__c alert : todoAlertsVariable) {
+    for (LoggerAlert__c alert : sourceSObjectTypeAlerts) {
       // The list of matches is initialized here, but it's passed to multiple actions below.
       // Every action should have a deep clone of the list (instead of the original reference)
       // passed so that the action can freely do things like clear or remove items from the list,
@@ -151,6 +94,76 @@ public class LoggerAlertService {
     if (dispatchers.isEmpty() == false) {
       new ActionsProcessor(dispatchers).execute();
     }
+  }
+
+  private Set<String> getContextFields(Schema.SObjectType sourceSObjectType, List<LoggerAlert__c> alerts) {
+    Set<String> fieldPathStrings = new Set<String>();
+    for (LoggerAlert__c alert : alerts) {
+      for (LoggerAlertAction__c alertAction : alert.LoggerAlertActions__r) {
+        if (String.isBlank(alertAction.OutputFields__c)) {
+          continue;
+        }
+
+        for (String fieldName : alertAction.OutputFields__c.split('[ ,\\n]')) {
+          if (String.isBlank(fieldName)) {
+            continue;
+          }
+          fieldPathStrings.add(fieldName.trim().toLowerCase());
+        }
+      }
+
+      Set<String> cleanedFieldNames = new Set<String>();
+      for (String fieldName : fieldPathStrings) {
+        LoggerSObjectMetadata.FieldPath fieldPath = new LoggerSObjectMetadata.FieldPath(sourceSObjectType, fieldName);
+        if (fieldPath.isValid()) {
+          cleanedFieldNames.add(fieldPath.getFormattedFieldPath());
+        }
+      }
+    }
+
+    return fieldPathStrings;
+  }
+
+  private List<LoggerAlert__c> getAlerts(Schema.SObjectType sobjectType) {
+    String sobjectApiName = sobjectType.toString();
+    if (SOBJECT_API_NAME_TO_ALERTS.containsKey(sobjectApiName) == false) {
+      // TODO move SOQL query to LogManagementDataSelector class
+      SOBJECT_API_NAME_TO_ALERTS.put(
+        sobjectApiName,
+        [
+          SELECT
+            Id,
+            IsLogRetentionOverrideEnabled__c,
+            IsMatchStorageEnabled__c,
+            NumberOfDaysToRetainLogs__c,
+            OriginOrganizationId__c,
+            SourceSObjectFilter__c,
+            SourceSObjectType__c,
+            TotalMatches__c,
+            Type__c,
+            (
+              SELECT
+                Id,
+                CalloutConnectionType__c,
+                CalloutNamedCredential__c,
+                OutputFields__c,
+                EmailAddressRecipient__c,
+                EmailRecipientType__c,
+                EmailUserRecipient__c,
+                LoggerAlert__c,
+                ObservabilityPlatform__c,
+                SlackChannel__c,
+                Type__c
+              FROM LoggerAlertActions__r
+              WHERE IsEnabled__c = TRUE
+            )
+          FROM LoggerAlert__c
+          WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE
+        ]
+      );
+    }
+
+    return SOBJECT_API_NAME_TO_ALERTS.get(sobjectApiName);
   }
 
   private List<SObject> getMatchingRecords(LoggerAlert__c alert, List<SObject> records) {
