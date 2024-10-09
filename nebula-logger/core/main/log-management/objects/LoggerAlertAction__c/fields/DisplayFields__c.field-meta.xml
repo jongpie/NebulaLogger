@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>SlackFields__c</fullName>
+    <fullName>DisplayFields__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <label>TODO: Rename to ContextFields__c</label>
+    <label>Display Fields</label>
     <length>2000</length>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>false</trackHistory>

@@ -101,8 +101,8 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.SlackConnectionType__c</fieldItem>
-                <identifier>RecordSlackConnectionType_cField</identifier>
+                <fieldItem>Record.CalloutConnectionType__c</fieldItem>
+                <identifier>RecordCalloutConnectionType_cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Type__c}</leftValue>
@@ -122,9 +122,9 @@
                 <identifier>RecordSlackChannel_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.SlackConnectionType__c}</leftValue>
+                        <leftValue>{!Record.CalloutConnectionType__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>Chat Post Message</rightValue>
+                        <rightValue>OAuth</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -135,8 +135,8 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.SlackFields__c</fieldItem>
-                <identifier>RecordSlackFields_cField</identifier>
+                <fieldItem>Record.DisplayFields__c</fieldItem>
+                <identifier>RecordDisplayFields_cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Type__c}</leftValue>

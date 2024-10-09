@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>SlackConnectionType__c</fullName>
-    <label>Slack Connection Type</label>
+    <fullName>CalloutConnectionType__c</fullName>
+    <label>Callout Connection Type</label>
     <required>false</required>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
@@ -11,20 +11,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Chat Post Message</fullName>
+                <fullName>OAuth</fullName>
                 <default>false</default>
-                <label>Chat Post Message</label>
+                <label>OAuth</label>
             </value>
             <value>
                 <fullName>Webhook</fullName>
                 <default>false</default>
                 <label>Webhook</label>
-            </value>
-            <value>
-                <fullName>Named Credential</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Named Credential</label>
             </value>
         </valueSetDefinition>
     </valueSet>

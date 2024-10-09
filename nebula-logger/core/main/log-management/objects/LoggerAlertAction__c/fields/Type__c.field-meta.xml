@@ -21,9 +21,19 @@
                 <label>Send Slack Notification</label>
             </value>
             <value>
+                <fullName>Teams</fullName>
+                <default>false</default>
+                <label>Send Teams Notification</label>
+            </value>
+            <value>
                 <fullName>Observability Platform</fullName>
                 <default>false</default>
                 <label>Send to Observability Platform</label>
+            </value>
+            <value>
+                <fullName>Salesforce Org</fullName>
+                <default>false</default>
+                <label>Send to Salesforce Org</label>
             </value>
         </valueSetDefinition>
     </valueSet>

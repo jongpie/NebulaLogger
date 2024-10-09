@@ -47,14 +47,14 @@ public class LoggerAlertService {
 
     /*
       TODO things to add
-        1. If 1 or more Slack actions are setup, combine the lists in SlackFields__c together use to requery records
+        1. If 1 or more Slack actions are setup, combine the lists in DisplayFields__c together use to requery records
         2. Decide if email alerts will be supported for all Source SObject Types, and if so, can fields be customized (like Slack)?
         3. If 1 or more OTel actions are setup, query all fields on Log__c, LogEntry__c, LogEntryTag__c, LoggerTag__c, and LoggerScenario__c
         4. Based on IsLogRetentionOverrideEnabled__c, update the  field Log__c.LogRetentionDate__c
     */
 
     // TODO add re-query step here. It should query some base fields (Id, TransactionId__c, etc.),
-    // as well as any fields specified in LoggerAlert__c.SlackFields__c (which will possible be renamed
+    // as well as any fields specified in LoggerAlert__c.DisplayFields__c (which will possible be renamed
     // to something more generic, like "Display Fields", "Action Fields", "Output Fields", etc.)
 
     BulkRecordCreationDispatcher bulkRecordCreationDispatcher = new BulkRecordCreationDispatcher();
@@ -82,17 +82,15 @@ public class LoggerAlertService {
         (
           SELECT
             Id,
-            ActionSummary__c,
+            CalloutConnectionType__c,
             CalloutNamedCredential__c,
+            DisplayFields__c,
             EmailAddressRecipient__c,
             EmailRecipientType__c,
             EmailUserRecipient__c,
             LoggerAlert__c,
-            Name,
             ObservabilityPlatform__c,
             SlackChannel__c,
-            SlackConnectionType__c,
-            SlackFields__c,
             SourceSObjectType__c,
             Type__c
           FROM LoggerAlertActions__r
@@ -455,7 +453,7 @@ public class LoggerAlertService {
 
       System.Http httpClient = new System.Http();
       for (System.HttpRequest request : this.getHttpRequests()) {
-        // System.debug('Sending Slack ' + action.SlackConnectionType__c + ' request to ' + action.SlackChannel__c);
+        // System.debug('Sending Slack ' + action.CalloutConnectionType__c + ' request to ' + action.SlackChannel__c);
         // System.debug('Sending Slack, Trigger.isExecuting ' + Trigger.isExecuting);
         // System.debug('Sending Slack, Limits.getLimitCallouts ' + System.Limits.getLimitCallouts());
         System.HttpResponse response = httpClient.send(request);
@@ -485,7 +483,7 @@ public class LoggerAlertService {
       for (SObject record : this.matchingRecords) {
         SlackMessage slackMessage = this.buildSlackMessage(record);
         String endpoint = 'callout:' + this.action.CalloutNamedCredential__c;
-        if (this.action.SlackConnectionType__c == 'Chat Post Message') {
+        if (this.action.CalloutConnectionType__c == 'OAuth') {
           endpoint += this.action.CalloutNamedCredential__c + '/api/chat.postMessage' + this.action.SlackChannel__c;
         }
         System.debug('>>> Slack endpoint: ' + endpoint);

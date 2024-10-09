@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SlackChannel__c</fullName>
     <externalId>false</externalId>
-    <label>Slack Channel</label>
+    <label>TODO: call Collaboration Tool Channel</label>
     <length>255</length>
     <required>false</required>
     <trackHistory>true</trackHistory>
