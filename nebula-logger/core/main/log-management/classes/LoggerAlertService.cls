@@ -12,8 +12,9 @@ public class LoggerAlertService {
   private static final Integer MAX_ACTION_RETRY_COUNT = 3;
 
   // Static variable to hold the singleton instance
-  private static LoggerAlertService instance;
   private static Integer calloutTimeUsed = 0;
+  private static LoggerAlertService instance;
+  private static ActionsProcessor processor;
 
   // Private constructor to prevent direct instantiation
   private LoggerAlertService() {
@@ -119,9 +120,9 @@ public class LoggerAlertService {
     }
     // TODO use cleanedFieldNames to dynamically requery data (need to also include base fields?)
 
-    BulkRecordCreationDispatcher bulkRecordCreationDispatcher = new BulkRecordCreationDispatcher();
+    BulkRecordCreateActionDispatcher bulkRecordCreateActionDispatcher = new BulkRecordCreateActionDispatcher();
     List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
-    List<ActionDispatcher> dispatchers = new List<ActionDispatcher>{ bulkRecordCreationDispatcher };
+    List<ActionDispatcher> dispatchers = new List<ActionDispatcher>{ bulkRecordCreateActionDispatcher };
     // List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
 
     for (LoggerAlert__c alert : todoAlertsVariable) {
@@ -135,7 +136,7 @@ public class LoggerAlertService {
         continue;
       }
 
-      bulkRecordCreationDispatcher.addMatches(alert, matchingRecords.deepClone());
+      bulkRecordCreateActionDispatcher.addMatches(alert, matchingRecords.deepClone());
 
       for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
         ActionDispatcher dispatcher = createActionDispatcher(action, matchingRecords.deepClone());
@@ -193,6 +194,22 @@ public class LoggerAlertService {
     // Constructor
     public ActionsProcessor(List<ActionDispatcher> dispatchers) {
       this.dispatchers = dispatchers;
+    }
+
+    public ActionsProcessor() {
+      // No-op
+    }
+
+    public BulkRecordCreateActionDispatcher getRecordCreateActionDispatcher() {
+      return null;
+    }
+
+    public EmailActionDispatcher getEmailActionDispatcher() {
+      return null;
+    }
+
+    public SlackActionDispatcher getSlackActionDispatcher() {
+      return null;
     }
 
     public void execute(System.QueueableContext context) {
@@ -298,10 +315,10 @@ public class LoggerAlertService {
     }
   }
 
-  private class BulkRecordCreationDispatcher extends ActionDispatcher {
+  private class BulkRecordCreateActionDispatcher extends ActionDispatcher {
     private List<LoggerAlertMatch__c> loggerAlertMatches = new List<LoggerAlertMatch__c>();
 
-    public BulkRecordCreationDispatcher() {
+    public BulkRecordCreateActionDispatcher() {
       super();
     }
 
