@@ -62,7 +62,7 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
     List<LoggerAlertAction__c> loggerAlertActions = (List<LoggerAlertAction__c>) triggerNew;
 
     LoggerAlertActionHandler.validateNamedCredentials(loggerAlertActions);
-    LoggerAlertActionHandler.validateSlackFields(loggerAlertActions);
+    LoggerAlertActionHandler.validateDisplayFields(loggerAlertActions);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -70,7 +70,7 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
     Map<Id, LoggerAlertAction__c> idToOldLoggerAlertAction = (Map<Id, LoggerAlertAction__c>) triggerOldMap;
 
     LoggerAlertActionHandler.validateNamedCredentials(loggerAlertActions, idToOldLoggerAlertAction);
-    LoggerAlertActionHandler.validateSlackFields(loggerAlertActions, idToOldLoggerAlertAction);
+    LoggerAlertActionHandler.validateDisplayFields(loggerAlertActions, idToOldLoggerAlertAction);
   }
 
   private static void validateNamedCredentials(
@@ -121,7 +121,7 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
     }
   }
 
-  private static void validateSlackFields(
+  private static void validateDisplayFields(
     List<LoggerAlertAction__c> loggerAlertActions,
     Map<Id, LoggerAlertAction__c> loggerAlertActionIdToOldLoggerAlertAction
   ) {
@@ -132,38 +132,38 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
       }
 
       LoggerAlertAction__c oldLoggerAlertAction = loggerAlertActionIdToOldLoggerAlertAction.get(loggerAlertAction.Id);
-      if (loggerAlertAction.SlackFields__c != oldLoggerAlertAction.SlackFields__c) {
+      if (loggerAlertAction.DisplayFields__c != oldLoggerAlertAction.DisplayFields__c) {
         changedLoggerAlertActions.add(loggerAlertAction);
       }
     }
 
-    LoggerAlertActionHandler.validateSlackFields(changedLoggerAlertActions);
+    LoggerAlertActionHandler.validateDisplayFields(changedLoggerAlertActions);
   }
 
   /**
-   * @description Validates that the field `SlackFields__c` contains 1 or more valid fields that should be included
+   * @description Validates that the field `DisplayFields__c` contains 1 or more valid fields that should be included
    *              in the Slack message. This includes support for parent level fields (e.g. `Log__r.TransactionId__c`)
    * @param  loggerAlertActions The action records to validate
    */
-  private static void validateSlackFields(List<LoggerAlertAction__c> loggerAlertActions) {
+  private static void validateDisplayFields(List<LoggerAlertAction__c> loggerAlertActions) {
     for (LoggerAlertAction__c loggerAlertAction : loggerAlertActions) {
       if (loggerAlertAction.Type__c != TYPE_SLACK) {
         continue;
       }
 
-      if (String.isBlank(loggerAlertAction.SlackFields__c)) {
-        loggerAlertAction.SlackFields__c.addError('1 or more ' + loggerAlertAction.SourceSObjectType__c + ' fields must be specified for Slack action');
+      if (String.isBlank(loggerAlertAction.DisplayFields__c)) {
+        loggerAlertAction.DisplayFields__c.addError('1 or more ' + loggerAlertAction.SourceSObjectType__c + ' fields must be specified for Slack action');
         continue;
       }
 
       Schema.SObjectType sourceSObjectType = getSObjectType(loggerAlertAction.SourceSObjectType__c);
       Map<String, Schema.SObjectField> sourceSObjectFieldNameToField = getSourceFieldMap(loggerAlertAction.SourceSObjectType__c);
-      List<String> slackFieldNames = loggerAlertAction.SlackFields__c.split('[ ,\\n]');
+      List<String> slackFieldNames = loggerAlertAction.DisplayFields__c.split('[ ,\\n]');
       List<String> cleanedSlackFieldNames = new List<String>();
       List<String> invalidFieldPathStrings = new List<String>();
       for (String slackFieldName : slackFieldNames) {
         String cleanedSlackFieldName = slackFieldName?.trim();
-        // When splitting the field SlackFields__c, some empty strings occur if there are multiple delimiters in a row.
+        // When splitting the field DisplayFields__c, some empty strings occur if there are multiple delimiters in a row.
         // Example: 'First_Field__c,\nAnother_Field__c'
         if (String.isBlank(cleanedSlackFieldName)) {
           continue;
@@ -183,11 +183,11 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
           invalidFieldPathStrings.size() == 1 ? '' : 's',
           String.join(invalidFieldPathStrings, ', ')
         };
-        loggerAlertAction.SlackFields__c.addError(String.format(errorMessageTemplate, errorMessageTemplateParameters));
+        loggerAlertAction.DisplayFields__c.addError(String.format(errorMessageTemplate, errorMessageTemplateParameters));
       } else {
         cleanedSlackFieldNames.sort();
         Set<String> deduplicatedSlackFieldNames = new Set<String>(cleanedSlackFieldNames);
-        loggerAlertAction.SlackFields__c = String.join(deduplicatedSlackFieldNames, '\n');
+        loggerAlertAction.DisplayFields__c = String.join(deduplicatedSlackFieldNames, '\n');
       }
     }
   }
