@@ -99,9 +99,9 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
 
       Schema.SObjectType sourceSObjectType = getSObjectType(loggerAlert.SourceSObjectType__c);
       System.Formula.builder()
+        .withFormula(loggerAlert.SourceSObjectFilter__c)
         .withReturnType(FormulaEval.FormulaReturnType.Boolean)
         .withType(sourceSObjectType)
-        .withFormula(loggerAlert.SourceSObjectFilter__c)
         .build();
     }
   }

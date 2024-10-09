@@ -105,4 +105,121 @@ public without sharing class LoggerSObjectMetadata {
     @AuraEnabled
     public String type;
   }
+
+  @SuppressWarnings('PMD.ApexDoc')
+  public class FieldPath {
+    private List<Schema.SObjectField> fieldChain;
+    private Schema.DescribeFieldResult fieldDescribe;
+    private String fieldPathError;
+    private String formattedFieldPath;
+    private String originalFieldPath;
+    private Schema.SObjectType sobjectType;
+
+    public FieldPath(Schema.SObjectType sobjectType, String fieldPath) {
+      this.sobjectType = sobjectType;
+      this.originalFieldPath = fieldPath;
+
+      try {
+        // this.fieldChain = this.getFieldChain(sobjectType, fieldPath);
+        this.setFieldPathDetails(sobjectType, fieldPath);
+        this.fieldDescribe = this.getLastFieldDescribe();
+      } catch (Exception ex) {
+        this.fieldPathError = ex.getMessage();
+      }
+    }
+
+    public Boolean isValid() {
+      return String.isBlank(this.fieldPathError);
+    }
+
+    public String getError() {
+      return this.fieldPathError;
+    }
+
+    public String getFormattedFieldPath() {
+      return this.formattedFieldPath;
+    }
+
+    public Schema.SObjectField getField() {
+      return this.fieldChain[this.fieldChain.size() - 1];
+    }
+
+    public Object getValue(SObject record) {
+      Schema.SObjectType parentSObjectType = this.sobjectType;
+      SObject parentRecord = record;
+
+      for (Schema.SObjectField field : this.fieldChain) {
+        Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+        if (fieldDescribe.getSoapType() != Schema.SoapType.ID) {
+          return parentRecord.get(fieldDescribe.getName());
+        } else {
+          parentSObjectType = fieldDescribe.getReferenceTo().get(0);
+
+          SObject newParentRecord = parentRecord.getSObject(field);
+          if (newParentRecord == null) {
+            return null;
+          } else {
+            parentRecord = newParentRecord;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    private List<Schema.SObjectField> getFieldChain(Schema.SObjectType sobjectType, String fieldPath) {
+      return null;
+    }
+
+    private void setFieldPathDetails(Schema.SObjectType sobjectType, String fieldPath) {
+      Schema.SObjectType currentSObjectType = sobjectType;
+
+      List<Schema.SObjectField> fields = new List<Schema.SObjectField>();
+      List<String> fieldPathPieces = fieldPath.split('\\.');
+      List<String> cleansedFieldPathPieces = new List<String>();
+      Integer lastFieldIndex = fieldPathPieces.size() <= 1 ? 0 : fieldPathPieces.size() - 1;
+
+      for (Integer i = 0; i < fieldPathPieces.size(); i++) {
+        String fieldPathPiece = fieldPathPieces[i];
+        Boolean isRelationshipPiece = true;
+
+        String fieldApiName;
+        if (i == lastFieldIndex) {
+          fieldApiName = fieldPathPiece;
+          isRelationshipPiece = false;
+        } else if (fieldPathPiece.endsWith('__r')) {
+          fieldApiName = fieldPathPiece.replace('__r', '__c');
+        } else {
+          fieldApiName = fieldPathPiece + 'Id';
+        }
+
+        Schema.SObjectField field = currentSObjectType.getDescribe().fields.getMap().get(fieldApiName);
+
+        if (field == null) {
+          throw new System.IllegalArgumentException(
+            'Invalid field path \'' + fieldPath + '\', could not find field ' + fieldApiName + ' on ' + currentSObjectType
+          );
+        }
+
+        String cleansedFieldPathPiece = isRelationshipPiece ? field.getDescribe().getRelationshipName() : field.toString();
+        cleansedFieldPathPieces.add(cleansedFieldPathPiece);
+
+        // TODO add support for polymorphic fields
+        if (i < lastFieldIndex) {
+          currentSObjectType = field.getDescribe().getReferenceTo().get(0);
+        }
+
+        fields.add(field);
+      }
+      this.formattedFieldPath = String.join(cleansedFieldPathPieces, '.');
+
+      // return fields;
+      this.fieldChain = fields;
+    }
+
+    private Schema.DescribeFieldResult getLastFieldDescribe() {
+      Integer lastFieldIndex = this.fieldChain.size() - 1;
+      return this.fieldChain[lastFieldIndex].getDescribe();
+    }
+  }
 }

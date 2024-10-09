@@ -52,15 +52,6 @@ public class LoggerAlertService {
         3. If 1 or more OTel actions are setup, query all fields on Log__c, LogEntry__c, LogEntryTag__c, LoggerTag__c, and LoggerScenario__c
         4. Based on IsLogRetentionOverrideEnabled__c, update the  field Log__c.LogRetentionDate__c
     */
-
-    // TODO add re-query step here. It should query some base fields (Id, TransactionId__c, etc.),
-    // as well as any fields specified in LoggerAlert__c.DisplayFields__c (which will possible be renamed
-    // to something more generic, like "Display Fields", "Action Fields", "Output Fields", etc.)
-
-    BulkRecordCreationDispatcher bulkRecordCreationDispatcher = new BulkRecordCreationDispatcher();
-    List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
-    List<ActionDispatcher> dispatchers = new List<ActionDispatcher>{ bulkRecordCreationDispatcher };
-    // List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
     List<LoggerAlert__c> todoAlertsVariable = [
       SELECT
         Id,
@@ -99,6 +90,40 @@ public class LoggerAlertService {
       FROM LoggerAlert__c
       WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE
     ];
+
+    // TODO add re-query step here. It should query some base fields (Id, TransactionId__c, etc.),
+    // as well as any fields specified in LoggerAlert__c.DisplayFields__c (which will possible be renamed
+    // to something more generic, like "Display Fields", "Action Fields", "Output Fields", etc.)
+    Set<String> fieldPathStrings = new Set<String>();
+    for (LoggerAlert__c alert : todoAlertsVariable) {
+      for (LoggerAlertAction__c alertAction : alert.LoggerAlertActions__r) {
+        if (String.isBlank(alertAction.DisplayFields__c)) {
+          continue;
+        }
+
+        for (String fieldName : alertAction.DisplayFields__c.split('[ ,\\n]')) {
+          if (String.isBlank(fieldName)) {
+            continue;
+          }
+          fieldPathStrings.add(fieldName.trim().toLowerCase());
+        }
+      }
+
+      Set<String> cleanedFieldNames = new Set<String>();
+      for (String fieldName : fieldPathStrings) {
+        LoggerSObjectMetadata.FieldPath fieldPath = new LoggerSObjectMetadata.FieldPath(records.getSObjectType(), fieldName);
+        if (fieldPath.isValid()) {
+          cleanedFieldNames.add(fieldPath.getFormattedFieldPath());
+        }
+      }
+    }
+    // TODO use cleanedFieldNames to dynamically requery data (need to also include base fields?)
+
+    BulkRecordCreationDispatcher bulkRecordCreationDispatcher = new BulkRecordCreationDispatcher();
+    List<LoggerAlertMatch__c> alertMatches = new List<LoggerAlertMatch__c>();
+    List<ActionDispatcher> dispatchers = new List<ActionDispatcher>{ bulkRecordCreationDispatcher };
+    // List<LoggerAlert__c> todoAlertsVariable = null; // TODO!!!!
+
     for (LoggerAlert__c alert : todoAlertsVariable) {
       // The list of matches is initialized here, but it's passed to multiple actions below.
       // Every action should have a deep clone of the list (instead of the original reference)
