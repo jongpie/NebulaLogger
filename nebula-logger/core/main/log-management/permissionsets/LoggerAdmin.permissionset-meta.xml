@@ -1698,7 +1698,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerAlertAction__c.ActionSummary__c</field>
+        <field>LoggerAlertAction__c.Summary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1713,7 +1713,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerAlertAction__c.DisplayFields__c</field>
+        <field>LoggerAlertAction__c.OutputFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1867,6 +1867,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlert__c.SourceSObjectFilterFields__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>LoggerAlert__c.TotalEnabledActions__c</field>
         <readable>true</readable>
@@ -2004,6 +2009,14 @@
     </tabSettings>
     <tabSettings>
         <tab>LoggerAlert__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LoggerAlertAction__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LoggerAlertMatch__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

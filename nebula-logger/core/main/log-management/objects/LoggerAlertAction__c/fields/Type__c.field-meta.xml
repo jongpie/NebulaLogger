@@ -13,27 +13,27 @@
             <value>
                 <fullName>Email</fullName>
                 <default>false</default>
-                <label>Send Email Notification</label>
+                <label>Email Notification</label>
             </value>
             <value>
                 <fullName>Slack</fullName>
                 <default>false</default>
-                <label>Send Slack Notification</label>
+                <label>Slack Notification</label>
             </value>
             <value>
                 <fullName>Teams</fullName>
                 <default>false</default>
-                <label>Send Teams Notification</label>
+                <label>Teams Notification</label>
             </value>
             <value>
-                <fullName>Observability Platform</fullName>
+                <fullName>OpenTelemetry Receiver Callout</fullName>
                 <default>false</default>
-                <label>Send to Observability Platform</label>
+                <label>OpenTelemetry Receiver Callout</label>
             </value>
             <value>
                 <fullName>Salesforce Org</fullName>
                 <default>false</default>
-                <label>Send to Salesforce Org</label>
+                <label>Salesforce Org</label>
             </value>
         </valueSetDefinition>
     </valueSet>

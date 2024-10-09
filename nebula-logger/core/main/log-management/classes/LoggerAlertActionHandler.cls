@@ -132,7 +132,7 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
       }
 
       LoggerAlertAction__c oldLoggerAlertAction = loggerAlertActionIdToOldLoggerAlertAction.get(loggerAlertAction.Id);
-      if (loggerAlertAction.DisplayFields__c != oldLoggerAlertAction.DisplayFields__c) {
+      if (loggerAlertAction.OutputFields__c != oldLoggerAlertAction.OutputFields__c) {
         changedLoggerAlertActions.add(loggerAlertAction);
       }
     }
@@ -141,7 +141,7 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
   }
 
   /**
-   * @description Validates that the field `DisplayFields__c` contains 1 or more valid fields that should be included
+   * @description Validates that the field `OutputFields__c` contains 1 or more valid fields that should be included
    *              in the Slack message. This includes support for parent level fields (e.g. `Log__r.TransactionId__c`)
    * @param  loggerAlertActions The action records to validate
    */
@@ -151,19 +151,19 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
         continue;
       }
 
-      if (String.isBlank(loggerAlertAction.DisplayFields__c)) {
-        loggerAlertAction.DisplayFields__c.addError('1 or more ' + loggerAlertAction.SourceSObjectType__c + ' fields must be specified for Slack action');
+      if (String.isBlank(loggerAlertAction.OutputFields__c)) {
+        loggerAlertAction.OutputFields__c.addError('1 or more ' + loggerAlertAction.SourceSObjectType__c + ' fields must be specified for Slack action');
         continue;
       }
 
       Schema.SObjectType sourceSObjectType = getSObjectType(loggerAlertAction.SourceSObjectType__c);
       Map<String, Schema.SObjectField> sourceSObjectFieldNameToField = getSourceFieldMap(loggerAlertAction.SourceSObjectType__c);
-      List<String> displayFieldNames = loggerAlertAction.DisplayFields__c.split('[ ,\\n]');
+      List<String> displayFieldNames = loggerAlertAction.OutputFields__c.split('[ ,\\n]');
       List<String> cleanedDisplayFieldNames = new List<String>();
       List<String> invalidFieldPathStrings = new List<String>();
       for (String displayFieldName : displayFieldNames) {
         String cleanedDisplayFieldName = displayFieldName?.trim();
-        // When splitting the field DisplayFields__c, some empty strings occur if there are multiple delimiters in a row.
+        // When splitting the field OutputFields__c, some empty strings occur if there are multiple delimiters in a row.
         // Example: 'First_Field__c,\nAnother_Field__c'
         if (String.isBlank(cleanedDisplayFieldName)) {
           continue;
@@ -183,11 +183,11 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
           invalidFieldPathStrings.size() == 1 ? '' : 's',
           String.join(invalidFieldPathStrings, ', ')
         };
-        loggerAlertAction.DisplayFields__c.addError(String.format(errorMessageTemplate, errorMessageTemplateParameters));
+        loggerAlertAction.OutputFields__c.addError(String.format(errorMessageTemplate, errorMessageTemplateParameters));
       } else {
         cleanedDisplayFieldNames.sort();
         Set<String> deduplicatedDisplayFieldNames = new Set<String>(cleanedDisplayFieldNames);
-        loggerAlertAction.DisplayFields__c = String.join(deduplicatedDisplayFieldNames, '\n');
+        loggerAlertAction.OutputFields__c = String.join(deduplicatedDisplayFieldNames, '\n');
       }
     }
   }
