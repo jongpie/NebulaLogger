@@ -176,7 +176,9 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
   private Schema.SObjectType getInitialSObjectType() {
     Schema.SObjectType initialSObjectType;
-    if (this.getLogEntryTagCount() > 0) {
+    if (this.getLoggerAlertMatchCount() > 0) {
+      initialSObjectType = Schema.LoggerAlertMatch__c.SObjectType;
+    } else if (this.getLogEntryTagCount() > 0) {
       initialSObjectType = Schema.LogEntryTag__c.SObjectType;
     } else if (this.getLogEntryCount() > 0) {
       initialSObjectType = Schema.LogEntry__c.SObjectType;
@@ -184,6 +186,20 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
       initialSObjectType = Schema.Log__c.SObjectType;
     }
     return initialSObjectType;
+  }
+
+  private Integer getLoggerAlertMatchCount() {
+    return [
+      SELECT COUNT()
+      FROM LoggerAlertMatch__c
+      WHERE
+        (LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+        AND LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+        OR (LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+        AND LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+        OR (Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+        AND Log__r.LogRetentionDate__c != NULL)
+    ];
   }
 
   private Integer getLogEntryTagCount() {

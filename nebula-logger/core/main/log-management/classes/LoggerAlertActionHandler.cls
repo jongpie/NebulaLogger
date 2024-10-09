@@ -158,22 +158,22 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
 
       Schema.SObjectType sourceSObjectType = getSObjectType(loggerAlertAction.SourceSObjectType__c);
       Map<String, Schema.SObjectField> sourceSObjectFieldNameToField = getSourceFieldMap(loggerAlertAction.SourceSObjectType__c);
-      List<String> slackFieldNames = loggerAlertAction.DisplayFields__c.split('[ ,\\n]');
-      List<String> cleanedSlackFieldNames = new List<String>();
+      List<String> displayFieldNames = loggerAlertAction.DisplayFields__c.split('[ ,\\n]');
+      List<String> cleanedDisplayFieldNames = new List<String>();
       List<String> invalidFieldPathStrings = new List<String>();
-      for (String slackFieldName : slackFieldNames) {
-        String cleanedSlackFieldName = slackFieldName?.trim();
+      for (String displayFieldName : displayFieldNames) {
+        String cleanedDisplayFieldName = displayFieldName?.trim();
         // When splitting the field DisplayFields__c, some empty strings occur if there are multiple delimiters in a row.
         // Example: 'First_Field__c,\nAnother_Field__c'
-        if (String.isBlank(cleanedSlackFieldName)) {
+        if (String.isBlank(cleanedDisplayFieldName)) {
           continue;
         }
 
-        FieldPath fieldPath = new FieldPath(sourceSObjectType, cleanedSlackFieldName);
+        LoggerSObjectMetadata.FieldPath fieldPath = new LoggerSObjectMetadata.FieldPath(sourceSObjectType, cleanedDisplayFieldName);
         if (fieldPath.isValid() == false) {
-          invalidFieldPathStrings.add(cleanedSlackFieldName);
+          invalidFieldPathStrings.add(cleanedDisplayFieldName);
         } else {
-          cleanedSlackFieldNames.add(fieldPath.getFormattedFieldPath());
+          cleanedDisplayFieldNames.add(fieldPath.getFormattedFieldPath());
         }
       }
 
@@ -185,9 +185,9 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
         };
         loggerAlertAction.DisplayFields__c.addError(String.format(errorMessageTemplate, errorMessageTemplateParameters));
       } else {
-        cleanedSlackFieldNames.sort();
-        Set<String> deduplicatedSlackFieldNames = new Set<String>(cleanedSlackFieldNames);
-        loggerAlertAction.DisplayFields__c = String.join(deduplicatedSlackFieldNames, '\n');
+        cleanedDisplayFieldNames.sort();
+        Set<String> deduplicatedDisplayFieldNames = new Set<String>(cleanedDisplayFieldNames);
+        loggerAlertAction.DisplayFields__c = String.join(deduplicatedDisplayFieldNames, '\n');
       }
     }
   }
@@ -229,123 +229,6 @@ public without sharing class LoggerAlertActionHandler extends LoggerSObjectHandl
       when else {
         throw new System.IllegalArgumentException('Unsupported source SObject type: ' + sourceSObjectType);
       }
-    }
-  }
-
-  @SuppressWarnings('PMD.ApexDoc')
-  public class FieldPath {
-    private List<Schema.SObjectField> fieldChain;
-    private Schema.DescribeFieldResult fieldDescribe;
-    private String fieldPathError;
-    private String formattedFieldPath;
-    private String originalFieldPath;
-    private Schema.SObjectType sobjectType;
-
-    public FieldPath(Schema.SObjectType sobjectType, String fieldPath) {
-      this.sobjectType = sobjectType;
-      this.originalFieldPath = fieldPath;
-
-      try {
-        // this.fieldChain = this.getFieldChain(sobjectType, fieldPath);
-        this.setFieldPathDetails(sobjectType, fieldPath);
-        this.fieldDescribe = this.getLastFieldDescribe();
-      } catch (Exception ex) {
-        this.fieldPathError = ex.getMessage();
-      }
-    }
-
-    public Boolean isValid() {
-      return String.isBlank(this.fieldPathError);
-    }
-
-    public String getError() {
-      return this.fieldPathError;
-    }
-
-    public String getFormattedFieldPath() {
-      return this.formattedFieldPath;
-    }
-
-    public Schema.SObjectField getField() {
-      return this.fieldChain[this.fieldChain.size() - 1];
-    }
-
-    public Object getValue(SObject record) {
-      Schema.SObjectType parentSObjectType = this.sobjectType;
-      SObject parentRecord = record;
-
-      for (Schema.SObjectField field : this.fieldChain) {
-        Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-        if (fieldDescribe.getSoapType() != Schema.SoapType.ID) {
-          return parentRecord.get(fieldDescribe.getName());
-        } else {
-          parentSObjectType = fieldDescribe.getReferenceTo().get(0);
-
-          SObject newParentRecord = parentRecord.getSObject(field);
-          if (newParentRecord == null) {
-            return null;
-          } else {
-            parentRecord = newParentRecord;
-          }
-        }
-      }
-
-      return null;
-    }
-
-    private List<Schema.SObjectField> getFieldChain(Schema.SObjectType sobjectType, String fieldPath) {
-      return null;
-    }
-
-    private void setFieldPathDetails(Schema.SObjectType sobjectType, String fieldPath) {
-      Schema.SObjectType currentSObjectType = sobjectType;
-
-      List<Schema.SObjectField> fields = new List<Schema.SObjectField>();
-      List<String> fieldPathPieces = fieldPath.split('\\.');
-      List<String> cleansedFieldPathPieces = new List<String>();
-      Integer lastFieldIndex = fieldPathPieces.size() <= 1 ? 0 : fieldPathPieces.size() - 1;
-
-      for (Integer i = 0; i < fieldPathPieces.size(); i++) {
-        String fieldPathPiece = fieldPathPieces[i];
-        Boolean isRelationshipPiece = true;
-
-        String fieldApiName;
-        if (i == lastFieldIndex) {
-          fieldApiName = fieldPathPiece;
-          isRelationshipPiece = false;
-        } else if (fieldPathPiece.endsWith('__r')) {
-          fieldApiName = fieldPathPiece.replace('__r', '__c');
-        } else {
-          fieldApiName = fieldPathPiece + 'Id';
-        }
-
-        Schema.SObjectField field = currentSObjectType.getDescribe().fields.getMap().get(fieldApiName);
-
-        if (field == null) {
-          throw new System.IllegalArgumentException(
-            'Invalid field path \'' + fieldPath + '\', could not find field ' + fieldApiName + ' on ' + currentSObjectType
-          );
-        }
-
-        String cleansedFieldPathPiece = isRelationshipPiece ? field.getDescribe().getRelationshipName() : field.toString();
-        cleansedFieldPathPieces.add(cleansedFieldPathPiece);
-
-        // TODO add support for polymorphic fields
-        if (i < lastFieldIndex) {
-          currentSObjectType = field.getDescribe().getReferenceTo().get(0);
-        }
-
-        fields.add(field);
-      }
-      this.formattedFieldPath = String.join(cleansedFieldPathPieces, '.');
-
-      // return fields;
-      this.fieldChain = fields;
-    }
-
-    private Schema.DescribeFieldResult getLastFieldDescribe() {
-      Integer lastFieldIndex = this.fieldChain.size() - 1;
-      return this.fieldChain[lastFieldIndex].getDescribe();
     }
   }
 }
