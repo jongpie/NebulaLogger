@@ -1673,7 +1673,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LoggerAlertAction__c.CalloutConnectionType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LoggerAlertAction__c.CalloutNamedCredential__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LoggerAlertAction__c.DisplayFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1704,16 +1714,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LoggerAlertAction__c.SlackChannel__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerAlertAction__c.SlackConnectionType__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>LoggerAlertAction__c.SlackFields__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
