@@ -67,23 +67,6 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.EmailRecipientType__c</fieldItem>
-                <identifier>RecordEmailRecipientType_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Email</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.CalloutNamedCredential__c</fieldItem>
                 <identifier>RecordCalloutNamedCredential_cField</identifier>
                 <visibilityRule>
@@ -118,13 +101,13 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.SlackChannel__c</fieldItem>
-                <identifier>RecordSlackChannel_cField</identifier>
+                <fieldItem>Record.EmailRecipientType__c</fieldItem>
+                <identifier>RecordEmailRecipientType_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.CalloutConnectionType__c}</leftValue>
+                        <leftValue>{!Record.Type__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>OAuth</rightValue>
+                        <rightValue>Email</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -135,13 +118,13 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.DisplayFields__c</fieldItem>
-                <identifier>RecordDisplayFields_cField</identifier>
+                <fieldItem>Record.EmailUserRecipient__c</fieldItem>
+                <identifier>RecordEmailUserRecipient_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
+                        <leftValue>{!Record.EmailRecipientType__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>Slack</rightValue>
+                        <rightValue>User</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -169,13 +152,30 @@
                     <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.EmailUserRecipient__c</fieldItem>
-                <identifier>RecordEmailUserRecipient_cField</identifier>
+                <fieldItem>Record.SlackChannel__c</fieldItem>
+                <identifier>RecordSlackChannel_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.EmailRecipientType__c}</leftValue>
+                        <leftValue>{!Record.CalloutConnectionType__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>User</rightValue>
+                        <rightValue>OAuth</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OutputFields__c</fieldItem>
+                <identifier>RecordOutputFields_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.SourceSObjectType__c}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>LogEntryEvent__e</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
