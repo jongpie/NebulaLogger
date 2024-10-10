@@ -44,16 +44,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-const FIREFOX_SAFARI_STACK_REGEXP = /(^|@)\S+:\d+/;
 const CHROME_IE_STACK_REGEXP = /^\s*at .*(\S+:\d+|\(native\))/m;
 const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/;
 
 class ErrorStackParser {
   parse(error) {
     let stackTraceParticles;
-    if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined') {
-      stackTraceParticles = this.parseOpera(error);
-    } else if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP)) {
+    if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP)) {
       stackTraceParticles = this.parseV8OrIE(error);
     } else if (error.stack) {
       stackTraceParticles = this.parseFFOrSafari(error);
@@ -146,82 +143,6 @@ class ErrorStackParser {
       };
     }, this);
   }
-
-  parseOpera(e) {
-    if (!e.stacktrace || (e.message.indexOf('\n') > -1 && e.message.split('\n').length > e.stacktrace.split('\n').length)) {
-      return this.parseOpera9(e);
-    } else if (!e.stack) {
-      return this.parseOpera10(e);
-    }
-    return this.parseOpera11(e);
-  }
-
-  parseOpera9(e) {
-    const lineRE = /Line (\d+).*script (?:in )?(\S+)/i;
-    const lines = e.message.split('\n');
-    const result = [];
-
-    for (let i = 2, len = lines.length; i < len; i += 2) {
-      const match = lineRE.exec(lines[i]);
-      if (match) {
-        result.push({
-          fileName: match[2],
-          lineNumber: match[1],
-          source: lines[i]
-        });
-      }
-    }
-
-    return result;
-  }
-
-  parseOpera10(e) {
-    const lineRE = /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i;
-    const lines = e.stacktrace.split('\n');
-    const result = [];
-
-    for (let i = 0, len = lines.length; i < len; i += 2) {
-      const match = lineRE.exec(lines[i]);
-      if (match) {
-        result.push({
-          functionName: match[3] || undefined,
-          fileName: match[2],
-          lineNumber: match[1],
-          source: lines[i]
-        });
-      }
-    }
-
-    return result;
-  }
-
-  // Opera 10.65+ Error.stack very similar to FF/Safari
-  parseOpera11(error) {
-    const filtered = error.stack.split('\n').filter(function (line) {
-      return !!line.match(FIREFOX_SAFARI_STACK_REGEXP) && !line.match(/^Error created at/);
-    }, this);
-
-    return filtered.map(function (line) {
-      const tokens = line.split('@');
-      const locationParts = this.extractLocation(tokens.pop());
-      const functionCall = tokens.shift() || '';
-      const functionName = functionCall.replace(/<anonymous function(: (\w+))?>/, '$2').replace(/\([^)]*\)/g, '') || undefined;
-      let argsRaw;
-      if (functionCall.match(/\(([^)]*)\)/)) {
-        argsRaw = functionCall.replace(/^[^(]+\(([^)]*)\)$/, '$1');
-      }
-      const args = argsRaw === undefined || argsRaw === '[arguments not available]' ? undefined : argsRaw.split(',');
-
-      return {
-        functionName: functionName,
-        args: args,
-        fileName: locationParts[0],
-        lineNumber: locationParts[1],
-        columnNumber: locationParts[2],
-        source: line
-      };
-    }, this);
-  }
 }
 /* End of code originally copied from stacktrace.js */
 
@@ -243,11 +164,8 @@ export default class LoggerStackTrace {
         return;
       }
 
-      if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug.js')) {
-        return;
-      }
-
-      if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('aura_proddebug')) {
+      const ignoredAuraFilenamesRegEx = /aura_prod(?:\.js|debug(?:\.js)?)$/;
+      if (!originStackTraceParticle && ignoredAuraFilenamesRegEx.test(currentStackTraceParticle.fileName)) {
         return;
       }
 

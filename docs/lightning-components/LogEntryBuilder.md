@@ -1,89 +1,101 @@
-<a name="LogEntryBuilder"></a>
+## Functions
 
-## LogEntryBuilder
+<dl>
+<dt><a href="#setMessage">setMessage(message)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Sets the log entry event&#39;s message field</p>
+</dd>
+<dt><a href="#setRecordId">setRecordId(recordId)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Sets the log entry event&#39;s record fields</p>
+</dd>
+<dt><a href="#setRecord">setRecord(record)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Sets the log entry event&#39;s record fields</p>
+</dd>
+<dt><a href="#setScenario">setScenario(scenario)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Sets the log entry event&#39;s scenario field</p>
+</dd>
+<dt><a href="#setError">setError(error)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Deprecated - use <code>setExceptionDetails(exception)</code> instead
+             The name of this method is very similar to the logger function logger.error(),
+             resulting in confusion when used together:
+               <code>logger.error(&#39;Unexpected error&#39;).setError(someErrorObject);</code>
+             The new <code>setExceptionDetails(exception)</code> function provides the exact same functionality,
+             but aligns with the Apex builder&#39;s method name, and helps reduce the confusion with <code>logger.error()</code></p>
+</dd>
+<dt><a href="#setExceptionDetails">setExceptionDetails(exception)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Sets the log entry event&#39;s exception fields</p>
+</dd>
+<dt><a href="#setField">setField(fieldToValue)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Sets multiple field values on the builder&#39;s <code>LogEntryEvent__e</code> record</p>
+</dd>
+<dt><a href="#parseStackTrace">parseStackTrace(originStackTraceError)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Parses the provided error&#39;s stack trace and sets the log entry&#39;s origin &amp; stack trace fields</p>
+</dd>
+<dt><a href="#addTag">addTag(tag)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Appends the tag to the existing list of tags</p>
+</dd>
+<dt><a href="#addTags">addTags(tags)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Appends the tag to the existing list of tags</p>
+</dd>
+<dt><a href="#getComponentLogEntry">getComponentLogEntry()</a> <code>ComponentLogEntry</code></dt>
+<dd><p>Returns the object used to save log entry data</p>
+</dd>
+</dl>
 
-**Kind**: global class
+<a name="setMessage"></a>
 
-- [LogEntryBuilder](#LogEntryBuilder)
-  - [new LogEntryBuilder(loggingLevel)](#new_LogEntryBuilder_new)
-  - [.setMessage(message)](#LogEntryBuilder+setMessage) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.setScenario(scenario)](#LogEntryBuilder+setScenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.setExceptionDetails(exception)](#LogEntryBuilder+setExceptionDetails) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.setField(fieldToValue)](#LogEntryBuilder+setField) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.parseStackTrace(originStackTraceError)](#LogEntryBuilder+parseStackTrace) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-  - [.getComponentLogEntry()](#LogEntryBuilder+getComponentLogEntry) <code>ComponentLogEntry</code>
-
-<a name="new_LogEntryBuilder_new"></a>
-
-### new LogEntryBuilder(loggingLevel)
-
-Constructor used to generate each JavaScript-based log entry event
-This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
-
-| Param        | Type                | Description                                                                     |
-| ------------ | ------------------- | ------------------------------------------------------------------------------- |
-| loggingLevel | <code>String</code> | The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e` |
-
-<a name="LogEntryBuilder+setMessage"></a>
-
-### logEntryBuilder.setMessage(message) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## setMessage(message) <code>LogEntryBuilder</code>
 
 Sets the log entry event's message field
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
 | ------- | ------------------- | -------------------------------------------------- |
 | message | <code>String</code> | The string to use to set the entry's message field |
 
-<a name="LogEntryBuilder+setRecordId"></a>
+<a name="setRecordId"></a>
 
-### logEntryBuilder.setRecordId(recordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## setRecordId(recordId) <code>LogEntryBuilder</code>
 
 Sets the log entry event's record fields
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param    | Type                | Description                                       |
 | -------- | ------------------- | ------------------------------------------------- |
 | recordId | <code>String</code> | The ID of the SObject record related to the entry |
 
-<a name="LogEntryBuilder+setRecord"></a>
+<a name="setRecord"></a>
 
-### logEntryBuilder.setRecord(record) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## setRecord(record) <code>LogEntryBuilder</code>
 
 Sets the log entry event's record fields
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param  | Type                | Description                                                                                           |
 | ------ | ------------------- | ----------------------------------------------------------------------------------------------------- |
 | record | <code>Object</code> | The `SObject` record related to the entry. The JSON of the record is automatically added to the entry |
 
-<a name="LogEntryBuilder+setScenario"></a>
+<a name="setScenario"></a>
 
-### logEntryBuilder.setScenario(scenario) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## setScenario(scenario) <code>LogEntryBuilder</code>
 
 Sets the log entry event's scenario field
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param    | Type                | Description                                         |
 | -------- | ------------------- | --------------------------------------------------- |
 | scenario | <code>String</code> | The string to use to set the entry's scenario field |
 
-<a name="LogEntryBuilder+setError"></a>
+<a name="setError"></a>
 
-### logEntryBuilder.setError(error) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## setError(error) <code>LogEntryBuilder</code>
 
 Deprecated - use `setExceptionDetails(exception)` instead
 The name of this method is very similar to the logger function logger.error(),
@@ -92,83 +104,83 @@ resulting in confusion when used together:
 The new `setExceptionDetails(exception)` function provides the exact same functionality,
 but aligns with the Apex builder's method name, and helps reduce the confusion with `logger.error()`
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param | Type               | Description                                                                      |
 | ----- | ------------------ | -------------------------------------------------------------------------------- |
 | error | <code>Error</code> | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
 
-<a name="LogEntryBuilder+setExceptionDetails"></a>
+<a name="setExceptionDetails"></a>
 
-### logEntryBuilder.setExceptionDetails(exception) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## setExceptionDetails(exception) <code>LogEntryBuilder</code>
 
 Sets the log entry event's exception fields
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param     | Type               | Description                                                                      |
 | --------- | ------------------ | -------------------------------------------------------------------------------- |
 | exception | <code>Error</code> | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
 
-<a name="LogEntryBuilder+setField"></a>
+<a name="setField"></a>
 
-### logEntryBuilder.setField(fieldToValue) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## setField(fieldToValue) <code>LogEntryBuilder</code>
 
 Sets multiple field values on the builder's `LogEntryEvent__e` record
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param        | Type                | Description                                                                                                                                                               |
 | ------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | fieldToValue | <code>Object</code> | An object containing the custom field name as a key, with the corresponding value to store. Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}` |
 
-<a name="LogEntryBuilder+parseStackTrace"></a>
+<a name="parseStackTrace"></a>
 
-### logEntryBuilder.parseStackTrace(originStackTraceError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## parseStackTrace(originStackTraceError) <code>LogEntryBuilder</code>
 
 Parses the provided error's stack trace and sets the log entry's origin & stack trace fields
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param                 | Type               | Description                                                             |
 | --------------------- | ------------------ | ----------------------------------------------------------------------- |
 | originStackTraceError | <code>Error</code> | The instance of a JavaScript `Error` object with a stack trace to parse |
 
-<a name="LogEntryBuilder+addTag"></a>
+<a name="addTag"></a>
 
-### logEntryBuilder.addTag(tag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## addTag(tag) <code>LogEntryBuilder</code>
 
 Appends the tag to the existing list of tags
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param | Type                | Description                                          |
 | ----- | ------------------- | ---------------------------------------------------- |
 | tag   | <code>String</code> | The string to add as a tag for the current log entry |
 
-<a name="LogEntryBuilder+addTags"></a>
+<a name="addTags"></a>
 
-### logEntryBuilder.addTags(tags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+## addTags(tags) <code>LogEntryBuilder</code>
 
 Appends the tag to the existing list of tags
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
-**Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param | Type                              | Description                                              |
 | ----- | --------------------------------- | -------------------------------------------------------- |
 | tags  | <code>Array.&lt;String&gt;</code> | The list of strings to add as tags for the current entry |
 
-<a name="LogEntryBuilder+getComponentLogEntry"></a>
+<a name="getComponentLogEntry"></a>
 
-### logEntryBuilder.getComponentLogEntry() <code>ComponentLogEntry</code>
+## getComponentLogEntry() <code>ComponentLogEntry</code>
 
 Returns the object used to save log entry data
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Kind**: global function  
 **Returns**: <code>ComponentLogEntry</code> - An instance of `ComponentLogEntry` that matches the Apex class `ComponentLogger.ComponentLogEntry`

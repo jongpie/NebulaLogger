@@ -1,21 +1,3 @@
-## Constants
-
-<dl>
-<dt><a href="#createLogger">createLogger</a> <code>Promise.&lt;LoggerService&gt;</code></dt>
-<dd><p>Deprecated - use <code>getLogger()</code> instead
-             Async function that returns a fully-loaded logger service.
-             Requires some code to be executed async, so the service is not immediately available.
-             Example: <code>const logger = await createLogger();</code></p>
-</dd>
-<dt><a href="#getLogger">getLogger</a> <code>LoggerService</code></dt>
-<dd><p>Recommended approach
-             Synchronous function that returns a ready-to-use logger service.
-             Internally, some code is still executed async, but the service can immediately
-             be used, without awaiting a Promise
-             Example: <code>const logger = getLogger();</code></p>
-</dd>
-</dl>
-
 ## Functions
 
 <dl>
@@ -61,31 +43,21 @@
 <dd><p>Saves any entries in Logger&#39;s buffer, using the specified save method for only this call
              All subsequent calls to saveLog() will use the transaction save method</p>
 </dd>
+<dt><a href="#createLogger">createLogger()</a> <code>Promise.&lt;LoggerService&gt;</code></dt>
+<dd><p>Deprecated - use <code>getLogger()</code> instead
+             Async function that returns a fully-loaded logger service.
+             Requires some code to be executed async, so the service is not immediately available.
+             Example: <code>const logger = await createLogger();</code></p>
+</dd>
+<dt><a href="#getLogger">getLogger()</a> <code>LoggerService</code></dt>
+<dd><p>Recommended approach
+             Synchronous function that returns a ready-to-use logger service.
+             Internally, some code is still executed async, but the service can immediately
+             be used, without awaiting a Promise
+             Example: <code>const logger = getLogger();</code></p>
+</dd>
 </dl>
 
-<a name="createLogger"></a>
-
-## createLogger <code>Promise.&lt;LoggerService&gt;</code>
-
-Deprecated - use `getLogger()` instead
-Async function that returns a fully-loaded logger service.
-Requires some code to be executed async, so the service is not immediately available.
-Example: `const logger = await createLogger();`
-
-**Kind**: global constant  
-**Returns**: <code>Promise.&lt;LoggerService&gt;</code> - A Promise that resolves an instance of `LoggerService`  
-<a name="getLogger"></a>
-
-## getLogger <code>LoggerService</code>
-
-Recommended approach
-Synchronous function that returns a ready-to-use logger service.
-Internally, some code is still executed async, but the service can immediately
-be used, without awaiting a Promise
-Example: `const logger = getLogger();`
-
-**Kind**: global constant  
-**Returns**: <code>LoggerService</code> - An instance of `LoggerService`  
 <a name="getUserSettings"></a>
 
 ## getUserSettings() <code>ComponentLogger.ComponentLoggerSettings</code>
@@ -240,3 +212,27 @@ All subsequent calls to saveLog() will use the transaction save method
 | Param      | Type                | Description                                                              |
 | ---------- | ------------------- | ------------------------------------------------------------------------ |
 | saveMethod | <code>String</code> | The enum value of Logger.SaveMethod to use for this specific save action |
+
+<a name="createLogger"></a>
+
+## createLogger() <code>Promise.&lt;LoggerService&gt;</code>
+
+Deprecated - use `getLogger()` instead
+Async function that returns a fully-loaded logger service.
+Requires some code to be executed async, so the service is not immediately available.
+Example: `const logger = await createLogger();`
+
+**Kind**: global function  
+**Returns**: <code>Promise.&lt;LoggerService&gt;</code> - A Promise that resolves an instance of `LoggerService`  
+<a name="getLogger"></a>
+
+## getLogger() <code>LoggerService</code>
+
+Recommended approach
+Synchronous function that returns a ready-to-use logger service.
+Internally, some code is still executed async, but the service can immediately
+be used, without awaiting a Promise
+Example: `const logger = getLogger();`
+
+**Kind**: global function  
+**Returns**: <code>LoggerService</code> - An instance of `LoggerService`

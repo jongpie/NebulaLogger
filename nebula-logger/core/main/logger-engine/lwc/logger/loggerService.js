@@ -202,27 +202,9 @@ export default class LoggerService {
 
   /* eslint-disable no-console */
   _logToConsole(loggingLevel, message, componentLogEntry) {
-    let consoleLoggingFunction;
-    switch (loggingLevel) {
-      case 'ERROR':
-        consoleLoggingFunction = console.error;
-        break;
-      case 'WARN':
-        consoleLoggingFunction = console.warn;
-        break;
-      case 'INFO':
-        consoleLoggingFunction = console.info;
-        break;
-      default:
-        consoleLoggingFunction = console.debug;
-        break;
-    }
-
+    const consoleLoggingFunction = console[loggingLevel.toLowerCase()] ?? console.debug;
     const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[loggingLevel];
     const qualifiedMessage = `${loggingLevelEmoji} ${loggingLevel}: ${message}`;
-    // Some JS stack traces are huuuuge, so don't print it in the browser console.
-    // The stack trace will still be saved on the backend.
-    // '\n' + JSON.stringify(this.#componentLogEntry, replacer, 2)
     const formattedComponentLogEntryString = !componentLogEntry
       ? ''
       : '\n' +
