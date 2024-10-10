@@ -197,6 +197,7 @@
     "Nebula Logger - Core@4.14.10-new-callablelogger-apex-class": "04t5Y0000015oTdQAI",
     "Nebula Logger - Core@4.14.11-updated-behavior-of-logger.setasynccontext()": "04t5Y0000015oUgQAI",
     "Nebula Logger - Core@4.14.12-replaced-httprequestendpoint__c-with-httprequestendpointaddress__c": "04t5Y0000015oV0QAI",
+    "Nebula Logger - Core@4.14.13-new-getlogger()-js-function": "04t5Y0000015oW3QAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
