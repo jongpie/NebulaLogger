@@ -60,6 +60,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
       this.upsertLogEntries();
       this.appendRuleBasedTags();
       this.upsertLogEntryTags();
+
+      LoggerAlertService.getInstance().process(this.logEntryEvents);
     }
   }
 

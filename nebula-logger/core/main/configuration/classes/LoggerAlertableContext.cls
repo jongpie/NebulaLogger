@@ -5,14 +5,14 @@
 
 /**
  * @group Configuration
- * @description Class used by the logging system for notification contextual details
- * @see LoggerNotifier
+ * @description Class used by the logging system for alert contextual details
+ * @see LoggerAlertService
  * @see LoggerPlugin
  */
 @SuppressWarnings('PMD.ApexDoc')
-public without sharing class LoggerNotifiableContext {
+public without sharing class LoggerAlertableContext {
   public List<SObject> loggingRecords;
-  public LoggerAlert__c notificationRule;
+  public LoggerAlert__c alert;
   public transient Schema.SObjectType sobjectType;
   public String sobjectTypeName;
 
@@ -20,9 +20,9 @@ public without sharing class LoggerNotifiableContext {
    * @description Constructor used to set the details of the SObject Type & records for a notification
    * @param  loggingRecords      The `List<SObject>` of records that triggered the notification
    */
-  public LoggerNotifiableContext(LoggerAlert__c notificationRule, List<SObject> loggingRecords) {
+  public LoggerAlertableContext(LoggerAlert__c alert, List<SObject> loggingRecords) {
+    this.alert = alert;
     this.loggingRecords = loggingRecords;
-    this.notificationRule = notificationRule;
     this.sobjectType = loggingRecords.getSObjectType();
 
     this.sobjectTypeName = this.sobjectType?.toString();

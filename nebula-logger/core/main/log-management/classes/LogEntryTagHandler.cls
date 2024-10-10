@@ -43,6 +43,12 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
     this.setUniqueIdField();
   }
 
+  protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
+    this.logEntryTags = (List<LogEntryTag__c>) triggerNewMap.values();
+
+    LoggerAlertService.getInstance().process(this.logEntryTags);
+  }
+
   private void setUniqueIdField() {
     for (LogEntryTag__c logEntryTag : this.logEntryTags) {
       logEntryTag.UniqueId__c = generateUniqueId(logEntryTag);
