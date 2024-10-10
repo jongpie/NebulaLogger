@@ -64,6 +64,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     this.updateUnlinkedChildLogs();
     this.shareLogsWithLoggingUsers();
+
+    LoggerAlertService.getInstance().process(this.logs);
   }
 
   private void setClosedStatusFields() {
