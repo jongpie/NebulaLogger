@@ -12,8 +12,16 @@ public without sharing class LoggerPlugin {
   private static final Map<String, LoggerPlugin__mdt> DEVELOPER_NAME_TO_RECORD = loadEnabledRecords();
 
   // TODO before making plugins global/available in the managed package,
-  // consider replacing LoggerBatchableContext, LoggerNotifiableContext, and LoggerTriggerableContext
+  // consider replacing LoggerBatchableContext, LoggerAlertableContext, and LoggerTriggerableContext
   // with new inner classes in a new LoggerContext parent class (e.g., LoggerContext.Triggerable or LoggerContext.TriggerableContext?)
+
+  /**
+   * @description Interface used to create plugins that can be used within Nebula Logger's alert system `LoggerAlertService`
+   */
+  @SuppressWarnings('PMD.ApexDoc')
+  public interface Alertable {
+    void dispatch(LoggerPlugin__mdt configuration, LoggerAlertableContext input);
+  }
 
   /**
    * @description Interface used to create plugins that can be used within Nebula Logger's batch job `LogBatchPurger`
@@ -23,14 +31,6 @@ public without sharing class LoggerPlugin {
     void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input);
     void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scopeRecords);
     void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input);
-  }
-
-  /**
-   * @description Interface used to create plugins that can be used within Nebula Logger's notification system `LoggerNotifier`
-   */
-  @SuppressWarnings('PMD.ApexDoc')
-  public interface Notifiable {
-    void sendNotification(LoggerPlugin__mdt configuration, LoggerNotifiableContext input);
   }
 
   public interface OpenTelemetrySendable {
