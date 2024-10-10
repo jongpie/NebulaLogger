@@ -36,6 +36,9 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
       when 'LogEntryEvent__e' {
         return LogEntryEvent__e.SObjectType;
       }
+      when 'Log__c' {
+        return Log__c.SObjectType;
+      }
       when 'LogEntry__c' {
         return LogEntry__c.SObjectType;
       }

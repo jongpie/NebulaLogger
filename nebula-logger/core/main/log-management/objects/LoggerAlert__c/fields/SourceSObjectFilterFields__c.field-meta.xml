@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <inlineHelpText>By default, parent fields aren&apos;t available in formula filters. If any parent fields are used in your filter formula, specify them here to ensure that the filter works correctly.</inlineHelpText>
-    <label>Source SObject Filter Fields</label>
+    <label>Source SObject Filter Parent Fields</label>
     <length>2000</length>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>false</trackHistory>
