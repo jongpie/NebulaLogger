@@ -1,10 +1,3 @@
-## Constants
-
-<dl>
-<dt><a href="#createLogger">createLogger</a> <code>Promise.&lt;LoggerService&gt;</code></dt>
-<dd></dd>
-</dl>
-
 ## Functions
 
 <dl>
@@ -14,6 +7,10 @@
 <dt><a href="#setScenario">setScenario(scenario)</a></dt>
 <dd><p>Sets the scenario name for the current transaction - this is stored in <code>LogEntryEvent__e.Scenario__c</code>
              and <code>Log__c.Scenario__c</code>, and can be used to filter &amp; group logs</p>
+</dd>
+<dt><a href="#exception">exception(message, exception)</a> <code>LogEntryBuilder</code></dt>
+<dd><p>Creates a new log entry with logging level == <code>LoggingLevel.ERROR</code>,
+             automatically saves the log, and then throws the provided exception</p>
 </dd>
 <dt><a href="#error">error(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.ERROR</code></p>
@@ -46,14 +43,21 @@
 <dd><p>Saves any entries in Logger&#39;s buffer, using the specified save method for only this call
              All subsequent calls to saveLog() will use the transaction save method</p>
 </dd>
+<dt><a href="#createLogger">createLogger()</a> <code>Promise.&lt;LoggerService&gt;</code></dt>
+<dd><p>Deprecated - use <code>getLogger()</code> instead
+             Async function that returns a fully-loaded logger service.
+             Requires some code to be executed async, so the service is not immediately available.
+             Example: <code>const logger = await createLogger();</code></p>
+</dd>
+<dt><a href="#getLogger">getLogger()</a> <code>LoggerService</code></dt>
+<dd><p>Recommended approach
+             Synchronous function that returns a ready-to-use logger service.
+             Internally, some code is still executed async, but the service can immediately
+             be used, without awaiting a Promise
+             Example: <code>const logger = getLogger();</code></p>
+</dd>
 </dl>
 
-<a name="createLogger"></a>
-
-## createLogger <code>Promise.&lt;LoggerService&gt;</code>
-
-**Kind**: global constant  
-**Returns**: <code>Promise.&lt;LoggerService&gt;</code> - a LoggerService instance  
 <a name="getUserSettings"></a>
 
 ## getUserSettings() <code>ComponentLogger.ComponentLoggerSettings</code>
@@ -74,6 +78,21 @@ and `Log__c.Scenario__c`, and can be used to filter & group logs
 | Param    | Type                | Description                                            |
 | -------- | ------------------- | ------------------------------------------------------ |
 | scenario | <code>String</code> | The name to use for the current transaction's scenario |
+
+<a name="exception"></a>
+
+## exception(message, exception) <code>LogEntryBuilder</code>
+
+Creates a new log entry with logging level == `LoggingLevel.ERROR`,
+automatically saves the log, and then throws the provided exception
+
+**Kind**: global function  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param     | Type                | Description                                                                      |
+| --------- | ------------------- | -------------------------------------------------------------------------------- |
+| message   | <code>String</code> | The string to use to set the entry's message field                               |
+| exception | <code>Error</code>  | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
 
 <a name="error"></a>
 
@@ -193,3 +212,27 @@ All subsequent calls to saveLog() will use the transaction save method
 | Param      | Type                | Description                                                              |
 | ---------- | ------------------- | ------------------------------------------------------------------------ |
 | saveMethod | <code>String</code> | The enum value of Logger.SaveMethod to use for this specific save action |
+
+<a name="createLogger"></a>
+
+## createLogger() <code>Promise.&lt;LoggerService&gt;</code>
+
+Deprecated - use `getLogger()` instead
+Async function that returns a fully-loaded logger service.
+Requires some code to be executed async, so the service is not immediately available.
+Example: `const logger = await createLogger();`
+
+**Kind**: global function  
+**Returns**: <code>Promise.&lt;LoggerService&gt;</code> - A Promise that resolves an instance of `LoggerService`  
+<a name="getLogger"></a>
+
+## getLogger() <code>LoggerService</code>
+
+Recommended approach
+Synchronous function that returns a ready-to-use logger service.
+Internally, some code is still executed async, but the service can immediately
+be used, without awaiting a Promise
+Example: `const logger = getLogger();`
+
+**Kind**: global function  
+**Returns**: <code>LoggerService</code> - An instance of `LoggerService`

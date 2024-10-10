@@ -20,7 +20,15 @@
               "components": [
                 {
                   "componentAttributes": {},
-                  "componentName": "c:loggerLWCImportDemo",
+                  "componentName": "c:loggerLWCGetLoggerImportDemo",
+                  "id": "534c7039-bb9e-49b9-a00a-92fdb1665bad",
+                  "renderPriority": "NEUTRAL",
+                  "renditionMap": {},
+                  "type": "component"
+                },
+                {
+                  "componentAttributes": {},
+                  "componentName": "c:loggerLWCCreateLoggerImportDemo",
                   "id": "eb678e7a-f879-4166-9d05-c3287a523795",
                   "renderPriority": "NEUTRAL",
                   "renditionMap": {},

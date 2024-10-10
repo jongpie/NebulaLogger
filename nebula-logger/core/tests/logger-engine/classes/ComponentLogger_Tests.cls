@@ -495,7 +495,7 @@ private class ComponentLogger_Tests {
       ProfileId = System.UserInfo.getProfileId()
     );
     ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-    componentLogEntry.browser = new ComponentLogger.ComponentBrowser();
+    componentLogEntry.browser = new ComponentLogger.ComponentBrowserContext();
     componentLogEntry.browser.address = 'https://flow-ruby-5228.scratch.lightning.force.com/lightning/n/Logger_lwc_demo?c__asdfsdf=asdf';
     componentLogEntry.browser.formFactor = 'Large';
     componentLogEntry.browser.language = 'en-US';

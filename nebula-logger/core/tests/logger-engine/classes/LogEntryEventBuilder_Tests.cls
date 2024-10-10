@@ -301,7 +301,6 @@ private class LogEntryEventBuilder_Tests {
 
     System.Assert.areEqual(0, mockSelector.getCachedUserQueryCount());
     System.Assert.isNull(logEntryEvent.LoggedByFederationIdentifier__c);
-    System.Assert.isNull(logEntryEvent.LoggedByUsername__c);
     System.Assert.isNull(logEntryEvent.ProfileName__c);
     System.Assert.isNull(logEntryEvent.UserLicenseDefinitionKey__c);
     System.Assert.isNull(logEntryEvent.UserLicenseId__c);
@@ -324,7 +323,6 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areNotEqual(0, mockSelector.getCachedUserQueryCount());
     Schema.User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
     System.Assert.areEqual(cachedUser.FederationIdentifier, logEntryEvent.LoggedByFederationIdentifier__c);
-    System.Assert.areEqual(cachedUser.Username, logEntryEvent.LoggedByUsername__c);
     System.Assert.areEqual(cachedUser.Profile.Name, logEntryEvent.ProfileName__c);
     System.Assert.areEqual(cachedUser.Profile.UserLicense.LicenseDefinitionKey, logEntryEvent.UserLicenseDefinitionKey__c);
     System.Assert.areEqual(cachedUser.Profile.UserLicenseId, logEntryEvent.UserLicenseId__c);
@@ -1799,7 +1797,6 @@ private class LogEntryEventBuilder_Tests {
     MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
     LoggerEngineDataSelector.setMock(mockSelector);
     Schema.User mockUser = LoggerMockDataCreator.createUser();
-    mockUser.Id = System.UserInfo.getUserId();
     mockSelector.setCachedUser(mockUser);
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
@@ -1811,14 +1808,23 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(organization.Name, builder.getLogEntryEvent().OrganizationName__c);
     System.Assert.areEqual(organization.NamespacePrefix, builder.getLogEntryEvent().OrganizationNamespacePrefix__c);
     System.Assert.areEqual(organization.OrganizationType, builder.getLogEntryEvent().OrganizationType__c);
-    // Verify user fields
+    // Verify user fields set from System.UserInfo
+    System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
+    System.Assert.areEqual(System.UserInfo.getLocale(), builder.getLogEntryEvent().Locale__c);
+    System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
+    System.Assert.areEqual(System.UserInfo.getUsername(), builder.getLogEntryEvent().LoggedByUsername__c);
+    System.Assert.areEqual(System.UserInfo.getProfileId(), builder.getLogEntryEvent().ProfileId__c);
+    System.Assert.areEqual(System.UserInfo.getUiThemeDisplayed(), builder.getLogEntryEvent().ThemeDisplayed__c);
+    System.Assert.areEqual(System.UserInfo.getTimeZone().getId(), builder.getLogEntryEvent().TimeZoneId__c);
+    System.Assert.areEqual(System.UserInfo.getTimeZone().getDisplayName(), builder.getLogEntryEvent().TimeZoneName__c);
+    System.Assert.areEqual(System.UserInfo.getUserRoleId(), builder.getLogEntryEvent().UserRoleId__c);
+    System.Assert.areEqual(System.UserInfo.getUserType(), builder.getLogEntryEvent().UserType__c);
+    // Verify user fields set from queried User
     System.Assert.areEqual(mockUser.FederationIdentifier, builder.getLogEntryEvent().LoggedByFederationIdentifier__c);
-    System.Assert.areEqual(mockUser.Id, builder.getLogEntryEvent().LoggedById__c);
     System.Assert.areEqual(mockUser.Profile.Name, builder.getLogEntryEvent().ProfileName__c);
     System.Assert.areEqual(mockUser.Profile.UserLicense.LicenseDefinitionKey, builder.getLogEntryEvent().UserLicenseDefinitionKey__c);
     System.Assert.areEqual(mockUser.Profile.UserLicense.Name, builder.getLogEntryEvent().UserLicenseName__c);
     System.Assert.areEqual(mockUser.Profile.UserLicenseId, builder.getLogEntryEvent().UserLicenseId__c);
-    System.Assert.areEqual(mockUser.Username, builder.getLogEntryEvent().LoggedByUsername__c);
     System.Assert.areEqual(mockUser.UserRole?.Name, builder.getLogEntryEvent().UserRoleName__c);
   }
 

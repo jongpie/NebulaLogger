@@ -307,7 +307,7 @@ public inherited sharing class ComponentLogger {
      * @description Context about the user's browser, automatically captured by Nebula Logger
      */
     @AuraEnabled
-    public ComponentBrowser browser { get; set; }
+    public ComponentBrowserContext browser { get; set; }
 
     /**
      * @description (Optional) A JavaScript Error to log
@@ -379,7 +379,7 @@ public inherited sharing class ComponentLogger {
   /**
    * @description A DTO object used to log details about the user's browser
    */
-  public class ComponentBrowser {
+  public class ComponentBrowserContext {
     /**
      * @description The URL displayed in the user's browser
      */

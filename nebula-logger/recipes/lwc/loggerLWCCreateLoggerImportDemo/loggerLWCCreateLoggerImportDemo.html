@@ -6,10 +6,11 @@
 -->
 
 <template>
-  <lightning-card title="Nebula Logger for Lightning Web Components - New Approach" icon-name="custom:custom19">
+  <lightning-card title="Nebula Logger for Lightning Web Components - Deprecated createLogger() Approach" icon-name="custom:custom19">
     <div class="slds-var-m-around_medium">
-      ✅ This component demonstrates how to use Nebula Logger by using &nbsp;<code>import { createLogger } from 'c/logger';</code> in your component's
-      JavaScript file. This approach was introduced in Nebula Logger v4.10.2, and is now the recommended approach.
+      ⚠ This component demonstrates how to use Nebula Logger by using &nbsp;<code>import &#123; createLogger &#125; from 'c/logger';</code> in your component's
+      JavaScript file. This approach was introduced in Nebula Logger v4.10.2 and is still supported, but is considered deprecate as of v4.14.13. The new
+      recommended approach is to instead use &nbsp;<code>import &#123; getLogger &#125; from 'c/logger';</code>
     </div>
     <div>
       <lightning-button label="Re-render LWC" onclick={handleRerenderButton}></lightning-button>

@@ -24,7 +24,8 @@
     <tabs>standard-home</tabs>
     <tabs>standard-Account</tabs>
     <tabs>Logger_App_Page_Demo</tabs>
-    <tabs>Logger_LWC_Import_Demo</tabs>
+    <tabs>Logger_LWC_Get_Logger_Import_Demo</tabs>
+    <tabs>Logger_LWC_Create_Logger_Import_Demo</tabs>
     <tabs>Logger_LWC_Embed_Demo</tabs>
     <tabs>Logger_Aura_Embed_Demo</tabs>
     <tabs>Log__c</tabs>

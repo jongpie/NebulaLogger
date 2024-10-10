@@ -32,15 +32,41 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
-            <name>loggerLWCImportDemoHeader</name>
-            <fieldText>loggerLWCImportDemo</fieldText>
+            <name>loggerLWCGetLoggerImportDemoHeader</name>
+            <fieldText>loggerLWCGetLoggerImportDemo</fieldText>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>loggerLWCImportDemoHeader_Column1</name>
+                <name>loggerLWCGetLoggerImportDemoHeader_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>loggerLWCImportDemo</name>
-                    <extensionName>c:loggerLWCImportDemo</extensionName>
+                    <name>loggerLWCGetLoggerImportDemo</name>
+                    <extensionName>c:loggerLWCGetLoggerImportDemo</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>loggerLWCCreateLoggerImportDemoHeader</name>
+            <fieldText>loggerLWCCreateLoggerImportDemo</fieldText>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>loggerLWCCreateLoggerImportDemoHeader_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>loggerLWCCreateLoggerImportDemo</name>
+                    <extensionName>c:loggerLWCCreateLoggerImportDemo</extensionName>
                     <fieldType>ComponentInstance</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>

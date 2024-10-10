@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Logger: LWC Import Demo</label>
-    <lwcComponent>loggerLWCImportDemo</lwcComponent>
+    <label>Logger: Deprecated createLogger() Demo</label>
+    <lwcComponent>loggerLWCCreateLoggerImportDemo</lwcComponent>
     <motif>Custom21: Computer</motif>
 </CustomTab>

@@ -996,7 +996,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     logEntryEvent.LoggedByFederationIdentifier__c = CACHED_USER.FederationIdentifier;
-    logEntryEvent.LoggedByUsername__c = CACHED_USER.Username;
     logEntryEvent.ProfileName__c = CACHED_USER.Profile.Name;
     logEntryEvent.UserLicenseDefinitionKey__c = CACHED_USER.Profile.UserLicense.LicenseDefinitionKey;
     logEntryEvent.UserLicenseId__c = CACHED_USER.Profile.UserLicenseId;
@@ -1007,6 +1006,7 @@ global with sharing class LogEntryEventBuilder {
   private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
     templateLogEntryEvent.Locale__c = System.UserInfo.getLocale();
     templateLogEntryEvent.LoggedById__c = System.UserInfo.getUserId();
+    templateLogEntryEvent.LoggedByUsername__c = System.UserInfo.getUsername();
     templateLogEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
     templateLogEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
     templateLogEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();

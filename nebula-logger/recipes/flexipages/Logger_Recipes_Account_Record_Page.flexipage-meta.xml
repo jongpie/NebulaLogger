@@ -7,7 +7,10 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
-                            <value>Account.loggerLWCImportDemo</value>
+                            <value>Account.loggerLWCGetLoggerImportDemo</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Account.loggerLWCCreateLoggerImportDemo</value>
                         </valueListItems>
                         <valueListItems>
                             <value>Account.loggerLWCEmbedDemo</value>
@@ -72,8 +75,14 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>loggerLWCImportDemo</componentName>
-                <identifier>c_loggerLWCImportDemo</identifier>
+                <componentName>loggerLWCGetLoggerImportDemo</componentName>
+                <identifier>c_loggerLWCGetLoggerImportDemo</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>loggerLWCCreateLoggerImportDemo</componentName>
+                <identifier>c_loggerLWCCreateLoggerImportDemo</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
