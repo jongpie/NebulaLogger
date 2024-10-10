@@ -45,6 +45,12 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     this.setCheckboxFields();
   }
 
+  protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
+    this.logEntries = (List<LogEntry__c>) triggerNewMap.values();
+
+    LoggerAlertService.getInstance().process(this.logEntries);
+  }
+
   private void setApexClassFields() {
     String apexClassSObjectTypeName = Schema.ApexClass.SObjectType.toString();
     Set<String> apexClassNames = new Set<String>();
