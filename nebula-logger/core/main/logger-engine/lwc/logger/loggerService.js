@@ -192,6 +192,17 @@ export default class LoggerService {
     newDiv.innerHTML = `
       <h1>Nebula Logger <code>console</code> override enabled!🥳</h1>
       <p>Run <code>console.saveLog()</code> to save any pending log entries</p>
+      <div>
+        <button class="slds-button" onclick="console.saveLog()">save log?</button>
+        <lightning-button
+          variant="brand"
+          label="Start"
+          title="Begins the task"
+          onclick="console.saveLog()"
+        >
+        hi??
+        </lightning-button>
+      </div>
     `;
 
     // Add styles to make the div appear in the bottom-right corner
