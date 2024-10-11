@@ -9,7 +9,6 @@ import LogEntryEventBuilder from './logEntryBuilder';
 import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
-import Logger from './logger';
 
 const CURRENT_VERSION_NUMBER = 'v4.14.13';
 
@@ -57,7 +56,7 @@ export class BrowserContext {
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 export default class LoggerService {
   static hasInitialized = false;
-  static windowOverrideLogger;
+  static instance;
 
   #componentLogEntries = [];
   #settings;
@@ -187,6 +186,31 @@ export default class LoggerService {
     console.saveLog = () => {
       this.saveLog();
     };
+
+    const newDiv = document.createElement('div');
+    // newDiv.innerHTML = 'hi';
+    newDiv.innerHTML = `
+      <h1>Nebula Logger <code>console</code> override enabled!🥳</h1>
+      <p>Run <code>console.saveLog()</code> to save any pending log entries</p>
+    `;
+
+    // Add styles to make the div appear in the bottom-right corner
+    Object.assign(newDiv.style, {
+      position: 'fixed',
+      bottom: '10px',
+      right: '10px',
+      minWidth: '150px',
+      minHeight: '100px',
+      backgroundColor: '#ffcc00', // Bright yellow background color
+      color: '#000', // Black text color
+      padding: '10px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Add a slight shadow
+      borderRadius: '8px', // Rounded corners
+      zIndex: '1000' // Ensure it's on top of other content
+    });
+
+    // Append the new div to the body
+    document.body.appendChild(newDiv);
   }
 
   async _loadSettingsFromServer() {
@@ -267,10 +291,10 @@ export default class LoggerService {
 }
 
 export function getLoggerService() {
-  if (!LoggerService.windowOverrideLogger) {
+  if (!LoggerService.instance) {
     console.info('Eeeeeeks 👀👀👀👀👀');
-    LoggerService.windowOverrideLogger = new LoggerService();
-    LoggerService.windowOverrideLogger._overrideStandardConsole();
+    LoggerService.instance = new LoggerService();
+    LoggerService.instance._overrideStandardConsole();
     console.info('Eeeeeeks 🥳😎👈👈🔥👋😁');
   }
   return new LoggerService();
