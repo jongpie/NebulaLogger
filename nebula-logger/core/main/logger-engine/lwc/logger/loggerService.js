@@ -197,8 +197,8 @@ export default class LoggerService {
     // Add styles to make the div appear in the bottom-right corner
     Object.assign(newDiv.style, {
       position: 'fixed',
-      bottom: '10px',
-      right: '10px',
+      bottom: '60px',
+      right: '20px',
       minWidth: '150px',
       minHeight: '100px',
       backgroundColor: '#ffcc00', // Bright yellow background color
