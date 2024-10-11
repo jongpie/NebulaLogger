@@ -2,4 +2,5 @@
 .husky/
 .sfdx/
 .vscode/
+temp/
 test-coverage/

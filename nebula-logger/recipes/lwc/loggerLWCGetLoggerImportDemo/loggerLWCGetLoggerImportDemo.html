@@ -6,13 +6,10 @@
 -->
 
 <template>
-  <!-- This is the legacy approach for using c-logger - the new approach is to import it in your JS file -->
-  <c-logger></c-logger>
-
-  <lightning-card title="Nebula Logger for Lightning Web Components - Legacy Approach" icon-name="custom:custom19">
+  <lightning-card title="Nebula Logger for Lightning Web Components - Recommended getLogger()  Approach" icon-name="custom:custom19">
     <div class="slds-var-m-around_medium">
-      ⚠ This component demonstrates how to use Nebula Logger by adding <code>&lt;c-logger&gt;</code> to your component's markup. This approach is still
-      supported, but is considered deprecated as of v4.10.2. The new recommended approach is to import the logger component in your component's JavaScript file.
+      ✅ This component demonstrates how to use Nebula Logger by using &nbsp;<code>import &#123; getLogger &#125; from 'c/logger';</code> in your component's
+      JavaScript file. This approach was introduced in Nebula Logger v4.14.13, and is now the recommended approach.
     </div>
     <div>
       <lightning-button label="Re-render LWC" onclick={handleRerenderButton}></lightning-button>

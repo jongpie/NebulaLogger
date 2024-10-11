@@ -55,7 +55,7 @@ return The transaction ID (based on `Logger.getTransactionId())`
 
 ### Inner Classes
 
-#### ComponentLogger.ComponentBrowser class
+#### ComponentLogger.ComponentBrowserContext class
 
 A DTO object used to log details about the user&apos;s browser
 
@@ -123,7 +123,7 @@ A DTO object used to create log entries for lightning components
 
 ##### Properties
 
-###### `browser` → `ComponentBrowser`
+###### `browser` → `ComponentBrowserContext`
 
 Context about the user&apos;s browser, automatically captured by Nebula Logger
 

@@ -55,7 +55,11 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>Logger_LWC_Import_Demo</tab>
+        <tab>Logger_LWC_Create_Logger_Import_Demo</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>Logger_LWC_Get_Logger_Import_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

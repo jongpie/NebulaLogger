@@ -1,5 +1,5 @@
 import { createElement } from 'lwc';
-import loggerLWCImportDemo from 'c/loggerLWCImportDemo';
+import loggerLWCGetLoggerImportDemo from 'c/loggerLWCGetLoggerImportDemo';
 
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 
@@ -35,7 +35,7 @@ describe('logger demo tests', () => {
 
   it('mounts and saves log correctly in one go', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const demo = createElement('c-logger-demo', { is: loggerLWCImportDemo });
+    const demo = createElement('c-logger-demo', { is: loggerLWCGetLoggerImportDemo });
     document.body.appendChild(demo);
 
     await flushPromises();

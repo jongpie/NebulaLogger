@@ -17,8 +17,14 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>loggerLWCImportDemo</componentName>
-                <identifier>c_loggerLWCImportDemo</identifier>
+                <componentName>loggerLWCGetLoggerImportDemo</componentName>
+                <identifier>c_loggerLWCGetLoggerImportDemo</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>loggerLWCCreateLoggerImportDemo</componentName>
+                <identifier>c_loggerLWCCreateLoggerImportDemo</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>

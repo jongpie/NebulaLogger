@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.12.NEXT",
-      "versionName": "Replaced HttpRequestEndpoint__c with HttpRequestEndpointAddress__c",
-      "versionDescription": "Deprecated the HttpRequestEndpoint__c fields on LogEntryEvent__e and LogEntry__c, and replaced them with new HttpRequestEndpointAddress__c fields that have a much longer max length (2,000 vs 255)",
+      "versionNumber": "4.14.13.NEXT",
+      "versionName": "New getLogger() JS Function",
+      "versionDescription": "Added a new function getLogger() in c/logger that can be called synchronously (createLogger() was async). This simplifies how developers use it, and avoids some lingering JS stack trace issues that occur in async functions.",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -197,6 +197,7 @@
     "Nebula Logger - Core@4.14.10-new-callablelogger-apex-class": "04t5Y0000015oTdQAI",
     "Nebula Logger - Core@4.14.11-updated-behavior-of-logger.setasynccontext()": "04t5Y0000015oUgQAI",
     "Nebula Logger - Core@4.14.12-replaced-httprequestendpoint__c-with-httprequestendpointaddress__c": "04t5Y0000015oV0QAI",
+    "Nebula Logger - Core@4.14.13-new-getlogger()-js-function": "04t5Y0000015oW3QAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
