@@ -4,13 +4,13 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, api } from 'lwc';
-import LoggerService from './loggerService';
+import { getLoggerService } from './loggerService';
 
 export default class Logger extends LightningElement {
   #loggerService;
 
   connectedCallback() {
-    this.#loggerService = new LoggerService();
+    this.#loggerService = getLoggerService();
   }
 
   /**
@@ -180,5 +180,5 @@ export async function createLogger() {
  * @return {LoggerService} An instance of `LoggerService`
  */
 export function getLogger() {
-  return new LoggerService();
+  return getLoggerService();
 }

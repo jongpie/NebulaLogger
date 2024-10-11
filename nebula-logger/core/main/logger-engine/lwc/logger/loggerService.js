@@ -9,6 +9,7 @@ import LogEntryEventBuilder from './logEntryBuilder';
 import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
+import Logger from './logger';
 
 const CURRENT_VERSION_NUMBER = 'v4.14.13';
 
@@ -24,6 +25,14 @@ const LOGGING_LEVEL_EMOJIS = {
   FINE: '👍',
   FINER: '👌',
   FINEST: '🌟'
+};
+
+const STANDARD_CONSOLE = {
+  log: console.log,
+  warn: console.warn,
+  error: console.error,
+  info: console.info,
+  debug: console.debug
 };
 
 let areSystemMessagesEnabled = true;
@@ -48,6 +57,7 @@ export class BrowserContext {
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 export default class LoggerService {
   static hasInitialized = false;
+  static windowOverrideLogger;
 
   #componentLogEntries = [];
   #settings;
@@ -149,6 +159,36 @@ export default class LoggerService {
     await this.#taskQueue.executeTasks();
   }
 
+  _overrideStandardConsole() {
+    STANDARD_CONSOLE.debug('!!! Running _overrideStandardConsole()');
+
+    const getStringifiedArgs = args => {
+      if (typeof args === 'object' && args !== null) {
+        return JSON.stringify(args, null, 2); // Pretty print with indentation
+      }
+      return args;
+    };
+
+    console.error = (...args) => {
+      this.error(getStringifiedArgs(...args));
+    };
+    console.warn = (...args) => {
+      this.warn(getStringifiedArgs(...args));
+    };
+    console.info = (...args) => {
+      this.info(getStringifiedArgs(...args));
+    };
+    console.debug = (...args) => {
+      this.debug(getStringifiedArgs(...args));
+    };
+    console.log = (...args) => {
+      this.fine(getStringifiedArgs(...args));
+    };
+    console.saveLog = () => {
+      this.saveLog();
+    };
+  }
+
   async _loadSettingsFromServer() {
     const loadSettingsTask = async () => {
       try {
@@ -202,7 +242,7 @@ export default class LoggerService {
 
   /* eslint-disable no-console */
   _logToConsole(loggingLevel, message, componentLogEntry) {
-    const consoleLoggingFunction = console[loggingLevel.toLowerCase()] ?? console.debug;
+    const consoleLoggingFunction = STANDARD_CONSOLE[loggingLevel.toLowerCase()] ?? STANDARD_CONSOLE.debug;
     const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[loggingLevel];
     const qualifiedMessage = `${loggingLevelEmoji} ${loggingLevel}: ${message}`;
     const formattedComponentLogEntryString = !componentLogEntry
@@ -224,4 +264,14 @@ export default class LoggerService {
 
     consoleLoggingFunction(CONSOLE_OUTPUT_CONFIG.messagePrefix, CONSOLE_OUTPUT_CONFIG.messageFormatting, qualifiedMessage, formattedComponentLogEntryString);
   }
+}
+
+export function getLoggerService() {
+  if (!LoggerService.windowOverrideLogger) {
+    console.info('Eeeeeeks 👀👀👀👀👀');
+    LoggerService.windowOverrideLogger = new LoggerService();
+    LoggerService.windowOverrideLogger._overrideStandardConsole();
+    console.info('Eeeeeeks 🥳😎👈👈🔥👋😁');
+  }
+  return new LoggerService();
 }
