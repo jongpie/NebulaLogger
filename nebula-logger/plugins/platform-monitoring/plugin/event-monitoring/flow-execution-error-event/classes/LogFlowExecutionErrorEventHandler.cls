@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 /**
  * @group Plugins
- * @description `FlowExecutionErrorEvent` messages are created and fired by the platform when Screen Flows have unhandled errors, and this creates logs for them
+ * @description `Schema.FlowExecutionErrorEvent` messages are created and fired by the platform when Screen Flows have unhandled errors, and this creates logs for them
  */
 public without sharing class LogFlowExecutionErrorEventHandler {
   @TestVisible
@@ -33,7 +33,7 @@ public without sharing class LogFlowExecutionErrorEventHandler {
       );
       flowLogEntry.timestamp = flowExecutionErrorEvent.EventDate;
       LogEntryEventBuilder builder = flowLogEntry.addToLoggerBuffer()?.setRecord(flowExecutionErrorEvent.FlowVersionId);
-      if (builder.shouldSave()) {
+      if (builder.shouldSave() == true) {
         // TODO remove this in a future release, this is a temporary fix until orgs have upgraded to v4.8.4.
         // Prior to v4.8.4, there was a bug in core package where the TimestampString__c field would be out of
         // sync with the Timestamp__c field, resulting in inaccurate data being used.
@@ -78,7 +78,7 @@ public without sharing class LogFlowExecutionErrorEventHandler {
       TimeZone tz = Timezone.getTimeZone(loggingUser.TimeZoneSidKey);
       for (LogEntryEventBuilder builder : builders) {
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-        // override Schema.User-level fields
+        // override User-level fields
         logEntryEvent.LoggedById__c = loggingUser.Id;
         logEntryEvent.LoggedByUsername__c = loggingUser.Username;
         logEntryEvent.ProfileName__c = loggingUser.Profile.Name;
