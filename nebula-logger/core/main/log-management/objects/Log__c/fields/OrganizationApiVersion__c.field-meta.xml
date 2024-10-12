@@ -15,14 +15,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>v63.0</fullName>
+                <default>false</default>
+                <label>v63.0 - Spring&apos;25 Release</label>
+            </value>
+            <value>
                 <fullName>v62.0</fullName>
                 <default>false</default>
                 <label>v62.0 - Winter&apos;25 Release</label>
-            </value>
-            <value>
-                <fullName>v61.0</fullName>
-                <default>false</default>
-                <label>v61.0 - Summer &apos;24 Release</label>
             </value>
         </valueSetDefinition>
     </valueSet>

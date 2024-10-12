@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "61.0",
+  "sourceApiVersion": "62.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.13.NEXT",
-      "versionName": "New getLogger() JS Function",
-      "versionDescription": "Added a new function getLogger() in c/logger that can be called synchronously (createLogger() was async). This simplifies how developers use it, and avoids some lingering JS stack trace issues that occur in async functions.",
+      "versionNumber": "4.15.0.NEXT",
+      "versionName": "Winter '25 Release",
+      "versionDescription": "TODO",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
