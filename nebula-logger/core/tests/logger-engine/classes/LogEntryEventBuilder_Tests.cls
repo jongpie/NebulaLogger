@@ -1850,6 +1850,48 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_set_network_fields_for_experience_site_user_using_stub_network_record() {
+    String mockNetworkId = LoggerMockDataCreator.createId(Schema.Account.SObjectType);
+    String mockNetworkName = 'An Account record, substituting for a Network record';
+    String mockNetworkUrlPrefix = 'some string value for URL prefix';
+    LoggerEngineDataSelector.stubNetworkRecord = new Schema.Account(Description = mockNetworkUrlPrefix, Id = mockNetworkId, Name = mockNetworkName);
+    LogEntryEventBuilder.networkId = LoggerEngineDataSelector.stubNetworkRecord.Id;
+    LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField = Schema.Account.Description.toString();
+
+    LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
+
+    System.Assert.areEqual(mockNetworkId, logEntryEvent.NetworkId__c);
+    System.Assert.areEqual(mockNetworkName, logEntryEvent.NetworkName__c);
+    System.Assert.areEqual(System.Network.getLoginUrl(mockNetworkId), logEntryEvent.NetworkLoginUrl__c);
+    System.Assert.areEqual(System.Network.getLogoutUrl(mockNetworkId), logEntryEvent.NetworkLogoutUrl__c);
+    System.Assert.areEqual(System.Network.getSelfRegUrl(mockNetworkId), logEntryEvent.NetworkSelfRegistrationUrl__c);
+    System.Assert.areEqual(mockNetworkUrlPrefix, logEntryEvent.NetworkUrlPathPrefix__c);
+  }
+
+  @IsTest
+  static void it_should_set_network_fields_for_experience_site_user_using_real_network_record_when_enabled() {
+    if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false || System.Database.countQuery('SELECT COUNT() FROM Network') == 0) {
+      return;
+    }
+
+    SObject queriedNetworkRecord = System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network LIMIT 1');
+    // Ideally, this type of test would run using System.runAs() and a test user setup for the queried Network record
+    // But, setting up a test user in a test context can run into a lot of issues due to custom fields, validation rules, etc.
+    // that have been deployed to an org. So, just use the stubNetworkRecord variable, even though this is a real Network record
+    LoggerEngineDataSelector.stubNetworkRecord = queriedNetworkRecord;
+    LogEntryEventBuilder.networkId = queriedNetworkRecord.Id;
+
+    LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
+
+    System.Assert.areEqual(queriedNetworkRecord.get('Id'), logEntryEvent.NetworkId__c);
+    System.Assert.areEqual((String) queriedNetworkRecord.get('Name'), logEntryEvent.NetworkName__c);
+    System.Assert.areEqual(System.Network.getLoginUrl(queriedNetworkRecord.Id), logEntryEvent.NetworkLoginUrl__c);
+    System.Assert.areEqual(System.Network.getLogoutUrl(queriedNetworkRecord.Id), logEntryEvent.NetworkLogoutUrl__c);
+    System.Assert.areEqual(System.Network.getSelfRegUrl(queriedNetworkRecord.Id), logEntryEvent.NetworkSelfRegistrationUrl__c);
+    System.Assert.areEqual((String) queriedNetworkRecord.get('UrlPathPrefix'), logEntryEvent.NetworkUrlPathPrefix__c);
+  }
+
+  @IsTest
   static void it_should_set_user_fields_when_anonymous_mode_disabled() {
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));

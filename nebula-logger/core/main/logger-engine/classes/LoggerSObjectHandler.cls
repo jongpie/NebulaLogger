@@ -244,7 +244,7 @@ public without sharing abstract class LoggerSObjectHandler {
 
   private static Map<Schema.SObjectType, LoggerSObjectHandler__mdt> queryHandlerConfigurations() {
     Map<Schema.SObjectType, LoggerSObjectHandler__mdt> sobjectTypeToHandlerConfiguration = new Map<Schema.SObjectType, LoggerSObjectHandler__mdt>();
-    for (LoggerSObjectHandler__mdt handlerConfiguration : LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers()) {
+    for (LoggerSObjectHandler__mdt handlerConfiguration : LoggerConfigurationDataSelector.getInstance().getLoggerSObjectHandlers()) {
       handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectType__r.QualifiedApiName;
       Schema.SObjectType sobjectType = prepHandlerType(handlerConfiguration);
       sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
