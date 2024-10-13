@@ -17,6 +17,7 @@
     <testClassName>LogEntryTagHandler_Tests</testClassName>
     <testClassName>LoggerBatchableContext_Tests</testClassName>
     <testClassName>LoggerCache_Tests</testClassName>
+    <testClassName>LoggerConfigurationDataSelector_Tests</testClassName>
     <testClassName>LoggerDataStore_Tests</testClassName>
     <testClassName>LoggerEmailSender_Tests</testClassName>
     <testClassName>LoggerEngineDataSelector_Tests</testClassName>

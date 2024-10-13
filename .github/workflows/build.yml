@@ -10,6 +10,8 @@ on:
   push:
     branches:
       - main
+      # Temp for testing, remove before creating a PR
+      - feature/winter-25-release
     paths:
       - .github/workflows/**
       - config/scratch-orgs/**
@@ -188,14 +190,6 @@ jobs:
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex -- --synchronous
 
-      # This is the only scratch org that's used for uploading code coverage
-      - name: 'Upload Apex test code coverage to Codecov.io'
-        uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true
-          flags: Apex
-          token: ${{ secrets.CODECOV_TOKEN }}
-
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
         if: ${{ always() }}
@@ -263,6 +257,14 @@ jobs:
 
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
+
+      # This is the only scratch org that's used for uploading code coverage
+      - name: 'Upload Apex test code coverage to Codecov.io'
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          flags: Apex
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt

@@ -6,6 +6,12 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerScenarioRule_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
+  // DELETEME Deprecated method, remove in a future release
   @IsTest
   static void it_should_throw_exception_when_mock_record_scenario_is_null() {
     LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(Scenario__c = null);
@@ -26,7 +32,7 @@ private class LoggerScenarioRule_Tests {
     List<LoggerScenarioRule__mdt> mockRules = new List<LoggerScenarioRule__mdt>();
     for (Integer i = 0; i < 5; i++) {
       LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(IsEnabled__c = true, Scenario__c = 'Some Scenario #' + i);
-      LoggerScenarioRule.setMock(mockRule);
+      LoggerConfigurationDataSelector.mockLoggerScenarioRules.add(mockRule);
       mockRules.add(mockRule);
     }
 
@@ -42,7 +48,7 @@ private class LoggerScenarioRule_Tests {
   @IsTest
   static void it_should_load_configured_rule_when_start_and_end_time_are_both_null() {
     LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(EndTime__c = null, IsEnabled__c = true, Scenario__c = 'Some Scenario', StartTime__c = null);
-    LoggerScenarioRule.setMock(mockRule);
+    LoggerConfigurationDataSelector.mockLoggerScenarioRules.add(mockRule);
 
     LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
@@ -57,7 +63,7 @@ private class LoggerScenarioRule_Tests {
       Scenario__c = 'Some Scenario',
       StartTime__c = System.now().addMinutes(-1)
     );
-    LoggerScenarioRule.setMock(mockRule);
+    LoggerConfigurationDataSelector.mockLoggerScenarioRules.add(mockRule);
 
     LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
@@ -67,7 +73,7 @@ private class LoggerScenarioRule_Tests {
   @IsTest
   static void it_should_load_configured_rule_when_start_time_is_null_and_end_time_is_valid() {
     LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(EndTime__c = System.now().addMinutes(1), IsEnabled__c = true, Scenario__c = 'Some Scenario');
-    LoggerScenarioRule.setMock(mockRule);
+    LoggerConfigurationDataSelector.mockLoggerScenarioRules.add(mockRule);
 
     LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
@@ -82,7 +88,7 @@ private class LoggerScenarioRule_Tests {
       Scenario__c = 'Some Scenario',
       StartTime__c = System.now().addMinutes(-1)
     );
-    LoggerScenarioRule.setMock(mockRule);
+    LoggerConfigurationDataSelector.mockLoggerScenarioRules.add(mockRule);
 
     LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
@@ -97,7 +103,7 @@ private class LoggerScenarioRule_Tests {
       Scenario__c = 'Some Scenario',
       StartTime__c = System.now().addMinutes(1)
     );
-    LoggerScenarioRule.setMock(mockRule);
+    LoggerConfigurationDataSelector.mockLoggerScenarioRules.add(mockRule);
 
     LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 
@@ -111,7 +117,7 @@ private class LoggerScenarioRule_Tests {
       IsEnabled__c = true,
       Scenario__c = 'Some Scenario'
     );
-    LoggerScenarioRule.setMock(mockRule);
+    LoggerConfigurationDataSelector.mockLoggerScenarioRules.add(mockRule);
 
     LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
 

@@ -6,6 +6,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogManagementDataSelector_Tests {
+  @TestVisible
   private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 
   @IsTest
@@ -233,6 +234,36 @@ private class LogManagementDataSelector_Tests {
     System.Assert.areEqual(deleteableRecord.Id, returnedResults.get(0).RecordId);
   }
 
+  // TODO delete me!
+  private static final String TEST_FLOW_NAME = 'TODO remove this constant + improve tests to use a mock/stub record';
+
+  @IsTest
+  static void it_returns_matching_flow_definition_view_for_specified_flow_api_name() {
+    List<String> targetFlowApiNames = new List<String>{ TEST_FLOW_NAME };
+    List<Schema.FlowDefinitionView> expectedResults = [
+      SELECT ActiveVersionId, ApiName, Description, DurableId, Label, LastModifiedBy, LastModifiedDate, ManageableState, ProcessType, TriggerType
+      FROM FlowDefinitionView
+      WHERE ApiName IN :targetFlowApiNames AND IsActive = TRUE
+    ];
+
+    List<Schema.FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
+
+    System.Assert.areEqual(expectedResults, returnedResults);
+  }
+
+  @IsTest
+  static void it_does_not_query_flow_definition_views_when_disabled_via_logger_parameter() {
+    List<String> targetFlowApiNames = new List<String>{ TEST_FLOW_NAME };
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA);
+    Integer originalQueryCount = System.Limits.getQueries();
+
+    List<Schema.FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
+
+    System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
+    System.Assert.areEqual(0, returnedResults.size());
+  }
+
   @IsTest
   static void it_returns_log_for_specified_log_id() {
     LoggerSObjectHandler.shouldExecute(false);
@@ -381,6 +412,7 @@ private class LogManagementDataSelector_Tests {
 
   @IsTest
   static void it_returns_omni_processes_for_specified_ids() {
+    // FIXME use a stub record here, always?
     // No need to fail the test if it's running in an org that does not have OmniStudio enabled
     if (IS_OMNISTUDIO_ENABLED == false) {
       return;

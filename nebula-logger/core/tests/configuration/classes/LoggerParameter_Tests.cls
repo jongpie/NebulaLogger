@@ -6,8 +6,9 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
-  private static Schema.User getUserRecord() {
-    return new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
   }
 
   @IsTest
@@ -645,7 +646,7 @@ private class LoggerParameter_Tests {
 
   @IsTest
   static void it_should_return_sobject_parameter() {
-    SObject parameterValue = getUserRecord();
+    SObject parameterValue = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObject', Value__c = System.JSON.serialize(parameterValue));
     LoggerParameter.setMock(mockParameter);
 
@@ -656,7 +657,7 @@ private class LoggerParameter_Tests {
 
   @IsTest
   static void it_should_return_sobject_list_parameter() {
-    List<SObject> parameterValue = new List<SObject>{ getUserRecord() };
+    List<SObject> parameterValue = new List<SObject>{ new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername()) };
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObjectList', Value__c = System.JSON.serialize(parameterValue));
     LoggerParameter.setMock(mockParameter);
 

@@ -11,6 +11,47 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class LoggerSObjectProxy {
+  @TestVisible
+  private static final AuthSessionFieldNames AUTH_SESSION_FIELD_NAMES {
+    get {
+      if (AUTH_SESSION_FIELD_NAMES == null) {
+        AUTH_SESSION_FIELD_NAMES = new AuthSessionFieldNames();
+      }
+      return AUTH_SESSION_FIELD_NAMES;
+    }
+    private set;
+  }
+  @TestVisible
+  private static final LoginHistoryFieldNames LOGIN_HISTORY_FIELD_NAMES {
+    get {
+      if (LOGIN_HISTORY_FIELD_NAMES == null) {
+        LOGIN_HISTORY_FIELD_NAMES = new LoginHistoryFieldNames();
+      }
+      return LOGIN_HISTORY_FIELD_NAMES;
+    }
+    private set;
+  }
+  @TestVisible
+  private static final NetworkFieldNames NETWORK_FIELD_NAMES {
+    get {
+      if (NETWORK_FIELD_NAMES == null) {
+        NETWORK_FIELD_NAMES = new NetworkFieldNames();
+      }
+      return NETWORK_FIELD_NAMES;
+    }
+    private set;
+  }
+  @TestVisible
+  private static final OmniProcessFieldNames OMNI_PROCESS_FIELD_NAMES {
+    get {
+      if (OMNI_PROCESS_FIELD_NAMES == null) {
+        OMNI_PROCESS_FIELD_NAMES = new OmniProcessFieldNames();
+      }
+      return OMNI_PROCESS_FIELD_NAMES;
+    }
+    private set;
+  }
+
   /**
    * @description All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible
    *              to mock field values directly during unit tests - even using tricks like System.JSON.deserialize() do not work. The `LoggerSObjectProxy.AuthSession`
@@ -31,9 +72,13 @@ public without sharing class LoggerSObjectProxy {
 
     @SuppressWarnings('PMD.ApexDoc')
     public AuthSession(Schema.AuthSession authSessionRecord) {
+      this(authSessionRecord, new LoginHistory(authSessionRecord?.LoginHistory));
+    }
+
+    public AuthSession(Schema.AuthSession authSessionRecord, LoginHistory loginHistoryProxy) {
       if (authSessionRecord != null) {
         this.Id = authSessionRecord.Id;
-        this.LoginHistory = new LoginHistory(authSessionRecord.LoginHistory);
+        this.LoginHistory = loginHistoryProxy;
         this.LoginHistoryId = authSessionRecord.LoginHistoryId;
         this.LoginType = authSessionRecord.LoginType;
         this.LogoutUrl = authSessionRecord.LogoutUrl;
@@ -84,9 +129,9 @@ public without sharing class LoggerSObjectProxy {
     @SuppressWarnings('PMD.ApexDoc')
     public Network(SObject networkRecord) {
       if (networkRecord != null) {
-        this.Id = (String) networkRecord.get('Id');
-        this.Name = (String) networkRecord.get('Name');
-        this.UrlPathPrefix = (String) networkRecord.get('UrlPathPrefix');
+        this.Id = (String) networkRecord.get(NETWORK_FIELD_NAMES.idField);
+        this.Name = (String) networkRecord.get(NETWORK_FIELD_NAMES.nameField);
+        this.UrlPathPrefix = (String) networkRecord.get(NETWORK_FIELD_NAMES.urlPathPrefixField);
       }
     }
   }
@@ -112,16 +157,56 @@ public without sharing class LoggerSObjectProxy {
     @SuppressWarnings('PMD.ApexDoc')
     public OmniProcess(SObject omniProcess) {
       if (omniProcess != null) {
-        this.CreatedById = (String) omniProcess.get('CreatedById');
+        this.CreatedById = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.createdByIdField);
+        // TODO convert to use OMNI_PROCESS_FIELD_NAMES
         this.CreatedBy = (Schema.User) omniProcess.getSObject('CreatedBy');
-        this.CreatedDate = (Datetime) omniProcess.get('CreatedDate');
-        this.Id = (String) omniProcess.get('Id');
-        this.LastModifiedById = (String) omniProcess.get('LastModifiedById');
+        this.CreatedDate = (Datetime) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.createdDateField);
+        this.Id = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.idField);
+        this.LastModifiedById = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.lastModifiedByIdField);
+        // TODO convert to use OMNI_PROCESS_FIELD_NAMES
         this.LastModifiedBy = (Schema.User) omniProcess.getSObject('LastModifiedBy');
-        this.LastModifiedDate = (Datetime) omniProcess.get('LastModifiedDate');
-        this.OmniProcessType = (String) omniProcess.get('OmniProcessType');
-        this.UniqueName = (String) omniProcess.get('UniqueName');
+        this.LastModifiedDate = (Datetime) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.lastModifiedDateField);
+        this.OmniProcessType = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.omniProcessTypeField);
+        this.UniqueName = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.uniqueNameField);
       }
     }
+  }
+
+  private class AuthSessionFieldNames {
+    public String idField = 'Id';
+    public String loginTypeField = 'LoginType';
+    public String loginHistoryIdField = 'LoginHistoryId';
+    public String loginHistoryField = 'LoginHistory';
+    public String logoutUrlField = 'LogoutUrl';
+    public String parentIdField = 'ParentId';
+    public String sessionSecurityLevelField = 'SessionSecurityLevel';
+    public String sessionTypeField = 'SessionType';
+    public String sourceIpField = 'SourceIp';
+    public String usersIdField = 'UsersId';
+  }
+
+  private class LoginHistoryFieldNames {
+    public String applicationField = 'Application';
+    public String browserField = 'Browser';
+    public String platformField = 'Platform';
+    public String userIdField = 'UserId';
+  }
+
+  private class NetworkFieldNames {
+    public String idField = 'Id';
+    public String nameField = 'Name';
+    public String urlPathPrefixField = 'UrlPathPrefix';
+  }
+
+  private class OmniProcessFieldNames {
+    public String createdByIdField = 'CreatedById';
+    public String createdByField = 'CreatedBy';
+    public String createdDateField = 'CreatedDate';
+    public String idField = 'Id';
+    public String lastModifiedByIdField = 'LastModifiedById';
+    public String lastModifiedByField = 'LastModifiedBy';
+    public String lastModifiedDateField = 'LastModifiedDate';
+    public String omniProcessTypeField = 'OmniProcessType';
+    public String uniqueNameField = 'UniqueName';
   }
 }

@@ -812,6 +812,13 @@ public class LoggerParameter {
     return matchingParameters;
   }
 
+  /*
+    DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
+      ```
+      LoggerConfigurationDataSelector.useMocks();
+      LoggerConfigurationDataSelector.mockLoggerParameters.add(new LoggerParameter__mdt());
+      ```
+  */
   @TestVisible
   private static void setMock(LoggerParameter__mdt parameter) {
     if (String.isBlank(parameter.DeveloperName)) {
@@ -822,7 +829,7 @@ public class LoggerParameter {
   }
 
   private static Map<String, LoggerParameter__mdt> loadRecords() {
-    Map<String, LoggerParameter__mdt> parameters = LoggerParameter__mdt.getAll().clone();
+    Map<String, LoggerParameter__mdt> parameters = LoggerConfigurationDataSelector.getInstance().getLoggerParameters();
     if (System.Test.isRunningTest()) {
       // Keep a copy of any records that *should* be loaded during tests
       // Currently, only the record `SystemDebugMessageFormat` has a use case for this functionality,
