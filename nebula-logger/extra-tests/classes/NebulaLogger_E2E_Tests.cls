@@ -123,6 +123,7 @@ private class NebulaLogger_E2E_Tests {
   // tests can then be responsible for clearing any loaded records (or providing stubs) for tests that shouldn't rely
   // on the org's version of the custom metadata type records
   // Related issue: https://github.com/jongpie/NebulaLogger/issues/457
+  // FIXME re-add this (finally) after v4.15.0 is released to verify that handler configs are actually loaded during tests.
   // @IsTest
   // static void it_saves_via_synchronous_dml() {
   //     System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);

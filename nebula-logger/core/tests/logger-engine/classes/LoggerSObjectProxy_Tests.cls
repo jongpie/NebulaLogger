@@ -54,21 +54,18 @@ private class LoggerSObjectProxy_Tests {
   }
 
   @IsTest
-  static void it_converts_auth_session_record_to_proxy_from_stub_record_with_no_fields_set() {
+  static void it_converts_auth_session_record_to_proxy_from_mock_record_with_no_fields_set() {
     // Given the platform limitations with populating fields on an AuthSession record,
     // this test verifies that safe navigator is used for parent fields that may not be set/returned,
-    // like authSessionRecord.LoginHistory.Application. This ensures a empty AuthSession SObject
-    // can be used as a stub in other tests that want a minimalistic way to provide a stub.
+    // like authSessionRecord.LoginHistory.Application. This ensures an empty AuthSession SObject
+    // can be used as a mock in other tests that want a minimalistic way to provide a mock.
     Schema.AuthSession authSessionRecord = new Schema.AuthSession();
 
     LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSessionRecord);
 
     System.Assert.isNotNull(authSessionProxy);
     System.Assert.isNull(authSessionProxy.Id);
-    System.Assert.isNull(authSessionProxy.LoginHistory.Application);
-    System.Assert.isNull(authSessionProxy.LoginHistory.Browser);
-    System.Assert.isNull(authSessionProxy.LoginHistory.Platform);
-    System.Assert.isNull(authSessionProxy.LoginHistory.UserId);
+    System.Assert.isNull(authSessionProxy.LoginHistory);
     System.Assert.isNull(authSessionProxy.LoginHistoryId);
     System.Assert.isNull(authSessionProxy.LoginType);
     System.Assert.isNull(authSessionProxy.LogoutUrl);
@@ -80,18 +77,58 @@ private class LoggerSObjectProxy_Tests {
   }
 
   @IsTest
-  static void it_converts_auth_session_record_to_proxy_from_mock_record_with_no_fields_set() {
-    // This verifies that safe navigator is used for parent fields that may not be set/returned,
-    // like authSessionRecord.LoginHistory.Application. This ensures a empty AuthSession SObject
-    // can be used as a stub in other tests that want a minimalistic way to provide a stub, given
-    // the platform limitations with populating fields on an AuthSession record
+  static void it_converts_auth_session_record_to_proxy_when_using_stub_account_record() {
+    // Since Schema.AuthSession fields can't be set directly or using JSON.deserialize,
+    // verify that another SObject & its fields can be substituted when needed.
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField = 'AccountSource';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField = 'Industry';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryField = 'TODO';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField = 'Site';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField = 'ParentId';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField = 'Rating';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField = 'Type';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField = 'Fax';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField = 'OwnerId';
+    SObject stubAuthSessionRecord = new Schema.Account();
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.idField, LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType()));
+    stubAuthSessionRecord.put(
+      LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
+      LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
+    );
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField, 'Some Type');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField, LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType));
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES, 'TODO');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField, 'https://salesforce.com');
+    stubAuthSessionRecord.put(
+      LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
+      LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
+    );
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField, 'Some Very Secure Level');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField, 'Some type');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField, '1.2.3.4');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField, System.UserInfo.getUserId());
 
-    System.Assert.fail('TODO!');
-    // Use AUTH_SESSION_FIELD_NAMES AND LOGIN_HISTORY_FIELD_NAMES + 2 corresponding
+    LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(stubAuthSessionRecord, null);
+
+    System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField), authSessionProxy.Id);
+    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField), authSessionProxy.LoginType);
+    System.Assert.areEqual(
+      (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField),
+      authSessionProxy.LoginHistoryId
+    );
+    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField), authSessionProxy.LogoutUrl);
+    System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField), authSessionProxy.ParentId);
+    System.Assert.areEqual(
+      (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField),
+      authSessionProxy.SessionSecurityLevel
+    );
+    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField), authSessionProxy.SessionType);
+    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField), authSessionProxy.SourceIp);
+    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField), authSessionProxy.UsersId);
   }
 
   @IsTest
-  static void it_converts_login_history_record_to_proxy() {
+  static void it_converts_login_history_record_to_proxy_from_database() {
     List<Schema.LoginHistory> loginHistoryRecords = [
       SELECT Application, Browser, Platform, UserId
       FROM LoginHistory
@@ -113,6 +150,74 @@ private class LoggerSObjectProxy_Tests {
   }
 
   @IsTest
+  static void it_converts_login_history_record_to_proxy_from_mock_record_with_no_fields_set() {
+    // Given the platform limitations with populating fields on a LoginHistory record,
+    // this test ensures an empty LoginHistory SObject can be used as a mock in other tests that
+    // want a minimalistic way to provide a mock.
+    Schema.LoginHistory loginHistoryRecord = new Schema.LoginHistory();
+
+    LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory(loginHistoryRecord);
+
+    System.Assert.isNotNull(loginHistoryProxy);
+    System.Assert.isNull(loginHistoryProxy.Application);
+    System.Assert.isNull(loginHistoryProxy.Browser);
+    System.Assert.isNull(loginHistoryProxy.Platform);
+    System.Assert.isNull(loginHistoryProxy.UserId);
+  }
+
+  @IsTest
+  static void it_converts_login_history_record_to_proxy_when_using_stub_account_record() {
+    System.Assert.fail('TODO');
+    // Since Schema.AuthSession fields can't be set directly or using JSON.deserialize,
+    // verify that another SObject & its fields can be substituted when needed.
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField = 'AccountSource';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField = 'Industry';
+    // // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryField = 'TODO';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField = 'Site';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField = 'ParentId';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField = 'Rating';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField = 'Type';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField = 'Fax';
+    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField = 'OwnerId';
+    // SObject stubAuthSessionRecord = new Schema.Account();
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.idField, LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType()));
+    // stubAuthSessionRecord.put(
+    //   LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
+    //   LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
+    // );
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField, 'Some Type');
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField, LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType));
+    // // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES, 'TODO');
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField, 'https://salesforce.com');
+    // stubAuthSessionRecord.put(
+    //   LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
+    //   LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
+    // );
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField, 'Some Very Secure Level');
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField, 'Some type');
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField, '1.2.3.4');
+    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField, System.UserInfo.getUserId());
+
+    // LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(stubAuthSessionRecord, null);
+
+    // System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField), authSessionProxy.Id);
+    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField), authSessionProxy.LoginType);
+    // System.Assert.areEqual(
+    //   (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField),
+    //   authSessionProxy.LoginHistoryId
+    // );
+    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField), authSessionProxy.LogoutUrl);
+    // System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField), authSessionProxy.ParentId);
+    // System.Assert.areEqual(
+    //   (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField),
+    //   authSessionProxy.SessionSecurityLevel
+    // );
+    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField), authSessionProxy.SessionType);
+    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField), authSessionProxy.SourceIp);
+    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField), authSessionProxy.UsersId);
+  }
+
+  @IsTest
   static void it_converts_network_record_to_proxy_when_using_stub_account_record() {
     // Since Schema.Network doesn't exist in all orgs, verify that another SObject & its fields can be substituted
     LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField = Schema.Account.Description.toString();
@@ -123,9 +228,9 @@ private class LoggerSObjectProxy_Tests {
 
     LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(stubNetworkRecord);
 
-    System.Assert.areEqual((Id) LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField, networkProxy.Id);
-    System.Assert.areEqual((String) LoggerSObjectProxy.NETWORK_FIELD_NAMES.nameField, networkProxy.Name);
-    System.Assert.areEqual((String) LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField, networkProxy.UrlPathPrefix);
+    System.Assert.areEqual((Id) stubNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField), networkProxy.Id);
+    System.Assert.areEqual((String) stubNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.nameField), networkProxy.Name);
+    System.Assert.areEqual((String) stubNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField), networkProxy.UrlPathPrefix);
   }
 
   @IsTest

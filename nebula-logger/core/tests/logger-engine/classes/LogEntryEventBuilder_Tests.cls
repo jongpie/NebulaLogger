@@ -1854,9 +1854,11 @@ private class LogEntryEventBuilder_Tests {
     String mockNetworkId = LoggerMockDataCreator.createId(Schema.Account.SObjectType);
     String mockNetworkName = 'An Account record, substituting for a Network record';
     String mockNetworkUrlPrefix = 'some string value for URL prefix';
-    LoggerEngineDataSelector.stubNetworkRecord = new Schema.Account(Description = mockNetworkUrlPrefix, Id = mockNetworkId, Name = mockNetworkName);
-    LogEntryEventBuilder.networkId = LoggerEngineDataSelector.stubNetworkRecord.Id;
     LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField = Schema.Account.Description.toString();
+    Schema.Account stubNetworkRecord = new Schema.Account(Description = mockNetworkUrlPrefix, Id = mockNetworkId, Name = mockNetworkName);
+    LogEntryEventBuilder.networkId = stubNetworkRecord.Id;
+    LoggerEngineDataSelector.useMocks();
+    LoggerEngineDataSelector.mockNetworkRecords.add(stubNetworkRecord);
 
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 
@@ -1877,9 +1879,10 @@ private class LogEntryEventBuilder_Tests {
     SObject queriedNetworkRecord = System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network LIMIT 1');
     // Ideally, this type of test would run using System.runAs() and a test user setup for the queried Network record
     // But, setting up a test user in a test context can run into a lot of issues due to custom fields, validation rules, etc.
-    // that have been deployed to an org. So, just use the stubNetworkRecord variable, even though this is a real Network record
-    LoggerEngineDataSelector.stubNetworkRecord = queriedNetworkRecord;
+    // that have been deployed to an org. So, just use the mockNetworkRecords variable, even though this is a real Network record
     LogEntryEventBuilder.networkId = queriedNetworkRecord.Id;
+    LoggerEngineDataSelector.useMocks();
+    LoggerEngineDataSelector.mockNetworkRecords.add(queriedNetworkRecord);
 
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 

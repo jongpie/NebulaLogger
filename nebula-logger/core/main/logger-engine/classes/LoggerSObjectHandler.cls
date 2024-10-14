@@ -245,11 +245,13 @@ public without sharing abstract class LoggerSObjectHandler {
   private static Map<Schema.SObjectType, LoggerSObjectHandler__mdt> queryHandlerConfigurations() {
     Map<Schema.SObjectType, LoggerSObjectHandler__mdt> sobjectTypeToHandlerConfiguration = new Map<Schema.SObjectType, LoggerSObjectHandler__mdt>();
     for (LoggerSObjectHandler__mdt handlerConfiguration : LoggerConfigurationDataSelector.getInstance().getLoggerSObjectHandlers()) {
-      handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectType__r.QualifiedApiName;
       Schema.SObjectType sobjectType = prepHandlerType(handlerConfiguration);
       sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
     }
 
+    // FIXME remove this (finally) after v4.15.0 is released so that handler configs are actually loaded during tests.
+    // Nebula Logger's own tests have ways to clear the actual values now, so having this here isn't necessary any more.
+    // Related issue: https://github.com/jongpie/NebulaLogger/issues/457
     if (System.Test.isRunningTest()) {
       sobjectTypeToHandlerConfiguration.clear();
     }
@@ -258,9 +260,9 @@ public without sharing abstract class LoggerSObjectHandler {
   }
 
   private static Schema.SObjectType prepHandlerType(LoggerSObjectHandler__mdt handlerConfiguration) {
-    if (String.isNotBlank(handlerConfiguration.SObjectTypeOverride__c)) {
-      handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectTypeOverride__c;
-    }
+    handlerConfiguration.SObjectType__c = String.isNotBlank(handlerConfiguration.SObjectTypeOverride__c)
+      ? handlerConfiguration.SObjectTypeOverride__c
+      : handlerConfiguration.SObjectType__r.QualifiedApiName;
 
     return ((SObject) System.Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
   }

@@ -7,6 +7,8 @@
  * @group Configuration
  * @description Selector class used for all queries that are specific to the configuration layer
  */
+// TODO Add Apex docs
+@SuppressWarnings('PMD.ApexDoc, PMD.ApexCRUDViolation')
 public without sharing virtual class LoggerConfigurationDataSelector {
   private static final LoggerConfigurationDataSelector INSTANCE = new LoggerConfigurationDataSelector();
 
