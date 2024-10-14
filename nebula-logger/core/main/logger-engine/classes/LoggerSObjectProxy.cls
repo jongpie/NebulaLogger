@@ -9,7 +9,7 @@
  *              Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another,
  *              such as not being mockable or creatable, or not existing in all orgs.
  */
-@SuppressWarnings('PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public without sharing class LoggerSObjectProxy {
   @TestVisible
   private static final AuthSessionFieldNames AUTH_SESSION_FIELD_NAMES {
@@ -72,21 +72,25 @@ public without sharing class LoggerSObjectProxy {
 
     @SuppressWarnings('PMD.ApexDoc')
     public AuthSession(Schema.AuthSession authSessionRecord) {
-      this(authSessionRecord, new LoginHistory(authSessionRecord?.LoginHistory));
+      this(authSessionRecord, authSessionRecord?.LoginHistory);
     }
 
-    public AuthSession(Schema.AuthSession authSessionRecord, LoginHistory loginHistoryProxy) {
+    public AuthSession(Schema.AuthSession authSessionRecord, Schema.LoginHistory loginHistoryRecord) {
+      this((SObject) authSessionRecord, (SObject) loginHistoryRecord);
+    }
+
+    public AuthSession(SObject authSessionRecord, SObject loginHistoryRecord) {
       if (authSessionRecord != null) {
-        this.Id = authSessionRecord.Id;
-        this.LoginHistory = loginHistoryProxy;
-        this.LoginHistoryId = authSessionRecord.LoginHistoryId;
-        this.LoginType = authSessionRecord.LoginType;
-        this.LogoutUrl = authSessionRecord.LogoutUrl;
-        this.ParentId = authSessionRecord.ParentId;
-        this.SessionSecurityLevel = authSessionRecord.SessionSecurityLevel;
-        this.SessionType = authSessionRecord.SessionType;
-        this.SourceIp = authSessionRecord.SourceIp;
-        this.UsersId = authSessionRecord.UsersId;
+        this.Id = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.idField);
+        this.LoginHistory = loginHistoryRecord == null ? null : new LoginHistory(loginHistoryRecord);
+        this.LoginHistoryId = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.loginHistoryIdField);
+        this.LoginType = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.loginTypeField);
+        this.LogoutUrl = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.logoutUrlField);
+        this.ParentId = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.parentIdField);
+        this.SessionSecurityLevel = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField);
+        this.SessionType = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.sessionTypeField);
+        this.SourceIp = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.sourceIpField);
+        this.UsersId = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.usersIdField);
       }
     }
   }
@@ -105,11 +109,16 @@ public without sharing class LoggerSObjectProxy {
 
     @SuppressWarnings('PMD.ApexDoc')
     public LoginHistory(Schema.LoginHistory loginHistoryRecord) {
+      this((SObject) loginHistoryRecord);
+    }
+
+    @TestVisible
+    private LoginHistory(SObject loginHistoryRecord) {
       if (loginHistoryRecord != null) {
-        this.Application = loginHistoryRecord.Application;
-        this.Browser = loginHistoryRecord.Browser;
-        this.Platform = loginHistoryRecord.Platform;
-        this.UserId = loginHistoryRecord.UserId;
+        this.Application = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.applicationField);
+        this.Browser = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.browserField);
+        this.Platform = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.platformField);
+        this.UserId = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.userIdField);
       }
     }
   }
@@ -129,7 +138,7 @@ public without sharing class LoggerSObjectProxy {
     @SuppressWarnings('PMD.ApexDoc')
     public Network(SObject networkRecord) {
       if (networkRecord != null) {
-        this.Id = (String) networkRecord.get(NETWORK_FIELD_NAMES.idField);
+        this.Id = (Id) networkRecord.get(NETWORK_FIELD_NAMES.idField);
         this.Name = (String) networkRecord.get(NETWORK_FIELD_NAMES.nameField);
         this.UrlPathPrefix = (String) networkRecord.get(NETWORK_FIELD_NAMES.urlPathPrefixField);
       }

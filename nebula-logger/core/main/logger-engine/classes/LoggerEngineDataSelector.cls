@@ -7,13 +7,13 @@
  * @group Logger Engine
  * @description Selector class used for all queries that are specific to the logger engine layer
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessivePublicCount')
 public without sharing virtual class LoggerEngineDataSelector {
   @TestVisible
   private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('Schema.Network') != null;
 
   @TestVisible
-  private static List<Schema.AuthSession> mockAuthSessions;
+  private static List<SObject> mockAuthSessions;
   @TestVisible
   private static List<SObject> mockNetworkRecords;
 
@@ -45,7 +45,7 @@ public without sharing virtual class LoggerEngineDataSelector {
       return userIdToAuthSessionProxy;
     }
 
-    List<Schema.AuthSession> authSessions = [
+    List<SObject> authSessions = [
       SELECT
         Id,
         LoginType,
@@ -69,9 +69,8 @@ public without sharing virtual class LoggerEngineDataSelector {
       authSessions = mockAuthSessions;
     }
 
-    for (Schema.AuthSession authSession : authSessions) {
+    for (SObject authSession : authSessions) {
       LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSession);
-      System.Assert.fail('?authSessionProxy! ' + authSessionProxy);
       userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);
     }
     return userIdToAuthSessionProxy;
@@ -246,7 +245,7 @@ public without sharing virtual class LoggerEngineDataSelector {
     // by initializing all of the mock list variables.
     // And just in case there are multiple calls made to useMocks(),
     // only set the mock variables if they're null.
-    mockAuthSessions = mockAuthSessions ?? new List<Schema.AuthSession>();
+    mockAuthSessions = mockAuthSessions ?? new List<SObject>();
     mockNetworkRecords = mockNetworkRecords ?? new List<SObject>();
   }
 }

@@ -76,10 +76,34 @@ private class LoggerEngineDataSelector_Tests {
 
   @IsTest
   static void it_returns_cached_auth_session_proxy_from_provided_mocks() {
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField = 'AccountSource';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField = 'Industry';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField = 'Site';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField = 'ParentId';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField = 'Rating';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField = 'Type';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField = 'Fax';
+    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField = 'OwnerId';
+    SObject stubAuthSessionRecord = new Schema.Account();
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.idField, LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType()));
+    stubAuthSessionRecord.put(
+      LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
+      LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
+    );
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField, 'Some Type');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField, LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType));
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField, 'https://salesforce.com');
+    stubAuthSessionRecord.put(
+      LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
+      LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
+    );
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField, 'Some Very Secure Level');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField, 'Some type');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField, '1.2.3.4');
+    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField, System.UserInfo.getUserId());
     LoggerEngineDataSelector.useMocks();
-    Schema.AuthSession mockAuthSession = new Schema.AuthSession();
-    LoggerEngineDataSelector.mockAuthSessions.add(mockAuthSession);
-    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = new LoggerSObjectProxy.AuthSession(mockAuthSession);
+    LoggerEngineDataSelector.mockAuthSessions.add(stubAuthSessionRecord);
+    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = new LoggerSObjectProxy.AuthSession(stubAuthSessionRecord);
     System.Assert.areEqual(0, System.Limits.getQueries());
 
     LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
