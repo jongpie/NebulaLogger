@@ -245,6 +245,7 @@ public without sharing abstract class LoggerSObjectHandler {
   private static Map<Schema.SObjectType, LoggerSObjectHandler__mdt> queryHandlerConfigurations() {
     Map<Schema.SObjectType, LoggerSObjectHandler__mdt> sobjectTypeToHandlerConfiguration = new Map<Schema.SObjectType, LoggerSObjectHandler__mdt>();
     for (LoggerSObjectHandler__mdt handlerConfiguration : LoggerConfigurationDataSelector.getInstance().getLoggerSObjectHandlers()) {
+      handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectType__r.QualifiedApiName;
       Schema.SObjectType sobjectType = prepHandlerType(handlerConfiguration);
       sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
     }
@@ -260,9 +261,9 @@ public without sharing abstract class LoggerSObjectHandler {
   }
 
   private static Schema.SObjectType prepHandlerType(LoggerSObjectHandler__mdt handlerConfiguration) {
-    handlerConfiguration.SObjectType__c = String.isNotBlank(handlerConfiguration.SObjectTypeOverride__c)
-      ? handlerConfiguration.SObjectTypeOverride__c
-      : handlerConfiguration.SObjectType__r.QualifiedApiName;
+    if (String.isNotBlank(handlerConfiguration.SObjectTypeOverride__c)) {
+      handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectTypeOverride__c;
+    }
 
     return ((SObject) System.Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
   }

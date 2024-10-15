@@ -11,47 +11,6 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public without sharing class LoggerSObjectProxy {
-  @TestVisible
-  private static final AuthSessionFieldNames AUTH_SESSION_FIELD_NAMES {
-    get {
-      if (AUTH_SESSION_FIELD_NAMES == null) {
-        AUTH_SESSION_FIELD_NAMES = new AuthSessionFieldNames();
-      }
-      return AUTH_SESSION_FIELD_NAMES;
-    }
-    private set;
-  }
-  @TestVisible
-  private static final LoginHistoryFieldNames LOGIN_HISTORY_FIELD_NAMES {
-    get {
-      if (LOGIN_HISTORY_FIELD_NAMES == null) {
-        LOGIN_HISTORY_FIELD_NAMES = new LoginHistoryFieldNames();
-      }
-      return LOGIN_HISTORY_FIELD_NAMES;
-    }
-    private set;
-  }
-  @TestVisible
-  private static final NetworkFieldNames NETWORK_FIELD_NAMES {
-    get {
-      if (NETWORK_FIELD_NAMES == null) {
-        NETWORK_FIELD_NAMES = new NetworkFieldNames();
-      }
-      return NETWORK_FIELD_NAMES;
-    }
-    private set;
-  }
-  @TestVisible
-  private static final OmniProcessFieldNames OMNI_PROCESS_FIELD_NAMES {
-    get {
-      if (OMNI_PROCESS_FIELD_NAMES == null) {
-        OMNI_PROCESS_FIELD_NAMES = new OmniProcessFieldNames();
-      }
-      return OMNI_PROCESS_FIELD_NAMES;
-    }
-    private set;
-  }
-
   /**
    * @description All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible
    *              to mock field values directly during unit tests - even using tricks like System.JSON.deserialize() do not work. The `LoggerSObjectProxy.AuthSession`
@@ -69,30 +28,6 @@ public without sharing class LoggerSObjectProxy {
     public String SessionType;
     public String SourceIp;
     public Id UsersId;
-
-    @SuppressWarnings('PMD.ApexDoc')
-    public AuthSession(Schema.AuthSession authSessionRecord) {
-      this(authSessionRecord, authSessionRecord?.LoginHistory);
-    }
-
-    public AuthSession(Schema.AuthSession authSessionRecord, Schema.LoginHistory loginHistoryRecord) {
-      this((SObject) authSessionRecord, (SObject) loginHistoryRecord);
-    }
-
-    public AuthSession(SObject authSessionRecord, SObject loginHistoryRecord) {
-      if (authSessionRecord != null) {
-        this.Id = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.idField);
-        this.LoginHistory = loginHistoryRecord == null ? null : new LoginHistory(loginHistoryRecord);
-        this.LoginHistoryId = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.loginHistoryIdField);
-        this.LoginType = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.loginTypeField);
-        this.LogoutUrl = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.logoutUrlField);
-        this.ParentId = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.parentIdField);
-        this.SessionSecurityLevel = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField);
-        this.SessionType = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.sessionTypeField);
-        this.SourceIp = (String) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.sourceIpField);
-        this.UsersId = (Id) authSessionRecord.get(AUTH_SESSION_FIELD_NAMES.usersIdField);
-      }
-    }
   }
 
   /**
@@ -106,21 +41,6 @@ public without sharing class LoggerSObjectProxy {
     public String Browser;
     public String Platform;
     public Id UserId;
-
-    @SuppressWarnings('PMD.ApexDoc')
-    public LoginHistory(Schema.LoginHistory loginHistoryRecord) {
-      this((SObject) loginHistoryRecord);
-    }
-
-    @TestVisible
-    private LoginHistory(SObject loginHistoryRecord) {
-      if (loginHistoryRecord != null) {
-        this.Application = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.applicationField);
-        this.Browser = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.browserField);
-        this.Platform = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.platformField);
-        this.UserId = (String) loginHistoryRecord.get(LOGIN_HISTORY_FIELD_NAMES.userIdField);
-      }
-    }
   }
 
   /**
@@ -134,15 +54,6 @@ public without sharing class LoggerSObjectProxy {
     public String Id;
     public String Name;
     public String UrlPathPrefix;
-
-    @SuppressWarnings('PMD.ApexDoc')
-    public Network(SObject networkRecord) {
-      if (networkRecord != null) {
-        this.Id = (Id) networkRecord.get(NETWORK_FIELD_NAMES.idField);
-        this.Name = (String) networkRecord.get(NETWORK_FIELD_NAMES.nameField);
-        this.UrlPathPrefix = (String) networkRecord.get(NETWORK_FIELD_NAMES.urlPathPrefixField);
-      }
-    }
   }
 
   /**
@@ -162,60 +73,5 @@ public without sharing class LoggerSObjectProxy {
     public Datetime LastModifiedDate;
     public String OmniProcessType;
     public String UniqueName;
-
-    @SuppressWarnings('PMD.ApexDoc')
-    public OmniProcess(SObject omniProcess) {
-      if (omniProcess != null) {
-        this.CreatedById = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.createdByIdField);
-        // TODO convert to use OMNI_PROCESS_FIELD_NAMES
-        this.CreatedBy = (Schema.User) omniProcess.getSObject('CreatedBy');
-        this.CreatedDate = (Datetime) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.createdDateField);
-        this.Id = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.idField);
-        this.LastModifiedById = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.lastModifiedByIdField);
-        // TODO convert to use OMNI_PROCESS_FIELD_NAMES
-        this.LastModifiedBy = (Schema.User) omniProcess.getSObject('LastModifiedBy');
-        this.LastModifiedDate = (Datetime) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.lastModifiedDateField);
-        this.OmniProcessType = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.omniProcessTypeField);
-        this.UniqueName = (String) omniProcess.get(OMNI_PROCESS_FIELD_NAMES.uniqueNameField);
-      }
-    }
-  }
-
-  private class AuthSessionFieldNames {
-    public String idField = 'Id';
-    public String loginTypeField = 'LoginType';
-    public String loginHistoryIdField = 'LoginHistoryId';
-    public String loginHistoryField = 'LoginHistory';
-    public String logoutUrlField = 'LogoutUrl';
-    public String parentIdField = 'ParentId';
-    public String sessionSecurityLevelField = 'SessionSecurityLevel';
-    public String sessionTypeField = 'SessionType';
-    public String sourceIpField = 'SourceIp';
-    public String usersIdField = 'UsersId';
-  }
-
-  private class LoginHistoryFieldNames {
-    public String applicationField = 'Application';
-    public String browserField = 'Browser';
-    public String platformField = 'Platform';
-    public String userIdField = 'UserId';
-  }
-
-  private class NetworkFieldNames {
-    public String idField = 'Id';
-    public String nameField = 'Name';
-    public String urlPathPrefixField = 'UrlPathPrefix';
-  }
-
-  private class OmniProcessFieldNames {
-    public String createdByIdField = 'CreatedById';
-    public String createdByField = 'CreatedBy';
-    public String createdDateField = 'CreatedDate';
-    public String idField = 'Id';
-    public String lastModifiedByIdField = 'LastModifiedById';
-    public String lastModifiedByField = 'LastModifiedBy';
-    public String lastModifiedDateField = 'LastModifiedDate';
-    public String omniProcessTypeField = 'OmniProcessType';
-    public String uniqueNameField = 'UniqueName';
   }
 }

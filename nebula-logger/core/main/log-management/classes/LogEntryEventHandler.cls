@@ -244,7 +244,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
       recentLogWithApiReleaseDetails == null &&
       LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, null, jobStatuses) == 0
     ) {
-      System.enqueueJob(new StatusApiCalloutQueueable(TRANSACTION_ID_TO_LOG.values()));
+      LoggerDataStore.getJobQueue().enqueueJob(new StatusApiCalloutQueueable(TRANSACTION_ID_TO_LOG.values()));
     }
   }
 

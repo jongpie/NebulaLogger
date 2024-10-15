@@ -200,6 +200,24 @@ private class LogManagementDataSelector_Tests {
   }
 
   @IsTest
+  static void it_returns_count_of_async_apex_jobs_for_apex_class_name() {
+    System.enqueueJob(new ExampleQueueable());
+    String apexClassName = LogManagementDataSelector_Tests.class.getName();
+    String apexMethodName = null;
+    List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
+    Integer expectedCount = [
+      SELECT COUNT()
+      FROM AsyncApexJob
+      WHERE ApexClass.Name = :apexClassName AND MethodName = :apexMethodName AND Status IN :jobStatuses
+    ];
+    System.Assert.areEqual(1, expectedCount, 'Test has started under the wrong conditions');
+
+    Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
+
+    System.Assert.areEqual(expectedCount, returnedCount);
+  }
+
+  @IsTest
   static void it_returns_count_of_related_record_log_entries() {
     Id targetRecordId = System.UserInfo.getUserId();
     LoggerSObjectHandler.shouldExecute(false);
@@ -236,7 +254,7 @@ private class LogManagementDataSelector_Tests {
 
   @IsTest
   static void it_returns_matching_flow_definition_view_for_specified_flow_api_name() {
-    List<String> targetFlowApiNames = new List<String>{ 'TODO_TEST_FLOW_NAME' };
+    List<String> targetFlowApiNames = new List<String>{ 'Some_Fake_Flow_Name' };
     List<Schema.FlowDefinitionView> expectedResults = [
       SELECT ActiveVersionId, ApiName, Description, DurableId, Label, LastModifiedBy, LastModifiedDate, ManageableState, ProcessType, TriggerType
       FROM FlowDefinitionView
@@ -250,7 +268,7 @@ private class LogManagementDataSelector_Tests {
 
   @IsTest
   static void it_does_not_query_flow_definition_views_when_disabled_via_logger_parameter() {
-    List<String> targetFlowApiNames = new List<String>{ 'TODO_TEST_FLOW_NAME' };
+    List<String> targetFlowApiNames = new List<String>{ 'Some_Fake_Flow_Name' };
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = String.valueOf(false)));
     System.Assert.isFalse(LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA);
     Integer originalQueryCount = System.Limits.getQueries();
@@ -259,6 +277,20 @@ private class LogManagementDataSelector_Tests {
 
     System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
     System.Assert.areEqual(0, returnedResults.size());
+  }
+
+  @IsTest
+  static void it_returns_matching_flow_version_view_for_specified_flow_durable_id() {
+    List<String> targetFlowDurableIds = new List<String>{ 'Some_Fake_Flow_Durable_ID' };
+    List<Schema.FlowVersionView> expectedResults = [
+      SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber
+      FROM FlowVersionView
+      WHERE DurableId IN :targetFlowDurableIds
+    ];
+
+    List<Schema.FlowVersionView> returnedResults = LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(targetFlowDurableIds);
+
+    System.Assert.areEqual(expectedResults, returnedResults);
   }
 
   @IsTest
@@ -408,8 +440,7 @@ private class LogManagementDataSelector_Tests {
   }
 
   @IsTest
-  static void it_returns_omni_processes_for_specified_ids() {
-    // FIXME use a stub record here, always?
+  static void it_returns_omni_process_proxies_from_database() {
     // No need to fail the test if it's running in an org that does not have OmniStudio enabled
     if (IS_OMNISTUDIO_ENABLED == false) {
       return;
@@ -422,9 +453,23 @@ private class LogManagementDataSelector_Tests {
     // TODO revisit to see if there is any other way to create OmniProcess records to improve this test.
     List<String> omniProcessIds = new List<Id>();
 
-    List<SObject> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(omniProcessIds);
+    Map<Id, LoggerSObjectProxy.OmniProcess> returnedResults = LogManagementDataSelector.getInstance().getOmniProcessProxies(omniProcessIds);
 
     System.Assert.isNotNull(returnedResults);
+  }
+
+  @IsTest
+  static void it_returns_omni_process_proxies_from_provided_mocks() {
+    LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess();
+    // Any valid record ID should work here, and the OmniProcess object may not exist, so just use a User ID
+    mockOmniProcessProxy.Id = System.UserInfo.getUserId();
+    LogManagementDataSelector.mockOmniProcessProxies = new List<LoggerSObjectProxy.OmniProcess>{ mockOmniProcessProxy };
+    List<Id> fakeOmniProcessIds = new List<Id>{ mockOmniProcessProxy.Id };
+
+    Map<Id, LoggerSObjectProxy.OmniProcess> returnedResults = LogManagementDataSelector.getInstance().getOmniProcessProxies(fakeOmniProcessIds);
+
+    System.Assert.isNotNull(returnedResults);
+    System.Assert.areEqual(mockOmniProcessProxy, returnedResults.get(mockOmniProcessProxy.Id));
   }
 
   @IsTest
@@ -616,5 +661,11 @@ private class LogManagementDataSelector_Tests {
   }
 
   private class MockLogManagementDataSelector extends LogManagementDataSelector {
+  }
+
+  private class ExampleQueueable implements System.Queueable {
+    public void execute(System.QueueableContext context) {
+      // No-op
+    }
   }
 }
