@@ -47,7 +47,7 @@ private class LoggerEngineDataSelector_Tests {
 
   @IsTest
   static void it_returns_cached_auth_session_proxy_from_database() {
-    List<Schema.AuthSession> sessions = [
+    List<Schema.AuthSession> queriedAuthSessions = [
       SELECT
         Id,
         LoginHistory.Application,
@@ -63,7 +63,9 @@ private class LoggerEngineDataSelector_Tests {
       FROM AuthSession
       WHERE UsersId = :System.UserInfo.getUserId() AND IsCurrent = TRUE
     ];
-    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
+    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = queriedAuthSessions.isEmpty()
+      ? null
+      : (LoggerSObjectProxy.AuthSession) System.JSON.deserialize(System.JSON.serialize(queriedAuthSessions.get(0)), LoggerSObjectProxy.AuthSession.class);
     System.Assert.areEqual(1, System.Limits.getQueries());
 
     LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
