@@ -12,7 +12,7 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:nil="true" />
+        <value xsi:type="xsd:string">Some example record, used by Nebula Logger's pipeline for testing</value>
     </values>
     <values>
         <field>Value__c</field>
