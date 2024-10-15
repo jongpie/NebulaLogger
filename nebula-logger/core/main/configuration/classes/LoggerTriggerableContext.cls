@@ -55,6 +55,38 @@ public without sharing class LoggerTriggerableContext {
   //   this.triggerNew = triggerNew;
   //   this.triggerNewMap = triggerNewMap;
   //   this.triggerOldMap = triggerOldMap;
+  public class InvocableThing {
+    @InvocableVariable
+    public List<SObject> records;
+    @InvocableVariable
+    public SObject recordNew;
+    @InvocableVariable
+    public SObject recordOld;
+    @InvocableVariable
+    public List<LoggerPluginFlowRecordInput> recordInputs;
+    @InvocableVariable
+    public LoggerPluginFlowRecordInput recordInput;
+  }
+
+  public class InvocableInput {
+    @InvocableVariable
+    public String sobjectTypeName;
+  }
+
+  @InvocableMethod(
+    category='Logging'
+    label='Get Logger Trigger Context'
+    description='Returns the list of account names corresponding to the specified account IDs.'
+  )
+  public static List<InvocableThing> getTriggerContext(List<InvocableInput> inputs) {
+    InvocableThing thing = new InvocableThing();
+    thing.records = [SELECT id, username FROM user];
+    return new List<InvocableThing>{ thing };
+  }
+
+  public LoggerTriggerableContext(Schema.SObjectType sobjectType, System.TriggerOperation triggerOperationType, List<SObject> triggerNew) {
+    this(sobjectType, triggerOperationType, triggerNew, null, null);
+  }
 
   //   this.setupAdditionalProperties();
   // }
