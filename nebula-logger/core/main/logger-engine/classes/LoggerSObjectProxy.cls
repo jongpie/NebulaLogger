@@ -9,7 +9,6 @@
  *              Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another,
  *              such as not being mockable or creatable, or not existing in all orgs.
  */
-@SuppressWarnings('PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public without sharing class LoggerSObjectProxy {
   /**
    * @description All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible
@@ -75,6 +74,7 @@ public without sharing class LoggerSObjectProxy {
     public String UniqueName;
   }
 
+  @SuppressWarnings('PMD.ApexDoc')
   private abstract class SObjectProxy {
     public String serialize() {
       return System.JSON.serializePretty(this);
