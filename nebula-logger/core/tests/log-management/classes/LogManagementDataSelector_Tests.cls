@@ -663,6 +663,7 @@ private class LogManagementDataSelector_Tests {
   private class MockLogManagementDataSelector extends LogManagementDataSelector {
   }
 
+  @SuppressWarnings('PMD.EmptyStatementBlock')
   private class ExampleQueueable implements System.Queueable {
     public void execute(System.QueueableContext context) {
       // No-op
