@@ -694,12 +694,12 @@ The first step is to add a field to the platform event `LogEntryEvent__e`
   ```javascript
   import { getLogger } from 'c/logger';
 
-  export default class LoggerLWCImportDemo extends LightningElement {
+  export default class LoggerDemo extends LightningElement {
     logger = getLogger();
 
     connectedCallback() {
       // Set My_Field__c on every log entry event created in this component with the same value
-      this.logger.setField(LogEntryEvent__e.My_Field__c, 'some value that applies to any subsequent entry');
+      this.logger.setField({My_Field__c, 'some value that applies to any subsequent entry'});
 
       // Set fields on specific entries
       this.logger.warn('hello, world - "a value" set for Some_Other_Field__c').setField({ Some_Other_Field__c: 'a value' });
