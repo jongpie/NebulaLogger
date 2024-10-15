@@ -830,15 +830,15 @@ public class LoggerParameter {
 
   private static Map<String, LoggerParameter__mdt> loadRecords() {
     Map<String, LoggerParameter__mdt> parameters = LoggerConfigurationDataSelector.getInstance().getLoggerParameters();
+    // DELETEME remove this in a future release - only Nebula Logger's own tests should use mocks,
+    // but org tests should actually load the records from the database
     if (System.Test.isRunningTest()) {
       // Keep a copy of any records that *should* be loaded during tests
       // Currently, only the record `SystemDebugMessageFormat` has a use case for this functionality,
       // but others can be easily added if other use cases are found
       Map<String, LoggerParameter__mdt> parametersToLoadDuringTests = new Map<String, LoggerParameter__mdt>();
       for (String testContextParameterName : PARAMETERS_TO_LOAD_DURING_TESTS) {
-        if (parameters.containsKey(testContextParameterName)) {
-          parametersToLoadDuringTests.put(testContextParameterName, parameters.get(testContextParameterName));
-        }
+        parametersToLoadDuringTests.put(testContextParameterName, LoggerParameter__mdt.getInstance(testContextParameterName));
       }
       parameters.clear();
       parameters.putAll(parametersToLoadDuringTests);
