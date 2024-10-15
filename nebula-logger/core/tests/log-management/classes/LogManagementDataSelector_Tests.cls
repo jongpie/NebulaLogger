@@ -9,6 +9,11 @@ private class LogManagementDataSelector_Tests {
   @TestVisible
   private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @IsTest
   static void it_dynamically_queries_all_records_for_specified_sobject_type_and_fields() {
     Schema.SObjectType targetSObjectType = Schema.Organization.SObjectType;

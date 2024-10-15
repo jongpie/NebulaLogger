@@ -13,6 +13,11 @@ private class LogHandler_Tests {
   private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
   private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_the_log_sobjectType() {
     System.Assert.areEqual(Schema.Log__c.SObjectType, new LogHandler().getSObjectType());

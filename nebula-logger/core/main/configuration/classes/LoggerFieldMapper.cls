@@ -76,10 +76,6 @@ public without sharing class LoggerFieldMapper {
   private static Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>> loadRecords() {
     Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>> sourceSObjectTypeToTargetFieldMappings = new Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>>();
     for (LoggerFieldMapping__mdt fieldMapping : LoggerConfigurationDataSelector.getInstance().getLoggerFieldMappings()) {
-      fieldMapping.SourceSObjectType__c = fieldMapping.SourceSObjectType__c ?? fieldMapping.SourceSObjectType__r.QualifiedApiName;
-      fieldMapping.SourceField__c = fieldMapping.SourceField__c ?? fieldMapping.SourceField__r.QualifiedApiName;
-      fieldMapping.TargetSObjectType__c = fieldMapping.TargetSObjectType__c ?? fieldMapping.TargetSObjectType__r.QualifiedApiName;
-      fieldMapping.TargetField__c = fieldMapping.TargetField__c ?? fieldMapping.TargetField__r.QualifiedApiName;
       addFieldMapping(fieldMapping, sourceSObjectTypeToTargetFieldMappings);
     }
 

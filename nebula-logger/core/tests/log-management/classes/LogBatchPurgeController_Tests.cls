@@ -10,6 +10,11 @@ private class LogBatchPurgeController_Tests {
   private static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';
   private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar', '標準ユーザー')];
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_logPurgeAction_options() {
     List<String> fakeLogPurgeActions = new List<String>{ 'A_FAKE_PURGE_ACTION', 'ANOTHER_ONE', 'SOME_OTHER_PURGE_ACTION' };

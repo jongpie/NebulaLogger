@@ -6,6 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class FlowLogger_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_add_entry_to_logger_buffer() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());

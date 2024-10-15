@@ -9,7 +9,7 @@
  */
 // TODO Add Apex docs
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexCRUDViolation')
-public without sharing virtual class LoggerConfigurationDataSelector {
+public without sharing class LoggerConfigurationDataSelector {
   private static final LoggerConfigurationDataSelector INSTANCE = new LoggerConfigurationDataSelector();
 
   @TestVisible
@@ -43,7 +43,7 @@ public without sharing virtual class LoggerConfigurationDataSelector {
   }
 
   // TODO decide if LoggerSettings__c should be here (I don't think so)
-  public virtual List<LogEntryDataMaskRule__mdt> getLogEntryDataMaskRules() {
+  public List<LogEntryDataMaskRule__mdt> getLogEntryDataMaskRules() {
     return mockLogEntryDataMaskRules ?? LogEntryDataMaskRule__mdt.getAll().values().deepClone();
   }
 
@@ -52,7 +52,7 @@ public without sharing virtual class LoggerConfigurationDataSelector {
    *              including the field `SObjectField__r.QualifiedApiName` that cannot be accessed via `LogEntryTagRule__mdt.getAll()`
    * @return   The cached `List<LogEntryTagRule__mdt>` records
    */
-  public virtual List<LogEntryTagRule__mdt> getLogEntryTagRules() {
+  public List<LogEntryTagRule__mdt> getLogEntryTagRules() {
     List<LogEntryTagRule__mdt> rules = [
       SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
       FROM LogEntryTagRule__mdt
@@ -64,39 +64,54 @@ public without sharing virtual class LoggerConfigurationDataSelector {
     }
 
     for (LogEntryTagRule__mdt rule : rules) {
-      rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
+      rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName ?? rule.SObjectField__c;
     }
     return rules;
   }
 
-  public virtual List<LoggerFieldMapping__mdt> getLoggerFieldMappings() {
-    return mockLoggerFieldMappings ??
-      [
-        SELECT
-          DeveloperName,
-          IsEnabled__c,
-          SourceSObjectType__r.QualifiedApiName,
-          SourceField__r.QualifiedApiName,
-          TargetSObjectType__r.QualifiedApiName,
-          TargetField__r.QualifiedApiName
-        FROM LoggerFieldMapping__mdt
-        WHERE IsEnabled__c = TRUE
-      ];
+  public List<LoggerFieldMapping__mdt> getLoggerFieldMappings() {
+    List<LoggerFieldMapping__mdt> fieldMappings = [
+      SELECT
+        DeveloperName,
+        IsEnabled__c,
+        SourceSObjectType__r.QualifiedApiName,
+        SourceField__r.QualifiedApiName,
+        TargetSObjectType__r.QualifiedApiName,
+        TargetField__r.QualifiedApiName
+      FROM LoggerFieldMapping__mdt
+      WHERE IsEnabled__c = TRUE
+    ];
+
+    if (mockLoggerFieldMappings != null) {
+      fieldMappings = mockLoggerFieldMappings;
+    }
+
+    for (LoggerFieldMapping__mdt fieldMapping : fieldMappings) {
+      fieldMapping.SourceSObjectType__c = fieldMapping.SourceSObjectType__r.QualifiedApiName ?? fieldMapping.SourceSObjectType__c;
+      fieldMapping.SourceField__c = fieldMapping.SourceField__r.QualifiedApiName ?? fieldMapping.SourceField__c;
+      fieldMapping.TargetSObjectType__c = fieldMapping.TargetSObjectType__r.QualifiedApiName ?? fieldMapping.TargetSObjectType__c;
+      fieldMapping.TargetField__c = fieldMapping.TargetField__r.QualifiedApiName ?? fieldMapping.TargetField__c;
+    }
+
+    return fieldMappings;
   }
 
-  public virtual Map<String, LoggerParameter__mdt> getLoggerParameters() {
+  public Map<String, LoggerParameter__mdt> getLoggerParameters() {
     return mockLoggerParameters ?? LoggerParameter__mdt.getAll().deepClone();
   }
 
-  public virtual List<LoggerPlugin__mdt> getLoggerPlugins() {
+  public List<LoggerPlugin__mdt> getLoggerPlugins() {
     return mockLoggerPlugins ?? LoggerPlugin__mdt.getAll().values().deepClone();
   }
 
-  public virtual List<LoggerScenarioRule__mdt> getLoggerScenarioRules() {
+  public List<LoggerScenarioRule__mdt> getLoggerScenarioRules() {
     return mockLoggerScenarioRules ?? LoggerScenarioRule__mdt.getAll().values().deepClone();
   }
 
-  public virtual List<LoggerSObjectHandler__mdt> getLoggerSObjectHandlers() {
+  public List<LoggerSObjectHandler__mdt> getLoggerSObjectHandlers() {
+    // TODO eventually update this method to handle mapping relationship fields to lookup fields,
+    // Example: handler.SObjectType__c = handler.SObjectType__r.QualifiedApiName;
+    // Right now, this is handled in LoggerSObjectHandler
     return mockLoggerSObjectHandlers ??
       [
         SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
@@ -105,7 +120,7 @@ public without sharing virtual class LoggerConfigurationDataSelector {
       ];
   }
 
-  public virtual List<LogStatus__mdt> getLogStatuses() {
+  public List<LogStatus__mdt> getLogStatuses() {
     return mockLogStatuses ?? LogStatus__mdt.getAll().values().deepClone();
   }
 

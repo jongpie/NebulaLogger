@@ -15,6 +15,11 @@ private class LogBatchPurger_Tests {
   private static LoggerBatchableContext batchInput;
   private static List<SObject> pluginRecords;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @TestSetup
   static void setupData() {
     LoggerSObjectHandler.shouldExecute(false);

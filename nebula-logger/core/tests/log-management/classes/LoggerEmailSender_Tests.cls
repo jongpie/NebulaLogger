@@ -21,6 +21,11 @@ private class LoggerEmailSender_Tests {
     set;
   }
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_indicate_email_deliverability_is_based_on_email_deliverability_when_org_limits_not_exceeded() {
     System.OrgLimit singleEmailOrgLimit = OrgLimits.getMap().get('SingleEmail');
