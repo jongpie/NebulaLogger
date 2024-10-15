@@ -13,9 +13,9 @@ public without sharing virtual class LoggerEngineDataSelector {
   private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('Schema.Network') != null;
 
   @TestVisible
-  private static List<SObject> mockAuthSessions;
+  private static List<LoggerSObjectProxy.AuthSession> mockAuthSessionProxies;
   @TestVisible
-  private static List<SObject> mockNetworkRecords;
+  private static List<LoggerSObjectProxy.Network> mockNetworkProxies;
 
   private static LoggerEngineDataSelector instance = new LoggerEngineDataSelector();
 
@@ -45,7 +45,7 @@ public without sharing virtual class LoggerEngineDataSelector {
       return userIdToAuthSessionProxy;
     }
 
-    List<SObject> authSessions = [
+    List<SObject> authSessionRecords = [
       SELECT
         Id,
         LoginType,
@@ -65,12 +65,16 @@ public without sharing virtual class LoggerEngineDataSelector {
       ORDER BY ParentId NULLS FIRST
     ];
 
-    if (mockAuthSessions != null) {
-      authSessions = mockAuthSessions;
+    List<LoggerSObjectProxy.AuthSession> authSessionProxies = (List<LoggerSObjectProxy.AuthSession>) System.JSON.deserialize(
+      System.JSON.serializePretty(authSessionRecords),
+      List<LoggerSObjectProxy.AuthSession>.class
+    );
+
+    if (mockAuthSessionProxies != null) {
+      authSessionProxies = mockAuthSessionProxies;
     }
 
-    for (SObject authSession : authSessions) {
-      LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSession);
+    for (LoggerSObjectProxy.AuthSession authSessionProxy : authSessionProxies) {
       userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);
     }
     return userIdToAuthSessionProxy;
@@ -88,12 +92,12 @@ public without sharing virtual class LoggerEngineDataSelector {
       return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
     }
 
-    LoggerSObjectProxy.AuthSession authSession;
+    LoggerSObjectProxy.AuthSession authSessionProxy;
     if (LoggerParameter.QUERY_AUTH_SESSION_DATA) {
-      authSession = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
-      LoggerCache.getSessionCache().put(cacheKey, authSession);
+      authSessionProxy = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
+      LoggerCache.getSessionCache().put(cacheKey, authSessionProxy);
     }
-    return authSession;
+    return authSessionProxy;
   }
 
   /**
@@ -103,14 +107,7 @@ public without sharing virtual class LoggerEngineDataSelector {
    * @return           The cached `Schema.Network` record
    */
   public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
-    // TODO revisit this implementation/where this lives
-    if (mockNetworkRecords != null) {
-      Map<Id, SObject> networkIdToRecord = new Map<Id, SObject>(mockNetworkRecords);
-      SObject mockNetworkRecord = networkIdToRecord.get(networkId);
-      return mockNetworkRecord == null ? null : new LoggerSObjectProxy.Network(mockNetworkRecord);
-    }
-
-    if (networkId == null || IS_EXPERIENCE_CLOUD_ENABLED == false) {
+    if (networkId == null || (IS_EXPERIENCE_CLOUD_ENABLED == false && mockNetworkProxies == null)) {
       return null;
     }
 
@@ -170,9 +167,8 @@ public without sharing virtual class LoggerEngineDataSelector {
       return (Schema.User) LoggerCache.getSessionCache().get(cacheKey);
     }
 
-    Schema.User user;
-    if (LoggerParameter.QUERY_USER_DATA) {
-      user = getUsers(new List<Id>{ userId }).get(userId);
+    Schema.User user = getUsers(new List<Id>{ userId }).get(userId);
+    if (user != null) {
       LoggerCache.getSessionCache().put(cacheKey, user);
     }
     return user;
@@ -193,14 +189,18 @@ public without sharing virtual class LoggerEngineDataSelector {
     // may not be enabled in the org (no Schema.Network object), so run everything dynamically
     Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
     String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
-    List<SObject> networkRecords = System.Database.query(String.escapeSingleQuotes(query));
+    List<SObject> networkRecords = IS_EXPERIENCE_CLOUD_ENABLED ? System.Database.query(String.escapeSingleQuotes(query)) : new List<SObject>();
 
-    if (mockNetworkRecords != null) {
-      networkRecords = mockNetworkRecords;
+    List<LoggerSObjectProxy.Network> networkProxies = (List<LoggerSObjectProxy.Network>) System.JSON.deserialize(
+      System.JSON.serializePretty(networkRecords),
+      List<LoggerSObjectProxy.Network>.class
+    );
+
+    if (mockNetworkProxies != null) {
+      networkProxies = mockNetworkProxies;
     }
 
-    for (SObject networkRecord : networkRecords) {
-      LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(networkRecord);
+    for (LoggerSObjectProxy.Network networkProxy : networkProxies) {
       networkIdToNetworkProxy.put(networkProxy.Id, networkProxy);
     }
     return networkIdToNetworkProxy;
@@ -245,7 +245,7 @@ public without sharing virtual class LoggerEngineDataSelector {
     // by initializing all of the mock list variables.
     // And just in case there are multiple calls made to useMocks(),
     // only set the mock variables if they're null.
-    mockAuthSessions = mockAuthSessions ?? new List<SObject>();
-    mockNetworkRecords = mockNetworkRecords ?? new List<SObject>();
+    mockAuthSessionProxies = mockAuthSessionProxies ?? new List<LoggerSObjectProxy.AuthSession>();
+    mockNetworkProxies = mockNetworkProxies ?? new List<LoggerSObjectProxy.Network>();
   }
 }

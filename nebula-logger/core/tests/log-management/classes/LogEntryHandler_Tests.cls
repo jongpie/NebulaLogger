@@ -1262,17 +1262,13 @@ private class LogEntryHandler_Tests {
 
   @IsTest
   static void it_should_set_origin_omni_process_details() {
-    // No need to fail the test if it's running in an org that does not have OmniStudio enabled
-    if (IS_OMNISTUDIO_ENABLED == false) {
-      return;
-    }
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
-    SObject mockOmniProcessRecord = (SObject) (System.Type.forName('Schema.OmniProcess').newInstance());
-    LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
+    LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess();
     mockOmniProcessProxy.CreatedById = System.UserInfo.getUserId();
     mockOmniProcessProxy.CreatedBy = currentUser;
     mockOmniProcessProxy.CreatedDate = System.now().addDays(-7);
-    mockOmniProcessProxy.Id = LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType());
+    // Any valid ID - from any SObject Type - is good enough here, so we'll use Account
+    mockOmniProcessProxy.Id = LoggerMockDataCreator.createId(Schema.Account.SObjectType);
     mockOmniProcessProxy.LastModifiedById = currentUser.Id;
     mockOmniProcessProxy.LastModifiedBy = currentUser;
     mockOmniProcessProxy.LastModifiedDate = System.now().addDays(-1);

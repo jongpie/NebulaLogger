@@ -10,7 +10,7 @@ private class LoggerSObjectProxy_Tests {
   private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 
   @IsTest
-  static void it_converts_auth_session_record_to_proxy_from_database() {
+  static void it_correctly_deserializes_auth_session_records_to_proxies() {
     List<Schema.AuthSession> authSessionRecords = [
       SELECT
         Id,
@@ -27,311 +27,110 @@ private class LoggerSObjectProxy_Tests {
         SourceIp,
         UsersId
       FROM AuthSession
-      LIMIT 1
+      LIMIT 3
     ];
-    if (authSessionRecords.isEmpty()) {
-      // Since the Schema.AuthSession object cannot be mocked, the test can only run as an integration test
-      // No need to fail the test if there isn't a Schema.AuthSession record available via querying
-      return;
+
+    List<LoggerSObjectProxy.AuthSession> authSessionProxies = (List<LoggerSObjectProxy.AuthSession>) System.JSON.deserialize(
+      System.JSON.serialize(authSessionRecords),
+      List<LoggerSObjectProxy.AuthSession>.class
+    );
+
+    System.Assert.areEqual(authSessionRecords.size(), authSessionProxies.size());
+    for (Integer i = 0; i < authSessionRecords.size(); i++) {
+      Schema.AuthSession authSessionRecord = authSessionRecords.get(i);
+      LoggerSObjectProxy.AuthSession authSessionProxy = authSessionProxies.get(i);
+      System.Assert.areEqual(authSessionRecord.LoginHistory.Application, authSessionProxy.LoginHistory.Application);
+      System.Assert.areEqual(authSessionRecord.LoginHistory.Browser, authSessionProxy.LoginHistory.Browser);
+      System.Assert.areEqual(authSessionRecord.LoginHistory.Platform, authSessionProxy.LoginHistory.Platform);
+      System.Assert.areEqual(authSessionRecord.LoginHistory.UserId, authSessionProxy.LoginHistory.UserId);
+      System.Assert.areEqual(authSessionRecord.LoginHistoryId, authSessionProxy.LoginHistoryId);
+      System.Assert.areEqual(authSessionRecord.LoginType, authSessionProxy.LoginType);
+      System.Assert.areEqual(authSessionRecord.LogoutUrl, authSessionProxy.LogoutUrl);
+      System.Assert.areEqual(authSessionRecord.ParentId, authSessionProxy.ParentId);
+      System.Assert.areEqual(authSessionRecord.SessionSecurityLevel, authSessionProxy.SessionSecurityLevel);
+      System.Assert.areEqual(authSessionRecord.SessionType, authSessionProxy.SessionType);
+      System.Assert.areEqual(authSessionRecord.SourceIp, authSessionProxy.SourceIp);
+      System.Assert.areEqual(authSessionRecord.UsersId, authSessionProxy.UsersId);
     }
-    Schema.AuthSession authSessionRecord = authSessionRecords.get(0);
-
-    LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSessionRecord);
-
-    System.Assert.areEqual(authSessionRecord.Id, authSessionProxy.Id);
-    System.Assert.areEqual(authSessionRecord.LoginHistory.Application, authSessionProxy.LoginHistory.Application);
-    System.Assert.areEqual(authSessionRecord.LoginHistory.Browser, authSessionProxy.LoginHistory.Browser);
-    System.Assert.areEqual(authSessionRecord.LoginHistory.Platform, authSessionProxy.LoginHistory.Platform);
-    System.Assert.areEqual(authSessionRecord.LoginHistory.UserId, authSessionProxy.LoginHistory.UserId);
-    System.Assert.areEqual(authSessionRecord.LoginHistoryId, authSessionProxy.LoginHistoryId);
-    System.Assert.areEqual(authSessionRecord.LoginType, authSessionProxy.LoginType);
-    System.Assert.areEqual(authSessionRecord.LogoutUrl, authSessionProxy.LogoutUrl);
-    System.Assert.areEqual(authSessionRecord.ParentId, authSessionProxy.ParentId);
-    System.Assert.areEqual(authSessionRecord.SessionSecurityLevel, authSessionProxy.SessionSecurityLevel);
-    System.Assert.areEqual(authSessionRecord.SessionType, authSessionProxy.SessionType);
-    System.Assert.areEqual(authSessionRecord.SourceIp, authSessionProxy.SourceIp);
-    System.Assert.areEqual(authSessionRecord.UsersId, authSessionProxy.UsersId);
   }
 
   @IsTest
-  static void it_converts_auth_session_record_to_proxy_from_mock_record_with_no_fields_set() {
-    // Given the platform limitations with populating fields on an AuthSession record,
-    // this test verifies that safe navigator is used for parent fields that may not be set/returned,
-    // like authSessionRecord.LoginHistory.Application. This ensures an empty AuthSession SObject
-    // can be used as a mock in other tests that want a minimalistic way to provide a mock.
-    Schema.AuthSession authSessionRecord = new Schema.AuthSession();
-
-    LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSessionRecord);
-
-    System.Assert.isNotNull(authSessionProxy);
-    System.Assert.isNull(authSessionProxy.Id);
-    System.Assert.isNull(authSessionProxy.LoginHistory);
-    System.Assert.isNull(authSessionProxy.LoginHistoryId);
-    System.Assert.isNull(authSessionProxy.LoginType);
-    System.Assert.isNull(authSessionProxy.LogoutUrl);
-    System.Assert.isNull(authSessionProxy.ParentId);
-    System.Assert.isNull(authSessionProxy.SessionSecurityLevel);
-    System.Assert.isNull(authSessionProxy.SessionType);
-    System.Assert.isNull(authSessionProxy.SourceIp);
-    System.Assert.isNull(authSessionProxy.UsersId);
-  }
-
-  @IsTest
-  static void it_converts_auth_session_record_to_proxy_when_using_stub_account_record() {
-    // Since Schema.AuthSession fields can't be set directly or using JSON.deserialize,
-    // verify that another SObject & its fields can be substituted when needed.
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField = 'AccountSource';
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField = 'Industry';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryField = 'TODO';
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField = 'Site';
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField = 'ParentId';
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField = 'Rating';
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField = 'Type';
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField = 'Fax';
-    LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField = 'OwnerId';
-    SObject stubAuthSessionRecord = new Schema.Account();
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.idField, LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType()));
-    stubAuthSessionRecord.put(
-      LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
-      LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
-    );
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField, 'Some Type');
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField, LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType));
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES, 'TODO');
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField, 'https://salesforce.com');
-    stubAuthSessionRecord.put(
-      LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
-      LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
-    );
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField, 'Some Very Secure Level');
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField, 'Some type');
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField, '1.2.3.4');
-    stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField, System.UserInfo.getUserId());
-
-    LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(stubAuthSessionRecord, null);
-
-    System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField), authSessionProxy.Id);
-    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField), authSessionProxy.LoginType);
-    System.Assert.areEqual(
-      (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField),
-      authSessionProxy.LoginHistoryId
-    );
-    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField), authSessionProxy.LogoutUrl);
-    System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField), authSessionProxy.ParentId);
-    System.Assert.areEqual(
-      (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField),
-      authSessionProxy.SessionSecurityLevel
-    );
-    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField), authSessionProxy.SessionType);
-    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField), authSessionProxy.SourceIp);
-    System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField), authSessionProxy.UsersId);
-  }
-
-  @IsTest
-  static void it_converts_login_history_record_to_proxy_from_database() {
+  static void it_correctly_deserializes_login_history_records_to_proxies() {
     List<Schema.LoginHistory> loginHistoryRecords = [
       SELECT Application, Browser, Platform, UserId
       FROM LoginHistory
-      LIMIT 1
+      LIMIT 3
     ];
-    if (loginHistoryRecords.isEmpty()) {
-      // Since the LoginHistory object cannot be mocked, the test can only run as an integration test
-      // No need to fail the test if there isn't a LoginHistory record available via querying
-      return;
+
+    List<LoggerSObjectProxy.LoginHistory> loginHistoryProxies = (List<LoggerSObjectProxy.LoginHistory>) System.JSON.deserialize(
+      System.JSON.serialize(loginHistoryRecords),
+      List<LoggerSObjectProxy.LoginHistory>.class
+    );
+
+    System.Assert.areEqual(loginHistoryRecords.size(), loginHistoryProxies.size());
+    for (Integer i = 0; i < loginHistoryRecords.size(); i++) {
+      Schema.LoginHistory loginHistoryRecord = loginHistoryRecords.get(i);
+      LoggerSObjectProxy.LoginHistory loginHistoryProxy = loginHistoryProxies.get(i);
+      System.Assert.areEqual(loginHistoryRecord.Application, loginHistoryProxy.Application);
+      System.Assert.areEqual(loginHistoryRecord.Browser, loginHistoryProxy.Browser);
+      System.Assert.areEqual(loginHistoryRecord.Platform, loginHistoryProxy.Platform);
+      System.Assert.areEqual(loginHistoryRecord.UserId, loginHistoryProxy.UserId);
     }
-    Schema.LoginHistory loginHistoryRecord = loginHistoryRecords.get(0);
-
-    LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory(loginHistoryRecord);
-
-    System.Assert.areEqual(loginHistoryRecord.Application, loginHistoryProxy.Application);
-    System.Assert.areEqual(loginHistoryRecord.Browser, loginHistoryProxy.Browser);
-    System.Assert.areEqual(loginHistoryRecord.Platform, loginHistoryProxy.Platform);
-    System.Assert.areEqual(loginHistoryRecord.UserId, loginHistoryProxy.UserId);
   }
 
   @IsTest
-  static void it_converts_login_history_record_to_proxy_from_mock_record_with_no_fields_set() {
-    // Given the platform limitations with populating fields on a LoginHistory record,
-    // this test ensures an empty LoginHistory SObject can be used as a mock in other tests that
-    // want a minimalistic way to provide a mock.
-    Schema.LoginHistory loginHistoryRecord = new Schema.LoginHistory();
-
-    LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory(loginHistoryRecord);
-
-    System.Assert.isNotNull(loginHistoryProxy);
-    System.Assert.isNull(loginHistoryProxy.Application);
-    System.Assert.isNull(loginHistoryProxy.Browser);
-    System.Assert.isNull(loginHistoryProxy.Platform);
-    System.Assert.isNull(loginHistoryProxy.UserId);
-  }
-
-  @IsTest
-  static void it_converts_login_history_record_to_proxy_when_using_stub_account_record() {
-    System.Assert.fail('TODO');
-    // Since Schema.AuthSession fields can't be set directly or using JSON.deserialize,
-    // verify that another SObject & its fields can be substituted when needed.
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField = 'AccountSource';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField = 'Industry';
-    // // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryField = 'TODO';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField = 'Site';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField = 'ParentId';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField = 'Rating';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField = 'Type';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField = 'Fax';
-    // LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField = 'OwnerId';
-    // SObject stubAuthSessionRecord = new Schema.Account();
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.idField, LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType()));
-    // stubAuthSessionRecord.put(
-    //   LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
-    //   LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
-    // );
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField, 'Some Type');
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField, LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType));
-    // // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES, 'TODO');
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField, 'https://salesforce.com');
-    // stubAuthSessionRecord.put(
-    //   LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField,
-    //   LoggerMockDataCreator.createId(stubAuthSessionRecord.getSObjectType())
-    // );
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField, 'Some Very Secure Level');
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField, 'Some type');
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField, '1.2.3.4');
-    // stubAuthSessionRecord.put(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField, System.UserInfo.getUserId());
-
-    // LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(stubAuthSessionRecord, null);
-
-    // System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField), authSessionProxy.Id);
-    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginTypeField), authSessionProxy.LoginType);
-    // System.Assert.areEqual(
-    //   (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.loginHistoryIdField),
-    //   authSessionProxy.LoginHistoryId
-    // );
-    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.logoutUrlField), authSessionProxy.LogoutUrl);
-    // System.Assert.areEqual((Id) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.parentIdField), authSessionProxy.ParentId);
-    // System.Assert.areEqual(
-    //   (String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionSecurityLevelField),
-    //   authSessionProxy.SessionSecurityLevel
-    // );
-    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sessionTypeField), authSessionProxy.SessionType);
-    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.sourceIpField), authSessionProxy.SourceIp);
-    // System.Assert.areEqual((String) stubAuthSessionRecord.get(LoggerSObjectProxy.AUTH_SESSION_FIELD_NAMES.usersIdField), authSessionProxy.UsersId);
-  }
-
-  @IsTest
-  static void it_converts_network_record_to_proxy_when_using_stub_account_record() {
-    // Since Schema.Network doesn't exist in all orgs, verify that another SObject & its fields can be substituted
-    LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField = Schema.Account.Description.toString();
-    SObject stubNetworkRecord = new Schema.Account();
-    stubNetworkRecord.put(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField, LoggerMockDataCreator.createId(stubNetworkRecord.getSObjectType()));
-    stubNetworkRecord.put(LoggerSObjectProxy.NETWORK_FIELD_NAMES.nameField, 'Mock Network Record');
-    stubNetworkRecord.put(LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField, 'this-is-called-a-prefix-even-though-it-comes-at-the-end-of-the-base-url');
-
-    LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(stubNetworkRecord);
-
-    System.Assert.areEqual((Id) stubNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField), networkProxy.Id);
-    System.Assert.areEqual((String) stubNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.nameField), networkProxy.Name);
-    System.Assert.areEqual((String) stubNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField), networkProxy.UrlPathPrefix);
-  }
-
-  @IsTest
-  static void it_converts_network_record_to_proxy_when_experience_cloud_enabled() {
+  static void it_correctly_deserializes_network_records_to_proxies_when_experience_cloud_enabled() {
     // No need to fail the test if it's running in an org that does not have Experience Cloud enabled
     if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
       return;
     }
-    SObject mockNetworkRecord = (SObject) (System.Type.forName('Schema.Network').newInstance());
-    mockNetworkRecord.put(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField, LoggerMockDataCreator.createId(mockNetworkRecord.getSObjectType()));
-    mockNetworkRecord.put(LoggerSObjectProxy.NETWORK_FIELD_NAMES.nameField, 'Mock Network Record');
-    mockNetworkRecord.put(LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField, 'this-is-called-a-prefix-even-though-it-comes-at-the-end-of-the-base-url');
+    List<SObject> networkRecords = System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network LIMIT 3');
 
-    LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(mockNetworkRecord);
+    List<LoggerSObjectProxy.Network> networkProxies = (List<LoggerSObjectProxy.Network>) System.JSON.deserialize(
+      System.JSON.serialize(networkRecords),
+      List<LoggerSObjectProxy.Network>.class
+    );
 
-    System.Assert.areEqual((Id) mockNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.idField), networkProxy.Id);
-    System.Assert.areEqual((String) mockNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.nameField), networkProxy.Name);
-    System.Assert.areEqual((String) mockNetworkRecord.get(LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField), networkProxy.UrlPathPrefix);
+    System.Assert.areEqual(networkRecords.size(), networkProxies.size());
+    for (Integer i = 0; i < networkRecords.size(); i++) {
+      SObject networkRecord = networkRecords.get(i);
+      LoggerSObjectProxy.Network networkProxy = networkProxies.get(i);
+      System.Assert.areEqual(networkRecord.get('Id'), networkProxy.Id);
+      System.Assert.areEqual(networkRecord.get('Name'), networkProxy.Name);
+      System.Assert.areEqual(networkRecord.get('UrlPathPrefix'), networkProxy.UrlPathPrefix);
+    }
   }
 
   @IsTest
-  static void it_converts_omni_process_record_to_proxy_when_using_stub_account_record() {
-    // Since Schema.OmniProcess doesn't exist in all orgs, verify that another SObject & its fields can be substituted
-    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
-    // Some audit fields, like CreatedById, can't be set on an SObject, so start with a Map
-    Map<String, Object> mockOmniProcessUntyped = new Map<String, Object>{
-      'attributes' => new Map<String, Object>{ 'type' => Schema.Account.SObjectType.toString() }
-    };
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByIdField, currentUser.Id);
-    // mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByField, currentUser);
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdDateField, System.now().addDays(-7));
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByIdField, currentUser.Id);
-    // mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByField, currentUser);
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedDateField, System.now().addDays(-1));
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.omniProcessTypeField, 'Integration Procedure');
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.uniqueNameField, 'Mock_OmniScript_English_1');
-    SObject mockOmniProcessRecord = (SObject) System.JSON.deserialize(System.JSON.serialize(mockOmniProcessUntyped), SObject.class);
-    mockOmniProcessRecord.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.idField, LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType()));
-
-    LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
-
-    // System.Assert.areEqual((Schema.User) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByField), omniProcessProxy.CreatedBy);
-    System.Assert.areEqual((String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByIdField), omniProcessProxy.CreatedById);
-    System.Assert.areEqual((Datetime) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdDateField), omniProcessProxy.CreatedDate);
-    System.Assert.areEqual((Id) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.idField), omniProcessProxy.Id);
-    // System.Assert.areEqual((Schema.User) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByField), omniProcessProxy.LastModifiedBy);
-    System.Assert.areEqual(
-      (String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByIdField),
-      omniProcessProxy.LastModifiedById
-    );
-    System.Assert.areEqual(
-      (Datetime) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedDateField),
-      omniProcessProxy.LastModifiedDate
-    );
-    System.Assert.areEqual(
-      (String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.omniProcessTypeField),
-      omniProcessProxy.OmniProcessType
-    );
-    System.Assert.areEqual((String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.uniqueNameField), omniProcessProxy.UniqueName);
-  }
-
-  @IsTest
-  static void it_converts_omni_process_record_to_proxy_when_omnistudio_enabled() {
-    System.Assert.fail('TODO');
+  static void it_deserializes_omni_process_record_to_proxy_from_database_when_omnistudio_enabled() {
     // No need to fail the test if it's running in an org that does not have OmniStudio enabled
     if (IS_OMNISTUDIO_ENABLED == false) {
       return;
     }
-    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
-    // Some audit fields, like CreatedById, can't be set on an SObject, so start with a Map
-    Map<String, Object> mockOmniProcessUntyped = new Map<String, Object>{ 'attributes' => new Map<String, Object>{ 'type' => 'OmniProcess' } };
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByIdField, currentUser.Id);
-    // mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByField, currentUser);
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdDateField, System.now().addDays(-7));
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByIdField, currentUser.Id);
-    // mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByField, currentUser);
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedDateField, System.now().addDays(-1));
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.omniProcessTypeField, 'Integration Procedure');
-    mockOmniProcessUntyped.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.uniqueNameField, 'Mock_OmniScript_English_1');
-    SObject mockOmniProcessRecord = (SObject) System.JSON.deserialize(System.JSON.serialize(mockOmniProcessUntyped), SObject.class);
-    mockOmniProcessRecord.put(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.idField, LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType()));
+    List<SObject> omniProcessRecords = System.Database.query(
+      'SELECT SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username,' +
+        ' LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
+        ' FROM OmniProcess LIMIT 3'
+    );
 
-    LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
+    List<LoggerSObjectProxy.OmniProcess> omniProcessProxies = (List<LoggerSObjectProxy.OmniProcess>) System.JSON.deserialize(
+      System.JSON.serialize(omniProcessRecords),
+      List<LoggerSObjectProxy.OmniProcess>.class
+    );
 
-    // System.Assert.areEqual((Schema.User) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByField), omniProcessProxy.CreatedBy);
-    System.Assert.areEqual((String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdByIdField), omniProcessProxy.CreatedById);
-    System.Assert.areEqual((Datetime) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.createdDateField), omniProcessProxy.CreatedDate);
-    System.Assert.areEqual((Id) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.idField), omniProcessProxy.Id);
-    // System.Assert.areEqual((Schema.User) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByField), omniProcessProxy.LastModifiedBy);
-    System.Assert.areEqual(
-      (String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedByIdField),
-      omniProcessProxy.LastModifiedById
-    );
-    System.Assert.areEqual(
-      (Datetime) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.lastModifiedDateField),
-      omniProcessProxy.LastModifiedDate
-    );
-    System.Assert.areEqual(
-      (String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.omniProcessTypeField),
-      omniProcessProxy.OmniProcessType
-    );
-    System.Assert.areEqual((String) mockOmniProcessRecord.get(LoggerSObjectProxy.OMNI_PROCESS_FIELD_NAMES.uniqueNameField), omniProcessProxy.UniqueName);
+    System.Assert.areEqual(omniProcessRecords.size(), omniProcessProxies.size());
+    for (Integer i = 0; i < omniProcessRecords.size(); i++) {
+      SObject omniProcessRecord = omniProcessRecords.get(i);
+      LoggerSObjectProxy.OmniProcess omniProcessProxy = omniProcessProxies.get(i);
+      System.Assert.areEqual(omniProcessRecord.get('CreatedById'), omniProcessProxy.CreatedById);
+      System.Assert.areEqual(omniProcessRecord.getSObject('CreatedBy'), omniProcessProxy.CreatedBy);
+      System.Assert.areEqual(omniProcessRecord.get('CreatedDate'), omniProcessProxy.CreatedDate);
+      System.Assert.areEqual(omniProcessRecord.get('Id'), omniProcessProxy.Id);
+      System.Assert.areEqual(omniProcessRecord.get('LastModifiedById'), omniProcessProxy.LastModifiedById);
+      System.Assert.areEqual(omniProcessRecord.getSObject('LastModifiedBy'), omniProcessProxy.LastModifiedBy);
+      System.Assert.areEqual(omniProcessRecord.get('LastModifiedDate'), omniProcessProxy.LastModifiedDate);
+      System.Assert.areEqual(omniProcessRecord.get('OmniProcessType'), omniProcessProxy.OmniProcessType);
+      System.Assert.areEqual(omniProcessRecord.get('UniqueName'), omniProcessProxy.UniqueName);
+    }
   }
 }

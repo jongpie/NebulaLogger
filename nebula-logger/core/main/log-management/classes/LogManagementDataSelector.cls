@@ -9,7 +9,11 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing virtual class LogManagementDataSelector {
+  private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
+
   private static LogManagementDataSelector instance = new LogManagementDataSelector();
+  @TestVisible
+  private static List<LoggerSObjectProxy.OmniProcess> mockOmniProcessProxies;
 
   @SuppressWarnings('PMD.EmptyStatementBlock')
   @TestVisible
@@ -198,7 +202,7 @@ public without sharing virtual class LogManagementDataSelector {
   /**
    * @description Returns a list of `Schema.FlowVersionView` records description
    * @param  durableIds The durable IDs of the Flows to query
-   * @return            `List<Schema.FlowDefinitionView>` containing any matching records
+   * @return            `List<Schema.FlowVersionView>` containing any matching records
    */
   public virtual List<Schema.FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
     return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId IN :durableIds];
@@ -307,14 +311,25 @@ public without sharing virtual class LogManagementDataSelector {
 
     // OmniStudio may not be enabled in the org, and the Schema.OmniProcess object may not exist,
     // so run everything dynamically
-    Map<Id, LoggerSObjectProxy.OmniProcess> omniProcessIdToOmniProcessProxy = new Map<Id, LoggerSObjectProxy.OmniProcess>();
     String query =
       'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username, LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
       ' FROM OmniProcess WHERE Id IN :omniProcessIds';
-    for (SObject omniProcessRecord : System.Database.query(String.escapeSingleQuotes(query))) {
-      LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(omniProcessRecord);
+    List<SObject> omniProcessRecords = IS_OMNISTUDIO_ENABLED ? System.Database.query(String.escapeSingleQuotes(query)) : new List<SObject>();
+
+    List<LoggerSObjectProxy.OmniProcess> omniProcessProxies = (List<LoggerSObjectProxy.OmniProcess>) System.JSON.deserialize(
+      System.JSON.serializePretty(omniProcessRecords),
+      List<LoggerSObjectProxy.OmniProcess>.class
+    );
+
+    if (mockOmniProcessProxies != null) {
+      omniProcessProxies = mockOmniProcessProxies;
+    }
+
+    Map<Id, LoggerSObjectProxy.OmniProcess> omniProcessIdToOmniProcessProxy = new Map<Id, LoggerSObjectProxy.OmniProcess>();
+    for (LoggerSObjectProxy.OmniProcess omniProcessProxy : omniProcessProxies) {
       omniProcessIdToOmniProcessProxy.put(omniProcessProxy.Id, omniProcessProxy);
     }
+
     return omniProcessIdToOmniProcessProxy;
   }
 
