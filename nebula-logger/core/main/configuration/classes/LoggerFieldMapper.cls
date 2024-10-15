@@ -17,7 +17,7 @@ public without sharing class LoggerFieldMapper {
    * @param  sourceRecord The source `SObject` record containing the data to copy
    * @param  targetRecord The target `SObject` record that should have fields & field values appended
    */
-  @SuppressWarnings('PMD.AvoidDebugStatements PMD.CyclomaticComplexity')
+  @SuppressWarnings('PMD.AvoidDebugStatements, PMD.CyclomaticComplexity')
   public static void mapFieldValues(SObject sourceRecord, SObject targetRecord) {
     if (sourceRecord == null || targetRecord == null) {
       return;
