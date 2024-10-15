@@ -87,6 +87,12 @@ private class LoggerConfigurationDataSelector_Tests {
       FROM LoggerFieldMapping__mdt
       WHERE IsEnabled__c = TRUE
     ];
+    for (LoggerFieldMapping__mdt fieldMapping : expectedValues) {
+      fieldMapping.SourceSObjectType__c = fieldMapping.SourceSObjectType__r.QualifiedApiName ?? fieldMapping.SourceSObjectType__c;
+      fieldMapping.SourceField__c = fieldMapping.SourceField__r.QualifiedApiName ?? fieldMapping.SourceField__c;
+      fieldMapping.TargetSObjectType__c = fieldMapping.TargetSObjectType__r.QualifiedApiName ?? fieldMapping.TargetSObjectType__c;
+      fieldMapping.TargetField__c = fieldMapping.TargetField__r.QualifiedApiName ?? fieldMapping.TargetField__c;
+    }
 
     List<LoggerFieldMapping__mdt> returnedValues = LoggerConfigurationDataSelector.getInstance().getLoggerFieldMappings();
 
@@ -200,8 +206,5 @@ private class LoggerConfigurationDataSelector_Tests {
     List<LogStatus__mdt> returnedValues = LoggerConfigurationDataSelector.getInstance().getLogStatuses();
 
     System.Assert.areEqual(LoggerConfigurationDataSelector.mockLogStatuses, returnedValues);
-  }
-
-  private class MockLoggerConfigurationDataSelector extends LoggerConfigurationDataSelector {
   }
 }

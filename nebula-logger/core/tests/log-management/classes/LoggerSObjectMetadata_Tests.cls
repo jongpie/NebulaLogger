@@ -12,6 +12,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexUnitTestClassShouldHaveAsserts, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerSObjectMetadata_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_schema_for_specified_sobject_api_name() {
     Schema.SObjectType userSObjectType = Schema.User.SObjectType;

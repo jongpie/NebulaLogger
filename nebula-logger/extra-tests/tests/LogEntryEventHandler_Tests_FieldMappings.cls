@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests_FieldMappings {
+  static {
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_use_field_mappings_on_logger_scenario_and_log_and_log_entry_when_mappings_have_been_configured() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());

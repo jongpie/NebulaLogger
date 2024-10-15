@@ -8,6 +8,11 @@
 private class LogEntryHandler_Tests {
   private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   @TestSetup
   static void setupData() {
     LoggerSObjectHandler.shouldExecute(false);
