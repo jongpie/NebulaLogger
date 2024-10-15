@@ -184,11 +184,11 @@ jobs:
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
       # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+      - name: 'Run Apex Tests Synchronously'
+        run: npm run test:apex:nocoverage -- --synchronous
+
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage
-
-      - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex -- --synchronous
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -252,11 +252,12 @@ jobs:
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
       # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
-      - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
-
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
+
+      # This intentionally does NOT use test:apex:nocoverage, since code coverage results are uploaded below to codecov.io
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex
 
       # This is the only scratch org that's used for uploading code coverage
       - name: 'Upload Apex test code coverage to Codecov.io'
@@ -328,11 +329,11 @@ jobs:
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
       # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
-      - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
-
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
+
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -399,11 +400,11 @@ jobs:
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
       # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
-      - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
-
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
+
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -474,11 +475,11 @@ jobs:
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
       # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
-      - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
-
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
+
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
 
       - name: 'Delete Base Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -542,11 +543,11 @@ jobs:
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
       # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
-      - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
-
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
+
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -657,11 +658,11 @@ jobs:
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
       # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing in the meantime to ensure that everything works with or without an active session.
-      - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo
-
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo --synchronous
+
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo
 
       - name: 'Commit New Package Version'
         if: ${{ github.event_name == 'pull_request' }}

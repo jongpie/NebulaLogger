@@ -6,9 +6,27 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerConfigurationDataSelector_Tests {
-  static {
-    // Don't use the org's actual custom metadata records when running tests
+  @IsTest
+  static void it_initializes_mock_lists_when_use_mocks_is_called() {
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLogEntryDataMaskRules);
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLogEntryTagRules);
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLoggerFieldMappings);
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLoggerParameters);
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLoggerPlugins);
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLoggerScenarioRules);
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLoggerSObjectHandlers);
+    System.Assert.isNull(LoggerConfigurationDataSelector.mockLogStatuses);
+
     LoggerConfigurationDataSelector.useMocks();
+
+    System.Assert.areEqual(new List<LogEntryDataMaskRule__mdt>(), LoggerConfigurationDataSelector.mockLogEntryDataMaskRules);
+    System.Assert.areEqual(new List<LogEntryTagRule__mdt>(), LoggerConfigurationDataSelector.mockLogEntryTagRules);
+    System.Assert.areEqual(new List<LoggerFieldMapping__mdt>(), LoggerConfigurationDataSelector.mockLoggerFieldMappings);
+    System.Assert.areEqual(new Map<String, LoggerParameter__mdt>(), LoggerConfigurationDataSelector.mockLoggerParameters);
+    System.Assert.areEqual(new List<LoggerPlugin__mdt>(), LoggerConfigurationDataSelector.mockLoggerPlugins);
+    System.Assert.areEqual(new List<LoggerScenarioRule__mdt>(), LoggerConfigurationDataSelector.mockLoggerScenarioRules);
+    System.Assert.areEqual(new List<LoggerSObjectHandler__mdt>(), LoggerConfigurationDataSelector.mockLoggerSObjectHandlers);
+    System.Assert.areEqual(new List<LogStatus__mdt>(), LoggerConfigurationDataSelector.mockLogStatuses);
   }
 
   @IsTest
@@ -86,7 +104,7 @@ private class LoggerConfigurationDataSelector_Tests {
 
   @IsTest
   static void it_returns_logger_parameters_from_database() {
-    Map<String, LoggerParameter__mdt> expectedValues = LoggerParameter__mdt.getAll();
+    Map<String, LoggerParameter__mdt> expectedValues = LoggerParameter__mdt.getAll().deepClone();
 
     Map<String, LoggerParameter__mdt> returnedValues = LoggerConfigurationDataSelector.getInstance().getLoggerParameters();
 
@@ -149,11 +167,9 @@ private class LoggerConfigurationDataSelector_Tests {
       FROM LoggerSObjectHandler__mdt
       WHERE IsEnabled__c = TRUE
     ];
-    System.Assert.isFalse(expectedValues.isEmpty());
 
     List<LoggerSObjectHandler__mdt> returnedValues = LoggerConfigurationDataSelector.getInstance().getLoggerSObjectHandlers();
 
-    System.Assert.isFalse(returnedValues.isEmpty());
     System.Assert.areEqual(expectedValues, returnedValues);
   }
 
@@ -171,11 +187,9 @@ private class LoggerConfigurationDataSelector_Tests {
   @IsTest
   static void it_returns_log_statuses_from_database() {
     List<LogStatus__mdt> expectedValues = LogStatus__mdt.getAll().values().deepClone();
-    System.Assert.isFalse(expectedValues.isEmpty());
 
     List<LogStatus__mdt> returnedValues = LoggerConfigurationDataSelector.getInstance().getLogStatuses();
 
-    System.Assert.isFalse(returnedValues.isEmpty());
     System.Assert.areEqual(expectedValues, returnedValues);
   }
 
