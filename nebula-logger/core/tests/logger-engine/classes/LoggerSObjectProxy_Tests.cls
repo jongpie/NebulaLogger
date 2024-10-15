@@ -10,6 +10,21 @@ private class LoggerSObjectProxy_Tests {
   private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 
   @IsTest
+  static void it_supports_constructing_proxy_classes() {
+    // This test is a bit silly, it's primarily here because the other tests uses JSON.deserialize(),
+    // which doesn't provided code coverage
+    LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession();
+    LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory();
+    LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network();
+    LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess();
+
+    System.Assert.areEqual(System.JSON.serializePretty(authSessionProxy), authSessionProxy.serialize());
+    System.Assert.areEqual(System.JSON.serializePretty(loginHistoryProxy), loginHistoryProxy.serialize());
+    System.Assert.areEqual(System.JSON.serializePretty(networkProxy), networkProxy.serialize());
+    System.Assert.areEqual(System.JSON.serializePretty(omniProcessProxy), omniProcessProxy.serialize());
+  }
+
+  @IsTest
   static void it_correctly_deserializes_auth_session_records_to_proxies() {
     List<Schema.AuthSession> authSessionRecords = [
       SELECT
@@ -39,10 +54,10 @@ private class LoggerSObjectProxy_Tests {
     for (Integer i = 0; i < authSessionRecords.size(); i++) {
       Schema.AuthSession authSessionRecord = authSessionRecords.get(i);
       LoggerSObjectProxy.AuthSession authSessionProxy = authSessionProxies.get(i);
-      System.Assert.areEqual(authSessionRecord.LoginHistory.Application, authSessionProxy.LoginHistory.Application);
-      System.Assert.areEqual(authSessionRecord.LoginHistory.Browser, authSessionProxy.LoginHistory.Browser);
-      System.Assert.areEqual(authSessionRecord.LoginHistory.Platform, authSessionProxy.LoginHistory.Platform);
-      System.Assert.areEqual(authSessionRecord.LoginHistory.UserId, authSessionProxy.LoginHistory.UserId);
+      System.Assert.areEqual(authSessionRecord.LoginHistory?.Application, authSessionProxy.LoginHistory?.Application);
+      System.Assert.areEqual(authSessionRecord.LoginHistory?.Browser, authSessionProxy.LoginHistory?.Browser);
+      System.Assert.areEqual(authSessionRecord.LoginHistory?.Platform, authSessionProxy.LoginHistory?.Platform);
+      System.Assert.areEqual(authSessionRecord.LoginHistory?.UserId, authSessionProxy.LoginHistory?.UserId);
       System.Assert.areEqual(authSessionRecord.LoginHistoryId, authSessionProxy.LoginHistoryId);
       System.Assert.areEqual(authSessionRecord.LoginType, authSessionProxy.LoginType);
       System.Assert.areEqual(authSessionRecord.LogoutUrl, authSessionProxy.LogoutUrl);

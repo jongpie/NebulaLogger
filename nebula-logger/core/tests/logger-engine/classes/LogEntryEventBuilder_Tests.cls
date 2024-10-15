@@ -216,12 +216,12 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isTrue(LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
     MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
     LoggerEngineDataSelector.setMock(mockSelector);
-    LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory(null);
+    LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory();
     mockLoginHistoryProxy.Application = 'Application';
     mockLoginHistoryProxy.Browser = 'Browser';
     mockLoginHistoryProxy.Platform = 'Platform';
     mockLoginHistoryProxy.UserId = System.UserInfo.getUserId();
-    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession(null);
+    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession();
     mockAuthSessionProxy.Id = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);
     mockAuthSessionProxy.LoginHistory = mockLoginHistoryProxy;
     mockAuthSessionProxy.LoginHistoryId = LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType);
@@ -1850,24 +1850,23 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
-  static void it_should_set_network_fields_for_experience_site_user_using_stub_network_record() {
-    String mockNetworkId = LoggerMockDataCreator.createId(Schema.Account.SObjectType);
-    String mockNetworkName = 'An Account record, substituting for a Network record';
-    String mockNetworkUrlPrefix = 'some string value for URL prefix';
-    LoggerSObjectProxy.NETWORK_FIELD_NAMES.urlPathPrefixField = Schema.Account.Description.toString();
-    Schema.Account stubNetworkRecord = new Schema.Account(Description = mockNetworkUrlPrefix, Id = mockNetworkId, Name = mockNetworkName);
-    LogEntryEventBuilder.networkId = stubNetworkRecord.Id;
+  static void it_should_set_network_fields_for_experience_site_user_using_mock_network_proxy() {
+    LoggerSObjectProxy.Network mockNetworkProxy = new LoggerSObjectProxy.Network();
+    mockNetworkProxy.Id = LoggerMockDataCreator.createId(Schema.Account.SObjectType);
+    mockNetworkProxy.Name = 'Some Network Name';
+    mockNetworkProxy.UrlPathPrefix = 'some string value for URL prefix';
+    LogEntryEventBuilder.networkId = mockNetworkProxy.Id;
     LoggerEngineDataSelector.useMocks();
-    LoggerEngineDataSelector.mockNetworkRecords.add(stubNetworkRecord);
+    LoggerEngineDataSelector.mockNetworkProxies.add(mockNetworkProxy);
 
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 
-    System.Assert.areEqual(mockNetworkId, logEntryEvent.NetworkId__c);
-    System.Assert.areEqual(mockNetworkName, logEntryEvent.NetworkName__c);
-    System.Assert.areEqual(System.Network.getLoginUrl(mockNetworkId), logEntryEvent.NetworkLoginUrl__c);
-    System.Assert.areEqual(System.Network.getLogoutUrl(mockNetworkId), logEntryEvent.NetworkLogoutUrl__c);
-    System.Assert.areEqual(System.Network.getSelfRegUrl(mockNetworkId), logEntryEvent.NetworkSelfRegistrationUrl__c);
-    System.Assert.areEqual(mockNetworkUrlPrefix, logEntryEvent.NetworkUrlPathPrefix__c);
+    System.Assert.areEqual(mockNetworkProxy.Id, logEntryEvent.NetworkId__c);
+    System.Assert.areEqual(mockNetworkProxy.Name, logEntryEvent.NetworkName__c);
+    System.Assert.areEqual(System.Network.getLoginUrl(mockNetworkProxy.Id), logEntryEvent.NetworkLoginUrl__c);
+    System.Assert.areEqual(System.Network.getLogoutUrl(mockNetworkProxy.Id), logEntryEvent.NetworkLogoutUrl__c);
+    System.Assert.areEqual(System.Network.getSelfRegUrl(mockNetworkProxy.Id), logEntryEvent.NetworkSelfRegistrationUrl__c);
+    System.Assert.areEqual(mockNetworkProxy.UrlPathPrefix, logEntryEvent.NetworkUrlPathPrefix__c);
   }
 
   @IsTest
@@ -1876,13 +1875,17 @@ private class LogEntryEventBuilder_Tests {
       return;
     }
 
-    SObject queriedNetworkRecord = System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network LIMIT 1');
     // Ideally, this type of test would run using System.runAs() and a test user setup for the queried Network record
     // But, setting up a test user in a test context can run into a lot of issues due to custom fields, validation rules, etc.
     // that have been deployed to an org. So, just use the mockNetworkRecords variable, even though this is a real Network record
+    SObject queriedNetworkRecord = System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network LIMIT 1');
+    LoggerSObjectProxy.Network networkProxy = (LoggerSObjectProxy.Network) System.JSON.deserialize(
+      System.JSON.serialize(queriedNetworkRecord),
+      LoggerSObjectProxy.Network.class
+    );
     LogEntryEventBuilder.networkId = queriedNetworkRecord.Id;
     LoggerEngineDataSelector.useMocks();
-    LoggerEngineDataSelector.mockNetworkRecords.add(queriedNetworkRecord);
+    LoggerEngineDataSelector.mockNetworkProxies.add(networkProxy);
 
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 
