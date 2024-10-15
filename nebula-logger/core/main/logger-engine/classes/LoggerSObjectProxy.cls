@@ -17,7 +17,7 @@ public without sharing class LoggerSObjectProxy {
    *              class acts as a substitute for a `Schema.AuthSession` record to provide the abilility to mock the data during unit & integration tests.
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class AuthSession {
+  public class AuthSession extends SObjectProxy {
     public Id Id;
     public String LoginType;
     public Id LoginHistoryId;
@@ -36,7 +36,7 @@ public without sharing class LoggerSObjectProxy {
    *              class acts as a substitute for a `Schema.LoginHistory` record to provide the abilility to mock the data during unit & integration tests.
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class LoginHistory {
+  public class LoginHistory extends SObjectProxy {
     public String Application;
     public String Browser;
     public String Platform;
@@ -50,7 +50,7 @@ public without sharing class LoggerSObjectProxy {
    *              strongly-typed references to fields (properties).
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class Network {
+  public class Network extends SObjectProxy {
     public String Id;
     public String Name;
     public String UrlPathPrefix;
@@ -63,7 +63,7 @@ public without sharing class LoggerSObjectProxy {
    *              strongly-typed references to fields (properties).
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class OmniProcess {
+  public class OmniProcess extends SObjectProxy {
     public Id CreatedById;
     public Schema.User CreatedBy;
     public Datetime CreatedDate;
@@ -73,5 +73,11 @@ public without sharing class LoggerSObjectProxy {
     public Datetime LastModifiedDate;
     public String OmniProcessType;
     public String UniqueName;
+  }
+
+  private abstract class SObjectProxy {
+    public String serialize() {
+      return System.JSON.serializePretty(this);
+    }
   }
 }
