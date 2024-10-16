@@ -829,25 +829,25 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
 
   ```apex
   public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
-     public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
-       // Example: only run the plugin for Log__c records
-       if (context.sobjectType != Schema.Log__c.SObjectType) {
-         return;
-       }
-    
-       List<Log__c> logs = (List<Log__c>) input.triggerNew;
-       switch on input.triggerOperationType {
-         when BEFORE_INSERT {
-           for (Log__c log : logs) {
-             log.Status__c = 'On Hold';
-           }
-         }
-         when BEFORE_UPDATE{
-           // TODO add before-update logic
-         }
-       }
-     }
-   }
+    public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
+      // Example: only run the plugin for Log__c records
+      if (context.sobjectType != Schema.Log__c.SObjectType) {
+        return;
+      }
+
+      List<Log__c> logs = (List<Log__c>) input.triggerNew;
+      switch on input.triggerOperationType {
+        when BEFORE_INSERT {
+          for (Log__c log : logs) {
+            log.Status__c = 'On Hold';
+          }
+        }
+        when BEFORE_UPDATE {
+          // TODO add before-update logic
+        }
+      }
+    }
+  }
   ```
 
 Once you've created your Apex or Flow plugin(s), you will also need to configure the plugin:

@@ -11,6 +11,9 @@
 public without sharing abstract class LoggerSObjectHandler {
   private static final String FLOW_PLUGIN_CONFIGURATION_INPUT_NAME = 'pluginConfiguration';
   private static final String FLOW_PLUGIN_INPUT_NAME = 'pluginInput';
+  private static final String FLOW_PLUGIN_INPUT_TRIGGER_NEW = 'triggerNew';
+  private static final String FLOW_PLUGIN_INPUT_TRIGGER_OPERATION_TYPE = 'triggerOperationType';
+  private static final String FLOW_PLUGIN_INPUT_UPDATED_TRIGGER_NEW = 'updatedTriggerNew';
   private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
   private static final Map<Schema.SObjectType, LoggerSObjectHandler__mdt> SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS = queryHandlerConfigurations();
 
@@ -197,11 +200,12 @@ public without sharing abstract class LoggerSObjectHandler {
       Map<String, Object> flowInputs = new Map<String, Object>();
       flowInputs.put(FLOW_PLUGIN_CONFIGURATION_INPUT_NAME, configuration);
       flowInputs.put(FLOW_PLUGIN_INPUT_NAME, this.input);
+      flowInputs.put(FLOW_PLUGIN_INPUT_TRIGGER_OPERATION_TYPE, this.input.triggerOperationType?.name());
 
       Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.SObjectHandlerFlowName__c, flowInputs);
       flowPlugin.start();
 
-      List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
+      List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue(FLOW_PLUGIN_INPUT_UPDATED_TRIGGER_NEW);
       if (updatedTriggerNew != null && updatedTriggerNew.size() == this.input.triggerNew.size()) {
         this.input.triggerNew.clear();
         this.input.triggerNew.addAll(updatedTriggerNew);
