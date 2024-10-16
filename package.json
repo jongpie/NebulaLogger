@@ -81,7 +81,7 @@
     "@salesforce/cli": "^2.56.6",
     "@salesforce/eslint-config-lwc": "^3.6.0",
     "@salesforce/sfdx-lwc-jest": "^5.1.0",
-    "@salesforce/sfdx-scanner": "^4.4.0",
+    "@salesforce/sfdx-scanner": "^4.6.0",
     "@types/jest-when": "^3.5.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
