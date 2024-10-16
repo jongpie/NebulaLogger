@@ -5,17 +5,17 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions, PMD.ApexUnitTestClassShouldHaveAsserts')
 @IsTest(IsParallel=true)
 private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<SObject>, Database.RaisesPlatformEvents {
-  static {
-    // Don't use the org's actual custom metadata records when running tests
-    LoggerConfigurationDataSelector.useMocks();
-  }
-
   private final Phase throwLocation;
 
   private enum Phase {
     START,
     EXECUTE,
     FINISH
+  }
+
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
   }
 
   @IsTest
