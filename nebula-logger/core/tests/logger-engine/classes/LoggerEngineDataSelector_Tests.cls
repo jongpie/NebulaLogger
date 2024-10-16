@@ -165,9 +165,20 @@ private class LoggerEngineDataSelector_Tests {
     LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(mockNetworkProxy.Id);
 
     System.Assert.isNotNull(returnedNetworkProxy);
-    System.Assert.areEqual(1, System.Limits.getQueries(), 'Query should still be executed, even when using mock records');
+    Integer expectedQueryCount;
+    if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED) {
+      expectedQueryCount = 1;
+      System.Assert.areEqual(
+        expectedQueryCount,
+        System.Limits.getQueries(),
+        'Query should still be executed, even when using mock records (and when Network object is available)'
+      );
+    } else {
+      expectedQueryCount = 0;
+      System.Assert.areEqual(expectedQueryCount, System.Limits.getQueries(), 'Query should not have been executed (when Network object is not available)');
+    }
     LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(mockNetworkProxy.Id);
-    System.Assert.areEqual(1, System.Limits.getQueries(), 'Query results should have been cached');
+    System.Assert.areEqual(expectedQueryCount, System.Limits.getQueries(), 'Query results should have been cached');
     System.Assert.areEqual(mockNetworkProxy.Id, returnedNetworkProxy.Id);
     System.Assert.areEqual(mockNetworkProxy.Name, returnedNetworkProxy.Name);
     System.Assert.areEqual(mockNetworkProxy.UrlPathPrefix, returnedNetworkProxy.UrlPathPrefix);
