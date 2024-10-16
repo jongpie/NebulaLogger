@@ -123,7 +123,7 @@ private class LoggerSObjectProxy_Tests {
       return;
     }
     List<SObject> omniProcessRecords = System.Database.query(
-      'SELECT SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username,' +
+      'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username,' +
         ' LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
         ' FROM OmniProcess LIMIT 3'
     );
