@@ -5,7 +5,33 @@
 
 /**
  * @group Configuration
- * @description Selector class used for all queries that are specific to the configuration layer
+ * @description Selector class used for all queries that are specific to the configuration layer.
+ *
+ *              All queries below are for records stored in custom metadata types (CMDT) - during Apex tests,
+ *              the CMDT records deployed to the current org are returned in queries. This is similar to
+ *              how queries on the User object will still return the org's actual users during tests.
+ *
+ *              For orgs using Nebula Logger, people often (and reasonably so) want to write automated tests
+ *              to validate that they're correctly logging data in the org - and in this context, it makes sense
+ *              for Nebula Logger to query the org's actual CMDT records. Doing so provides a test setup where
+ *              developers/admins/etc can write Apex tests that ensure their usage of Nebula Logger works as expected,
+ *              while using the CMDT records/customizations deployed to their current org. For example:
+ *                1. **Someone has created their own `LogEntryDataMaskRule__mdt` record, and they want to have a test to validate their
+ *                   sensitive data is masked correctly.
+ *                2. **Someone has built their own plugin & `LoggerPlugin__mdt` record, and they want to write an Apex test to validate that their plugin is
+ *                   correctly configured & correctly implemented (especially if there are multiple plugins being used, which could intefere with each other).
+ *                3. **Someone has created their own `LoggerScenario__mdt` record, and they want to write an Apex test to validate that the rule's settings
+ *                   correctly overrides the user's `LoggerSettings__c` record.
+ *                4. **One of Nebula Logger's `LoggerParameter__mdt` CMDT records is misconfigured with an invalid value**. The `LoggerParameter__mdt` object
+ *                   uses a long textarea field `Value__c` to store values to control/customize several features globally. Some of these values are
+ *                   strings/text, but many others are Boolean values (stored as text). If these are incorrectly configured with non-Boolean values
+ *                   (e.g., `Value__c = 'anything besides "true" or "false"`), then the associated feature in Nebula Logger may not behave the way
+ *                   that developers/admins expect.
+ *
+ *              But for Nebula Logger's own tests, it shouldn't rely on the org's actual CMDT records, it needs to be able to provide mocks & test in isolation
+ *              to validate that different combinations of different configurations will work as expected. This class is used to:
+ *                - Centralize all of the CMDT queries/retrievals used by Nebula Logger's codebase
+ *                - Provide a way for Nebula Logger's tests to be run independently of the org's actual CMDT records
  */
 // TODO Add Apex docs
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexCRUDViolation')
