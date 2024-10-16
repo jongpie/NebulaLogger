@@ -323,7 +323,7 @@ public class LoggerMockDataCreator {
   public static Schema.Organization getOrganization() {
     // TODO Switch to creating mock instance of Schema.Organization with sensible defaults that tests can then update as needed for different scenarios
     if (cachedOrganization == null) {
-      cachedOrganization = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+      cachedOrganization = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization LIMIT 1];
     }
     return cachedOrganization;
   }

@@ -1479,7 +1479,7 @@ private class LogEntryEventHandler_Tests {
   }
 
   private static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-    Schema.Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+    Schema.Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization LIMIT 1];
     String orgEnvironmentType;
     if (org.IsSandbox && org.TrialExpirationDate != null) {
       orgEnvironmentType = 'Scratch Org';

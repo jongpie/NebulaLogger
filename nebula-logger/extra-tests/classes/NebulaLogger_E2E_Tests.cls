@@ -139,7 +139,7 @@ private class NebulaLogger_E2E_Tests {
 
   private static LogEntry__c findMatchingLogEntry(String message) {
     LogEntry__c matchingLogEntry;
-    for (LogEntry__c logEntry : [SELECT Id, Message__c FROM LogEntry__c]) {
+    for (LogEntry__c logEntry : [SELECT Id, Message__c FROM LogEntry__c LIMIT 200]) {
       if (logEntry.Message__c == message) {
         matchingLogEntry = logEntry;
         break;
