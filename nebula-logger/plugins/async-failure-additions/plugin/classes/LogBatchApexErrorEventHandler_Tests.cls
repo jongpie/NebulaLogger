@@ -47,7 +47,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
     } catch (System.Exception ex) {
       // via https://salesforce.stackexchange.com/questions/263419/testing-batchapexerrorevent-trigger
     }
-    // at this point, we're still two async-levels deep into Platform Event-land; we need to call "deliver()" twice
+    // At this point, we're still two async-levels deep into Platform Event-land; we need to call "deliver()" twice
     System.Test.getEventBus().deliver(); // fires the platform event for Database.RaisesPlatformEvents
     System.Test.getEventBus().deliver(); // fires the logger's platform event
 
