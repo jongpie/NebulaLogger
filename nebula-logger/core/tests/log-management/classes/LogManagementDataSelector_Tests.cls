@@ -109,26 +109,6 @@ private class LogManagementDataSelector_Tests {
     System.Assert.areEqual(expectedResults, returnedResults);
   }
 
-  // FIXME Querying AsyncApexJob in a test context doesn't seem to return results for @future methods,
-  // and the @future method should be replaced with a queueable class anyway, so fix this test
-  // when converting the @future method to a private queueable class
-  // @IsTest
-  // static void it_returns_count_of_async_apex_jobs_for_specified_class_method_and_statuses() {
-  //     String apexClassName = LogManagementDataSelector_Tests.class.getName();
-  //     String apexMethodName = 'executeSomeFutureMethod';
-  //     List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
-  //     System.Assert.areEqual(0, LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses));
-
-  //     System.Test.startTest();
-  //     executeSomeFutureMethod();
-  //     System.Test.stopTest();
-
-  //     System.Assert.fail([SELECT status FROM AsyncApexJob]);
-  //     Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
-
-  //     System.Assert.areEqual(1, returnedCount);
-  // }
-
   @IsTest
   static void it_returns_cached_recent_log_with_api_release_details_when_call_status_api_callout_is_enabled() {
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
@@ -661,12 +641,6 @@ private class LogManagementDataSelector_Tests {
     LogManagementDataSelector.setMock(mockSelector);
 
     System.Assert.areEqual(mockSelector, LogManagementDataSelector.getInstance());
-  }
-
-  @SuppressWarnings('PMD.EmptyStatementBlock')
-  @future
-  private static void executeSomeFutureMethod() {
-    // This method intentionally does nothing - it\'s only used to help test queries on AsynxApexJob
   }
 
   private class MockLogManagementDataSelector extends LogManagementDataSelector {
