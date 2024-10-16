@@ -825,26 +825,29 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
   3. `Output` parameter `updatedTriggerNew` - If your Flow makes any updates to the collection of records, you should return a record collection containing the updated records
   4. `Input` parameter `triggerOld` - The list of logger records as they exist in the datatabase
 
-- Apex plugins: your Apex class should extend the abstract class `LoggerSObjectHandlerPlugin`. For example:
+- Apex plugins: your Apex class should implements `LoggerPlugin.Triggerable`. For example:
 
-  ```apex public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
-      public override void execute(
-          TriggerOperation triggerOperationType,
-          List<SObject> triggerNew,
-          Map<Id, SObject> triggerNewMap,
-          List<SObject> triggerOld,
-          Map<Id, SObject> triggerOldMap
-      ) {
-          switch on triggerOperationType {
-              when BEFORE_INSERT {
-                  for (Log__c log : (List<Log__c>) triggerNew) {
-                      log.Status__c = 'On Hold';
-                  }
-              }
-          }
-      }
-  }
-
+  ```apex
+  public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
+     public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
+       // Example: only run the plugin for Log__c records
+       if (context.sobjectType != Schema.Log__c.SObjectType) {
+         return;
+       }
+    
+       List<Log__c> logs = (List<Log__c>) input.triggerNew;
+       switch on input.triggerOperationType {
+         when BEFORE_INSERT {
+           for (Log__c log : logs) {
+             log.Status__c = 'On Hold';
+           }
+         }
+         when BEFORE_UPDATE{
+           // TODO add before-update logic
+         }
+       }
+     }
+   }
   ```
 
 Once you've created your Apex or Flow plugin(s), you will also need to configure the plugin:
