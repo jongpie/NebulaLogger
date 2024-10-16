@@ -100,6 +100,6 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
   }
 
   private static Log__c getLog() {
-    return [SELECT Id, (SELECT Message__c, OriginLocation__c, StackTrace__c FROM LogEntries__r) FROM Log__c];
+    return [SELECT Id, (SELECT Message__c, OriginLocation__c, StackTrace__c FROM LogEntries__r) FROM Log__c LIMIT 1];
   }
 }
