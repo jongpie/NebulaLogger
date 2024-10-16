@@ -21,18 +21,17 @@ ignore:
   - 'nebula-logger/recipes/**/*'
 comment:
   behavior: new
-
 # https://docs.codecov.com/docs/flags
-flags:
-  core:
-    paths:
-      - 'nebula-logger/core/**/*'
-    carryforward: false
-  Apex:
-    paths:
-      - 'nebula-logger/core/**/*.cls'
-    carryforward: false
-  LWC:
-    paths:
-      - 'nebula-logger/core/**/*.js'
-    carryforward: false
+# flags:
+#   core:
+#     paths:
+#       - 'nebula-logger/core/**/*'
+#     carryforward: false
+#   Apex:
+#     paths:
+#       - 'nebula-logger/core/**/*.cls'
+#     carryforward: false
+#   LWC:
+#     paths:
+#       - 'nebula-logger/core/**/*.js'
+#     carryforward: false
