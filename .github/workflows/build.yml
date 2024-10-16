@@ -180,7 +180,7 @@ jobs:
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage
@@ -256,7 +256,7 @@ jobs:
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage
@@ -324,7 +324,7 @@ jobs:
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage
@@ -395,7 +395,7 @@ jobs:
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage
@@ -470,7 +470,7 @@ jobs:
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage
@@ -538,7 +538,7 @@ jobs:
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage
@@ -653,7 +653,7 @@ jobs:
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
-      # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+      # Ultimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
       # Running the Apex tests sync & async serves as an extra level of integration testing in the meantime to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo
