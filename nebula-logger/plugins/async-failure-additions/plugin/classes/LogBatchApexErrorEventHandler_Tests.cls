@@ -10,13 +10,13 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
     LoggerConfigurationDataSelector.useMocks();
   }
 
+  private final Phase throwLocation;
+
   private enum Phase {
     START,
     EXECUTE,
     FINISH
   }
-
-  private final Phase throwLocation;
 
   @IsTest
   static void it_should_create_log_when_batch_job_throws_in_start_method() {
