@@ -28,8 +28,10 @@
  *                   (e.g., `Value__c = 'anything besides "true" or "false"`), then the associated feature in Nebula Logger may not behave the way
  *                   that developers/admins expect.
  *
- *              But for Nebula Logger's own tests, it shouldn't rely on the org's actual CMDT records, it needs to be able to provide mocks & test in isolation
- *              to validate that different combinations of different configurations will work as expected. This class is used to:
+ *              But for Nebula Logger's own tests, it shouldn't rely on the org's actual CMDT records, it needs to be able to provide
+ *              mocks & test in isolation to validate that different combinations of different configurations will work as expected.
+ *
+ *              This class is used to:
  *                - Centralize all of the CMDT queries/retrievals used by Nebula Logger's codebase
  *                - Provide a way for Nebula Logger's tests to be run independently of the org's actual CMDT records
  */
