@@ -213,7 +213,11 @@ private class LogManagementDataSelector_Tests {
     Integer expectedCount = [
       SELECT COUNT()
       FROM AsyncApexJob
-      WHERE ApexClass.Name = :apexClassName AND MethodName = :apexMethodName AND Status IN :jobStatuses
+      WHERE
+        ApexClass.NamespacePrefix = :Logger.getNamespacePrefix()
+        AND ApexClass.Name = :apexClassName
+        AND MethodName = :apexMethodName
+        AND Status IN :jobStatuses
     ];
     System.Assert.areEqual(1, expectedCount, 'Test has started under the wrong conditions');
 
