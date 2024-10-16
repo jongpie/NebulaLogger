@@ -402,7 +402,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setField(Schema.SObjectField field, Object fieldValue)` → `LogEntryEventBuilder`
 
-Sets a field values on the builder&apos;s `LogEntryEvent__e` record
+Sets a field value on the builder&apos;s `LogEntryEvent__e` record
 
 ##### Parameters
 

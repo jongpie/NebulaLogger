@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.13.NEXT",
-      "versionName": "New getLogger() JS Function",
-      "versionDescription": "Added a new function getLogger() in c/logger that can be called synchronously (createLogger() was async). This simplifies how developers use it, and avoids some lingering JS stack trace issues that occur in async functions.",
+      "versionNumber": "4.14.14.NEXT",
+      "versionName": "New Apex Static Method & JavaScript Function Logger.setField()",
+      "versionDescription": "Added a new Apex static method Logger.setField() and LWC function logger.setField() so custom fields can be set once --> auto-populated on all subsequent LogEntryEvent__e records",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -198,6 +198,7 @@
     "Nebula Logger - Core@4.14.11-updated-behavior-of-logger.setasynccontext()": "04t5Y0000015oUgQAI",
     "Nebula Logger - Core@4.14.12-replaced-httprequestendpoint__c-with-httprequestendpointaddress__c": "04t5Y0000015oV0QAI",
     "Nebula Logger - Core@4.14.13-new-getlogger()-js-function": "04t5Y0000015oW3QAI",
+    "Nebula Logger - Core@4.14.14-new-apex-static-method-&-javascript-function-logger.setfield()": "04t5Y0000015oWIQAY",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

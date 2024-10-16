@@ -10,7 +10,7 @@ import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
-const CURRENT_VERSION_NUMBER = 'v4.14.13';
+const CURRENT_VERSION_NUMBER = 'v4.14.14';
 
 const CONSOLE_OUTPUT_CONFIG = {
   messagePrefix: `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `,
@@ -49,6 +49,7 @@ export class BrowserContext {
 export default class LoggerService {
   static hasInitialized = false;
 
+  #componentFieldToValue = {};
   #componentLogEntries = [];
   #settings;
   #scenario;
@@ -67,6 +68,17 @@ export default class LoggerService {
   // TODO deprecate? Or make it async?
   getUserSettings() {
     return this.#settings;
+  }
+
+  /**
+   * @description Sets multiple field values on every generated `LogEntryEvent__e` record
+   * @param  {Object} fieldToValue An object containing the custom field name as a key, with the corresponding value to store.
+   *                      Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}`
+   */
+  setField(fieldToValue) {
+    if (!!fieldToValue && typeof fieldToValue === 'object' && !Array.isArray(fieldToValue)) {
+      Object.assign(this.#componentFieldToValue, fieldToValue);
+    }
   }
 
   setScenario(scenario) {
@@ -176,6 +188,7 @@ export default class LoggerService {
       .setMessage(message)
       .setScenario(this.#scenario);
     const logEntry = logEntryBuilder.getComponentLogEntry();
+    Object.assign(logEntry.fieldToValue, this.#componentFieldToValue);
 
     const loggingLevelCheckTask = providedLoggingLevel => {
       if (this._meetsUserLoggingLevel(providedLoggingLevel)) {

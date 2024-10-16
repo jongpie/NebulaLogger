@@ -543,7 +543,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     // getLogger() is built to be sync, but internally, some async tasks must execute
     // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
-    await logger.getUserSettings();
 
     const logEntry = logger.info('example log entry').getComponentLogEntry();
 
@@ -555,13 +554,36 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
   });
 
-  it('sets multiple custom fields', async () => {
+  it('sets multiple custom component fields on subsequent entries', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = getLogger();
     // getLogger() is built to be sync, but internally, some async tasks must execute
     // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
-    await logger.getUserSettings();
+    const firstFakeFieldName = 'SomeField__c';
+    const firstFieldMockValue = 'something';
+    const secondFakeFieldName = 'AnotherField__c';
+    const secondFieldMockValue = 'another value';
+
+    const previousLogEntry = logger.info('example log entry from before setField() is called').getComponentLogEntry();
+    logger.setField({
+      [firstFakeFieldName]: firstFieldMockValue,
+      [secondFakeFieldName]: secondFieldMockValue
+    });
+    const subsequentLogEntry = logger.info('example log entry from after setField() is called').getComponentLogEntry();
+
+    expect(previousLogEntry.fieldToValue[firstFakeFieldName]).toBeUndefined();
+    expect(previousLogEntry.fieldToValue[secondFakeFieldName]).toBeUndefined();
+    expect(subsequentLogEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
+    expect(subsequentLogEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
+  });
+
+  it('sets multiple custom entry fields on a single entry', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = getLogger();
+    // getLogger() is built to be sync, but internally, some async tasks must execute
+    // before some sync tasks are executed
+    await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
     const firstFakeFieldName = 'SomeField__c';
@@ -586,7 +608,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     // getLogger() is built to be sync, but internally, some async tasks must execute
     // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
-    await logger.getUserSettings();
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
     expect(logEntry.recordId).toBeFalsy();
@@ -603,7 +624,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     // getLogger() is built to be sync, but internally, some async tasks must execute
     // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
-    await logger.getUserSettings();
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
     expect(logEntry.record).toBeFalsy();
@@ -620,7 +640,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     // getLogger() is built to be sync, but internally, some async tasks must execute
     // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
-    await logger.getUserSettings();
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
     expect(logEntry.error).toBeFalsy();
@@ -1147,7 +1166,29 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
     expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
   });
 
-  it('sets multiple custom fields when using deprecated async createLogger() import approach', async () => {
+  it('sets multiple custom component fields on subsequent entries when using deprecated async createLogger() import approach', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = await createLogger();
+    await logger.getUserSettings();
+    const firstFakeFieldName = 'SomeField__c';
+    const firstFieldMockValue = 'something';
+    const secondFakeFieldName = 'AnotherField__c';
+    const secondFieldMockValue = 'another value';
+
+    const previousLogEntry = logger.info('example log entry from before setField() is called').getComponentLogEntry();
+    logger.setField({
+      [firstFakeFieldName]: firstFieldMockValue,
+      [secondFakeFieldName]: secondFieldMockValue
+    });
+    const subsequentLogEntry = logger.info('example log entry from after setField() is called').getComponentLogEntry();
+
+    expect(previousLogEntry.fieldToValue[firstFakeFieldName]).toBeUndefined();
+    expect(previousLogEntry.fieldToValue[secondFakeFieldName]).toBeUndefined();
+    expect(subsequentLogEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
+    expect(subsequentLogEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
+  });
+
+  it('sets multiple custom entry fields on a single entry when using deprecated async createLogger() import approach', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     const logger = await createLogger();
     await logger.getUserSettings();

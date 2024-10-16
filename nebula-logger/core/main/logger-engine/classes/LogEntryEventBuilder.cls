@@ -629,7 +629,7 @@ global with sharing class LogEntryEventBuilder {
   }
 
   /**
-   * @description Sets a field values on the builder's `LogEntryEvent__e` record
+   * @description Sets a field value on the builder's `LogEntryEvent__e` record
    * @param  field      The `Schema.SObjectField` token of the field to populate
    *                    on the builder's `LogEntryEvent__e` record
    * @param  fieldValue The `Object` value to populate in the provided field
@@ -646,7 +646,7 @@ global with sharing class LogEntryEventBuilder {
   /**
    * @description Sets multiple field values on the builder's `LogEntryEvent__e` record
    * @param  fieldToValue An instance of `Map<Schema.SObjectField, Object>` containing the
-   *                      the fields & values to populate the builder's `LogEntryEvent__e` record
+   *                      the fields & values to populate on the builder's `LogEntryEvent__e` record
    * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   @SuppressWarnings('PMD.AvoidDebugStatements')
