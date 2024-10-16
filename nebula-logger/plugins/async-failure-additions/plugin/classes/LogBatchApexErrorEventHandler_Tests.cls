@@ -5,6 +5,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions, PMD.ApexUnitTestClassShouldHaveAsserts')
 @IsTest(IsParallel=true)
 private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<SObject>, Database.RaisesPlatformEvents {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationDataSelector.useMocks();
+  }
+
   private enum Phase {
     START,
     EXECUTE,
@@ -52,7 +57,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
   private static void assertLogWasCreatedForPhase(Phase phase) {
     Log__c log = getLog();
     System.Assert.isNotNull(log, 'Log should have been created!');
-    System.Assert.areEqual(2, log.LogEntries__r.size(), 'Two log entries should have been created');
+    System.Assert.areEqual(2, log.LogEntries__r.size(), 'Two log entries should have been created\n' + System.JSON.serializePretty(log.LogEntries__r));
     System.Assert.areEqual('Batch job terminated unexpectedly', log.LogEntries__r[0].Message__c);
     System.Assert.areEqual(
       String.format(
@@ -95,6 +100,6 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
   }
 
   private static Log__c getLog() {
-    return [SELECT Id, (SELECT Message__c FROM LogEntries__r) FROM Log__c];
+    return [SELECT Id, (SELECT Message__c, OriginLocation__c, StackTrace__c FROM LogEntries__r) FROM Log__c];
   }
 }
