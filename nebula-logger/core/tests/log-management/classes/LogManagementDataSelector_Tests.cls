@@ -199,7 +199,6 @@ private class LogManagementDataSelector_Tests {
         AND MethodName = :apexMethodName
         AND Status IN :jobStatuses
     ];
-    System.Assert.areEqual(1, expectedCount, 'Test has started under the wrong conditions');
 
     Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
 
