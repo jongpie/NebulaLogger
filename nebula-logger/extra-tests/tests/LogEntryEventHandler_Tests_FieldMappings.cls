@@ -7,7 +7,7 @@
 @IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests_FieldMappings {
   static {
-    LoggerConfigurationDataSelector.useMocks();
+    LoggerConfigurationSelector.useMocks();
   }
 
   @IsTest

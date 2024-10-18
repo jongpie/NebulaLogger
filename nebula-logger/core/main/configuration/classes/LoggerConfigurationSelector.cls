@@ -37,8 +37,8 @@
  */
 // TODO Add Apex docs
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexCRUDViolation')
-public without sharing class LoggerConfigurationDataSelector {
-  private static final LoggerConfigurationDataSelector INSTANCE = new LoggerConfigurationDataSelector();
+public without sharing class LoggerConfigurationSelector {
+  private static final LoggerConfigurationSelector INSTANCE = new LoggerConfigurationSelector();
 
   @TestVisible
   private static List<LogEntryDataMaskRule__mdt> mockLogEntryDataMaskRules;
@@ -59,14 +59,14 @@ public without sharing class LoggerConfigurationDataSelector {
 
   @SuppressWarnings('PMD.EmptyStatementBlock')
   @TestVisible
-  private LoggerConfigurationDataSelector() {
+  private LoggerConfigurationSelector() {
   }
 
   /**
-   * @description The instance `LoggerConfigurationDataSelector` used for any querying specific to the configuration layer
-   * @return   The singleton instance of `LoggerConfigurationDataSelector`
+   * @description The instance `LoggerConfigurationSelector` used for any querying specific to the configuration layer
+   * @return   The singleton instance of `LoggerConfigurationSelector`
    */
-  public static LoggerConfigurationDataSelector getInstance() {
+  public static LoggerConfigurationSelector getInstance() {
     return INSTANCE;
   }
 

@@ -1214,7 +1214,7 @@ global with sharing class LogEntryEventBuilder {
 
   private static Map<String, LogEntryDataMaskRule__mdt> loadDataMaskRules() {
     Map<String, LogEntryDataMaskRule__mdt> activeDataMaskRules = new Map<String, LogEntryDataMaskRule__mdt>();
-    for (LogEntryDataMaskRule__mdt dataMaskRule : LoggerConfigurationDataSelector.getInstance().getLogEntryDataMaskRules()) {
+    for (LogEntryDataMaskRule__mdt dataMaskRule : LoggerConfigurationSelector.getInstance().getLogEntryDataMaskRules()) {
       if (dataMaskRule.IsEnabled__c) {
         activeDataMaskRules.put(dataMaskRule.DeveloperName, dataMaskRule);
       }

@@ -34,8 +34,8 @@ public without sharing class LoggerScenarioRule {
   /*
     DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
       ```
-      LoggerConfigurationDataSelector.useMocks();
-      LoggerConfigurationDataSelector.mockLoggerScenarios.add(new LoggerScenario__mdt());
+      LoggerConfigurationSelector.useMocks();
+      LoggerConfigurationSelector.mockLoggerScenarios.add(new LoggerScenario__mdt());
       ```
   */
   @TestVisible
@@ -51,7 +51,7 @@ public without sharing class LoggerScenarioRule {
 
   private static Map<String, LoggerScenarioRule__mdt> loadLogScenarioRules() {
     Map<String, LoggerScenarioRule__mdt> scenarioRules = new Map<String, LoggerScenarioRule__mdt>();
-    for (LoggerScenarioRule__mdt scenarioRule : LoggerConfigurationDataSelector.getInstance().getLoggerScenarioRules()) {
+    for (LoggerScenarioRule__mdt scenarioRule : LoggerConfigurationSelector.getInstance().getLoggerScenarioRules()) {
       if (isValid(scenarioRule)) {
         scenarioRules.put(scenarioRule.Scenario__c, scenarioRule);
       }

@@ -271,7 +271,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
   private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
     Map<String, LogStatus__mdt> logStatusNameToStatus = new Map<String, LogStatus__mdt>();
-    for (LogStatus__mdt logStatus : LoggerConfigurationDataSelector.getInstance().getLogStatuses()) {
+    for (LogStatus__mdt logStatus : LoggerConfigurationSelector.getInstance().getLogStatuses()) {
       if (logStatus.IsActive__c) {
         logStatusNameToStatus.put(logStatus.MasterLabel, logStatus);
       }
