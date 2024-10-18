@@ -545,6 +545,7 @@ jobs:
         if: ${{ always() }}
 
   create-managed-package-beta:
+    environment: 'Demo Org'
     name: 'Create Managed Package Beta'
     needs:
       [
@@ -559,7 +560,6 @@ jobs:
       ]
     if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    environment: 'Demo Org'
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -596,11 +596,12 @@ jobs:
         run: npm run package:version:create:managed
 
   create-unlocked-package-release-candidate:
+    if: ${{ github.ref != 'refs/heads/main' }}
+
+    environment: 'Base Scratch Org'
     name: 'Create Core Package Release Candidate'
     needs: [create-managed-package-beta]
-    if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    environment: 'Demo Org'
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -628,21 +629,25 @@ jobs:
           echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
           npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
         env:
-          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          # DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
           DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
           DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-      - name: 'Authorize Demo Org'
-        shell: bash
-        run: |
-          echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-          npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo
-        env:
-          PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+      # - name: 'Authorize Demo Org'
+      #   shell: bash
+      #   run: |
+      #     echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
+      #     npx sf org login sfdx-url --sfdx-url-file ./PKG_DEMO_ORG_SFDX_URL.txt --alias nebula-logger-package-demo
+      #   env:
+      #     PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+
+      - name: 'Create Scratch Org'
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Create & Install Package Version'
-        run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
+        # run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
+        run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md
 
       # This is the only place in Nebula Logger's pipeline where the `LoggerCore` test suite runs & the results are sent to Codecov.io.
       # This is specifically done in the base scratch org, using only the `LoggerCore test` suite, in order to help validate that the core metadata
@@ -685,6 +690,8 @@ jobs:
           git push
 
   promote-package-versions:
+    if: ${{ github.ref == 'refs/heads/main' }}
+
     name: 'Promote Package Versions'
     needs:
       [
@@ -697,7 +704,6 @@ jobs:
         omnistudio-scratch-org-tests,
         platform-cache-scratch-org-tests
       ]
-    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
