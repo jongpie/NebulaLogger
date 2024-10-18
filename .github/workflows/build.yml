@@ -255,7 +255,14 @@ jobs:
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
 
-      # This intentionally does NOT use test:apex:nocoverage, since code coverage results are uploaded below to codecov.io
+      # For all other Apex test runs in the pipeline, test:apex:nocoverage is used
+      # because the code coverage results aren't needed/used, and the test runs & retrievals
+      # can be a little faster when code coverage is disabled.
+      #
+      # This difference in how tests run only happens here for the base scratch org
+      # to validate that tests work correctly - and provided sufficient code coverage -
+      # in orgs that do not have some optional Salesforce features that are referenced by Nebula Logger
+      # (e.g., orgs without Experience Cloud, OmniStudio, Platform Cache, etc.)
       - name: 'Run Apex Tests Asynchronously'
         run: npm run test:apex
 
