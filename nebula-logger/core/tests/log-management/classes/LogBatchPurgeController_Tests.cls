@@ -380,6 +380,8 @@ private class LogBatchPurgeController_Tests {
     insert logEntries;
 
     LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
+    tag.Name = 'tag ' + System.UUID.randomUUID().toString();
+    tag.UniqueId__c = tag.Name;
     insert tag;
 
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
