@@ -643,11 +643,11 @@ jobs:
       #     PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
       - name: 'Create Scratch Org'
-        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
+        run: npx sf org create scratch --no-namespace --no-track-source --alias base_package_subscriber_scratch_org --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
 
       - name: 'Create & Install Package Version'
         # run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
-        run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md
+        run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md  -targetusername base_package_subscriber_scratch_org
 
       # This is the only place in Nebula Logger's pipeline where the `LoggerCore` test suite runs & the results are sent to Codecov.io.
       # This is specifically done in the base scratch org, using only the `LoggerCore test` suite, in order to help validate that the core metadata
