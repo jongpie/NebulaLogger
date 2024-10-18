@@ -545,6 +545,8 @@ jobs:
         if: ${{ always() }}
 
   create-managed-package-beta:
+    if: ${{ github.ref != 'refs/heads/main' }}
+
     environment: 'Base Scratch Org'
     name: 'Create Managed Package Beta'
     needs:
@@ -558,7 +560,6 @@ jobs:
         omnistudio-scratch-org-tests,
         platform-cache-scratch-org-tests
       ]
-    if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout source code'
