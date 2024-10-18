@@ -8,7 +8,7 @@
 private class LogMassDeleteExtension_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests
-    LoggerConfigurationDataSelector.useMocks();
+    LoggerConfigurationSelector.useMocks();
   }
 
   @TestSetup

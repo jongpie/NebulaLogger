@@ -587,7 +587,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
   }
 
   private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
-    List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerConfigurationDataSelector.getInstance().getLogEntryTagRules();
+    List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerConfigurationSelector.getInstance().getLogEntryTagRules();
     if (System.Test.isRunningTest()) {
       // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
       tagAssignmentRules.clear();

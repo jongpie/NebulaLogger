@@ -8,7 +8,7 @@
 private class LoggerFieldMapper_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests
-    LoggerConfigurationDataSelector.useMocks();
+    LoggerConfigurationSelector.useMocks();
   }
 
   // DELETEME Deprecated method, remove in a future release
@@ -38,7 +38,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_safely_returns_when_target_record_is_null() {
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -58,7 +58,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_safely_returns_when_source_record_is_null() {
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -100,7 +100,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_maps_field_value_when_configured() {
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -121,7 +121,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_maps_field_values_for_multiple_target_sobject_types_when_configured() {
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'AnotherDevName',
         IsEnabled__c = true,
@@ -131,7 +131,7 @@ private class LoggerFieldMapper_Tests {
         TargetField__c = Schema.Log__c.Comments__c.toString()
       )
     );
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -159,7 +159,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_truncates_string_value_when_mapping_string_field_value() {
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -185,7 +185,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_handles_when_field_mappings_are_not_configured_for_current_target_sobject_type_but_do_exist_for_other_types() {
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -205,7 +205,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_safely_skips_field_mappings_for_incompatible_field_mappings() {
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = '🥳 Some Valid Mapping',
         IsEnabled__c = true,
@@ -215,7 +215,7 @@ private class LoggerFieldMapper_Tests {
         TargetField__c = Schema.LogEntry__c.EntryScenario__c.toString()
       )
     );
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = '😭 An Incompatible Mapping (mapping a String to a Datetime)',
         IsEnabled__c = true,
@@ -225,7 +225,7 @@ private class LoggerFieldMapper_Tests {
         TargetField__c = Schema.LogEntry__c.Timestamp__c.toString()
       )
     );
-    LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = '😀 Another Valid Mapping',
         IsEnabled__c = true,

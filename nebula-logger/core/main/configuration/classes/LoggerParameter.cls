@@ -815,8 +815,8 @@ public class LoggerParameter {
   /*
     DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
       ```
-      LoggerConfigurationDataSelector.useMocks();
-      LoggerConfigurationDataSelector.mockLoggerParameters.add(new LoggerParameter__mdt());
+      LoggerConfigurationSelector.useMocks();
+      LoggerConfigurationSelector.mockLoggerParameters.add(new LoggerParameter__mdt());
       ```
   */
   @TestVisible
@@ -829,7 +829,7 @@ public class LoggerParameter {
   }
 
   private static Map<String, LoggerParameter__mdt> loadRecords() {
-    Map<String, LoggerParameter__mdt> parameters = LoggerConfigurationDataSelector.getInstance().getLoggerParameters();
+    Map<String, LoggerParameter__mdt> parameters = LoggerConfigurationSelector.getInstance().getLoggerParameters();
     // DELETEME remove this in a future release - only Nebula Logger's own tests should use mocks,
     // but org tests should actually load the records from the database
     if (System.Test.isRunningTest()) {

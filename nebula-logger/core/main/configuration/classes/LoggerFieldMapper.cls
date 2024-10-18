@@ -60,8 +60,8 @@ public without sharing class LoggerFieldMapper {
   /*
     DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
       ```
-      LoggerConfigurationDataSelector.useMocks();
-      LoggerConfigurationDataSelector.mockLoggerFieldMappings.add(new LoggerFieldMapping__mdt());
+      LoggerConfigurationSelector.useMocks();
+      LoggerConfigurationSelector.mockLoggerFieldMappings.add(new LoggerFieldMapping__mdt());
       ```
   */
   @TestVisible
@@ -75,7 +75,7 @@ public without sharing class LoggerFieldMapper {
 
   private static Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>> loadRecords() {
     Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>> sourceSObjectTypeToTargetFieldMappings = new Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>>();
-    for (LoggerFieldMapping__mdt fieldMapping : LoggerConfigurationDataSelector.getInstance().getLoggerFieldMappings()) {
+    for (LoggerFieldMapping__mdt fieldMapping : LoggerConfigurationSelector.getInstance().getLoggerFieldMappings()) {
       addFieldMapping(fieldMapping, sourceSObjectTypeToTargetFieldMappings);
     }
 

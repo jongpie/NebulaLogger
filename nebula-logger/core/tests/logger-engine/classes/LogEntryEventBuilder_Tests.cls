@@ -10,7 +10,7 @@
 private class LogEntryEventBuilder_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests
-    LoggerConfigurationDataSelector.useMocks();
+    LoggerConfigurationSelector.useMocks();
     LoggerStackTrace.ignoreOrigin(LogEntryEventBuilder.class);
   }
 
