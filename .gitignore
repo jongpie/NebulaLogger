@@ -16,3 +16,4 @@ yarn.lock
 *.log
 **/lwc/jsconfig.json
 .config
+*.sfdx-hardis**.yml
