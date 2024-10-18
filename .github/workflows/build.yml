@@ -629,7 +629,7 @@ jobs:
           echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
           npx sf org login jwt --instance-url ${{ env.DEV_HUB_AUTH_URL }} --client-id ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwt-key-file ./jwt-server.key --set-default-dev-hub
         env:
-          # DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+          DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
           DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
           DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
           DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
@@ -655,8 +655,7 @@ jobs:
       #   1. Many teams cannot use one of the 2GP packages for various reasons, including company policies, security concerns, etc.,
       #      and being able to deploy the core metadata is something that should be supported.
       #   2. And even though the pipeline runs the `extra-tests` directory to validate logging works correctly in various types of scratch orgs,
-      #      for teams that are trying to deploy Nebula Logger's metadata, it's critical that the core tests have
-      #      sufficient code coverage to be deployed to a prod org.
+      #      for teams that are trying to deploy Nebula Logger's metadata, it's critical that the core tests have sufficient code coverage to be deployed to a prod org.
       #       - In the past, this has not always been the case, resulting in some teams having deployment issues & project delays due to the low code coverage
       #         that was (formerly) provided by some of the core tests classes.
       #       - In orgs that do not have some optional Salesforce features enabled/available (e.g., orgs without Experience Cloud, OmniStudio, Platform Cache, etc.),
