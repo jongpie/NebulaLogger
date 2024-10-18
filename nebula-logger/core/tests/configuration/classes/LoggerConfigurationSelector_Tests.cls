@@ -40,9 +40,7 @@ private class LoggerConfigurationSelector_Tests {
 
   @IsTest
   static void it_returns_log_entry_data_mask_rules_from_provided_mocks() {
-    LoggerConfigurationSelector.mockLogEntryDataMaskRules = new List<LogEntryDataMaskRule__mdt>{
-      new LogEntryDataMaskRule__mdt(DeveloperName = 'SomeDevName')
-    };
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules = new List<LogEntryDataMaskRule__mdt>{ new LogEntryDataMaskRule__mdt(DeveloperName = 'SomeDevName') };
 
     List<LogEntryDataMaskRule__mdt> returnedValues = LoggerConfigurationSelector.getInstance().getLogEntryDataMaskRules();
 
@@ -181,9 +179,7 @@ private class LoggerConfigurationSelector_Tests {
 
   @IsTest
   static void it_returns_logger_sobject_handlers_from_provided_mocks() {
-    LoggerConfigurationSelector.mockLoggerSObjectHandlers = new List<LoggerSObjectHandler__mdt>{
-      new LoggerSObjectHandler__mdt(DeveloperName = 'SomeDevName')
-    };
+    LoggerConfigurationSelector.mockLoggerSObjectHandlers = new List<LoggerSObjectHandler__mdt>{ new LoggerSObjectHandler__mdt(DeveloperName = 'SomeDevName') };
 
     List<LoggerSObjectHandler__mdt> returnedValues = LoggerConfigurationSelector.getInstance().getLoggerSObjectHandlers();
 
