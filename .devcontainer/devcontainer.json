@@ -1,0 +1,14 @@
+{
+  "name": "Salesforce Codespace",
+  "image": "mcr.microsoft.com/devcontainers/python:3.9", // Base image with Python (can be adjusted as needed)
+  "postCreateCommand": "npm ci",
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["salesforce.salesforcedx-vscode-expanded", "esbenp.prettier-vscode"]
+    }
+  }
+}
