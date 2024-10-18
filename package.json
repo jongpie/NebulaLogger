@@ -1,6 +1,6 @@
 {
   "name": "nebula-logger",
-  "version": "4.15.1",
+  "version": "4.15.2",
   "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
   "author": "Jonathan Gillespie",
   "license": "MIT",
@@ -83,6 +83,7 @@
     "@salesforce/sfdx-lwc-jest": "^5.1.0",
     "@salesforce/sfdx-scanner": "^4.6.0",
     "@types/jest-when": "^3.5.5",
+    "@utam/core": "^3.2.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
