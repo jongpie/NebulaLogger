@@ -4,6 +4,9 @@
 <dt><a href="#getUserSettings">getUserSettings()</a> <code>ComponentLogger.ComponentLoggerSettings</code></dt>
 <dd><p>Returns <strong>read-only</strong> information about the current user&#39;s settings, stored in <code>LoggerSettings__c</code></p>
 </dd>
+<dt><a href="#setField">setField(fieldToValue)</a></dt>
+<dd><p>Sets multiple field values on the builder&#39;s <code>LogEntryEvent__e</code> record</p>
+</dd>
 <dt><a href="#setScenario">setScenario(scenario)</a></dt>
 <dd><p>Sets the scenario name for the current transaction - this is stored in <code>LogEntryEvent__e.Scenario__c</code>
              and <code>Log__c.Scenario__c</code>, and can be used to filter &amp; group logs</p>
@@ -66,6 +69,18 @@ Returns **read-only** information about the current user's settings, stored in `
 
 **Kind**: global function  
 **Returns**: <code>ComponentLogger.ComponentLoggerSettings</code> - The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`  
+<a name="setField"></a>
+
+## setField(fieldToValue)
+
+Sets multiple field values on the builder's `LogEntryEvent__e` record
+
+**Kind**: global function
+
+| Param        | Type                | Description                                                                                                                                                               |
+| ------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fieldToValue | <code>Object</code> | An object containing the custom field name as a key, with the corresponding value to store. Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}` |
+
 <a name="setScenario"></a>
 
 ## setScenario(scenario)

@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Selector class used for all queries that are specific to the log management layer
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing virtual class LogManagementDataSelector {
   private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 

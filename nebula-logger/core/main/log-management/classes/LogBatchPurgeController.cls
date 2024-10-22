@@ -8,7 +8,7 @@
  * @description Controller class for lwc `logBatchPurge`, used to provide metrics of `Log__c`, `LogEntry__c`,
  *              `LogEntryTag__c` records to purge and allow user to manually run `LogBatchPurger` from the UI.
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public with sharing class LogBatchPurgeController {
   @TestVisible
   private static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';

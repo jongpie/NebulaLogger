@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Controller class for lwc `logEntryEventStream`, used to stream Log Entries in console and Tabular view.
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public with sharing class LogEntryEventStreamController {
   @TestVisible
   private static final String DISPLAY_FIELDS_PARAMETER_NAME = 'LogEntryEventStreamDisplayFields';

@@ -7,7 +7,7 @@
  * @group Logger Engine
  * @description Selector class used for all queries that are specific to the logger engine layer
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
 public without sharing virtual class LoggerEngineDataSelector {
   @TestVisible
   private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('Schema.Network') != null;
