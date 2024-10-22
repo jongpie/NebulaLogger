@@ -10,8 +10,6 @@ on:
   push:
     branches:
       - main
-      # Temp for testing, remove before creating a PR
-      - feature/improved-selector-tests-and-test-coverage
     paths:
       - .github/workflows/**
       - config/scratch-orgs/**
