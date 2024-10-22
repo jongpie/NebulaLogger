@@ -221,7 +221,7 @@ List&lt;Schema.FlowVersionView&gt;
 
 **Description**
 
-`List&lt;Schema.FlowDefinitionView&gt;` containing any matching records
+`List&lt;Schema.FlowVersionView&gt;` containing any matching records
 
 #### `getInstance()` → `LogManagementDataSelector`
 

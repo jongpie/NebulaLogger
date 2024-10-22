@@ -1,4 +1,4 @@
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.ApexDoc')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.ApexDoc')
 public with sharing class ExampleClassWithLogging {
   public void doSomething() {
     Logger.finest('Starting the doSomething() method!');

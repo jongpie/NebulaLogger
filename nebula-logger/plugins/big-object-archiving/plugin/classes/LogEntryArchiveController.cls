@@ -9,7 +9,7 @@
  * @see LogEntryArchivePlugin
  * @see LogEntryArchiveBuilder
  */
-@SuppressWarnings('PMD.ApexCRUDViolation')
+@SuppressWarnings('PMD.ApexCrudViolation')
 public with sharing class LogEntryArchiveController {
   @TestVisible
   private static final List<LogEntryArchive__b> MOCK_RECORDS = new List<LogEntryArchive__b>();

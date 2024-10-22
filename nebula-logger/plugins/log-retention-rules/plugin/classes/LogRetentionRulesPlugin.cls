@@ -77,7 +77,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
     update logIdToLog.values();
   }
 
-  @SuppressWarnings('PMD.ApexCRUDViolation')
+  @SuppressWarnings('PMD.ApexCrudViolation')
   private void loadConfiguredFilters() {
     Map<String, LogRetentionRule__mdt> queriedRulesByDeveloperName = new Map<String, LogRetentionRule__mdt>();
     Map<String, List<LogRetentionRuleCondition__mdt>> queriedConditionsByRuleDeveloperName = new Map<String, List<LogRetentionRuleCondition__mdt>>();

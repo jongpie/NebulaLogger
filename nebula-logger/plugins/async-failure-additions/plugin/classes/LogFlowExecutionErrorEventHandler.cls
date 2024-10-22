@@ -51,7 +51,7 @@ public without sharing class LogFlowExecutionErrorEventHandler {
     Logger.saveLog();
   }
 
-  @SuppressWarnings('PMD.ApexCRUDViolation')
+  @SuppressWarnings('PMD.ApexCrudViolation')
   private static void overrideUserInfo(Map<String, List<LogEntryEventBuilder>> usernameToBuilders) {
     Map<String, Schema.User> usernameToUser = new Map<String, Schema.User>();
     for (Schema.User user : [
