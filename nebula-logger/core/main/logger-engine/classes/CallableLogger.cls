@@ -68,7 +68,7 @@ global without sharing class CallableLogger implements System.Callable {
     return output;
   }
 
-  @SuppressWarnings('PMD.ApexDoc')
+  @SuppressWarnings('PMD.ApexDoc, PMD.StdCyclomaticComplexity')
   private class CallableHandler {
     public void handleCall(String action, Map<String, Object> input, Map<String, Object> output) {
       switch on action {
@@ -111,7 +111,7 @@ global without sharing class CallableLogger implements System.Callable {
       }
     }
 
-    @SuppressWarnings('PMD.CognitiveComplexity, PMD.NcssMethodCount')
+    @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount')
     private LogEntryEventBuilder newEntry(Map<String, Object> input) {
       // The value of loggingLevel could be either a string name or an enum value from System.LoggingLevel,
       // so always first convert it to a string for consistency
@@ -141,6 +141,18 @@ global without sharing class CallableLogger implements System.Callable {
       }
       if (input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
         LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+
+        Map<String, Object> cleanedInput = new Map<String, Object>();
+        for (String inputName : input.keySet()) {
+          Object value = input.get(inputName);
+          if (value instanceof Map<String, Object>) {
+            cleanedInput.put(inputName, value);
+          }
+        }
+        if (cleanedInput.keySet().isEmpty() == false) {
+          logEntryEvent.Message__c += '\n\nOmniStudio Input:\n' + System.JSON.serializePretty(cleanedInput);
+        }
+
         logEntryEvent.OriginLocation__c = null;
         logEntryEvent.OriginSourceApiName__c = null;
         logEntryEvent.OriginSourceId__c = (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID);
