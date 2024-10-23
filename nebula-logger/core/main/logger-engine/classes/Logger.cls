@@ -3473,7 +3473,7 @@ global with sharing class Logger {
     // intended behavior
     if (currentAsyncContext == null) {
       currentAsyncContext = asyncContext;
-      System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext));
+      info('Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext, true));
     }
   }
 
@@ -3589,6 +3589,8 @@ global with sharing class Logger {
     public final String parentJobId;
     public final String childJobId;
     public final String triggerId;
+    public final String finalizerResult;
+    public final String finalizerException;
 
     public AsyncContext(Database.BatchableContext batchableContext) {
       this.childJobId = batchableContext?.getChildJobId();
@@ -3597,7 +3599,11 @@ global with sharing class Logger {
     }
 
     public AsyncContext(System.FinalizerContext finalizerContext) {
-      this.parentJobId = finalizerContext?.getAsyncApexJobId();
+      if (finalizerContext != null) {
+        this.finalizerException = finalizerContext.getException()?.getMessage() + '\n' + finalizerContext.getException()?.getStackTraceString() ?? null;
+        this.finalizerResult = finalizerContext.getResult().name();
+        this.parentJobId = finalizerContext.getAsyncApexJobId();
+      }
       this.type = System.FinalizerContext.class.getName();
     }
 
