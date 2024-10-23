@@ -117,9 +117,9 @@ global without sharing class CallableLogger implements System.Callable {
       // so always first convert it to a string for consistency
       String loggingLevelName = input.get(ARGUMENT_LOGGING_LEVEL)?.toString();
       System.LoggingLevel loggingLevel = Logger.getLoggingLevel(loggingLevelName);
-      String message = (String) input.get(ARGUMENT_MESSAGE);
+      String formattedMessage = CallableLogger.getFormattedMessage(input);
 
-      LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, message);
+      LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, formattedMessage);
 
       if (input.containsKey(ARGUMENT_EXCEPTION)) {
         logEntryEventBuilder.setExceptionDetails((System.Exception) input.get(ARGUMENT_EXCEPTION));
@@ -142,17 +142,6 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
         LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
-        Map<String, Object> cleanedInput = new Map<String, Object>();
-        for (String inputName : input.keySet()) {
-          Object value = input.get(inputName);
-          if (value instanceof Map<String, Object>) {
-            cleanedInput.put(inputName, value);
-          }
-        }
-        if (cleanedInput.keySet().isEmpty() == false) {
-          logEntryEvent.Message__c += '\n\nOmniStudio Input:\n' + System.JSON.serializePretty(cleanedInput);
-        }
-
         logEntryEvent.OriginLocation__c = null;
         logEntryEvent.OriginSourceApiName__c = null;
         logEntryEvent.OriginSourceId__c = (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID);
@@ -166,9 +155,28 @@ global without sharing class CallableLogger implements System.Callable {
     private void saveLog(Map<String, Object> input) {
       // The value of saveMethodName could be either a string name or an enum value from Logger.SaveMethod,
       // so always first convert it to a string for consistency
-      // System.Assert.fail(input.toString());
       String saveMethodName = input.get(ARGUMENT_SAVE_METHOD_NAME)?.toString() ?? Logger.getUserSettings().DefaultSaveMethod__c;
       Logger.saveLog(saveMethodName);
     }
+  }
+
+  private static String getFormattedMessage(Map<String, Object> originalInput) {
+    String message = (String) originalInput.get(ARGUMENT_MESSAGE);
+
+    if (originalInput.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
+      Map<String, Object> cleanedInput = new Map<String, Object>();
+      for (String inputName : originalInput.keySet()) {
+        Object inputValue = originalInput.get(inputName);
+        if (inputValue instanceof Map<String, Object>) {
+          cleanedInput.put(inputName, inputValue);
+        }
+      }
+
+      if (cleanedInput.keySet().isEmpty() == false) {
+        message += '\n\nOmniStudio Input:\n' + System.JSON.serializePretty(cleanedInput);
+      }
+    }
+
+    return message;
   }
 }
