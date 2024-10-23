@@ -237,9 +237,9 @@ export default class LoggerService {
 
       // Change the structure of the origin stack trace & error stack trace for readability
       simplifiedLogEntry.originStackTrace = {
+        metadataType: componentLogEntry.originStackTrace?.metadataType,
         componentName: componentLogEntry.originStackTrace?.componentName,
-        functionName: componentLogEntry.originStackTrace?.functionName,
-        metadataType: componentLogEntry.originStackTrace?.metadataType
+        functionName: componentLogEntry.originStackTrace?.functionName
       };
 
       simplifiedLogEntry.error = componentLogEntry.error;
