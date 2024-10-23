@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.14.14';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.14.15';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -3473,7 +3473,9 @@ global with sharing class Logger {
     // intended behavior
     if (currentAsyncContext == null) {
       currentAsyncContext = asyncContext;
-      System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext));
+      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
+        info('Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext, true)).setExceptionDetails(asyncContext.finalizerException);
+      }
     }
   }
 
@@ -3589,6 +3591,8 @@ global with sharing class Logger {
     public final String parentJobId;
     public final String childJobId;
     public final String triggerId;
+    public final String finalizerResult;
+    public final Exception finalizerException;
 
     public AsyncContext(Database.BatchableContext batchableContext) {
       this.childJobId = batchableContext?.getChildJobId();
@@ -3597,7 +3601,11 @@ global with sharing class Logger {
     }
 
     public AsyncContext(System.FinalizerContext finalizerContext) {
-      this.parentJobId = finalizerContext?.getAsyncApexJobId();
+      if (finalizerContext != null) {
+        this.finalizerException = finalizerContext.getException();
+        this.finalizerResult = finalizerContext.getResult().name();
+        this.parentJobId = finalizerContext.getAsyncApexJobId();
+      }
       this.type = System.FinalizerContext.class.getName();
     }
 
