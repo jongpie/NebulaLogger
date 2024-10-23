@@ -19,6 +19,7 @@ export default class LoggerLWCGetLoggerImportDemo extends LightningElement {
 
   connectedCallback() {
     try {
+      this.logger.setScenario(this.scenario);
       this.logger.error('test error entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' });
       this.logger.warn('test warn entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' });
       this.logger.info('test info entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' });

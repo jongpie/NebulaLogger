@@ -195,7 +195,11 @@ export default class LoggerService {
         this.#componentLogEntries.push(logEntry);
 
         if (this.#settings.isConsoleLoggingEnabled) {
-          this._logToConsole(logEntry.loggingLevel, logEntry.message, logEntry);
+          // Use setTimeout() so any extra fields included in the log entry are added to the console first
+          // eslint-disable-next-line @lwc/lwc/no-async-operation
+          setTimeout(() => {
+            this._logToConsole(logEntry.loggingLevel, logEntry.message, logEntry);
+          }, 1000);
         }
         if (this.#settings.isLightningLoggerEnabled) {
           lightningLog(logEntry);
@@ -218,22 +222,42 @@ export default class LoggerService {
     const consoleLoggingFunction = console[loggingLevel.toLowerCase()] ?? console.debug;
     const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[loggingLevel];
     const qualifiedMessage = `${loggingLevelEmoji} ${loggingLevel}: ${message}`;
-    const formattedComponentLogEntryString = !componentLogEntry
-      ? ''
-      : '\n' +
-        JSON.stringify(
-          {
-            origin: {
-              component: componentLogEntry.originStackTrace?.componentName,
-              function: componentLogEntry.originStackTrace?.functionName,
-              metadataType: componentLogEntry.originStackTrace?.metadataType
-            },
-            scenario: componentLogEntry.scenario,
-            timestamp: componentLogEntry.timestamp
-          },
-          (_, value) => value ?? undefined,
-          2
-        );
+    const simplifiedLogEntry = !componentLogEntry ? undefined : { ...componentLogEntry };
+    if (simplifiedLogEntry) {
+      // Clean up some extra properties for readability
+      delete simplifiedLogEntry.browser;
+      delete simplifiedLogEntry.loggingLevel;
+      delete simplifiedLogEntry.message;
+      if (Object.keys(simplifiedLogEntry.fieldToValue).length === 0) {
+        delete simplifiedLogEntry.fieldToValue;
+      }
+      if (simplifiedLogEntry.tags.length === 0) {
+        delete simplifiedLogEntry.tags;
+      }
+
+      // Change the structure of the origin stack trace & error stack trace for readability
+      simplifiedLogEntry.originStackTrace = {
+        componentName: componentLogEntry.originStackTrace?.componentName,
+        functionName: componentLogEntry.originStackTrace?.functionName,
+        metadataType: componentLogEntry.originStackTrace?.metadataType
+      };
+
+      simplifiedLogEntry.error = componentLogEntry.error;
+      if (simplifiedLogEntry?.error?.stackTrace) {
+        simplifiedLogEntry.error.errorStackTrace = {
+          metadataType: simplifiedLogEntry.error.stackTrace.metadataType,
+          componentName: simplifiedLogEntry.error.stackTrace.componentName,
+          functionName: simplifiedLogEntry.error.stackTrace.functionName,
+          className: simplifiedLogEntry.error.stackTrace.className,
+          methodName: simplifiedLogEntry.error.stackTrace.methodName,
+          triggerName: simplifiedLogEntry.error.stackTrace.triggerName,
+          stackTraceString: simplifiedLogEntry.error.stackTrace.stackTraceString
+        };
+        delete simplifiedLogEntry.error.stackTrace;
+      }
+    }
+
+    const formattedComponentLogEntryString = !simplifiedLogEntry ? '' : '\n' + JSON.stringify(simplifiedLogEntry, (_, value) => value ?? undefined, 2);
 
     consoleLoggingFunction(CONSOLE_OUTPUT_CONFIG.messagePrefix, CONSOLE_OUTPUT_CONFIG.messageFormatting, qualifiedMessage, formattedComponentLogEntryString);
   }
