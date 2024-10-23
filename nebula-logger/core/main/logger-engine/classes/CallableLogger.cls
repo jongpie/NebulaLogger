@@ -139,7 +139,7 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(ARGUMENT_TAGS)) {
         logEntryEventBuilder.addTags((List<String>) input.get(ARGUMENT_TAGS));
       }
-      if (input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
+      if (CallableLogger.isOmniStudioInput(input)) {
         LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
         logEntryEvent.OriginLocation__c = null;
@@ -163,7 +163,7 @@ global without sharing class CallableLogger implements System.Callable {
   private static String getFormattedMessage(Map<String, Object> originalInput) {
     String message = (String) originalInput.get(ARGUMENT_MESSAGE);
 
-    if (originalInput.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
+    if (CallableLogger.isOmniStudioInput(originalInput)) {
       Map<String, Object> cleanedInput = new Map<String, Object>();
       for (String inputName : originalInput.keySet()) {
         Object inputValue = originalInput.get(inputName);
@@ -178,5 +178,9 @@ global without sharing class CallableLogger implements System.Callable {
     }
 
     return message;
+  }
+
+  private static Boolean isOmniStudioInput(Map<String, Object> input) {
+    return input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION;
   }
 }
