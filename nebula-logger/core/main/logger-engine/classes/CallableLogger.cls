@@ -94,6 +94,9 @@ global without sharing class CallableLogger implements System.Callable {
         }
         // Methods for adding & saving log entries
         when 'newEntry' {
+          String parentLogTransactionId = (String) input.get(ARGUMENT_PARENT_LOG_TRANSACTION_ID) ?? Logger.getTransactionId();
+          Logger.setParentLogTransactionId(parentLogTransactionId);
+
           LogEntryEventBuilder builder = this.newEntry(input);
           if (returnLogEntryEventBuilderInOutput) {
             output.put(ARGUMENT_LOG_ENTRY_EVENT_BUILDER, builder);
@@ -101,6 +104,8 @@ global without sharing class CallableLogger implements System.Callable {
           if (input.get(ARGUMENT_SAVE_LOG) == true) {
             this.saveLog(input);
           }
+
+          output.put(ARGUMENT_PARENT_LOG_TRANSACTION_ID, parentLogTransactionId);
         }
         when 'saveLog' {
           this.saveLog(input);
