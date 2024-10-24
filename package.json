@@ -39,6 +39,7 @@
     "docs:fix:lwc": "pwsh ./scripts/build/generate-lwc-docs.ps1 && git add ./docs/lightning-components",
     "docs:verify": "pwsh ./scripts/build/verify-docs-up-to-date.ps1",
     "husky:pre-commit": "lint-staged --config ./config/linters/lint-staged.config.js",
+    "lwc:preview:recipes": "sf lightning dev app --device-type desktop --name \"Logger Recipes\"",
     "package:version:create:managed": "pwsh ./scripts/build/create-managed-package-beta-version.ps1",
     "package:version:create:unlocked": "sf package version create --json --package \"Nebula Logger - Core\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "package:version:number:fix": "pwsh ./scripts/build/sync-package-version-number.ps1",
