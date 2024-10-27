@@ -132,7 +132,8 @@ After installing Nebula Logger in your org, there are a few additional configura
 
 For Apex developers, the `Logger` class has several methods that can be used to add entries with different logging levels. Each logging level's method has several overloads to support multiple parameters.
 
-```apex// This will generate a debug statement within developer console
+```apex
+// This will generate a debug statement within developer console
 System.debug('Debug statement using native Apex');
 
 // This will create a new `Log__c` record with multiple related `LogEntry__c` records
@@ -235,7 +236,8 @@ This example batchable class shows how you can leverage this feature to relate a
 
 > :information_source: If you deploy this example class to your org,you can run it using `Database.executeBatch(new BatchableLoggerExample());`
 
-```apexpublic with sharing class BatchableLoggerExample implements Database.Batchable<SObject>, Database.Stateful {
+```apex
+public with sharing class BatchableLoggerExample implements Database.Batchable<SObject>, Database.Stateful {
     private String originalTransactionId;
 
     public Database.QueryLocator start(Database.BatchableContext batchableContext) {
@@ -278,7 +280,8 @@ Queueable jobs can also leverage the parent transaction ID to relate logs togeth
 
 > :information_source: If you deploy this example class to your org,you can run it using `System.enqueueJob(new QueueableLoggerExample(3));`
 
-```apexpublic with sharing class QueueableLoggerExample implements Queueable {
+```apex
+public with sharing class QueueableLoggerExample implements Queueable {
     private Integer numberOfJobsToChain;
     private String parentLogTransactionId;
 
@@ -333,7 +336,8 @@ To see the full list of overloads, check out the `Logger` class [documentation](
 
 Each of the logging methods in `Logger` returns an instance of the class `LogEntryEventBuilder`. This class provides several additional methods together to further customize each log entry - each of the builder methods can be chained together. In this example Apex, 3 log entries are created using different approaches for calling `Logger` - all 3 approaches result in identical log entries.
 
-```apex// Get the current user so we can log it (just as an example of logging an SObject)
+```apex
+// Get the current user so we can log it (just as an example of logging an SObject)
 User currentUser = [SELECT Id, Name, Username, Email FROM User WHERE Id = :UserInfo.getUserId()];
 
 // Using static Logger method overloads
@@ -542,7 +546,8 @@ Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records v
 
 Apex developers can use 2 new methods in `LogEntryBuilder` to add tags - `LogEntryEventBuilder.addTag(String)` and `LogEntryEventBuilder.addTags(List<String>)`.
 
-```apex// Use addTag(String tagName) for adding 1 tag at a time
+```apex
+// Use addTag(String tagName) for adding 1 tag at a time
 Logger.debug('my log message').addTag('some tag').addTag('another tag');
 
 // Use addTags(List<String> tagNames) for adding a list of tags in 1 method call
