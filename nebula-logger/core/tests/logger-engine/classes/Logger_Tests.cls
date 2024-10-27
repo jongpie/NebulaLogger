@@ -826,6 +826,41 @@ private class Logger_Tests {
   }
 
   @IsTest
+  static void it_should_auto_create_log_entry_event_for_batchable_async_context_details_when_system_messages_are_enabled() {
+    Database.BatchableContext mockContext = new LoggerMockDataCreator.MockBatchableContext();
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+    System.Assert.isTrue(LoggerParameter.ENABLE_SYSTEM_MESSAGES, 'System messages should be enabled');
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    Logger.setAsyncContext(mockContext);
+    Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    Integer publishedEventsCount = LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size();
+    System.Assert.isTrue(
+      publishedEventsCount >= 1,
+      publishedEventsCount +
+        ' events published, but at least 1 should have been auto-created & published\n\n' +
+        System.JSON.serializePretty(LoggerMockDataStore.getEventBus().getPublishedPlatformEvents())
+    );
+    LogEntryEvent__e expectedLogEntryEvent = new LogEntryEvent__e(
+      LoggingLevel__c = System.LoggingLevel.INFO.name(),
+      Message__c = 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(new Logger.AsyncContext(mockContext), true)
+    );
+    List<LogEntryEvent__e> matchingPublishedLogEntryEvents = (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus()
+      .getMatchingPublishedPlatformEvents(expectedLogEntryEvent);
+    System.Assert.areEqual(1, matchingPublishedLogEntryEvents.size());
+    LogEntryEvent__e matchingPublishedLogEntryEvent = matchingPublishedLogEntryEvents.get(0);
+    System.Assert.areEqual(Database.BatchableContext.class.getName(), matchingPublishedLogEntryEvent.AsyncContextType__c);
+    System.Assert.areEqual(expectedLogEntryEvent.LoggingLevel__c, matchingPublishedLogEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(expectedLogEntryEvent.Message__c, matchingPublishedLogEntryEvent.Message__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionMessage__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionType__c);
+  }
+
+  @IsTest
   static void it_should_set_async_context_details_for_finalizer_context_when_event_published() {
     Id mockParentAsyncApexJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
     System.FinalizerContext mockContext = new LoggerMockDataCreator.MockFinalizerContext(mockParentAsyncApexJobId);
@@ -882,6 +917,81 @@ private class Logger_Tests {
     System.Assert.areEqual(firstNonNullMockContext.getAsyncApexJobId(), logEntryEvent.AsyncContextParentJobId__c);
     System.Assert.isNull(logEntryEvent.AsyncContextTriggerId__c);
     System.Assert.areEqual(System.FinalizerContext.class.getName(), logEntryEvent.AsyncContextType__c);
+  }
+
+  @IsTest
+  static void it_should_auto_create_log_entry_event_for_success_finalizer_async_context_details_when_system_messages_are_enabled() {
+    System.FinalizerContext mockContext = new LoggerMockDataCreator.MockFinalizerContext();
+    System.Assert.isNull(mockContext.getException());
+    System.Assert.areEqual(System.ParentJobResult.SUCCESS, mockContext.getResult());
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+    System.Assert.isTrue(LoggerParameter.ENABLE_SYSTEM_MESSAGES, 'System messages should be enabled');
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    Logger.setAsyncContext(mockContext);
+    Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    Integer publishedEventsCount = LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size();
+    System.Assert.isTrue(
+      publishedEventsCount >= 1,
+      publishedEventsCount +
+        ' events published, but at least 1 should have been auto-created & published\n\n' +
+        System.JSON.serializePretty(LoggerMockDataStore.getEventBus().getPublishedPlatformEvents())
+    );
+    LogEntryEvent__e expectedLogEntryEvent = new LogEntryEvent__e(
+      LoggingLevel__c = System.LoggingLevel.INFO.name(),
+      Message__c = 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(new Logger.AsyncContext(mockContext), true)
+    );
+    List<LogEntryEvent__e> matchingPublishedLogEntryEvents = (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus()
+      .getMatchingPublishedPlatformEvents(expectedLogEntryEvent);
+    System.Assert.areEqual(1, matchingPublishedLogEntryEvents.size());
+    LogEntryEvent__e matchingPublishedLogEntryEvent = matchingPublishedLogEntryEvents.get(0);
+    System.Assert.areEqual(System.FinalizerContext.class.getName(), matchingPublishedLogEntryEvent.AsyncContextType__c);
+    System.Assert.areEqual(expectedLogEntryEvent.LoggingLevel__c, matchingPublishedLogEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(expectedLogEntryEvent.Message__c, matchingPublishedLogEntryEvent.Message__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionMessage__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionType__c);
+  }
+
+  @IsTest
+  static void it_should_auto_create_log_entry_event_for_unhandled_exception_finalizer_async_context_details_when_system_messages_are_enabled() {
+    System.DmlException mockFinalizerUnhandledException = new System.DmlException('Oops');
+    System.FinalizerContext mockContext = new LoggerMockDataCreator.MockFinalizerContext(mockFinalizerUnhandledException);
+    System.Assert.isNotNull(mockContext.getException());
+    System.Assert.areEqual(System.ParentJobResult.UNHANDLED_EXCEPTION, mockContext.getResult());
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+    System.Assert.isTrue(LoggerParameter.ENABLE_SYSTEM_MESSAGES, 'System messages should be enabled');
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    Logger.setAsyncContext(mockContext);
+    Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    Integer publishedEventsCount = LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size();
+    System.Assert.isTrue(
+      publishedEventsCount >= 1,
+      publishedEventsCount +
+        ' events published, but at least 1 should have been auto-created & published\n\n' +
+        System.JSON.serializePretty(LoggerMockDataStore.getEventBus().getPublishedPlatformEvents())
+    );
+    LogEntryEvent__e expectedLogEntryEvent = new LogEntryEvent__e(
+      LoggingLevel__c = System.LoggingLevel.INFO.name(),
+      Message__c = 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(new Logger.AsyncContext(mockContext), true)
+    );
+    List<LogEntryEvent__e> matchingPublishedLogEntryEvents = (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus()
+      .getMatchingPublishedPlatformEvents(expectedLogEntryEvent);
+    System.Assert.areEqual(1, matchingPublishedLogEntryEvents.size());
+    LogEntryEvent__e matchingPublishedLogEntryEvent = matchingPublishedLogEntryEvents.get(0);
+    System.Assert.areEqual(System.FinalizerContext.class.getName(), matchingPublishedLogEntryEvent.AsyncContextType__c);
+    System.Assert.areEqual(expectedLogEntryEvent.LoggingLevel__c, matchingPublishedLogEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(expectedLogEntryEvent.Message__c, matchingPublishedLogEntryEvent.Message__c);
+    System.Assert.areEqual(mockFinalizerUnhandledException.getMessage(), matchingPublishedLogEntryEvent.ExceptionMessage__c);
+    System.Assert.areEqual(mockFinalizerUnhandledException.getTypeName(), matchingPublishedLogEntryEvent.ExceptionType__c);
   }
 
   @IsTest
@@ -944,6 +1054,41 @@ private class Logger_Tests {
   }
 
   @IsTest
+  static void it_should_auto_create_log_entry_event_for_queueable_async_context_details_when_system_messages_are_enabled() {
+    System.QueueableContext mockContext = new LoggerMockDataCreator.MockQueueableContext();
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+    System.Assert.isTrue(LoggerParameter.ENABLE_SYSTEM_MESSAGES, 'System messages should be enabled');
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    Logger.setAsyncContext(mockContext);
+    Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    Integer publishedEventsCount = LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size();
+    System.Assert.isTrue(
+      publishedEventsCount >= 1,
+      publishedEventsCount +
+        ' events published, but at least 1 should have been auto-created & published\n\n' +
+        System.JSON.serializePretty(LoggerMockDataStore.getEventBus().getPublishedPlatformEvents())
+    );
+    LogEntryEvent__e expectedLogEntryEvent = new LogEntryEvent__e(
+      LoggingLevel__c = System.LoggingLevel.INFO.name(),
+      Message__c = 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(new Logger.AsyncContext(mockContext), true)
+    );
+    List<LogEntryEvent__e> matchingPublishedLogEntryEvents = (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus()
+      .getMatchingPublishedPlatformEvents(expectedLogEntryEvent);
+    System.Assert.areEqual(1, matchingPublishedLogEntryEvents.size());
+    LogEntryEvent__e matchingPublishedLogEntryEvent = matchingPublishedLogEntryEvents.get(0);
+    System.Assert.areEqual(System.QueueableContext.class.getName(), matchingPublishedLogEntryEvent.AsyncContextType__c);
+    System.Assert.areEqual(expectedLogEntryEvent.LoggingLevel__c, matchingPublishedLogEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(expectedLogEntryEvent.Message__c, matchingPublishedLogEntryEvent.Message__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionMessage__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionType__c);
+  }
+
+  @IsTest
   static void it_should_set_async_context_details_for_schedulable_context_when_event_published() {
     Id mockCronTriggerId = LoggerMockDataCreator.createId(Schema.CronTrigger.SObjectType);
     System.SchedulableContext mockContext = new LoggerMockDataCreator.MockSchedulableContext(mockCronTriggerId);
@@ -999,6 +1144,41 @@ private class Logger_Tests {
     System.Assert.isNull(logEntryEvent.AsyncContextParentJobId__c);
     System.Assert.areEqual(firstNonNullMockContext.getTriggerId(), logEntryEvent.AsyncContextTriggerId__c);
     System.Assert.areEqual(System.SchedulableContext.class.getName(), logEntryEvent.AsyncContextType__c);
+  }
+
+  @IsTest
+  static void it_should_auto_create_log_entry_event_for_scheduleable_async_context_details_when_system_messages_are_enabled() {
+    System.SchedulableContext mockContext = new LoggerMockDataCreator.MockSchedulableContext();
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+    System.Assert.isTrue(LoggerParameter.ENABLE_SYSTEM_MESSAGES, 'System messages should be enabled');
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    Logger.setAsyncContext(mockContext);
+    Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    Integer publishedEventsCount = LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size();
+    System.Assert.isTrue(
+      publishedEventsCount >= 1,
+      publishedEventsCount +
+        ' events published, but at least 1 should have been auto-created & published\n\n' +
+        System.JSON.serializePretty(LoggerMockDataStore.getEventBus().getPublishedPlatformEvents())
+    );
+    LogEntryEvent__e expectedLogEntryEvent = new LogEntryEvent__e(
+      LoggingLevel__c = System.LoggingLevel.INFO.name(),
+      Message__c = 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(new Logger.AsyncContext(mockContext), true)
+    );
+    List<LogEntryEvent__e> matchingPublishedLogEntryEvents = (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus()
+      .getMatchingPublishedPlatformEvents(expectedLogEntryEvent);
+    System.Assert.areEqual(1, matchingPublishedLogEntryEvents.size());
+    LogEntryEvent__e matchingPublishedLogEntryEvent = matchingPublishedLogEntryEvents.get(0);
+    System.Assert.areEqual(System.SchedulableContext.class.getName(), matchingPublishedLogEntryEvent.AsyncContextType__c);
+    System.Assert.areEqual(expectedLogEntryEvent.LoggingLevel__c, matchingPublishedLogEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(expectedLogEntryEvent.Message__c, matchingPublishedLogEntryEvent.Message__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionMessage__c);
+    System.Assert.isNull(matchingPublishedLogEntryEvent.ExceptionType__c);
   }
 
   @IsTest

@@ -83,6 +83,39 @@ public without sharing class LoggerMockDataStore {
       return this.publishedPlatformEvents;
     }
 
+    /**
+     * @description Returns a list of published platform events that have the same field values
+     *              as the provided platform event record `comparisonPlatformEvent`. This is useful for
+     *              easily filtering to only the `LogEntryEvent__e` records relevant to a particular test method
+     *              in a transaction/test scenario where multiple `LogEntryEvent__e` are being generated.
+     *              Long-term, this helper method might be moved elsewhere, or replaced with something else,
+     *              but for now, the mock event bus is a good-enough spot for it.
+     * @param  comparisonPlatformEvent An instance of the platform event record to use for comparing
+     *                                 against the list of platform event records that have been published
+     * @return                         A list containing any matches. When no matches are found, the list is empty.
+     */
+    public List<SObject> getMatchingPublishedPlatformEvents(SObject comparisonPlatformEvent) {
+      Map<String, Object> comparisonFieldToValue = comparisonPlatformEvent.getPopulatedFieldsAsMap();
+      List<SObject> matchingRecords = new List<SObject>();
+      for (SObject eventToCheck : this.getPublishedPlatformEvents()) {
+        Boolean isMatchingRecord = true;
+        Map<String, Object> targetFieldToValue = eventToCheck.getPopulatedFieldsAsMap();
+
+        for (String populatedField : comparisonFieldToValue.keySet()) {
+          Object expectedValue = comparisonFieldToValue.get(populatedField);
+          if (targetFieldToValue.containsKey(populatedField) == false || eventToCheck.get(populatedField) != expectedValue) {
+            isMatchingRecord = false;
+            break;
+          }
+        }
+
+        if (isMatchingRecord) {
+          matchingRecords.add(eventToCheck);
+        }
+      }
+      return matchingRecords;
+    }
+
     public override Database.SaveResult publishRecord(SObject platformEvent) {
       return this.publishRecords(new List<SObject>{ platformEvent }).get(0);
     }

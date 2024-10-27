@@ -323,7 +323,7 @@ public class LoggerMockDataCreator {
   public static Schema.Organization getOrganization() {
     // TODO Switch to creating mock instance of Schema.Organization with sensible defaults that tests can then update as needed for different scenarios
     if (cachedOrganization == null) {
-      cachedOrganization = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+      cachedOrganization = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization LIMIT 1];
     }
     return cachedOrganization;
   }
@@ -457,6 +457,7 @@ public class LoggerMockDataCreator {
 
   @SuppressWarnings('PMD.ApexDoc')
   public class MockFinalizerContext implements System.FinalizerContext {
+    private Exception apexException;
     private Id asyncApexJobId;
 
     public MockFinalizerContext() {
@@ -467,19 +468,24 @@ public class LoggerMockDataCreator {
       this.asyncApexJobId = asyncApexJobId;
     }
 
+    public MockFinalizerContext(Exception ex) {
+      this();
+      this.apexException = ex;
+    }
+
     public Id getAsyncApexJobId() {
       return this.asyncApexJobId;
     }
 
     public Exception getException() {
-      return null;
+      return this.apexException;
     }
 
     public System.ParentJobResult getResult() {
-      return System.ParentJobResult.SUCCESS;
+      return this.apexException == null ? System.ParentJobResult.SUCCESS : System.ParentJobResult.UNHANDLED_EXCEPTION;
     }
 
-    public Id getRequestId() {
+    public String getRequestId() {
       return System.Request.getCurrent().getRequestId();
     }
   }

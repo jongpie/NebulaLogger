@@ -3586,13 +3586,31 @@ global with sharing class Logger {
 
   // Inner class for tracking details about the current transaction's async context
   @SuppressWarnings('PMD.ApexDoc')
+  @TestVisible
   private class AsyncContext {
     public final String type;
     public final String parentJobId;
     public final String childJobId;
     public final String triggerId;
     public final String finalizerResult;
-    public final Exception finalizerException;
+    // Instances of Exception can't be serialized, but instances of AsyncContext
+    // are sometimes serialized - so, the AsyncContext's Exception is transient,
+    // and an extra getter for Map<String, Object>, containing the exception's data,
+    // is used to provide a quick & easy serializable version
+    public transient final Exception finalizerException;
+    public Map<String, Object> finalizerUnhandledException {
+      get {
+        return finalizerException == null
+          ? null
+          : new Map<String, Object>{
+              'cause' => this.finalizerException.getCause(),
+              'lineNumber' => this.finalizerException.getLineNumber(),
+              'message' => this.finalizerException.getMessage(),
+              'stackTraceString' => this.finalizerException.getStackTraceString(),
+              'typeName' => this.finalizerException.getTypeName()
+            };
+      }
+    }
 
     public AsyncContext(Database.BatchableContext batchableContext) {
       this.childJobId = batchableContext?.getChildJobId();
@@ -3603,7 +3621,7 @@ global with sharing class Logger {
     public AsyncContext(System.FinalizerContext finalizerContext) {
       if (finalizerContext != null) {
         this.finalizerException = finalizerContext.getException();
-        this.finalizerResult = finalizerContext.getResult().name();
+        this.finalizerResult = finalizerContext.getResult()?.name();
         this.parentJobId = finalizerContext.getAsyncApexJobId();
       }
       this.type = System.FinalizerContext.class.getName();
