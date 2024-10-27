@@ -19,6 +19,7 @@ export default class LoggerLWCGetLoggerImportDemo extends LightningElement {
 
   connectedCallback() {
     try {
+      this.logger.setScenario(this.scenario);
       this.logger.error('test error entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' });
       this.logger.warn('test warn entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' });
       this.logger.info('test info entry').setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' });
@@ -83,6 +84,7 @@ export default class LoggerLWCGetLoggerImportDemo extends LightningElement {
 
   scenarioChange(event) {
     this.scenario = event.target.value;
+    this.logger.setScenario(this.scenario);
   }
 
   tagsStringChange(event) {
@@ -157,7 +159,6 @@ export default class LoggerLWCGetLoggerImportDemo extends LightningElement {
 
   saveLogExample() {
     console.log('running saveLog for btn');
-    this.logger.setScenario(this.scenario);
     console.log(this.logger);
     // this.logger.saveLog('QUEUEABLE');
     this.logger.saveLog();
