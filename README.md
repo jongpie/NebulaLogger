@@ -238,41 +238,41 @@ This example batchable class shows how you can leverage this feature to relate a
 
 ```apex
 public with sharing class BatchableLoggerExample implements Database.Batchable<SObject>, Database.Stateful {
-    private String originalTransactionId;
+  private String originalTransactionId;
 
-    public Database.QueryLocator start(Database.BatchableContext batchableContext) {
-        // Each batchable method runs in a separate transaction,
-        // so store the first transaction ID to later relate the other transactions
-        this.originalTransactionId = Logger.getTransactionId();
+  public Database.QueryLocator start(Database.BatchableContext batchableContext) {
+    // Each batchable method runs in a separate transaction,
+    // so store the first transaction ID to later relate the other transactions
+    this.originalTransactionId = Logger.getTransactionId();
 
-        Logger.info('Starting BatchableLoggerExample');
-        Logger.saveLog();
+    Logger.info('Starting BatchableLoggerExample');
+    Logger.saveLog();
 
-        // Just as an example, query all accounts
-        return Database.getQueryLocator([SELECT Id, Name, RecordTypeId FROM Account]);
+    // Just as an example, query all accounts
+    return Database.getQueryLocator([SELECT Id, Name, RecordTypeId FROM Account]);
+  }
+
+  public void execute(Database.BatchableContext batchableContext, List<Account> scope) {
+    // One-time call (per transaction) to set the parent log
+    Logger.setParentLogTransactionId(this.originalTransactionId);
+
+    for (Account account : scope) {
+      // Add your batch job's logic here
+
+      // Then log the result
+      Logger.info('Processed an account record', account);
     }
 
-    public void execute(Database.BatchableContext batchableContext, List<Account> scope) {
-        // One-time call (per transaction) to set the parent log
-        Logger.setParentLogTransactionId(this.originalTransactionId);
+    Logger.saveLog();
+  }
 
-        for (Account account : scope) {
-            // Add your batch job's logic here
+  public void finish(Database.BatchableContext batchableContext) {
+    // The finish method runs in yet-another transaction, so set the parent log again
+    Logger.setParentLogTransactionId(this.originalTransactionId);
 
-            // Then log the result
-            Logger.info('Processed an account record', account);
-        }
-
-        Logger.saveLog();
-    }
-
-    public void finish(Database.BatchableContext batchableContext) {
-        // The finish method runs in yet-another transaction, so set the parent log again
-        Logger.setParentLogTransactionId(this.originalTransactionId);
-
-        Logger.info('Finishing running BatchableLoggerExample');
-        Logger.saveLog();
-    }
+    Logger.info('Finishing running BatchableLoggerExample');
+    Logger.saveLog();
+  }
 }
 ```
 
@@ -282,42 +282,42 @@ Queueable jobs can also leverage the parent transaction ID to relate logs togeth
 
 ```apex
 public with sharing class QueueableLoggerExample implements Queueable {
-    private Integer numberOfJobsToChain;
-    private String parentLogTransactionId;
+  private Integer numberOfJobsToChain;
+  private String parentLogTransactionId;
 
-    private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+  private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
-    // Main constructor - for demo purposes, it accepts an integer that controls how many times the job runs
-    public QueueableLoggerExample(Integer numberOfJobsToChain) {
-        this(numberOfJobsToChain, null);
+  // Main constructor - for demo purposes, it accepts an integer that controls how many times the job runs
+  public QueueableLoggerExample(Integer numberOfJobsToChain) {
+    this(numberOfJobsToChain, null);
+  }
+
+  // Second constructor, used to pass the original transaction's ID to each chained instance of the job
+  // You don't have to use a constructor - a public method or property would work too.
+  // There just needs to be a way to pass the value of parentLogTransactionId between instances
+  public QueueableLoggerExample(Integer numberOfJobsToChain, String parentLogTransactionId) {
+    this.numberOfJobsToChain = numberOfJobsToChain;
+    this.parentLogTransactionId = parentLogTransactionId;
+  }
+
+  // Creates some log entries and starts a new instance of the job when applicable (based on numberOfJobsToChain)
+  public void execute(System.QueueableContext queueableContext) {
+    Logger.setParentLogTransactionId(this.parentLogTransactionId);
+
+    Logger.fine('queueableContext==' + queueableContext);
+    Logger.info('this.numberOfJobsToChain==' + this.numberOfJobsToChain);
+    Logger.info('this.parentLogTransactionId==' + this.parentLogTransactionId);
+
+    // Add your queueable job's logic here
+
+    Logger.saveLog();
+
+    --this.numberOfJobsToChain;
+    if (this.numberOfJobsToChain > 0) {
+      String parentLogTransactionId = this.parentLogTransactionId != null ? this.parentLogTransactionId : Logger.getTransactionId();
+      System.enqueueJob(new QueueableLoggerExample(this.numberOfJobsToChain, parentLogTransactionId));
     }
-
-    // Second constructor, used to pass the original transaction's ID to each chained instance of the job
-    // You don't have to use a constructor - a public method or property would work too.
-    // There just needs to be a way to pass the value of parentLogTransactionId between instances
-    public QueueableLoggerExample(Integer numberOfJobsToChain, String parentLogTransactionId) {
-        this.numberOfJobsToChain = numberOfJobsToChain;
-        this.parentLogTransactionId = parentLogTransactionId;
-    }
-
-    // Creates some log entries and starts a new instance of the job when applicable (based on numberOfJobsToChain)
-    public void execute(System.QueueableContext queueableContext) {
-        Logger.setParentLogTransactionId(this.parentLogTransactionId);
-
-        Logger.fine('queueableContext==' + queueableContext);
-        Logger.info('this.numberOfJobsToChain==' + this.numberOfJobsToChain);
-        Logger.info('this.parentLogTransactionId==' + this.parentLogTransactionId);
-
-        // Add your queueable job's logic here
-
-        Logger.saveLog();
-
-        --this.numberOfJobsToChain;
-        if (this.numberOfJobsToChain > 0) {
-            String parentLogTransactionId = this.parentLogTransactionId != null ? this.parentLogTransactionId : Logger.getTransactionId();
-            System.enqueueJob(new QueueableLoggerExample(this.numberOfJobsToChain, parentLogTransactionId));
-        }
-    }
+  }
 }
 ```
 
