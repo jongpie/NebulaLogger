@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.14.14';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.14.15';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -3473,7 +3473,9 @@ global with sharing class Logger {
     // intended behavior
     if (currentAsyncContext == null) {
       currentAsyncContext = asyncContext;
-      System.debug(System.LoggingLevel.INFO, 'Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext));
+      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
+        info('Nebula Logger - Async Context: ' + System.JSON.serializePretty(asyncContext, true)).setExceptionDetails(asyncContext.finalizerException);
+      }
     }
   }
 
@@ -3584,11 +3586,31 @@ global with sharing class Logger {
 
   // Inner class for tracking details about the current transaction's async context
   @SuppressWarnings('PMD.ApexDoc')
+  @TestVisible
   private class AsyncContext {
     public final String type;
     public final String parentJobId;
     public final String childJobId;
     public final String triggerId;
+    public final String finalizerResult;
+    // Instances of Exception can't be serialized, but instances of AsyncContext
+    // are sometimes serialized - so, the AsyncContext's Exception is transient,
+    // and an extra getter for Map<String, Object>, containing the exception's data,
+    // is used to provide a quick & easy serializable version
+    public transient final Exception finalizerException;
+    public Map<String, Object> finalizerUnhandledException {
+      get {
+        return finalizerException == null
+          ? null
+          : new Map<String, Object>{
+              'cause' => this.finalizerException.getCause(),
+              'lineNumber' => this.finalizerException.getLineNumber(),
+              'message' => this.finalizerException.getMessage(),
+              'stackTraceString' => this.finalizerException.getStackTraceString(),
+              'typeName' => this.finalizerException.getTypeName()
+            };
+      }
+    }
 
     public AsyncContext(Database.BatchableContext batchableContext) {
       this.childJobId = batchableContext?.getChildJobId();
@@ -3597,7 +3619,11 @@ global with sharing class Logger {
     }
 
     public AsyncContext(System.FinalizerContext finalizerContext) {
-      this.parentJobId = finalizerContext?.getAsyncApexJobId();
+      if (finalizerContext != null) {
+        this.finalizerException = finalizerContext.getException();
+        this.finalizerResult = finalizerContext.getResult()?.name();
+        this.parentJobId = finalizerContext.getAsyncApexJobId();
+      }
       this.type = System.FinalizerContext.class.getName();
     }
 
