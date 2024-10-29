@@ -269,6 +269,15 @@ private class Logger_Tests {
   }
 
   @IsTest
+  static void it_should_return_system_request_id() {
+    String expectedRequestId = System.Request.getCurrent().getRequestId();
+
+    String actualRequestId = Logger.getRequestId();
+
+    System.Assert.areEqual(expectedRequestId, actualRequestId);
+  }
+
+  @IsTest
   static void it_should_use_a_uuid_for_transaction_id() {
     String transactionId = Logger.getTransactionId();
 
