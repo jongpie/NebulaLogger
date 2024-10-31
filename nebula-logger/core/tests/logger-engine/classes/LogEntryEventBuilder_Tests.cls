@@ -35,6 +35,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.setRecord(System.UserInfo.getUserId()).getLogEntryEvent());
     System.Assert.isNull(builder.setRecord(new Schema.User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
     System.Assert.isNull(builder.setRecord(new List<Schema.User>{ new Schema.User(Id = System.UserInfo.getUserId()) }).getLogEntryEvent());
+    System.Assert.isNull(builder.setRecord(new Set<Id>{ System.UserInfo.getUserId() }).getLogEntryEvent());
     System.Assert.isNull(builder.addTags(new List<String>{ 'tag-1', 'tag-2' }).getLogEntryEvent());
     System.Assert.isNull(builder.parseStackTrace(new System.DmlException().getStackTraceString()).getLogEntryEvent());
   }
@@ -1247,6 +1248,26 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(System.JSON.serializePretty(userIdToUser), builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
     System.Assert.areEqual(Schema.User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_set_record_fields_for_set_of_id_records_when_populated() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+    Set<Id> userIdSet = new Map<Id, Schema.User>([SELECT Id, Name, Username, IsActive FROM User LIMIT 5]).keySet();
+    builder.setRecord(userIdSet);
+
+    System.Assert.areEqual(userIdSet.size(), builder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', builder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
+    System.Assert.isNotNull(builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+    System.Assert.areEqual('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest

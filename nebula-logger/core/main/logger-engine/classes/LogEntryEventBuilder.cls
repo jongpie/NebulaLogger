@@ -463,6 +463,26 @@ global with sharing class LogEntryEventBuilder {
   }
 
   /**
+   * @description Sets the log entry event's record fields
+   * @param  recordsIds The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry
+   * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setRecord(Set<Id> recordsIds) {
+    if (this.shouldSave() == false) {
+      return this;
+    }
+
+    List<SObject> records = new List<SObject>();
+    for (Id recordId : recordsIds) {
+      SObject record = recordId.getSObjectType().newSObject();
+      record.put('Id', recordId);
+      records.add(record);
+    }
+
+    return this.setRecord(records);
+  }
+
+  /**
    * @description Sets the log entry event's HTTP Request fields
    * @param  request The instance of `HttpRequest` to log
    * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
