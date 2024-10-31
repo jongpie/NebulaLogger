@@ -6,7 +6,7 @@
     <externalId>false</externalId>
     <formula>IF(
     NOT(ISBLANK(ParentLog__c)),
-    HYPERLINK(ParentLog__c, ParentLog__r.Name + &apos; - &apos; + ParentLogTransactionId__c),
+    HYPERLINK(ParentLog__c, ParentLog__r.Name + &apos; - &apos; + ParentLogTransactionId__c, &apos;_top&apos;),
     ParentLogTransactionId__c
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>

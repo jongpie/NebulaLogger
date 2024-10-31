@@ -576,6 +576,8 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ###### `MockFinalizerContext(Id asyncApexJobId)`
 
+###### `MockFinalizerContext(Exception ex)`
+
 ---
 
 ##### Methods
@@ -584,7 +586,7 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 ###### `getException()` → `Exception`
 
-###### `getRequestId()` → `Id`
+###### `getRequestId()` → `String`
 
 ###### `getResult()` → `System.ParentJobResult`
 

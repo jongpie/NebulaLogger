@@ -22,7 +22,7 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(fakeActionName, null);
 
-    System.Assert.areEqual(4, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
     System.Assert.areEqual('Unknown action: ' + fakeActionName, returnedOutput.get('exceptionMessage'));
     System.Assert.isNotNull(returnedOutput.get('exceptionStackTrace'));
@@ -37,7 +37,7 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call(fakeActionName, new Map<String, Object>{ 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(4, omnistudioOutput.size());
+    System.Assert.areEqual(4, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(false, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + omnistudioOutput);
     System.Assert.areEqual('Unknown action: ' + fakeActionName, omnistudioOutput.get('exceptionMessage'));
     System.Assert.isNotNull(omnistudioOutput.get('exceptionStackTrace'));
@@ -54,7 +54,7 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(incorrectlyCasedActionName, null);
 
-    System.Assert.areEqual(4, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
     System.Assert.areEqual('Unknown action: ' + incorrectlyCasedActionName, returnedOutput.get('exceptionMessage'));
     System.Assert.isNotNull(returnedOutput.get('exceptionStackTrace'));
@@ -68,9 +68,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('getTransactionId', null);
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
     System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
   }
 
   @IsTest
@@ -81,9 +83,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('getTransactionId', new Map<String, Object>{ 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(2, omnistudioOutput.size());
+    System.Assert.areEqual(4, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
     System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
   }
 
   @IsTest
@@ -95,9 +99,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('getParentLogTransactionId', null);
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
     System.Assert.areEqual(mockParentLogTransactionId, returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
   }
 
   @IsTest
@@ -110,9 +116,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('getParentLogTransactionId', new Map<String, Object>{ 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(2, omnistudioOutput.size());
+    System.Assert.areEqual(4, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
     System.Assert.areEqual(mockParentLogTransactionId, omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
   }
 
   @IsTest
@@ -124,8 +132,11 @@ private class CallableLogger_Tests {
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
       .call('setParentLogTransactionId', new Map<String, Object>{ 'parentLogTransactionId' => mockParentLogTransactionId });
 
-    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId());
   }
 
@@ -139,8 +150,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('setParentLogTransactionId', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(1, omnistudioOutput.size());
+    System.Assert.areEqual(4, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
     System.Assert.areEqual(mockParentLogTransactionId, Logger.getParentLogTransactionId());
   }
 
@@ -153,8 +167,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('getScenario', null);
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     System.Assert.areEqual(Logger.getScenario(), returnedOutput.get('scenario'));
   }
 
@@ -168,9 +185,12 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('getScenario', new Map<String, Object>{ 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(2, omnistudioOutput.size());
+    System.Assert.areEqual(5, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
     System.Assert.areEqual(Logger.getScenario(), omnistudioOutput.get('scenario'));
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
   }
 
   @IsTest
@@ -184,8 +204,11 @@ private class CallableLogger_Tests {
       new Map<String, Object>{ 'scenario' => mockScenario }
     );
 
-    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     System.Assert.areEqual(mockScenario, Logger.getScenario());
   }
 
@@ -199,8 +222,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('setScenario', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(1, omnistudioOutput.size());
+    System.Assert.areEqual(4, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
     System.Assert.areEqual(mockScenario, Logger.getScenario());
   }
 
@@ -216,8 +242,11 @@ private class CallableLogger_Tests {
       new Map<String, Object>{ 'scenario' => mockScenario }
     );
 
-    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     System.Assert.isNull(Logger.getScenario());
   }
 
@@ -232,8 +261,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('endScenario', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(1, omnistudioOutput.size());
+    System.Assert.areEqual(4, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
     System.Assert.isNull(Logger.getScenario());
   }
 
@@ -248,8 +280,11 @@ private class CallableLogger_Tests {
       new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message }
     );
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -272,11 +307,52 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(2, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput));
+    System.Assert.areEqual(5, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) omnistudioOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevelName, logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.OriginLocation__c, 'Expected a null for OriginLocation__c, received: ' + logEntryEvent.OriginLocation__c);
+    System.Assert.areEqual(TEST_OMNI_PROCESS_ID, logEntryEvent.OriginSourceId__c);
+    System.Assert.areEqual('OmniStudio', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_omnistudio_output_maps_to_new_entry_message_when_using_omnistudio_approach() {
+    Logger.transactionQuiddity = System.Quiddity.REMOTE_ACTION;
+    String loggingLevelName = System.LoggingLevel.FINE.name();
+    String message = 'some log entry message';
+    Map<String, Object> firstStepInput = new Map<String, Object>{ 'TextInput1' => 'Value1', 'TextInput2' => 'Value2' };
+    Map<String, Object> secondStepInput = new Map<String, Object>{ 'DateInput' => System.today(), 'BooleanInput' => true };
+    Map<String, Object> omnistudioInput = new Map<String, Object>{
+      'loggingLevel' => loggingLevelName,
+      'message' => message,
+      'omniProcessId' => TEST_OMNI_PROCESS_ID,
+      'someKeyForSomeString' => 'some string that should not be logged',
+      'firstStepInput' => firstStepInput,
+      'secondStepInput' => secondStepInput
+    };
+    Map<String, Object> omnistudioOutput = new Map<String, Object>();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
+
+    System.Assert.areEqual(5, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
+    System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) omnistudioOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevelName, logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(
+      message +
+        '\n\nOmniStudio Input:\n' +
+        System.JSON.serializePretty(new Map<String, Object>{ 'firstStepInput' => firstStepInput, 'secondStepInput' => secondStepInput }),
+      logEntryEvent.Message__c
+    );
     System.Assert.isNull(logEntryEvent.OriginLocation__c, 'Expected a null for OriginLocation__c, received: ' + logEntryEvent.OriginLocation__c);
     System.Assert.areEqual(TEST_OMNI_PROCESS_ID, logEntryEvent.OriginSourceId__c);
     System.Assert.areEqual('OmniStudio', logEntryEvent.OriginType__c);
@@ -295,8 +371,11 @@ private class CallableLogger_Tests {
       new Map<String, Object>{ 'exception' => apexException, 'loggingLevel' => loggingLevel, 'message' => message }
     );
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -321,8 +400,11 @@ private class CallableLogger_Tests {
       new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'recordId' => recordId }
     );
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -344,8 +426,11 @@ private class CallableLogger_Tests {
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'record' => record });
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -367,8 +452,11 @@ private class CallableLogger_Tests {
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'recordList' => recordList });
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -390,8 +478,11 @@ private class CallableLogger_Tests {
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'recordMap' => recordMap });
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -413,8 +504,11 @@ private class CallableLogger_Tests {
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'tags' => tags });
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -436,8 +530,11 @@ private class CallableLogger_Tests {
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'saveLog' => saveLog });
 
-    System.Assert.areEqual(2, returnedOutput.size());
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
@@ -456,8 +553,11 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('saveLog', null);
 
-    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(Logger.getUserSettings().DefaultSaveMethod__c, Logger.lastSaveMethodNameUsed);
   }
@@ -472,7 +572,7 @@ private class CallableLogger_Tests {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     callableLoggerInstance.call('saveLog', new Map<String, Object>{ 'output' => omnistudioOutput });
 
-    System.Assert.areEqual(1, omnistudioOutput.size(), omnistudioOutput.toString());
+    System.Assert.areEqual(4, omnistudioOutput.size(), omnistudioOutput.toString());
     System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(Logger.getUserSettings().DefaultSaveMethod__c, Logger.lastSaveMethodNameUsed);
@@ -491,8 +591,11 @@ private class CallableLogger_Tests {
       new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName }
     );
 
-    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
   }
@@ -510,8 +613,11 @@ private class CallableLogger_Tests {
       new Map<String, Object>{ 'saveMethodName' => targetSaveMethodName }
     );
 
-    System.Assert.areEqual(1, returnedOutput.size());
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
   }

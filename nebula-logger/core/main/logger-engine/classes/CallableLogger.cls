@@ -24,6 +24,7 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String ARGUMENT_RECORD = 'record';
   private static final String ARGUMENT_RECORD_LIST = 'recordList';
   private static final String ARGUMENT_RECORD_MAP = 'recordMap';
+  private static final String ARGUMENT_REQUEST_ID = 'requestId';
   private static final String ARGUMENT_SAVE_LOG = 'saveLog';
   private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName';
   private static final String ARGUMENT_TAGS = 'tags';
@@ -68,7 +69,7 @@ global without sharing class CallableLogger implements System.Callable {
     return output;
   }
 
-  @SuppressWarnings('PMD.ApexDoc')
+  @SuppressWarnings('PMD.ApexDoc, PMD.StdCyclomaticComplexity')
   private class CallableHandler {
     public void handleCall(String action, Map<String, Object> input, Map<String, Object> output) {
       switch on action {
@@ -94,12 +95,18 @@ global without sharing class CallableLogger implements System.Callable {
         }
         // Methods for adding & saving log entries
         when 'newEntry' {
-          LogEntryEventBuilder builder = this.newEntry(input);
-          if (returnLogEntryEventBuilderInOutput) {
-            output.put(ARGUMENT_LOG_ENTRY_EVENT_BUILDER, builder);
+          if (input.containsKey(ARGUMENT_PARENT_LOG_TRANSACTION_ID)) {
+            String parentLogTransactionId = (String) input.get(ARGUMENT_PARENT_LOG_TRANSACTION_ID);
+            Logger.setParentLogTransactionId(parentLogTransactionId);
           }
+
+          LogEntryEventBuilder builder = this.newEntry(input);
           if (input.get(ARGUMENT_SAVE_LOG) == true) {
             this.saveLog(input);
+          }
+
+          if (returnLogEntryEventBuilderInOutput) {
+            output.put(ARGUMENT_LOG_ENTRY_EVENT_BUILDER, builder);
           }
         }
         when 'saveLog' {
@@ -109,17 +116,21 @@ global without sharing class CallableLogger implements System.Callable {
           throw new System.IllegalArgumentException('Unknown action: ' + action);
         }
       }
+
+      output.put(ARGUMENT_TRANSACTION_ID, Logger.getTransactionId());
+      output.put(ARGUMENT_PARENT_LOG_TRANSACTION_ID, Logger.getParentLogTransactionId());
+      output.put(ARGUMENT_REQUEST_ID, Logger.getRequestId());
     }
 
-    @SuppressWarnings('PMD.CognitiveComplexity, PMD.NcssMethodCount')
+    @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount')
     private LogEntryEventBuilder newEntry(Map<String, Object> input) {
       // The value of loggingLevel could be either a string name or an enum value from System.LoggingLevel,
       // so always first convert it to a string for consistency
       String loggingLevelName = input.get(ARGUMENT_LOGGING_LEVEL)?.toString();
       System.LoggingLevel loggingLevel = Logger.getLoggingLevel(loggingLevelName);
-      String message = (String) input.get(ARGUMENT_MESSAGE);
+      String formattedMessage = CallableLogger.getFormattedMessage(input);
 
-      LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, message);
+      LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, formattedMessage);
 
       if (input.containsKey(ARGUMENT_EXCEPTION)) {
         logEntryEventBuilder.setExceptionDetails((System.Exception) input.get(ARGUMENT_EXCEPTION));
@@ -139,8 +150,9 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(ARGUMENT_TAGS)) {
         logEntryEventBuilder.addTags((List<String>) input.get(ARGUMENT_TAGS));
       }
-      if (input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION) {
+      if (CallableLogger.isOmniStudioInput(input)) {
         LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+
         logEntryEvent.OriginLocation__c = null;
         logEntryEvent.OriginSourceApiName__c = null;
         logEntryEvent.OriginSourceId__c = (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID);
@@ -154,9 +166,32 @@ global without sharing class CallableLogger implements System.Callable {
     private void saveLog(Map<String, Object> input) {
       // The value of saveMethodName could be either a string name or an enum value from Logger.SaveMethod,
       // so always first convert it to a string for consistency
-      // System.Assert.fail(input.toString());
       String saveMethodName = input.get(ARGUMENT_SAVE_METHOD_NAME)?.toString() ?? Logger.getUserSettings().DefaultSaveMethod__c;
       Logger.saveLog(saveMethodName);
     }
+  }
+
+  private static String getFormattedMessage(Map<String, Object> originalInput) {
+    String message = (String) originalInput.get(ARGUMENT_MESSAGE);
+
+    if (CallableLogger.isOmniStudioInput(originalInput)) {
+      Map<String, Object> cleanedInput = new Map<String, Object>();
+      for (String inputName : originalInput.keySet()) {
+        Object inputValue = originalInput.get(inputName);
+        if (inputValue instanceof Map<String, Object>) {
+          cleanedInput.put(inputName, inputValue);
+        }
+      }
+
+      if (cleanedInput.keySet().isEmpty() == false) {
+        message += '\n\nOmniStudio Input:\n' + System.JSON.serializePretty(cleanedInput);
+      }
+    }
+
+    return message;
+  }
+
+  private static Boolean isOmniStudioInput(Map<String, Object> input) {
+    return input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION;
   }
 }
