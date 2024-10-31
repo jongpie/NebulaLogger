@@ -223,7 +223,6 @@ export default class LoggerService {
     const loggingLevelEmoji = LOGGING_LEVEL_EMOJIS[loggingLevel];
     const qualifiedMessage = `${loggingLevelEmoji} ${loggingLevel}: ${message}`;
     // Clean up some extra properties for readability
-    console.debug('>>> original componentLogEntry: ', JSON.stringify(componentLogEntry, null, 2));
     const simplifiedLogEntry = !componentLogEntry
       ? undefined
       : {
