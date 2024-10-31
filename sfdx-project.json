@@ -19,19 +19,6 @@
       "default": false
     },
     {
-      "package": "Nebula Logger - Core Plugin - Async Failure Additions",
-      "path": "./nebula-logger/plugins/async-failure-additions/plugin",
-      "dependencies": [
-        {
-          "package": "Nebula Logger - Core@4.7.2-parent-log-transaction-id-bugfix"
-        }
-      ],
-      "versionNumber": "1.0.2.NEXT",
-      "versionName": "Added logging for Screen Flow failures",
-      "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)",
-      "default": false
-    },
-    {
       "package": "Nebula Logger - Core Plugin - Big Object Archiving",
       "path": "./nebula-logger/plugins/big-object-archiving/plugin",
       "dependencies": [
@@ -55,6 +42,19 @@
       "versionNumber": "0.9.0.NEXT",
       "versionName": "Beta Release",
       "versionDescription": "Initial beta version of new plugin",
+      "default": false
+    },
+    {
+      "package": "Nebula Logger - Core Plugin - Platform Monitoring",
+      "path": "./nebula-logger/plugins/platform-monitoring",
+      "dependencies": [
+        {
+          "package": "Nebula Logger - Core@4.7.2-parent-log-transaction-id-bugfix"
+        }
+      ],
+      "versionNumber": "1.0.2.NEXT",
+      "versionName": "Added logging for Screen Flow failures",
+      "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)",
       "default": false
     },
     {
@@ -200,16 +200,16 @@
     "Nebula Logger - Core@4.14.13-new-getlogger()-js-function": "04t5Y0000015oW3QAI",
     "Nebula Logger - Core@4.14.14-new-apex-static-method-&-javascript-function-logger.setfield()": "04t5Y0000015oWIQAY",
     "Nebula Logger - Core@4.14.15-create-log-entry-for-asyncapexcontext": "04t5Y0000015obxQAA",
-    "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
-    "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
-    "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
-    "Nebula Logger - Core Plugin - Async Failure Additions@1.0.2": "04t5Y0000023QttQAE",
     "Nebula Logger - Core Plugin - Big Object Archiving": "0Ho5Y000000blMSSAY",
     "Nebula Logger - Core Plugin - Big Object Archiving@0.9.0": "04t5Y0000015lgLQAQ",
     "Nebula Logger - Core Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
     "Nebula Logger - Core Plugin - Log Retention Rules@0.9.0": "04t5Y0000015lgGQAQ",
     "Nebula Logger - Core Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",
     "Nebula Logger - Core Plugin - Logger Admin Dashboard@0.9.0": "04t5Y0000015l3yQAA",
+    "Nebula Logger - Core Plugin - Platform Monitoring": "0Ho5Y000000blO4SAI",
+    "Nebula Logger - Core Plugin - Platform Monitoring@1.0.0": "04t5Y0000015lhiQAA",
+    "Nebula Logger - Core Plugin - Platform Monitoring@1.0.1": "04t5Y0000015lhsQAA",
+    "Nebula Logger - Core Plugin - Platform Monitoring@1.0.2": "04t5Y0000023QttQAE",
     "Nebula Logger - Core Plugin - Slack": "0Ho5Y000000blMDSAY",
     "Nebula Logger - Core Plugin - Slack@0.9.0-beta-release": "04t5e00000061lHAAQ",
     "Nebula Logger - Core Plugin - Slack@0.9.1-beta-release-round-2": "04t5e00000065xiAAA",
