@@ -13,8 +13,6 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 `sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015ocbQAA`
 
-`sfdx force:package:install --wait 20 --securitytype AdminsOnly --package 04t5Y0000015ocbQAA`
-
 ---
 
 ## Managed Package - v4.15.0
@@ -24,8 +22,6 @@ The most robust observability solution for Salesforce experts. Built 100% native
 [![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/12?closed=1)
 
 `sf package install --wait 30 --security-type AdminsOnly --package TODO_MANAGED_PACKAGE`
-
-`sfdx force:package:install --wait 30 --securitytype AdminsOnly --package TODO_MANAGED_PACKAGE`
 
 ---
 
