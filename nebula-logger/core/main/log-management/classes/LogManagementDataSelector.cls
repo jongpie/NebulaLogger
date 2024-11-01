@@ -214,7 +214,7 @@ public without sharing virtual class LogManagementDataSelector {
 
     List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
     logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
-    List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), Schema.Log__c.SObjectType.getDescribe().getName() };
+    List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), Schema.Log__c.SObjectType.toString() };
 
     String query = String.format(queryTemplate, textReplacements);
     return (Log__c) System.Database.query(String.escapeSingleQuotes(query));
@@ -229,7 +229,7 @@ public without sharing virtual class LogManagementDataSelector {
     String queryTemplate = 'SELECT {0} FROM {1} WHERE Id = :logEntryId';
 
     List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
-    List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ','), Schema.LogEntry__c.SObjectType.getDescribe().getName() };
+    List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ','), Schema.LogEntry__c.SObjectType.toString() };
 
     String query = String.format(queryTemplate, textReplacements);
     return (LogEntry__c) System.Database.query(String.escapeSingleQuotes(query));
@@ -246,9 +246,9 @@ public without sharing virtual class LogManagementDataSelector {
     List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
     List<String> textReplacements = new List<String>{
       String.join(logEntryFieldNames, ', '),
-      Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-      Schema.LogEntry__c.Log__c.getDescribe().getName(),
-      Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName()
+      Schema.LogEntry__c.SObjectType.toString(),
+      Schema.LogEntry__c.Log__c.toString(),
+      Schema.LogEntry__c.TransactionEntryNumber__c.toString()
     };
 
     String query = String.format(queryTemplate, textReplacements);
@@ -357,8 +357,8 @@ public without sharing virtual class LogManagementDataSelector {
   public virtual List<LogEntry__c> getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
     List<Object> queryTextReplacements = new List<Object>{
       fieldsClause,
-      Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-      Schema.LogEntry__c.RecordId__c.getDescribe().getName(),
+      Schema.LogEntry__c.SObjectType.toString(),
+      Schema.LogEntry__c.RecordId__c.toString(),
       orderByClause,
       rowLimit
     };

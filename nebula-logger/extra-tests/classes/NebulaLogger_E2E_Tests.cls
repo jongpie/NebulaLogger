@@ -164,7 +164,7 @@ private class NebulaLogger_E2E_Tests {
     // Loop through the deserialized record map and put the field & value
     // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
     for (Schema.SObjectField sobjectField : changesToFields.keySet()) {
-      String fieldName = sobjectField.getDescribe().getName();
+      String fieldName = sobjectField.toString();
       deserializedRecordMap.put(fieldName, changesToFields.get(sobjectField));
     }
 

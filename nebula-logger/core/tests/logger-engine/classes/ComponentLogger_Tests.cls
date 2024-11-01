@@ -127,8 +127,8 @@ private class ComponentLogger_Tests {
     // Realistically, people shouldn't/wouldn't set fields like HttpRequestBody__c or HttpRequestMethod__c...
     // But to avoid adding an extra field just for test purposes, we'll use some existing fields
     componentLogEntry.fieldToValue = new Map<String, Object>{
-      Schema.LogEntryEvent__e.HttpRequestBody__c.getDescribe().getName() => 'some value',
-      Schema.LogEntryEvent__e.HttpRequestMethod__c.getDescribe().getName() => 'another value'
+      Schema.LogEntryEvent__e.HttpRequestBody__c.toString() => 'some value',
+      Schema.LogEntryEvent__e.HttpRequestMethod__c.toString() => 'another value'
     };
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());

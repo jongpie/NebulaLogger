@@ -279,9 +279,9 @@ private class SlackLoggerPlugin_Tests {
   @SuppressWarnings('PMD.UnusedLocalVariable')
   private static List<Log__c> queryLogs(System.LoggingLevel notificationLoggingLevel) {
     List<String> fieldNames = new List<String>{
-      Schema.Log__c.MaxLogEntryLoggingLevelOrdinal__c.getDescribe().getName(),
-      Schema.Log__c.SendSlackNotification__c.getDescribe().getName(),
-      Schema.Log__c.SlackNotificationDate__c.getDescribe().getName()
+      Schema.Log__c.MaxLogEntryLoggingLevelOrdinal__c.toString(),
+      Schema.Log__c.SendSlackNotification__c.toString(),
+      Schema.Log__c.SlackNotificationDate__c.toString()
     };
     for (Schema.FieldSetMember fieldSetMember : Schema.SObjectType.Log__c.fieldSets.getMap().get(SlackLoggerPlugin.FIELD_SET_NAME).getFields()) {
       fieldNames.add(fieldSetMember.getFieldPath());

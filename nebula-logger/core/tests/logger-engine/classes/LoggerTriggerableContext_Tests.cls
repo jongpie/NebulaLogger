@@ -27,7 +27,7 @@ private class LoggerTriggerableContext_Tests {
     LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, newUsers, null, null);
 
     System.Assert.areEqual(sobjectType, context.sobjectType);
-    System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+    System.Assert.areEqual(sobjectType.toString(), context.sobjectTypeName);
     System.Assert.areEqual(triggerOperationType, context.triggerOperationType);
     System.Assert.areEqual(newUsers, context.triggerNew);
     System.Assert.isNull(context.triggerNewMap);
@@ -55,7 +55,7 @@ private class LoggerTriggerableContext_Tests {
     LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, updatedUsers, newUsersMap, oldUsersMap);
 
     System.Assert.areEqual(sobjectType, context.sobjectType);
-    System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+    System.Assert.areEqual(sobjectType.toString(), context.sobjectTypeName);
     System.Assert.areEqual(triggerOperationType, context.triggerOperationType);
     System.Assert.areEqual(updatedUsers, context.triggerNew);
     System.Assert.areEqual(newUsersMap, context.triggerNewMap);
@@ -82,7 +82,7 @@ private class LoggerTriggerableContext_Tests {
     LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, null, null, deletedLogsMap);
 
     System.Assert.areEqual(sobjectType, context.sobjectType);
-    System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+    System.Assert.areEqual(sobjectType.toString(), context.sobjectTypeName);
     System.Assert.areEqual(triggerOperationType, context.triggerOperationType);
     System.Assert.isNull(context.triggerNew);
     System.Assert.isNull(context.triggerNewMap);

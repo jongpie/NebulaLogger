@@ -162,7 +162,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
       '\nLIMIT 1' +
       '\n)';
     List<String> fieldNames = new List<String>{
-      Schema.Log__c.Name.getDescribe().getName(),
+      Schema.Log__c.Name.toString(),
       logEntryChildQuery,
       'LoggedBy__r.Username',
       'TYPEOF Owner WHEN User THEN Username ELSE Name END'
@@ -245,7 +245,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
   private List<FieldDto> createRecordNotificationFields(List<Schema.SObjectField> fields, SObject record) {
     List<FieldDto> notificationFields = new List<FieldDto>();
     for (Schema.SObjectField field : fields) {
-      FieldDto notificationField = this.createRecordNotificationField(field.getDescribe().getName(), field, record);
+      FieldDto notificationField = this.createRecordNotificationField(field.toString(), field, record);
       if (notificationField != null) {
         notificationFields.add(notificationField);
       }

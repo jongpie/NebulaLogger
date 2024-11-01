@@ -111,7 +111,7 @@ public with sharing class RelatedLogEntriesController {
 
     // Use username instead of name for user
     if (lookupSObjectType == Schema.User.SObjectType) {
-      return relationshipName + '.' + Schema.User.Username.getDescribe().getName();
+      return relationshipName + '.' + Schema.User.Username.toString();
     }
 
     // There are several commonly used names for the display field name - typically, Name, but check for others

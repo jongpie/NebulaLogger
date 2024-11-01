@@ -15,7 +15,7 @@ private class LoggerSObjectMetadata_Tests {
   @IsTest
   static void it_should_return_schema_for_specified_sobject_api_name() {
     Schema.SObjectType userSObjectType = Schema.User.SObjectType;
-    String userSObjectApiName = userSObjectType.getDescribe().getName();
+    String userSObjectApiName = userSObjectType.toString();
     // TODO Add `Schema.` prefix if the string API name doesn't include `.` (unqualified)
     LoggerSObjectMetadata.SObjectSchema sobjectSchema = LoggerSObjectMetadata.getSchemaForName(userSObjectApiName);
     validateSObjectDetails(userSObjectType, sobjectSchema);
@@ -33,7 +33,7 @@ private class LoggerSObjectMetadata_Tests {
     System.Assert.areEqual(sobjectType.getDescribe().getLabel(), sobjectSchema.label);
     System.Assert.areEqual(sobjectType.getDescribe().getLabelPlural(), sobjectSchema.labelPlural);
     System.Assert.areEqual(sobjectType.getDescribe().getLocalName(), sobjectSchema.localApiName);
-    System.Assert.areEqual(sobjectType.getDescribe().getName(), sobjectSchema.apiName);
+    System.Assert.areEqual(sobjectType.toString(), sobjectSchema.apiName);
     System.Assert.areEqual(sobjectType.getDescribe().fields.getMap().size(), sobjectSchema.fields.size());
 
     // Field details

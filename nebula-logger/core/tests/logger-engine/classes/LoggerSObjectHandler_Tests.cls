@@ -20,7 +20,7 @@ private class LoggerSObjectHandler_Tests {
       new LoggerSObjectHandler__mdt(
         IsEnabled__c = true,
         SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
-        SObjectType__c = sobjectType.getDescribe().getName()
+        SObjectType__c = sobjectType.toString()
       )
     );
 
@@ -40,7 +40,7 @@ private class LoggerSObjectHandler_Tests {
       new LoggerSObjectHandler__mdt(
         IsEnabled__c = true,
         SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
-        SObjectTypeOverride__c = sobjectType.getDescribe().getName()
+        SObjectTypeOverride__c = sobjectType.toString()
       )
     );
 
