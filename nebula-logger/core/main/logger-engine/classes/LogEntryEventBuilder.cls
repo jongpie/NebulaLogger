@@ -467,7 +467,7 @@ global with sharing class LogEntryEventBuilder {
    * @param  recordsIds The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
-  global LogEntryEventBuilder setRecord(Set<Id> recordsIds) {
+  global LogEntryEventBuilder setRecord(Iterable<Id> recordsIds) {
     if (this.shouldSave() == false) {
       return this;
     }
@@ -475,7 +475,7 @@ global with sharing class LogEntryEventBuilder {
     List<SObject> records = new List<SObject>();
     for (Id recordId : recordsIds) {
       SObject record = recordId.getSObjectType().newSObject();
-      record.put('Id', recordId);
+      record.Id = recordId;
       records.add(record);
     }
 
