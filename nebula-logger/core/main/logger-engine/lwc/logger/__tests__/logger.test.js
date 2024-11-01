@@ -40,8 +40,9 @@ jest.mock(
 );
 
 describe('logger lwc recommended sync getLogger() import approach tests', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     disableSystemMessages();
+    setTimeout = callbackFunction => callbackFunction();
     // One of logger's features (when enabled) is to auto-call the browser's console
     // so devs can see a log entry easily. But during Jest tests, seeing all of the
     // console statements is... a bit overwhelming, so the global console functions
@@ -651,7 +652,7 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     logEntryBuilder.setExceptionDetails(error);
 
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.stackTrace);
     expect(logEntry.error.type).toEqual('JavaScript.TypeError');
   });
 
@@ -679,7 +680,10 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     logEntryBuilder.setExceptionDetails(error);
 
     expect(logEntry.error.message).toEqual(error.body.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.stackTrace.metadataType).toEqual('ApexClass');
+    expect(logEntry.error.stackTrace.className).toEqual('SomeApexClass');
+    expect(logEntry.error.stackTrace.methodName).toEqual('runSomeMethod');
+    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.body.stackTrace);
     expect(logEntry.error.type).toEqual(error.body.exceptionType);
   });
 
@@ -1253,7 +1257,7 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.stackTrace);
     expect(logEntry.error.type).toEqual('JavaScript.TypeError');
   });
 
@@ -1278,7 +1282,10 @@ describe('logger lwc deprecated async createLogger() import tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.body.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.stackTrace.metadataType).toEqual('ApexClass');
+    expect(logEntry.error.stackTrace.className).toEqual('SomeApexClass');
+    expect(logEntry.error.stackTrace.methodName).toEqual('runSomeMethod');
+    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.body.stackTrace);
     expect(logEntry.error.type).toEqual(error.body.exceptionType);
   });
 
@@ -1817,7 +1824,7 @@ describe('logger lwc legacy markup tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
+    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.stackTrace);
     expect(logEntry.error.type).toEqual('JavaScript.TypeError');
   });
 
@@ -1844,7 +1851,10 @@ describe('logger lwc legacy markup tests', () => {
     logEntryBuilder.setError(error);
 
     expect(logEntry.error.message).toEqual(error.body.message);
-    expect(logEntry.error.stackTrace).toEqual(error.body.stackTrace);
+    expect(logEntry.error.stackTrace.metadataType).toEqual('ApexClass');
+    expect(logEntry.error.stackTrace.className).toEqual('SomeApexClass');
+    expect(logEntry.error.stackTrace.methodName).toEqual('runSomeMethod');
+    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.body.stackTrace);
     expect(logEntry.error.type).toEqual(error.body.exceptionType);
   });
 

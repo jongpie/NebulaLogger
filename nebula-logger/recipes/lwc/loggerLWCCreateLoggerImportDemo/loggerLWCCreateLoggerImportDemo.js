@@ -82,6 +82,7 @@ export default class LoggerLWCCreateLoggerImportDemo extends LightningElement {
 
   scenarioChange(event) {
     this.scenario = event.target.value;
+    this.logger.setScenario(this.scenario);
   }
 
   tagsStringChange(event) {
@@ -156,7 +157,6 @@ export default class LoggerLWCCreateLoggerImportDemo extends LightningElement {
 
   saveLogExample() {
     console.log('running saveLog for btn');
-    this.logger.setScenario(this.scenario);
     console.log(this.logger);
     // this.logger.saveLog('QUEUEABLE');
     this.logger.saveLog();

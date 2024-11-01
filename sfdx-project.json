@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.16.NEXT",
-      "versionName": "CallableLogger Enhancements",
-      "versionDescription": "Added 3 enhancements to the CallableLogger class (used for OmniStudio logging & loosely-coupled dependencies)\n\n    1. It now automatically appends OmniStudio's input data for OmniScript steps as JSON to the Message__c fields on LogEntryEvent__e and LogEntry__c.\n    2. The 'newEntry' action now also supports setting the parent log transaction ID, using the argument 'parentLogTransactionId'.\n    3. Transaction details are now returned in the output for all actions, including the current transaction ID, the parent log transaction ID, and the Salesforce-generated request ID.",
+      "versionNumber": "4.14.17.NEXT",
+      "versionName": "Improved JavaScript Console Output",
+      "versionDescription": "Added more details to the component log entry JSON that's printed using console statements. The stringified object now includes more details, such as the exception, tags, and scenario.",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -201,6 +201,7 @@
     "Nebula Logger - Core@4.14.14-new-apex-static-method-&-javascript-function-logger.setfield()": "04t5Y0000015oWIQAY",
     "Nebula Logger - Core@4.14.15-create-log-entry-for-asyncapexcontext": "04t5Y0000015obxQAA",
     "Nebula Logger - Core@4.14.16-callablelogger-enhancements": "04t5Y0000015ocHQAQ",
+    "Nebula Logger - Core@4.14.17-improved-javascript-console-output": "04t5Y0000015ocRQAQ",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

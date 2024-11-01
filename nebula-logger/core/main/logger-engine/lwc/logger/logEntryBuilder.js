@@ -106,8 +106,29 @@ export default class LogEntryEventBuilder {
     this.#componentLogEntry.error = {};
     if (exception.body) {
       this.#componentLogEntry.error.message = exception.body.message;
-      this.#componentLogEntry.error.stackTrace = exception.body.stackTrace;
       this.#componentLogEntry.error.type = exception.body.exceptionType;
+
+      const transformedErrorStackTrace = {
+        className: undefined,
+        methodName: undefined,
+        metadataType: undefined,
+        triggerName: undefined,
+        stackTraceString: exception.body.stackTrace
+      };
+      if (exception.body.stackTrace?.indexOf(':') > -1) {
+        const stackTracePieces = exception.body.stackTrace.split(':')[0].split('.');
+
+        if (stackTracePieces[0] === 'Class') {
+          transformedErrorStackTrace.className = stackTracePieces[1];
+          transformedErrorStackTrace.methodName = stackTracePieces[stackTracePieces.length - 1];
+          transformedErrorStackTrace.metadataType = 'ApexClass';
+        } else if (stackTracePieces[0] === 'Trigger') {
+          transformedErrorStackTrace.triggerName = stackTracePieces[1];
+          transformedErrorStackTrace.metadataType = 'ApexTrigger';
+        }
+      }
+
+      this.#componentLogEntry.error.stackTrace = transformedErrorStackTrace;
     } else {
       this.#componentLogEntry.error.message = exception.message;
       this.#componentLogEntry.error.stackTrace = new LoggerStackTrace().parse(exception);
@@ -154,9 +175,11 @@ export default class LogEntryEventBuilder {
    * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
    */
   addTag(tag) {
-    this.#componentLogEntry.tags.push(tag);
-    // Deduplicate the list of tags
-    this.#componentLogEntry.tags = Array.from(new Set(this.#componentLogEntry.tags));
+    if (tag?.trim()) {
+      this.#componentLogEntry.tags.push(tag?.trim());
+      // Deduplicate the list of tags
+      this.#componentLogEntry.tags = Array.from(new Set(this.#componentLogEntry.tags));
+    }
     return this;
   }
 
