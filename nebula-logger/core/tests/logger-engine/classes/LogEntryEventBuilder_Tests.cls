@@ -1251,6 +1251,26 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_set_record_fields_for_list_of_id_records_when_populated() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+    List<Id> userIdList = new List<Id>(new Map<Id, Schema.User>([SELECT Id, Name, Username, IsActive FROM User LIMIT 5]).keySet());
+    builder.setRecord(userIdList);
+
+    System.Assert.areEqual(userIdList.size(), builder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', builder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
+    System.Assert.isNotNull(builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+    System.Assert.areEqual('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
   static void it_should_set_record_fields_for_set_of_id_records_when_populated() {
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
