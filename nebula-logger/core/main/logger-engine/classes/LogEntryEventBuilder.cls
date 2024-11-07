@@ -472,11 +472,14 @@ global with sharing class LogEntryEventBuilder {
       return this;
     }
 
-    List<SObject> records = new List<SObject>();
-    for (Id recordId : recordsIds) {
-      SObject record = recordId.getSObjectType().newSObject();
-      record.Id = recordId;
-      records.add(record);
+    List<SObject> records;
+    if (recordsIds != null) {
+      records = new List<SObject>();
+      for (Id recordId : recordsIds) {
+        SObject record = recordId.getSObjectType().newSObject();
+        record.Id = recordId;
+        records.add(record);
+      }
     }
 
     return this.setRecord(records);
