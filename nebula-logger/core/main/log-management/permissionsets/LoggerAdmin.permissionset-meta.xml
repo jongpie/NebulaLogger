@@ -568,12 +568,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestEndpoint__c</field>
+        <field>LogEntry__c.HttpRequestEndpointAddress__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestEndpointAddress__c</field>
+        <field>LogEntry__c.HttpRequestEndpoint__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -619,6 +619,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HttpResponseStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ImpersonatedByUsernameLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -989,6 +994,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.Origin__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ParentLogLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ProfileLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

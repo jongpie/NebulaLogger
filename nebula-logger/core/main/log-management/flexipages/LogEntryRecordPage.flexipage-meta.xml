@@ -17,23 +17,23 @@
     <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Log__r.LoggedByUsernameLink__c</fieldItem>
-                <identifier>RecordLog_rLoggedByUsernameLink_cField2</identifier>
+                <fieldItem>Record.LoggedByUsernameLink__c</fieldItem>
+                <identifier>RecordLoggedByUsernameLink_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Log__r.ProfileLink__c</fieldItem>
-                <identifier>RecordLog_rProfileLink_cField2</identifier>
+                <fieldItem>Record.ProfileLink__c</fieldItem>
+                <identifier>RecordProfileLink_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Log__r.ImpersonatedByUsernameLink__c</fieldItem>
-                <identifier>RecordLog_rImpersonatedByUsernameLink_cField2</identifier>
+                <fieldItem>Record.ImpersonatedByUsernameLink__c</fieldItem>
+                <identifier>RecordImpersonatedByUsernameLink_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Log__r.ImpersonatedByUsernameLink__c}</leftValue>
+                        <leftValue>{!Record.ImpersonatedByUsernameLink__c}</leftValue>
                         <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
@@ -125,11 +125,11 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Log__r.ParentLogLink__c</fieldItem>
-                <identifier>RecordLog_rParentLogLink_cField</identifier>
+                <fieldItem>Record.ParentLogLink__c</fieldItem>
+                <identifier>RecordParentLogLink_cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Log__r.ParentLogLink__c}</leftValue>
+                        <leftValue>{!Record.ParentLogLink__c}</leftValue>
                         <operator>NE</operator>
                     </criteria>
                 </visibilityRule>

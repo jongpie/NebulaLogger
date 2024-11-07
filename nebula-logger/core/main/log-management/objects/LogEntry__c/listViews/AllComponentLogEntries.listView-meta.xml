@@ -5,6 +5,7 @@
     <columns>Log__c</columns>
     <columns>LoggingLevel__c</columns>
     <columns>LoggedByUsernameLink__c</columns>
+    <columns>ProfileLink__c</columns>
     <columns>Message__c</columns>
     <columns>ComponentType__c</columns>
     <columns>ComponentApiName__c</columns>

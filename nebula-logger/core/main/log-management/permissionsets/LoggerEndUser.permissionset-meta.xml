@@ -309,6 +309,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.ImpersonatedByUsernameLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.LimitsAggregateQueriesMax__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -615,6 +620,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.Origin__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ParentLogLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ProfileLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
