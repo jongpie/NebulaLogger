@@ -9,10 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.4.NEXT",
-      "versionName": "FlowLogger exception message handling",
-      "versionDescription": "FlowLogger now properly truncates the LogEntryEvent__e.ExceptionMessage__c field",
-      "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
+      "versionNumber": "4.15.6.NEXT",
+      "versionName": "Logger Alerts",
+      "versionDescription": "TODO",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
