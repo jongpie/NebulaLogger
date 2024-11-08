@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.0.NEXT",
-      "versionName": "Winter '25 Release",
-      "versionDescription": "Updated all metadata to API v62.0, replaced compact layouts with new dynamic highlights components in all flexipages",
+      "versionNumber": "4.15.3.NEXT",
+      "versionName": "Logger Alerts",
+      "versionDescription": "TODO",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
