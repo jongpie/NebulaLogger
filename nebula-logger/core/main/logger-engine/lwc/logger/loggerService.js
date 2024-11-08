@@ -51,6 +51,7 @@ export default class LoggerService {
 
   #componentFieldToValue = {};
   #componentLogEntries = [];
+  #parentLogTransactionId;
   #settings;
   #scenario;
   #taskQueue = new LoggerServiceTaskQueue();
@@ -79,6 +80,18 @@ export default class LoggerService {
     if (!!fieldToValue && typeof fieldToValue === 'object' && !Array.isArray(fieldToValue)) {
       Object.assign(this.#componentFieldToValue, fieldToValue);
     }
+  }
+
+  getParentLogTransactionId() {
+    return this.#scenario;
+  }
+
+  setParentLogTransactionId(parentLogTransactionId) {
+    this.#parentLogTransactionId = parentLogTransactionId;
+  }
+
+  getScenario() {
+    return this.#scenario;
   }
 
   setScenario(scenario) {

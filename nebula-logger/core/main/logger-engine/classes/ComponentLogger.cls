@@ -374,6 +374,18 @@ public inherited sharing class ComponentLogger {
      */
     @AuraEnabled
     public List<String> tags { get; set; }
+
+    /**
+     * @description (Optional) TODO
+     */
+    @AuraEnabled
+    public String parentLogTransactionId { get; set; }
+
+    /**
+     * @description (Optional) TODO
+     */
+    @AuraEnabled
+    public String transactionId { get; set; }
   }
 
   /**
