@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllChildLogs</fullName>
+    <columns>NAME</columns>
+    <columns>ParentLogLink__c</columns>
+    <columns>LoggedByUsernameLink__c</columns>
+    <columns>ProfileLink__c</columns>
+    <columns>TransactionId__c</columns>
+    <columns>TotalLogEntries__c</columns>
+    <columns>TotalERRORLogEntries__c</columns>
+    <columns>TotalWARNLogEntries__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>Priority__c</columns>
+    <columns>Status__c</columns>
+    <columns>TransactionScenarioLink__c</columns>
+    <columns>StartTime__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ParentLogLink__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>All Child Logs</label>
+</ListView>
