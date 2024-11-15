@@ -123,6 +123,11 @@
     <description>Provides full control of Nebula Logger&apos;s data &amp; custom features</description>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntryTag__c.ImpersonatedByUsernameLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntryTag__c.LogEntryOrigin__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -139,6 +144,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntryTag__c.LoggedByUsernameLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntryTag__c.ParentLogLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntryTag__c.ProfileLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

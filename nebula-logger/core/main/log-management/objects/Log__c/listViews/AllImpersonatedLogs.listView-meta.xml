@@ -19,5 +19,5 @@
         <field>ImpersonatedByUsernameLink__c</field>
         <operation>notEqual</operation>
     </filters>
-    <label>All Impersonated Log Entries</label>
+    <label>All Impersonated Logs</label>
 </ListView>
