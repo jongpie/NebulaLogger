@@ -269,6 +269,9 @@
                             <value>NAME</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>LoggingLevel__c</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Origin__c</value>
                         </valueListItems>
                         <valueListItems>
@@ -279,9 +282,6 @@
                         </valueListItems>
                         <valueListItems>
                             <value>EntryScenarioLink__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>LoggingLevel__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>TransactionEntryNumber__c</value>

@@ -137,9 +137,6 @@
                             <value>NAME</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>StartTime__c</value>
-                        </valueListItems>
-                        <valueListItems>
                             <value>LoggedByUsernameLink__c</value>
                         </valueListItems>
                         <valueListItems>
@@ -158,10 +155,10 @@
                             <value>OWNER.ALIAS</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Priority__c</value>
+                            <value>Status__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Status__c</value>
+                            <value>StartTime__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -222,10 +219,16 @@
                             <value>NAME</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Timestamp__c</value>
+                            <value>Log__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>LoggingLevel__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>LoggedByUsernameLink__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>ProfileLink__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>Origin__c</value>
@@ -234,13 +237,10 @@
                             <value>Message__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>LoggingLevel__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Log__c</value>
-                        </valueListItems>
-                        <valueListItems>
                             <value>RecordLink__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Timestamp__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
