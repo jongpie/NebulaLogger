@@ -17,11 +17,11 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 ## Managed Package - v4.15.0
 
-[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=TODO_MANAGED_PACKAGE)
-[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=TODO_MANAGED_PACKAGE)
+[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015odFQAQ)
+[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015odFQAQ)
 [![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/12?closed=1)
 
-`sf package install --wait 30 --security-type AdminsOnly --package TODO_MANAGED_PACKAGE`
+`sf package install --wait 30 --security-type AdminsOnly --package 04t5Y0000015odFQAQ`
 
 ---
 
