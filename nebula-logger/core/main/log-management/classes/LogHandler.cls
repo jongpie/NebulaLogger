@@ -287,11 +287,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
   private static List<OrganizationLimit> loadOrganizationLimits() {
     List<OrganizationLimit> organizationLimits = new List<OrganizationLimit>();
+    Map<String, System.OrgLimit> orgLimits = System.OrgLimits.getMap();
 
-    List<String> systemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
+    List<String> systemOrgLimitNames = new List<String>(orgLimits.keySet());
     systemOrgLimitNames.sort();
     for (String systemOrgLimitName : systemOrgLimitNames) {
-      System.OrgLimit systemOrgLimit = System.OrgLimits.getMap().get(systemOrgLimitName);
+      System.OrgLimit systemOrgLimit = orgLimits.get(systemOrgLimitName);
       OrganizationLimit organizationLimit = new OrganizationLimit();
       organizationLimit.Name = systemOrgLimit.getName();
       organizationLimit.Used = systemOrgLimit.getValue();
