@@ -2,29 +2,99 @@
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Name</fieldItem>
+                <identifier>RecordNameField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-2301c152-3f49-48f9-a6f1-7198e617bc7d</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.UniqueId__c</fieldItem>
+                <identifier>RecordUniqueId_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OwnerId</fieldItem>
+                <identifier>RecordOwnerIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.CreatedById</fieldItem>
+                <identifier>RecordCreatedByIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LastModifiedById</fieldItem>
+                <identifier>RecordLastModifiedByIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-d08ec573-1f6a-4ec8-8d97-72f7aee83f08</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>collapsed</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>enableActionsConfiguration</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>enableActionsInNative</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>hideChatterActions</name>
-                    <value>false</value>
+                    <name>actionNames</name>
+                    <valueList>
+                        <valueListItems>
+                            <value>ChangeOwnerOne</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Edit</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Share</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>RecordShareHierarchy</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Delete</value>
+                        </valueListItems>
+                    </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>numVisibleActions</name>
                     <value>10</value>
                 </componentInstanceProperties>
-                <componentName>force:highlightsPanel</componentName>
-                <identifier>force_highlightsPanel</identifier>
+                <componentInstanceProperties>
+                    <name>primaryField</name>
+                    <value>Facet-2301c152-3f49-48f9-a6f1-7198e617bc7d</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>secondaryFields</name>
+                    <value>Facet-d08ec573-1f6a-4ec8-8d97-72f7aee83f08</value>
+                </componentInstanceProperties>
+                <componentName>record_flexipage:dynamicHighlights</componentName>
+                <identifier>record_flexipage_dynamicHighlights</identifier>
             </componentInstance>
         </itemInstances>
         <name>header</name>
@@ -67,9 +137,6 @@
                             <value>NAME</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>StartTime__c</value>
-                        </valueListItems>
-                        <valueListItems>
                             <value>LoggedByUsernameLink__c</value>
                         </valueListItems>
                         <valueListItems>
@@ -88,10 +155,10 @@
                             <value>OWNER.ALIAS</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Priority__c</value>
+                            <value>Status__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Status__c</value>
+                            <value>StartTime__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -152,10 +219,16 @@
                             <value>NAME</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Timestamp__c</value>
+                            <value>Log__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>LoggingLevel__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>LoggedByUsernameLink__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>ProfileLink__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>Origin__c</value>
@@ -164,13 +237,10 @@
                             <value>Message__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>LoggingLevel__c</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Log__c</value>
-                        </valueListItems>
-                        <valueListItems>
                             <value>RecordLink__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Timestamp__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -221,7 +291,7 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
-                <identifier>force_relatedListSingleContainer2</identifier>
+                <identifier>force_relatedListSingleContainer</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-f057dac9-734a-4003-bfc0-0c452db10e0a</name>

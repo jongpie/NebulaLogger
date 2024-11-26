@@ -16,30 +16,30 @@ private class LogEntryEventHandler_Tests_FieldMappings {
       new LoggerFieldMapping__mdt(
         DeveloperName = 'LoggerScenarioFieldMapping',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.SomeLoggerScenarioField__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.LoggerScenario__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.LoggerScenario__c.SomeLoggerScenarioField__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.SomeLoggerScenarioField__c.toString(),
+        TargetSObjectType__c = Schema.LoggerScenario__c.SObjectType.toString(),
+        TargetField__c = Schema.LoggerScenario__c.SomeLoggerScenarioField__c.toString()
       )
     );
     LoggerFieldMapper.setMock(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'LogFieldMapping',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.SomeLogField__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.Log__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.Log__c.SomeLogField__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.SomeLogField__c.toString(),
+        TargetSObjectType__c = Schema.Log__c.SObjectType.toString(),
+        TargetField__c = Schema.Log__c.SomeLogField__c.toString()
       )
     );
     LoggerFieldMapper.setMock(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'LogEntryFieldMapping',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.SomeLogEntryField__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.LogEntry__c.SomeLogEntryField__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.SomeLogEntryField__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.SomeLogEntryField__c.toString()
       )
     );
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();

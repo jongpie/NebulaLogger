@@ -49,7 +49,7 @@ public without sharing class LoggerTriggerableContext {
 
   private void setupAdditionalProperties() {
     // Additional invocable variables for Flow Builders (and Apex Developers too, if they want to use them)
-    this.sobjectTypeName = this.sobjectType.getDescribe().getName();
+    this.sobjectTypeName = this.sobjectType.toString();
     this.triggerOperationTypeName = this.triggerOperationType?.name();
     this.triggerRecords = new List<LoggerTriggerableContext.RecordInput>();
     if (this.triggerNew != null) {

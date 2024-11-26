@@ -3,6 +3,7 @@
     <fullName>AllClosedLogs</fullName>
     <columns>NAME</columns>
     <columns>LoggedByUsernameLink__c</columns>
+    <columns>ProfileLink__c</columns>
     <columns>StartTime__c</columns>
     <columns>OWNER.ALIAS</columns>
     <columns>Priority__c</columns>

@@ -903,7 +903,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(mockLogId, builder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Custom Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-    System.Assert.areEqual(Log__c.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.areEqual(Log__c.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -923,7 +923,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(status.Id, builder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Custom Metadata Type Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-    System.Assert.areEqual(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.areEqual(LogStatus__mdt.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -986,7 +986,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(log.Id, builder.getLogEntryEvent().RecordId__c);
     System.Assert.areEqual(System.JSON.serializePretty(log), builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Custom Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-    System.Assert.areEqual(Log__c.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.areEqual(Log__c.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -1006,7 +1006,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(status.Id, builder.getLogEntryEvent().RecordId__c);
     System.Assert.areEqual(System.JSON.serializePretty(status), builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Custom Metadata Type Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-    System.Assert.areEqual(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.areEqual(LogStatus__mdt.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -1027,7 +1027,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
     System.Assert.areEqual(System.JSON.serializePretty(platformEvent), builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Platform Event Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-    System.Assert.areEqual(LogEntryEvent__e.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.areEqual(LogEntryEvent__e.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -1138,7 +1138,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
     System.Assert.areEqual(System.JSON.serializePretty(users), builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-    System.Assert.areEqual(Schema.User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.areEqual(Schema.User.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -1247,7 +1247,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
     System.Assert.areEqual(System.JSON.serializePretty(userIdToUser), builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-    System.Assert.areEqual(Schema.User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.areEqual(Schema.User.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest

@@ -11,7 +11,7 @@ private class LogManagementDataSelector_Tests {
   @IsTest
   static void it_dynamically_queries_all_records_for_specified_sobject_type_and_fields() {
     Schema.SObjectType targetSObjectType = Schema.Organization.SObjectType;
-    Set<String> targetFieldNames = new Set<String>{ Schema.Organization.Id.getDescribe().getName(), Schema.Organization.Name.getDescribe().getName() };
+    Set<String> targetFieldNames = new Set<String>{ Schema.Organization.Id.toString(), Schema.Organization.Name.toString() };
     List<Schema.Organization> expectedResults = System.Database.query('SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType);
 
     List<SObject> returnedResults = LogManagementDataSelector.getInstance().getAll(targetSObjectType, targetFieldNames);
@@ -23,7 +23,7 @@ private class LogManagementDataSelector_Tests {
   @IsTest
   static void it_dynamically_queries_records_for_specified_sobject_type_and_fields_and_ids() {
     Schema.SObjectType targetSObjectType = Schema.User.SObjectType;
-    Set<String> targetFieldNames = new Set<String>{ Schema.User.Id.getDescribe().getName(), Schema.User.Name.getDescribe().getName() };
+    Set<String> targetFieldNames = new Set<String>{ Schema.User.Id.toString(), Schema.User.Name.toString() };
     List<Id> targetIds = new List<Id>(new Map<Id, Schema.User>([SELECT Id FROM User LIMIT 3]).keySet());
     List<Schema.User> expectedResults = System.Database.query(
       'SELECT ' + String.join(targetFieldNames, ', ') + ' FROM ' + targetSObjectType + ' WHERE Id IN :targetIds'
@@ -469,11 +469,8 @@ private class LogManagementDataSelector_Tests {
     matchingLogEntry.RecordId__c = targetRecordId;
     logEntries.add(matchingLogEntry);
     insert logEntries;
-    String fieldsClause = String.join(
-      new List<String>{ Schema.LogEntry__c.Id.getDescribe().getName(), Schema.LogEntry__c.Timestamp__c.getDescribe().getName() },
-      ', '
-    );
-    String orderByClause = Schema.LogEntry__c.Timestamp__c.getDescribe().getName();
+    String fieldsClause = String.join(new List<String>{ Schema.LogEntry__c.Id.toString(), Schema.LogEntry__c.Timestamp__c.toString() }, ', ');
+    String orderByClause = Schema.LogEntry__c.Timestamp__c.toString();
     Integer rowLimit = 3;
 
     List<LogEntry__c> returnedResults = LogManagementDataSelector.getInstance().getRecordLogEntries(targetRecordId, fieldsClause, orderByClause, rowLimit);

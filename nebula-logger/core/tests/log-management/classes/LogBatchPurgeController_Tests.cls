@@ -351,7 +351,7 @@ private class LogBatchPurgeController_Tests {
     for (Integer i = 1; i <= noOfRecords; i++) {
       LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = i + 1);
 
-      LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+      LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
     }
     insert logEntries;
@@ -369,18 +369,20 @@ private class LogBatchPurgeController_Tests {
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < noOfRecords; i++) {
       LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name());
-      LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+      LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
     }
     insert logEntries;
 
-    LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
+    String uniqueTagId = System.UUID.randomUUID().toString();
+    LoggerTag__c tag = new LoggerTag__c(Name = uniqueTagId, UniqueId__c = uniqueTagId);
+    LoggerMockDataCreator.createDataBuilder(tag).populateRequiredFields();
     insert tag;
 
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
     for (LogEntry__c logEntry : logEntries) {
       LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
-      LoggerMockDataCreator.createDataBuilder(logEntryTag).populateRequiredFields().getRecord();
+      LoggerMockDataCreator.createDataBuilder(logEntryTag).populateRequiredFields();
       logEntryTags.add(logEntryTag);
     }
     insert logEntryTags;

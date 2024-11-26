@@ -387,7 +387,7 @@ public class LoggerMockDataCreator {
 
     // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
     System.runAs(new Schema.User(Id = System.UserInfo.getUserId())) {
-      QueueSObject queueSObject = new QueueSObject(QueueId = queue.Id, SObjectType = sobjectType.getDescribe().getName());
+      QueueSObject queueSObject = new QueueSObject(QueueId = queue.Id, SObjectType = sobjectType.toString());
       insert queueSObject;
     }
 
@@ -419,7 +419,7 @@ public class LoggerMockDataCreator {
     // Loop through the deserialized record map and put the field & value
     // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
     for (Schema.SObjectField sobjectField : changesToFields.keySet()) {
-      String fieldName = sobjectField.getDescribe().getName();
+      String fieldName = sobjectField.toString();
       deserializedRecordMap.put(fieldName, changesToFields.get(sobjectField));
     }
 

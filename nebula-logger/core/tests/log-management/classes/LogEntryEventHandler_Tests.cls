@@ -879,7 +879,7 @@ private class LogEntryEventHandler_Tests {
     String configuredTagName = 'CMDT Tag';
     LoggerTestConfigurator.setMock(
       new LogEntryTagRule__mdt(
-        SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+        SObjectField__c = Schema.LogEntry__c.Message__c.toString(),
         ComparisonType__c = 'CONTAINS',
         ComparisonValue__c = 'some value',
         Tags__c = configuredTagName
@@ -918,7 +918,7 @@ private class LogEntryEventHandler_Tests {
     String configuredTagName = 'CMDT Tag';
     LoggerTestConfigurator.setMock(
       new LogEntryTagRule__mdt(
-        SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+        SObjectField__c = Schema.LogEntry__c.Message__c.toString(),
         ComparisonType__c = 'CONTAINS',
         ComparisonValue__c = logEntryEvent.Message__c.substring(1, 4),
         Tags__c = configuredTagName
@@ -958,7 +958,7 @@ private class LogEntryEventHandler_Tests {
     String configuredTagName = 'CMDT Tag';
     LoggerTestConfigurator.setMock(
       new LogEntryTagRule__mdt(
-        SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+        SObjectField__c = Schema.LogEntry__c.Message__c.toString(),
         ComparisonType__c = 'EQUALS',
         ComparisonValue__c = logEntryEvent.Message__c,
         Tags__c = configuredTagName
@@ -1000,7 +1000,7 @@ private class LogEntryEventHandler_Tests {
     String configuredTagName = 'CMDT Tag';
     LoggerTestConfigurator.setMock(
       new LogEntryTagRule__mdt(
-        SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+        SObjectField__c = Schema.LogEntry__c.Message__c.toString(),
         ComparisonType__c = 'MATCHES_REGEX',
         ComparisonValue__c = zipCodeRegEx,
         Tags__c = configuredTagName
@@ -1041,7 +1041,7 @@ private class LogEntryEventHandler_Tests {
     String configuredTagName = 'CMDT Tag';
     LoggerTestConfigurator.setMock(
       new LogEntryTagRule__mdt(
-        SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+        SObjectField__c = Schema.LogEntry__c.Message__c.toString(),
         ComparisonType__c = 'STARTS_WITH',
         ComparisonValue__c = logEntryEvent.Message__c.left(3),
         Tags__c = configuredTagName

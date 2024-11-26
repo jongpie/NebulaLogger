@@ -46,7 +46,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
   }
 
   private void setApexClassFields() {
-    String apexClassSObjectTypeName = Schema.ApexClass.SObjectType.getDescribe().getName();
+    String apexClassSObjectTypeName = Schema.ApexClass.SObjectType.toString();
     Set<String> apexClassNames = new Set<String>();
     Set<LogEntry__c> apexClassLogEntries = new Set<LogEntry__c>();
     for (LogEntry__c logEntry : this.logEntries) {
@@ -84,7 +84,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
   }
 
   private void setApexTriggerFields() {
-    String apexTriggerSObjectTypeName = Schema.ApexTrigger.SObjectType.getDescribe().getName();
+    String apexTriggerSObjectTypeName = Schema.ApexTrigger.SObjectType.toString();
     Set<String> apexTriggerNames = new Set<String>();
     Set<LogEntry__c> apexTriggerLogEntries = new Set<LogEntry__c>();
     for (LogEntry__c logEntry : this.logEntries) {
@@ -371,7 +371,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
     // Use username instead of name for user
     if (sobjectType == Schema.User.SObjectType) {
-      String userFieldName = Schema.User.Username.getDescribe().getName();
+      String userFieldName = Schema.User.Username.toString();
       SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.put(Schema.User.SObjectType, userFieldName);
       return userFieldName;
     }
