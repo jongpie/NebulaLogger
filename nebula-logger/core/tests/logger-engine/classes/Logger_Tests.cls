@@ -1817,7 +1817,7 @@ private class Logger_Tests {
         DeveloperName = 'Mock_Log_Entry_Event_Config',
         IsEnabled__c = true,
         SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
-        SObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName()
+        SObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString()
       )
     );
     Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
@@ -1871,7 +1871,7 @@ private class Logger_Tests {
         DeveloperName = 'Mock_Log_Entry_Event_Config',
         IsEnabled__c = true,
         SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
-        SObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName()
+        SObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString()
       )
     );
     List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
@@ -1924,7 +1924,7 @@ private class Logger_Tests {
         DeveloperName = 'Mock_Log_Entry_Event_Config',
         IsEnabled__c = true,
         SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
-        SObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName()
+        SObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString()
       )
     );
     List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();

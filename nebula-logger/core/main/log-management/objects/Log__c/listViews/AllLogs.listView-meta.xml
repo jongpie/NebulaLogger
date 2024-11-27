@@ -3,6 +3,7 @@
     <fullName>AllLogs</fullName>
     <columns>NAME</columns>
     <columns>LoggedByUsernameLink__c</columns>
+    <columns>ProfileLink__c</columns>
     <columns>TransactionId__c</columns>
     <columns>TotalLimitsCpuTimeUsed__c</columns>
     <columns>TotalLogEntries__c</columns>

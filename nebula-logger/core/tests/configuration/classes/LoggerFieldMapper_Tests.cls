@@ -27,10 +27,10 @@ private class LoggerFieldMapper_Tests {
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.Message__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.LogEntry__c.Message__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.Message__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.Message__c.toString()
       )
     );
     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'Some value');
@@ -38,10 +38,7 @@ private class LoggerFieldMapper_Tests {
 
     LoggerFieldMapper.mapFieldValues(logEntryEvent, logEntry);
 
-    System.Assert.isTrue(
-      logEntry.getPopulatedFieldsAsMap().containsKey(Schema.LogEntry__c.Message__c.getDescribe().getName()),
-      System.JSON.serialize(logEntry)
-    );
+    System.Assert.isTrue(logEntry.getPopulatedFieldsAsMap().containsKey(Schema.LogEntry__c.Message__c.toString()), System.JSON.serialize(logEntry));
     System.Assert.areEqual(logEntryEvent.Message__c, logEntry.Message__c);
   }
 
@@ -51,10 +48,10 @@ private class LoggerFieldMapper_Tests {
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.Message__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.LogEntry__c.Message__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.Message__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.Message__c.toString()
       )
     );
     Integer messageMaxLength = Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
@@ -63,10 +60,7 @@ private class LoggerFieldMapper_Tests {
 
     LoggerFieldMapper.mapFieldValues(logEntryEvent, logEntry);
 
-    System.Assert.isTrue(
-      logEntry.getPopulatedFieldsAsMap().containsKey(Schema.LogEntry__c.Message__c.getDescribe().getName()),
-      System.JSON.serialize(logEntry)
-    );
+    System.Assert.isTrue(logEntry.getPopulatedFieldsAsMap().containsKey(Schema.LogEntry__c.Message__c.toString()), System.JSON.serialize(logEntry));
     System.Assert.areEqual(
       logEntryEvent.Message__c.left(messageMaxLength),
       logEntry.Message__c,
@@ -80,10 +74,10 @@ private class LoggerFieldMapper_Tests {
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.TransactionId__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.Log__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.Log__c.TransactionId__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.TransactionId__c.toString(),
+        TargetSObjectType__c = Schema.Log__c.SObjectType.toString(),
+        TargetField__c = Schema.Log__c.TransactionId__c.toString()
       )
     );
     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'Some value');
@@ -100,30 +94,30 @@ private class LoggerFieldMapper_Tests {
       new LoggerFieldMapping__mdt(
         DeveloperName = '🥳 Some Valid Mapping',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.EntryScenario__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.LogEntry__c.EntryScenario__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.EntryScenario__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.EntryScenario__c.toString()
       )
     );
     LoggerFieldMapper.setMock(
       new LoggerFieldMapping__mdt(
         DeveloperName = '😭 An Incompatible Mapping (mapping a String to a Datetime)',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.Message__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.LogEntry__c.Timestamp__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.Message__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.Timestamp__c.toString()
       )
     );
     LoggerFieldMapper.setMock(
       new LoggerFieldMapping__mdt(
         DeveloperName = '😀 Another Valid Mapping',
         IsEnabled__c = true,
-        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName(),
-        SourceField__c = Schema.LogEntryEvent__e.TransactionEntryNumber__c.getDescribe().getName(),
-        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-        TargetField__c = Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName()
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.TransactionEntryNumber__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.TransactionEntryNumber__c.toString()
       )
     );
     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(

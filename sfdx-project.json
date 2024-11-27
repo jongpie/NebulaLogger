@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "61.0",
+  "sourceApiVersion": "62.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.14.18.NEXT",
-      "versionName": "Added setRecord() Overload for List<Id> and Set<Id> Parameters",
-      "versionDescription": "Added a new overload setRecord(System.Iterable<Id> recordsIds) in LogEntryEventBuilder to make it easy to log List<Id> and Set<Id>.",
+      "versionNumber": "4.15.0.NEXT",
+      "versionName": "Winter '25 Release",
+      "versionDescription": "Updated all metadata to API v62.0, replaced compact layouts with new dynamic highlights components in all flexipages",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -203,6 +203,7 @@
     "Nebula Logger - Core@4.14.16-callablelogger-enhancements": "04t5Y0000015ocHQAQ",
     "Nebula Logger - Core@4.14.17-improved-javascript-console-output": "04t5Y0000015ocRQAQ",
     "Nebula Logger - Core@4.14.18-added-setrecord()-overload-for-list<id>-and-set<id>-parameters": "04t5Y0000015ocbQAA",
+    "Nebula Logger - Core@4.15.0-winter-'25-release": "04t5Y0000015odKQAQ",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

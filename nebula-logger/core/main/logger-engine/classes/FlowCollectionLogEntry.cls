@@ -105,7 +105,7 @@ global inherited sharing class FlowCollectionLogEntry {
       );
       LogEntryEventBuilder builder = shadowLogEntry.addToLoggerBuffer()?.setRecord(flowCollectionLogEntry.records);
       if (builder.shouldSave() && flowCollectionLogEntry.records?.size() > 0) {
-        builder.getLogEntryEvent().RecordSObjectType__c = flowCollectionLogEntry.records.get(0).getSObjectType().getDescribe().getName();
+        builder.getLogEntryEvent().RecordSObjectType__c = flowCollectionLogEntry.records.get(0).getSObjectType().toString();
       }
 
       shadowLogEntries.add(shadowLogEntry);

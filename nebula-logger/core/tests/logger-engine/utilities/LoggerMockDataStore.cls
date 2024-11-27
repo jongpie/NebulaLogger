@@ -207,7 +207,7 @@ public without sharing class LoggerMockDataStore {
         continue;
       }
 
-      Boolean recordHasField = record.getPopulatedFieldsAsMap().containsKey(requiredField.getDescribe().getName());
+      Boolean recordHasField = record.getPopulatedFieldsAsMap().containsKey(requiredField.toString());
       Boolean recordHasFieldValue = record.get(requiredField) != null;
       if (recordHasField == false || recordHasFieldValue == false) {
         SObjectException ex = new SObjectException();

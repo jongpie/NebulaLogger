@@ -139,7 +139,7 @@ public without sharing class LoggerTestConfigurator {
         new LoggerSObjectHandler__mdt(
           IsEnabled__c = isEnabled,
           SObjectHandlerApexClass__c = sobjectTypeToDefaultHandlerApexClass.get(sobjectType).getName(),
-          SObjectType__c = sobjectType.getDescribe().getName()
+          SObjectType__c = sobjectType.toString()
         )
       );
     }

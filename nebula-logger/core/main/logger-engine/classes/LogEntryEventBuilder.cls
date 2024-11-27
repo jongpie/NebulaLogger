@@ -342,7 +342,7 @@ global with sharing class LogEntryEventBuilder {
     try {
       Schema.SObjectType sobjectType = recordId?.getSObjectType();
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
-      this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+      this.logEntryEvent.RecordSObjectType__c = sobjectType.toString();
     } catch (System.SObjectException sobjectException) {
       // Some SObject Types are considered template objects, such as CaseComment, AccountHistory,
       // ContactHistory, etc, so calling Id.getSObjectType() does not work for some types of record IDs
@@ -382,7 +382,7 @@ global with sharing class LogEntryEventBuilder {
       this.logEntryEvent.RecordJson__c = cleanedRecordJson;
       this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
-      this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
+      this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
     }
 
@@ -418,7 +418,7 @@ global with sharing class LogEntryEventBuilder {
       this.logEntryEvent.RecordJson__c = cleanedRecordJson;
       this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
-      this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+      this.logEntryEvent.RecordSObjectType__c = sobjectType.toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
     }
 
@@ -455,7 +455,7 @@ global with sharing class LogEntryEventBuilder {
       this.logEntryEvent.RecordJson__c = cleanedRecordJson;
       this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
-      this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+      this.logEntryEvent.RecordSObjectType__c = sobjectType.toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
     }
 
@@ -903,7 +903,7 @@ global with sharing class LogEntryEventBuilder {
       OriginType__c = 'Apex',
       TriggerIsExecuting__c = Trigger.isExecuting,
       TriggerOperationType__c = Trigger.operationType?.name(),
-      TriggerSObjectType__c = Trigger.new?.getSObjectType().getDescribe().getName()
+      TriggerSObjectType__c = Trigger.new?.getSObjectType().toString()
     );
 
     if (LoggerParameter.STORE_TRANSACTION_LIMITS) {
@@ -1123,7 +1123,7 @@ global with sharing class LogEntryEventBuilder {
   }
 
   private static String getSObjectClassification(Schema.SObjectType sobjectType) {
-    String sobjectName = sobjectType.getDescribe().getName();
+    String sobjectName = sobjectType.toString();
 
     // Check the map to see if we've already determined the classification for this SObject type
     if (CACHED_SOBJECT_NAME_TO_CLASSIFICATION.containsKey(sobjectName)) {
@@ -1181,7 +1181,7 @@ global with sharing class LogEntryEventBuilder {
   }
 
   private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
-    String sobjectFullName = sobjectType.getDescribe().getName();
+    String sobjectFullName = sobjectType.toString();
     String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
     // Remove the trailing '__' if present

@@ -11,7 +11,7 @@
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>true</unique>

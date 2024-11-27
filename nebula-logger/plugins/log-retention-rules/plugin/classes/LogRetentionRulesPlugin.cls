@@ -43,15 +43,15 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
     List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
     logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
     for (String logFieldName : logFieldNames) {
-      String logRelationshipPrefix = Schema.LogEntry__c.Log__c.getDescribe().getName().substringBeforeLast('__c') + '__r';
+      String logRelationshipPrefix = Schema.LogEntry__c.Log__c.toString().substringBeforeLast('__c') + '__r';
       logEntryFieldNames.add(logRelationshipPrefix + '.' + logFieldName);
     }
 
     String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} IN :logEntries';
     List<String> queryInputs = new List<String>{
       String.join(logEntryFieldNames, ','),
-      Schema.LogEntry__c.SObjectType.getDescribe().getName(),
-      Schema.LogEntry__c.Id.getDescribe().getName()
+      Schema.LogEntry__c.SObjectType.toString(),
+      Schema.LogEntry__c.Id.toString()
     };
     String logEntryQuery = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
     return (List<LogEntry__c>) System.Database.query(logEntryQuery);

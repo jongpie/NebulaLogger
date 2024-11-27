@@ -118,7 +118,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
   }
 
   private List<LogEntry__c> requeryLogEntriesToArchive(List<LogEntry__c> logEntries) {
-    String logLookupRelationshipName = Schema.LogEntry__c.Log__c.getDescribe().getName().removeEnd('__c') + '__r';
+    String logLookupRelationshipName = Schema.LogEntry__c.Log__c.toString().removeEnd('__c') + '__r';
     List<String> logFieldsToQuery = new List<String>();
     for (String fieldName : Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet()) {
       logFieldsToQuery.add(logLookupRelationshipName + '.' + fieldName);
@@ -134,16 +134,16 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     List<String> logEntryFieldsToQuery = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
     logEntryFieldsToQuery.addAll(logFieldsToQuery);
 
-    String tagLookupRelationshipName = Schema.LogEntryTag__c.Tag__c.getDescribe().getName().removeEnd('__c') + '__r';
-    String tagNameField = tagLookupRelationshipName + '.' + Schema.LoggerTag__c.Name.getDescribe().getName();
+    String tagLookupRelationshipName = Schema.LogEntryTag__c.Tag__c.toString().removeEnd('__c') + '__r';
+    String tagNameField = tagLookupRelationshipName + '.' + Schema.LoggerTag__c.Name.toString();
 
-    String logPurgeActionParentFieldName = logLookupRelationshipName + '.' + Schema.Log__c.LogPurgeAction__c.getDescribe().getName();
+    String logPurgeActionParentFieldName = logLookupRelationshipName + '.' + Schema.Log__c.LogPurgeAction__c.toString();
     String queryTemplate = 'SELECT {0}, (SELECT {1} FROM {2}) FROM {3} WHERE Id IN :logEntries AND {4} = :BIG_OBJECT_LOG_PURGE_ACTION';
     List<Object> queryInputs = new List<Object>{
       String.join(logEntryFieldsToQuery, ', '),
       tagNameField,
       'LogEntryTags__r', // TODO replace with strongly-typed reference or namespace-safe string
-      Schema.LogEntry__c.SObjectType.getDescribe().getName(),
+      Schema.LogEntry__c.SObjectType.toString(),
       logPurgeActionParentFieldName
     };
     String query = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
@@ -156,9 +156,9 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     for (Integer i = 0; i < parentFieldChainPieces.size(); i++) {
       Schema.SObjectField field = parentFieldChainPieces.get(i);
       if (i != lastIndex) {
-        parentFieldPath += field.getDescribe().getName().removeEnd('__c') + '__r.';
+        parentFieldPath += field.toString().removeEnd('__c') + '__r.';
       } else {
-        parentFieldPath += field.getDescribe().getName();
+        parentFieldPath += field.toString();
       }
     }
     return parentFieldPath;

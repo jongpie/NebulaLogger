@@ -52,7 +52,7 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
         <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>61.0</apiVersion>
+    <apiVersion>62.0</apiVersion>
     <description>A scheduled Flow used in tests to verify that LogEntryHandler automatically logs details about the Flow (metadata data)</description>
     <interviewLabel>LogEntryHandler_Tests_Scheduled_Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LogEntryHandler_Tests_Scheduled_Flow</label>

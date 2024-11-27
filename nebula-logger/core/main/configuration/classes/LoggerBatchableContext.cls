@@ -25,6 +25,6 @@ public without sharing class LoggerBatchableContext {
   public LoggerBatchableContext(Database.BatchableContext batchableContext, Schema.SObjectType sobjectType) {
     this.batchableContext = batchableContext;
     this.sobjectType = sobjectType;
-    this.sobjectTypeName = sobjectType?.getDescribe().getName();
+    this.sobjectTypeName = sobjectType?.toString();
   }
 }

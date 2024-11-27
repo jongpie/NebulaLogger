@@ -15,7 +15,7 @@ private class LoggerBatchableContext_Tests {
 
     System.Assert.areEqual(mockBatchableContext, context.batchableContext);
     System.Assert.areEqual(sobjectType, context.sobjectType);
-    System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+    System.Assert.areEqual(sobjectType.toString(), context.sobjectTypeName);
   }
 
   @IsTest
