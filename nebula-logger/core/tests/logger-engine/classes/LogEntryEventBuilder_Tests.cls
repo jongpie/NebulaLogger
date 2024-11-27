@@ -21,11 +21,15 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.setMessage(getMessage()).getLogEntryEvent());
     System.Assert.isNull(builder.setExceptionDetails(new System.DmlException()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.DeleteResult) null).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult((Database.EmptyRecycleBinResult) null).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult((Database.LeadConvertResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.MergeResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.SaveResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.UpsertResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.UndeleteResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.DeleteResult>()).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult(new List<Database.EmptyRecycleBinResult>()).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult(new List<Database.LeadConvertResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.MergeResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.SaveResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.UpsertResult>()).getLogEntryEvent());
