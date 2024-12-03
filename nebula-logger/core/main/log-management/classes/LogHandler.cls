@@ -11,7 +11,7 @@
 public without sharing class LogHandler extends LoggerSObjectHandler {
   private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_TO_STATUS = new Map<String, LogStatus__mdt>();
 
-  private static final List<OrganizationLimit> ORGANIZATION_LIMITS {
+  private static final List<SerializableOrganizationLimit> ORGANIZATION_LIMITS {
     get {
       if (ORGANIZATION_LIMITS == null) {
         ORGANIZATION_LIMITS = loadOrganizationLimits();
@@ -40,7 +40,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     this.loggerScenariosById = queryLoggerScenarios(this.logs);
 
     this.setClosedStatusFields();
-    this.setOrganizationLimits();
+    this.setSerializableOrganizationLimits();
     // The log OwnerId field should support being manually changed, so only auto-set it on insert
     this.setOwnerId();
     this.setParentLog();
@@ -87,7 +87,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
   }
 
-  private void setOrganizationLimits() {
+  private void setSerializableOrganizationLimits() {
     if (LoggerParameter.STORE_ORGANIZATION_LIMITS == false) {
       return;
     }
@@ -285,21 +285,22 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     return logStatusNameToStatus;
   }
 
-  private static List<OrganizationLimit> loadOrganizationLimits() {
-    List<OrganizationLimit> organizationLimits = new List<OrganizationLimit>();
+  private static List<SerializableOrganizationLimit> loadOrganizationLimits() {
+    List<SerializableOrganizationLimit> serializableOrganizationLimits = new List<SerializableOrganizationLimit>();
+    Map<String, System.OrgLimit> systemOrgLimits = System.OrgLimits.getMap();
 
-    List<String> systemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
+    List<String> systemOrgLimitNames = new List<String>(systemOrgLimits.keySet());
     systemOrgLimitNames.sort();
     for (String systemOrgLimitName : systemOrgLimitNames) {
-      System.OrgLimit systemOrgLimit = System.OrgLimits.getMap().get(systemOrgLimitName);
-      OrganizationLimit organizationLimit = new OrganizationLimit();
-      organizationLimit.Name = systemOrgLimit.getName();
-      organizationLimit.Used = systemOrgLimit.getValue();
-      organizationLimit.Max = systemOrgLimit.getLimit();
-      organizationLimits.add(organizationLimit);
+      System.OrgLimit systemOrgLimit = systemOrgLimits.get(systemOrgLimitName);
+      SerializableOrganizationLimit serializableOrganizationLimit = new SerializableOrganizationLimit();
+      serializableOrganizationLimit.Name = systemOrgLimit.getName();
+      serializableOrganizationLimit.Used = systemOrgLimit.getValue();
+      serializableOrganizationLimit.Max = systemOrgLimit.getLimit();
+      serializableOrganizationLimits.add(serializableOrganizationLimit);
     }
 
-    return organizationLimits;
+    return serializableOrganizationLimits;
   }
 
   private static Map<Id, LoggerScenario__c> queryLoggerScenarios(List<Log__c> logs) {
@@ -344,9 +345,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     MOCK_LOG_STATUS_TO_STATUS.put(logStatus.MasterLabel, logStatus);
   }
 
+  // The class System.OrgLimit isn't serializable, so this DTO is used instead
+  // so that the serialized string can be stored in Log__c.OrganizationLimits__c.
+  // The JSON data is then displayed on the Log__c page using a custom LWC.
   @SuppressWarnings('PMD.ApexDoc')
   @TestVisible
-  private class OrganizationLimit {
+  private class SerializableOrganizationLimit {
     public String Name { get; set; }
     public Integer Used { get; set; }
     public Integer Max { get; set; }
