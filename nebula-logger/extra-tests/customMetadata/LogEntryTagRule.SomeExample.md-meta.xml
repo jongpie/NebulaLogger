@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Some Example</label>
+    <protected>false</protected>
+    <values>
+        <field>ComparisonType__c</field>
+        <value xsi:type="xsd:string">CONTAINS</value>
+    </values>
+    <values>
+        <field>ComparisonValue__c</field>
+        <value xsi:type="xsd:string">some value</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SObjectField__c</field>
+        <value xsi:type="xsd:string">Message__c</value>
+    </values>
+    <values>
+        <field>SObjectType__c</field>
+        <value xsi:type="xsd:string">LogEntry__c</value>
+    </values>
+    <values>
+        <field>Tags__c</field>
+        <value xsi:type="xsd:string">Special tag
+Another tag
+And yet again, one more tag</value>
+    </values>
+</CustomMetadata>
