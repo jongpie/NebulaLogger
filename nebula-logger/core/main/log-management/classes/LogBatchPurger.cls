@@ -206,6 +206,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
    * @param sobjectType Takes the sObjectType enum to instanciate a new log related instance.
    * @return The instance of Database.QueryLocator for the lowest-level Logger object
    */
+  @SuppressWarnings('PMD.UnusedLocalVariable')
   private Database.QueryLocator getQueryLocator(Schema.SObjectType sobjectType) {
     Database.QueryLocator queryLocator;
 

@@ -8,7 +8,22 @@
 private class LoggerFieldMapper_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests
-    LoggerFieldMapper.SOURCE_SOBJECT_TYPE_TO_TARGET_FIELD_MAPPINGS.clear();
+    LoggerConfigurationSelector.useMocks();
+  }
+
+  // DELETEME Deprecated method, remove in a future release
+  @IsTest
+  static void it_should_throw_exception_when_mock_record_developer_name_is_null() {
+    LoggerFieldMapping__mdt mockFieldMapping = new LoggerFieldMapping__mdt(DeveloperName = null);
+    System.Exception thrownIllegalArgumentException;
+
+    try {
+      LoggerFieldMapper.setMock(mockFieldMapping);
+    } catch (System.IllegalArgumentException ex) {
+      thrownIllegalArgumentException = ex;
+    }
+
+    System.Assert.isNotNull(thrownIllegalArgumentException);
   }
 
   @IsTest
@@ -22,7 +37,48 @@ private class LoggerFieldMapper_Tests {
   }
 
   @IsTest
-  static void it_maps_field_value_when_configured() {
+  static void it_safely_returns_when_target_record_is_null() {
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
+      new LoggerFieldMapping__mdt(
+        DeveloperName = 'SomeDevName',
+        IsEnabled__c = true,
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.Message__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.Message__c.toString()
+      )
+    );
+    LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'Some value');
+    LogEntry__c logEntry = null;
+
+    LoggerFieldMapper.mapFieldValues(logEntryEvent, logEntry);
+
+    System.Assert.isNull(logEntry, System.JSON.serialize(logEntry));
+  }
+
+  @IsTest
+  static void it_safely_returns_when_source_record_is_null() {
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
+      new LoggerFieldMapping__mdt(
+        DeveloperName = 'SomeDevName',
+        IsEnabled__c = true,
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.Message__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.Message__c.toString()
+      )
+    );
+    LogEntryEvent__e logEntryEvent = null;
+    LogEntry__c logEntry = new LogEntry__c();
+
+    LoggerFieldMapper.mapFieldValues(logEntryEvent, logEntry);
+
+    System.Assert.isTrue(logEntry.getPopulatedFieldsAsMap().isEmpty(), System.JSON.serialize(logEntry));
+  }
+
+  // DELETEME Deprecated method, remove in a future release
+  @IsTest
+  static void it_maps_field_value_when_configured_with_deprecated_set_mock_method() {
     LoggerFieldMapper.setMock(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
@@ -43,8 +99,67 @@ private class LoggerFieldMapper_Tests {
   }
 
   @IsTest
+  static void it_maps_field_value_when_configured() {
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
+      new LoggerFieldMapping__mdt(
+        DeveloperName = 'SomeDevName',
+        IsEnabled__c = true,
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.Message__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.Message__c.toString()
+      )
+    );
+    LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'Some value');
+    LogEntry__c logEntry = new LogEntry__c();
+
+    LoggerFieldMapper.mapFieldValues(logEntryEvent, logEntry);
+
+    System.Assert.isTrue(logEntry.getPopulatedFieldsAsMap().containsKey(Schema.LogEntry__c.Message__c.toString()), System.JSON.serialize(logEntry));
+    System.Assert.areEqual(logEntryEvent.Message__c, logEntry.Message__c);
+  }
+
+  @IsTest
+  static void it_maps_field_values_for_multiple_target_sobject_types_when_configured() {
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
+      new LoggerFieldMapping__mdt(
+        DeveloperName = 'AnotherDevName',
+        IsEnabled__c = true,
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.HttpRequestEndpoint__c.toString(),
+        TargetSObjectType__c = Schema.Log__c.SObjectType.toString(),
+        TargetField__c = Schema.Log__c.Comments__c.toString()
+      )
+    );
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
+      new LoggerFieldMapping__mdt(
+        DeveloperName = 'SomeDevName',
+        IsEnabled__c = true,
+        SourceSObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString(),
+        SourceField__c = Schema.LogEntryEvent__e.Message__c.toString(),
+        TargetSObjectType__c = Schema.LogEntry__c.SObjectType.toString(),
+        TargetField__c = Schema.LogEntry__c.Message__c.toString()
+      )
+    );
+    LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+      HttpRequestEndpoint__c = 'https://some-endpoint-mapped-to-comments.for.some.reason.com',
+      Message__c = 'Some value'
+    );
+    Log__c log = new Log__c();
+    LogEntry__c logEntry = new LogEntry__c();
+
+    LoggerFieldMapper.mapFieldValues(logEntryEvent, log);
+    LoggerFieldMapper.mapFieldValues(logEntryEvent, logEntry);
+
+    System.Assert.isTrue(log.getPopulatedFieldsAsMap().containsKey(Schema.Log__c.Comments__c.toString()), System.JSON.serialize(log));
+    System.Assert.areEqual(logEntryEvent.HttpRequestEndpoint__c, log.Comments__c);
+    System.Assert.isTrue(logEntry.getPopulatedFieldsAsMap().containsKey(Schema.LogEntry__c.Message__c.toString()), System.JSON.serialize(logEntry));
+    System.Assert.areEqual(logEntryEvent.Message__c, logEntry.Message__c);
+  }
+
+  @IsTest
   static void it_truncates_string_value_when_mapping_string_field_value() {
-    LoggerFieldMapper.setMock(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -70,7 +185,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_handles_when_field_mappings_are_not_configured_for_current_target_sobject_type_but_do_exist_for_other_types() {
-    LoggerFieldMapper.setMock(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = 'SomeDevName',
         IsEnabled__c = true,
@@ -90,7 +205,7 @@ private class LoggerFieldMapper_Tests {
 
   @IsTest
   static void it_safely_skips_field_mappings_for_incompatible_field_mappings() {
-    LoggerFieldMapper.setMock(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = '🥳 Some Valid Mapping',
         IsEnabled__c = true,
@@ -100,7 +215,7 @@ private class LoggerFieldMapper_Tests {
         TargetField__c = Schema.LogEntry__c.EntryScenario__c.toString()
       )
     );
-    LoggerFieldMapper.setMock(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = '😭 An Incompatible Mapping (mapping a String to a Datetime)',
         IsEnabled__c = true,
@@ -110,7 +225,7 @@ private class LoggerFieldMapper_Tests {
         TargetField__c = Schema.LogEntry__c.Timestamp__c.toString()
       )
     );
-    LoggerFieldMapper.setMock(
+    LoggerConfigurationSelector.mockLoggerFieldMappings.add(
       new LoggerFieldMapping__mdt(
         DeveloperName = '😀 Another Valid Mapping',
         IsEnabled__c = true,
