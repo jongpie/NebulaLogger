@@ -1238,6 +1238,10 @@
         <object>LoggerTag__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>LogMassDelete</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <tabSettings>
         <tab>LogEntryTag__c</tab>
         <visibility>Visible</visibility>

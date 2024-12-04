@@ -10,11 +10,6 @@
  */
 @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
-  // During tests, always load this CMDT record
-  // so that tests use the same format when calling System.debug()
-  private static final String SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER = 'SystemDebugMessageFormat';
-  private static final Set<String> PARAMETERS_TO_LOAD_DURING_TESTS = new Set<String>{ SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER };
-
   /**
    * @description Indicates if Nebula Logger will make an async callout to `https://api.status.salesforce.com`
    *              to get additional details about the current org, which is then stored on the Log__c record.
@@ -498,7 +493,7 @@ public class LoggerParameter {
   public static final String SYSTEM_DEBUG_MESSAGE_FORMAT {
     get {
       if (SYSTEM_DEBUG_MESSAGE_FORMAT == null) {
-        SYSTEM_DEBUG_MESSAGE_FORMAT = getString(SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER, '{OriginLocation__c}\n{Message__c}');
+        SYSTEM_DEBUG_MESSAGE_FORMAT = getString('SystemDebugMessageFormat', '{OriginLocation__c}\n{Message__c}');
       }
       return SYSTEM_DEBUG_MESSAGE_FORMAT;
     }
@@ -551,7 +546,7 @@ public class LoggerParameter {
   private static final Map<String, LoggerParameter__mdt> DEVELOPER_NAME_TO_RECORD {
     get {
       if (DEVELOPER_NAME_TO_RECORD == null) {
-        DEVELOPER_NAME_TO_RECORD = loadRecords();
+        DEVELOPER_NAME_TO_RECORD = LoggerConfigurationSelector.getInstance().getLoggerParameters();
       }
       return DEVELOPER_NAME_TO_RECORD;
     }
@@ -812,6 +807,13 @@ public class LoggerParameter {
     return matchingParameters;
   }
 
+  /*
+    DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
+      ```
+      LoggerConfigurationSelector.useMocks();
+      LoggerConfigurationSelector.mockLoggerParameters.add(new LoggerParameter__mdt());
+      ```
+  */
   @TestVisible
   private static void setMock(LoggerParameter__mdt parameter) {
     if (String.isBlank(parameter.DeveloperName)) {
@@ -819,24 +821,6 @@ public class LoggerParameter {
     }
 
     DEVELOPER_NAME_TO_RECORD.put(parameter.DeveloperName, parameter);
-  }
-
-  private static Map<String, LoggerParameter__mdt> loadRecords() {
-    Map<String, LoggerParameter__mdt> parameters = LoggerParameter__mdt.getAll().clone();
-    if (System.Test.isRunningTest()) {
-      // Keep a copy of any records that *should* be loaded during tests
-      // Currently, only the record `SystemDebugMessageFormat` has a use case for this functionality,
-      // but others can be easily added if other use cases are found
-      Map<String, LoggerParameter__mdt> parametersToLoadDuringTests = new Map<String, LoggerParameter__mdt>();
-      for (String testContextParameterName : PARAMETERS_TO_LOAD_DURING_TESTS) {
-        if (parameters.containsKey(testContextParameterName)) {
-          parametersToLoadDuringTests.put(testContextParameterName, parameters.get(testContextParameterName));
-        }
-      }
-      parameters.clear();
-      parameters.putAll(parametersToLoadDuringTests);
-    }
-    return parameters;
   }
 
   private static Object castParameterValue(String parameterDeveloperName, System.Type dataType) {

@@ -644,12 +644,12 @@ private class LogEntryEventHandler_Tests {
     System.Assert.isFalse(LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
     MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
     LoggerEngineDataSelector.setMock(mockSelector);
-    LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory(null);
+    LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory();
     mockLoginHistoryProxy.Application = 'Application';
     mockLoginHistoryProxy.Browser = 'Browser';
     mockLoginHistoryProxy.Platform = 'Platform';
     mockLoginHistoryProxy.UserId = System.UserInfo.getUserId();
-    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession(null);
+    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession();
     mockAuthSessionProxy.Id = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);
     mockAuthSessionProxy.LoginHistory = mockLoginHistoryProxy;
     mockAuthSessionProxy.LoginHistoryId = LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType);
@@ -1479,7 +1479,7 @@ private class LogEntryEventHandler_Tests {
   }
 
   private static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-    Schema.Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+    Schema.Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization LIMIT 1];
     String orgEnvironmentType;
     if (org.IsSandbox && org.TrialExpirationDate != null) {
       orgEnvironmentType = 'Scratch Org';

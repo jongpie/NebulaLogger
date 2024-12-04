@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Selector class used for all queries that are specific to the log management layer
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing virtual class LogManagementDataSelector {
   private static LogManagementDataSelector instance = new LogManagementDataSelector();
 
@@ -312,7 +312,10 @@ public without sharing virtual class LogManagementDataSelector {
       'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username, LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
       ' FROM OmniProcess WHERE Id IN :omniProcessIds';
     for (SObject omniProcessRecord : System.Database.query(String.escapeSingleQuotes(query))) {
-      LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(omniProcessRecord);
+      LoggerSObjectProxy.OmniProcess omniProcessProxy = (LoggerSObjectProxy.OmniProcess) System.JSON.deserialize(
+        System.JSON.serialize(omniProcessRecord),
+        LoggerSObjectProxy.OmniProcess.class
+      );
       omniProcessIdToOmniProcessProxy.put(omniProcessProxy.Id, omniProcessProxy);
     }
     return omniProcessIdToOmniProcessProxy;

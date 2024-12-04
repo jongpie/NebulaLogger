@@ -8,6 +8,11 @@
 private class LoggerPlugin_Tests {
   private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_returned_all_enabled_plugin_configurations() {
     LoggerPlugin__mdt firstMockPluginConfiguration = createMockPluginConfiguration('Some_Mock_Plugin_Configuration');

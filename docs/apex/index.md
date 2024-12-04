@@ -152,7 +152,11 @@ Class used by the logging system for batch contextual details
 
 ### [LoggerCache](Configuration/LoggerCache)
 
-Class used to cache query results returned by the selector classes
+Class used to cache query results &amp; data used in other parts of Nebula Logger
+
+### [LoggerConfigurationSelector](Configuration/LoggerConfigurationSelector)
+
+Selector class used for all queries that are specific to the configuration layer.
 
 ### [LoggerFieldMapper](Configuration/LoggerFieldMapper)
 
