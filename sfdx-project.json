@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.2.NEXT",
-      "versionName": "Added Support for Logging EmptyRecyleBinResult",
-      "versionDescription": "Added Logger method overloads & new LogEntryEventBuilder methods to capture instances of EmptyRecyleBinResult and List<EmptyRecyleBinResult>. Several  LogHandler class to cache the Apex call to System.OrgLimits.getMap() to reduce CPU usage",
+      "versionNumber": "4.15.3.NEXT",
+      "versionName": "Improved Testability of Query Selectors",
+      "versionDescription": "Tweaked the internals of the selector classes to provide more control & reusability to improve overall testability",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
