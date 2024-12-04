@@ -162,7 +162,7 @@ jobs:
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Validate Core Source in Scratch Org'
-        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
@@ -233,7 +233,7 @@ jobs:
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Validate Core Source in Scratch Org'
-        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
@@ -301,7 +301,7 @@ jobs:
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Validate Core Source in Scratch Org'
-        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
@@ -369,7 +369,7 @@ jobs:
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Validate Core Source in Scratch Org'
-        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
@@ -444,7 +444,7 @@ jobs:
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Validate Core Source in Scratch Org'
-        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
@@ -515,7 +515,7 @@ jobs:
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
       - name: 'Validate Core Source in Scratch Org'
-        run: npx sf project deploy validate --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+        run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
 
       # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
       - name: 'Deploy All Source to Scratch Org'
