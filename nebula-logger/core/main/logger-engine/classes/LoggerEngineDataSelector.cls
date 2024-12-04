@@ -66,7 +66,7 @@ public without sharing virtual class LoggerEngineDataSelector {
     ];
 
     List<LoggerSObjectProxy.AuthSession> authSessionProxies = (List<LoggerSObjectProxy.AuthSession>) System.JSON.deserialize(
-      System.JSON.serializePretty(authSessionRecords),
+      System.JSON.serialize(authSessionRecords),
       List<LoggerSObjectProxy.AuthSession>.class
     );
 
@@ -193,7 +193,7 @@ public without sharing virtual class LoggerEngineDataSelector {
     List<SObject> networkRecords = IS_EXPERIENCE_CLOUD_ENABLED ? System.Database.query(String.escapeSingleQuotes(query)) : new List<SObject>();
 
     List<LoggerSObjectProxy.Network> networkProxies = (List<LoggerSObjectProxy.Network>) System.JSON.deserialize(
-      System.JSON.serializePretty(networkRecords),
+      System.JSON.serialize(networkRecords),
       List<LoggerSObjectProxy.Network>.class
     );
 
