@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Some Example</label>
+    <protected>false</protected>
+    <values>
+        <field>EndTime__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsAnonymousModeEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsApexSystemDebugLoggingEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsDataMaskingEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsJavaScriptConsoleLoggingEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsLogAssignmentEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsLogRetentionOverrideEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsLoggerEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsPlatformEventStorageLocationEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsRecordFieldStrippingEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsSavingEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>NumberOfDaysToRetainLogs__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PlatformEventStorageLocation__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>SaveMethod__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Scenario__c</field>
+        <value xsi:type="xsd:string">Some example scenario</value>
+    </values>
+    <values>
+        <field>StartTime__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>UserLoggingLevel__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>
