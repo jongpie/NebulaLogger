@@ -7,10 +7,15 @@
  * @group Logger Engine
  * @description Selector class used for all queries that are specific to the logger engine layer
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessivePublicCount')
 public without sharing virtual class LoggerEngineDataSelector {
   @TestVisible
-  private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('NetworkMember') != null;
+  private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('Schema.Network') != null;
+
+  @TestVisible
+  private static List<LoggerSObjectProxy.AuthSession> mockAuthSessionProxies;
+  @TestVisible
+  private static List<LoggerSObjectProxy.Network> mockNetworkProxies;
 
   private static LoggerEngineDataSelector instance = new LoggerEngineDataSelector();
 
@@ -40,7 +45,7 @@ public without sharing virtual class LoggerEngineDataSelector {
       return userIdToAuthSessionProxy;
     }
 
-    for (Schema.AuthSession authSession : [
+    List<SObject> authSessionRecords = [
       SELECT
         Id,
         LoginType,
@@ -58,8 +63,18 @@ public without sharing virtual class LoggerEngineDataSelector {
       FROM AuthSession
       WHERE UsersId IN :userIds AND IsCurrent = TRUE
       ORDER BY ParentId NULLS FIRST
-    ]) {
-      LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSession);
+    ];
+
+    List<LoggerSObjectProxy.AuthSession> authSessionProxies = (List<LoggerSObjectProxy.AuthSession>) System.JSON.deserialize(
+      System.JSON.serializePretty(authSessionRecords),
+      List<LoggerSObjectProxy.AuthSession>.class
+    );
+
+    if (mockAuthSessionProxies != null) {
+      authSessionProxies = mockAuthSessionProxies;
+    }
+
+    for (LoggerSObjectProxy.AuthSession authSessionProxy : authSessionProxies) {
       userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);
     }
     return userIdToAuthSessionProxy;
@@ -77,32 +92,12 @@ public without sharing virtual class LoggerEngineDataSelector {
       return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
     }
 
-    LoggerSObjectProxy.AuthSession authSession;
+    LoggerSObjectProxy.AuthSession authSessionProxy;
     if (LoggerParameter.QUERY_AUTH_SESSION_DATA) {
-      authSession = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
-      LoggerCache.getSessionCache().put(cacheKey, authSession);
+      authSessionProxy = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
+      LoggerCache.getSessionCache().put(cacheKey, authSessionProxy);
     }
-    return authSession;
-  }
-
-  /**
-   * @description Returns a cached copy of the `LoggerSObjectHandler__mdt` records in the org,
-   *              including the field `SObjectType__r.QualifiedApiName` that cannot be accessed via `LoggerSObjectHandler__mdt.getAll()`
-   * @return   The cached `List<LoggerSObjectHandler__mdt>` records
-   */
-  public virtual List<LoggerSObjectHandler__mdt> getCachedLoggerSObjectHandlers() {
-    String cacheKey = 'EnabledLoggerSObjectHandlers';
-    if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
-      return (List<LoggerSObjectHandler__mdt>) LoggerCache.getOrganizationCache().get(cacheKey);
-    }
-
-    List<LoggerSObjectHandler__mdt> enabledSObjectHandlers = [
-      SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
-      FROM LoggerSObjectHandler__mdt
-      WHERE IsEnabled__c = TRUE
-    ];
-    LoggerCache.getOrganizationCache().put(cacheKey, enabledSObjectHandlers);
-    return enabledSObjectHandlers;
+    return authSessionProxy;
   }
 
   /**
@@ -112,7 +107,7 @@ public without sharing virtual class LoggerEngineDataSelector {
    * @return           The cached `Schema.Network` record
    */
   public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
-    if (networkId == null || IS_EXPERIENCE_CLOUD_ENABLED == false) {
+    if (networkId == null || (IS_EXPERIENCE_CLOUD_ENABLED == false && mockNetworkProxies == null)) {
       return null;
     }
 
@@ -163,32 +158,6 @@ public without sharing virtual class LoggerEngineDataSelector {
   }
 
   /**
-   * @description Returns a cached copy of the `LogEntryTagRule__mdt` records in the org,
-   *              including the field `SObjectField__r.QualifiedApiName` that cannot be accessed via `LogEntryTagRule__mdt.getAll()`
-   * @return   The cached `List<LogEntryTagRule__mdt>` records
-   */
-  public virtual List<LogEntryTagRule__mdt> getCachedTagAssignmentRules() {
-    String cacheKey = 'TagAssignmentRules';
-    if (LoggerCache.getOrganizationCache().contains(cacheKey)) {
-      return (List<LogEntryTagRule__mdt>) LoggerCache.getOrganizationCache().get(cacheKey);
-    }
-
-    List<LogEntryTagRule__mdt> tagAssignmentRules = new List<LogEntryTagRule__mdt>();
-    if (LogEntryTagRule__mdt.getAll().isEmpty() == false || System.Test.isRunningTest()) {
-      for (LogEntryTagRule__mdt rule : [
-        SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
-        FROM LogEntryTagRule__mdt
-        WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
-      ]) {
-        rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
-        tagAssignmentRules.add(rule);
-      }
-    }
-    LoggerCache.getOrganizationCache().put(cacheKey, tagAssignmentRules);
-    return tagAssignmentRules;
-  }
-
-  /**
    * @description Returns a cached copy of the current user, including some profile fields that cannot be accessed via `UserInfo`
    * @return   The cached `Schema.User` record for the current user
    */
@@ -199,9 +168,8 @@ public without sharing virtual class LoggerEngineDataSelector {
       return (Schema.User) LoggerCache.getSessionCache().get(cacheKey);
     }
 
-    Schema.User user;
-    if (LoggerParameter.QUERY_USER_DATA) {
-      user = getUsers(new List<Id>{ userId }).get(userId);
+    Schema.User user = getUsers(new List<Id>{ userId }).get(userId);
+    if (user != null) {
       LoggerCache.getSessionCache().put(cacheKey, user);
     }
     return user;
@@ -222,8 +190,18 @@ public without sharing virtual class LoggerEngineDataSelector {
     // may not be enabled in the org (no Schema.Network object), so run everything dynamically
     Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
     String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
-    for (SObject networkRecord : System.Database.query(String.escapeSingleQuotes(query))) {
-      LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(networkRecord);
+    List<SObject> networkRecords = IS_EXPERIENCE_CLOUD_ENABLED ? System.Database.query(String.escapeSingleQuotes(query)) : new List<SObject>();
+
+    List<LoggerSObjectProxy.Network> networkProxies = (List<LoggerSObjectProxy.Network>) System.JSON.deserialize(
+      System.JSON.serializePretty(networkRecords),
+      List<LoggerSObjectProxy.Network>.class
+    );
+
+    if (mockNetworkProxies != null) {
+      networkProxies = mockNetworkProxies;
+    }
+
+    for (LoggerSObjectProxy.Network networkProxy : networkProxies) {
       networkIdToNetworkProxy.put(networkProxy.Id, networkProxy);
     }
     return networkIdToNetworkProxy;
@@ -256,8 +234,19 @@ public without sharing virtual class LoggerEngineDataSelector {
     );
   }
 
+  // DELETEME Deprecated method, remove in a future release
   @TestVisible
   private static void setMock(LoggerEngineDataSelector mockSelectorInstance) {
     instance = mockSelectorInstance;
+  }
+
+  @TestVisible
+  private static void useMocks() {
+    // Avoid using the org's actual data records when running tests
+    // by initializing all of the mock list variables.
+    // And just in case there are multiple calls made to useMocks(),
+    // only set the mock variables if they're null.
+    mockAuthSessionProxies = mockAuthSessionProxies ?? new List<LoggerSObjectProxy.AuthSession>();
+    mockNetworkProxies = mockNetworkProxies ?? new List<LoggerSObjectProxy.Network>();
   }
 }
