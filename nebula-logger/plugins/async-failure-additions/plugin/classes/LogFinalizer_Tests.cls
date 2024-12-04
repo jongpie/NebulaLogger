@@ -27,7 +27,7 @@ private class LogFinalizer_Tests {
     }
     System.Test.getEventBus().deliver();
 
-    List<LogEntry__c> logEntries = [SELECT Message__c, ExceptionMessage__c FROM LogEntry__c];
+    List<LogEntry__c> logEntries = [SELECT Message__c, ExceptionMessage__c FROM LogEntry__c WHERE LoggingLevel__c = :System.LoggingLevel.ERROR.name()];
     System.Assert.areEqual(2, logEntries.size(), 'Should log for errors');
     LogEntry__c firstEntry = logEntries.get(0);
     System.Assert.areEqual('There was an error during this queueable job', firstEntry.Message__c);

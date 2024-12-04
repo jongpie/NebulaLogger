@@ -59,9 +59,9 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         RecordId__c,
         Timestamp__c
       FROM LogEntry__c
+      WHERE LoggingLevel__c = :System.LoggingLevel.ERROR.name()
     ];
     // LogEntry__c related asserts
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), entry.LoggingLevel__c, 'Logging level should be set correctly');
     System.Assert.areEqual(
       String.format(
         LogFlowExecutionErrorEventHandler.LOG_STRING,

@@ -12,9 +12,9 @@ public without sharing virtual class LogFinalizer implements System.Finalizer {
    * @param finalizerContext The `System.FinalizerContext` associated with the finalizer
    */
   public void execute(System.FinalizerContext finalizerContext) {
-    Logger.setAsyncContext(finalizerContext);
     switch on finalizerContext.getResult() {
       when UNHANDLED_EXCEPTION {
+        Logger.setAsyncContext(finalizerContext);
         Logger.error('There was an error during this queueable job');
         Logger.error('Error details', finalizerContext.getException());
       }
