@@ -312,7 +312,10 @@ public without sharing virtual class LogManagementDataSelector {
       'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username, LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
       ' FROM OmniProcess WHERE Id IN :omniProcessIds';
     for (SObject omniProcessRecord : System.Database.query(String.escapeSingleQuotes(query))) {
-      LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(omniProcessRecord);
+      LoggerSObjectProxy.OmniProcess omniProcessProxy = (LoggerSObjectProxy.OmniProcess) System.JSON.deserialize(
+        System.JSON.serialize(omniProcessRecord),
+        LoggerSObjectProxy.OmniProcess.class
+      );
       omniProcessIdToOmniProcessProxy.put(omniProcessProxy.Id, omniProcessProxy);
     }
     return omniProcessIdToOmniProcessProxy;

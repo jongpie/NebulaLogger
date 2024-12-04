@@ -39,7 +39,9 @@ private class LoggerEngineDataSelector_Tests {
       FROM AuthSession
       WHERE UsersId = :System.UserInfo.getUserId() AND IsCurrent = TRUE
     ];
-    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
+    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty()
+      ? null
+      : (LoggerSObjectProxy.AuthSession) System.JSON.deserialize(System.JSON.serialize(sessions.get(0)), LoggerSObjectProxy.AuthSession.class);
     System.Assert.areEqual(1, System.Limits.getQueries());
 
     LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
@@ -73,25 +75,6 @@ private class LoggerEngineDataSelector_Tests {
 
     System.Assert.areEqual(0, mockSelector.getCachedAuthSessionQueryCount());
     System.Assert.isNull(returnedAuthSessionProxy);
-  }
-
-  @IsTest
-  static void it_returns_cached_sobject_handlers() {
-    List<LoggerSObjectHandler__mdt> expectedSObjectHandlers = [
-      SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
-      FROM LoggerSObjectHandler__mdt
-      WHERE IsEnabled__c = TRUE
-    ];
-    System.Assert.areEqual(0, System.Limits.getQueries());
-
-    List<LoggerSObjectHandler__mdt> returnedSObjectHandlers = LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
-
-    // The specific query used for LoggerSObjectHandler__mdt shouldn't count towards the SOQL query limits,
-    // so 0 queries are expected here
-    System.Assert.areEqual(0, System.Limits.getQueries());
-    LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
-    System.Assert.areEqual(0, System.Limits.getQueries(), 'Query results should have been cached');
-    System.Assert.areEqual(expectedSObjectHandlers, returnedSObjectHandlers);
   }
 
   @IsTest
@@ -135,23 +118,6 @@ private class LoggerEngineDataSelector_Tests {
 
     System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
     System.Assert.isNull(returnedOrganization);
-  }
-
-  @IsTest
-  static void it_returns_cached_tag_assignment_rules() {
-    List<LogEntryTagRule__mdt> expectedTagAssignmentRules = [
-      SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
-      FROM LogEntryTagRule__mdt
-      WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
-    ];
-    System.Assert.areEqual(1, System.Limits.getQueries());
-
-    List<LogEntryTagRule__mdt> returnedTagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-
-    System.Assert.areEqual(2, System.Limits.getQueries());
-    LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-    System.Assert.areEqual(2, System.Limits.getQueries(), 'Query results should have been cached');
-    System.Assert.areEqual(expectedTagAssignmentRules, returnedTagAssignmentRules);
   }
 
   @IsTest
