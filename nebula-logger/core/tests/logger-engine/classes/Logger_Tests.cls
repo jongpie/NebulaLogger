@@ -6,6 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
 @IsTest(IsParallel=true)
 private class Logger_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_version_number() {
     String expectedVersionNumber = Logger.CURRENT_VERSION_NUMBER;

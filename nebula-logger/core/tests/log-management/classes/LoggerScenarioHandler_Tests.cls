@@ -6,6 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LoggerScenarioHandler_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_the_loggerScenario_sobjectType() {
     System.Assert.areEqual(Schema.LoggerScenario__c.SObjectType, new LoggerScenarioHandler().getSObjectType());

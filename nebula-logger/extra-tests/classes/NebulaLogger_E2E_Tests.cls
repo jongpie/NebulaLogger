@@ -117,24 +117,18 @@ private class NebulaLogger_E2E_Tests {
     System.Assert.areEqual(message, requestRecords.get(0).Message__c);
   }
 
-  // FIXME this test currently fails because custom metadata types (including LoggerSObjectHandler__mdt)
-  // aren't loaded during a test context, which prevents LogEntryEventHandler from running in a BEFORE_INSERT context
-  // In a future release, Nebula Logger should be updated to always load custom metadata records - Nebula Logger's own
-  // tests can then be responsible for clearing any loaded records (or providing stubs) for tests that shouldn't rely
-  // on the org's version of the custom metadata type records
-  // Related issue: https://github.com/jongpie/NebulaLogger/issues/457
-  // @IsTest
-  // static void it_saves_via_synchronous_dml() {
-  //     System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
-  //     String message = 'Some random FINEST entry';
-  //     Logger.finest(message);
+  @IsTest
+  static void it_saves_via_synchronous_dml() {
+    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
+    String message = 'Some random FINEST entry';
+    Logger.finest(message);
 
-  //     Logger.saveLog(Logger.SaveMethod.SYNCHRONOUS_DML);
+    Logger.saveLog(Logger.SaveMethod.SYNCHRONOUS_DML);
 
-  //     System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
-  //     LogEntry__c matchingLogEntry = findMatchingLogEntry(message);
-  //     System.Assert.isNotNull(matchingLogEntry);
-  // }
+    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
+    LogEntry__c matchingLogEntry = findMatchingLogEntry(message);
+    System.Assert.isNotNull(matchingLogEntry);
+  }
 
   private static LogEntry__c findMatchingLogEntry(String message) {
     LogEntry__c matchingLogEntry;

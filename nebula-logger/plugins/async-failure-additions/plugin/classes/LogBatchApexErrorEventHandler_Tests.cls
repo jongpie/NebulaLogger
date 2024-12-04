@@ -5,13 +5,18 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions, PMD.ApexUnitTestClassShouldHaveAsserts')
 @IsTest(IsParallel=true)
 private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<SObject>, Database.RaisesPlatformEvents {
+  private final Phase throwLocation;
+
   private enum Phase {
     START,
     EXECUTE,
     FINISH
   }
 
-  private final Phase throwLocation;
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
 
   @IsTest
   static void it_should_create_log_when_batch_job_throws_in_start_method() {
@@ -42,7 +47,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
     } catch (System.Exception ex) {
       // via https://salesforce.stackexchange.com/questions/263419/testing-batchapexerrorevent-trigger
     }
-    // at this point, we're still two async-levels deep into Platform Event-land; we need to call "deliver()" twice
+    // At this point, we're still two async-levels deep into Platform Event-land; we need to call "deliver()" twice
     System.Test.getEventBus().deliver(); // fires the platform event for Database.RaisesPlatformEvents
     System.Test.getEventBus().deliver(); // fires the logger's platform event
 
@@ -52,7 +57,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
   private static void assertLogWasCreatedForPhase(Phase phase) {
     Log__c log = getLog();
     System.Assert.isNotNull(log, 'Log should have been created!');
-    System.Assert.areEqual(2, log.LogEntries__r.size(), 'Two log entries should have been created');
+    System.Assert.areEqual(2, log.LogEntries__r.size(), 'Two log entries should have been created\n' + System.JSON.serializePretty(log.LogEntries__r));
     System.Assert.areEqual('Batch job terminated unexpectedly', log.LogEntries__r[0].Message__c);
     System.Assert.areEqual(
       String.format(
@@ -95,6 +100,6 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
   }
 
   private static Log__c getLog() {
-    return [SELECT Id, (SELECT Message__c FROM LogEntries__r) FROM Log__c LIMIT 1];
+    return [SELECT Id, (SELECT Message__c, OriginLocation__c, StackTrace__c FROM LogEntries__r) FROM Log__c LIMIT 1];
   }
 }

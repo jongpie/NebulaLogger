@@ -13,6 +13,11 @@
 private class LoggerSObjectHandler_Tests {
   private static final String FAKE_PROFILE_NAME = 'Some String';
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_configured_sobject_handler() {
     Schema.SObjectType sobjectType = new MockSObjectHandler().getSObjectType();

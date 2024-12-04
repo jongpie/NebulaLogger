@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Selector class used for all queries that are specific to the log management layer
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing virtual class LogManagementDataSelector {
   private static LogManagementDataSelector instance = new LogManagementDataSelector();
 
