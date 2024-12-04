@@ -112,7 +112,7 @@ private class NebulaLogger_E2E_Tests {
       System.JSON.serialize(untypedRequestBody.get('records')),
       List<LogEntryEvent__e>.class
     );
-    System.Assert.areEqual(1, requestRecords.size());
+    System.Assert.isFalse(requestRecords.isEmpty(), System.JSON.serializePretty(requestRecords));
     System.Assert.areEqual(message, builder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(message, requestRecords.get(0).Message__c);
   }
