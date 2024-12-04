@@ -9,7 +9,6 @@
  *              Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another,
  *              such as not being mockable or creatable, or not existing in all orgs.
  */
-@SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class LoggerSObjectProxy {
   /**
    * @description All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible
@@ -17,7 +16,7 @@ public without sharing class LoggerSObjectProxy {
    *              class acts as a substitute for a `Schema.AuthSession` record to provide the abilility to mock the data during unit & integration tests.
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class AuthSession {
+  public class AuthSession extends SObjectProxy {
     public Id Id;
     public String LoginType;
     public Id LoginHistoryId;
@@ -28,22 +27,6 @@ public without sharing class LoggerSObjectProxy {
     public String SessionType;
     public String SourceIp;
     public Id UsersId;
-
-    @SuppressWarnings('PMD.ApexDoc')
-    public AuthSession(Schema.AuthSession authSessionRecord) {
-      if (authSessionRecord != null) {
-        this.Id = authSessionRecord.Id;
-        this.LoginHistory = new LoginHistory(authSessionRecord.LoginHistory);
-        this.LoginHistoryId = authSessionRecord.LoginHistoryId;
-        this.LoginType = authSessionRecord.LoginType;
-        this.LogoutUrl = authSessionRecord.LogoutUrl;
-        this.ParentId = authSessionRecord.ParentId;
-        this.SessionSecurityLevel = authSessionRecord.SessionSecurityLevel;
-        this.SessionType = authSessionRecord.SessionType;
-        this.SourceIp = authSessionRecord.SourceIp;
-        this.UsersId = authSessionRecord.UsersId;
-      }
-    }
   }
 
   /**
@@ -52,21 +35,11 @@ public without sharing class LoggerSObjectProxy {
    *              class acts as a substitute for a `Schema.LoginHistory` record to provide the abilility to mock the data during unit & integration tests.
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class LoginHistory {
+  public class LoginHistory extends SObjectProxy {
     public String Application;
     public String Browser;
     public String Platform;
     public Id UserId;
-
-    @SuppressWarnings('PMD.ApexDoc')
-    public LoginHistory(Schema.LoginHistory loginHistoryRecord) {
-      if (loginHistoryRecord != null) {
-        this.Application = loginHistoryRecord.Application;
-        this.Browser = loginHistoryRecord.Browser;
-        this.Platform = loginHistoryRecord.Platform;
-        this.UserId = loginHistoryRecord.UserId;
-      }
-    }
   }
 
   /**
@@ -76,19 +49,10 @@ public without sharing class LoggerSObjectProxy {
    *              strongly-typed references to fields (properties).
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class Network {
+  public class Network extends SObjectProxy {
     public String Id;
     public String Name;
     public String UrlPathPrefix;
-
-    @SuppressWarnings('PMD.ApexDoc')
-    public Network(SObject networkRecord) {
-      if (networkRecord != null) {
-        this.Id = (String) networkRecord.get('Id');
-        this.Name = (String) networkRecord.get('Name');
-        this.UrlPathPrefix = (String) networkRecord.get('UrlPathPrefix');
-      }
-    }
   }
 
   /**
@@ -98,7 +62,7 @@ public without sharing class LoggerSObjectProxy {
    *              strongly-typed references to fields (properties).
    */
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
-  public class OmniProcess {
+  public class OmniProcess extends SObjectProxy {
     public Id CreatedById;
     public Schema.User CreatedBy;
     public Datetime CreatedDate;
@@ -108,20 +72,12 @@ public without sharing class LoggerSObjectProxy {
     public Datetime LastModifiedDate;
     public String OmniProcessType;
     public String UniqueName;
+  }
 
-    @SuppressWarnings('PMD.ApexDoc')
-    public OmniProcess(SObject omniProcess) {
-      if (omniProcess != null) {
-        this.CreatedById = (String) omniProcess.get('CreatedById');
-        this.CreatedBy = (Schema.User) omniProcess.getSObject('CreatedBy');
-        this.CreatedDate = (Datetime) omniProcess.get('CreatedDate');
-        this.Id = (String) omniProcess.get('Id');
-        this.LastModifiedById = (String) omniProcess.get('LastModifiedById');
-        this.LastModifiedBy = (Schema.User) omniProcess.getSObject('LastModifiedBy');
-        this.LastModifiedDate = (Datetime) omniProcess.get('LastModifiedDate');
-        this.OmniProcessType = (String) omniProcess.get('OmniProcessType');
-        this.UniqueName = (String) omniProcess.get('UniqueName');
-      }
+  @SuppressWarnings('PMD.ApexDoc')
+  private abstract class SObjectProxy {
+    public String serialize() {
+      return System.JSON.serializePretty(this);
     }
   }
 }
