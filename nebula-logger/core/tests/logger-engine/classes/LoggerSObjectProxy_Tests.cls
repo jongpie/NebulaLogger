@@ -102,7 +102,7 @@ private class LoggerSObjectProxy_Tests {
     if (IS_OMNISTUDIO_ENABLED == false) {
       return;
     }
-    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUserName());
     // String createdByFieldName = 'CreatedBy';
     String createdByIdFieldName = 'CreatedById';
     String createdDateFieldName = 'CreatedDate';

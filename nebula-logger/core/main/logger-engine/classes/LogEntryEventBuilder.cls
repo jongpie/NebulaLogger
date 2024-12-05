@@ -210,7 +210,11 @@ global with sharing class LogEntryEventBuilder {
    * @return                       The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-    return this.setDatabaseDetails(new List<Database.EmptyRecycleBinResult>{ emptyRecycleBinResult }, Database.EmptyRecycleBinResult.class, emptyRecycleBinResult?.getId());
+    return this.setDatabaseDetails(
+      new List<Database.EmptyRecycleBinResult>{ emptyRecycleBinResult },
+      Database.EmptyRecycleBinResult.class,
+      emptyRecycleBinResult?.getId()
+    );
   }
 
   /**
@@ -271,7 +275,6 @@ global with sharing class LogEntryEventBuilder {
   global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
     return this.setDatabaseDetails(deleteResults, Database.DeleteResult.class, null);
   }
-
 
   /**
    * @description Sets the log entry event's database operation result fields
@@ -1048,7 +1051,7 @@ global with sharing class LogEntryEventBuilder {
   private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
     templateLogEntryEvent.Locale__c = System.UserInfo.getLocale();
     templateLogEntryEvent.LoggedById__c = System.UserInfo.getUserId();
-    templateLogEntryEvent.LoggedByUsername__c = System.UserInfo.getUsername();
+    templateLogEntryEvent.LoggedByUsername__c = System.UserInfo.getUserName();
     templateLogEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
     templateLogEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
     templateLogEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();
