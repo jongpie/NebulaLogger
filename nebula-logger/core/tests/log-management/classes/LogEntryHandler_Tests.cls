@@ -1266,7 +1266,7 @@ private class LogEntryHandler_Tests {
     if (IS_OMNISTUDIO_ENABLED == false) {
       return;
     }
-    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUserName());
     SObject mockOmniProcessRecord = (SObject) (System.Type.forName('Schema.OmniProcess').newInstance());
     LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
     mockOmniProcessProxy.CreatedById = System.UserInfo.getUserId();

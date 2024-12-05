@@ -111,6 +111,47 @@ Database.DeleteResult
 
 The mock instance of `Database.DeleteResult`
 
+#### `createDatabaseEmptyRecycleBinResult(Boolean isSuccess)` → `Database.EmptyRecycleBinResult`
+
+Creates a mock instance of `Database.EmptyRecycleBinResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+
+##### Return
+
+**Type**
+
+Database.EmptyRecycleBinResult
+
+**Description**
+
+The mock instance of `Database.EmptyRecycleBinResult`
+
+#### `createDatabaseEmptyRecycleBinResult(Boolean isSuccess, Id recordId)` → `Database.EmptyRecycleBinResult`
+
+Creates a mock instance of `Database.EmptyRecycleBinResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
+
+##### Return
+
+**Type**
+
+Database.EmptyRecycleBinResult
+
+**Description**
+
+The mock instance of `Database.EmptyRecycleBinResult`
+
 #### `createDatabaseLeadConvertResult(Boolean isSuccess)` → `Database.LeadConvertResult`
 
 Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.

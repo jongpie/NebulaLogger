@@ -93,7 +93,7 @@ private class LogEntryArchiveBuilder_Tests {
     System.Assert.areEqual(System.UserInfo.getUserId(), logEntryArchive.ArchivedById__c, 'logEntryArchive.ArchivedById__c was not properly set');
     System.Assert.isNotNull(logEntryArchive.ArchivedDate__c, 'logEntryArchive.ArchivedDate__c was not properly set');
     System.Assert.areEqual(System.today(), logEntryArchive.ArchivedDate__c.date(), 'logEntryArchive.ArchivedDate__c was not properly set');
-    System.Assert.areEqual(System.UserInfo.getUsername(), logEntryArchive.ArchivedByUsername__c, 'logEntryArchive.ArchivedByUsername__c was not properly set');
+    System.Assert.areEqual(System.UserInfo.getUserName(), logEntryArchive.ArchivedByUsername__c, 'logEntryArchive.ArchivedByUsername__c was not properly set');
     System.Assert.areEqual(mockEvent.ComponentType__c, logEntryArchive.ComponentType__c, 'logEntryArchive.ComponentType__c was not properly set');
     System.Assert.areEqual(
       mockEvent.DatabaseResultCollectionSize__c,
@@ -457,7 +457,7 @@ private class LogEntryArchiveBuilder_Tests {
     System.Assert.areEqual(System.UserInfo.getUserId(), logEntryArchive.ArchivedById__c, 'logEntryArchive.ArchivedById__c was not properly set');
     System.Assert.isNotNull(logEntryArchive.ArchivedDate__c, 'logEntryArchive.ArchivedDate__c was not properly set');
     System.Assert.areEqual(System.today(), logEntryArchive.ArchivedDate__c.date(), 'logEntryArchive.ArchivedDate__c was not properly set');
-    System.Assert.areEqual(System.UserInfo.getUsername(), logEntryArchive.ArchivedByUsername__c, 'logEntryArchive.ArchivedByUsername__c was not properly set');
+    System.Assert.areEqual(System.UserInfo.getUserName(), logEntryArchive.ArchivedByUsername__c, 'logEntryArchive.ArchivedByUsername__c was not properly set');
     System.Assert.areEqual(logEntry.Log__r.ClosedBy__c, logEntryArchive.ClosedById__c, 'logEntryArchive.ClosedById__c was not properly set');
     System.Assert.areEqual(
       logEntry.Log__r.ClosedBy__r?.Username,

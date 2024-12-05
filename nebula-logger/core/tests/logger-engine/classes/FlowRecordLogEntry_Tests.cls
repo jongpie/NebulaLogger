@@ -22,7 +22,7 @@ private class FlowRecordLogEntry_Tests {
       Id = System.UserInfo.getUserId(),
       FirstName = System.UserInfo.getFirstName(),
       LastName = System.UserInfo.getLastName(),
-      Username = System.UserInfo.getUsername()
+      Username = System.UserInfo.getUserName()
     );
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
     System.LoggingLevel flowRecordEntryLoggingLevel = System.LoggingLevel.DEBUG;
@@ -64,7 +64,7 @@ private class FlowRecordLogEntry_Tests {
       Id = System.UserInfo.getUserId(),
       FirstName = System.UserInfo.getFirstName(),
       LastName = System.UserInfo.getLastName(),
-      Username = System.UserInfo.getUsername()
+      Username = System.UserInfo.getUserName()
     );
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
     System.LoggingLevel flowRecordEntryLoggingLevel = System.LoggingLevel.DEBUG;
@@ -108,7 +108,7 @@ private class FlowRecordLogEntry_Tests {
       Id = System.UserInfo.getUserId(),
       FirstName = System.UserInfo.getFirstName(),
       LastName = System.UserInfo.getLastName(),
-      Username = System.UserInfo.getUsername()
+      Username = System.UserInfo.getUserName()
     );
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
     System.LoggingLevel flowRecordEntryLoggingLevel = System.LoggingLevel.DEBUG;
@@ -145,7 +145,7 @@ private class FlowRecordLogEntry_Tests {
       Id = System.UserInfo.getUserId(),
       FirstName = System.UserInfo.getFirstName(),
       LastName = System.UserInfo.getLastName(),
-      Username = System.UserInfo.getUsername()
+      Username = System.UserInfo.getUserName()
     );
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.ERROR;
     System.LoggingLevel flowRecordEntryLoggingLevel = System.LoggingLevel.DEBUG;

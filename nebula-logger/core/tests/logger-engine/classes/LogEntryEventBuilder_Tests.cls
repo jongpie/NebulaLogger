@@ -21,11 +21,15 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.setMessage(getMessage()).getLogEntryEvent());
     System.Assert.isNull(builder.setExceptionDetails(new System.DmlException()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.DeleteResult) null).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult((Database.EmptyRecycleBinResult) null).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult((Database.LeadConvertResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.MergeResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.SaveResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.UpsertResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.UndeleteResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.DeleteResult>()).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult(new List<Database.EmptyRecycleBinResult>()).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult(new List<Database.LeadConvertResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.MergeResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.SaveResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.UpsertResult>()).getLogEntryEvent());
@@ -1217,7 +1221,7 @@ private class LogEntryEventBuilder_Tests {
     Schema.User nullUser;
     Map<Id, SObject> userIdToUser = new Map<Id, SObject>{
       mockUserId => nullUser,
-      System.UserInfo.getUserId() => new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername())
+      System.UserInfo.getUserId() => new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUserName())
     };
     builder.setRecord(userIdToUser);
 
@@ -1873,7 +1877,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
     System.Assert.areEqual(System.UserInfo.getLocale(), builder.getLogEntryEvent().Locale__c);
     System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
-    System.Assert.areEqual(System.UserInfo.getUsername(), builder.getLogEntryEvent().LoggedByUsername__c);
+    System.Assert.areEqual(System.UserInfo.getUserName(), builder.getLogEntryEvent().LoggedByUsername__c);
     System.Assert.areEqual(System.UserInfo.getProfileId(), builder.getLogEntryEvent().ProfileId__c);
     System.Assert.areEqual(System.UserInfo.getUiThemeDisplayed(), builder.getLogEntryEvent().ThemeDisplayed__c);
     System.Assert.areEqual(System.UserInfo.getTimeZone().getId(), builder.getLogEntryEvent().TimeZoneId__c);

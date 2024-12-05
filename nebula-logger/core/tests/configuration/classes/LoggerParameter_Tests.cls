@@ -7,7 +7,7 @@
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
   private static Schema.User getUserRecord() {
-    return new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+    return new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUserName());
   }
 
   @IsTest

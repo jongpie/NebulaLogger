@@ -197,29 +197,33 @@ global with sharing class LogEntryEventBuilder {
 
   /**
    * @description Sets the log entry event's database operation result fields
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global LogEntryEventBuilder setDatabaseResult(Database.LeadConvertResult leadConvertResult) {
-    return this.setDatabaseDetails(new List<Database.LeadConvertResult>{ leadConvertResult }, Database.LeadConvertResult.class, leadConvertResult?.getLeadId());
-  }
-
-  /**
-   * @description Sets the log entry event's database operation result fields
-   * @param  leadConvertResults The list of `Database.LeadConvertResult`s to log
-   * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global LogEntryEventBuilder setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults) {
-    return this.setDatabaseDetails(leadConvertResults, Database.LeadConvertResult.class, null);
-  }
-
-  /**
-   * @description Sets the log entry event's database operation result fields
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
     return this.setDatabaseDetails(new List<Database.DeleteResult>{ deleteResult }, Database.DeleteResult.class, deleteResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  emptyRecycleBinResult The instance of `Database.EmptyRecycleBinResult` to log
+   * @return                       The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return this.setDatabaseDetails(
+      new List<Database.EmptyRecycleBinResult>{ emptyRecycleBinResult },
+      Database.EmptyRecycleBinResult.class,
+      emptyRecycleBinResult?.getId()
+    );
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(Database.LeadConvertResult leadConvertResult) {
+    return this.setDatabaseDetails(new List<Database.LeadConvertResult>{ leadConvertResult }, Database.LeadConvertResult.class, leadConvertResult?.getLeadId());
   }
 
   /**
@@ -270,6 +274,24 @@ global with sharing class LogEntryEventBuilder {
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
     return this.setDatabaseDetails(deleteResults, Database.DeleteResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  emptyRecycleBinResults The list of `Database.EmptyRecycleBinResult` instances to log
+   * @return                        The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return this.setDatabaseDetails(emptyRecycleBinResults, Database.EmptyRecycleBinResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  leadConvertResults The list of `Database.LeadConvertResult`s to log
+   * @return                    The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults) {
+    return this.setDatabaseDetails(leadConvertResults, Database.LeadConvertResult.class, null);
   }
 
   /**
@@ -1029,7 +1051,7 @@ global with sharing class LogEntryEventBuilder {
   private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
     templateLogEntryEvent.Locale__c = System.UserInfo.getLocale();
     templateLogEntryEvent.LoggedById__c = System.UserInfo.getUserId();
-    templateLogEntryEvent.LoggedByUsername__c = System.UserInfo.getUsername();
+    templateLogEntryEvent.LoggedByUsername__c = System.UserInfo.getUserName();
     templateLogEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
     templateLogEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
     templateLogEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();

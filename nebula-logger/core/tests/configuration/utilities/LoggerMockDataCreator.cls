@@ -32,35 +32,6 @@ public class LoggerMockDataCreator {
   }
 
   /**
-   * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
-   *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
-   *              record ID is automatically included.
-   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
-   * @return   The mock instance of `Database.LeadConvertResult`
-   */
-  public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess) {
-    return createDatabaseLeadConvertResult(isSuccess, createId(Schema.Lead.SObjectType));
-  }
-
-  /**
-   * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
-   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
-   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
-   * @param  recordId  The record ID to use within the mock result
-   * @return   The mock instance of `Database.LeadConvertResult`
-   */
-  public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId) {
-    if (isSuccess) {
-      return (Database.LeadConvertResult) System.JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
-    } else {
-      return (Database.LeadConvertResult) System.JSON.deserialize(
-        '{"success":false, "leadid": "' + recordId + '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
-        Database.LeadConvertResult.class
-      );
-    }
-  }
-
-  /**
    * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
    *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
    *              record ID is automatically included.
@@ -85,6 +56,66 @@ public class LoggerMockDataCreator {
       return (Database.DeleteResult) System.JSON.deserialize(
         '{"success":false, "id": "' + recordId + '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
         Database.DeleteResult.class
+      );
+    }
+  }
+
+  /**
+   * @description Creates a mock instance of `Database.EmptyRecycleBinResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+   *              record ID is automatically included.
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @return   The mock instance of `Database.EmptyRecycleBinResult`
+   */
+  public static Database.EmptyRecycleBinResult createDatabaseEmptyRecycleBinResult(Boolean isSuccess) {
+    return createDatabaseEmptyRecycleBinResult(isSuccess, createId(Schema.Account.SObjectType));
+  }
+
+  /**
+   * @description Creates a mock instance of `Database.EmptyRecycleBinResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @param  recordId  The record ID to use within the mock result
+   * @return   The mock instance of `Database.EmptyRecycleBinResult`
+   */
+  public static Database.EmptyRecycleBinResult createDatabaseEmptyRecycleBinResult(Boolean isSuccess, Id recordId) {
+    if (isSuccess) {
+      return (Database.EmptyRecycleBinResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.EmptyRecycleBinResult.class);
+    } else {
+      return (Database.EmptyRecycleBinResult) System.JSON.deserialize(
+        '{"success":false, "id": "' +
+          recordId +
+          '", "errors":[{"message": "invalid record id; no recycle bin entry found", "statusCode": "INVALID_ID_FIELD"}]}',
+        Database.EmptyRecycleBinResult.class
+      );
+    }
+  }
+
+  /**
+   * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+   *              record ID is automatically included.
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @return   The mock instance of `Database.LeadConvertResult`
+   */
+  public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess) {
+    return createDatabaseLeadConvertResult(isSuccess, createId(Schema.Lead.SObjectType));
+  }
+
+  /**
+   * @description Creates a mock instance of `Database.LeadConvertResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @param  recordId  The record ID to use within the mock result
+   * @return   The mock instance of `Database.LeadConvertResult`
+   */
+  public static Database.LeadConvertResult createDatabaseLeadConvertResult(Boolean isSuccess, Id recordId) {
+    if (isSuccess) {
+      return (Database.LeadConvertResult) System.JSON.deserialize('{"success": true, "leadid": "' + recordId + '"}', Database.LeadConvertResult.class);
+    } else {
+      return (Database.LeadConvertResult) System.JSON.deserialize(
+        '{"success":false, "leadid": "' + recordId + '", "errors":[{"message": "convertedStatus is required...", "statusCode": "REQUIRED_FIELD_MISSING"}]}',
+        Database.LeadConvertResult.class
       );
     }
   }
