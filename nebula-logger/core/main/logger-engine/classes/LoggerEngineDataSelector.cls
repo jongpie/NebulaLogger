@@ -92,11 +92,8 @@ public without sharing virtual class LoggerEngineDataSelector {
       return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
     }
 
-    LoggerSObjectProxy.AuthSession authSessionProxy;
-    if (LoggerParameter.QUERY_AUTH_SESSION_DATA) {
-      authSessionProxy = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
-      LoggerCache.getSessionCache().put(cacheKey, authSessionProxy);
-    }
+    LoggerSObjectProxy.AuthSession authSessionProxy = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
+    LoggerCache.getSessionCache().put(cacheKey, authSessionProxy);
     return authSessionProxy;
   }
 
@@ -107,7 +104,7 @@ public without sharing virtual class LoggerEngineDataSelector {
    * @return           The cached `Schema.Network` record
    */
   public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
-    if (networkId == null || (IS_EXPERIENCE_CLOUD_ENABLED == false && mockNetworkProxies == null)) {
+    if (networkId == null) {
       return null;
     }
 
@@ -116,11 +113,8 @@ public without sharing virtual class LoggerEngineDataSelector {
       return (LoggerSObjectProxy.Network) LoggerCache.getOrganizationCache().get(cacheKey);
     }
 
-    LoggerSObjectProxy.Network networkProxy;
-    if (LoggerParameter.QUERY_NETWORK_DATA) {
-      networkProxy = getNetworkProxies(new List<Id>{ networkId }).get(networkId);
-      LoggerCache.getOrganizationCache().put(cacheKey, networkProxy);
-    }
+    LoggerSObjectProxy.Network networkProxy = getNetworkProxies(new List<Id>{ networkId }).get(networkId);
+    LoggerCache.getOrganizationCache().put(cacheKey, networkProxy);
     return networkProxy;
   }
 
@@ -181,14 +175,14 @@ public without sharing virtual class LoggerEngineDataSelector {
    * @return            The instance of `Map<Id, SObject>` containing any matching `Schema.Network` records
    */
   public Map<Id, LoggerSObjectProxy.Network> getNetworkProxies(List<Id> networkIds) {
-    // TODO add caching in a future release
+    Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
     if (LoggerParameter.QUERY_NETWORK_DATA == false) {
-      return null;
+      return networkIdToNetworkProxy;
     }
 
     // Networks (aka experience sites aka community sites aka portal sites ò_ô)
     // may not be enabled in the org (no Schema.Network object), so run everything dynamically
-    Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
+
     String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
     List<SObject> networkRecords = IS_EXPERIENCE_CLOUD_ENABLED ? System.Database.query(String.escapeSingleQuotes(query)) : new List<SObject>();
 

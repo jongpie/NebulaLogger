@@ -6,8 +6,6 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogManagementDataSelector_Tests {
-  private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
-
   static {
     // Don't use the org's actual custom metadata records when running tests
     LoggerConfigurationSelector.useMocks();
@@ -60,6 +58,7 @@ private class LogManagementDataSelector_Tests {
     Set<String> targetApexClassNames = new Set<String>{ 'SomeClass', 'AnotherClass' };
     Integer originalQueryCount = System.Limits.getQueries();
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_APEX_CLASS_DATA);
 
     List<Schema.ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
@@ -88,6 +87,7 @@ private class LogManagementDataSelector_Tests {
     Set<String> targetApexTriggerNames = new Set<String>{ 'SomeTrigger', 'AnotherTrigger' };
     Integer originalQueryCount = System.Limits.getQueries();
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexTriggerData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_APEX_TRIGGER_DATA);
 
     List<Schema.ApexTrigger> returnedResults = LogManagementDataSelector.getInstance().getApexTriggers(targetApexTriggerNames);
 
@@ -107,26 +107,6 @@ private class LogManagementDataSelector_Tests {
     System.Assert.areEqual(2, System.Limits.getQueries());
     System.Assert.areEqual(expectedResults, returnedResults);
   }
-
-  // FIXME Querying AsyncApexJob in a test context doesn't seem to return results for @future methods,
-  // and the @future method should be replaced with a queueable class anyway, so fix this test
-  // when converting the @future method to a private queueable class
-  // @IsTest
-  // static void it_returns_count_of_async_apex_jobs_for_specified_class_method_and_statuses() {
-  //     String apexClassName = LogManagementDataSelector_Tests.class.getName();
-  //     String apexMethodName = 'executeSomeFutureMethod';
-  //     List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
-  //     System.Assert.areEqual(0, LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses));
-
-  //     System.Test.startTest();
-  //     executeSomeFutureMethod();
-  //     System.Test.stopTest();
-
-  //     System.Assert.fail([SELECT status FROM AsyncApexJob]);
-  //     Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
-
-  //     System.Assert.areEqual(1, returnedCount);
-  // }
 
   @IsTest
   static void it_returns_cached_recent_log_with_api_release_details_when_call_status_api_callout_is_enabled() {
@@ -160,6 +140,22 @@ private class LogManagementDataSelector_Tests {
     }
 
     System.Assert.areEqual(2, System.Limits.getQueries());
+  }
+
+  @IsTest
+  static void it_returns_count_of_async_apex_jobs_for_specified_apex_class_and_method_name() {
+    // Even though an inner class is used, the AsyncApexJob
+    String apexClassName = LogManagementDataSelector_Tests.class.getName();
+    String apexMethodName = null;
+    List<String> jobStatuses = new List<String>{ 'Completed' };
+    System.Assert.areEqual(0, LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses));
+
+    System.Test.startTest();
+    System.enqueueJob(new ExampleQueuable());
+    System.Test.stopTest();
+
+    Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
+    System.Assert.areEqual(1, returnedCount);
   }
 
   @IsTest
@@ -236,6 +232,44 @@ private class LogManagementDataSelector_Tests {
 
     System.Assert.areEqual(1, returnedResults.size());
     System.Assert.areEqual(deleteableRecord.Id, returnedResults.get(0).RecordId);
+  }
+
+  @IsTest
+  static void it_does_not_query_flow_definition_view_when_disabled_via_logger_parameter() {
+    // The IDs used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
+    List<Id> targetFlowDefinitionViewIds = new List<Id>{ System.UserInfo.getUserId() };
+    Integer originalQueryCount = System.Limits.getQueries();
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA);
+
+    List<Schema.FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowDefinitionViewIds);
+
+    System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
+    System.Assert.areEqual(0, returnedResults.size());
+  }
+
+  @IsTest
+  static void it_returns_flow_definition_view_for_nonexistent_api_name() {
+    LoggerSObjectHandler.shouldExecute(false);
+    String fakeFlowApiName = 'Some Flow API Name That Cannot Exist Because It Has Spaces and Emojis 👈👈😎, THUS, We CAN Safely Call This A Fake API Name';
+
+    List<Schema.FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance()
+      .getFlowDefinitionViewsByFlowApiName(new List<String>{ fakeFlowApiName });
+
+    System.Assert.isNotNull(returnedResults);
+    System.Assert.isTrue(returnedResults.isEmpty());
+  }
+
+  @IsTest
+  static void it_returns_flow_version_view_for_nonexistent_durable_ids() {
+    LoggerSObjectHandler.shouldExecute(false);
+    String fakeFlowDurableId = 'Some Flow API Name That Cannot Exist Because It Has Spaces and Emojis 👈👈😎, THUS, We CAN Safely Call This A Fake API Name';
+
+    List<Schema.FlowVersionView> returnedResults = LogManagementDataSelector.getInstance()
+      .getFlowVersionViewsByDurableId(new List<String>{ fakeFlowDurableId });
+
+    System.Assert.isNotNull(returnedResults);
+    System.Assert.isTrue(returnedResults.isEmpty());
   }
 
   @IsTest
@@ -385,11 +419,7 @@ private class LogManagementDataSelector_Tests {
   }
 
   @IsTest
-  static void it_returns_omni_processes_for_specified_ids() {
-    // No need to fail the test if it's running in an org that does not have OmniStudio enabled
-    if (IS_OMNISTUDIO_ENABLED == false) {
-      return;
-    }
+  static void it_returns_omni_processes_for_empty_list_of_ids() {
     // Fun fact: in an anonymous Apex script, you can easily create an OmniProcess record...
     // ...but when you create one in a test class, you get a gack error 🥲
     // Because of this platform limitation, this test is not great - it doesn't create records (because it can't),
@@ -398,9 +428,10 @@ private class LogManagementDataSelector_Tests {
     // TODO revisit to see if there is any other way to create OmniProcess records to improve this test.
     List<String> omniProcessIds = new List<Id>();
 
-    List<SObject> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(omniProcessIds);
+    Map<Id, LoggerSObjectProxy.OmniProcess> returnedResults = LogManagementDataSelector.getInstance().getOmniProcessProxies(omniProcessIds);
 
     System.Assert.isNotNull(returnedResults);
+    System.Assert.isTrue(returnedResults.isEmpty());
   }
 
   @IsTest
@@ -409,6 +440,7 @@ private class LogManagementDataSelector_Tests {
     List<Id> targetOmniProcessIds = new List<Id>{ System.UserInfo.getUserId() };
     Integer originalQueryCount = System.Limits.getQueries();
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOmniProcessData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_OMNI_PROCESS_DATA);
 
     Map<Id, LoggerSObjectProxy.OmniProcess> returnedResults = LogManagementDataSelector.getInstance().getOmniProcessProxies(targetOmniProcessIds);
 
@@ -585,12 +617,13 @@ private class LogManagementDataSelector_Tests {
     System.Assert.areEqual(mockSelector, LogManagementDataSelector.getInstance());
   }
 
-  @SuppressWarnings('PMD.EmptyStatementBlock')
-  @future
-  private static void executeSomeFutureMethod() {
-    // This method intentionally does nothing - it\'s only used to help test queries on AsynxApexJob
+  private class MockLogManagementDataSelector extends LogManagementDataSelector {
   }
 
-  private class MockLogManagementDataSelector extends LogManagementDataSelector {
+  private class ExampleQueuable implements System.Queueable {
+    @SuppressWarnings('PMD.EmptyStatementBlock')
+    public void execute(System.QueueableContext queueableContext) {
+      // No-op, just for testing purposes
+    }
   }
 }

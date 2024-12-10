@@ -10,8 +10,8 @@
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
       "versionNumber": "4.15.2.NEXT",
-      "versionName": "Improved Testability of Query Selectors",
-      "versionDescription": "Tweaked the internals of the selector classes to provide more control & reusability to improve overall testability",
+      "versionName": "Improved Testability of Queries",
+      "versionDescription": "Enhanced the internals of the existing selector classes LoggerEngineDataSelector and LogManagementDataSelector + introducted a new class LoggerConfigurationSelector to provide improve testability of queries",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
