@@ -6,8 +6,9 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
-  private static Schema.User getUserRecord() {
-    return new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
   }
 
   @IsTest
@@ -421,14 +422,12 @@ private class LoggerParameter_Tests {
 
   @IsTest
   static void it_should_return_constant_value_for_system_debug_message_format() {
-    // The constant LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT is unique - its value should always be
-    // loaded from LoggerParameter__mdt, even in a test context so that orgs can control the output of debug
-    // messages within their own test classes. All other constants use mock configurations
-    String configuredValue = LoggerParameter__mdt.getInstance('SystemDebugMessageFormat').Value__c;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SystemDebugMessageFormat', Value__c = '{SomeFieldName__c}');
+    LoggerParameter.setMock(mockParameter);
 
     String returnedValue = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT;
 
-    System.Assert.areEqual(configuredValue, returnedValue);
+    System.Assert.areEqual(mockParameter.Value__c, returnedValue);
   }
 
   @IsTest
@@ -645,7 +644,7 @@ private class LoggerParameter_Tests {
 
   @IsTest
   static void it_should_return_sobject_parameter() {
-    SObject parameterValue = getUserRecord();
+    SObject parameterValue = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObject', Value__c = System.JSON.serialize(parameterValue));
     LoggerParameter.setMock(mockParameter);
 
@@ -656,7 +655,7 @@ private class LoggerParameter_Tests {
 
   @IsTest
   static void it_should_return_sobject_list_parameter() {
-    List<SObject> parameterValue = new List<SObject>{ getUserRecord() };
+    List<SObject> parameterValue = new List<SObject>{ new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername()) };
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MySObjectList', Value__c = System.JSON.serialize(parameterValue));
     LoggerParameter.setMock(mockParameter);
 
