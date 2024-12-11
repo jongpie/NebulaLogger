@@ -54,8 +54,6 @@ class ErrorStackParser {
       stackTraceParticles = this.parseV8OrIE(error);
     } else if (error.stack) {
       stackTraceParticles = this.parseFFOrSafari(error);
-    } else {
-      throw new Error('Cannot parse given Error object');
     }
 
     return stackTraceParticles;
