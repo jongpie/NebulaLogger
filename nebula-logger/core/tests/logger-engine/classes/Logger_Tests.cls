@@ -1316,79 +1316,58 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_return_true_when_error_logging_level_is_enabled() {
-    Boolean expectedValue = true;
-    Logger.getUserSettings().IsEnabled__c = expectedValue;
+    Logger.getUserSettings().IsEnabled__c = true;
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
 
-    Boolean returnedValue = Logger.isErrorEnabled();
-
-    System.Assert.areEqual(expectedValue, returnedValue);
+    System.Assert.isTrue(Logger.isErrorEnabled());
   }
 
   @IsTest
   static void it_should_return_true_when_warn_logging_level_is_enabled() {
-    Boolean expectedValue = true;
-    Logger.getUserSettings().IsEnabled__c = expectedValue;
+    Logger.getUserSettings().IsEnabled__c = true;
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.WARN.name();
 
-    Boolean returnedValue = Logger.isWarnEnabled();
-
-    System.Assert.areEqual(expectedValue, returnedValue);
+    System.Assert.isTrue(Logger.isWarnEnabled());
   }
 
   @IsTest
   static void it_should_return_true_when_info_logging_level_is_enabled() {
-    Boolean expectedValue = true;
-    Logger.getUserSettings().IsEnabled__c = expectedValue;
+    Logger.getUserSettings().IsEnabled__c = true;
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.INFO.name();
 
-    Boolean returnedValue = Logger.isInfoEnabled();
-
-    System.Assert.areEqual(expectedValue, returnedValue);
+    System.Assert.isTrue(Logger.isInfoEnabled());
   }
 
   @IsTest
   static void it_should_return_true_when_debug_logging_level_is_enabled() {
-    Boolean expectedValue = true;
-    Logger.getUserSettings().IsEnabled__c = expectedValue;
+    Logger.getUserSettings().IsEnabled__c = true;
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
 
-    Boolean returnedValue = Logger.isDebugEnabled();
-
-    System.Assert.areEqual(expectedValue, returnedValue);
+    System.Assert.isTrue(Logger.isDebugEnabled());
   }
 
   @IsTest
   static void it_should_return_true_when_fine_logging_level_is_enabled() {
-    Boolean expectedValue = true;
-    Logger.getUserSettings().IsEnabled__c = expectedValue;
+    Logger.getUserSettings().IsEnabled__c = true;
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINE.name();
 
-    Boolean returnedValue = Logger.isFineEnabled();
-
-    System.Assert.areEqual(expectedValue, returnedValue);
+    System.Assert.isTrue(Logger.isFineEnabled());
   }
 
   @IsTest
   static void it_should_return_true_when_finer_logging_level_is_enabled() {
-    Boolean expectedValue = true;
-    Logger.getUserSettings().IsEnabled__c = expectedValue;
+    Logger.getUserSettings().IsEnabled__c = true;
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINER.name();
 
-    Boolean returnedValue = Logger.isFinerEnabled();
-
-    System.Assert.areEqual(expectedValue, returnedValue);
+    System.Assert.isTrue(Logger.isFinerEnabled());
   }
 
   @IsTest
   static void it_should_return_true_when_finest_logging_level_is_enabled() {
-    Boolean expectedValue = true;
-    Logger.getUserSettings().IsEnabled__c = expectedValue;
+    Logger.getUserSettings().IsEnabled__c = true;
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
 
-    Boolean returnedValue = Logger.isFinestEnabled();
-
-    System.Assert.areEqual(expectedValue, returnedValue);
+    System.Assert.isTrue(Logger.isFinestEnabled());
   }
 
   @IsTest

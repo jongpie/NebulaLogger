@@ -308,7 +308,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isErrorEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.ERROR);
+    return isEnabled(System.LoggingLevel.ERROR);
   }
 
   /**
@@ -316,7 +316,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isWarnEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.WARN);
+    return isEnabled(System.LoggingLevel.WARN);
   }
 
   /**
@@ -324,7 +324,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isInfoEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.INFO);
+    return isEnabled(System.LoggingLevel.INFO);
   }
 
   /**
@@ -332,7 +332,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isDebugEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.DEBUG);
+    return isEnabled(System.LoggingLevel.DEBUG);
   }
 
   /**
@@ -340,7 +340,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isFineEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINE);
+    return isEnabled(System.LoggingLevel.FINE);
   }
 
   /**
@@ -348,7 +348,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isFinerEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINER);
+    return isEnabled(System.LoggingLevel.FINER);
   }
 
   /**
@@ -356,7 +356,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isFinestEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINEST);
+    return isEnabled(System.LoggingLevel.FINEST);
   }
 
   /**
@@ -615,7 +615,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return error().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+    return error().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
   }
 
   /**
@@ -685,7 +685,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return error().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+    return error().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
   }
 
   /**
@@ -695,7 +695,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
-      return error().setDatabaseResult(leadConvertResults).setMessage(logMessage);
+    return error().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -837,7 +837,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return error().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+    return error().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
   }
 
   /**
@@ -907,7 +907,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return error().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+    return error().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
   }
 
   /**
@@ -917,7 +917,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(String message, List<Database.LeadConvertResult> leadConvertResults) {
-      return error().setDatabaseResult(leadConvertResults).setMessage(message);
+    return error().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -1060,7 +1060,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return warn().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+    return warn().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
   }
 
   /**
@@ -1130,7 +1130,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return warn().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+    return warn().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
   }
 
   /**
@@ -1140,7 +1140,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
-      return warn().setDatabaseResult(leadConvertResults).setMessage(logMessage);
+    return warn().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -1282,7 +1282,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return warn().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+    return warn().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
   }
 
   /**
@@ -1352,7 +1352,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return warn().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+    return warn().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
   }
 
   /**
@@ -1362,7 +1362,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(String message, List<Database.LeadConvertResult> leadConvertResults) {
-      return warn().setDatabaseResult(leadConvertResults).setMessage(message);
+    return warn().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -1504,7 +1504,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return info().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+    return info().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
   }
 
   /**
@@ -1574,7 +1574,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return info().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+    return info().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
   }
 
   /**
@@ -1584,7 +1584,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
-      return info().setDatabaseResult(leadConvertResults).setMessage(logMessage);
+    return info().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -1683,7 +1683,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return info().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+    return info().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
   }
 
   /**
@@ -1753,7 +1753,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return info().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+    return info().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
   }
 
   /**
@@ -1763,7 +1763,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(String message, List<Database.LeadConvertResult> leadConvertResults) {
-      return info().setDatabaseResult(leadConvertResults).setMessage(message);
+    return info().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -1863,7 +1863,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return debug().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+    return debug().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
   }
 
   /**
@@ -1933,7 +1933,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return debug().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+    return debug().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
   }
 
   /**
@@ -1943,7 +1943,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
-      return debug().setDatabaseResult(leadConvertResults).setMessage(logMessage);
+    return debug().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -2042,7 +2042,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return debug().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+    return debug().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
   }
 
   /**
@@ -2112,7 +2112,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return debug().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+    return debug().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
   }
 
   /**
@@ -2122,7 +2122,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(String message, List<Database.LeadConvertResult> leadConvertResults) {
-      return debug().setDatabaseResult(leadConvertResults).setMessage(message);
+    return debug().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -2222,7 +2222,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return fine().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+    return fine().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
   }
 
   /**
@@ -2292,7 +2292,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return fine().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+    return fine().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
   }
 
   /**
@@ -2302,7 +2302,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
-      return fine().setDatabaseResult(leadConvertResults).setMessage(logMessage);
+    return fine().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -2401,7 +2401,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return fine().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+    return fine().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
   }
 
   /**
@@ -2471,7 +2471,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return fine().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+    return fine().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
   }
 
   /**
@@ -2481,7 +2481,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(String message, List<Database.LeadConvertResult> leadConvertResults) {
-      return fine().setDatabaseResult(leadConvertResults).setMessage(message);
+    return fine().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -2581,7 +2581,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return finer().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+    return finer().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
   }
 
   /**
@@ -2651,7 +2651,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return finer().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+    return finer().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
   }
 
   /**
@@ -2661,7 +2661,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
-      return finer().setDatabaseResult(leadConvertResults).setMessage(logMessage);
+    return finer().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -2760,7 +2760,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return finer().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+    return finer().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
   }
 
   /**
@@ -2830,7 +2830,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return finer().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+    return finer().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
   }
 
   /**
@@ -2840,7 +2840,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(String message, List<Database.LeadConvertResult> leadConvertResults) {
-      return finer().setDatabaseResult(leadConvertResults).setMessage(message);
+    return finer().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -2940,7 +2940,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return finest().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+    return finest().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
   }
 
   /**
@@ -3010,7 +3010,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return finest().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+    return finest().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
   }
 
   /**
@@ -3020,7 +3020,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
-      return finest().setDatabaseResult(leadConvertResults).setMessage(logMessage);
+    return finest().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -3119,7 +3119,7 @@ global with sharing class Logger {
    * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-      return finest().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+    return finest().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
   }
 
   /**
@@ -3189,7 +3189,7 @@ global with sharing class Logger {
    * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-      return finest().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+    return finest().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
   }
 
   /**
@@ -3199,7 +3199,7 @@ global with sharing class Logger {
    * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(String message, List<Database.LeadConvertResult> leadConvertResults) {
-      return finest().setDatabaseResult(leadConvertResults).setMessage(message);
+    return finest().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -3333,7 +3333,11 @@ global with sharing class Logger {
    * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
    * @return                        The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults
+  ) {
     List<Database.EmptyRecycleBinResult> resultsToLog = new List<Database.EmptyRecycleBinResult>();
     for (Database.EmptyRecycleBinResult emptyRecycleBinResult : emptyRecycleBinResults) {
       if (emptyRecycleBinResult.isSuccess() == false) {
