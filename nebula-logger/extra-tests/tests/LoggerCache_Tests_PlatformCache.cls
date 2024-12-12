@@ -25,7 +25,7 @@ private class LoggerCache_Tests_PlatformCache {
 
     // Run the different Cacheable methods to ensure everything works
     String testKey = 'someKey';
-    Object testValue = System.now();
+    Object testValue = System.Datetime.now();
     System.Assert.isNotNull(organizationCache);
     System.Assert.isFalse(organizationCache.contains(testKey));
     System.Assert.areEqual(
@@ -74,7 +74,7 @@ private class LoggerCache_Tests_PlatformCache {
 
     // Run the different Cacheable methods to ensure everything works
     String testKey = 'someKey';
-    Object testValue = System.now();
+    Object testValue = System.Datetime.now();
     System.Assert.isNotNull(sessionCache);
     System.Assert.isFalse(sessionCache.contains(testKey));
     System.Assert.areEqual(

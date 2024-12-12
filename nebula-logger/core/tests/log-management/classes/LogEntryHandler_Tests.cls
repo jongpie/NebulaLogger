@@ -13,7 +13,7 @@ private class LogEntryHandler_Tests {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     insert log;
-    System.Test.setCreatedDate(log.Id, System.now().addDays(-8));
+    System.Test.setCreatedDate(log.Id, System.Datetime.now().addDays(-8));
   }
 
   @IsTest
@@ -1271,11 +1271,11 @@ private class LogEntryHandler_Tests {
     LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
     mockOmniProcessProxy.CreatedById = System.UserInfo.getUserId();
     mockOmniProcessProxy.CreatedBy = currentUser;
-    mockOmniProcessProxy.CreatedDate = System.now().addDays(-7);
+    mockOmniProcessProxy.CreatedDate = System.Datetime.now().addDays(-7);
     mockOmniProcessProxy.Id = LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType());
     mockOmniProcessProxy.LastModifiedById = currentUser.Id;
     mockOmniProcessProxy.LastModifiedBy = currentUser;
-    mockOmniProcessProxy.LastModifiedDate = System.now().addDays(-1);
+    mockOmniProcessProxy.LastModifiedDate = System.Datetime.now().addDays(-1);
     mockOmniProcessProxy.OmniProcessType = 'Integration Procedure';
     mockOmniProcessProxy.UniqueName = 'Mock_OmniScript_English_1';
     MockLogManagementDataSelector mockSelector = new MockLogManagementDataSelector();

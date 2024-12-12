@@ -60,7 +60,7 @@ public without sharing class LoggerScenarioRule {
   private static Boolean isValid(LoggerScenarioRule__mdt scenarioRule) {
     Boolean isValid = false;
     if (scenarioRule.IsEnabled__c) {
-      Datetime currentTime = System.now();
+      Datetime currentTime = System.Datetime.now();
       Boolean startTimeIsValid = scenarioRule.StartTime__c == null || scenarioRule.StartTime__c <= currentTime;
       Boolean endTimeIsValid = scenarioRule.EndTime__c == null || scenarioRule.EndTime__c >= currentTime;
 

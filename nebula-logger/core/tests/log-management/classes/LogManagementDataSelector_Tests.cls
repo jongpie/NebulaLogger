@@ -144,7 +144,7 @@ private class LogManagementDataSelector_Tests {
       TransactionId__c = 'expectedLog.TransactionId__c'
     );
     insert new List<Log__c>{ olderLog, expectedLog };
-    System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
+    System.Test.setCreatedDate(olderLog.Id, System.Datetime.now().addMinutes(-5));
     System.Assert.areEqual(1, System.Limits.getQueries(), 'Expected 1 query to be used during test setup');
 
     for (Integer i = 0; i < 3; i++) {

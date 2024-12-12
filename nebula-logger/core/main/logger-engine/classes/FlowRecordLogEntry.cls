@@ -81,7 +81,7 @@ global inherited sharing class FlowRecordLogEntry {
   @InvocableVariable(required=false label='DEPRECATED: Use \'Tags\' Instead')
   public List<String> topics;
 
-  public DateTime timestamp = System.now();
+  public DateTime timestamp = System.Datetime.now();
 
   /**
    * @description Invocable method for adding record entries via flow or process builder

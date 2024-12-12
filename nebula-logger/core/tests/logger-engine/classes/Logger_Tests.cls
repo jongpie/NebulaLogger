@@ -105,7 +105,7 @@ private class Logger_Tests {
     orgDefaults.Id = null;
     orgDefaults.LoggingLevel__c = System.LoggingLevel.WARN.name();
     orgDefaults.SetupOwnerId = System.UserInfo.getOrganizationId();
-    orgDefaults.StartTime__c = System.now().addDays(1);
+    orgDefaults.StartTime__c = System.Datetime.now().addDays(1);
     insert orgDefaults;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
@@ -124,7 +124,7 @@ private class Logger_Tests {
     orgDefaults.Id = null;
     orgDefaults.LoggingLevel__c = System.LoggingLevel.WARN.name();
     orgDefaults.SetupOwnerId = System.UserInfo.getOrganizationId();
-    orgDefaults.EndTime__c = System.now().addDays(-1);
+    orgDefaults.EndTime__c = System.Datetime.now().addDays(-1);
     insert orgDefaults;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
@@ -166,7 +166,7 @@ private class Logger_Tests {
     profileSettings.Id = null;
     profileSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
-    profileSettings.StartTime__c = System.now().addDays(1);
+    profileSettings.StartTime__c = System.Datetime.now().addDays(1);
     insert profileSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
@@ -188,7 +188,7 @@ private class Logger_Tests {
     profileSettings.Id = null;
     profileSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
-    profileSettings.EndTime__c = System.now().addDays(-1);
+    profileSettings.EndTime__c = System.Datetime.now().addDays(-1);
     insert profileSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
@@ -234,7 +234,7 @@ private class Logger_Tests {
     userSettings.Id = null;
     userSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     userSettings.SetupOwnerId = System.UserInfo.getUserId();
-    userSettings.StartTime__c = System.now().addDays(1);
+    userSettings.StartTime__c = System.Datetime.now().addDays(1);
     insert userSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
@@ -257,7 +257,7 @@ private class Logger_Tests {
     userSettings.Id = null;
     userSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     userSettings.SetupOwnerId = System.UserInfo.getUserId();
-    userSettings.EndTime__c = System.now().addDays(-1);
+    userSettings.EndTime__c = System.Datetime.now().addDays(-1);
     insert userSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();

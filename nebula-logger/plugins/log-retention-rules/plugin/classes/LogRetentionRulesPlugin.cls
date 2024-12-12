@@ -69,7 +69,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         }
 
         Integer numberOfDaysToRetainLogs = Integer.valueOf(filterResult.getRule().NumberOfDaysToRetainLogs__c);
-        log.LogRetentionDate__c = numberOfDaysToRetainLogs == null ? null : System.today().addDays(numberOfDaysToRetainLogs);
+        log.LogRetentionDate__c = numberOfDaysToRetainLogs == null ? null : System.Date.today().addDays(numberOfDaysToRetainLogs);
 
         logIdToLog.put(log.Id, log);
       }

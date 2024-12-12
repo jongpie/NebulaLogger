@@ -116,10 +116,10 @@ private class LoggerSObjectProxy_Tests {
     Map<String, Object> mockOmniProcessUntyped = new Map<String, Object>{ 'attributes' => new Map<String, Object>{ 'type' => 'OmniProcess' } };
     mockOmniProcessUntyped.put(createdByIdFieldName, currentUser.Id);
     // mockOmniProcessUntyped.put(createdByFieldName, currentUser);
-    mockOmniProcessUntyped.put(createdDateFieldName, System.now().addDays(-7));
+    mockOmniProcessUntyped.put(createdDateFieldName, System.Datetime.now().addDays(-7));
     mockOmniProcessUntyped.put(lastModifiedByIdFieldName, currentUser.Id);
     // mockOmniProcessUntyped.put(lastModifiedByFieldName, currentUser);
-    mockOmniProcessUntyped.put(lastModifiedDateFieldName, System.now().addDays(-1));
+    mockOmniProcessUntyped.put(lastModifiedDateFieldName, System.Datetime.now().addDays(-1));
     mockOmniProcessUntyped.put(omniProcessTypeFieldName, 'Integration Procedure');
     mockOmniProcessUntyped.put(uniqueFieldName, 'Mock_OmniScript_English_1');
     SObject mockOmniProcessRecord = (SObject) System.JSON.deserialize(System.JSON.serialize(mockOmniProcessUntyped), SObject.class);

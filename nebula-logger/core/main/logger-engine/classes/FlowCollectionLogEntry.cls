@@ -84,7 +84,7 @@ global inherited sharing class FlowCollectionLogEntry {
   /**
    * @description Represents the current system time
    */
-  public DateTime timestamp = System.now();
+  public DateTime timestamp = System.Datetime.now();
 
   /**
    * @description Invocable method for adding LogEntry records via flow or process builder

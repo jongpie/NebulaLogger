@@ -20,7 +20,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
   static void it_logs_when_enabled() {
     setLoggerParamEnabled(true);
     Schema.FlowExecutionErrorEvent flowExecutionErrorEvent = new Schema.FlowExecutionErrorEvent();
-    flowExecutionErrorEvent.EventDate = System.now().addSeconds(-5);
+    flowExecutionErrorEvent.EventDate = System.Datetime.now().addSeconds(-5);
     flowExecutionErrorEvent.ElementApiName = 'test_exception_element';
     flowExecutionErrorEvent.FlowApiName = 'Testing_FlowExecutionErrorEvent';
     flowExecutionErrorEvent.FlowVersionNumber = 1;

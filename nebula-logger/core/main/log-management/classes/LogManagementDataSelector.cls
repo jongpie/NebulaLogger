@@ -121,7 +121,7 @@ public without sharing virtual class LogManagementDataSelector {
     // Query for recent logs created only today - the status API should be called
     // at least once per day to make sure that status details are still accurate.
     // This query should make a callout approximately every 4 hours.
-    Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
+    Datetime fourHoursAgo = System.Datetime.now().addMinutes(-4 * 60);
 
     List<Log__c> logs = [
       SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c, OrganizationReleaseNumber__c, OrganizationReleaseVersion__c
