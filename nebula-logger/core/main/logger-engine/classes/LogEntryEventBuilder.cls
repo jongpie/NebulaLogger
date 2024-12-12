@@ -1216,7 +1216,7 @@ global with sharing class LogEntryEventBuilder {
 
   // TODO need to revisit Visualforce logic, re-add fields to either Log__c or LogEntry__c, etc.
   /* private static String getVisualforcePageName() {
-        String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
+        String visualforcePageName = ApexPages.currentPage()?.getUrl();
         if (visualforcePageName != null && visualforcePageName.contains('?')) {
             visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
         } else if (visualforcePageName != null) {

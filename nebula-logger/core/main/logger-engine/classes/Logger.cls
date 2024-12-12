@@ -98,7 +98,7 @@ global with sharing class Logger {
         }
         // If System.UserInfo.getSessionId() returns null, set to an empty string to
         // avoid calling System.UserInfo.getSessionId() again
-        USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
+        USER_SESSION_ID = USER_SESSION_ID ?? '';
       }
       return USER_SESSION_ID;
     }

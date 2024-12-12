@@ -14,19 +14,19 @@ public with sharing class SiteRegisterController {
   public String password {
     get;
     set {
-      password = value == null ? value : value.trim();
+      password = value?.trim();
     }
   }
   public String confirmPassword {
     get;
     set {
-      confirmPassword = value == null ? value : value.trim();
+      confirmPassword = value?.trim();
     }
   }
   public String communityNickname {
     get;
     set {
-      communityNickname = value == null ? value : value.trim();
+      communityNickname = value?.trim();
     }
   }
 
