@@ -1,6 +1,6 @@
 {
   "name": "nebula-logger",
-  "version": "4.15.1",
+  "version": "4.15.2",
   "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
   "author": "Jonathan Gillespie",
   "license": "MIT",
@@ -67,7 +67,8 @@
     "test": "npm run test:lwc && npm run test:apex",
     "test:apex": "npm run test:apex:nocoverage -- --code-coverage --detailed-coverage",
     "test:apex:nocoverage": "npx sf apex run test --concise --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
-    "test:apex:suite": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --code-coverage --detailed-coverage --output-dir ./tests/apex",
+    "test:apex:suite": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --code-coverage --detailed-coverage --output-dir ./test-coverage/apex",
+    "test:apex:suite:nocoverage": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --output-dir ./test-coverage/apex",
     "test:lwc": "sfdx-lwc-jest --skipApiVersionCheck --coverage",
     "test:lwc:nocoverage": "sfdx-lwc-jest --skipApiVersionCheck",
     "test:nocoverage": "npm run test:lwc:nocoverage && npm run test:apex:nocoverage"
