@@ -12,14 +12,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Database.EmptyRecycleBinResult</fullName>
-                <default>false</default>
-                <label>Database.EmptyRecycleBinResult</label>
-            </value>
-            <value>
                 <fullName>Database.DeleteResult</fullName>
                 <default>false</default>
                 <label>Database.DeleteResult</label>
+            </value>
+            <value>
+                <fullName>Database.EmptyRecycleBinResult</fullName>
+                <default>false</default>
+                <label>Database.EmptyRecycleBinResult</label>
             </value>
             <value>
                 <fullName>Database.LeadConvertResult</fullName>
