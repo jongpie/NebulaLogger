@@ -1423,6 +1423,11 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
+    // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
+    // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
+    // ignoring Logger_Tests as an origin (using Logger.ignoreOrigin()) avoids the source snippet code from running in LogEntryHandler
+    Logger.ignoreOrigin(Logger_Tests.class);
+
     // TODO Move this test to LogEntryEventBuilder_Tests
     String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
     Schema.User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Username = :automatedProcessUsername AND Profile.Name = NULL];
@@ -1493,6 +1498,11 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_save_via_event_bus_when_defaulted() {
+    // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
+    // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
+    // ignoring Logger_Tests as an origin (using Logger.ignoreOrigin()) avoids the source snippet code from running in LogEntryHandler
+    Logger.ignoreOrigin(Logger_Tests.class);
+
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1524,6 +1534,11 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_save_via_event_bus_when_specified_via_settings() {
+    // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
+    // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
+    // ignoring Logger_Tests as an origin (using Logger.ignoreOrigin()) avoids the source snippet code from running in LogEntryHandler
+    Logger.ignoreOrigin(Logger_Tests.class);
+
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1551,6 +1566,11 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_save_via_event_bus_when_specified_via_setSaveMethod() {
+    // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
+    // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
+    // ignoring Logger_Tests as an origin (using Logger.ignoreOrigin()) avoids the source snippet code from running in LogEntryHandler
+    Logger.ignoreOrigin(Logger_Tests.class);
+
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1581,6 +1601,11 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_save_via_queueable_when_defaulted() {
+    // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
+    // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
+    // ignoring Logger_Tests as an origin (using Logger.ignoreOrigin()) avoids the source snippet code from running in LogEntryHandler
+    Logger.ignoreOrigin(Logger_Tests.class);
+
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1614,6 +1639,11 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_save_via_queueable_when_specified_via_settings() {
+    // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
+    // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
+    // ignoring Logger_Tests as an origin (using Logger.ignoreOrigin()) avoids the source snippet code from running in LogEntryHandler
+    Logger.ignoreOrigin(Logger_Tests.class);
+
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1643,6 +1673,11 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_save_via_queueable_when_specified_via_setSaveMethod() {
+    // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
+    // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
+    // ignoring Logger_Tests as an origin (using Logger.ignoreOrigin()) avoids the source snippet code from running in LogEntryHandler
+    Logger.ignoreOrigin(Logger_Tests.class);
+
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
