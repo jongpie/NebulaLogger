@@ -25,7 +25,7 @@ private class FlowLogEntry_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     FlowLogEntry flowEntry = createFlowLogEntry();
     flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
-    flowEntry.timestamp = System.Datetime.now().addSeconds(-20);
+    flowEntry.timestamp = System.now().addSeconds(-20);
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -202,7 +202,7 @@ private class FlowLogEntry_Tests {
     flowEntry.saveLog = true;
     flowEntry.faultMessage = 'Exception message';
     flowEntry.shouldThrowFaultMessageException = true;
-    flowEntry.timestamp = System.Datetime.now();
+    flowEntry.timestamp = System.now();
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());

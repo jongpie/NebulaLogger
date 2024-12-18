@@ -66,7 +66,7 @@ global inherited sharing virtual class LogMessage {
    * @param  messageInputs       The list of inputs text to use for any placeholders in the unformatted message
    * @example
    * String unformattedMessage = 'my string with 1 input: {0}';
-   * List<Object> arguments = new List<Object>{ System.Datetime.now() };
+   * List<Object> arguments = new List<Object>{ System.now() };
    * String formattedMessage = new LogMessage(unformattedMessage, arguments).getMessage();
    */
   global LogMessage(String unformattedMessage, List<Object> messageInputs) {

@@ -507,7 +507,7 @@ private class ComponentLogger_Tests {
     componentLogEntry.originStackTrace = createMockComponentStackTrace();
     componentLogEntry.recordId = currentUser.Id;
     componentLogEntry.record = currentUser;
-    componentLogEntry.timestamp = System.Datetime.now().addDays(-1 / 24);
+    componentLogEntry.timestamp = System.now().addDays(-1 / 24);
     componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
     return componentLogEntry;
   }

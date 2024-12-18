@@ -55,7 +55,7 @@ private class LoggerScenarioRule_Tests {
       EndTime__c = null,
       IsEnabled__c = true,
       Scenario__c = 'Some Scenario',
-      StartTime__c = System.Datetime.now().addMinutes(-1)
+      StartTime__c = System.now().addMinutes(-1)
     );
     LoggerScenarioRule.setMock(mockRule);
 
@@ -66,7 +66,7 @@ private class LoggerScenarioRule_Tests {
 
   @IsTest
   static void it_should_load_configured_rule_when_start_time_is_null_and_end_time_is_valid() {
-    LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(EndTime__c = System.Datetime.now().addMinutes(1), IsEnabled__c = true, Scenario__c = 'Some Scenario');
+    LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(EndTime__c = System.now().addMinutes(1), IsEnabled__c = true, Scenario__c = 'Some Scenario');
     LoggerScenarioRule.setMock(mockRule);
 
     LoggerScenarioRule__mdt returnedRule = LoggerScenarioRule.getInstance(mockRule.Scenario__c);
@@ -77,10 +77,10 @@ private class LoggerScenarioRule_Tests {
   @IsTest
   static void it_should_load_configured_rule_when_start_and_end_time_are_both_valid() {
     LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(
-      EndTime__c = System.Datetime.now().addMinutes(1),
+      EndTime__c = System.now().addMinutes(1),
       IsEnabled__c = true,
       Scenario__c = 'Some Scenario',
-      StartTime__c = System.Datetime.now().addMinutes(-1)
+      StartTime__c = System.now().addMinutes(-1)
     );
     LoggerScenarioRule.setMock(mockRule);
 
@@ -95,7 +95,7 @@ private class LoggerScenarioRule_Tests {
       EndTime__c = null,
       IsEnabled__c = true,
       Scenario__c = 'Some Scenario',
-      StartTime__c = System.Datetime.now().addMinutes(1)
+      StartTime__c = System.now().addMinutes(1)
     );
     LoggerScenarioRule.setMock(mockRule);
 
@@ -107,7 +107,7 @@ private class LoggerScenarioRule_Tests {
   @IsTest
   static void it_should_not_load_configured_rule_when_end_time_is_in_the_past() {
     LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(
-      EndTime__c = System.Datetime.now().addMinutes(-1),
+      EndTime__c = System.now().addMinutes(-1),
       IsEnabled__c = true,
       Scenario__c = 'Some Scenario'
     );

@@ -87,7 +87,7 @@ Constructor to handle dynamically formatting a string with a list of inputs
 
 ```java
 String unformattedMessage = 'my string with 1 input: {0}';
-List<Object> arguments = new List<Object>{ System.Datetime.now() };
+List<Object> arguments = new List<Object>{ System.now() };
 String formattedMessage = new LogMessage(unformattedMessage, arguments).getMessage();
 ```
 

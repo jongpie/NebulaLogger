@@ -19,7 +19,7 @@ private class FlowLogger_Tests {
     flowEntry.message = 'hello from Flow';
     flowEntry.loggingLevelName = entryLoggingLevel.name();
     flowEntry.saveLog = false;
-    flowEntry.timestamp = System.Datetime.now();
+    flowEntry.timestamp = System.now();
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -63,7 +63,7 @@ private class FlowLogger_Tests {
     flowEntry.message = 'hello from Flow';
     flowEntry.loggingLevelName = entryLoggingLevel.name();
     flowEntry.saveLog = true;
-    flowEntry.timestamp = System.Datetime.now();
+    flowEntry.timestamp = System.now();
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -107,7 +107,7 @@ private class FlowLogger_Tests {
     flowEntry.loggingLevelName = entryLoggingLevel.name();
     flowEntry.saveLog = true;
     flowEntry.saveMethodName = Logger.SaveMethod.QUEUEABLE.name();
-    flowEntry.timestamp = System.Datetime.now();
+    flowEntry.timestamp = System.now();
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -153,7 +153,7 @@ private class FlowLogger_Tests {
     flowEntry.saveLog = false;
     flowEntry.faultMessage = 'Exception message';
     flowEntry.shouldThrowFaultMessageException = true;
-    flowEntry.timestamp = System.Datetime.now();
+    flowEntry.timestamp = System.now();
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -204,7 +204,7 @@ private class FlowLogger_Tests {
     flowEntry.saveLog = false;
     flowEntry.faultMessage = null;
     flowEntry.shouldThrowFaultMessageException = true;
-    flowEntry.timestamp = System.Datetime.now();
+    flowEntry.timestamp = System.now();
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());

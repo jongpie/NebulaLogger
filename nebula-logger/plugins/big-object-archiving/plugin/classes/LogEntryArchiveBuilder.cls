@@ -50,7 +50,7 @@ public without sharing class LogEntryArchiveBuilder {
     this.logEntryArchive = new LogEntryArchive__b(
       ApiVersion__c = this.logEntryEvent.ApiVersion__c,
       ArchivedById__c = System.UserInfo.getUserId(),
-      ArchivedDate__c = System.Datetime.now(),
+      ArchivedDate__c = System.now(),
       ArchivedByUsername__c = System.UserInfo.getUsername(),
       ComponentType__c = this.logEntryEvent.ComponentType__c,
       DatabaseResultCollectionSize__c = this.logEntryEvent.DatabaseResultCollectionSize__c,
@@ -179,7 +179,7 @@ public without sharing class LogEntryArchiveBuilder {
       ApiReleaseVersion__c = this.logEntry.Log__r.ApiReleaseVersion__c,
       ApiVersion__c = this.logEntry.Log__r.ApiVersion__c,
       ArchivedById__c = System.UserInfo.getUserId(),
-      ArchivedDate__c = System.Datetime.now(),
+      ArchivedDate__c = System.now(),
       ArchivedByUsername__c = System.UserInfo.getUsername(),
       ClosedById__c = this.logEntry.Log__r.ClosedBy__c,
       ClosedByUsername__c = this.logEntry.Log__r.ClosedBy__r.Username,

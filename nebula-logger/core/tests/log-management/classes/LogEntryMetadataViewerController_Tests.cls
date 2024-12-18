@@ -106,7 +106,7 @@ private class LogEntryMetadataViewerController_Tests {
     mockLogEntry.ExceptionSourceMetadataType__c = exceptionApexClass == null ? null : LoggerStackTrace.SourceMetadataType.ApexClass.name();
     mockLogEntry.OriginSourceApiName__c = originApexClass?.Name;
     mockLogEntry.OriginSourceMetadataType__c = originApexClass == null ? null : LoggerStackTrace.SourceMetadataType.ApexClass.name();
-    mockLogEntry.Timestamp__c = System.Datetime.now();
+    mockLogEntry.Timestamp__c = System.now();
     return mockLogEntry;
   }
 
@@ -116,7 +116,7 @@ private class LogEntryMetadataViewerController_Tests {
     mockLogEntry.ExceptionSourceMetadataType__c = exceptionApexTrigger == null ? null : LoggerStackTrace.SourceMetadataType.ApexTrigger.name();
     mockLogEntry.OriginSourceApiName__c = originApexTrigger?.Name;
     mockLogEntry.OriginSourceMetadataType__c = originApexTrigger == null ? null : LoggerStackTrace.SourceMetadataType.ApexTrigger.name();
-    mockLogEntry.Timestamp__c = System.Datetime.now();
+    mockLogEntry.Timestamp__c = System.now();
     return mockLogEntry;
   }
 
@@ -125,7 +125,7 @@ private class LogEntryMetadataViewerController_Tests {
       Body = 'Wow, look at this code for a mock version of apex class ' + mockApexClassName,
       Name = mockApexClassName
     );
-    return (Schema.ApexClass) LoggerMockDataCreator.setReadOnlyField(mockApexClass, Schema.ApexClass.LastModifiedDate, System.Datetime.now().addDays(-7));
+    return (Schema.ApexClass) LoggerMockDataCreator.setReadOnlyField(mockApexClass, Schema.ApexClass.LastModifiedDate, System.now().addDays(-7));
   }
 
   private static Schema.ApexTrigger createMockApexTrigger(String mockApexTriggerName) {
@@ -133,7 +133,7 @@ private class LogEntryMetadataViewerController_Tests {
       Body = 'Wow, look at this code for a mock version of apex trigger ' + mockApexTriggerName,
       Name = mockApexTriggerName
     );
-    return (Schema.ApexTrigger) LoggerMockDataCreator.setReadOnlyField(mockApexTrigger, Schema.ApexTrigger.LastModifiedDate, System.Datetime.now().addDays(-7));
+    return (Schema.ApexTrigger) LoggerMockDataCreator.setReadOnlyField(mockApexTrigger, Schema.ApexTrigger.LastModifiedDate, System.now().addDays(-7));
   }
 
   // LogEntryMetadataViewerController uses a few queries via LogManagementDataSelector - this class mocks the query results

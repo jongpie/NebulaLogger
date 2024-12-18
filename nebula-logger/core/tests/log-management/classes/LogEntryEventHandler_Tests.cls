@@ -736,9 +736,9 @@ private class LogEntryEventHandler_Tests {
 
   //     List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
   //     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-  //         EpochTimestamp__c = System.Datetime.now().getTime(),
+  //         EpochTimestamp__c = System.now().getTime(),
   //         Message__c = 'my message',
-  //         Timestamp__c = System.Datetime.now(),
+  //         Timestamp__c = System.now(),
   //         Tags__c = String.join(tags, '\n'),
   //         TransactionEntryNumber__c = 1,
   //         TransactionId__c = transactionId
@@ -1125,7 +1125,7 @@ private class LogEntryEventHandler_Tests {
       TransactionId__c = 'ABC-XYZ'
     );
     insert recentLog;
-    insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.Datetime.now().addHours(-1));
+    insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
     LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
     LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();

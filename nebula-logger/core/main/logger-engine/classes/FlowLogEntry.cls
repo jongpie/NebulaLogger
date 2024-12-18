@@ -84,7 +84,7 @@ global inherited sharing class FlowLogEntry {
   /**
    * @description Current system timestamp.
    */
-  public DateTime timestamp = System.Datetime.now();
+  public DateTime timestamp = System.now();
 
   /**
    * @description Invocable method, that can be called via flow.

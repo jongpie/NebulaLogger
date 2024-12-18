@@ -224,7 +224,7 @@ private class SlackLoggerPlugin_Tests {
       LoggingLevel__c = logEntryLoggingLevel.name(),
       LoggingLevelOrdinal__c = logEntryLoggingLevel.ordinal(),
       StackTrace__c = 'A stack trace',
-      Timestamp__c = System.Datetime.now()
+      Timestamp__c = System.now()
     );
     insert logEntry;
     return queryLogs(logEntryLoggingLevel);

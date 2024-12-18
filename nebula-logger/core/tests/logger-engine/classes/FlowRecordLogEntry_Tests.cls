@@ -33,7 +33,7 @@ private class FlowRecordLogEntry_Tests {
     FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
     flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
     flowRecordEntry.record = currentUser;
-    flowRecordEntry.timestamp = System.Datetime.now().addSeconds(-20);
+    flowRecordEntry.timestamp = System.now().addSeconds(-20);
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -243,7 +243,7 @@ private class FlowRecordLogEntry_Tests {
     flowRecordEntry.saveLog = true;
     flowRecordEntry.faultMessage = 'Exception message';
     flowRecordEntry.shouldThrowFaultMessageException = true;
-    flowRecordEntry.timestamp = System.Datetime.now();
+    flowRecordEntry.timestamp = System.now();
     System.Assert.areEqual(0, Logger.saveLogCallCount);
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());

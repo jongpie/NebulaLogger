@@ -9,7 +9,7 @@ private class LogRetentionFilter_Tests {
   @IsTest
   static void it_should_match_one_condition_on_datetime_equal_to() {
     Integer numberOfDaysToRetainLogs = 90;
-    Datetime mockTimestamp = System.Datetime.now();
+    Datetime mockTimestamp = System.now();
     LogRetentionRule__mdt rule = createMockRule('number_equal_to');
     rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
     List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
@@ -32,7 +32,7 @@ private class LogRetentionFilter_Tests {
   @IsTest
   static void it_should_match_one_condition_on_datetime_not_equal_to() {
     Integer numberOfDaysToRetainLogs = 90;
-    Datetime mockTimestamp = System.Datetime.now();
+    Datetime mockTimestamp = System.now();
     LogRetentionRule__mdt rule = createMockRule('number_not_equal_to');
     rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
     List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
@@ -55,7 +55,7 @@ private class LogRetentionFilter_Tests {
   @IsTest
   static void it_should_match_one_condition_on_datetime_less_than() {
     Integer numberOfDaysToRetainLogs = 90;
-    Datetime mockTimestamp = System.Datetime.now();
+    Datetime mockTimestamp = System.now();
     LogRetentionRule__mdt rule = createMockRule('number_less_than');
     rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
     List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
@@ -77,7 +77,7 @@ private class LogRetentionFilter_Tests {
 
   @IsTest
   static void it_should_match_one_condition_on_datetime_less_than_or_equal_to() {
-    Datetime mockTimestamp = System.Datetime.now();
+    Datetime mockTimestamp = System.now();
     LogRetentionRule__mdt rule = createMockRule('number_less_than_or_equal_to');
     List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
       createMockRuleCondition('Timestamp__c', 'LESS_THAN_OR_EQUAL_TO', 'Value', mockTimestamp)
@@ -98,7 +98,7 @@ private class LogRetentionFilter_Tests {
 
   @IsTest
   static void it_should_match_one_condition_on_datetime_greater_than() {
-    Datetime mockTimestamp = System.Datetime.now();
+    Datetime mockTimestamp = System.now();
     LogRetentionRule__mdt rule = createMockRule('number_greater_than');
     List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
       createMockRuleCondition('Timestamp__c', 'GREATER_THAN', 'Value', mockTimestamp)
@@ -119,7 +119,7 @@ private class LogRetentionFilter_Tests {
 
   @IsTest
   static void it_should_match_one_condition_on_datetime_greater_than_or_equal_to() {
-    Datetime mockTimestamp = System.Datetime.now();
+    Datetime mockTimestamp = System.now();
     LogRetentionRule__mdt rule = createMockRule('number_greater_than_or_equal_to');
     List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
       createMockRuleCondition('Timestamp__c', 'GREATER_THAN_OR_EQUAL_TO', 'Value', mockTimestamp)
@@ -141,7 +141,7 @@ private class LogRetentionFilter_Tests {
   @IsTest
   static void it_should_throw_illegal_argument_exception_on_datetime_when_invalid_operator() {
     String invalidOperator = 'THIS_IS_AN_INVALID_OPERATOR';
-    Datetime mockTimestamp = System.Datetime.now();
+    Datetime mockTimestamp = System.now();
     LogRetentionRule__mdt rule = createMockRule('number_with_invalid_operator');
     List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
       createMockRuleCondition('Timestamp__c', invalidOperator, 'Value', mockTimestamp)

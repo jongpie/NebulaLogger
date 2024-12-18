@@ -108,7 +108,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         Logger.finest('Sent log entries to Slack endpoint').setHttpResponseDetails(response);
       }
 
-      log.SlackNotificationDate__c = System.Datetime.now();
+      log.SlackNotificationDate__c = System.now();
       sentLogs.add(log);
     }
     Logger.saveLog();
