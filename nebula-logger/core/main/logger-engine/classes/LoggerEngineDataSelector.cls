@@ -155,6 +155,7 @@ public without sharing virtual class LoggerEngineDataSelector {
           OrganizationType,
           TrialExpirationDate
         FROM Organization
+        LIMIT 1
       ];
       LoggerCache.getOrganizationCache().put(cacheKey, organization);
     }
