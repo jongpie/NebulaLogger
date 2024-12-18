@@ -1221,7 +1221,7 @@ private class LogEntryEventBuilder_Tests {
     Schema.User nullUser;
     Map<Id, SObject> userIdToUser = new Map<Id, SObject>{
       mockUserId => nullUser,
-      System.UserInfo.getUserId() => new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUserName())
+      System.UserInfo.getUserId() => new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername())
     };
     builder.setRecord(userIdToUser);
 
@@ -1877,7 +1877,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
     System.Assert.areEqual(System.UserInfo.getLocale(), builder.getLogEntryEvent().Locale__c);
     System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
-    System.Assert.areEqual(System.UserInfo.getUserName(), builder.getLogEntryEvent().LoggedByUsername__c);
+    System.Assert.areEqual(System.UserInfo.getUsername(), builder.getLogEntryEvent().LoggedByUsername__c);
     System.Assert.areEqual(System.UserInfo.getProfileId(), builder.getLogEntryEvent().ProfileId__c);
     System.Assert.areEqual(System.UserInfo.getUiThemeDisplayed(), builder.getLogEntryEvent().ThemeDisplayed__c);
     System.Assert.areEqual(System.UserInfo.getTimeZone().getId(), builder.getLogEntryEvent().TimeZoneId__c);

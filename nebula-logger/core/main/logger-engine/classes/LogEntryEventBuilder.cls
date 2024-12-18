@@ -1051,7 +1051,7 @@ global with sharing class LogEntryEventBuilder {
   private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
     templateLogEntryEvent.Locale__c = System.UserInfo.getLocale();
     templateLogEntryEvent.LoggedById__c = System.UserInfo.getUserId();
-    templateLogEntryEvent.LoggedByUsername__c = System.UserInfo.getUserName();
+    templateLogEntryEvent.LoggedByUsername__c = System.UserInfo.getUsername();
     templateLogEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
     templateLogEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
     templateLogEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();

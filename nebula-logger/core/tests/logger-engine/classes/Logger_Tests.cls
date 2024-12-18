@@ -11451,7 +11451,7 @@ private class Logger_Tests {
     return new Schema.User(
       Id = System.UserInfo.getUserId(),
       ProfileId = System.UserInfo.getProfileId(),
-      Username = System.UserInfo.getUserName(),
+      Username = System.UserInfo.getUsername(),
       UserRoleId = System.UserInfo.getUserRoleId()
     );
   }
