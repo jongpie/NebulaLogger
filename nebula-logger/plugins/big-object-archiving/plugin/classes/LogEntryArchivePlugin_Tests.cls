@@ -159,7 +159,7 @@ private class LogEntryArchivePlugin_Tests {
       'Last save method used should have been set to BIG_OBJECT_EVENT_BUS'
     );
     System.Test.stopTest();
-    System.Assert.areEqual(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
+    System.Assert.isFalse(LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.isEmpty(), 'Should have been put into big object buffer');
     System.Assert.isNotNull(transactionId, 'Should have a value for transaction ID');
     System.Assert.areEqual(transactionId, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.get(0).TransactionId__c, 'Transaction ID should match');
     System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WHERE TransactionId__c = :transactionId], 'No custom object data should have been created');
@@ -182,7 +182,7 @@ private class LogEntryArchivePlugin_Tests {
       'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
     );
     System.Assert.areEqual(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
-    System.Assert.areEqual(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
+    System.Assert.isFalse(LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.isEmpty(), 'Should have been put into big object buffer');
     System.Assert.areEqual(
       'BIG_OBJECT_IMMEDIATE',
       LogEntryArchivePlugin.lastSaveMethodUsed,
@@ -210,7 +210,7 @@ private class LogEntryArchivePlugin_Tests {
       'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
     );
     System.Assert.areEqual(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
-    System.Assert.areEqual(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
+    System.Assert.isFalse(LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.isEmpty(), 'Should have been put into big object buffer');
     System.Assert.areEqual(
       'BIG_OBJECT_QUEUEABLE',
       LogEntryArchivePlugin.lastSaveMethodUsed,

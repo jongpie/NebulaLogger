@@ -6,6 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class FlowRecordLogEntry_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   static FlowRecordLogEntry createFlowRecordLogEntry() {
     FlowRecordLogEntry flowRecordEntry = new FlowRecordLogEntry();
     flowRecordEntry.flowName = 'MyFlowOrProcessBuilder';

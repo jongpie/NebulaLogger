@@ -1682,6 +1682,10 @@
         <object>LoggerTag__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>LogMassDelete</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <tabSettings>
         <tab>LogEntryEventStream</tab>
         <visibility>Visible</visibility>

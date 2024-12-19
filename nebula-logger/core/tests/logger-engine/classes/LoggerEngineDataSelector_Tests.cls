@@ -6,6 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerEngineDataSelector_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_loads_mock_instance() {
     MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
@@ -17,7 +22,21 @@ private class LoggerEngineDataSelector_Tests {
   }
 
   @IsTest
-  static void it_returns_cached_auth_session_proxy() {
+  static void it_returns_cached_auth_session_proxy_when_populated_in_cache() {
+    System.Assert.isTrue(LoggerParameter.QUERY_AUTH_SESSION_DATA);
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    LoggerEngineDataSelector.useMocks();
+    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession();
+    LoggerCache.getOrganizationCache().put('AuthSession' + System.UserInfo.getUserId(), mockAuthSessionProxy);
+
+    LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    System.Assert.areEqual(mockAuthSessionProxy, returnedAuthSessionProxy);
+  }
+
+  @IsTest
+  static void it_returns_queried_auth_session_proxy_when_cache_is_not_populated() {
     List<Schema.AuthSession> sessions = [
       SELECT
         Id,
@@ -34,7 +53,9 @@ private class LoggerEngineDataSelector_Tests {
       FROM AuthSession
       WHERE UsersId = :System.UserInfo.getUserId() AND IsCurrent = TRUE
     ];
-    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
+    LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty()
+      ? null
+      : (LoggerSObjectProxy.AuthSession) System.JSON.deserialize(System.JSON.serialize(sessions.get(0)), LoggerSObjectProxy.AuthSession.class);
     System.Assert.areEqual(1, System.Limits.getQueries());
 
     LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
@@ -43,6 +64,21 @@ private class LoggerEngineDataSelector_Tests {
     LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
     System.Assert.areEqual(2, System.Limits.getQueries(), 'Query results should have been cached');
     System.Assert.areEqual(expectedAuthSessionProxy, returnedAuthSessionProxy);
+  }
+
+  @IsTest
+  static void it_returns_mock_auth_session_proxy_when_mock_is_provided() {
+    System.Assert.isTrue(LoggerParameter.QUERY_AUTH_SESSION_DATA);
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    LoggerEngineDataSelector.useMocks();
+    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession();
+    mockAuthSessionProxy.UsersId = System.UserInfo.getUserId();
+    LoggerEngineDataSelector.mockAuthSessionProxies.add(mockAuthSessionProxy);
+
+    LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+
+    System.Assert.areEqual(1, System.Limits.getQueries());
+    System.Assert.areEqual(mockAuthSessionProxy, returnedAuthSessionProxy);
   }
 
   @IsTest
@@ -71,22 +107,59 @@ private class LoggerEngineDataSelector_Tests {
   }
 
   @IsTest
-  static void it_returns_cached_sobject_handlers() {
-    List<LoggerSObjectHandler__mdt> expectedSObjectHandlers = [
-      SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
-      FROM LoggerSObjectHandler__mdt
-      WHERE IsEnabled__c = TRUE
-    ];
+  static void it_returns_null_when_querying_network_is_disabled() {
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = String.valueOf(false)));
+    System.Assert.isFalse(LoggerParameter.QUERY_NETWORK_DATA);
+    Id someNetworkId = System.UserInfo.getUserId();
     System.Assert.areEqual(0, System.Limits.getQueries());
 
-    List<LoggerSObjectHandler__mdt> returnedSObjectHandlers = LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(someNetworkId);
 
-    // The specific query used for LoggerSObjectHandler__mdt shouldn't count towards the SOQL query limits,
-    // so 0 queries are expected here
     System.Assert.areEqual(0, System.Limits.getQueries());
-    LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
-    System.Assert.areEqual(0, System.Limits.getQueries(), 'Query results should have been cached');
-    System.Assert.areEqual(expectedSObjectHandlers, returnedSObjectHandlers);
+    System.Assert.isNull(returnedNetworkProxy);
+  }
+
+  @IsTest
+  static void it_returns_null_when_network_id_is_null() {
+    System.Assert.isTrue(LoggerParameter.QUERY_NETWORK_DATA);
+    Id someNetworkId;
+    System.Assert.areEqual(0, System.Limits.getQueries());
+
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(someNetworkId);
+
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    System.Assert.isNull(returnedNetworkProxy);
+  }
+
+  @IsTest
+  static void it_returns_cached_network_proxy_when_populated_in_cache() {
+    System.Assert.isTrue(LoggerParameter.QUERY_NETWORK_DATA);
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    LoggerEngineDataSelector.useMocks();
+    LoggerSObjectProxy.Network mockNetworkProxy = new LoggerSObjectProxy.Network();
+    mockNetworkProxy.Id = System.UserInfo.getUserId();
+    LoggerCache.getOrganizationCache().put('Network' + mockNetworkProxy.Id, mockNetworkProxy);
+
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(mockNetworkProxy.Id);
+
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    System.Assert.areEqual(mockNetworkProxy, returnedNetworkProxy);
+  }
+
+  @IsTest
+  static void it_returns_mock_network_proxy_when_mock_is_provided() {
+    System.Assert.isTrue(LoggerParameter.QUERY_NETWORK_DATA);
+    System.Assert.areEqual(0, System.Limits.getQueries());
+    LoggerEngineDataSelector.useMocks();
+    LoggerSObjectProxy.Network mockNetworkProxy = new LoggerSObjectProxy.Network();
+    mockNetworkProxy.Id = System.UserInfo.getUserId();
+    LoggerEngineDataSelector.mockNetworkProxies.add(mockNetworkProxy);
+
+    LoggerSObjectProxy.Network returnedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(mockNetworkProxy.Id);
+
+    Integer expectedQueryCount = LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED ? 1 : 0;
+    System.Assert.areEqual(expectedQueryCount, System.Limits.getQueries());
+    System.Assert.areEqual(mockNetworkProxy, returnedNetworkProxy);
   }
 
   @IsTest
@@ -130,23 +203,6 @@ private class LoggerEngineDataSelector_Tests {
 
     System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
     System.Assert.isNull(returnedOrganization);
-  }
-
-  @IsTest
-  static void it_returns_cached_tag_assignment_rules() {
-    List<LogEntryTagRule__mdt> expectedTagAssignmentRules = [
-      SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
-      FROM LogEntryTagRule__mdt
-      WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
-    ];
-    System.Assert.areEqual(1, System.Limits.getQueries());
-
-    List<LogEntryTagRule__mdt> returnedTagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-
-    System.Assert.areEqual(2, System.Limits.getQueries());
-    LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-    System.Assert.areEqual(2, System.Limits.getQueries(), 'Query results should have been cached');
-    System.Assert.areEqual(expectedTagAssignmentRules, returnedTagAssignmentRules);
   }
 
   @IsTest

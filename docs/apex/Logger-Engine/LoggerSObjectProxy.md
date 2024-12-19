@@ -8,17 +8,17 @@ Proxy class used as a middle layer between some problematic SObject Types and th
 
 ---
 
+### Methods
+
+#### `serialize()` → `String`
+
+---
+
 ### Inner Classes
 
 #### LoggerSObjectProxy.AuthSession class
 
 All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible to mock field values directly during unit tests - even using tricks like System.JSON.deserialize() do not work. The `LoggerSObjectProxy.AuthSession` class acts as a substitute for a `Schema.AuthSession` record to provide the abilility to mock the data during unit &amp; integration tests.
-
----
-
-##### Constructors
-
-###### `AuthSession(Schema.AuthSession authSessionRecord)`
 
 ---
 
@@ -52,12 +52,6 @@ All `Schema.LoginHistory` SObjects are read-only in Apex, which makes them more 
 
 ---
 
-##### Constructors
-
-###### `LoginHistory(Schema.LoginHistory loginHistoryRecord)`
-
----
-
 ##### Properties
 
 ###### `Application` → `String`
@@ -76,12 +70,6 @@ Not all orgs have the SObject `Schema.Network` - it is only present in orgs that
 
 ---
 
-##### Constructors
-
-###### `Network(SObject networkRecord)`
-
----
-
 ##### Properties
 
 ###### `Id` → `String`
@@ -95,12 +83,6 @@ Not all orgs have the SObject `Schema.Network` - it is only present in orgs that
 #### LoggerSObjectProxy.OmniProcess class
 
 Not all orgs have the SObject `Schema.OmniProcess` - it is only present in orgs that have enabled OmniStudio, so `Schema.OmniProcess` has to be referenced dynamically, including using hardcoded `String` values for field API names. The `LoggerSObjectProxy.OmniProcess` class acts as a substitute for a `Schema.OmniProcess` record so that the rest of the codebase can rely on strongly-typed references to fields (properties).
-
----
-
-##### Constructors
-
-###### `OmniProcess(SObject omniProcess)`
 
 ---
 

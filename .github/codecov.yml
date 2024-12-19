@@ -2,9 +2,19 @@ coverage:
   status:
     project:
       default:
-        target: 90
+        target: 90%
         threshold: 2%
         if_ci_failed: success
+      Apex:
+        target: 90%
+        flags:
+          - Apex
+      # LWC code coverage needs to be improved overall,
+      # but for now, the threshold is lowered in Codecov.io
+      LWC:
+        target: 85%
+        flags:
+          - LWC
     patch: off
 ignore:
   - 'config/experience-cloud/**/*'

@@ -10,7 +10,6 @@
  */
 public without sharing class LoggerFieldMapper {
   // TODO this is a goofy data structure, revisit how CMDT records are tracked/cached to see if there's a simpler & cleaner approach
-  @TestVisible
   private static final Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>> SOURCE_SOBJECT_TYPE_TO_TARGET_FIELD_MAPPINGS = loadRecords();
 
   /**
@@ -18,7 +17,7 @@ public without sharing class LoggerFieldMapper {
    * @param  sourceRecord The source `SObject` record containing the data to copy
    * @param  targetRecord The target `SObject` record that should have fields & field values appended
    */
-  @SuppressWarnings('PMD.CyclomaticComplexity')
+  @SuppressWarnings('PMD.AvoidDebugStatements, PMD.CyclomaticComplexity')
   public static void mapFieldValues(SObject sourceRecord, SObject targetRecord) {
     if (sourceRecord == null || targetRecord == null) {
       return;
@@ -42,7 +41,6 @@ public without sharing class LoggerFieldMapper {
     // TODO consider caching the SObjectField instances and/or DescribeFieldResult instances
     Map<String, Schema.SObjectField> targetFieldNameToField = targetRecord.getSObjectType().getDescribe().fields.getMap();
 
-    List<LoggerFieldMapping__mdt> incompatibleFieldMappings = new List<LoggerFieldMapping__mdt>();
     for (LoggerFieldMapping__mdt fieldMapping : fieldMappings) {
       try {
         Schema.SObjectField targetField = targetFieldNameToField.get(fieldMapping.TargetField__c);
@@ -53,20 +51,19 @@ public without sharing class LoggerFieldMapper {
         }
         targetRecord.put(fieldMapping.TargetField__c, sourceRecordFieldValue);
       } catch (System.Exception ex) {
-        incompatibleFieldMappings.add(fieldMapping);
+        String mappingErrorMessage = 'Unable to map source field ' + fieldMapping.SourceField__c + ' to target field ' + fieldMapping.TargetField__c;
+        System.debug(System.LoggingLevel.FINEST, mappingErrorMessage);
       }
-    }
-    if (LoggerParameter.ENABLE_SYSTEM_MESSAGES && incompatibleFieldMappings.isEmpty() == false) {
-      LogMessage logMessage = new LogMessage(
-        'Unable to map {0} custom fields on {1} record. Target SObject record:\n\n{2}',
-        incompatibleFieldMappings.size(),
-        targetRecord.getSObjectType(),
-        System.JSON.serializePretty(targetRecord)
-      );
-      Logger.finest(logMessage, incompatibleFieldMappings);
     }
   }
 
+  /*
+    DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
+      ```
+      LoggerConfigurationSelector.useMocks();
+      LoggerConfigurationSelector.mockLoggerFieldMappings.add(new LoggerFieldMapping__mdt());
+      ```
+  */
   @TestVisible
   private static void setMock(LoggerFieldMapping__mdt fieldMapping) {
     if (String.isBlank(fieldMapping.DeveloperName)) {
@@ -76,34 +73,10 @@ public without sharing class LoggerFieldMapper {
     addFieldMapping(fieldMapping, SOURCE_SOBJECT_TYPE_TO_TARGET_FIELD_MAPPINGS);
   }
 
-  @SuppressWarnings('PMD.ApexCrudViolation')
   private static Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>> loadRecords() {
-    // TODO decide if this query should be moved to LogManagementDataSelector
-    List<LoggerFieldMapping__mdt> fieldMappings = [
-      SELECT
-        DeveloperName,
-        IsEnabled__c,
-        SourceSObjectType__r.QualifiedApiName,
-        SourceField__r.QualifiedApiName,
-        TargetSObjectType__r.QualifiedApiName,
-        TargetField__r.QualifiedApiName
-      FROM LoggerFieldMapping__mdt
-      WHERE IsEnabled__c = TRUE
-    ];
     Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>> sourceSObjectTypeToTargetFieldMappings = new Map<Schema.SObjectType, Map<Schema.SObjectType, List<LoggerFieldMapping__mdt>>>();
-    for (LoggerFieldMapping__mdt fieldMapping : fieldMappings) {
-      // This simplifies some of the CMDT fields by avoiding the use of parent fields directly,
-      // which makes downstream code & testing much easier
-      LoggerFieldMapping__mdt cleanedFieldMapping = new LoggerFieldMapping__mdt(
-        DeveloperName = fieldMapping.DeveloperName,
-        IsEnabled__c = fieldMapping.IsEnabled__c,
-        SourceSObjectType__c = fieldMapping.SourceSObjectType__r.QualifiedApiName,
-        SourceField__c = fieldMapping.SourceField__r.QualifiedApiName,
-        TargetSObjectType__c = fieldMapping.TargetSObjectType__r.QualifiedApiName,
-        TargetField__c = fieldMapping.TargetField__r.QualifiedApiName
-      );
-
-      addFieldMapping(cleanedFieldMapping, sourceSObjectTypeToTargetFieldMappings);
+    for (LoggerFieldMapping__mdt fieldMapping : LoggerConfigurationSelector.getInstance().getLoggerFieldMappings()) {
+      addFieldMapping(fieldMapping, sourceSObjectTypeToTargetFieldMappings);
     }
 
     return sourceSObjectTypeToTargetFieldMappings;
@@ -135,9 +108,5 @@ public without sharing class LoggerFieldMapper {
 
   private static Schema.SObjectType getSObjectType(String sobjectApiName) {
     return ((SObject) System.Type.forName(sobjectApiName).newInstance()).getSObjectType();
-  }
-
-  private static Schema.SObjectField getSObjectField(Schema.SObjectType sobjectType, String fieldApiName) {
-    return sobjectType.getDescribe().fields.getMap().get(fieldApiName);
   }
 }

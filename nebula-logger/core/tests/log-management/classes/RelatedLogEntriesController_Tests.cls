@@ -9,6 +9,11 @@ private class RelatedLogEntriesController_Tests {
   private static final Integer TOTAL_LOG_ENTRIES = 10;
   private static final Integer TOTAL_RELATED_LOG_ENTRIES = 7;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   static String getFieldSetName() {
     Schema.FieldSet fieldSet = Schema.SObjectType.LogEntry__c.fieldSets.getMap().values().get(0);
     String fieldSetNamespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
