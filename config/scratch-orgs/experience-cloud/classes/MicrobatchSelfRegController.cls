@@ -5,7 +5,7 @@ public class MicrobatchSelfRegController {
   public String communityNickname {
     get;
     set {
-      communityNickname = value == null ? value : value.trim();
+      communityNickname = value?.trim();
     }
   }
 

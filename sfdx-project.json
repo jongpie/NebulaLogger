@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.1.NEXT",
-      "versionName": "System.OrgLimits Optimisations",
-      "versionDescription": "Updated LogHandler class to cache the Apex call to System.OrgLimits.getMap() to reduce CPU usage",
+      "versionNumber": "4.15.2.NEXT",
+      "versionName": "Added Support for Logging EmptyRecyleBinResult",
+      "versionDescription": "Added Logger method overloads & new LogEntryEventBuilder methods to capture instances of EmptyRecyleBinResult and List<EmptyRecyleBinResult>. Several  LogHandler class to cache the Apex call to System.OrgLimits.getMap() to reduce CPU usage",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -205,6 +205,7 @@
     "Nebula Logger - Core@4.14.18-added-setrecord()-overload-for-list<id>-and-set<id>-parameters": "04t5Y0000015ocbQAA",
     "Nebula Logger - Core@4.15.0-winter-'25-release": "04t5Y0000015odKQAQ",
     "Nebula Logger - Core@4.15.1-system.orglimits-optimisations": "04t5Y0000015ohhQAA",
+    "Nebula Logger - Core@4.15.2-added-support-for-logging-emptyrecylebinresult": "04t5Y0000015oifQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

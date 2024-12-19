@@ -24,7 +24,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
     flowExecutionErrorEvent.ElementApiName = 'test_exception_element';
     flowExecutionErrorEvent.FlowApiName = 'Testing_FlowExecutionErrorEvent';
     flowExecutionErrorEvent.FlowVersionNumber = 1;
-    flowExecutionErrorEvent.Username = System.UserInfo.getUserName();
+    flowExecutionErrorEvent.Username = System.UserInfo.getUsername();
 
     System.runAs(new Schema.User(Id = [SELECT Id FROM User WHERE Alias = 'autoproc'].Id)) {
       System.Test.startTest();

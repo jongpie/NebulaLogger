@@ -567,7 +567,7 @@ public class LoggerParameter {
    */
   public static Boolean getBoolean(String parameterDeveloperName, Boolean defaultValue) {
     Boolean parameterValue = (Boolean) castParameterValue(parameterDeveloperName, Boolean.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -579,7 +579,7 @@ public class LoggerParameter {
    */
   public static List<Boolean> getBooleanList(String parameterDeveloperName, List<Boolean> defaultValue) {
     List<Boolean> parameterValue = (List<Boolean>) castParameterValue(parameterDeveloperName, List<Boolean>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -591,7 +591,7 @@ public class LoggerParameter {
    */
   public static Date getDate(String parameterDeveloperName, Date defaultValue) {
     Date parameterValue = (Date) castParameterValue(parameterDeveloperName, Date.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -603,7 +603,7 @@ public class LoggerParameter {
    */
   public static List<Date> getDateList(String parameterDeveloperName, List<Date> defaultValue) {
     List<Date> parameterValue = (List<Date>) castParameterValue(parameterDeveloperName, List<Date>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -615,7 +615,7 @@ public class LoggerParameter {
    */
   public static Datetime getDatetime(String parameterDeveloperName, Datetime defaultValue) {
     Datetime parameterValue = (Datetime) castParameterValue(parameterDeveloperName, Datetime.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -627,7 +627,7 @@ public class LoggerParameter {
    */
   public static List<Datetime> getDatetimeList(String parameterDeveloperName, List<Datetime> defaultValue) {
     List<Datetime> parameterValue = (List<Datetime>) castParameterValue(parameterDeveloperName, List<Datetime>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -639,7 +639,7 @@ public class LoggerParameter {
    */
   public static Decimal getDecimal(String parameterDeveloperName, Decimal defaultValue) {
     Decimal parameterValue = (Decimal) castParameterValue(parameterDeveloperName, Decimal.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -651,7 +651,7 @@ public class LoggerParameter {
    */
   public static List<Decimal> getDecimalList(String parameterDeveloperName, List<Decimal> defaultValue) {
     List<Decimal> parameterValue = (List<Decimal>) castParameterValue(parameterDeveloperName, List<Decimal>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -663,7 +663,7 @@ public class LoggerParameter {
    */
   public static Double getDouble(String parameterDeveloperName, Double defaultValue) {
     Double parameterValue = (Double) castParameterValue(parameterDeveloperName, Double.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -675,7 +675,7 @@ public class LoggerParameter {
    */
   public static List<Double> getDoubleList(String parameterDeveloperName, List<Double> defaultValue) {
     List<Double> parameterValue = (List<Double>) castParameterValue(parameterDeveloperName, List<Double>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -687,7 +687,7 @@ public class LoggerParameter {
    */
   public static Id getId(String parameterDeveloperName, Id defaultValue) {
     Id parameterValue = (Id) castParameterValue(parameterDeveloperName, Id.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -699,7 +699,7 @@ public class LoggerParameter {
    */
   public static List<Id> getIdList(String parameterDeveloperName, List<Id> defaultValue) {
     List<Id> parameterValue = (List<Id>) castParameterValue(parameterDeveloperName, List<Id>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -711,7 +711,7 @@ public class LoggerParameter {
    */
   public static Integer getInteger(String parameterDeveloperName, Integer defaultValue) {
     Integer parameterValue = (Integer) castParameterValue(parameterDeveloperName, Integer.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -723,7 +723,7 @@ public class LoggerParameter {
    */
   public static List<Integer> getIntegerList(String parameterDeveloperName, List<Integer> defaultValue) {
     List<Integer> parameterValue = (List<Integer>) castParameterValue(parameterDeveloperName, List<Integer>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -735,7 +735,7 @@ public class LoggerParameter {
    */
   public static Long getLong(String parameterDeveloperName, Long defaultValue) {
     Long parameterValue = (Long) castParameterValue(parameterDeveloperName, Long.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -747,7 +747,7 @@ public class LoggerParameter {
    */
   public static List<Long> getLongList(String parameterDeveloperName, List<Long> defaultValue) {
     List<Long> parameterValue = (List<Long>) castParameterValue(parameterDeveloperName, List<Long>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -759,7 +759,7 @@ public class LoggerParameter {
    */
   public static SObject getSObject(String parameterDeveloperName, SObject defaultValue) {
     SObject parameterValue = (SObject) castParameterValue(parameterDeveloperName, SObject.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -771,7 +771,7 @@ public class LoggerParameter {
    */
   public static List<SObject> getSObjectList(String parameterDeveloperName, List<SObject> defaultValue) {
     List<SObject> parameterValue = (List<SObject>) castParameterValue(parameterDeveloperName, List<SObject>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -783,7 +783,7 @@ public class LoggerParameter {
   public static String getString(String parameterDeveloperName, String defaultValue) {
     // Since the Value__c field is already a String, this method skips using the method castParameterValue
     String parameterValue = loadParameterValue(parameterDeveloperName);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**
@@ -794,7 +794,7 @@ public class LoggerParameter {
    */
   public static List<String> getStringList(String parameterDeveloperName, List<String> defaultValue) {
     List<String> parameterValue = (List<String>) castParameterValue(parameterDeveloperName, List<String>.class);
-    return parameterValue != null ? parameterValue : defaultValue;
+    return parameterValue ?? defaultValue;
   }
 
   /**

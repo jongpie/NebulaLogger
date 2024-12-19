@@ -140,46 +140,6 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setDatabaseResult(Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
-
-Sets the log entry event&apos;s database operation result fields
-
-##### Parameters
-
-| Param               | Description                                         |
-| ------------------- | --------------------------------------------------- |
-| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The same instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
-
-Sets the log entry event&apos;s database operation result fields
-
-##### Parameters
-
-| Param                | Description                                      |
-| -------------------- | ------------------------------------------------ |
-| `leadConvertResults` | The list of `Database.LeadConvertResult`s to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The same instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `setDatabaseResult(Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s database operation result fields
@@ -189,6 +149,46 @@ Sets the log entry event&apos;s database operation result fields
 | Param          | Description                                    |
 | -------------- | ---------------------------------------------- |
 | `deleteResult` | The instance of `Database.DeleteResult` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setDatabaseResult(Database.EmptyRecycleBinResult emptyRecycleBinResult)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param                   | Description                                             |
+|-------------------------|---------------------------------------------------------|
+| `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setDatabaseResult(Database.LeadConvertResult leadConvertResult)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param               | Description                                         |
+| ------------------- | --------------------------------------------------- |
+| `leadConvertResult` | The instance of `Database.LeadConvertResult` to log |
 
 ##### Return
 
@@ -289,6 +289,46 @@ Sets the log entry event&apos;s database operation result fields
 | Param           | Description                                          |
 | --------------- | ---------------------------------------------------- |
 | `deleteResults` | The list of `Database.DeleteResult` instances to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setDatabaseResult(List<Database.EmptyRecycleBinResult> emptyRecycleBinResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param                    | Description                                          |
+|--------------------------|------------------------------------------------------|
+| `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult`s to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param                | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| `leadConvertResults` | The list of `Database.LeadConvertResult`s to log |
 
 ##### Return
 

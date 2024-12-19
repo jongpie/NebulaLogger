@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.15.1';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.15.2';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -98,7 +98,7 @@ global with sharing class Logger {
         }
         // If System.UserInfo.getSessionId() returns null, set to an empty string to
         // avoid calling System.UserInfo.getSessionId() again
-        USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
+        USER_SESSION_ID = USER_SESSION_ID ?? '';
       }
       return USER_SESSION_ID;
     }
@@ -308,7 +308,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isErrorEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.ERROR);
+    return isEnabled(System.LoggingLevel.ERROR);
   }
 
   /**
@@ -316,7 +316,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isWarnEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.WARN);
+    return isEnabled(System.LoggingLevel.WARN);
   }
 
   /**
@@ -324,7 +324,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isInfoEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.INFO);
+    return isEnabled(System.LoggingLevel.INFO);
   }
 
   /**
@@ -332,7 +332,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isDebugEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.DEBUG);
+    return isEnabled(System.LoggingLevel.DEBUG);
   }
 
   /**
@@ -340,7 +340,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isFineEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINE);
+    return isEnabled(System.LoggingLevel.FINE);
   }
 
   /**
@@ -348,7 +348,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isFinerEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINER);
+    return isEnabled(System.LoggingLevel.FINER);
   }
 
   /**
@@ -356,7 +356,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean isFinestEnabled() {
-    return isEnabled() && meetsUserLoggingLevel(System.LoggingLevel.FINEST);
+    return isEnabled(System.LoggingLevel.FINEST);
   }
 
   /**
@@ -600,22 +600,32 @@ global with sharing class Logger {
   // ERROR logging level methods
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
-   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder error(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
-    return error().setDatabaseResult(leadConvertResult).setMessage(logMessage);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(LogMessage logMessage, Database.DeleteResult deleteResult) {
     return error().setDatabaseResult(deleteResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  logMessage            The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return error().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
+    return error().setDatabaseResult(leadConvertResult).setMessage(logMessage);
   }
 
   /**
@@ -666,6 +676,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return error().setDatabaseResult(deleteResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return error().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
+    return error().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -792,22 +822,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  message      The string to use to set the entry's message field
+   * @param  deleteResult The instance of `Database.DeleteResult` to log
+   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(String message, Database.DeleteResult deleteResult) {
+    return error().setDatabaseResult(deleteResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  message               The string to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return error().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
    * @param  message           The string to use to set the entry's message field
    * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
    * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder error(String message, Database.LeadConvertResult leadConvertResult) {
     return error().setDatabaseResult(leadConvertResult).setMessage(message);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
-   * @param  message   The string to use to set the entry's message field
-   * @param  deleteResult The instance of `Database.DeleteResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder error(String message, Database.DeleteResult deleteResult) {
-    return error().setDatabaseResult(deleteResult).setMessage(message);
   }
 
   /**
@@ -858,6 +898,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder error(String message, List<Database.DeleteResult> deleteResults) {
     return error().setDatabaseResult(deleteResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return error().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+   * @param  message      The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder error(String message, List<Database.LeadConvertResult> leadConvertResults) {
+    return error().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -985,22 +1045,32 @@ global with sharing class Logger {
   // WARN logging level methods
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
-   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder warn(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
-    return warn().setDatabaseResult(leadConvertResult).setMessage(logMessage);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(LogMessage logMessage, Database.DeleteResult deleteResult) {
     return warn().setDatabaseResult(deleteResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  logMessage            The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return warn().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
+    return warn().setDatabaseResult(leadConvertResult).setMessage(logMessage);
   }
 
   /**
@@ -1051,6 +1121,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return warn().setDatabaseResult(deleteResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return warn().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
+    return warn().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -1177,22 +1267,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  message      The string to use to set the entry's message field
+   * @param  deleteResult The instance of `Database.DeleteResult` to log
+   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(String message, Database.DeleteResult deleteResult) {
+    return warn().setDatabaseResult(deleteResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  message               The string to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return warn().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
    * @param  message           The string to use to set the entry's message field
    * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
    * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder warn(String message, Database.LeadConvertResult leadConvertResult) {
     return warn().setDatabaseResult(leadConvertResult).setMessage(message);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
-   * @param  message   The string to use to set the entry's message field
-   * @param  deleteResult The instance of `Database.DeleteResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder warn(String message, Database.DeleteResult deleteResult) {
-    return warn().setDatabaseResult(deleteResult).setMessage(message);
   }
 
   /**
@@ -1243,6 +1343,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder warn(String message, List<Database.DeleteResult> deleteResults) {
     return warn().setDatabaseResult(deleteResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return warn().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+   * @param  message      The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder warn(String message, List<Database.LeadConvertResult> leadConvertResults) {
+    return warn().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -1369,22 +1489,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
-   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder info(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
-    return info().setDatabaseResult(leadConvertResult).setMessage(logMessage);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(LogMessage logMessage, Database.DeleteResult deleteResult) {
     return info().setDatabaseResult(deleteResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  logMessage            The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return info().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
+    return info().setDatabaseResult(leadConvertResult).setMessage(logMessage);
   }
 
   /**
@@ -1435,6 +1565,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return info().setDatabaseResult(deleteResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return info().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
+    return info().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -1518,22 +1668,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  message      The string to use to set the entry's message field
+   * @param  deleteResult The instance of `Database.DeleteResult` to log
+   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(String message, Database.DeleteResult deleteResult) {
+    return info().setDatabaseResult(deleteResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  message               The string to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return info().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
    * @param  message           The string to use to set the entry's message field
    * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
    * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder info(String message, Database.LeadConvertResult leadConvertResult) {
     return info().setDatabaseResult(leadConvertResult).setMessage(message);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
-   * @param  message   The string to use to set the entry's message field
-   * @param  deleteResult The instance of `Database.DeleteResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder info(String message, Database.DeleteResult deleteResult) {
-    return info().setDatabaseResult(deleteResult).setMessage(message);
   }
 
   /**
@@ -1584,6 +1744,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder info(String message, List<Database.DeleteResult> deleteResults) {
     return info().setDatabaseResult(deleteResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return info().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+   * @param  message      The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder info(String message, List<Database.LeadConvertResult> leadConvertResults) {
+    return info().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -1669,21 +1849,31 @@ global with sharing class Logger {
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder debug(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
-    return debug().setDatabaseResult(leadConvertResult).setMessage(logMessage);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
-   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(LogMessage logMessage, Database.DeleteResult deleteResult) {
     return debug().setDatabaseResult(deleteResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  logMessage            The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return debug().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
+    return debug().setDatabaseResult(leadConvertResult).setMessage(logMessage);
   }
 
   /**
@@ -1734,6 +1924,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return debug().setDatabaseResult(deleteResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return debug().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
+    return debug().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -1817,22 +2027,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  message      The string to use to set the entry's message field
+   * @param  deleteResult The instance of `Database.DeleteResult` to log
+   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(String message, Database.DeleteResult deleteResult) {
+    return debug().setDatabaseResult(deleteResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  message               The string to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return debug().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
    * @param  message           The string to use to set the entry's message field
    * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
    * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder debug(String message, Database.LeadConvertResult leadConvertResult) {
     return debug().setDatabaseResult(leadConvertResult).setMessage(message);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
-   * @param  message   The string to use to set the entry's message field
-   * @param  deleteResult The instance of `Database.DeleteResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder debug(String message, Database.DeleteResult deleteResult) {
-    return debug().setDatabaseResult(deleteResult).setMessage(message);
   }
 
   /**
@@ -1883,6 +2103,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder debug(String message, List<Database.DeleteResult> deleteResults) {
     return debug().setDatabaseResult(deleteResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return debug().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+   * @param  message      The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder debug(String message, List<Database.LeadConvertResult> leadConvertResults) {
+    return debug().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -1968,21 +2208,31 @@ global with sharing class Logger {
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder fine(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
-    return fine().setDatabaseResult(leadConvertResult).setMessage(logMessage);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
-   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(LogMessage logMessage, Database.DeleteResult deleteResult) {
     return fine().setDatabaseResult(deleteResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  logMessage            The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return fine().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
+    return fine().setDatabaseResult(leadConvertResult).setMessage(logMessage);
   }
 
   /**
@@ -2033,6 +2283,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return fine().setDatabaseResult(deleteResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return fine().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
+    return fine().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -2116,22 +2386,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  message      The string to use to set the entry's message field
+   * @param  deleteResult The instance of `Database.DeleteResult` to log
+   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(String message, Database.DeleteResult deleteResult) {
+    return fine().setDatabaseResult(deleteResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  message               The string to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return fine().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
    * @param  message           The string to use to set the entry's message field
    * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
    * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder fine(String message, Database.LeadConvertResult leadConvertResult) {
     return fine().setDatabaseResult(leadConvertResult).setMessage(message);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
-   * @param  message   The string to use to set the entry's message field
-   * @param  deleteResult The instance of `Database.DeleteResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder fine(String message, Database.DeleteResult deleteResult) {
-    return fine().setDatabaseResult(deleteResult).setMessage(message);
   }
 
   /**
@@ -2182,6 +2462,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder fine(String message, List<Database.DeleteResult> deleteResults) {
     return fine().setDatabaseResult(deleteResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return fine().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+   * @param  message            The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder fine(String message, List<Database.LeadConvertResult> leadConvertResults) {
+    return fine().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -2267,21 +2567,31 @@ global with sharing class Logger {
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder finer(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
-    return finer().setDatabaseResult(leadConvertResult).setMessage(logMessage);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
-   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(LogMessage logMessage, Database.DeleteResult deleteResult) {
     return finer().setDatabaseResult(deleteResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  logMessage            The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return finer().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
+    return finer().setDatabaseResult(leadConvertResult).setMessage(logMessage);
   }
 
   /**
@@ -2332,6 +2642,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return finer().setDatabaseResult(deleteResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return finer().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
+    return finer().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -2415,22 +2745,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  message      The string to use to set the entry's message field
+   * @param  deleteResult The instance of `Database.DeleteResult` to log
+   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(String message, Database.DeleteResult deleteResult) {
+    return finer().setDatabaseResult(deleteResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  message               The string to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return finer().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
    * @param  message           The string to use to set the entry's message field
    * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
    * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finer(String message, Database.LeadConvertResult leadConvertResult) {
     return finer().setDatabaseResult(leadConvertResult).setMessage(message);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
-   * @param  message   The string to use to set the entry's message field
-   * @param  deleteResult The instance of `Database.DeleteResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder finer(String message, Database.DeleteResult deleteResult) {
-    return finer().setDatabaseResult(deleteResult).setMessage(message);
   }
 
   /**
@@ -2481,6 +2821,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder finer(String message, List<Database.DeleteResult> deleteResults) {
     return finer().setDatabaseResult(deleteResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return finer().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+   * @param  message      The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finer(String message, List<Database.LeadConvertResult> leadConvertResults) {
+    return finer().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -2566,21 +2926,31 @@ global with sharing class Logger {
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder finest(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
-    return finest().setDatabaseResult(leadConvertResult).setMessage(logMessage);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
-   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(LogMessage logMessage, Database.DeleteResult deleteResult) {
     return finest().setDatabaseResult(deleteResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  logMessage            The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(LogMessage logMessage, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return finest().setDatabaseResult(emptyRecycleBinResult).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  logMessage        The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
+   * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(LogMessage logMessage, Database.LeadConvertResult leadConvertResult) {
+    return finest().setDatabaseResult(leadConvertResult).setMessage(logMessage);
   }
 
   /**
@@ -2631,6 +3001,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return finest().setDatabaseResult(deleteResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return finest().setDatabaseResult(emptyRecycleBinResults).setMessage(logMessage);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.LeadConvertResult> leadConvertResults) {
+    return finest().setDatabaseResult(leadConvertResults).setMessage(logMessage);
   }
 
   /**
@@ -2714,22 +3104,32 @@ global with sharing class Logger {
 
   /**
    * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  message      The string to use to set the entry's message field
+   * @param  deleteResult The instance of `Database.DeleteResult` to log
+   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(String message, Database.DeleteResult deleteResult) {
+    return finest().setDatabaseResult(deleteResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  message               The string to use to set the entry's message field
+   * @param  emptyRecycleBinResult The instance of `Database.LeadConvertResult` to log
+   * @return                       The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(String message, Database.EmptyRecycleBinResult emptyRecycleBinResult) {
+    return finest().setDatabaseResult(emptyRecycleBinResult).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
    * @param  message           The string to use to set the entry's message field
    * @param  leadConvertResult The instance of `Database.LeadConvertResult` to log
    * @return                   The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global static LogEntryEventBuilder finest(String message, Database.LeadConvertResult leadConvertResult) {
     return finest().setDatabaseResult(leadConvertResult).setMessage(message);
-  }
-
-  /**
-   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
-   * @param  message   The string to use to set the entry's message field
-   * @param  deleteResult The instance of `Database.DeleteResult` to log
-   * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-   */
-  global static LogEntryEventBuilder finest(String message, Database.DeleteResult deleteResult) {
-    return finest().setDatabaseResult(deleteResult).setMessage(message);
   }
 
   /**
@@ -2780,6 +3180,26 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder finest(String message, List<Database.DeleteResult> deleteResults) {
     return finest().setDatabaseResult(deleteResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(String message, List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
+    return finest().setDatabaseResult(emptyRecycleBinResults).setMessage(message);
+  }
+
+  /**
+   * @description Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+   * @param  message      The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global static LogEntryEventBuilder finest(String message, List<Database.LeadConvertResult> leadConvertResults) {
+    return finest().setDatabaseResult(leadConvertResults).setMessage(message);
   }
 
   /**
@@ -2862,40 +3282,6 @@ global with sharing class Logger {
   }
 
   /**
-   * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
-   * @param  loggingLevel       The logging level to use for the log entry
-   * @param  logMessage         The instance of `LogMessage` to use to set the entry's message field
-   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
-   * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
-   */
-  global static LogEntryEventBuilder logDatabaseErrors(
-    System.LoggingLevel loggingLevel,
-    LogMessage logMessage,
-    List<Database.LeadConvertResult> leadConvertResults
-  ) {
-    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), leadConvertResults);
-  }
-
-  /**
-   * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
-   * @param  loggingLevel  The logging level to use for the log entry
-   * @param  message       The string to use to set the entry's message field
-   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
-   * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
-   */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.LeadConvertResult> leadConvertResults) {
-    List<Database.LeadConvertResult> resultsToLog = new List<Database.LeadConvertResult>();
-    for (Database.LeadConvertResult leadConvertResult : leadConvertResults) {
-      if (leadConvertResult.isSuccess() == false) {
-        resultsToLog.add(leadConvertResult);
-      }
-    }
-
-    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
-    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
-  }
-
-  /**
    * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
    * @param  loggingLevel  The logging level to use for the log entry
    * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
@@ -2918,6 +3304,78 @@ global with sharing class Logger {
     for (Database.DeleteResult deleteResult : deleteResults) {
       if (deleteResult.isSuccess() == false) {
         resultsToLog.add(deleteResult);
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<EmptyRecycleBinResult>` where `isSuccess() != true`
+   * @param  loggingLevel           The logging level to use for the log entry
+   * @param  logMessage             The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), emptyRecycleBinResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<EmptyRecycleBinResult>` where `isSuccess() != true`
+   * @param  loggingLevel           The logging level to use for the log entry
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @return                        The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults
+  ) {
+    List<Database.EmptyRecycleBinResult> resultsToLog = new List<Database.EmptyRecycleBinResult>();
+    for (Database.EmptyRecycleBinResult emptyRecycleBinResult : emptyRecycleBinResults) {
+      if (emptyRecycleBinResult.isSuccess() == false) {
+        resultsToLog.add(emptyRecycleBinResult);
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
+   * @param  loggingLevel       The logging level to use for the log entry
+   * @param  logMessage         The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.LeadConvertResult> leadConvertResults
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), leadConvertResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
+   * @param  loggingLevel       The logging level to use for the log entry
+   * @param  message            The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.LeadConvertResult> leadConvertResults) {
+    List<Database.LeadConvertResult> resultsToLog = new List<Database.LeadConvertResult>();
+    for (Database.LeadConvertResult leadConvertResult : leadConvertResults) {
+      if (leadConvertResult.isSuccess() == false) {
+        resultsToLog.add(leadConvertResult);
       }
     }
 
