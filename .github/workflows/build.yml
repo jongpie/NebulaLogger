@@ -726,18 +726,23 @@ jobs:
       # .....
       # ...
 
-      # TODO Add some extra steps to try to deploy to the scratch org, using the manifest file, to ensure it works
-      - name: 'Generate core package metadata manifest file'
-        run: |
-          npm run package:manifest:generate:core
-          git add ./nebula-logger/core.package.xml
-          git commit -m "Generated updated package.xml manifest file for core unlocked package version"
-
-      - name: 'Commit New Package Version'
+      - name: 'Configure git for commits'
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
+
+      # TODO Add some extra steps to try to deploy to the scratch org, using the manifest file, to ensure it works
+      - name: 'Generate core package metadata manifest file'
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          npm run package:manifest:generate:core || true
+          git add ./nebula-logger/core.package.xml || true
+          git commit -m "Generated updated package.xml manifest file for core unlocked package version" || true
+
+      - name: 'Commit New Package Version'
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
           # npm run sf:plugins:link:bummer
           echo y | npx sf plugins install @jongpie/sfdx-bummer-plugin --force
           npx sf bummer:package:aliases:sort
