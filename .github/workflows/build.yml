@@ -2,8 +2,6 @@
 name: Build
 
 env:
-  CLR_ICU_VERSION_OVERRIDE: 50.2
-  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
   SF_DISABLE_AUTOUPDATE: true
   SF_LOG_LEVEL: debug
   SF_SKIP_NEW_VERSION_CHECK: true
@@ -28,7 +26,7 @@ on:
 jobs:
   code-quality-tests:
     name: 'Run Code Quality Tests'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -90,7 +88,7 @@ jobs:
   lwc-jest-tests:
     name: 'Run LWC Jest Tests'
     needs: [code-quality-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -123,7 +121,7 @@ jobs:
     environment: 'Advanced Scratch Org'
     name: 'Run Advanced Scratch Org Tests'
     needs: [code-quality-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -198,7 +196,7 @@ jobs:
     environment: 'Base Scratch Org'
     name: 'Run Base Scratch Org Tests'
     needs: [code-quality-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -266,7 +264,7 @@ jobs:
     environment: 'Event Monitoring Scratch Org'
     name: 'Run Event Monitoring Scratch Org Tests'
     needs: [code-quality-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -334,7 +332,7 @@ jobs:
     environment: 'Experience Cloud Scratch Org'
     name: 'Run Experience Cloud Scratch Org Tests'
     needs: [code-quality-tests, advanced-scratch-org-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -405,7 +403,7 @@ jobs:
     environment: 'OmniStudio Scratch Org'
     name: 'Run OmniStudio Scratch Org Tests'
     needs: [code-quality-tests, base-scratch-org-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -480,7 +478,7 @@ jobs:
     environment: 'Platform Cache Scratch Org'
     name: 'Run Platform Cache Scratch Org Tests'
     needs: [code-quality-tests, event-monitoring-scratch-org-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -560,7 +558,7 @@ jobs:
         omnistudio-scratch-org-tests,
         platform-cache-scratch-org-tests
       ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -602,7 +600,7 @@ jobs:
     environment: 'Base Scratch Org'
     name: 'Create Core Package Release Candidate'
     needs: [create-managed-package-beta]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -763,7 +761,7 @@ jobs:
         omnistudio-scratch-org-tests,
         platform-cache-scratch-org-tests
       ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
