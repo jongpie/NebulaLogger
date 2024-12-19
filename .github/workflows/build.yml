@@ -726,18 +726,15 @@ jobs:
       # .....
       # ...
 
-      # TODO Add some extra steps to try to deploy to the scratch org, using the manifest file, to ensure it works
-      - name: 'Generate core package metadata manifest file'
-        run: |
-          npm run package:manifest:generate:core
-          git add ./nebula-logger/core.package.xml
-          git commit -m "Generated updated package.xml manifest file for core unlocked package version"
-
-      - name: 'Commit New Package Version'
+      - name: 'Configure git for pipeline commits'
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
+
+      - name: 'Commit new package version'
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
           # npm run sf:plugins:link:bummer
           echo y | npx sf plugins install @jongpie/sfdx-bummer-plugin --force
           npx sf bummer:package:aliases:sort
@@ -745,6 +742,18 @@ jobs:
           git add ./sfdx-project.json
           git commit -m "Created new core unlocked package version"
           git push
+
+      # TODO Add some extra steps to try to deploy to the scratch org, using the manifest file, to ensure it works
+      - name: 'Commit updates to core package manifest file'
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          npm run package:manifest:generate:core || true
+          git add ./nebula-logger/core.package.xml || true
+          git commit -m "Generated updated package.xml manifest file for core unlocked package version" || true
+
+      - name: 'Push pipeline commits'
+        if: ${{ github.event_name == 'pull_request' }}
+        run: git push
 
   promote-package-versions:
     if: ${{ github.ref == 'refs/heads/main' }}
