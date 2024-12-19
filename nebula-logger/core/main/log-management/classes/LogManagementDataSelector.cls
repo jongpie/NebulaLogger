@@ -7,8 +7,10 @@
  * @group Log Management
  * @description Selector class used for all queries that are specific to the log management layer
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing virtual class LogManagementDataSelector {
+  private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
+
   private static LogManagementDataSelector instance = new LogManagementDataSelector();
 
   @SuppressWarnings('PMD.EmptyStatementBlock')
@@ -143,7 +145,18 @@ public without sharing virtual class LogManagementDataSelector {
    * @return                The `Integer` count of matching `AsynxApexJob` records
    */
   public virtual Integer getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses) {
-    return [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :apexClassName AND MethodName = :apexMethodName AND Status IN :jobStatuses];
+    String apexClassNamespacePrefix = apexClassName.contains('.') ? apexClassName.substringBefore('.') : null;
+    String apexClassLocalName = apexClassName.contains('.') ? apexClassName.substringAfter('.') : apexClassName;
+
+    return [
+      SELECT COUNT()
+      FROM AsyncApexJob
+      WHERE
+        ApexClass.NamespacePrefix = :apexClassNamespacePrefix
+        AND ApexClass.Name = :apexClassLocalName
+        AND MethodName = :apexMethodName
+        AND Status IN :jobStatuses
+    ];
   }
 
   /**
@@ -311,8 +324,14 @@ public without sharing virtual class LogManagementDataSelector {
     String query =
       'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username, LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
       ' FROM OmniProcess WHERE Id IN :omniProcessIds';
-    for (SObject omniProcessRecord : System.Database.query(String.escapeSingleQuotes(query))) {
-      LoggerSObjectProxy.OmniProcess omniProcessProxy = new LoggerSObjectProxy.OmniProcess(omniProcessRecord);
+    List<SObject> omniProcessRecords = IS_OMNISTUDIO_ENABLED ? System.Database.query(String.escapeSingleQuotes(query)) : new List<SObject>();
+
+    List<LoggerSObjectProxy.OmniProcess> omniProcessProxies = (List<LoggerSObjectProxy.OmniProcess>) System.JSON.deserialize(
+      System.JSON.serialize(omniProcessRecords),
+      List<LoggerSObjectProxy.OmniProcess>.class
+    );
+
+    for (LoggerSObjectProxy.OmniProcess omniProcessProxy : omniProcessProxies) {
       omniProcessIdToOmniProcessProxy.put(omniProcessProxy.Id, omniProcessProxy);
     }
     return omniProcessIdToOmniProcessProxy;

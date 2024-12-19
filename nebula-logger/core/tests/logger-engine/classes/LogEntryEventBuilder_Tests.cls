@@ -9,6 +9,8 @@
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests {
   static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
     LoggerStackTrace.ignoreOrigin(LogEntryEventBuilder.class);
   }
 
@@ -220,12 +222,12 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isTrue(LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
     MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
     LoggerEngineDataSelector.setMock(mockSelector);
-    LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory(null);
+    LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory();
     mockLoginHistoryProxy.Application = 'Application';
     mockLoginHistoryProxy.Browser = 'Browser';
     mockLoginHistoryProxy.Platform = 'Platform';
     mockLoginHistoryProxy.UserId = System.UserInfo.getUserId();
-    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession(null);
+    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession();
     mockAuthSessionProxy.Id = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);
     mockAuthSessionProxy.LoginHistory = mockLoginHistoryProxy;
     mockAuthSessionProxy.LoginHistoryId = LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType);

@@ -44,20 +44,6 @@ LoggerSObjectProxy.AuthSession
 
 The cached `LoggerSObjectProxy.AuthSession` record
 
-#### `getCachedLoggerSObjectHandlers()` → `List<LoggerSObjectHandler_t>`
-
-Returns a cached copy of the `LoggerSObjectHandler_t` records in the org, including the field `SObjectType__r.QualifiedApiName` that cannot be accessed via `LoggerSObjectHandler_t.getAll()`
-
-##### Return
-
-**Type**
-
-List&lt;LoggerSObjectHandler_t&gt;
-
-**Description**
-
-The cached `List&lt;LoggerSObjectHandler_t&gt;` records
-
 #### `getCachedNetworkProxy(Id networkId)` → `LoggerSObjectProxy.Network`
 
 Returns a cached copy of the current user&apos;s `Schema.Network` site, or `null` if the current user is not associated with a `Schema.Network` site
@@ -91,20 +77,6 @@ Schema.Organization
 **Description**
 
 The cached `Schema.Organization` record
-
-#### `getCachedTagAssignmentRules()` → `List<LogEntryTagRule_t>`
-
-Returns a cached copy of the `LogEntryTagRule_t` records in the org, including the field `SObjectField__r.QualifiedApiName` that cannot be accessed via `LogEntryTagRule_t.getAll()`
-
-##### Return
-
-**Type**
-
-List&lt;LogEntryTagRule_t&gt;
-
-**Description**
-
-The cached `List&lt;LogEntryTagRule_t&gt;` records
 
 #### `getCachedUser()` → `Schema.User`
 
