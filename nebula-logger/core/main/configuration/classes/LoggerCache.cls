@@ -5,7 +5,7 @@
 
 /**
  * @group Configuration
- * @description Class used to cache query results returned by the selector classes
+ * @description Class used to cache query results & data used in other parts of Nebula Logger
  */
 @SuppressWarnings('PMD.CognitiveComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerCache {
