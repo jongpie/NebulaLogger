@@ -6,5 +6,5 @@
     </classAccesses>
     <description>Provides access to integrate with Nebula Logger via REST API calls</description>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Nebula Logger: REST Integration</label>
+    <label>Nebula Logger: Inbound REST Integration</label>
 </PermissionSet>
