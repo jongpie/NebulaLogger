@@ -12,6 +12,7 @@
       "versionNumber": "4.15.3.NEXT",
       "versionName": "Improved Testability of Queries",
       "versionDescription": "Enhanced the internals of the existing selector classes LoggerEngineDataSelector and LogManagementDataSelector + introducted a new class LoggerConfigurationSelector to provide improve testability of queries",
+      "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -28,7 +29,7 @@
       ],
       "versionNumber": "1.0.3.NEXT",
       "versionName": "Logging & Testing Improvements",
-      "versionDescription": "Updated LogFinalizer to skip logging the async context when no error has occurred, and corrected some test issues caused by changes in core v4.15.3 unhandled exceptions within screen flows to be automatically logged (toggleable, default off)",
+      "versionDescription": "Requires v4.15.3 (or newer) of Nebula Logger's core unlocked package. Updated LogFinalizer to skip logging the async context when no error has occurred, and corrected some test issues caused by changes in core v4.15.3",
       "default": false
     },
     {
@@ -41,7 +42,7 @@
       ],
       "versionNumber": "0.9.1.NEXT",
       "versionName": "Testing Improvements",
-      "versionDescription": "Corrected some test issues caused by changes in core v4.15.3",
+      "versionDescription": "Requires v4.15.3 (or newer) of Nebula Logger's core unlocked package. Corrected some test issues caused by changes in core v4.15.3",
       "default": false
     },
     {
@@ -211,8 +212,10 @@
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.2": "04t5Y0000023QttQAE",
+    "Nebula Logger - Core Plugin - Async Failure Additions@1.0.3": "04t5Y0000015ok7QAA",
     "Nebula Logger - Core Plugin - Big Object Archiving": "0Ho5Y000000blMSSAY",
     "Nebula Logger - Core Plugin - Big Object Archiving@0.9.0": "04t5Y0000015lgLQAQ",
+    "Nebula Logger - Core Plugin - Big Object Archiving@0.9.1": "04t5Y0000015okCQAQ",
     "Nebula Logger - Core Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
     "Nebula Logger - Core Plugin - Log Retention Rules@0.9.0": "04t5Y0000015lgGQAQ",
     "Nebula Logger - Core Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",

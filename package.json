@@ -53,7 +53,6 @@
     "plugin:version:create:async-failure-additions": "sf package version create --json --package \"Nebula Logger - Core Plugin - Async Failure Additions\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:big-object": "sf package version create --json --package \"Nebula Logger - Core Plugin - Big Object Archiving\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:log-retention-rules": "sf package version create --json --package \"Nebula Logger - Core Plugin - Log Retention Rules\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
-    "plugin:version:create:logger-admin-dashboard": "sf package version create --json --package \"Nebula Logger - Core Plugin - Logger Admin Dashboard\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:slack": "sf package version create --json --package \"Nebula Logger - Core Plugin - Slack\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "prepare": "chmod +x ./.husky/pre-commit",
     "prettier:fix": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}\"",

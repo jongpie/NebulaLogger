@@ -1,9 +1,9 @@
 # Big Object Archiving plugin for Nebula Logger
 
-> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger's unlocked package
+> :information_source: This plugin requires `v4.15.3` or newer of Nebula Logger's core unlocked package
 
-[![Install Unlocked Package Plugin in a Sandbox](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgLQAQ)
-[![Install Unlocked Package Plugin in Production](../.images/btn-install-unlocked-package-plugin-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgLQAQ)
+[![Install Unlocked Package Plugin in a Sandbox](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015okCQAQ)
+[![Install Unlocked Package Plugin in Production](../.images/btn-install-unlocked-package-plugin-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015okCQAQ)
 
 Adds a Big Object - `LogEntryArchive__b` - to Nebula Logger for archiving of logging data. The `LogEntryArchive__b` object can be used to:
 
