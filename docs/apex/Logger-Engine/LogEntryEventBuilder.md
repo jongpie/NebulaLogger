@@ -167,7 +167,7 @@ Sets the log entry event&apos;s database operation result fields
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
 ##### Return
@@ -307,7 +307,7 @@ Sets the log entry event&apos;s database operation result fields
 ##### Parameters
 
 | Param                    | Description                                          |
-|--------------------------|------------------------------------------------------|
+| ------------------------ | ---------------------------------------------------- |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult`s to log |
 
 ##### Return

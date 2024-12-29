@@ -98,6 +98,13 @@ public without sharing class LoggerPlugin {
     return (Triggerable) pluginInstance;
   }
 
+  /*
+    DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
+      ```
+      LoggerConfigurationSelector.useMocks();
+      LoggerConfigurationSelector.mockLoggerPlugins.add(new LoggerPlugin__mdt());
+      ```
+  */
   @TestVisible
   private static void setMock(LoggerPlugin__mdt pluginConfiguration) {
     if (String.isBlank(pluginConfiguration.DeveloperName)) {
@@ -114,7 +121,7 @@ public without sharing class LoggerPlugin {
 
   private static Map<String, LoggerPlugin__mdt> loadEnabledRecords() {
     Map<String, LoggerPlugin__mdt> pluginDeveloperNameToConfiguration = new Map<String, LoggerPlugin__mdt>();
-    for (LoggerPlugin__mdt pluginConfiguration : LoggerPlugin__mdt.getAll().values()) {
+    for (LoggerPlugin__mdt pluginConfiguration : LoggerConfigurationSelector.getInstance().getLoggerPlugins()) {
       if (pluginConfiguration.IsEnabled__c) {
         pluginDeveloperNameToConfiguration.put(pluginConfiguration.DeveloperName, pluginConfiguration);
       }

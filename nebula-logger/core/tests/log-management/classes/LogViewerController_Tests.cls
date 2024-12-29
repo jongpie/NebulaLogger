@@ -6,6 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LogViewerController_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @TestSetup
   static void setupData() {
     LoggerSObjectHandler.shouldExecute(false);

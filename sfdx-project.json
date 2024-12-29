@@ -9,9 +9,10 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.2.NEXT",
-      "versionName": "Added Support for Logging EmptyRecyleBinResult",
-      "versionDescription": "Added Logger method overloads & new LogEntryEventBuilder methods to capture instances of EmptyRecyleBinResult and List<EmptyRecyleBinResult>. Several  LogHandler class to cache the Apex call to System.OrgLimits.getMap() to reduce CPU usage",
+      "versionNumber": "4.15.3.NEXT",
+      "versionName": "Improved Testability of Queries",
+      "versionDescription": "Enhanced the internals of the existing selector classes LoggerEngineDataSelector and LogManagementDataSelector + introducted a new class LoggerConfigurationSelector to provide improve testability of queries",
+      "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
         "path": "./nebula-logger/extra-tests"
@@ -23,12 +24,12 @@
       "path": "./nebula-logger/plugins/async-failure-additions/plugin",
       "dependencies": [
         {
-          "package": "Nebula Logger - Core@4.7.2-parent-log-transaction-id-bugfix"
+          "package": "Nebula Logger - Core@4.15.3-improved-testability-of-queries"
         }
       ],
-      "versionNumber": "1.0.2.NEXT",
-      "versionName": "Added logging for Screen Flow failures",
-      "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)",
+      "versionNumber": "1.0.3.NEXT",
+      "versionName": "Logging & Testing Improvements",
+      "versionDescription": "Requires v4.15.3 (or newer) of Nebula Logger's core unlocked package. Updated LogFinalizer to skip logging the async context when no error has occurred, and corrected some test issues caused by changes in core v4.15.3",
       "default": false
     },
     {
@@ -36,12 +37,12 @@
       "path": "./nebula-logger/plugins/big-object-archiving/plugin",
       "dependencies": [
         {
-          "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
+          "package": "Nebula Logger - Core@4.15.3-improved-testability-of-queries"
         }
       ],
-      "versionNumber": "0.9.0.NEXT",
-      "versionName": "Beta Release",
-      "versionDescription": "Initial beta version of new plugin",
+      "versionNumber": "0.9.1.NEXT",
+      "versionName": "Testing Improvements",
+      "versionDescription": "Requires v4.15.3 (or newer) of Nebula Logger's core unlocked package. Corrected some test issues caused by changes in core v4.15.3",
       "default": false
     },
     {
@@ -206,12 +207,15 @@
     "Nebula Logger - Core@4.15.0-winter-'25-release": "04t5Y0000015odKQAQ",
     "Nebula Logger - Core@4.15.1-system.orglimits-optimisations": "04t5Y0000015ohhQAA",
     "Nebula Logger - Core@4.15.2-added-support-for-logging-emptyrecylebinresult": "04t5Y0000015oifQAA",
+    "Nebula Logger - Core@4.15.3-improved-testability-of-queries": "04t5Y0000015ok2QAA",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.2": "04t5Y0000023QttQAE",
+    "Nebula Logger - Core Plugin - Async Failure Additions@1.0.3": "04t5Y0000015ok7QAA",
     "Nebula Logger - Core Plugin - Big Object Archiving": "0Ho5Y000000blMSSAY",
     "Nebula Logger - Core Plugin - Big Object Archiving@0.9.0": "04t5Y0000015lgLQAQ",
+    "Nebula Logger - Core Plugin - Big Object Archiving@0.9.1": "04t5Y0000015okCQAQ",
     "Nebula Logger - Core Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
     "Nebula Logger - Core Plugin - Log Retention Rules@0.9.0": "04t5Y0000015lgGQAQ",
     "Nebula Logger - Core Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",

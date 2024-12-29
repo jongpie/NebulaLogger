@@ -31,6 +31,13 @@ public without sharing class LoggerScenarioRule {
     return SCENARIO_NAME_TO_SCENARIO_RULE.get(scenario);
   }
 
+  /*
+    DELETEME Deprecated method, remove in a future release & instead use something like this in tests:
+      ```
+      LoggerConfigurationSelector.useMocks();
+      LoggerConfigurationSelector.mockLoggerScenarios.add(new LoggerScenario__mdt());
+      ```
+  */
   @TestVisible
   private static void setMock(LoggerScenarioRule__mdt scenarioRule) {
     if (String.isBlank(scenarioRule.Scenario__c)) {
@@ -44,14 +51,10 @@ public without sharing class LoggerScenarioRule {
 
   private static Map<String, LoggerScenarioRule__mdt> loadLogScenarioRules() {
     Map<String, LoggerScenarioRule__mdt> scenarioRules = new Map<String, LoggerScenarioRule__mdt>();
-    for (LoggerScenarioRule__mdt scenarioRule : LoggerScenarioRule__mdt.getAll().values()) {
+    for (LoggerScenarioRule__mdt scenarioRule : LoggerConfigurationSelector.getInstance().getLoggerScenarioRules()) {
       if (isValid(scenarioRule)) {
         scenarioRules.put(scenarioRule.Scenario__c, scenarioRule);
       }
-    }
-
-    if (System.Test.isRunningTest()) {
-      scenarioRules.clear();
     }
 
     return scenarioRules;

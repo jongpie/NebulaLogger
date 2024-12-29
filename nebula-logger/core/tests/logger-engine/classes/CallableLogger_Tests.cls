@@ -12,6 +12,8 @@ private class CallableLogger_Tests {
   private static final String TEST_OMNI_PROCESS_ID = '0jNDL000000Cbac2AC';
 
   static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
     CallableLogger.returnLogEntryEventBuilderInOutput = true;
   }
 

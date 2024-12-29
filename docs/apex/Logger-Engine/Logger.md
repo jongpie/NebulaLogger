@@ -124,7 +124,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 ##### Parameters
 
 | Param                   | Description                                                               |
-|-------------------------|---------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------- |
 | `logMessage`            | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log                   |
 
@@ -271,7 +271,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 ##### Parameters
 
 | Param                    | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------------------- |
 | `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log             |
 
@@ -292,7 +292,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 ##### Parameters
 
 | Param                | Description                                                               |
-|----------------------|---------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------- |
 | `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log                |
 
@@ -501,7 +501,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `message`               | The string to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
@@ -627,7 +627,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
+| -------------------- | ---------------------------------------------------------- |
 | `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 
@@ -648,7 +648,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 ##### Parameters
 
 | Param                    | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------- |
 | `message`                | The string to use to set the entry&apos;s message field       |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
@@ -669,7 +669,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
+| -------------------- | ---------------------------------------------------------- |
 | `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 
@@ -888,7 +888,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 ##### Parameters
 
 | Param                   | Description                                                               |
-|-------------------------|---------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------- |
 | `logMessage`            | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log                   |
 
@@ -1035,7 +1035,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 ##### Parameters
 
 | Param                    | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------------------- |
 | `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log             |
 
@@ -1056,7 +1056,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 ##### Parameters
 
 | Param                | Description                                                               |
-|----------------------|---------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------- |
 | `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log                |
 
@@ -1352,7 +1352,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `message`               | The string to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
@@ -1499,7 +1499,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 ##### Parameters
 
 | Param                    | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------- |
 | `message`                | The string to use to set the entry&apos;s message field       |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
@@ -1520,8 +1520,8 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
-| `message`       | The string to use to set the entry&apos;s message field |
+| -------------------- | ---------------------------------------------------------- |
+| `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 
 ##### Return
@@ -1920,7 +1920,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 ##### Parameters
 
 | Param                   | Description                                                               |
-|-------------------------|---------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------- |
 | `logMessage`            | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log                   |
 
@@ -2067,7 +2067,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 ##### Parameters
 
 | Param                    | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------------------- |
 | `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log             |
 
@@ -2088,7 +2088,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 ##### Parameters
 
 | Param                | Description                                                               |
-|----------------------|---------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------- |
 | `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log                |
 
@@ -2297,7 +2297,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `message`               | The string to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
@@ -2444,7 +2444,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 ##### Parameters
 
 | Param                    | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------- |
 | `message`                | The string to use to set the entry&apos;s message field       |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
@@ -2465,8 +2465,8 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
-| `message`       | The string to use to set the entry&apos;s message field |
+| -------------------- | ---------------------------------------------------------- |
+| `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 
 ##### Return
@@ -2674,7 +2674,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 ##### Parameters
 
 | Param                   | Description                                                               |
-|-------------------------|---------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------- |
 | `logMessage`            | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log                   |
 
@@ -2821,7 +2821,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 ##### Parameters
 
 | Param                    | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------------------- |
 | `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log             |
 
@@ -2842,7 +2842,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 ##### Parameters
 
 | Param                | Description                                                               |
-|----------------------|---------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------- |
 | `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log                |
 
@@ -3051,7 +3051,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `message`               | The string to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
@@ -3198,7 +3198,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 ##### Parameters
 
 | Param                    | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------- |
 | `message`                | The string to use to set the entry&apos;s message field       |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
@@ -3219,8 +3219,8 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
-| `message`       | The string to use to set the entry&apos;s message field |
+| -------------------- | ---------------------------------------------------------- |
+| `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 
 ##### Return
@@ -3428,7 +3428,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 ##### Parameters
 
 | Param                   | Description                                                               |
-|-------------------------|---------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------- |
 | `logMessage`            | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log                   |
 
@@ -3575,7 +3575,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 ##### Parameters
 
 | Param                    | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------------------- |
 | `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log             |
 
@@ -3596,7 +3596,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 ##### Parameters
 
 | Param                | Description                                                               |
-|----------------------|---------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------- |
 | `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log                |
 
@@ -3805,7 +3805,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `message`               | The string to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
@@ -3952,7 +3952,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 ##### Parameters
 
 | Param                    | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------- |
 | `message`                | The string to use to set the entry&apos;s message field       |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
@@ -3973,8 +3973,8 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
-| `message`       | The string to use to set the entry&apos;s message field |
+| -------------------- | ---------------------------------------------------------- |
+| `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 
 ##### Return
@@ -4404,7 +4404,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 ##### Parameters
 
 | Param                   | Description                                                               |
-|-------------------------|---------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------- |
 | `logMessage`            | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log                   |
 
@@ -4551,7 +4551,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 ##### Parameters
 
 | Param                    | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------------------- |
 | `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log             |
 
@@ -4572,7 +4572,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 ##### Parameters
 
 | Param                | Description                                                               |
-|----------------------|---------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------- |
 | `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log                |
 
@@ -4781,7 +4781,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `message`               | The string to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
@@ -4928,7 +4928,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 ##### Parameters
 
 | Param                    | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------- |
 | `message`                | The string to use to set the entry&apos;s message field       |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
@@ -4949,8 +4949,8 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
-| `message`       | The string to use to set the entry&apos;s message field |
+| -------------------- | ---------------------------------------------------------- |
+| `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 
 ##### Return
@@ -5807,7 +5807,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 ##### Parameters
 
 | Param                   | Description                                                               |
-|-------------------------|---------------------------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------------------------- |
 | `logMessage`            | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log                   |
 
@@ -5954,7 +5954,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 ##### Parameters
 
 | Param                    | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------------------- |
 | `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log             |
 
@@ -5975,7 +5975,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 ##### Parameters
 
 | Param                | Description                                                               |
-|----------------------|---------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------- |
 | `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log                |
 
@@ -6271,7 +6271,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 ##### Parameters
 
 | Param                   | Description                                             |
-|-------------------------|---------------------------------------------------------|
+| ----------------------- | ------------------------------------------------------- |
 | `message`               | The string to use to set the entry&apos;s message field |
 | `emptyRecycleBinResult` | The instance of `Database.EmptyRecycleBinResult` to log |
 
@@ -6418,7 +6418,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 ##### Parameters
 
 | Param                    | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
+| ------------------------ | ------------------------------------------------------------- |
 | `message`                | The string to use to set the entry&apos;s message field       |
 | `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
@@ -6439,7 +6439,7 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 ##### Parameters
 
 | Param                | Description                                                |
-|----------------------|------------------------------------------------------------|
+| -------------------- | ---------------------------------------------------------- |
 | `message`            | The string to use to set the entry&apos;s message field    |
 | `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
 

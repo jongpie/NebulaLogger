@@ -4,7 +4,7 @@ layout: default
 
 ## LoggerCache class
 
-Class used to cache query results returned by the selector classes
+Class used to cache query results &amp; data used in other parts of Nebula Logger
 
 ---
 

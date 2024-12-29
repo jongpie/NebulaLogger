@@ -6,6 +6,8 @@ private class LogEntryMetadataViewerController_Tests {
   private static final String SOURCE_METADATA_ORIGIN = 'Origin';
 
   static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
     LogManagementDataSelector.setMock(MOCK_SELECTOR);
   }
 

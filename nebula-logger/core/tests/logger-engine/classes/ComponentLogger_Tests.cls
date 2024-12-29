@@ -8,6 +8,11 @@
 )
 @IsTest(IsParallel=true)
 private class ComponentLogger_Tests {
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_logger_settings() {
     LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();

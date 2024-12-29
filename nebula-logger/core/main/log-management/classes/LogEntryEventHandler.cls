@@ -8,7 +8,7 @@
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
 @SuppressWarnings(
-  'PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions'
+  'PMD.ApexCRUDViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions'
 )
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
   @TestVisible
@@ -244,7 +244,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
       recentLogWithApiReleaseDetails == null &&
       LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, null, jobStatuses) == 0
     ) {
-      System.enqueueJob(new StatusApiCalloutQueueable(TRANSACTION_ID_TO_LOG.values()));
+      LoggerDataStore.getJobQueue().enqueueJob(new StatusApiCalloutQueueable(TRANSACTION_ID_TO_LOG.values()));
     }
   }
 
@@ -587,7 +587,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
   }
 
   private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
-    List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
+    List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerConfigurationSelector.getInstance().getLogEntryTagRules();
     if (System.Test.isRunningTest()) {
       // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
       tagAssignmentRules.clear();

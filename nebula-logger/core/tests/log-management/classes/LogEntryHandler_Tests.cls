@@ -8,6 +8,11 @@
 private class LogEntryHandler_Tests {
   private static final Boolean IS_OMNISTUDIO_ENABLED = System.Type.forName('Schema.OmniProcess') != null;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @TestSetup
   static void setupData() {
     LoggerSObjectHandler.shouldExecute(false);
@@ -1267,12 +1272,12 @@ private class LogEntryHandler_Tests {
       return;
     }
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
-    SObject mockOmniProcessRecord = (SObject) (System.Type.forName('Schema.OmniProcess').newInstance());
-    LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess(mockOmniProcessRecord);
+    Schema.SObjectType omniProcessSObjectType = ((SObject) (System.Type.forName('Schema.OmniProcess').newInstance())).getSObjectType();
+    LoggerSObjectProxy.OmniProcess mockOmniProcessProxy = new LoggerSObjectProxy.OmniProcess();
     mockOmniProcessProxy.CreatedById = System.UserInfo.getUserId();
     mockOmniProcessProxy.CreatedBy = currentUser;
     mockOmniProcessProxy.CreatedDate = System.now().addDays(-7);
-    mockOmniProcessProxy.Id = LoggerMockDataCreator.createId(mockOmniProcessRecord.getSObjectType());
+    mockOmniProcessProxy.Id = LoggerMockDataCreator.createId(omniProcessSObjectType);
     mockOmniProcessProxy.LastModifiedById = currentUser.Id;
     mockOmniProcessProxy.LastModifiedBy = currentUser;
     mockOmniProcessProxy.LastModifiedDate = System.now().addDays(-1);
