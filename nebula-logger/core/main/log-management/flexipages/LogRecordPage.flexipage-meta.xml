@@ -316,6 +316,86 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExternalServiceId__c</fieldItem>
+                <identifier>RecordExternalServiceId_cField2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ExternalServiceId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExternalServiceName__c</fieldItem>
+                <identifier>RecordExternalServiceName_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ExternalServiceName__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExternalServiceType__c</fieldItem>
+                <identifier>RecordExternalServiceType_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ExternalServiceType__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExternalServiceVersion__c</fieldItem>
+                <identifier>RecordExternalServiceVersion_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ExternalServiceVersion__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ParentLogLink__c</fieldItem>
+                <identifier>RecordParentLogLink__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ParentLogTransactionId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TransactionId__c</fieldItem>
@@ -348,6 +428,10 @@
                 <identifier>RecordStartTime__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <name>Facet-d581561a-9af6-472b-bf5b-f191cbaa0836</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -368,10 +452,6 @@
                 <identifier>RecordTotalLimitsCpuTimeUsed__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-d581561a-9af6-472b-bf5b-f191cbaa0836</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -400,16 +480,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.TotalWARNLogEntries__c</fieldItem>
                 <identifier>RecordTotalWARNLogEntries__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ParentLogLink__c</fieldItem>
-                <identifier>RecordParentLogLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-af147cb3-e6b1-4ef7-a00b-d4746d5a1c90</name>
