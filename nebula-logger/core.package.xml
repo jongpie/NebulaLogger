@@ -70,6 +70,8 @@
         <members>LoggerParameter_Tests</members>
         <members>LoggerPlugin</members>
         <members>LoggerPlugin_Tests</members>
+        <members>LoggerRestResource</members>
+        <members>LoggerRestResource_Tests</members>
         <members>LoggerSObjectHandler</members>
         <members>LoggerSObjectHandler_Tests</members>
         <members>LoggerSObjectMetadata</members>
@@ -154,6 +156,10 @@
         <members>LogEntryEvent__e.ExceptionSourceMetadataType__c</members>
         <members>LogEntryEvent__e.ExceptionStackTrace__c</members>
         <members>LogEntryEvent__e.ExceptionType__c</members>
+        <members>LogEntryEvent__e.ExternalServiceId__c</members>
+        <members>LogEntryEvent__e.ExternalServiceName__c</members>
+        <members>LogEntryEvent__e.ExternalServiceType__c</members>
+        <members>LogEntryEvent__e.ExternalServiceVersion__c</members>
         <members>LogEntryEvent__e.HttpRequestBodyMasked__c</members>
         <members>LogEntryEvent__e.HttpRequestBody__c</members>
         <members>LogEntryEvent__e.HttpRequestCompressed__c</members>
@@ -531,6 +537,10 @@
         <members>Log__c.ClosedDate__c</members>
         <members>Log__c.Comments__c</members>
         <members>Log__c.EndTime__c</members>
+        <members>Log__c.ExternalServiceId__c</members>
+        <members>Log__c.ExternalServiceName__c</members>
+        <members>Log__c.ExternalServiceType__c</members>
+        <members>Log__c.ExternalServiceVersion__c</members>
         <members>Log__c.HasComments__c</members>
         <members>Log__c.HasLoggedByFederationIdentifier__c</members>
         <members>Log__c.HasOrganizationLimits__c</members>
@@ -861,6 +871,7 @@
         <members>Log__c.AllBatchLogs</members>
         <members>Log__c.AllChildLogs</members>
         <members>Log__c.AllClosedLogs</members>
+        <members>Log__c.AllExternalServiceLogs</members>
         <members>Log__c.AllImpersonatedLogs</members>
         <members>Log__c.AllLogs</members>
         <members>Log__c.AllLogsWithERROREntries</members>
@@ -890,6 +901,7 @@
     <types>
         <members>LoggerAdmin</members>
         <members>LoggerEndUser</members>
+        <members>LoggerIntegration</members>
         <members>LoggerLogCreator</members>
         <members>LoggerLogViewer</members>
         <name>PermissionSet</name>

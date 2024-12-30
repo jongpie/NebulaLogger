@@ -424,7 +424,13 @@ public without sharing virtual class LogManagementDataSelector {
       return new List<Schema.User>();
     }
 
-    return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username LIMIT 20];
+    return [
+      SELECT Id, Name, Username, SmallPhotoUrl
+      FROM User
+      WHERE IsActive = TRUE AND (Name LIKE :searchTerm OR Username LIKE :searchTerm)
+      ORDER BY Username
+      LIMIT 20
+    ];
   }
 
   /**

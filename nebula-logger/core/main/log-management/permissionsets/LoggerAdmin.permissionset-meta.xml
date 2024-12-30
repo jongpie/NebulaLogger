@@ -73,6 +73,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LoggerRestResource</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LoggerSObjectMetadata</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1244,6 +1248,26 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.EndTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ExternalServiceId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ExternalServiceName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ExternalServiceType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ExternalServiceVersion__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

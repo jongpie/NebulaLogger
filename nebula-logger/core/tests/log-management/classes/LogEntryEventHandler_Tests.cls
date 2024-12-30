@@ -1303,6 +1303,10 @@ private class LogEntryEventHandler_Tests {
         AsyncContextParentJobId__c,
         AsyncContextTriggerId__c,
         AsyncContextType__c,
+        ExternalServiceId__c,
+        ExternalServiceName__c,
+        ExternalServiceType__c,
+        ExternalServiceVersion__c,
         Id,
         Locale__c,
         LoggedBy__c,
@@ -1496,6 +1500,10 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.AsyncContextParentJobId__c, log.AsyncContextParentJobId__c, 'log.AsyncContextParentJobId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.AsyncContextTriggerId__c, log.AsyncContextTriggerId__c, 'log.AsyncContextTriggerId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.AsyncContextType__c, log.AsyncContextType__c, 'log.AsyncContextTriggerId__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.ExternalServiceId__c, log.ExternalServiceId__c, 'log.ExternalServiceId__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.ExternalServiceName__c, log.ExternalServiceName__c, 'log.ExternalServiceName__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.ExternalServiceType__c, log.ExternalServiceType__c, 'log.ExternalServiceType__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.ExternalServiceVersion__c, log.ExternalServiceVersion__c, 'log.ExternalServiceVersion__c was not properly set');
     System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
     System.Assert.areEqual(
       logEntryEvent.LoggedByFederationIdentifier__c,
