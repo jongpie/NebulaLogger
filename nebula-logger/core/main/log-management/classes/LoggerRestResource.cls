@@ -344,12 +344,18 @@ global with sharing class LoggerRestResource {
 
       for (OTelAttribute entryAttribute : this.attributes) {
         switch on entryAttribute.key {
-          when 'service.name' {
-            supplementalFieldToValue.put(LogEntryEvent__e.OriginServiceName__c, entryAttribute.value?.stringValue);
+          when 'service.id' {
+            supplementalFieldToValue.put(LogEntryEvent__e.ExternalServiceId__c, entryAttribute.value?.stringValue);
           }
-          // TODO
-          // when 'service.version' {
-          // }
+          when 'service.name' {
+            supplementalFieldToValue.put(LogEntryEvent__e.ExternalServiceName__c, entryAttribute.value?.stringValue);
+          }
+          when 'service.type' {
+            supplementalFieldToValue.put(LogEntryEvent__e.ExternalServiceType__c, entryAttribute.value?.stringValue);
+          }
+          when 'service.version' {
+            supplementalFieldToValue.put(LogEntryEvent__e.ExternalServiceVersion__c, entryAttribute.value?.stringValue);
+          }
         }
       }
 
@@ -393,7 +399,7 @@ global with sharing class LoggerRestResource {
         }
         this.convertedLogEntryEvent = builder.getLogEntryEvent();
         this.convertedLogEntryEvent.EntryScenario__c = this.name;
-        this.convertedLogEntryEvent.OriginType__c = 'API';
+        this.convertedLogEntryEvent.OriginType__c = 'External Service';
         this.convertedLogEntryEvent.TransactionId__c = convertedTraceId;
 
         // Since the log entries originate off-platform, tracking the limits usage isn't really relevant here

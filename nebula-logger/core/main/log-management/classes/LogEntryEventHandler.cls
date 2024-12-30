@@ -161,6 +161,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         AsyncContextParentJobId__c = logEntryEvent.AsyncContextParentJobId__c,
         AsyncContextTriggerId__c = logEntryEvent.AsyncContextTriggerId__c,
         AsyncContextType__c = logEntryEvent.AsyncContextType__c,
+        ExternalServiceId__c = logEntryEvent.ExternalServiceId__c,
+        ExternalServiceName__c = logEntryEvent.ExternalServiceName__c,
+        ExternalServiceType__c = logEntryEvent.ExternalServiceType__c,
+        ExternalServiceVersion__c = logEntryEvent.ExternalServiceVersion__c,
         ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
         Locale__c = logEntryEvent.Locale__c,
         LoggedBy__c = logEntryEvent.LoggedById__c,
@@ -339,7 +343,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         MessageTruncated__c = logEntryEvent.MessageTruncated__c,
         Name = null, // Salesforce will auto-set the record ID as the name when null
         OriginLocation__c = logEntryEvent.OriginLocation__c,
-        OriginServiceName__c = logEntryEvent.OriginServiceName__c,
         OriginSourceActionName__c = logEntryEvent.OriginSourceActionName__c,
         OriginSourceApiName__c = logEntryEvent.OriginSourceApiName__c,
         OriginSourceId__c = logEntryEvent.OriginSourceId__c,

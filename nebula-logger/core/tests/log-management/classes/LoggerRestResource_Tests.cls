@@ -224,11 +224,20 @@ private class LoggerRestResource_Tests {
     LoggerRestResource.OTelScopeLog scopeLog = new LoggerRestResource.OTelScopeLog();
     scopeLog.logRecords.add(otelLogEntry);
     LoggerRestResource.OTelResourceLog resourceLog = new LoggerRestResource.OTelResourceLog();
+    LoggerRestResource.OTelAttribute resourceServiceIdAttribute = new LoggerRestResource.OTelAttribute('service.id', 'some-unique-id-value');
+    resourceLog.resource.attributes.add(resourceServiceIdAttribute);
     LoggerRestResource.OTelAttribute resourceServiceNameAttribute = new LoggerRestResource.OTelAttribute(
       'service.name',
       'some-external-system-or-microservice'
     );
     resourceLog.resource.attributes.add(resourceServiceNameAttribute);
+    LoggerRestResource.OTelAttribute resourceServiceTypeAttribute = new LoggerRestResource.OTelAttribute(
+      'service.type',
+      'some-type-of-external-system-or-microservice'
+    );
+    resourceLog.resource.attributes.add(resourceServiceTypeAttribute);
+    LoggerRestResource.OTelAttribute resourceServiceVersionAttribute = new LoggerRestResource.OTelAttribute('service.version', 'some-version-number');
+    resourceLog.resource.attributes.add(resourceServiceVersionAttribute);
     resourceLog.scopeLogs.add(scopeLog);
     LoggerRestResource.OTelLogsPayload logsPayload = new LoggerRestResource.OTelLogsPayload();
     logsPayload.resourceLogs.add(resourceLog);
@@ -254,14 +263,18 @@ private class LoggerRestResource_Tests {
     System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+    // External Service Fields
+    System.Assert.areEqual(resourceServiceIdAttribute.value.stringValue, publishedLogEntryEvent.ExternalServiceId__c);
+    System.Assert.areEqual(resourceServiceNameAttribute.value.stringValue, publishedLogEntryEvent.ExternalServiceName__c);
+    System.Assert.areEqual(resourceServiceTypeAttribute.value.stringValue, publishedLogEntryEvent.ExternalServiceType__c);
+    System.Assert.areEqual(resourceServiceVersionAttribute.value.stringValue, publishedLogEntryEvent.ExternalServiceVersion__c);
     // Origin Fields
     System.Assert.isNull(publishedLogEntryEvent.OriginLocation__c);
-    System.Assert.areEqual(resourceServiceNameAttribute.value.stringValue, publishedLogEntryEvent.OriginServiceName__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceActionName__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceApiName__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceId__c);
     System.Assert.isNull(publishedLogEntryEvent.OriginSourceMetadataType__c);
-    System.Assert.areEqual('API', publishedLogEntryEvent.OriginType__c);
+    System.Assert.areEqual('External Service', publishedLogEntryEvent.OriginType__c);
     System.Assert.areEqual(otelLogEntry.severityText.toUpperCase(), publishedLogEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(otelLogEntry.body.stringValue, publishedLogEntryEvent.Message__c);
     // Limits Fields
