@@ -245,4 +245,32 @@ private class FlowLogger_Tests {
     System.Assert.isNull(publishedLogEntryEvent.StackTrace__c, 'Flow does not have a stack trace, so expect null');
     System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
   }
+
+  @IsTest
+  static void it_truncates_too_long_exception_messages() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
+    Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    Integer maxLengthForExceptionMessage = Schema.LogEntryEvent__e.ExceptionMessage__c.getDescribe().getLength();
+    FlowLogger.LogEntry flowEntry = new FlowLogger.LogEntry();
+    flowEntry.flowName = 'MyFlow';
+    flowEntry.message = 'hello from Flow';
+    flowEntry.loggingLevelName = entryLoggingLevel.name();
+    flowEntry.saveLog = true;
+    flowEntry.faultMessage = '0'.repeat(maxLengthForExceptionMessage + 1);
+    flowEntry.timestamp = System.now();
+    System.Assert.areEqual(0, Logger.saveLogCallCount);
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+    FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.areEqual(1, Logger.saveLogCallCount);
+    System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+    System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+    LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+    System.Assert.areEqual(maxLengthForExceptionMessage, publishedLogEntryEvent.ExceptionMessage__c.length());
+  }
 }
