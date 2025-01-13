@@ -265,34 +265,6 @@
                 <identifier>RecordSourceSObjectFilter_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.SourceSObjectFilterFields__c</fieldItem>
-                <identifier>RecordSourceSObjectFilterFields_cField</identifier>
-                <visibilityRule>
-                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
-                    <criteria>
-                        <leftValue>{!Record.SourceSObjectType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Log__c</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!Record.SourceSObjectType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>LogEntry__c</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!Record.SourceSObjectType__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>LogEntryTag__c</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-e1be7252-a5c7-486f-82fa-6f9803d64c95</name>
         <type>Facet</type>
     </flexiPageRegions>

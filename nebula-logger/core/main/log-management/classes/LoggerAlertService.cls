@@ -79,6 +79,7 @@ public class LoggerAlertService {
         continue;
       }
 
+      // TODO remove this call to deepClone()?
       bulkRecordCreateActionDispatcher.addMatches(alert, matchingRecords.deepClone());
 
       for (LoggerAlertAction__c action : alert.LoggerAlertActions__r) {
@@ -173,8 +174,15 @@ public class LoggerAlertService {
       .withType(records.getSObjectType())
       .build();
 
+    // TOOD move to a new private static helper method
+    Set<String> referencedFieldNames = formulaEvaluator.getReferencedFields();
+    // TODO make sure Id, and any other relevant fields are included, but make sure to match casing returned from formulaEvaluator.getReferencedFields()
+    referencedFieldNames.add('Id');
+    String query = 'SELECT ' + String.join(referencedFieldNames, ', ') + ' FROM ' + records.getSObjectType() + ' WHERE Id IN :records';
+    List<SObject> requeriedRecords = System.Database.query(query);
+
     List<SObject> matchingRecords = new List<SObject>();
-    for (SObject inputRecord : records) {
+    for (SObject inputRecord : requeriedRecords) {
       Boolean matchesFilter = (Boolean) formulaEvaluator.evaluate(inputRecord);
       if (matchesFilter) {
         matchingRecords.add(inputRecord);

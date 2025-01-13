@@ -100,18 +100,18 @@ public without sharing class LoggerPlugin {
   }
 
   /**
-   * @description Creates an instance of the class `LoggerPlugin.Notifiable` based on the provided `LoggerPlugin__mdt` configuration
-   * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Notifiable`
-   * @return                     The dynamically created instance of `LoggerPlugin.Notifiable`,
+   * @description Creates an instance of the class `LoggerPlugin.Alertable` based on the provided `LoggerPlugin__mdt` configuration
+   * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Alertable`
+   * @return                     The dynamically created instance of `LoggerPlugin.Alertable`,
    *                             or `null` if an instance could not be created based on the provided configuration
    */
-  public static Notifiable newNotifiableInstance(String apexClassTypeName) {
+  public static Alertable newAlertableInstance(String apexClassTypeName) {
     Object pluginInstance = newPluginInstance(apexClassTypeName);
-    Boolean isValidInstance = pluginInstance instanceof Notifiable;
+    Boolean isValidInstance = pluginInstance instanceof Alertable;
     if (isValidInstance == false) {
       pluginInstance = null;
     }
-    return (Notifiable) pluginInstance;
+    return (Alertable) pluginInstance;
   }
 
   /**

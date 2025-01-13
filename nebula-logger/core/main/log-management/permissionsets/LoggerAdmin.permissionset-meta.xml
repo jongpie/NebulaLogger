@@ -1833,11 +1833,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LoggerAlert__c.SourceSObjectFilterFields__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>LoggerAlert__c.SourceSObjectFilter__c</field>
         <readable>true</readable>
     </fieldPermissions>
