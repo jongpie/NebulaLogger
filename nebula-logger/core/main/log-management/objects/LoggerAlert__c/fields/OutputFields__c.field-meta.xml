@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <inlineHelpText>A list of 1 or more fields to display in the generated notification.</inlineHelpText>
-    <label>TODO delete, maybe: Output Fields</label>
+    <label>Output Fields: TODO use this field</label>
     <length>2000</length>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>false</trackHistory>

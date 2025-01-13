@@ -178,6 +178,8 @@ public class LoggerAlertService {
     Set<String> referencedFieldNames = formulaEvaluator.getReferencedFields();
     // TODO make sure Id, and any other relevant fields are included, but make sure to match casing returned from formulaEvaluator.getReferencedFields()
     referencedFieldNames.add('Id');
+    // TODO need to trim each value + use correct/consistent casing (lowercase?)
+    referencedFieldNames.add(alert.OutputFields__c.split(','));
     String query = 'SELECT ' + String.join(referencedFieldNames, ', ') + ' FROM ' + records.getSObjectType() + ' WHERE Id IN :records';
     List<SObject> requeriedRecords = System.Database.query(query);
 

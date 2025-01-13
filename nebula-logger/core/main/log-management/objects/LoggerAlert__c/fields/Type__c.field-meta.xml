@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <label>Type</label>
-    <required>true</required>
+    <required>false</required>
     <securityClassification>Confidential</securityClassification>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
