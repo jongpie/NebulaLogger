@@ -208,6 +208,7 @@
     "Nebula Logger - Core@4.15.1-system.orglimits-optimisations": "04t5Y0000015ohhQAA",
     "Nebula Logger - Core@4.15.2-added-support-for-logging-emptyrecylebinresult": "04t5Y0000015oifQAA",
     "Nebula Logger - Core@4.15.3-improved-testability-of-queries": "04t5Y0000015ok2QAA",
+    "Nebula Logger - Core@4.15.4-flowlogger-exception-message-handling": "04t5Y0000015oklQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
