@@ -108,11 +108,7 @@ public inherited sharing class FlowLogger {
 
       // Set the logging level if it's blank
       if (String.isBlank(this.loggingLevelName)) {
-        if (String.isNotBlank(this.faultMessage)) {
-          this.loggingLevelName = System.LoggingLevel.ERROR.name();
-        } else {
-          this.loggingLevelName = System.LoggingLevel.DEBUG.name();
-        }
+        this.loggingLevelName = (String.isNotBlank(this.faultMessage) ? System.LoggingLevel.ERROR : System.LoggingLevel.DEBUG).name();
       }
 
       // In Flow, using comma-separated String is easier than List<String>
@@ -148,7 +144,10 @@ public inherited sharing class FlowLogger {
         //
         // TODO Need to revisit this to see if there is a way to determine this programatically, or if new
         // Flow parameter(s) would be needed.
-        this.logEntryEvent.ExceptionMessage__c = hasFaultMessage ? this.faultMessage : FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE;
+        this.logEntryEvent.ExceptionMessage__c = LoggerDataStore.truncateFieldValue(
+          Schema.LogEntryEvent__e.ExceptionMessage__c,
+          hasFaultMessage ? this.faultMessage : FLOW_FAULT_ERROR_DEFAULT_EXCEPTION_MESSAGE
+        );
         this.logEntryEvent.ExceptionSourceApiName__c = this.flowName;
         this.logEntryEvent.ExceptionSourceMetadataType__c = FLOW_SOURCE_METADATA_TYPE;
         this.logEntryEvent.ExceptionType__c = FLOW_EXCEPTION_TYPE_NAME;
