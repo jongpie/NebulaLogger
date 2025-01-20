@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.4.NEXT",
-      "versionName": "FlowLogger exception message handling",
-      "versionDescription": "FlowLogger now properly truncates the LogEntryEvent__e.ExceptionMessage__c field",
+      "versionNumber": "4.15.5.NEXT",
+      "versionName": "Bugfix for AuthSession with null LoginHistory exception message handling",
+      "versionDescription": "Added safe navigation operator on LoginHistory from authSession records to avoid a NullPointerException",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
