@@ -30,7 +30,7 @@ global inherited sharing class FlowLogEntry {
   /**
    * @description Optionally specify a logging level - the default is 'DEBUG'
    */
-  @InvocableVariable(required=false label='(Optional) Logging Level')
+  @InvocableVariable(required=false label='(Optional) Logging Level' description='Supported Levels: ERROR, WARN, INFO, DEBUG, FINE, FINER, and FINEST')
   global String loggingLevelName;
 
   /**
@@ -54,7 +54,7 @@ global inherited sharing class FlowLogEntry {
   /**
    * @description Optionally choose the save method to use when 'Save Log' is true
    */
-  @InvocableVariable(required=false label='(Optional) Save Method')
+  @InvocableVariable(required=false label='(Optional) Save Method' description='Supported Save Methods: EVENT_BUS, QUEUEABLE, REST, and SYNCHRONOUS_DML')
   global String saveMethodName;
 
   /**
