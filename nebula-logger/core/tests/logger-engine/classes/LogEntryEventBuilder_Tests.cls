@@ -258,6 +258,42 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_query_and_handle_authSession_when_logingHistory_is_null() {
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(true)));
+    System.Assert.isTrue(LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
+    MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+    LoggerEngineDataSelector.setMock(mockSelector);
+    LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession();
+    mockAuthSessionProxy.Id = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);
+    mockAuthSessionProxy.LoginHistory = null;
+    mockAuthSessionProxy.LoginHistoryId = null;
+    mockAuthSessionProxy.LoginType = 'LoginType';
+    mockAuthSessionProxy.LogoutUrl = 'LogoutUrl';
+    mockAuthSessionProxy.ParentId = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);
+    mockAuthSessionProxy.SessionSecurityLevel = 'SessionSecurityLevel';
+    mockAuthSessionProxy.SessionType = 'SessionType';
+    mockAuthSessionProxy.SourceIp = 'SourceIp';
+    mockAuthSessionProxy.UsersId = System.UserInfo.getUserId();
+    mockSelector.setCachedAuthSessionProxy(mockAuthSessionProxy);
+    System.Assert.areEqual(0, mockSelector.getCachedAuthSessionQueryCount());
+
+    LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).setMessage('some message').getLogEntryEvent();
+
+    System.Assert.areEqual(1, mockSelector.getCachedAuthSessionQueryCount());
+    System.Assert.isNull(logEntryEvent.LoginApplication__c);
+    System.Assert.isNull(logEntryEvent.LoginBrowser__c);
+    System.Assert.isNull(logEntryEvent.LoginPlatform__c);
+    System.Assert.isNull(logEntryEvent.LoginHistoryId__c);
+    System.Assert.areEqual(mockAuthSessionProxy.LoginType, logEntryEvent.LoginType__c);
+    System.Assert.areEqual(mockAuthSessionProxy.LogoutUrl, logEntryEvent.LogoutUrl__c);
+    System.Assert.areEqual(mockAuthSessionProxy.ParentId, logEntryEvent.ParentSessionId__c);
+    System.Assert.areEqual(mockAuthSessionProxy.Id, logEntryEvent.SessionId__c);
+    System.Assert.areEqual(mockAuthSessionProxy.SessionSecurityLevel, logEntryEvent.SessionSecurityLevel__c);
+    System.Assert.areEqual(mockAuthSessionProxy.SessionType, logEntryEvent.SessionType__c);
+    System.Assert.areEqual(mockAuthSessionProxy.SourceIp, logEntryEvent.SourceIp__c);
+  }
+
+  @IsTest
   static void it_should_not_run_organization_query_when_disabled_via_logger_parameter() {
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
     System.Assert.isFalse(LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
