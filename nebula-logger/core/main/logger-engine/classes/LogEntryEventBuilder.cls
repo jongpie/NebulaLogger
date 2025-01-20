@@ -980,10 +980,10 @@ global with sharing class LogEntryEventBuilder {
       return;
     }
 
-    logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.Application;
-    logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.Browser;
-    logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION_PROXY.LoginHistoryId;
-    logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.Platform;
+    logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION_PROXY.LoginHistory?.Application;
+    logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION_PROXY.LoginHistory?.Browser;
+    logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION_PROXY?.LoginHistoryId;
+    logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION_PROXY.LoginHistory?.Platform;
     logEntryEvent.LoginType__c = CACHED_AUTH_SESSION_PROXY.LoginType;
     logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION_PROXY.LogoutUrl;
     logEntryEvent.ParentSessionId__c = CACHED_AUTH_SESSION_PROXY.ParentId;
@@ -992,8 +992,8 @@ global with sharing class LogEntryEventBuilder {
     logEntryEvent.SessionType__c = CACHED_AUTH_SESSION_PROXY.SessionType;
     logEntryEvent.SourceIp__c = CACHED_AUTH_SESSION_PROXY.SourceIp;
 
-    if (CACHED_AUTH_SESSION_PROXY.LoginHistory.UserId != CURRENT_USER.Id) {
-      logEntryEvent.ImpersonatedById__c = CACHED_AUTH_SESSION_PROXY.LoginHistory.UserId;
+    if (CACHED_AUTH_SESSION_PROXY.LoginHistory?.UserId != CURRENT_USER.Id) {
+      logEntryEvent.ImpersonatedById__c = CACHED_AUTH_SESSION_PROXY.LoginHistory?.UserId;
     }
   }
 
