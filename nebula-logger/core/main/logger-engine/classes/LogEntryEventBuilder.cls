@@ -982,7 +982,7 @@ global with sharing class LogEntryEventBuilder {
 
     logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION_PROXY.LoginHistory?.Application;
     logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION_PROXY.LoginHistory?.Browser;
-    logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION_PROXY?.LoginHistoryId;
+    logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION_PROXY.LoginHistoryId;
     logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION_PROXY.LoginHistory?.Platform;
     logEntryEvent.LoginType__c = CACHED_AUTH_SESSION_PROXY.LoginType;
     logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION_PROXY.LogoutUrl;
