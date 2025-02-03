@@ -648,6 +648,9 @@ private class LogEntryEventHandler_Tests {
     mockLoginHistoryProxy.Application = 'Application';
     mockLoginHistoryProxy.Browser = 'Browser';
     mockLoginHistoryProxy.Platform = 'Platform';
+    // TODO also test for when this UserId is a different user when an admin is impersonating another user
+    // This could be a bit tricky because creating a User in tests could fail in some orgs, and querying existing
+    // users in tests could fail in other orgs 🙃
     mockLoginHistoryProxy.UserId = System.UserInfo.getUserId();
     LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession();
     mockAuthSessionProxy.Id = LoggerMockDataCreator.createId(Schema.AuthSession.SObjectType);

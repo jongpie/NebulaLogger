@@ -628,6 +628,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
       log.SessionSecurityLevel__c = matchingAuthSessionProxy.SessionSecurityLevel;
       log.SessionType__c = matchingAuthSessionProxy.SessionType;
       log.SourceIp__c = matchingAuthSessionProxy.SourceIp;
+
+      if (matchingAuthSessionProxy.LoginHistory?.UserId != log.LoggedBy__c) {
+        log.ImpersonatedBy__c = matchingAuthSessionProxy.LoginHistory?.UserId;
+      }
     }
   }
 
