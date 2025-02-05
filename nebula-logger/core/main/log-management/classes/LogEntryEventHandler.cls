@@ -617,10 +617,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         continue;
       }
 
-      log.LoginApplication__c = matchingAuthSessionProxy.LoginHistory.Application;
-      log.LoginBrowser__c = matchingAuthSessionProxy.LoginHistory.Browser;
+      log.LoginApplication__c = matchingAuthSessionProxy.LoginHistory?.Application;
+      log.LoginBrowser__c = matchingAuthSessionProxy.LoginHistory?.Browser;
       log.LoginHistoryId__c = matchingAuthSessionProxy.LoginHistoryId;
-      log.LoginPlatform__c = matchingAuthSessionProxy.LoginHistory.Platform;
+      log.LoginPlatform__c = matchingAuthSessionProxy.LoginHistory?.Platform;
       log.LoginType__c = matchingAuthSessionProxy.LoginType;
       log.LogoutUrl__c = matchingAuthSessionProxy.LogoutUrl;
       log.ParentSessionId__c = matchingAuthSessionProxy.ParentId;
@@ -628,6 +628,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
       log.SessionSecurityLevel__c = matchingAuthSessionProxy.SessionSecurityLevel;
       log.SessionType__c = matchingAuthSessionProxy.SessionType;
       log.SourceIp__c = matchingAuthSessionProxy.SourceIp;
+
+      if (matchingAuthSessionProxy.LoginHistory?.UserId != log.LoggedBy__c) {
+        log.ImpersonatedBy__c = matchingAuthSessionProxy.LoginHistory?.UserId;
+      }
     }
   }
 
