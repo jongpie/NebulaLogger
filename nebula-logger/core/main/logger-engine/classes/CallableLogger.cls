@@ -175,17 +175,7 @@ global without sharing class CallableLogger implements System.Callable {
     String message = (String) originalInput.get(ARGUMENT_MESSAGE);
 
     if (CallableLogger.isOmniStudioInput(originalInput)) {
-      Map<String, Object> cleanedInput = new Map<String, Object>();
-      for (String inputName : originalInput.keySet()) {
-        Object inputValue = originalInput.get(inputName);
-        if (inputValue instanceof Map<String, Object>) {
-          cleanedInput.put(inputName, inputValue);
-        }
-      }
-
-      if (cleanedInput.keySet().isEmpty() == false) {
-        message += '\n\nOmniStudio Input:\n' + System.JSON.serializePretty(cleanedInput);
-      }
+      message += addOmniStudioSpecificFormatting(originalInput);
     }
 
     return message;
@@ -193,5 +183,20 @@ global without sharing class CallableLogger implements System.Callable {
 
   private static Boolean isOmniStudioInput(Map<String, Object> input) {
     return input.containsKey(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID) || Logger.getCurrentQuiddity() == System.Quiddity.REMOTE_ACTION;
+  }
+
+  private static String addOmniStudioSpecificFormatting(Map<String, Object> originalInput) {
+    // "Remote Actions of Omniscripts and Integration Procedures can invoke any class that implements Callable"
+    // within both of those, OmniStudio developers can declaratively add "Additional Inputs", which themselves
+    // are a key/value pairing
+    Map<String, Object> cleanedOmniStudioInputs = new Map<String, Object>();
+    for (String inputName : originalInput.keySet()) {
+      Object inputValue = originalInput.get(inputName);
+      if (inputValue instanceof Map<String, Object>) {
+        cleanedOmniStudioInputs.put(inputName, inputValue);
+      }
+    }
+    // if we've added any of the so-called Additional Inputs, help to differentiate them within the larger message
+    return cleanedOmniStudioInputs.isEmpty() == false ? '\n\nOmniStudio Input:\n' + System.JSON.serializePretty(cleanedOmniStudioInputs) : '';
   }
 }
