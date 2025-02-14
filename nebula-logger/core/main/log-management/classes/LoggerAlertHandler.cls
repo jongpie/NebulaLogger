@@ -19,6 +19,8 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
   protected override void executeBeforeInsert(List<SObject> triggerNew) {
     List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNew;
 
+    LoggerAlertHandler.clearThresholdFields(loggerAlerts);
+    LoggerAlertHandler.setIsMatchingThresholdEnabled(loggerAlerts);
     LoggerAlertHandler.setOrganizationId(loggerAlerts);
     LoggerAlertHandler.validateFilters(loggerAlerts);
   }
@@ -27,8 +29,20 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
     List<LoggerAlert__c> loggerAlerts = (List<LoggerAlert__c>) triggerNewMap.values();
     Map<Id, LoggerAlert__c> idToOldLoggerAlert = (Map<Id, LoggerAlert__c>) triggerOldMap;
 
+    LoggerAlertHandler.clearThresholdFields(loggerAlerts);
+    LoggerAlertHandler.setIsMatchingThresholdEnabled(loggerAlerts);
     LoggerAlertHandler.setOrganizationId(loggerAlerts);
     LoggerAlertHandler.validateFilters(loggerAlerts, idToOldLoggerAlert);
+  }
+
+  private static void clearThresholdFields(List<LoggerAlert__c> loggerAlerts) {
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      if (loggerAlert.MatchingType__c != 'Threshold Match') {
+        loggerAlert.MatchingThresholdRecordCount__c = null;
+        loggerAlert.MatchingThresholdTimePeriodIncrement__c = null;
+        loggerAlert.MatchingThresholdTimePeriodUnit__c = null;
+      }
+    }
   }
 
   private static Schema.SObjectType getSObjectType(String sobjectApiName) {
@@ -47,6 +61,14 @@ public without sharing class LoggerAlertHandler extends LoggerSObjectHandler {
       }
       when else {
         throw new System.IllegalArgumentException('Unsupported SObject Type ' + sobjectApiName);
+      }
+    }
+  }
+
+  private static void setIsMatchingThresholdEnabled(List<LoggerAlert__c> loggerAlerts) {
+    for (LoggerAlert__c loggerAlert : loggerAlerts) {
+      if (loggerAlert.MatchingType__c == 'Threshold Match') {
+        loggerAlert.IsMatchingThresholdEnabled__c = true;
       }
     }
   }

@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsMatchStorageEnabled__c</fullName>
     <defaultValue>true</defaultValue>
-    <inlineHelpText>When enabled, records are created in LoggerAlertMatch__c for every record that matches the alert&apos;s filter. This data can be used in reporting, trend analysis, automations, and more. However, it also consumes data storage space, which may be limited in some Salesforce orgs.</inlineHelpText>
+    <inlineHelpText>When enabled, records are created in LoggerAlertMatch__c for every record that matches the alert's filter. This data can be used in reporting, trend analysis, automations, and more. However, it also consumes data storage space, which may be limited in some Salesforce orgs.</inlineHelpText>
     <label>Store Matches</label>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>

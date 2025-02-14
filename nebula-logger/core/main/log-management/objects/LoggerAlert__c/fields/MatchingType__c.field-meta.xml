@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MatchingType__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <label>Matching Type</label>
+    <required>true</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Immediate Match</fullName>
+                <default>false</default>
+                <label>Immediate Match</label>
+            </value>
+            <value>
+                <fullName>Threshold Match</fullName>
+                <default>false</default>
+                <label>Threshold Match</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
