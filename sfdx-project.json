@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.6.NEXT",
-      "versionName": "Adds tryCatch CallableLogger method",
-      "versionDescription": "tryCatch CallableLogger method for OmniStudio and other decoupled logging usages",
+      "versionNumber": "4.15.7.NEXT",
+      "versionName": "Jest test cleanup and stacktrace parsing bugfix",
+      "versionDescription": "Fixed an issue in LoggerStackTrace.js that would cause an unintended exception when there isn't a valid JS stack trace",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
