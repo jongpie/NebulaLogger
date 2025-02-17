@@ -27,6 +27,7 @@ export default class Logger extends LightningElement {
    * @param  {Object} fieldToValue An object containing the custom field name as a key, with the corresponding value to store.
    *                      Example: `{"SomeField__c": "some value", "AnotherField__c": "another value"}`
    */
+  @api
   setField(fieldToValue) {
     this.#loggerService.setField(fieldToValue);
   }

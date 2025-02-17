@@ -39,7 +39,14 @@ jest.mock(
   { virtual: true }
 );
 
-describe('logger lwc recommended sync getLogger() import approach tests', () => {
+const getMarkupLogger = async () => {
+  const logger = createElement('c-logger', { is: Logger });
+  document.body.appendChild(logger);
+  await flushPromises();
+  return logger;
+};
+
+describe('logger tests', () => {
   beforeAll(() => {
     disableSystemMessages();
     setTimeout = callbackFunction => callbackFunction();
@@ -58,44 +65,12 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     jest.clearAllMocks();
   });
 
-  it('returns user settings', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
-    await flushPromises('Resolve async task queue');
-
-    const userSettings = logger.getUserSettings();
-
-    expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
-    expect(userSettings.isEnabled).toEqual(true);
-    expect(userSettings.isConsoleLoggingEnabled).toEqual(false);
-    expect(userSettings.isLightningLoggerEnabled).toEqual(false);
-  });
-
-  it('sets a scenario on all subsequent entries', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
-    await flushPromises('Resolve async task queue');
-    const scenario = 'some scenario';
-    const message = 'some message';
-
-    const firstLogEntry = logger.finest(message).getComponentLogEntry();
-    logger.setScenario(scenario);
-    const secondLogEntry = logger.info(message).getComponentLogEntry();
-
-    expect(firstLogEntry.scenario).toBeUndefined();
-    expect(secondLogEntry.scenario).toEqual(scenario);
-  });
-
   it('calls console.info a single time on initialization', async () => {
+    // this test is non-parameterized due to issues with console.info
+    // being actually set to jest.fn() in it.each calls
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
     enableSystemMessages();
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
 
     logger.error('some message');
@@ -113,11 +88,40 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(console.info.mock.calls[0][2]).toBe(expectedInitializationMessage);
   });
 
-  it('logs an ERROR entry', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('returns user settings', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
+
+    const userSettings = logger.getUserSettings();
+
+    expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
+    expect(userSettings.isEnabled).toEqual(true);
+    expect(userSettings.isConsoleLoggingEnabled).toEqual(false);
+    expect(userSettings.isLightningLoggerEnabled).toEqual(false);
+  });
+
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets a scenario on all subsequent entries', async loggingFunction => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = await loggingFunction();
+    await flushPromises('Resolve async task queue');
+    const scenario = 'some scenario';
+    const message = 'some message';
+
+    const firstLogEntry = logger.finest(message).getComponentLogEntry();
+    logger.setScenario(scenario);
+    const secondLogEntry = logger.info(message).getComponentLogEntry();
+
+    expect(firstLogEntry.scenario).toBeUndefined();
+    expect(secondLogEntry.scenario).toEqual(scenario);
+  });
+
+  it.each([
+    [getLogger, 'getLogger'],
+    [createLogger, 'createLogger'],
+    [getMarkupLogger, 'markupLogger']
+  ])('logs an ERROR entry', async loggingFunction => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel ERROR';
 
@@ -134,11 +138,13 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console.error for an ERROR entry when enabled', async () => {
+  it.each([
+    [getLogger, 'getLogger'],
+    [createLogger, 'createLogger'],
+    [getMarkupLogger, 'markupLogger']
+  ])('calls console.error for an ERROR entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel ERROR';
 
@@ -154,11 +160,13 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls lightning/logger.log for an ERROR entry when enabled', async () => {
+  it.each([
+    [getLogger, 'getLogger'],
+    [createLogger, 'createLogger'],
+    [getMarkupLogger, 'markupLogger']
+  ])('calls lightning/logger.log for an ERROR entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel ERROR';
 
@@ -173,11 +181,13 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
   });
 
-  it('logs a WARN entry', async () => {
+  it.each([
+    [getLogger, 'getLogger'],
+    [createLogger, 'createLogger'],
+    [getMarkupLogger, 'markupLogger']
+  ])('logs a WARN entry', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel WARN';
 
@@ -197,8 +207,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls console.warn for an WARN entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel WARN';
 
@@ -217,8 +225,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls lightning/logger.log for an WARN entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel WARN';
 
@@ -233,11 +239,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
   });
 
-  it('logs an INFO entry', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('logs an INFO entry', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel INFO';
 
@@ -257,8 +261,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls console.info for an INFO entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel INFO';
 
@@ -282,8 +284,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls lightning/logger.log for an INFO entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel INFO';
 
@@ -298,11 +298,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
   });
 
-  it('logs a DEBUG entry', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('logs a DEBUG entry', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel DEBUG';
 
@@ -322,8 +320,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls console.debug for an DEBUG entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel DEBUG';
 
@@ -342,8 +338,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls lightning/logger.log for an DEBUG entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel DEBUG';
 
@@ -358,11 +352,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
   });
 
-  it('logs a FINE entry', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('logs a FINE entry', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINE';
 
@@ -382,8 +374,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls console.debug for an FINE entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINE';
 
@@ -402,8 +392,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls lightning/logger.log for an FINE entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINE';
 
@@ -418,11 +406,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
   });
 
-  it('logs a FINER entry', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('logs a FINER entry', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINER';
 
@@ -442,8 +428,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls console.debug for an FINER entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINER';
 
@@ -462,8 +446,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls lightning/logger.log for an FINER entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINER';
 
@@ -478,11 +460,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
   });
 
-  it('logs a FINEST entry', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('logs a FINEST entry', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINEST';
 
@@ -502,8 +482,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls console.debug for an FINEST entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINEST';
 
@@ -522,8 +500,6 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
   it('calls lightning/logger.log for an FINEST entry when enabled', async () => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
     const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINEST';
 
@@ -538,11 +514,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(lightningLog.mock.calls[0][0]).toBe(componentLogEntry);
   });
 
-  it('sets browser details', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets browser details', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
 
     const logEntry = logger.info('example log entry').getComponentLogEntry();
@@ -555,11 +529,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
   });
 
-  it('sets multiple custom component fields on subsequent entries', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets multiple custom component fields on subsequent entries', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const firstFakeFieldName = 'SomeField__c';
     const firstFieldMockValue = 'something';
@@ -579,11 +551,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(subsequentLogEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
   });
 
-  it('sets multiple custom entry fields on a single entry', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets multiple custom entry fields on a single entry', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -603,11 +573,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
   });
 
-  it('sets recordId', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets recordId', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -619,11 +587,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.recordId).toEqual(mockUserId);
   });
 
-  it('sets record', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets record', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -635,11 +601,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.record).toEqual(mockUserRecord);
   });
 
-  it('sets JavaScript error details', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets JavaScript error details', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -656,11 +620,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.error.type).toEqual('JavaScript.TypeError');
   });
 
-  it('sets Apex error details', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('sets Apex error details', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -687,11 +649,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.error.type).toEqual(error.body.exceptionType);
   });
 
-  it('adds tags', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('adds tags', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -703,11 +663,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.tags.length).toEqual(mockTags.length);
   });
 
-  it('deduplicates tags', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('deduplicates tags', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const logEntryBuilder = logger.info('example log entry');
     const logEntry = logEntryBuilder.getComponentLogEntry();
@@ -723,11 +681,9 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.tags.length).toEqual(1);
   });
 
-  it('auto-saves log & throws exception', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('auto-saves log & throws exception', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'some message';
     const mockError = new TypeError('oops');
@@ -749,13 +705,11 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(savedComponentLogEntry.message).toEqual(message);
   });
 
-  it('still works for ERROR logging level when disabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('still works for ERROR logging level when disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    const settings = logger.getUserSettings({ forceReload: true });
+    const settings = logger.getUserSettings();
     expect(settings.isEnabled).toEqual(false);
     const error = new TypeError('oops');
 
@@ -781,13 +735,11 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for WARN logging level when disabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('still works for WARN logging level when disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    const settings = await logger.getUserSettings({ forceReload: true });
+    const settings = await logger.getUserSettings();
     expect(settings.isEnabled).toEqual(false);
     const error = new TypeError('oops');
 
@@ -813,13 +765,11 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for INFO logging level when disabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('still works for INFO logging level when disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    const settings = await logger.getUserSettings({ forceReload: true });
+    const settings = await logger.getUserSettings();
     expect(settings.isEnabled).toEqual(false);
     const error = new TypeError('oops');
 
@@ -845,13 +795,11 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for DEBUG logging level when disabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('still works for DEBUG logging level when disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    const settings = await logger.getUserSettings({ forceReload: true });
+    const settings = await logger.getUserSettings();
     expect(settings.isEnabled).toEqual(false);
     const error = new TypeError('oops');
 
@@ -877,13 +825,11 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for FINE logging level when disabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('still works for FINE logging level when disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    const settings = await logger.getUserSettings({ forceReload: true });
+    const settings = await logger.getUserSettings();
     expect(settings.isEnabled).toEqual(false);
     const error = new TypeError('oops');
 
@@ -909,13 +855,11 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for FINER logging level when disabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('still works for FINER logging level when disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    const settings = await logger.getUserSettings({ forceReload: true });
+    const settings = await logger.getUserSettings();
     expect(settings.isEnabled).toEqual(false);
     const error = new TypeError('oops');
 
@@ -941,1173 +885,10 @@ describe('logger lwc recommended sync getLogger() import approach tests', () => 
     expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('still works for FINEST logging level when disabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('still works for FINEST logging level when disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .finest('example FINEST log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setExceptionDetails(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('FINEST');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('flushes buffer', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
-    await flushPromises('Resolve async task queue');
-    await logger.getUserSettings({ forceReload: true });
-    const numberOfLogEntries = 3;
-    for (let i = 0; i < numberOfLogEntries; i++) {
-      logger.info('entry number: ' + i);
-    }
-    expect(logger.getBufferSize()).toEqual(numberOfLogEntries);
-
-    await logger.flushBuffer();
-
-    expect(logger.getBufferSize()).toEqual(0);
-  });
-
-  it('saves log entries and flushes buffer', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
-    await flushPromises('Resolve async task queue');
-    await logger.getUserSettings({ forceReload: true });
-    const firstEntryBuilder = logger.info('example INFO log entry added BEFORE saveLog()');
-    const secondEntryBuilder = logger.debug('example DEBUG log entry added BEFORE saveLog()');
-    await flushPromises();
-    expect(logger.getBufferSize()).toBe(2);
-
-    logger.saveLog();
-    logger.warn('example WARN log entry added AFTER saveLog()');
-
-    await flushPromises('Resolve async task queue');
-    expect(logger.getBufferSize()).toBe(1);
-    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
-    const expectedApexParameter = {
-      componentLogEntries: [firstEntryBuilder.getComponentLogEntry(), secondEntryBuilder.getComponentLogEntry()],
-      saveMethodName: undefined
-    };
-    expect(saveComponentLogEntries.mock.calls[0][0]).toEqual(expectedApexParameter);
-  });
-});
-
-describe('logger lwc deprecated async createLogger() import tests', () => {
-  beforeEach(() => {
-    disableSystemMessages();
-    // One of logger's features (when enabled) is to auto-call the browser's console
-    // so devs can see a log entry easily. But during Jest tests, seeing all of the
-    // console statements is... a bit overwhelming, so the global console functions
-    // are overwritten with an empty function so they're no-ops / they don't show up
-    // in the test logs
-    const emptyFunction = () => '';
-    console.error = emptyFunction;
-    console.warn = emptyFunction;
-    console.info = emptyFunction;
-    console.debug = emptyFunction;
-  });
-  afterEach(async () => {
-    jest.clearAllMocks();
-  });
-
-  it('returns user settings when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-
-    const userSettings = logger.getUserSettings();
-
-    expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
-    expect(userSettings.isEnabled).toEqual(true);
-    expect(userSettings.isConsoleLoggingEnabled).toEqual(false);
-    expect(userSettings.isLightningLoggerEnabled).toEqual(false);
-  });
-
-  it('sets a scenario on all subsequent entries when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    // const logger = getLogger();
-    // getLogger() is built to be sync, but internally, some async tasks must execute
-    // before some sync tasks are executed
-    await flushPromises('Resolve async task queue');
-    const logger = await createLogger();
-    const scenario = 'some scenario';
-    const message = 'some message';
-
-    const firstLogEntry = logger.finest(message).getComponentLogEntry();
-    logger.setScenario(scenario);
-    const secondLogEntry = logger.info(message).getComponentLogEntry();
-
-    expect(firstLogEntry.scenario).toBeUndefined();
-    expect(secondLogEntry.scenario).toEqual(scenario);
-  });
-
-  it('logs an ERROR entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'component log entry with loggingLevel ERROR';
-
-    const logEntry = logger.error(message).getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('ERROR');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a WARN entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'component log entry with loggingLevel WARN';
-
-    const logEntry = logger.warn(message).getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('WARN');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs an INFO entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'component log entry with loggingLevel INFO';
-
-    const logEntry = logger.info(message).getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('INFO');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a DEBUG entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'component log entry with loggingLevel DEBUG';
-
-    const logEntry = logger.debug(message).getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('DEBUG');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a FINE entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'component log entry with loggingLevel FINE';
-
-    const logEntry = logger.fine(message).getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('FINE');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a FINER entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'component log entry with loggingLevel FINER';
-
-    const logEntry = logger.finer(message).getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('FINER');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a FINEST entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'component log entry with loggingLevel FINEST';
-
-    const logEntry = logger.finest(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('FINEST');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('sets browser details when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    await logger.getUserSettings();
-
-    const logEntry = logger.info('example log entry').getComponentLogEntry();
-
-    expect(logEntry.browser.address).toEqual(window.location.href);
-    expect(logEntry.browser.formFactor).toEqual(FORM_FACTOR);
-    expect(logEntry.browser.language).toEqual(window.navigator.language);
-    expect(logEntry.browser.screenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);
-    expect(logEntry.browser.userAgent).toEqual(window.navigator.userAgent);
-    expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
-  });
-
-  it('sets multiple custom component fields on subsequent entries when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    await logger.getUserSettings();
-    const firstFakeFieldName = 'SomeField__c';
-    const firstFieldMockValue = 'something';
-    const secondFakeFieldName = 'AnotherField__c';
-    const secondFieldMockValue = 'another value';
-
-    const previousLogEntry = logger.info('example log entry from before setField() is called').getComponentLogEntry();
-    logger.setField({
-      [firstFakeFieldName]: firstFieldMockValue,
-      [secondFakeFieldName]: secondFieldMockValue
-    });
-    const subsequentLogEntry = logger.info('example log entry from after setField() is called').getComponentLogEntry();
-
-    expect(previousLogEntry.fieldToValue[firstFakeFieldName]).toBeUndefined();
-    expect(previousLogEntry.fieldToValue[secondFakeFieldName]).toBeUndefined();
-    expect(subsequentLogEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
-    expect(subsequentLogEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
-  });
-
-  it('sets multiple custom entry fields on a single entry when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    await logger.getUserSettings();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    const firstFakeFieldName = 'SomeField__c';
-    const firstFieldMockValue = 'something';
-    const secondFakeFieldName = 'AnotherField__c';
-    const secondFieldMockValue = 'another value';
-    expect(logEntry.fieldToValue[firstFakeFieldName]).toBeFalsy();
-    expect(logEntry.fieldToValue[secondFakeFieldName]).toBeFalsy();
-
-    logEntryBuilder.setField({
-      [firstFakeFieldName]: firstFieldMockValue,
-      [secondFakeFieldName]: secondFieldMockValue
-    });
-
-    expect(logEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
-    expect(logEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
-  });
-
-  it('sets recordId when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    await logger.getUserSettings();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.recordId).toBeFalsy();
-    const mockUserId = '0052F000008yLcEQAU';
-
-    logEntryBuilder.setRecordId(mockUserId);
-
-    expect(logEntry.recordId).toEqual(mockUserId);
-  });
-
-  it('sets record when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    await logger.getUserSettings();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.record).toBeFalsy();
-    const mockUserRecord = { Id: '0052F000008yLcEQAU', FirstName: 'Jonathan', LastName: 'Gillespie' };
-
-    logEntryBuilder.setRecord(mockUserRecord);
-
-    expect(logEntry.record).toEqual(mockUserRecord);
-  });
-
-  it('sets JavaScript error details when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    await logger.getUserSettings();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.error).toBeFalsy();
-    const error = new TypeError('oops');
-    expect(error).toBeTruthy();
-    expect(error.message).toBeTruthy();
-    expect(error.stack).toBeTruthy();
-
-    logEntryBuilder.setError(error);
-
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.stackTrace);
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-  });
-
-  it('sets Apex error details when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.error).toBeFalsy();
-    const error = {
-      body: {
-        exceptionType: 'System.DmlException',
-        message: 'Some Apex error, oh no!',
-        stackTrace: 'Class.SomeApexClass.runSomeMethod: line 314, column 42'
-      }
-    };
-    expect(error).toBeTruthy();
-    expect(error.body.exceptionType).toBeTruthy();
-    expect(error.body.message).toBeTruthy();
-    expect(error.body.stackTrace).toBeTruthy();
-
-    logEntryBuilder.setError(error);
-
-    expect(logEntry.error.message).toEqual(error.body.message);
-    expect(logEntry.error.stackTrace.metadataType).toEqual('ApexClass');
-    expect(logEntry.error.stackTrace.className).toEqual('SomeApexClass');
-    expect(logEntry.error.stackTrace.methodName).toEqual('runSomeMethod');
-    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.body.stackTrace);
-    expect(logEntry.error.type).toEqual(error.body.exceptionType);
-  });
-
-  it('adds tags when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.recordId).toBeFalsy();
-    const mockTags = ['first tag', 'second tag', 'third tag'];
-
-    logEntryBuilder.addTags(mockTags);
-
-    expect(logEntry.tags.length).toEqual(mockTags.length);
-  });
-
-  it('deduplicates tags when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.recordId).toBeFalsy();
-    const mockTags = ['duplicate tag', 'duplicate tag'];
-    expect(mockTags.length).toEqual(2);
-    expect(new Set(mockTags).size).toEqual(1);
-
-    for (let i = 0; i < mockTags.length; i++) {
-      logEntryBuilder.addTag(mockTags[i]);
-    }
-
-    expect(logEntry.tags.length).toEqual(1);
-  });
-
-  it('auto-saves log & throws exception when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const message = 'some message';
-    const mockError = new TypeError('oops');
-    let thrownError;
-
-    try {
-      logger.exception(message, mockError);
-    } catch (error) {
-      thrownError = error;
-    }
-
-    expect(thrownError).toBe(mockError);
-    await flushPromises('Resolve async task queue');
-    expect(logger.getBufferSize()).toBe(0);
-    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
-    expect(saveComponentLogEntries.mock.calls[0][0].componentLogEntries.length).toEqual(1);
-    const savedComponentLogEntry = saveComponentLogEntries.mock.calls[0][0].componentLogEntries[0];
-    expect(savedComponentLogEntry.loggingLevel).toEqual('ERROR');
-    expect(savedComponentLogEntry.message).toEqual(message);
-  });
-
-  it('still works for ERROR logging level when disabled when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = await createLogger();
-    const settings = logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .error('example ERROR log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('ERROR');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('still works for WARN logging level when disabled when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = await createLogger();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .warn('example WARN log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('WARN');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('still works for INFO logging level when disabled when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = await createLogger();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .info('example INFO log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('INFO');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('still works for DEBUG logging level when disabled when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = await createLogger();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .debug('example DEBUG log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('DEBUG');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('still works for FINE logging level when disabled when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = await createLogger();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .fine('example FINE log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('FINE');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('still works for FINER logging level when disabled when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = await createLogger();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .finer('example FINER log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('FINER');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('still works for FINEST logging level when disabled when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = await createLogger();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .finest('example FINEST log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-    expect(logEntry.loggingLevel).toEqual('FINEST');
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-    expect(logEntry.timestamp).toBeTruthy();
-  });
-
-  it('flushes buffer when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    await logger.getUserSettings({ forceReload: true });
-    const numberOfLogEntries = 3;
-    for (let i = 0; i < numberOfLogEntries; i++) {
-      logger.info('entry number: ' + i);
-    }
-    await flushPromises();
-    expect(logger.getBufferSize()).toEqual(numberOfLogEntries);
-
-    await logger.flushBuffer();
-
-    expect(logger.getBufferSize()).toEqual(0);
-  });
-
-  it('saves log entries and flushes buffer when using deprecated async createLogger() import approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = await createLogger();
-    const firstEntryBuilder = logger.info('example INFO log entry added BEFORE saveLog()');
-    const secondEntryBuilder = logger.debug('example DEBUG log entry added BEFORE saveLog()');
-    await flushPromises();
-    expect(logger.getBufferSize()).toBe(2);
-
-    logger.saveLog();
-    logger.warn('example WARN log entry added AFTER saveLog()');
-
-    await flushPromises('Resolve async task queue');
-    expect(logger.getBufferSize()).toBe(1);
-    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
-    const expectedApexParameter = {
-      componentLogEntries: [firstEntryBuilder.getComponentLogEntry(), secondEntryBuilder.getComponentLogEntry()],
-      saveMethodName: undefined
-    };
-    expect(saveComponentLogEntries.mock.calls[0][0]).toEqual(expectedApexParameter);
-  });
-});
-
-describe('logger lwc legacy markup tests', () => {
-  beforeEach(() => {
-    disableSystemMessages();
-    // One of logger's features (when enabled) is to auto-call the browser's console
-    // so devs can see a log entry easily. But during Jest tests, seeing all of the
-    // console statements is... a bit overwhelming, so the global console functions
-    // are overwritten with an empty function so they're no-ops / they don't show up
-    // in the test logs
-    const emptyFunction = () => '';
-    console.error = emptyFunction;
-    console.warn = emptyFunction;
-    console.info = emptyFunction;
-    console.debug = emptyFunction;
-  });
-  afterEach(async () => {
-    while (document.body.firstChild) {
-      document.body.removeChild(document.body.firstChild);
-    }
-    jest.clearAllMocks();
-  });
-
-  it('returns user settings when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const userSettings = await logger.getUserSettings();
-
-    expect(userSettings.defaultSaveMethod).toEqual('EVENT_BUS');
-    expect(userSettings.isEnabled).toEqual(true);
-    expect(userSettings.isConsoleLoggingEnabled).toEqual(false);
-    expect(userSettings.isLightningLoggerEnabled).toEqual(false);
-  });
-
-  it('sets a scenario on all subsequent entries when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const scenario = 'some scenario';
-    const message = 'some message';
-
-    const firstLogEntry = logger.finest(message).getComponentLogEntry();
-    logger.setScenario(scenario);
-    const secondLogEntry = logger.info(message).getComponentLogEntry();
-
-    expect(firstLogEntry.scenario).toBeUndefined();
-    expect(secondLogEntry.scenario).toEqual(scenario);
-  });
-
-  it('logs an ERROR entry when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const message = 'component log entry with loggingLevel ERROR';
-    const logEntry = await logger.error(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('ERROR');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a WARN entry when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const message = 'component log entry with loggingLevel WARN';
-    const logEntry = await logger.warn(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('WARN');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs an INFO entry when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const message = 'component log entry with loggingLevel INFO';
-    const logEntry = logger.info(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('INFO');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a DEBUG entry when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const message = 'component log entry with loggingLevel DEBUG';
-    const logEntry = await logger.debug(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('DEBUG');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a FINE entry when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const message = 'component log entry with loggingLevel FINE';
-    const logEntry = await logger.fine(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('FINE');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a FINER entry when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const message = 'component log entry with loggingLevel FINER';
-    const logEntry = await logger.finer(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('FINER');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('logs a FINEST entry when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const message = 'component log entry with loggingLevel FINEST';
-    const logEntry = await logger.finest(message).getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(1);
-    expect(logEntry.loggingLevel).toEqual('FINEST');
-    expect(logEntry.message).toEqual(message);
-  });
-
-  it('sets browser details when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-
-    const logEntry = await logger.info('example log entry').getComponentLogEntry();
-
-    expect(logEntry.browser.address).toEqual(window.location.href);
-    expect(logEntry.browser.formFactor).toEqual(FORM_FACTOR);
-    expect(logEntry.browser.language).toEqual(window.navigator.language);
-    expect(logEntry.browser.screenResolution).toEqual(window.screen.availWidth + ' x ' + window.screen.availHeight);
-    expect(logEntry.browser.userAgent).toEqual(window.navigator.userAgent);
-    expect(logEntry.browser.windowResolution).toEqual(window.innerWidth + ' x ' + window.innerHeight);
-  });
-
-  it('sets multiple custom fields when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const logEntryBuilder = await logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    const firstFakeFieldName = 'SomeField__c';
-    const firstFieldMockValue = 'something';
-    const secondFakeFieldName = 'AnotherField__c';
-    const secondFieldMockValue = 'another value';
-    expect(logEntry.fieldToValue[firstFakeFieldName]).toBeFalsy();
-    expect(logEntry.fieldToValue[secondFakeFieldName]).toBeFalsy();
-
-    logEntryBuilder.setField({
-      [firstFakeFieldName]: firstFieldMockValue,
-      [secondFakeFieldName]: secondFieldMockValue
-    });
-
-    expect(logEntry.fieldToValue[firstFakeFieldName]).toEqual(firstFieldMockValue);
-    expect(logEntry.fieldToValue[secondFakeFieldName]).toEqual(secondFieldMockValue);
-  });
-
-  it('sets recordId when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const logEntryBuilder = await logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.recordId).toBeFalsy();
-
-    const mockUserId = '0052F000008yLcEQAU';
-    logEntryBuilder.setRecordId(mockUserId);
-
-    expect(logEntry.recordId).toEqual(mockUserId);
-  });
-
-  it('sets record when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const logEntryBuilder = await logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.record).toBeFalsy();
-    const mockUserRecord = { Id: '0052F000008yLcEQAU', FirstName: 'Jonathan', LastName: 'Gillespie' };
-
-    logEntryBuilder.setRecord(mockUserRecord);
-
-    expect(logEntry.record).toEqual(mockUserRecord);
-  });
-
-  it('sets JavaScript error details when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const logEntryBuilder = await logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.error).toBeFalsy();
-    const error = new TypeError('oops');
-    expect(error).toBeTruthy();
-    expect(error.message).toBeTruthy();
-    expect(error.stack).toBeTruthy();
-
-    logEntryBuilder.setError(error);
-
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.stackTrace);
-    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
-  });
-
-  it('sets Apex error details when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.error).toBeFalsy();
-    const error = {
-      body: {
-        exceptionType: 'System.DmlException',
-        message: 'Some Apex error, oh no!',
-        stackTrace: 'Class.SomeApexClass.runSomeMethod: line 314, column 42'
-      }
-    };
-    expect(error).toBeTruthy();
-    expect(error.body.exceptionType).toBeTruthy();
-    expect(error.body.message).toBeTruthy();
-    expect(error.body.stackTrace).toBeTruthy();
-
-    logEntryBuilder.setError(error);
-
-    expect(logEntry.error.message).toEqual(error.body.message);
-    expect(logEntry.error.stackTrace.metadataType).toEqual('ApexClass');
-    expect(logEntry.error.stackTrace.className).toEqual('SomeApexClass');
-    expect(logEntry.error.stackTrace.methodName).toEqual('runSomeMethod');
-    expect(logEntry.error.stackTrace.stackTraceString).toEqual(error.body.stackTrace);
-    expect(logEntry.error.type).toEqual(error.body.exceptionType);
-  });
-
-  it('adds tags when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.recordId).toBeFalsy();
-    const mockTags = ['first tag', 'second tag', 'third tag'];
-
-    logEntryBuilder.addTags(mockTags);
-
-    expect(logEntry.tags.length).toEqual(mockTags.length);
-  });
-
-  it('deduplicates tags when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const logEntryBuilder = logger.info('example log entry');
-    const logEntry = logEntryBuilder.getComponentLogEntry();
-    expect(logEntry.recordId).toBeFalsy();
-    const mockTags = ['duplicate tag', 'duplicate tag'];
-    expect(mockTags.length).toEqual(2);
-    expect(new Set(mockTags).size).toEqual(1);
-
-    for (let i = 0; i < mockTags.length; i++) {
-      logEntryBuilder.addTag(mockTags[i]);
-    }
-
-    expect(logEntry.tags.length).toEqual(1);
-  });
-
-  it('auto-saves log & throws exception when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const message = 'some message';
-    const mockError = new TypeError('oops');
-    let thrownError;
-
-    try {
-      logger.exception(message, mockError);
-    } catch (error) {
-      thrownError = error;
-    }
-
-    expect(thrownError).toBe(mockError);
-    await flushPromises('Resolve async task queue');
-    expect(logger.getBufferSize()).toBe(0);
-    expect(saveComponentLogEntries).toHaveBeenCalledTimes(1);
-    expect(saveComponentLogEntries.mock.calls[0][0].componentLogEntries.length).toEqual(1);
-    const savedComponentLogEntry = saveComponentLogEntries.mock.calls[0][0].componentLogEntries[0];
-    expect(savedComponentLogEntry.loggingLevel).toEqual('ERROR');
-    expect(savedComponentLogEntry.message).toEqual(message);
-  });
-
-  it('still works for ERROR logging level when disabled when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .error('example ERROR log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('ERROR');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.timestamp).toBeTruthy();
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-  });
-
-  it('still works for WARN logging level when disabled when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .warn('example WARN log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('WARN');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.timestamp).toBeTruthy();
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-  });
-
-  it('still works for INFO logging level when disabled when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .info('example INFO log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('INFO');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.timestamp).toBeTruthy();
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-  });
-
-  it('still works for DEBUG logging level when disabled when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .debug('example DEBUG log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('DEBUG');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.timestamp).toBeTruthy();
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-  });
-
-  it('still works for FINE logging level when disabled when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .fine('example FINE log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('FINE');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.timestamp).toBeTruthy();
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-  });
-
-  it('still works for FINER logging level when disabled when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(false);
-    const error = new TypeError('oops');
-
-    const logEntry = logger
-      .finer('example FINER log entry')
-      .setMessage('some message')
-      .setRecordId('some_record_Id')
-      .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
-      .addTag('a tag')
-      .addTags(['a second tag', 'a third tag'])
-      .getComponentLogEntry();
-
-    expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('FINER');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.originStackTrace).toBeTruthy();
-    expect(logEntry.error.message).toEqual(error.message);
-    expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.timestamp).toBeTruthy();
-    expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
-  });
-
-  it('still works for FINEST logging level when disabled when using deprecated markup approach', async () => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isEnabled: false });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
     const settings = await logger.getUserSettings();
     expect(settings.isEnabled).toEqual(false);
     const error = new TypeError('oops');
@@ -2117,50 +898,42 @@ describe('logger lwc legacy markup tests', () => {
       .setMessage('some message')
       .setRecordId('some_record_Id')
       .setRecord({ Id: 'some_record_Id' })
-      .setError(error)
+      .setExceptionDetails(error)
       .addTag('a tag')
       .addTags(['a second tag', 'a third tag'])
       .getComponentLogEntry();
 
-    await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
-    expect(logEntry.loggingLevel).toEqual('FINEST');
-    expect(logEntry.recordId).toEqual('some_record_Id');
-    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
-    expect(logEntry.error).toBeTruthy();
-    expect(logEntry.originStackTrace).toBeTruthy();
     expect(logEntry.error.message).toEqual(error.message);
     expect(logEntry.error.stackTrace).toBeTruthy();
-    expect(logEntry.timestamp).toBeTruthy();
+    expect(logEntry.error.type).toEqual('JavaScript.TypeError');
+    expect(logEntry.loggingLevel).toEqual('FINEST');
+    expect(logEntry.originStackTrace).toBeTruthy();
+    expect(logEntry.record).toEqual({ Id: 'some_record_Id' });
+    expect(logEntry.recordId).toEqual('some_record_Id');
     expect(logEntry.tags).toEqual(['a tag', 'a second tag', 'a third tag']);
+    expect(logEntry.timestamp).toBeTruthy();
   });
 
-  it('flushes buffer when using deprecated markup approach', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('flushes buffer', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
-    await flushPromises();
-    const settings = await logger.getUserSettings({ forceReload: true });
-    expect(settings.isEnabled).toEqual(true);
+    const logger = await loggingFunction();
+    await flushPromises('Resolve async task queue');
     const numberOfLogEntries = 3;
     for (let i = 0; i < numberOfLogEntries; i++) {
       logger.info('entry number: ' + i);
     }
-    await flushPromises();
     expect(logger.getBufferSize()).toEqual(numberOfLogEntries);
 
     await logger.flushBuffer();
 
-    await flushPromises();
     expect(logger.getBufferSize()).toEqual(0);
   });
 
-  it('saves log entries and flushes buffer when using deprecated markup approach', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('saves log entries and flushes buffer', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    const logger = createElement('c-logger', { is: Logger });
-    document.body.appendChild(logger);
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
-    await logger.getUserSettings({ forceReload: true });
     const firstEntryBuilder = logger.info('example INFO log entry added BEFORE saveLog()');
     const secondEntryBuilder = logger.debug('example DEBUG log entry added BEFORE saveLog()');
     await flushPromises();
