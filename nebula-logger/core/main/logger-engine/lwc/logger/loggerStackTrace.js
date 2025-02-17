@@ -49,13 +49,11 @@ const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/;
 
 class ErrorStackParser {
   parse(error) {
-    let stackTraceParticles;
+    let stackTraceParticles = [];
     if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP)) {
       stackTraceParticles = this.parseV8OrIE(error);
     } else if (error.stack) {
       stackTraceParticles = this.parseFFOrSafari(error);
-    } else {
-      throw new Error('Cannot parse given Error object');
     }
 
     return stackTraceParticles;
