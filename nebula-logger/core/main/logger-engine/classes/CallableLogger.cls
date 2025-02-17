@@ -148,7 +148,10 @@ global without sharing class CallableLogger implements System.Callable {
         logEntryEventBuilder.setRecord((Map<Id, SObject>) input.get(ARGUMENT_RECORD_MAP));
       }
       if (input.containsKey(ARGUMENT_TAGS)) {
-        logEntryEventBuilder.addTags((List<String>) input.get(ARGUMENT_TAGS));
+        List<Object> tags = (List<Object>) input.get(ARGUMENT_TAGS);
+        for (Object tag : tags) {
+          logEntryEventBuilder.addTag(tag?.toString());
+        }
       }
       if (CallableLogger.isOmniStudioInput(input)) {
         LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
