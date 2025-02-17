@@ -211,6 +211,7 @@
     "Nebula Logger - Core@4.15.4-flowlogger-exception-message-handling": "04t5Y0000015oklQAA",
     "Nebula Logger - Core@4.15.5-bugfix-for-authsession-with-null-loginhistory-exception-message-handling": "04t5Y0000015p5jQAA",
     "Nebula Logger - Core@4.15.6-adds-trycatch-callablelogger-method": "04t5Y0000015pEdQAI",
+    "Nebula Logger - Core@4.15.7-jest-test-cleanup-and-stacktrace-parsing-bugfix": "04t5Y0000015pEnQAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
