@@ -72,6 +72,11 @@ global without sharing class CallableLogger implements System.Callable {
   @SuppressWarnings('PMD.ApexDoc, PMD.StdCyclomaticComplexity')
   private class CallableHandler {
     public void handleCall(String action, Map<String, Object> input, Map<String, Object> output) {
+      if (action == 'tryCatch') {
+        action = 'newEntry';
+        input.put(ARGUMENT_MESSAGE, 'An unexpected error occurred:\n' + System.JSON.serializePretty(input));
+        input.put(ARGUMENT_LOGGING_LEVEL, System.LoggingLevel.ERROR.name());
+      }
       switch on action {
         // Methods for transaction IDs / parent transaction IDs
         when 'getTransactionId' {
@@ -175,7 +180,7 @@ global without sharing class CallableLogger implements System.Callable {
   }
 
   private static String getFormattedMessage(Map<String, Object> originalInput) {
-    String message = (String) originalInput.get(ARGUMENT_MESSAGE);
+    String message = (String) originalInput.get(ARGUMENT_MESSAGE) ?? '';
 
     if (CallableLogger.isOmniStudioInput(originalInput)) {
       message += addOmniStudioSpecificFormatting(originalInput);

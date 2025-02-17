@@ -623,4 +623,17 @@ private class CallableLogger_Tests {
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.areEqual(targetSaveMethodName, Logger.lastSaveMethodNameUsed);
   }
+
+  @IsTest
+  static void it_logs_try_catch_when_passed_as_action() {
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> input = new Map<String, Object>{ 'argument_1' => 'first arg', 'argument_2' => 'second arg' };
+
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('tryCatch', input.clone());
+
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual('An unexpected error occurred:\n' + System.JSON.serializePretty(input), logEntryEvent.Message__c);
+    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+  }
 }
