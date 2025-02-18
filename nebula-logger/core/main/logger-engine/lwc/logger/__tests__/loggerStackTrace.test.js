@@ -20,6 +20,29 @@ describe('logger stack trace parsing tests', () => {
     jest.clearAllMocks();
   });
 
+  it('correctly handles undefined error', async () => {
+    const originStackTraceError = undefined;
+    const loggerStackTrace = new LoggerStackTrace();
+
+    const originStackTrace = loggerStackTrace.parse(originStackTraceError);
+
+    expect(originStackTrace.componentName).toBeUndefined();
+    expect(originStackTrace.functionName).toBeUndefined();
+    expect(originStackTrace.metadataType).toBeUndefined();
+  });
+
+  it('correctly handles non-null error with undefined stack trace', async () => {
+    const originStackTraceError = new Error();
+    originStackTraceError.stack = undefined;
+    const loggerStackTrace = new LoggerStackTrace();
+
+    const originStackTrace = loggerStackTrace.parse(originStackTraceError);
+
+    expect(originStackTrace.componentName).toBeUndefined();
+    expect(originStackTrace.functionName).toBeUndefined();
+    expect(originStackTrace.metadataType).toBeUndefined();
+  });
+
   it('correctly parses Chrome stack trace when debug mode is enabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
