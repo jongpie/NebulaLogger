@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.7.NEXT",
-      "versionName": "Jest test cleanup and stacktrace parsing bugfix",
-      "versionDescription": "Fixed an issue in LoggerStackTrace.js that would cause an unintended exception when there isn't a valid JS stack trace",
+      "versionNumber": "4.15.8.NEXT",
+      "versionName": "Log__c.ParentLogTransactionId__c Custom Index",
+      "versionDescription": "Fixes an issue with high-volume calls to LogManagementDataSelector.getLogsWithoutParentLogByParentTransactionId()",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
