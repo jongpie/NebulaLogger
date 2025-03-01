@@ -20,6 +20,19 @@
       "default": false
     },
     {
+      "package": "Nebula Logger - Core Plugin - Approval Namespace",
+      "path": "./nebula-logger/plugins/approvals/plugin",
+      "dependencies": [
+        {
+          "package": "Nebula Logger - Core@4.7.0-spring-'22-release"
+        }
+      ],
+      "versionNumber": "1.0.0.NEXT",
+      "versionName": "Adds Approval namespace adapter",
+      "versionDescription": "Requires v4.7.0 (or newer) of Nebula Logger's core unlocked package. Adds Approval namespace adapter to allow logging of LockResult and other Approvals-based classes",
+      "default": false
+    },
+    {
       "package": "Nebula Logger - Core Plugin - Async Failure Additions",
       "path": "./nebula-logger/plugins/async-failure-additions/plugin",
       "dependencies": [

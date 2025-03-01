@@ -50,6 +50,7 @@
     "permset:assign:big-object-admin": "sf org assign permset --name LoggerLogEntryArchiveAdmin",
     "permset:assign:recipes-admin": "sf org assign permset --name LoggerRecipesAdmin",
     "permset:assign:slack-admin": "sf org assign permset --name LoggerSlackPluginAdmin",
+    "plugin:version:create:approvals": "sf package version create --json --package \"Nebula Logger - Core Plugin - Approval Namespace\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:async-failure-additions": "sf package version create --json --package \"Nebula Logger - Core Plugin - Async Failure Additions\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:big-object": "sf package version create --json --package \"Nebula Logger - Core Plugin - Big Object Archiving\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:log-retention-rules": "sf package version create --json --package \"Nebula Logger - Core Plugin - Log Retention Rules\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
