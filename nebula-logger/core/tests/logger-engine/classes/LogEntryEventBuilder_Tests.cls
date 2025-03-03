@@ -886,7 +886,7 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_unlockResult() {
-    List<Approval.UnlockResult> unlockResults = new List<Database.DeleteResult>();
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>();
     for (Integer i = 0; i < 5; i++) {
       unlockResults.add(LoggerMockDataCreator.createApprovalUnlockResult(false));
     }

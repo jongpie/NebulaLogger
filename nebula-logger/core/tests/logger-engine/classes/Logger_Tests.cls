@@ -2340,7 +2340,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_error_entry_for_logMessage_with_failed_lockResult() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2718,8 +2718,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -2742,8 +2742,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -2766,8 +2766,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -3216,7 +3216,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_error_entry_for_string_message_with_failed_lockResult() {
+  static void it_should_add_error_entry_for_string_message_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3594,8 +3594,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -3618,8 +3618,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -3642,8 +3642,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -4091,7 +4091,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_warn_entry_for_logMessage_with_failed_lockResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4469,8 +4469,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -4493,8 +4493,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -4517,8 +4517,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -4967,7 +4967,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_warn_entry_for_string_message_with_failed_lockResult() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5345,8 +5345,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -5369,8 +5369,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -5393,8 +5393,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -5843,7 +5843,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_info_entry_for_logMessage_with_failed_lockResult() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6221,8 +6221,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -6245,8 +6245,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -6269,8 +6269,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -6630,7 +6630,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_info_entry_for_string_message_with_failed_lockResult() {
+  static void it_should_add_info_entry_for_string_message_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7008,8 +7008,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -7032,8 +7032,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -7056,8 +7056,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -7417,7 +7417,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_debug_entry_for_logMessage_with_failed_lockResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7795,8 +7795,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -7819,8 +7819,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -7843,8 +7843,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -8204,7 +8204,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_debug_entry_for_string_message_with_failed_lockResult() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8582,8 +8582,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -8606,8 +8606,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -8630,8 +8630,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -8991,7 +8991,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_fine_entry_for_logMessage_with_failed_lockResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9369,8 +9369,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -9393,8 +9393,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -9417,8 +9417,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -9778,7 +9778,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_fine_entry_for_string_message_with_failed_lockResult() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10156,8 +10156,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -10180,8 +10180,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -10204,8 +10204,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -10565,7 +10565,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_finer_entry_for_logMessage_with_failed_lockResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10943,8 +10943,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -10967,8 +10967,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -10991,8 +10991,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -11352,7 +11352,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_finer_entry_for_string_message_with_failed_lockResult() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -11730,8 +11730,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -11754,8 +11754,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -11778,8 +11778,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -12139,7 +12139,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_finest_entry_for_logMessage_with_failed_lockResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -12517,8 +12517,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -12541,8 +12541,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -12565,8 +12565,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -12926,7 +12926,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_finest_entry_for_string_message_with_failed_lockResult() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_unlockResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -13304,8 +13304,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -13328,8 +13328,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -13352,8 +13352,8 @@ private class Logger_Tests {
     System.Assert.areEqual(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().RecordJson__c);
-    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().ApprovalResultJson__c);
-    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().ApprovalResultType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
     System.Assert.isNull(entryBuilder.getLogEntryEvent().Tags__c);
   }
 
@@ -13821,53 +13821,53 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_skip_logging_approval_processResult_for_logMessage_when_logging_level_is_disabled() {
+  static void it_should_skip_logging_approval_unlockResult_for_logMessage_when_logging_level_is_disabled() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
     Id recordId = System.UserInfo.getUserId();
-    Approval.ProcessResult successfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    Approval.ProcessResult unsuccessfulResult = LoggerMockDataCreator.createApprovalProcessResult(false, recordId);
-    List<Approval.ProcessResult> processResults = new List<Approval.ProcessResult>{ successfulResult, unsuccessfulResult };
-    System.Assert.areEqual(2, processResults.size());
+    Approval.UnlockResult successfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    Approval.UnlockResult unsuccessfulResult = LoggerMockDataCreator.createApprovalUnlockResult(false, recordId);
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>{ successfulResult, unsuccessfulResult };
+    System.Assert.areEqual(2, unlockResults.size());
     System.Assert.areEqual(0, Logger.getBufferSize());
 
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
-    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, processResults);
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, unlockResults);
 
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.isFalse(returnedBuilder.shouldSave());
   }
 
   @IsTest
-  static void it_should_skip_logging_approval_processResult_for_logMessage_when_no_errors_found() {
+  static void it_should_skip_logging_approval_unlockResult_for_logMessage_when_no_errors_found() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
     Id recordId = System.UserInfo.getUserId();
-    Approval.ProcessResult successfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    Approval.ProcessResult anotherSuccessfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    List<Approval.ProcessResult> processResults = new List<Approval.ProcessResult>{ successfulResult, anotherSuccessfulResult };
-    System.Assert.areEqual(2, processResults.size());
+    Approval.UnlockResult successfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    Approval.UnlockResult anotherSuccessfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>{ successfulResult, anotherSuccessfulResult };
+    System.Assert.areEqual(2, unlockResults.size());
     System.Assert.areEqual(0, Logger.getBufferSize());
 
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
-    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, processResults);
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, unlockResults);
 
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.isFalse(returnedBuilder.shouldSave());
   }
 
   @IsTest
-  static void it_should_log_approval_processResult_for_logMessage_when_isSuccess_is_false() {
+  static void it_should_log_approval_unlockResult_for_logMessage_when_isSuccess_is_false() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
     Id recordId = System.UserInfo.getUserId();
-    Approval.ProcessResult successfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    Approval.ProcessResult unsuccessfulResult = LoggerMockDataCreator.createApprovalProcessResult(false, recordId);
-    List<Approval.ProcessResult> processResults = new List<Approval.ProcessResult>{ successfulResult, unsuccessfulResult };
-    System.Assert.areEqual(2, processResults.size());
+    Approval.UnlockResult successfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    Approval.UnlockResult unsuccessfulResult = LoggerMockDataCreator.createApprovalUnlockResult(false, recordId);
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>{ successfulResult, unsuccessfulResult };
+    System.Assert.areEqual(2, unlockResults.size());
     System.Assert.areEqual(0, Logger.getBufferSize());
 
-    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, processResults);
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, unlockResults);
 
     System.Assert.areEqual(1, Logger.getBufferSize());
     System.Assert.isTrue(returnedBuilder.shouldSave());
@@ -13878,53 +13878,53 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_skip_logging_approval_processResult_for_string_message_when_logging_level_is_disabled() {
+  static void it_should_skip_logging_approval_unlockResult_for_string_message_when_logging_level_is_disabled() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
-    Approval.ProcessResult successfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    Approval.ProcessResult unsuccessfulResult = LoggerMockDataCreator.createApprovalProcessResult(false, recordId);
-    List<Approval.ProcessResult> processResults = new List<Approval.ProcessResult>{ successfulResult, unsuccessfulResult };
-    System.Assert.areEqual(2, processResults.size());
+    Approval.UnlockResult successfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    Approval.UnlockResult unsuccessfulResult = LoggerMockDataCreator.createApprovalUnlockResult(false, recordId);
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>{ successfulResult, unsuccessfulResult };
+    System.Assert.areEqual(2, unlockResults.size());
     System.Assert.areEqual(0, Logger.getBufferSize());
 
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
-    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, processResults);
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, unlockResults);
 
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.isFalse(returnedBuilder.shouldSave());
   }
 
   @IsTest
-  static void it_should_skip_logging_approval_processResult_for_string_message_when_no_errors_found() {
+  static void it_should_skip_logging_approval_unlockResult_for_string_message_when_no_errors_found() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
-    Approval.ProcessResult successfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    Approval.ProcessResult anotherSuccessfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    List<Approval.ProcessResult> processResults = new List<Approval.ProcessResult>{ successfulResult, anotherSuccessfulResult };
-    System.Assert.areEqual(2, processResults.size());
+    Approval.UnlockResult successfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    Approval.UnlockResult anotherSuccessfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>{ successfulResult, anotherSuccessfulResult };
+    System.Assert.areEqual(2, unlockResults.size());
     System.Assert.areEqual(0, Logger.getBufferSize());
 
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
-    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, processResults);
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, unlockResults);
 
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Assert.isFalse(returnedBuilder.shouldSave());
   }
 
   @IsTest
-  static void it_should_log_approval_processResult_for_string_message_when_isSuccess_is_false() {
+  static void it_should_log_approval_unlockResult_for_string_message_when_isSuccess_is_false() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
-    Approval.ProcessResult successfulResult = LoggerMockDataCreator.createApprovalProcessResult(true, recordId);
-    Approval.ProcessResult unsuccessfulResult = LoggerMockDataCreator.createApprovalProcessResult(false, recordId);
-    List<Approval.ProcessResult> processResults = new List<Approval.ProcessResult>{ successfulResult, unsuccessfulResult };
-    System.Assert.areEqual(2, processResults.size());
+    Approval.UnlockResult successfulResult = LoggerMockDataCreator.createApprovalUnlockResult(true, recordId);
+    Approval.UnlockResult unsuccessfulResult = LoggerMockDataCreator.createApprovalUnlockResult(false, recordId);
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>{ successfulResult, unsuccessfulResult };
+    System.Assert.areEqual(2, unlockResults.size());
     System.Assert.areEqual(0, Logger.getBufferSize());
 
-    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, processResults);
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, unlockResults);
 
     System.Assert.areEqual(1, Logger.getBufferSize());
     System.Assert.isTrue(returnedBuilder.shouldSave());
@@ -14883,7 +14883,7 @@ private class Logger_Tests {
   }
 
   static List<Approval.UnlockResult> getUnlockResultList() {
-    List<Approval.Unlock> unlockResults = new List<Approval.DeleteResult>();
+    List<Approval.UnlockResult> unlockResults = new List<Approval.UnlockResult>();
     for (Integer i = 0; i < 3; i++) {
       unlockResults.add(LoggerMockDataCreator.createApprovalUnlockResult(true));
     }
