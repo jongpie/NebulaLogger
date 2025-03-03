@@ -22,6 +22,9 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.setMessage(getLogMessage()).getLogEntryEvent());
     System.Assert.isNull(builder.setMessage(getMessage()).getLogEntryEvent());
     System.Assert.isNull(builder.setExceptionDetails(new System.DmlException()).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult((Approval.LockResult) null).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult((Approval.ProcessResult) null).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult((Approval.UnlockResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.DeleteResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.EmptyRecycleBinResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.LeadConvertResult) null).getLogEntryEvent());
@@ -29,6 +32,9 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.setDatabaseResult((Database.SaveResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.UpsertResult) null).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult((Database.UndeleteResult) null).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult(new List<Approval.LockResult>()).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult(new List<Approval.ProcessResult>()).getLogEntryEvent());
+    System.Assert.isNull(builder.setDatabaseResult(new List<Approval.UnlockResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.DeleteResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.EmptyRecycleBinResult>()).getLogEntryEvent());
     System.Assert.isNull(builder.setDatabaseResult(new List<Database.LeadConvertResult>()).getLogEntryEvent());
@@ -691,6 +697,48 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_set_database_result_fields_for_lockResult() {
+    Approval.LockResult lockResult = LoggerMockDataCreator.createApprovalLockResult(true);
+    System.Assert.isNotNull(lockResult);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    builder.setDatabaseResult(lockResult);
+
+    System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.LockResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
+  }
+
+  @IsTest
+  static void it_should_set_database_result_fields_for_processResult() {
+    Approval.ProcessResult processResult = LoggerMockDataCreator.createApprovalProcessResult(true);
+    System.Assert.isNotNull(processResult);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    builder.setDatabaseResult(processResult);
+
+    System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.ProcessResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
+  }
+
+  @IsTest
+  static void it_should_set_database_result_fields_for_unlockResult() {
+    Approval.UnlockResult unlockResult = LoggerMockDataCreator.createApprovalUnlockResult(true);
+    System.Assert.isNotNull(unlockResult);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    builder.setDatabaseResult(unlockResult);
+
+    System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.UnlockResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
+  }
+  
+  @IsTest
   static void it_should_set_database_result_fields_for_deleteResult() {
     Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
     System.Assert.isNotNull(deleteResult);
@@ -802,6 +850,54 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
     System.Assert.areEqual(System.JSON.serializePretty(upsertResult), builder.getLogEntryEvent().DatabaseResultJson__c);
     System.Assert.areEqual(Database.UpsertResult.class.getName() + '.Update', builder.getLogEntryEvent().DatabaseResultType__c);
+  }
+
+  @IsTest
+  static void it_should_set_database_result_fields_for_list_of_lockResult() {
+    List<Approval.LockResult> lockResults = new List<Approval.LockResult>();
+    for (Integer i = 0; i < 5; i++) {
+      lockResults.add(LoggerMockDataCreator.createApprovalLockResult(false));
+    }
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    builder.setDatabaseResult(lockResults);
+
+    System.Assert.areEqual(lockResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(lockResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.DeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
+  }
+
+  @IsTest
+  static void it_should_set_database_result_fields_for_list_of_processResult() {
+    List<Approval.ProcessResult> processResults = new List<Approval.ProcessResult>();
+    for (Integer i = 0; i < 5; i++) {
+      processResults.add(LoggerMockDataCreator.createApprovalProcessResult(false));
+    }
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    builder.setDatabaseResult(processResults);
+
+    System.Assert.areEqual(processResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(processResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.DeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
+  }
+
+  @IsTest
+  static void it_should_set_database_result_fields_for_list_of_unlockResult() {
+    List<Approval.UnlockResult> unlockResults = new List<Database.DeleteResult>();
+    for (Integer i = 0; i < 5; i++) {
+      unlockResults.add(LoggerMockDataCreator.createApprovalUnlockResult(false));
+    }
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    builder.setDatabaseResult(unlockResults);
+
+    System.Assert.areEqual(unlockResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unlockResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(Approval.DeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
   }
 
   @IsTest
