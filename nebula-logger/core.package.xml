@@ -694,6 +694,7 @@
         <members>LogEntry__c.ExceptionLocation__c</members>
         <members>LogEntry__c.OriginLocation__c</members>
         <members>Log__c.LogRetentionDate__c</members>
+        <members>Log__c.ParentLogTransactionId__c</members>
         <name>CustomIndex</name>
     </types>
     <types>
