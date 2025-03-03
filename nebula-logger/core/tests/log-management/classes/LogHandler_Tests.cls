@@ -508,7 +508,7 @@ private class LogHandler_Tests {
   }
 
   @IsTest
-  static void it_should_set_priority_to_high_when_there_is_an_error_log_entry() {
+  static void it_should_set_priority_to_high_when_there_is_error_log_entry() {
     setupConfigurations();
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.Priority__c = LOW_PRIORITY;
@@ -531,7 +531,7 @@ private class LogHandler_Tests {
   }
 
   @IsTest
-  static void it_should_set_priority_to_medium_when_there_is_a_warn_log_entry() {
+  static void it_should_set_priority_to_medium_when_there_is_warn_log_entry() {
     setupConfigurations();
     Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
     LoggerDataStore.getDatabase().insertRecord(log);
