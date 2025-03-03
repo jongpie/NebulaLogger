@@ -283,7 +283,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_use_a_uuid_for_transaction_id() {
+  static void it_should_use_uuid_for_transaction_id() {
     String transactionId = Logger.getTransactionId();
 
     Boolean isValidUuid;
@@ -2220,7 +2220,7 @@ private class Logger_Tests {
 
   // Start ERROR methods for LogMessage
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_successful_deleteResult() {
+  static void it_should_add_error_entry_for_logMessage_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2244,7 +2244,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_failed_deleteResult() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2268,7 +2268,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_error_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2292,7 +2292,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2316,7 +2316,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_successful_leadConvertResult() {
+  static void it_should_add_error_entry_for_logMessage_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2340,7 +2340,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_failed_leadConvertResult() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2364,7 +2364,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_successful_saveResult() {
+  static void it_should_add_error_entry_for_logMessage_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2388,7 +2388,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_failed_saveResult() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2412,7 +2412,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_successful_undeleteResult() {
+  static void it_should_add_error_entry_for_logMessage_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2436,7 +2436,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_failed_undeleteResult() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2460,7 +2460,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_successful_upsertResult_when_insert() {
+  static void it_should_add_error_entry_for_logMessage_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2484,7 +2484,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_failed_upsertResult_when_insert() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2508,7 +2508,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_successful_upsertResult_when_update() {
+  static void it_should_add_error_entry_for_logMessage_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2532,7 +2532,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_failed_upsertResult_when_update() {
+  static void it_should_add_error_entry_for_logMessage_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2556,7 +2556,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_deleteResultList() {
+  static void it_should_add_error_entry_for_logMessage_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2580,7 +2580,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_emptyRecycleBinResultList() {
+  static void it_should_add_error_entry_for_logMessage_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2604,7 +2604,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_leadConvertResultList() {
+  static void it_should_add_error_entry_for_logMessage_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2628,7 +2628,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_saveResultList() {
+  static void it_should_add_error_entry_for_logMessage_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2652,7 +2652,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_undeleteResultList() {
+  static void it_should_add_error_entry_for_logMessage_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2676,7 +2676,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_upsertResultList() {
+  static void it_should_add_error_entry_for_logMessage_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2700,7 +2700,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_exception() {
+  static void it_should_add_error_entry_for_logMessage_with_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2722,7 +2722,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_recordId_and_exception() {
+  static void it_should_add_error_entry_for_logMessage_with_recordId_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2744,7 +2744,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_recordId() {
+  static void it_should_add_error_entry_for_logMessage_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2766,7 +2766,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_record_and_exception() {
+  static void it_should_add_error_entry_for_logMessage_with_record_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2788,7 +2788,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_record() {
+  static void it_should_add_error_entry_for_logMessage_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2810,7 +2810,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_recordList_and_exception() {
+  static void it_should_add_error_entry_for_logMessage_with_recordList_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2833,7 +2833,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage_with_recordList() {
+  static void it_should_add_error_entry_for_logMessage_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2856,7 +2856,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_logMessage() {
+  static void it_should_add_error_entry_for_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2880,7 +2880,7 @@ private class Logger_Tests {
 
   // Start ERROR methods for String
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_successful_deleteResult() {
+  static void it_should_add_error_entry_for_string_message_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2904,7 +2904,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_failed_deleteResult() {
+  static void it_should_add_error_entry_for_string_message_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2928,7 +2928,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_error_entry_for_string_message_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2952,7 +2952,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_error_entry_for_string_message_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -2976,7 +2976,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_successful_leadConvertResult() {
+  static void it_should_add_error_entry_for_string_message_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3000,7 +3000,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_failed_leadConvertResult() {
+  static void it_should_add_error_entry_for_string_message_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3024,7 +3024,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_successful_saveResult() {
+  static void it_should_add_error_entry_for_string_message_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3048,7 +3048,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_failed_saveResult() {
+  static void it_should_add_error_entry_for_string_message_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3072,7 +3072,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_successful_undeleteResult() {
+  static void it_should_add_error_entry_for_string_message_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3096,7 +3096,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_failed_undeleteResult() {
+  static void it_should_add_error_entry_for_string_message_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3120,7 +3120,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_successful_upsertResult_when_insert() {
+  static void it_should_add_error_entry_for_string_message_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3144,7 +3144,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_failed_upsertResult_when_insert() {
+  static void it_should_add_error_entry_for_string_message_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3168,7 +3168,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_successful_upsertResult_when_update() {
+  static void it_should_add_error_entry_for_string_message_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3192,7 +3192,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_failed_upsertResult_when_update() {
+  static void it_should_add_error_entry_for_string_message_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3216,7 +3216,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_deleteResultList() {
+  static void it_should_add_error_entry_for_string_message_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3240,7 +3240,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_emptyRecycleBinResultList() {
+  static void it_should_add_error_entry_for_string_message_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3264,7 +3264,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_leadConvertResultList() {
+  static void it_should_add_error_entry_for_string_message_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3288,7 +3288,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_saveResultList() {
+  static void it_should_add_error_entry_for_string_message_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3312,7 +3312,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_undeleteResultList() {
+  static void it_should_add_error_entry_for_string_message_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3336,7 +3336,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_upsertResultList() {
+  static void it_should_add_error_entry_for_string_message_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3360,7 +3360,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_exception() {
+  static void it_should_add_error_entry_for_string_message_with_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3382,7 +3382,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_recordId_and_exception() {
+  static void it_should_add_error_entry_for_string_message_with_recordId_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3404,7 +3404,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_recordId() {
+  static void it_should_add_error_entry_for_string_message_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3426,7 +3426,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_record_and_exception() {
+  static void it_should_add_error_entry_for_string_message_with_record_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3448,7 +3448,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_record() {
+  static void it_should_add_error_entry_for_string_message_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3470,7 +3470,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_recordList_and_exception() {
+  static void it_should_add_error_entry_for_string_message_with_recordList_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3493,7 +3493,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message_with_recordList() {
+  static void it_should_add_error_entry_for_string_message_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3516,7 +3516,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_error_entry_for_string_message() {
+  static void it_should_add_error_entry_for_string_message() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3539,7 +3539,7 @@ private class Logger_Tests {
 
   // Start WARN methods for LogMessage
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_successful_deleteResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3563,7 +3563,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_failed_deleteResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3587,7 +3587,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3611,7 +3611,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3635,7 +3635,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_successful_leadConvertResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3659,7 +3659,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_failed_leadConvertResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3683,7 +3683,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_successful_saveResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3707,7 +3707,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_failed_saveResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3731,7 +3731,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_successful_undeleteResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3755,7 +3755,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_failed_undeleteResult() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3779,7 +3779,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_successful_upsertResult_when_insert() {
+  static void it_should_add_warn_entry_for_logMessage_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3803,7 +3803,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_failed_upsertResult_when_insert() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3827,7 +3827,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_successful_upsertResult_when_update() {
+  static void it_should_add_warn_entry_for_logMessage_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3851,7 +3851,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_failed_upsertResult_when_update() {
+  static void it_should_add_warn_entry_for_logMessage_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3875,7 +3875,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_deleteResultList() {
+  static void it_should_add_warn_entry_for_logMessage_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3899,7 +3899,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_emptyRecycleBinResultList() {
+  static void it_should_add_warn_entry_for_logMessage_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3923,7 +3923,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_leadConvertResultList() {
+  static void it_should_add_warn_entry_for_logMessage_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3947,7 +3947,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_saveResultList() {
+  static void it_should_add_warn_entry_for_logMessage_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3971,7 +3971,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_undeleteResultList() {
+  static void it_should_add_warn_entry_for_logMessage_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -3995,7 +3995,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_upsertResultList() {
+  static void it_should_add_warn_entry_for_logMessage_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4019,7 +4019,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_exception() {
+  static void it_should_add_warn_entry_for_logMessage_with_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4041,7 +4041,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_recordId_and_exception() {
+  static void it_should_add_warn_entry_for_logMessage_with_recordId_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4063,7 +4063,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_recordId() {
+  static void it_should_add_warn_entry_for_logMessage_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4085,7 +4085,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_record_and_exception() {
+  static void it_should_add_warn_entry_for_logMessage_with_record_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4107,7 +4107,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_record() {
+  static void it_should_add_warn_entry_for_logMessage_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4129,7 +4129,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_recordList_and_exception() {
+  static void it_should_add_warn_entry_for_logMessage_with_recordList_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4152,7 +4152,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage_with_recordList() {
+  static void it_should_add_warn_entry_for_logMessage_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4175,7 +4175,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_logMessage() {
+  static void it_should_add_warn_entry_for_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4199,7 +4199,7 @@ private class Logger_Tests {
 
   // Start WARN methods for String
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_successful_deleteResult() {
+  static void it_should_add_warn_entry_for_string_message_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4223,7 +4223,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_failed_deleteResult() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4247,7 +4247,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_warn_entry_for_string_message_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4271,7 +4271,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4295,7 +4295,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_successful_leadConvertResult() {
+  static void it_should_add_warn_entry_for_string_message_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4319,7 +4319,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_failed_leadConvertResult() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4343,7 +4343,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_successful_saveResult() {
+  static void it_should_add_warn_entry_for_string_message_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4367,7 +4367,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_failed_saveResult() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4391,7 +4391,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_successful_undeleteResult() {
+  static void it_should_add_warn_entry_for_string_message_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4415,7 +4415,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_failed_undeleteResult() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4439,7 +4439,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_successful_upsertResult_when_insert() {
+  static void it_should_add_warn_entry_for_string_message_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4463,7 +4463,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_failed_upsertResult_when_insert() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4487,7 +4487,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_successful_upsertResult_when_update() {
+  static void it_should_add_warn_entry_for_string_message_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4511,7 +4511,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_failed_upsertResult_when_update() {
+  static void it_should_add_warn_entry_for_string_message_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4535,7 +4535,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_deleteResultList() {
+  static void it_should_add_warn_entry_for_string_message_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4559,7 +4559,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_emptyRecycleBinResultList() {
+  static void it_should_add_warn_entry_for_string_message_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4583,7 +4583,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_leadConvertResultList() {
+  static void it_should_add_warn_entry_for_string_message_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4607,7 +4607,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_saveResultList() {
+  static void it_should_add_warn_entry_for_string_message_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4631,7 +4631,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_undeleteResultList() {
+  static void it_should_add_warn_entry_for_string_message_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4655,7 +4655,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_upsertResultList() {
+  static void it_should_add_warn_entry_for_string_message_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4679,7 +4679,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_exception() {
+  static void it_should_add_warn_entry_for_string_message_with_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4701,7 +4701,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_recordId_and_exception() {
+  static void it_should_add_warn_entry_for_string_message_with_recordId_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4723,7 +4723,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_recordId() {
+  static void it_should_add_warn_entry_for_string_message_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4745,7 +4745,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_record_and_exception() {
+  static void it_should_add_warn_entry_for_string_message_with_record_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4767,7 +4767,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_record() {
+  static void it_should_add_warn_entry_for_string_message_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4789,7 +4789,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_recordList_and_exception() {
+  static void it_should_add_warn_entry_for_string_message_with_recordList_and_exception() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4812,7 +4812,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message_with_recordList() {
+  static void it_should_add_warn_entry_for_string_message_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4835,7 +4835,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_warn_entry_for_string_message() {
+  static void it_should_add_warn_entry_for_string_message() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4859,7 +4859,7 @@ private class Logger_Tests {
 
   // Start INFO methods for LogMessage
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_successful_deleteResult() {
+  static void it_should_add_info_entry_for_logMessage_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4883,7 +4883,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_failed_deleteResult() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4907,7 +4907,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_info_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4931,7 +4931,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4955,7 +4955,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_successful_leadConvertResult() {
+  static void it_should_add_info_entry_for_logMessage_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -4979,7 +4979,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_failed_leadConvertResult() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5003,7 +5003,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_successful_saveResult() {
+  static void it_should_add_info_entry_for_logMessage_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5027,7 +5027,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_failed_saveResult() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5051,7 +5051,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_successful_undeleteResult() {
+  static void it_should_add_info_entry_for_logMessage_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5075,7 +5075,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_failed_undeleteResult() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5099,7 +5099,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_successful_upsertResult_when_insert() {
+  static void it_should_add_info_entry_for_logMessage_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5123,7 +5123,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_failed_upsertResult_when_insert() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5147,7 +5147,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_successful_upsertResult_when_update() {
+  static void it_should_add_info_entry_for_logMessage_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5171,7 +5171,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_failed_upsertResult_when_update() {
+  static void it_should_add_info_entry_for_logMessage_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5195,7 +5195,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_deleteResultList() {
+  static void it_should_add_info_entry_for_logMessage_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5219,7 +5219,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_emptyRecycleBinResultList() {
+  static void it_should_add_info_entry_for_logMessage_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5243,7 +5243,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_leadConvertResultList() {
+  static void it_should_add_info_entry_for_logMessage_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5267,7 +5267,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_saveResultList() {
+  static void it_should_add_info_entry_for_logMessage_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5291,7 +5291,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_undeleteResultList() {
+  static void it_should_add_info_entry_for_logMessage_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5315,7 +5315,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_upsertResultList() {
+  static void it_should_add_info_entry_for_logMessage_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5339,7 +5339,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_recordId() {
+  static void it_should_add_info_entry_for_logMessage_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5361,7 +5361,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_record() {
+  static void it_should_add_info_entry_for_logMessage_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5383,7 +5383,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage_with_recordList() {
+  static void it_should_add_info_entry_for_logMessage_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5406,7 +5406,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_logMessage() {
+  static void it_should_add_info_entry_for_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5430,7 +5430,7 @@ private class Logger_Tests {
 
   // Start INFO methods for String
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_successful_deleteResult() {
+  static void it_should_add_info_entry_for_string_message_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5454,7 +5454,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_failed_deleteResult() {
+  static void it_should_add_info_entry_for_string_message_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5478,7 +5478,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_info_entry_for_string_message_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5502,7 +5502,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_info_entry_for_string_message_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5526,7 +5526,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_successful_leadConvertResult() {
+  static void it_should_add_info_entry_for_string_message_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5550,7 +5550,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_failed_leadConvertResult() {
+  static void it_should_add_info_entry_for_string_message_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5574,7 +5574,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_successful_saveResult() {
+  static void it_should_add_info_entry_for_string_message_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5598,7 +5598,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_failed_saveResult() {
+  static void it_should_add_info_entry_for_string_message_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5622,7 +5622,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_successful_undeleteResult() {
+  static void it_should_add_info_entry_for_string_message_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5646,7 +5646,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_failed_undeleteResult() {
+  static void it_should_add_info_entry_for_string_message_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5670,7 +5670,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_successful_upsertResult_when_insert() {
+  static void it_should_add_info_entry_for_string_message_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5694,7 +5694,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_failed_upsertResult_when_insert() {
+  static void it_should_add_info_entry_for_string_message_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5718,7 +5718,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_successful_upsertResult_when_update() {
+  static void it_should_add_info_entry_for_string_message_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5742,7 +5742,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_failed_upsertResult_when_update() {
+  static void it_should_add_info_entry_for_string_message_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5766,7 +5766,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_deleteResultList() {
+  static void it_should_add_info_entry_for_string_message_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5790,7 +5790,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_emptyRecycleBinResultList() {
+  static void it_should_add_info_entry_for_string_message_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5814,7 +5814,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_leadConvertResultList() {
+  static void it_should_add_info_entry_for_string_message_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5838,7 +5838,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_saveResultList() {
+  static void it_should_add_info_entry_for_string_message_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5862,7 +5862,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_undeleteResultList() {
+  static void it_should_add_info_entry_for_string_message_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5886,7 +5886,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_upsertResultList() {
+  static void it_should_add_info_entry_for_string_message_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5910,7 +5910,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_recordId() {
+  static void it_should_add_info_entry_for_string_message_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5932,7 +5932,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_record() {
+  static void it_should_add_info_entry_for_string_message_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5954,7 +5954,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message_with_recordList() {
+  static void it_should_add_info_entry_for_string_message_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -5977,7 +5977,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_info_entry_for_string_message() {
+  static void it_should_add_info_entry_for_string_message() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6001,7 +6001,7 @@ private class Logger_Tests {
 
   // Start DEBUG methods for LogMessage
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_successful_deleteResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6025,7 +6025,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_failed_deleteResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6049,7 +6049,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6073,7 +6073,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6097,7 +6097,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_successful_leadConvertResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6121,7 +6121,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_failed_leadConvertResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6145,7 +6145,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_successful_saveResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6169,7 +6169,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_failed_saveResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6193,7 +6193,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_successful_undeleteResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6217,7 +6217,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_failed_undeleteResult() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6241,7 +6241,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_successful_upsertResult_when_insert() {
+  static void it_should_add_debug_entry_for_logMessage_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6265,7 +6265,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_failed_upsertResult_when_insert() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6289,7 +6289,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_successful_upsertResult_when_update() {
+  static void it_should_add_debug_entry_for_logMessage_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6313,7 +6313,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_failed_upsertResult_when_update() {
+  static void it_should_add_debug_entry_for_logMessage_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6337,7 +6337,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_deleteResultList() {
+  static void it_should_add_debug_entry_for_logMessage_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6361,7 +6361,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_emptyRecycleBinResultList() {
+  static void it_should_add_debug_entry_for_logMessage_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6385,7 +6385,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_leadConvertResultList() {
+  static void it_should_add_debug_entry_for_logMessage_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6409,7 +6409,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_saveResultList() {
+  static void it_should_add_debug_entry_for_logMessage_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6433,7 +6433,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_undeleteResultList() {
+  static void it_should_add_debug_entry_for_logMessage_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6457,7 +6457,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_upsertResultList() {
+  static void it_should_add_debug_entry_for_logMessage_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6481,7 +6481,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_recordId() {
+  static void it_should_add_debug_entry_for_logMessage_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6503,7 +6503,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_record() {
+  static void it_should_add_debug_entry_for_logMessage_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6525,7 +6525,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage_with_recordList() {
+  static void it_should_add_debug_entry_for_logMessage_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6548,7 +6548,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_logMessage() {
+  static void it_should_add_debug_entry_for_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6572,7 +6572,7 @@ private class Logger_Tests {
 
   // Start DEBUG methods for String
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_successful_deleteResult() {
+  static void it_should_add_debug_entry_for_string_message_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6596,7 +6596,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_failed_deleteResult() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6620,7 +6620,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_debug_entry_for_string_message_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6644,7 +6644,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6668,7 +6668,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_successful_leadConvertResult() {
+  static void it_should_add_debug_entry_for_string_message_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6692,7 +6692,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_failed_leadConvertResult() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6716,7 +6716,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_successful_saveResult() {
+  static void it_should_add_debug_entry_for_string_message_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6740,7 +6740,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_failed_saveResult() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6764,7 +6764,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_successful_undeleteResult() {
+  static void it_should_add_debug_entry_for_string_message_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6788,7 +6788,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_failed_undeleteResult() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6812,7 +6812,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_successful_upsertResult_when_insert() {
+  static void it_should_add_debug_entry_for_string_message_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6836,7 +6836,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_failed_upsertResult_when_insert() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6860,7 +6860,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_successful_upsertResult_when_update() {
+  static void it_should_add_debug_entry_for_string_message_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6884,7 +6884,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_failed_upsertResult_when_update() {
+  static void it_should_add_debug_entry_for_string_message_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6908,7 +6908,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_deleteResultList() {
+  static void it_should_add_debug_entry_for_string_message_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6932,7 +6932,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_emptyRecycleBinResultList() {
+  static void it_should_add_debug_entry_for_string_message_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6956,7 +6956,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_leadConvertResultList() {
+  static void it_should_add_debug_entry_for_string_message_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6980,7 +6980,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_saveResultList() {
+  static void it_should_add_debug_entry_for_string_message_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7004,7 +7004,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_undeleteResultList() {
+  static void it_should_add_debug_entry_for_string_message_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7028,7 +7028,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_upsertResultList() {
+  static void it_should_add_debug_entry_for_string_message_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7052,7 +7052,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_recordId() {
+  static void it_should_add_debug_entry_for_string_message_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7074,7 +7074,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_record() {
+  static void it_should_add_debug_entry_for_string_message_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7096,7 +7096,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message_with_recordList() {
+  static void it_should_add_debug_entry_for_string_message_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7119,7 +7119,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_debug_entry_for_string_message() {
+  static void it_should_add_debug_entry_for_string_message() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7143,7 +7143,7 @@ private class Logger_Tests {
 
   // Start FINE methods for LogMessage
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_successful_deleteResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7167,7 +7167,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_failed_deleteResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7191,7 +7191,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7215,7 +7215,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7239,7 +7239,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_successful_leadConvertResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7263,7 +7263,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_failed_leadConvertResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7287,7 +7287,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_successful_saveResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7311,7 +7311,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_failed_saveResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7335,7 +7335,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_successful_undeleteResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7359,7 +7359,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_failed_undeleteResult() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7383,7 +7383,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_successful_upsertResult_when_insert() {
+  static void it_should_add_fine_entry_for_logMessage_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7407,7 +7407,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_failed_upsertResult_when_insert() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7431,7 +7431,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_successful_upsertResult_when_update() {
+  static void it_should_add_fine_entry_for_logMessage_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7455,7 +7455,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_failed_upsertResult_when_update() {
+  static void it_should_add_fine_entry_for_logMessage_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7479,7 +7479,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_deleteResultList() {
+  static void it_should_add_fine_entry_for_logMessage_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7503,7 +7503,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_emptyRecycleBinResultList() {
+  static void it_should_add_fine_entry_for_logMessage_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7527,7 +7527,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_leadConvertResultList() {
+  static void it_should_add_fine_entry_for_logMessage_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7551,7 +7551,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_saveResultList() {
+  static void it_should_add_fine_entry_for_logMessage_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7575,7 +7575,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_undeleteResultList() {
+  static void it_should_add_fine_entry_for_logMessage_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7599,7 +7599,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_upsertResultList() {
+  static void it_should_add_fine_entry_for_logMessage_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7623,7 +7623,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_recordId() {
+  static void it_should_add_fine_entry_for_logMessage_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7645,7 +7645,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_record() {
+  static void it_should_add_fine_entry_for_logMessage_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7667,7 +7667,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage_with_recordList() {
+  static void it_should_add_fine_entry_for_logMessage_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7690,7 +7690,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_logMessage() {
+  static void it_should_add_fine_entry_for_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7714,7 +7714,7 @@ private class Logger_Tests {
 
   // Start FINE methods for String
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_successful_deleteResult() {
+  static void it_should_add_fine_entry_for_string_message_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7738,7 +7738,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_failed_deleteResult() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7762,7 +7762,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_fine_entry_for_string_message_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7786,7 +7786,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7810,7 +7810,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_successful_leadConvertResult() {
+  static void it_should_add_fine_entry_for_string_message_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7834,7 +7834,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_failed_leadConvertResult() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7858,7 +7858,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_successful_saveResult() {
+  static void it_should_add_fine_entry_for_string_message_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7882,7 +7882,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_failed_saveResult() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7906,7 +7906,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_successful_undeleteResult() {
+  static void it_should_add_fine_entry_for_string_message_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7930,7 +7930,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_failed_undeleteResult() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7954,7 +7954,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_successful_upsertResult_when_insert() {
+  static void it_should_add_fine_entry_for_string_message_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -7978,7 +7978,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_failed_upsertResult_when_insert() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8002,7 +8002,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_successful_upsertResult_when_update() {
+  static void it_should_add_fine_entry_for_string_message_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8026,7 +8026,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_failed_upsertResult_when_update() {
+  static void it_should_add_fine_entry_for_string_message_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8050,7 +8050,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_deleteResultList() {
+  static void it_should_add_fine_entry_for_string_message_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8074,7 +8074,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_emptyRecycleBinResultList() {
+  static void it_should_add_fine_entry_for_string_message_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8098,7 +8098,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_leadConvertResultList() {
+  static void it_should_add_fine_entry_for_string_message_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8122,7 +8122,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_saveResultList() {
+  static void it_should_add_fine_entry_for_string_message_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8146,7 +8146,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_undeleteResultList() {
+  static void it_should_add_fine_entry_for_string_message_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8170,7 +8170,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_upsertResultList() {
+  static void it_should_add_fine_entry_for_string_message_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8194,7 +8194,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_recordId() {
+  static void it_should_add_fine_entry_for_string_message_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8216,7 +8216,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_record() {
+  static void it_should_add_fine_entry_for_string_message_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8238,7 +8238,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message_with_recordList() {
+  static void it_should_add_fine_entry_for_string_message_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8261,7 +8261,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_fine_entry_for_string_message() {
+  static void it_should_add_fine_entry_for_string_message() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8285,7 +8285,7 @@ private class Logger_Tests {
 
   // Start FINER methods for LogMessage
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_successful_deleteResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8309,7 +8309,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_failed_deleteResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8333,7 +8333,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8357,7 +8357,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8381,7 +8381,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_successful_leadConvertResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8405,7 +8405,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_failed_leadConvertResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8429,7 +8429,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_successful_saveResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8453,7 +8453,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_failed_saveResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8477,7 +8477,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_successful_undeleteResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8501,7 +8501,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_failed_undeleteResult() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8525,7 +8525,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_successful_upsertResult_when_insert() {
+  static void it_should_add_finer_entry_for_logMessage_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8549,7 +8549,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_failed_upsertResult_when_insert() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8573,7 +8573,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_successful_upsertResult_when_update() {
+  static void it_should_add_finer_entry_for_logMessage_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8597,7 +8597,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_failed_upsertResult_when_update() {
+  static void it_should_add_finer_entry_for_logMessage_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8621,7 +8621,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_deleteResultList() {
+  static void it_should_add_finer_entry_for_logMessage_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8645,7 +8645,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_emptyRecycleBinResultList() {
+  static void it_should_add_finer_entry_for_logMessage_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8669,7 +8669,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_leadConvertResultList() {
+  static void it_should_add_finer_entry_for_logMessage_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8693,7 +8693,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_saveResultList() {
+  static void it_should_add_finer_entry_for_logMessage_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8717,7 +8717,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_undeleteResultList() {
+  static void it_should_add_finer_entry_for_logMessage_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8741,7 +8741,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_upsertResultList() {
+  static void it_should_add_finer_entry_for_logMessage_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8765,7 +8765,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_recordId() {
+  static void it_should_add_finer_entry_for_logMessage_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8787,7 +8787,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_record() {
+  static void it_should_add_finer_entry_for_logMessage_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8809,7 +8809,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage_with_recordList() {
+  static void it_should_add_finer_entry_for_logMessage_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8832,7 +8832,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_logMessage() {
+  static void it_should_add_finer_entry_for_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8856,7 +8856,7 @@ private class Logger_Tests {
 
   // Start FINER methods for String
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_successful_deleteResult() {
+  static void it_should_add_finer_entry_for_string_message_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8880,7 +8880,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_failed_deleteResult() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8904,7 +8904,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_finer_entry_for_string_message_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8928,7 +8928,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8952,7 +8952,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_successful_leadConvertResult() {
+  static void it_should_add_finer_entry_for_string_message_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -8976,7 +8976,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_failed_leadConvertResult() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9000,7 +9000,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_successful_saveResult() {
+  static void it_should_add_finer_entry_for_string_message_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9024,7 +9024,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_failed_saveResult() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9048,7 +9048,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_successful_undeleteResult() {
+  static void it_should_add_finer_entry_for_string_message_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9072,7 +9072,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_failed_undeleteResult() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9096,7 +9096,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_successful_upsertResult_when_insert() {
+  static void it_should_add_finer_entry_for_string_message_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9120,7 +9120,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_failed_upsertResult_when_insert() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9144,7 +9144,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_successful_upsertResult_when_update() {
+  static void it_should_add_finer_entry_for_string_message_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9168,7 +9168,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_failed_upsertResult_when_update() {
+  static void it_should_add_finer_entry_for_string_message_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9192,7 +9192,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_deleteResultList() {
+  static void it_should_add_finer_entry_for_string_message_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9216,7 +9216,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_emptyRecycleBinResultList() {
+  static void it_should_add_finer_entry_for_string_message_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9240,7 +9240,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_leadConvertResultList() {
+  static void it_should_add_finer_entry_for_string_message_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9264,7 +9264,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_saveResultList() {
+  static void it_should_add_finer_entry_for_string_message_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9288,7 +9288,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_undeleteResultList() {
+  static void it_should_add_finer_entry_for_string_message_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9312,7 +9312,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_upsertResultList() {
+  static void it_should_add_finer_entry_for_string_message_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9336,7 +9336,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_recordId() {
+  static void it_should_add_finer_entry_for_string_message_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9358,7 +9358,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_record() {
+  static void it_should_add_finer_entry_for_string_message_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9380,7 +9380,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message_with_recordList() {
+  static void it_should_add_finer_entry_for_string_message_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9403,7 +9403,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finer_entry_for_string_message() {
+  static void it_should_add_finer_entry_for_string_message() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9427,7 +9427,7 @@ private class Logger_Tests {
 
   // Start FINEST methods for LogMessage
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_successful_deleteResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9451,7 +9451,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_failed_deleteResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9475,7 +9475,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9499,7 +9499,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9523,7 +9523,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_successful_leadConvertResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9547,7 +9547,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_failed_leadConvertResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9571,7 +9571,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_successful_saveResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9595,7 +9595,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_failed_saveResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9619,7 +9619,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_successful_undeleteResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9643,7 +9643,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_failed_undeleteResult() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9667,7 +9667,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_successful_upsertResult_when_insert() {
+  static void it_should_add_finest_entry_for_logMessage_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9691,7 +9691,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_failed_upsertResult_when_insert() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9715,7 +9715,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_successful_upsertResult_when_update() {
+  static void it_should_add_finest_entry_for_logMessage_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9739,7 +9739,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_failed_upsertResult_when_update() {
+  static void it_should_add_finest_entry_for_logMessage_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9763,7 +9763,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_deleteResultList() {
+  static void it_should_add_finest_entry_for_logMessage_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9787,7 +9787,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_emptyRecycleBinResultList() {
+  static void it_should_add_finest_entry_for_logMessage_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9811,7 +9811,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_leadConvertResultList() {
+  static void it_should_add_finest_entry_for_logMessage_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9835,7 +9835,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_saveResultList() {
+  static void it_should_add_finest_entry_for_logMessage_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9859,7 +9859,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_undeleteResultList() {
+  static void it_should_add_finest_entry_for_logMessage_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9883,7 +9883,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_upsertResultList() {
+  static void it_should_add_finest_entry_for_logMessage_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9907,7 +9907,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_recordId() {
+  static void it_should_add_finest_entry_for_logMessage_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9929,7 +9929,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_record() {
+  static void it_should_add_finest_entry_for_logMessage_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9951,7 +9951,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage_with_recordList() {
+  static void it_should_add_finest_entry_for_logMessage_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9974,7 +9974,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_logMessage() {
+  static void it_should_add_finest_entry_for_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -9998,7 +9998,7 @@ private class Logger_Tests {
 
   // Start FINEST methods for String
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_successful_deleteResult() {
+  static void it_should_add_finest_entry_for_string_message_with_successful_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10022,7 +10022,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_failed_deleteResult() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_deleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10046,7 +10046,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_successful_emptyRecycleBinResult() {
+  static void it_should_add_finest_entry_for_string_message_with_successful_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10070,7 +10070,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_failed_emptyRecycleBinResult() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_emptyRecycleBinResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10094,7 +10094,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_successful_leadConvertResult() {
+  static void it_should_add_finest_entry_for_string_message_with_successful_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10118,7 +10118,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_failed_leadConvertResult() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_leadConvertResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10142,7 +10142,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_successful_saveResult() {
+  static void it_should_add_finest_entry_for_string_message_with_successful_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10166,7 +10166,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_failed_saveResult() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_saveResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10190,7 +10190,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_successful_undeleteResult() {
+  static void it_should_add_finest_entry_for_string_message_with_successful_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10214,7 +10214,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_failed_undeleteResult() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_undeleteResult() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10238,7 +10238,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_successful_upsertResult_when_insert() {
+  static void it_should_add_finest_entry_for_string_message_with_successful_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10262,7 +10262,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_failed_upsertResult_when_insert() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_upsertResult_when_insert() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10286,7 +10286,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_successful_upsertResult_when_update() {
+  static void it_should_add_finest_entry_for_string_message_with_successful_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10310,7 +10310,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_failed_upsertResult_when_update() {
+  static void it_should_add_finest_entry_for_string_message_with_failed_upsertResult_when_update() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10334,7 +10334,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_deleteResultList() {
+  static void it_should_add_finest_entry_for_string_message_with_deleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10358,7 +10358,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_emptyRecycleBinResultList() {
+  static void it_should_add_finest_entry_for_string_message_with_emptyRecycleBinResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10382,7 +10382,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_leadConvertResultList() {
+  static void it_should_add_finest_entry_for_string_message_with_leadConvertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10406,7 +10406,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_saveResultList() {
+  static void it_should_add_finest_entry_for_string_message_with_saveResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10430,7 +10430,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_undeleteResultList() {
+  static void it_should_add_finest_entry_for_string_message_with_undeleteResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10454,7 +10454,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_upsertResultList() {
+  static void it_should_add_finest_entry_for_string_message_with_upsertResultList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10478,7 +10478,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_recordId() {
+  static void it_should_add_finest_entry_for_string_message_with_recordId() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10500,7 +10500,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_record() {
+  static void it_should_add_finest_entry_for_string_message_with_record() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10522,7 +10522,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message_with_recordList() {
+  static void it_should_add_finest_entry_for_string_message_with_recordList() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -10545,7 +10545,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_an_finest_entry_for_string_message() {
+  static void it_should_add_finest_entry_for_string_message() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -11255,7 +11255,7 @@ private class Logger_Tests {
 
   // Start newEntry for LogMessage test methods
   @IsTest
-  static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldSave_override() {
+  static void it_should_add_new_entry_for_loggingLevel_with_logMessage_and_shouldSave_override() {
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(userLoggingLevel);
     System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
@@ -11281,7 +11281,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_not_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldNotSave_override() {
+  static void it_should_not_add_new_entry_for_loggingLevel_with_logMessage_and_shouldNotSave_override() {
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(userLoggingLevel);
     System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
@@ -11301,7 +11301,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage() {
+  static void it_should_add_new_entry_for_loggingLevel_with_logMessage() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
@@ -11326,7 +11326,7 @@ private class Logger_Tests {
 
   // Start newEntry for String test methods
   @IsTest
-  static void it_should_add_a_new_entry_for_loggingLevel_with_string_and_shouldSave_override() {
+  static void it_should_add_new_entry_for_loggingLevel_with_string_and_shouldSave_override() {
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(userLoggingLevel);
     System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
@@ -11352,7 +11352,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_not_add_a_new_entry_for_loggingLevel_with_string_and_shouldNotSave_override() {
+  static void it_should_not_add_new_entry_for_loggingLevel_with_string_and_shouldNotSave_override() {
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(userLoggingLevel);
     System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
@@ -11372,7 +11372,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_add_a_new_entry_for_loggingLevel_with_string() {
+  static void it_should_add_new_entry_for_loggingLevel_with_string() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
     setUserLoggingLevel(loggingLevel);
     System.Assert.areEqual(0, Logger.getBufferSize());
