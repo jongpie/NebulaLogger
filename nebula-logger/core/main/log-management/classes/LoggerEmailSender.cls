@@ -26,6 +26,14 @@ public without sharing class LoggerEmailSender {
   }
 
   @TestVisible
+  public with sharing class createLoggerEmailSender {
+    public LoggerEmailSender instance = new LoggerEmailSender();
+    instance.CACHED_APEX_ERROR_RECIPIENTS = queryApexErrrorRecipients();
+    system.debug('LoggerEmailSender instance: ' + instance);
+    instance.sendErrorEmail(Schema.SObjectType sobjectType, List<Database.SaveResult> saveResults);
+  }
+
+  @TestVisible
   private static Boolean IS_EMAIL_DELIVERABILITY_AVAILABLE {
     get {
       if (IS_EMAIL_DELIVERABILITY_AVAILABLE == null) {
