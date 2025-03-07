@@ -626,10 +626,10 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 
 ##### Parameters
 
-| Param                | Description                                                |
-| -------------------- | ---------------------------------------------------------- |
-| `message`            | The string to use to set the entry&apos;s message field    |
-| `leadConvertResults` | The list of `Database.LeadConvertResults` instances to log |
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `deleteResults` | The list of `Database.DeleteResult` instances to log    |
 
 ##### Return
 
