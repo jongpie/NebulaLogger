@@ -13,7 +13,7 @@ public class LoggerApprovalAdapter {
    * @return `Database.SaveResult` that can be used in `LogEntryEventBuilder.setDatabaseResult()` calls
    */
   public static Database.SaveResult transform(Approval.LockResult lockResult) {
-    return (Database.SaveResult) JSON.deserialize(JSON.serialize(lockResult), Database.SaveResult.class);
+    return (Database.SaveResult) System.JSON.deserialize(System.JSON.serialize(lockResult), Database.SaveResult.class);
   }
 
   /**
@@ -22,7 +22,7 @@ public class LoggerApprovalAdapter {
    * @return `List<Database.SaveResult>` that can be used in `LogEntryEventBuilder.setDatabaseResult()` calls
    */
   public static List<Database.SaveResult> transform(List<Approval.LockResult> lockResults) {
-    return (List<Database.SaveResult>) JSON.deserialize(JSON.serialize(lockResults), List<Database.SaveResult>.class);
+    return (List<Database.SaveResult>) System.JSON.deserialize(System.JSON.serialize(lockResults), List<Database.SaveResult>.class);
   }
 
   /**
@@ -31,7 +31,7 @@ public class LoggerApprovalAdapter {
    * @return `Database.SaveResult` that can be used in `LogEntryEventBuilder.setDatabaseResult()` calls
    */
   public static Database.SaveResult transform(Approval.UnlockResult unlockResult) {
-    return (Database.SaveResult) JSON.deserialize(JSON.serialize(unlockResult), Database.SaveResult.class);
+    return (Database.SaveResult) System.JSON.deserialize(System.JSON.serialize(unlockResult), Database.SaveResult.class);
   }
 
   /**
@@ -40,7 +40,7 @@ public class LoggerApprovalAdapter {
    * @return `List<Database.SaveResult>` that can be used in `LogEntryEventBuilder.setDatabaseResult()` calls
    */
   public static List<Database.SaveResult> transform(List<Approval.UnlockResult> unlockResults) {
-    return (List<Database.SaveResult>) JSON.deserialize(JSON.serialize(unlockResults), List<Database.SaveResult>.class);
+    return (List<Database.SaveResult>) System.JSON.deserialize(System.JSON.serialize(unlockResults), List<Database.SaveResult>.class);
   }
 
   /**
@@ -96,7 +96,7 @@ public class LoggerApprovalAdapter {
 
   private static LogMessage getFormattedLogMessage(String approvalType, List<Object> approvals) {
     Object messageTarget = approvals.size() > 1 ? (Object) approvals : (Object) approvals[0];
-    return new LogMessage('{0}{1} received:\n{2}', new List<String>{ approvalType, approvals.size() > 1 ? 's' : '', JSON.serialize(messageTarget) });
+    return new LogMessage('{0}{1} received:\n{2}', new List<String>{ approvalType, approvals.size() > 1 ? 's' : '', System.JSON.serialize(messageTarget) });
   }
 
   private static List<Id> getEntityIds(List<Object> processes) {

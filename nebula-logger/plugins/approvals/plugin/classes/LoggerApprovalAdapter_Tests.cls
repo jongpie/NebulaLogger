@@ -52,16 +52,16 @@ private class LoggerApprovalAdapter_Tests {
   static void transformsSingleProcessRequestToLoggerCompatibleObject() {
     Approval.ProcessSubmitRequest approval = new Approval.ProcessSubmitRequest();
     approval.setComments('Approve');
-    approval.setNextApproverIds(new List<Id>{ UserInfo.getUserId() });
+    approval.setNextApproverIds(new List<Id>{ System.UserInfo.getUserId() });
     approval.setObjectId(System.UserInfo.getUserId());
     approval.setProcessDefinitionNameOrId('Some_Developer_Name');
     approval.setSkipEntryCriteria(true);
-    approval.setSubmitterId(UserInfo.getUserId());
+    approval.setSubmitterId(System.UserInfo.getUserId());
 
     LogEntryEventBuilder builder = LoggerApprovalAdapter.log(approval, System.LoggingLevel.DEBUG);
 
     System.Assert.areEqual(approval.getObjectId(), builder.getLogEntryEvent().RecordId__c);
-    System.Assert.areEqual('Approval.ProcessRequest received:\n' + JSON.serialize(approval), builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual('Approval.ProcessRequest received:\n' + System.JSON.serialize(approval), builder.getLogEntryEvent().Message__c);
     System.Assert.areEqual('DEBUG', builder.getLogEntryEvent().LoggingLevel__c);
   }
 
@@ -69,17 +69,17 @@ private class LoggerApprovalAdapter_Tests {
   static void transformsBulkProcessRequestToLoggerCompatibleObject() {
     Approval.ProcessSubmitRequest approval = new Approval.ProcessSubmitRequest();
     approval.setComments('Approve');
-    approval.setNextApproverIds(new List<Id>{ UserInfo.getUserId() });
+    approval.setNextApproverIds(new List<Id>{ System.UserInfo.getUserId() });
     approval.setObjectId(System.UserInfo.getUserId());
     approval.setProcessDefinitionNameOrId('Some_Developer_Name');
     approval.setSkipEntryCriteria(true);
-    approval.setSubmitterId(UserInfo.getUserId());
+    approval.setSubmitterId(System.UserInfo.getUserId());
     List<Approval.ProcessRequest> requests = new List<Approval.ProcessRequest>{ approval, approval };
 
     LogEntryEventBuilder builder = LoggerApprovalAdapter.log(requests, System.LoggingLevel.DEBUG);
 
     System.Assert.areEqual('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
-    System.Assert.areEqual('Approval.ProcessRequests received:\n' + JSON.serialize(requests), builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual('Approval.ProcessRequests received:\n' + System.JSON.serialize(requests), builder.getLogEntryEvent().Message__c);
     System.Assert.areEqual('DEBUG', builder.getLogEntryEvent().LoggingLevel__c);
   }
 
@@ -88,13 +88,13 @@ private class LoggerApprovalAdapter_Tests {
     Approval.ProcessWorkitemRequest approval = new Approval.ProcessWorkitemRequest();
     approval.setComments('Approve');
     approval.setAction('Approve');
-    approval.setNextApproverIds(new List<Id>{ UserInfo.getUserId() });
+    approval.setNextApproverIds(new List<Id>{ System.UserInfo.getUserId() });
     approval.setWorkitemId(System.UserInfo.getUserId());
 
     LogEntryEventBuilder builder = LoggerApprovalAdapter.log(approval, System.LoggingLevel.FINE);
 
     System.Assert.areEqual(approval.getWorkitemId(), builder.getLogEntryEvent().RecordId__c);
-    System.Assert.areEqual('Approval.ProcessRequest received:\n' + JSON.serialize(approval), builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual('Approval.ProcessRequest received:\n' + System.JSON.serialize(approval), builder.getLogEntryEvent().Message__c);
     System.Assert.areEqual('FINE', builder.getLogEntryEvent().LoggingLevel__c);
   }
 
@@ -103,14 +103,14 @@ private class LoggerApprovalAdapter_Tests {
     Approval.ProcessWorkitemRequest approval = new Approval.ProcessWorkitemRequest();
     approval.setComments('Approve');
     approval.setAction('Approve');
-    approval.setNextApproverIds(new List<Id>{ UserInfo.getUserId() });
+    approval.setNextApproverIds(new List<Id>{ System.UserInfo.getUserId() });
     approval.setWorkitemId(System.UserInfo.getUserId());
     List<Approval.ProcessRequest> requests = new List<Approval.ProcessRequest>{ approval, approval };
 
     LogEntryEventBuilder builder = LoggerApprovalAdapter.log(requests, System.LoggingLevel.INFO);
 
     System.Assert.areEqual('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
-    System.Assert.areEqual('Approval.ProcessRequests received:\n' + JSON.serialize(requests), builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual('Approval.ProcessRequests received:\n' + System.JSON.serialize(requests), builder.getLogEntryEvent().Message__c);
     System.Assert.areEqual('INFO', builder.getLogEntryEvent().LoggingLevel__c);
   }
 
@@ -121,7 +121,7 @@ private class LoggerApprovalAdapter_Tests {
     LogEntryEventBuilder builder = LoggerApprovalAdapter.log(approval, System.LoggingLevel.FINEST);
 
     System.Assert.areEqual(approval.getEntityId(), builder.getLogEntryEvent().RecordId__c);
-    System.Assert.areEqual('Approval.ProcessResult received:\n' + JSON.serialize(approval), builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual('Approval.ProcessResult received:\n' + System.JSON.serialize(approval), builder.getLogEntryEvent().Message__c);
     System.Assert.areEqual('FINEST', builder.getLogEntryEvent().LoggingLevel__c);
   }
 
@@ -133,12 +133,12 @@ private class LoggerApprovalAdapter_Tests {
     LogEntryEventBuilder builder = LoggerApprovalAdapter.log(approvals, System.LoggingLevel.WARN);
 
     System.Assert.areEqual('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
-    System.Assert.areEqual('Approval.ProcessResults received:\n' + JSON.serialize(approvals), builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual('Approval.ProcessResults received:\n' + System.JSON.serialize(approvals), builder.getLogEntryEvent().Message__c);
     System.Assert.areEqual('WARN', builder.getLogEntryEvent().LoggingLevel__c);
   }
 
   private static Object createResult(System.Type targetType) {
     String value = '{ "id" : "001000000000000", "success": true, "errors": [] }';
-    return JSON.deserialize(value, targetType);
+    return System.JSON.deserialize(value, targetType);
   }
 }
