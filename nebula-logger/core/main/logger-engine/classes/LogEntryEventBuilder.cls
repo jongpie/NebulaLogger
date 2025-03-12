@@ -490,13 +490,16 @@ global with sharing class LogEntryEventBuilder {
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setRecord(System.Iterable<Id> recordIds) {
-    if (this.shouldSave() == false || recordIds == null) {
+    if (this.shouldSave() == false) {
       return this;
     }
 
-    List<SObject> records = new List<SObject>();
-    for (Id recordId : recordIds) {
-      records.add(recordId?.getSObjectType().newSObject(recordId));
+    List<SObject> records;
+    if (recordIds != null) {
+      records = new List<SObject>();
+      for (Id recordId : recordIds) {
+        records.add(recordId.getSObjectType().newSObject(recordId));
+      }
     }
 
     return this.setRecord(records);
