@@ -9,8 +9,8 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.8.NEXT",
-      "versionName": "Log__c.ParentLogTransactionId__c Custom Index",
+      "versionNumber": "4.15.9.NEXT",
+      "versionName": "Improved Null Handling in LogEntryEventBuilder.setRecord()",
       "versionDescription": "Fixes an issue with high-volume calls to LogManagementDataSelector.getLogsWithoutParentLogByParentTransactionId()",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
@@ -24,7 +24,7 @@
       "path": "./nebula-logger/plugins/approvals/plugin",
       "dependencies": [
         {
-          "package": "Nebula Logger - Core@4.7.0-spring-'22-release"
+          "package": "Nebula Logger - Core@4.15.9-improved-null-handling-in-logentryeventbuilder.setrecord()"
         }
       ],
       "versionNumber": "1.0.0.NEXT",
@@ -226,6 +226,7 @@
     "Nebula Logger - Core@4.15.6-adds-trycatch-callablelogger-method": "04t5Y0000015pEdQAI",
     "Nebula Logger - Core@4.15.7-jest-test-cleanup-and-stacktrace-parsing-bugfix": "04t5Y0000015pEnQAI",
     "Nebula Logger - Core@4.15.8-log__c.parentlogtransactionid__c-custom-index": "04t5Y0000015pFCQAY",
+    "Nebula Logger - Core Plugin - Approval Namespace": "0Ho5Y000000blPMSAY",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
