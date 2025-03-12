@@ -197,6 +197,33 @@ global with sharing class LogEntryEventBuilder {
 
   /**
    * @description Sets the log entry event's database operation result fields
+   * @param  lockResult The instance of `Approval.LockResult` to log
+   * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(Approval.LockResult lockResult) {
+    return this.setDatabaseDetails(new List<Approval.LockResult>{ lockResult }, Approval.LockResult.class, lockResult?.getId());
+  }
+  
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  processResult The instance of `Approval.ProcessResult` to log
+   * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(Approval.ProcessResult processResult) {
+    return this.setDatabaseDetails(new List<Approval.ProcessResult>{ processResult }, Approval.ProcessResult.class, processResult?.getEntityId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  unlockResult The instance of `Approval.UnlockResult` to log
+   * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(Approval.UnlockResult unlockResult) {
+    return this.setDatabaseDetails(new List<Approval.UnlockResult>{ unlockResult }, Approval.UnlockResult.class, unlockResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
@@ -210,11 +237,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                       The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-    return this.setDatabaseDetails(
-      new List<Database.EmptyRecycleBinResult>{ emptyRecycleBinResult },
-      Database.EmptyRecycleBinResult.class,
-      emptyRecycleBinResult?.getId()
-    );
+    return this.setDatabaseDetails(new List<Database.EmptyRecycleBinResult>{ emptyRecycleBinResult }, Database.EmptyRecycleBinResult.class, emptyRecycleBinResult?.getId());
   }
 
   /**
@@ -265,6 +288,33 @@ global with sharing class LogEntryEventBuilder {
    */
   global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
     return this.setDatabaseDetails(new List<Database.UndeleteResult>{ undeleteResult }, Database.UndeleteResult.class, undeleteResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  lockResults The list of `Approval.LockResult` instances to log
+   * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(List<Approval.LockResult> lockResults) {
+    return this.setDatabaseDetails(lockResults, Approval.LockResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  processResults The list of `Approval.ProcessResult` instances to log
+   * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(List<Approval.ProcessResult> processResults) {
+    return this.setDatabaseDetails(processResults, Approval.ProcessResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  unlockResults The list of `Approval.UnlockResult` instances to log
+   * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(List<Approval.UnlockResult> unlockResults) {
+    return this.setDatabaseDetails(unlockResults, Approval.UnlockResult.class, null);
   }
 
   /**
