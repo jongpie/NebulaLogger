@@ -226,6 +226,7 @@
     "Nebula Logger - Core@4.15.6-adds-trycatch-callablelogger-method": "04t5Y0000015pEdQAI",
     "Nebula Logger - Core@4.15.7-jest-test-cleanup-and-stacktrace-parsing-bugfix": "04t5Y0000015pEnQAI",
     "Nebula Logger - Core@4.15.8-log__c.parentlogtransactionid__c-custom-index": "04t5Y0000015pFCQAY",
+    "Nebula Logger - Core@4.15.9-improved-null-handling-in-logentryeventbuilder.setrecord()": "04t5Y0000015pFWQAY",
     "Nebula Logger - Core Plugin - Approval Namespace": "0Ho5Y000000blPMSAY",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
