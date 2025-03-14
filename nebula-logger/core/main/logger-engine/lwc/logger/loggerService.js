@@ -10,7 +10,7 @@ import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
-const CURRENT_VERSION_NUMBER = 'v4.15.8';
+const CURRENT_VERSION_NUMBER = 'v4.15.9';
 
 const CONSOLE_OUTPUT_CONFIG = {
   messagePrefix: `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `,
