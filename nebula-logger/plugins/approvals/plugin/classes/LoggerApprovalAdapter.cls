@@ -110,7 +110,9 @@ public class LoggerApprovalAdapter {
       } else if (process instanceof Approval.ProcessResult) {
         possibleEntityId = ((Approval.ProcessResult) process).getEntityId();
       }
-      results.add(possibleEntityId);
+      if (possibleEntityId != null) {
+        results.add(possibleEntityId);
+      }
     }
     return results;
   }
