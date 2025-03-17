@@ -65,7 +65,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     this.updateUnlinkedChildLogs();
     this.shareLogsWithLoggingUsers();
 
-    LoggerAlertService.getInstance().process(this.logs);
+    // TODO long term, LoggerAlertService will probably be called here. But for now, it's kept in a separate plugin.
+    // LoggerAlertService.getInstance().process(this.logs);
   }
 
   private void setClosedStatusFields() {

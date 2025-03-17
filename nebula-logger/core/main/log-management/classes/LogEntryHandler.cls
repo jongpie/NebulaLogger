@@ -48,7 +48,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
   protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
     this.logEntries = (List<LogEntry__c>) triggerNewMap.values();
 
-    LoggerAlertService.getInstance().process(this.logEntries);
+    // TODO long term, LoggerAlertService will probably be called here. But for now, it's kept in a separate plugin.
+    // LoggerAlertService.getInstance().process(this.logEntries);
   }
 
   private void setApexClassFields() {

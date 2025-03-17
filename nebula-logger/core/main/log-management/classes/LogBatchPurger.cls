@@ -176,9 +176,12 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
   private Schema.SObjectType getInitialSObjectType() {
     Schema.SObjectType initialSObjectType;
-    if (this.getLoggerAlertMatchCount() > 0) {
-      initialSObjectType = Schema.LoggerAlertMatch__c.SObjectType;
-    } else if (this.getLogEntryTagCount() > 0) {
+    // TODO long term, LoggerAlert__c will hopefully be purged here.
+    // But for now, it's kept in a separate plugin, so LogBatchPurger doesn't directly handle it.
+    // if (this.getLoggerAlertMatchCount() > 0) {
+    //   initialSObjectType = Schema.LoggerAlertMatch__c.SObjectType;
+    // } else
+    if (this.getLogEntryTagCount() > 0) {
       initialSObjectType = Schema.LogEntryTag__c.SObjectType;
     } else if (this.getLogEntryCount() > 0) {
       initialSObjectType = Schema.LogEntry__c.SObjectType;
@@ -188,19 +191,21 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     return initialSObjectType;
   }
 
-  private Integer getLoggerAlertMatchCount() {
-    return [
-      SELECT COUNT()
-      FROM LoggerAlertMatch__c
-      WHERE
-        (LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
-        AND LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c != NULL)
-        OR (LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
-        AND LogEntry__r.Log__r.LogRetentionDate__c != NULL)
-        OR (Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
-        AND Log__r.LogRetentionDate__c != NULL)
-    ];
-  }
+  // TODO long term, LoggerAlert__c will hopefully be purged here.
+  // But for now, it's kept in a separate plugin, so LogBatchPurger doesn't directly handle it.
+  // private Integer getLoggerAlertMatchCount() {
+  //   return [
+  //     SELECT COUNT()
+  //     FROM LoggerAlertMatch__c
+  //     WHERE
+  //       (LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+  //       AND LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+  //       OR (LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+  //       AND LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+  //       OR (Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+  //       AND Log__r.LogRetentionDate__c != NULL)
+  //   ];
+  // }
 
   private Integer getLogEntryTagCount() {
     return [
@@ -227,22 +232,24 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     Database.QueryLocator queryLocator;
 
     switch on sobjectType.newSObject() {
-      when LoggerAlertMatch__c loggerAlertMatch {
-        queryLocator = System.Database.getQueryLocator(
-          [
-            SELECT Id
-            FROM LoggerAlertMatch__c
-            WHERE
-              (LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
-              AND LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c != NULL)
-              OR (LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
-              AND LogEntry__r.Log__r.LogRetentionDate__c != NULL)
-              OR (Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
-              AND Log__r.LogRetentionDate__c != NULL)
-          ]
-        );
-      }
-      when LogEntryTag__c logEntryTag {
+      when // TODO long term, LoggerAlert__c will hopefully be purged here.
+      // But for now, it's kept in a separate plugin, so LogBatchPurger doesn't directly handle it.
+      // when LoggerAlertMatch__c loggerAlertMatch {
+      //   queryLocator = System.Database.getQueryLocator(
+      //     [
+      //       SELECT Id
+      //       FROM LoggerAlertMatch__c
+      //       WHERE
+      //         (LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+      //         AND LogEntryTag__r.LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+      //         OR (LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+      //         AND LogEntry__r.Log__r.LogRetentionDate__c != NULL)
+      //         OR (Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE
+      //         AND Log__r.LogRetentionDate__c != NULL)
+      //     ]
+      //   );
+      // }
+      LogEntryTag__c logEntryTag {
         queryLocator = System.Database.getQueryLocator(
           [
             SELECT Id

@@ -46,7 +46,8 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
   protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
     this.logEntryTags = (List<LogEntryTag__c>) triggerNewMap.values();
 
-    LoggerAlertService.getInstance().process(this.logEntryTags);
+    // TODO long term, LoggerAlertService will probably be called here. But for now, it's kept in a separate plugin.
+    // LoggerAlertService.getInstance().process(this.logEntryTags);
   }
 
   private void setUniqueIdField() {

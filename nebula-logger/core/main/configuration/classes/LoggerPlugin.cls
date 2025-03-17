@@ -15,13 +15,14 @@ public without sharing class LoggerPlugin {
   // consider replacing LoggerBatchableContext, LoggerAlertableContext, and LoggerTriggerableContext
   // with new inner classes in a new LoggerContext parent class (e.g., LoggerContext.Triggerable or LoggerContext.TriggerableContext?)
 
-  /**
-   * @description Interface used to create plugins that can be used within Nebula Logger's alert system `LoggerAlertService`
-   */
-  @SuppressWarnings('PMD.ApexDoc')
-  public interface Alertable {
-    void dispatch(LoggerPlugin__mdt configuration, LoggerAlertableContext input);
-  }
+  // TODO long term, Alertable will hopefully live here. But for now, it's kept in a separate plugin.
+  // /**
+  //  * @description Interface used to create plugins that can be used within Nebula Logger's alert system `LoggerAlertService`
+  //  */
+  // @SuppressWarnings('PMD.ApexDoc')
+  // public interface Alertable {
+  //   void dispatch(LoggerPlugin__mdt configuration, LoggerAlertableContext input);
+  // }
 
   /**
    * @description Interface used to create plugins that can be used within Nebula Logger's batch job `LogBatchPurger`
@@ -99,20 +100,21 @@ public without sharing class LoggerPlugin {
     return (Batchable) pluginInstance;
   }
 
-  /**
-   * @description Creates an instance of the class `LoggerPlugin.Alertable` based on the provided `LoggerPlugin__mdt` configuration
-   * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Alertable`
-   * @return                     The dynamically created instance of `LoggerPlugin.Alertable`,
-   *                             or `null` if an instance could not be created based on the provided configuration
-   */
-  public static Alertable newAlertableInstance(String apexClassTypeName) {
-    Object pluginInstance = newPluginInstance(apexClassTypeName);
-    Boolean isValidInstance = pluginInstance instanceof Alertable;
-    if (isValidInstance == false) {
-      pluginInstance = null;
-    }
-    return (Alertable) pluginInstance;
-  }
+  // TODO long term, Alertable will hopefully live here. But for now, it's kept in a separate plugin.
+  // /**
+  //  * @description Creates an instance of the class `LoggerPlugin.Alertable` based on the provided `LoggerPlugin__mdt` configuration
+  //  * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Alertable`
+  //  * @return                     The dynamically created instance of `LoggerPlugin.Alertable`,
+  //  *                             or `null` if an instance could not be created based on the provided configuration
+  //  */
+  // public static Alertable newAlertableInstance(String apexClassTypeName) {
+  //   Object pluginInstance = newPluginInstance(apexClassTypeName);
+  //   Boolean isValidInstance = pluginInstance instanceof Alertable;
+  //   if (isValidInstance == false) {
+  //     pluginInstance = null;
+  //   }
+  //   return (Alertable) pluginInstance;
+  // }
 
   /**
    * @description Creates an instance of the class `LoggerPlugin.Triggerable` based on the provided `LoggerPlugin__mdt` configuration

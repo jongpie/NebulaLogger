@@ -61,7 +61,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
       this.appendRuleBasedTags();
       this.upsertLogEntryTags();
 
-      LoggerAlertService.getInstance().process(this.logEntryEvents);
+      // TODO long term, LoggerAlertService will probably be called here. But for now, it's kept in a separate plugin.
+      // LoggerAlertService.getInstance().process(this.logEntryEvents);
     }
   }
 
