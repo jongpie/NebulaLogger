@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.8.NEXT",
-      "versionName": "Log__c.ParentLogTransactionId__c Custom Index",
-      "versionDescription": "Fixes an issue with high-volume calls to LogManagementDataSelector.getLogsWithoutParentLogByParentTransactionId()",
+      "versionNumber": "4.15.9.NEXT",
+      "versionName": "New EntrySaveReason__c Fields on LogEntryEvent__e and LogEntry__c",
+      "versionDescription": "Added new fields EntrySaveReason__c on LogEntryEvent__e & LogEntry__c to explicitly track why an entry is saved. This is now also used in LogEntryEventHandler.filterLogEntryEventsToSave() to ensure these types of entries are saved in LogEntry__c.",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
