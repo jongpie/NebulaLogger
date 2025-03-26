@@ -1,0 +1,41 @@
+<template>
+  <c-logger-page-section>
+    <span slot="title">Source Record Settings</span>
+    <span slot="content">
+      <lightning-layout multiple-rows vertical-align="start">
+        <lightning-layout-item size="12">
+          Hi! 👋
+
+          <lightning-record-edit-form object-api-name={objectApiName} record-id={recordId}>
+            <lightning-messages></lightning-messages>
+            <lightning-input-field field-name="SourceSObjectType__c"></lightning-input-field>
+            <lightning-input-field field-name="SourceSObjectFilter__c"></lightning-input-field>
+            <lightning-button type="submit" label="Save" class="slds-m-top_small"></lightning-button>
+          </lightning-record-edit-form>
+
+          <!-- <c-logger-code-viewer
+            code={sourceSnippet.Code}
+            data-id="sourceSnippet"
+            language={sourceSnippet.Language}
+            starting-line-number={sourceSnippet.StartingLineNumber}
+            target-line-number={sourceSnippet.TargetLineNumber}
+          >
+            <span slot="title">{sourceSnippet.Title}</span>
+            <span slot="actions">
+              <lightning-button-group>
+                <template if:true={hasFullSourceMetadata}>
+                  <lightning-button
+                    icon-name="utility:apex"
+                    label="View Full Source"
+                    onclick={handleShowFullSourceMetadataModal}
+                    variant="inverse"
+                  ></lightning-button>
+                </template>
+              </lightning-button-group>
+            </span>
+          </c-logger-code-viewer> -->
+        </lightning-layout-item>
+      </lightning-layout>
+    </span>
+  </c-logger-page-section>
+</template>

@@ -19,7 +19,7 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
-    <label>Nebula Logger: Alerts (Beta)</label>
+    <label>Logger Alerts (Beta)</label>
     <navType>Console</navType>
     <tabs>standard-home</tabs>
     <tabs>LoggerAlert__c</tabs>

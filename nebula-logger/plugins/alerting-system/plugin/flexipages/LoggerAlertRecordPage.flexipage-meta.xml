@@ -440,6 +440,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>loggerAlertEditor</componentName>
+                <identifier>c_loggerAlertEditor</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-bf42d9c8-cf4a-436c-8641-1575b843e753</value>
