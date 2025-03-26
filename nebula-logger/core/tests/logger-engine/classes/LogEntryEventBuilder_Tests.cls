@@ -1939,7 +1939,7 @@ private class LogEntryEventBuilder_Tests {
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, entryLoggingLevel, true);
 
     System.Assert.isTrue(builder.shouldSave());
-    System.Assert.areEqual('Logging Level Match', builder.getLogEntryEvent().EntrySaveReason__c);
+    System.Assert.areEqual('Logging Level Met', builder.getLogEntryEvent().EntrySaveReason__c);
   }
 
   @IsTest
