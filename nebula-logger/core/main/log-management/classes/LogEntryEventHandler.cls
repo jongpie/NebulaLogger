@@ -85,8 +85,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         continue;
       }
 
-      if (String.isBlank(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c)) {
-        // DefaultPlatformEventStorageLoggingLevel__c is optional - if it's null, then always save the event
+      // DefaultPlatformEventStorageLoggingLevel__c is optional - if it's null, then always save the event
+      if (
+        logEntryEvent.EntrySaveReason__c == LogEntryEventBuilder.ENTRY_SAVE_REASON_OVERRIDE ||
+        String.isBlank(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c)
+      ) {
         logEntryEventsToSave.add(logEntryEvent);
       } else {
         System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c);
@@ -272,6 +275,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
         DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
         DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
+        EntrySaveReason__c = logEntryEvent.EntrySaveReason__c,
         EpochTimestamp__c = logEntryEvent.EpochTimestamp__c,
         EventUuid__c = logEntryEvent.EventUuid,
         ExceptionLocation__c = logEntryEvent.ExceptionLocation__c,

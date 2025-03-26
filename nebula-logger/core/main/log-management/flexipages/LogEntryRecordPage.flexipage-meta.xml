@@ -2072,6 +2072,29 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.EntrySaveReason__c</fieldItem>
+                <identifier>RecordEntrySaveReason_cField</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.EntrySaveReason__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Logging Level Met</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.EntrySaveReason__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Override</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.EntryScenario__c</fieldItem>

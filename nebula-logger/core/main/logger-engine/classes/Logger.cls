@@ -366,7 +366,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean meetsUserLoggingLevel(System.LoggingLevel logEntryLoggingLevel) {
-    return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
+    return logEntryLoggingLevel.ordinal() >= userLoggingLevel.ordinal();
   }
 
   /**
