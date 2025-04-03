@@ -18,9 +18,9 @@
                 <label>Logging Level Met</label>
             </value>
             <value>
-                <fullName>Override</fullName>
+                <fullName>Save Overridden</fullName>
                 <default>false</default>
-                <label>Override</label>
+                <label>Save Overridden</label>
             </value>
         </valueSetDefinition>
     </valueSet>

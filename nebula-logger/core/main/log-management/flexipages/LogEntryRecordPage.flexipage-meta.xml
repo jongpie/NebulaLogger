@@ -2086,7 +2086,7 @@
                     <criteria>
                         <leftValue>{!Record.EntrySaveReason__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>Override</rightValue>
+                        <rightValue>Save Overridden</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>

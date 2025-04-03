@@ -248,9 +248,9 @@ private class LogEntryEventHandler_Tests {
     settings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     upsert settings;
     LogEntryEvent__e logEntryEventWithOverride = createLogEntryEvent();
-    logEntryEventWithOverride.EntrySaveReason__c = 'Override';
+    logEntryEventWithOverride.EntrySaveReason__c = 'Save Overridden';
     logEntryEventWithOverride.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-    logEntryEventWithOverride.Message__c = 'Entry with save reason == Override';
+    logEntryEventWithOverride.Message__c = 'Entry with save reason == Save Overridden';
     LogEntryEvent__e logEntryEventWithoutOverride = createLogEntryEvent();
     logEntryEventWithoutOverride.EntrySaveReason__c = 'Any other value';
     logEntryEventWithoutOverride.LoggingLevel__c = System.LoggingLevel.FINEST.name();

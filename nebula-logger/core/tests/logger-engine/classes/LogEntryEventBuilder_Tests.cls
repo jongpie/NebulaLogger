@@ -1956,7 +1956,7 @@ private class LogEntryEventBuilder_Tests {
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, entryLoggingLevel, true);
 
     System.Assert.isTrue(builder.shouldSave());
-    System.Assert.areEqual('Override', builder.getLogEntryEvent().EntrySaveReason__c);
+    System.Assert.areEqual('Save Overridden', builder.getLogEntryEvent().EntrySaveReason__c);
   }
 
   @IsTest

@@ -13,7 +13,7 @@
 )
 global with sharing class LogEntryEventBuilder {
   public static final String ENTRY_SAVE_REASON_LOGGING_LEVEL_MET = 'Logging Level Met';
-  public static final String ENTRY_SAVE_REASON_OVERRIDE = 'Override';
+  public static final String ENTRY_SAVE_REASON_OVERRIDE = 'Save Overridden';
 
   private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
   private static final Schema.User CURRENT_USER = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
