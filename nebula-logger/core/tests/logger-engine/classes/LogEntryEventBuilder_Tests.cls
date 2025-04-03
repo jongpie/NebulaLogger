@@ -1912,13 +1912,51 @@ private class LogEntryEventBuilder_Tests {
   @IsTest
   static void it_should_return_value_of_shouldSave_when_true() {
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+
     System.Assert.isTrue(builder.shouldSave());
+    System.Assert.isNotNull(builder.getLogEntryEvent().EntrySaveReason__c);
   }
 
   @IsTest
   static void it_should_return_value_of_shouldSave_when_false() {
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, false);
+
     System.Assert.isFalse(builder.shouldSave());
+    System.Assert.isNull(builder.getLogEntryEvent());
+  }
+
+  @IsTest
+  static void it_should_set_save_reason_when_user_logging_level_met() {
+    System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
+    System.LoggingLevel entryLoggingLevel = System.LoggingLevel.WARN;
+    System.Assert.isTrue(
+      entryLoggingLevel.ordinal() > userLoggingLevel.ordinal(),
+      'Test has started under the wrong conditions, the entry logging level should meet the user logging level'
+    );
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.LoggingLevel__c = userLoggingLevel.name();
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, entryLoggingLevel, true);
+
+    System.Assert.isTrue(builder.shouldSave());
+    System.Assert.areEqual('Logging Level Met', builder.getLogEntryEvent().EntrySaveReason__c);
+  }
+
+  @IsTest
+  static void it_should_set_save_reason_when_entry_saving_is_overridden() {
+    System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
+    System.LoggingLevel entryLoggingLevel = System.LoggingLevel.FINE;
+    System.Assert.isTrue(
+      entryLoggingLevel.ordinal() < userLoggingLevel.ordinal(),
+      'Test has started under the wrong conditions, the entry logging level should NOT meet the user logging level'
+    );
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.LoggingLevel__c = userLoggingLevel.name();
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, entryLoggingLevel, true);
+
+    System.Assert.isTrue(builder.shouldSave());
+    System.Assert.areEqual('Save Overridden', builder.getLogEntryEvent().EntrySaveReason__c);
   }
 
   @IsTest

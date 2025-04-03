@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.15.8';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.15.9';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -366,7 +366,7 @@ global with sharing class Logger {
    * @return Boolean
    */
   global static Boolean meetsUserLoggingLevel(System.LoggingLevel logEntryLoggingLevel) {
-    return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
+    return logEntryLoggingLevel.ordinal() >= userLoggingLevel.ordinal();
   }
 
   /**

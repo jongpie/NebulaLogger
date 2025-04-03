@@ -12,6 +12,9 @@
   'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
+  public static final String ENTRY_SAVE_REASON_LOGGING_LEVEL_MET = 'Logging Level Met';
+  public static final String ENTRY_SAVE_REASON_OVERRIDE = 'Save Overridden';
+
   private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
   private static final Schema.User CURRENT_USER = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
   private static final String HTTP_HEADER_FORMAT = '{0}: {1}';
@@ -128,6 +131,7 @@ global with sharing class LogEntryEventBuilder {
       this.entryLoggingLevel = entryLoggingLevel;
 
       this.logEntryEvent = getLogEntryEventTemplate(entryLoggingLevel);
+      this.setSaveReason();
       this.setTimestamp(System.now());
     }
   }
@@ -848,6 +852,13 @@ global with sharing class LogEntryEventBuilder {
     return this.logEntryEvent;
   }
 
+  private void setSaveReason() {
+    System.LoggingLevel userLoggingLevel = System.LoggingLevel.valueOf(this.userSettings.LoggingLevel__c);
+    Boolean isEntryLoggingLevelEnabled = this.entryLoggingLevel.ordinal() >= userLoggingLevel.ordinal();
+
+    this.logEntryEvent.EntrySaveReason__c = isEntryLoggingLevelEnabled ? ENTRY_SAVE_REASON_LOGGING_LEVEL_MET : ENTRY_SAVE_REASON_OVERRIDE;
+  }
+
   @SuppressWarnings('PMD.AvoidDebugStatements')
   private void logToApexDebug(String message) {
     if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false) {
@@ -861,6 +872,7 @@ global with sharing class LogEntryEventBuilder {
         if (String.isBlank(possibleReplacement)) {
           continue;
         }
+
         String logEntryFieldName = possibleReplacement.substringBefore('}');
         Object logEntryFieldValue = this.logEntryEvent.get(logEntryFieldName);
         if (logEntryFieldValue == null) {
