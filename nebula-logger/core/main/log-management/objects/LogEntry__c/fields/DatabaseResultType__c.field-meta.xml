@@ -12,6 +12,21 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Approval.LockResult</fullName>
+                <default>false</default>
+                <label>Approval.LockResult</label>
+            </value>
+            <value>
+                <fullName>Approval.ProcessResult</fullName>
+                <default>false</default>
+                <label>Approval.ProcessResult</label>
+            </value>
+            <value>
+                <fullName>Approval.UnlockResult</fullName>
+                <default>false</default>
+                <label>Approval.UnlockResult</label>
+            </value>
+            <value>
                 <fullName>Database.DeleteResult</fullName>
                 <default>false</default>
                 <label>Database.DeleteResult</label>

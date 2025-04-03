@@ -96,6 +96,69 @@ LoggerSettings\_\_c
 
 A new `LoggerSettings__c` record, with all fields populated with default field values
 
+#### `debug(LogMessage logMessage, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`   | The instance of `Approval.LockResult` to log                              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(LogMessage logMessage, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log                           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(LogMessage logMessage, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `debug(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
@@ -232,6 +295,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 | -------------- | ------------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(LogMessage logMessage, List<Approval.LockResult> lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`    | The instance of `List&lt;Approval.LockResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(LogMessage logMessage, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `logMessage`     | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResults` | The instance of `List&lt;Approval.ProcessResult&gt;` to log               |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(LogMessage logMessage, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResults` | The instance of `List&lt;Approval.UnlockResult&gt;` to log                |
 
 ##### Return
 
@@ -473,6 +599,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `debug(String message, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param        | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `message`    | The string to use to set the entry&apos;s message field |
+| `lockResult` | The instance of `Approval.LockResult` to log            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(String message, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log         |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(String message, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `message`      | The string to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `debug(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
@@ -609,6 +798,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
 | -------------- | ------------------------------------------------------- |
 | `message`      | The string to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(String message, List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param         | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| `message`     | The string to use to set the entry&apos;s message field |
+| `lockResults` | The list of `Approval.LockResult` instances to log      |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(String message, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param            | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `message`        | The string to use to set the entry&apos;s message field |
+| `processResults` | The list of `Approval.ProcessResult` instances to log   |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `debug(String message, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.DEBUG`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log    |
 
 ##### Return
 
@@ -860,6 +1112,69 @@ End the specified scenario, if it&apos;s the currently active scenario, and roll
 | ---------- | ------------------------------- |
 | `scenario` | The name of the scenario to end |
 
+#### `error(LogMessage logMessage, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`   | The instance of `Approval.LockResult` to log                              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(LogMessage logMessage, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log                           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(LogMessage logMessage, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `error(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
@@ -996,6 +1311,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | -------------- | ------------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(LogMessage logMessage, List<Approval.LockResult> lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`    | The instance of `List&lt;Approval.LockResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(LogMessage logMessage, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `logMessage`     | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResults` | The instance of `List&lt;Approval.ProcessResult&gt;` to log               |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(LogMessage logMessage, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResults` | The instance of `List&lt;Approval.UnlockResult&gt;` to log                |
 
 ##### Return
 
@@ -1324,6 +1702,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `error(String message, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param        | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `message`    | The string to use to set the entry&apos;s message field |
+| `lockResult` | The instance of `Approval.LockResult` to log            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(String message, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log         |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(String message, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `message`      | The string to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `error(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
@@ -1460,6 +1901,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
 | -------------- | ------------------------------------------------------- |
 | `message`      | The string to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(String message, List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param         | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| `message`     | The string to use to set the entry&apos;s message field |
+| `lockResults` | The list of `Approval.LockResult` instances to log      |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(String message, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param            | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `message`        | The string to use to set the entry&apos;s message field |
+| `processResults` | The list of `Approval.ProcessResult` instances to log   |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `error(String message, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.ERROR`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log    |
 
 ##### Return
 
@@ -1892,6 +2396,69 @@ Asynchronoulsy publishes the list of `LogEntryEvent__e` records
 | ------------------ | ---------------------------------------------------------- |
 | `queueableContext` | The context of the current queue, provided by the platform |
 
+#### `fine(LogMessage logMessage, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`   | The instance of `Approval.LockResult` to log                              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(LogMessage logMessage, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log                           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(LogMessage logMessage, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `fine(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.FINE`
@@ -2028,6 +2595,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 | -------------- | ------------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(LogMessage logMessage, List<Approval.LockResult> lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`    | The instance of `List&lt;Approval.LockResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(LogMessage logMessage, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `logMessage`     | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResults` | The instance of `List&lt;Approval.ProcessResult&gt;` to log               |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(LogMessage logMessage, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResults` | The instance of `List&lt;Approval.UnlockResult&gt;` to log                |
 
 ##### Return
 
@@ -2269,6 +2899,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `fine(String message, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param        | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `message`    | The string to use to set the entry&apos;s message field |
+| `lockResult` | The instance of `Approval.LockResult` to log            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(String message, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log         |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(String message, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `message`      | The string to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `fine(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.FINE`
@@ -2405,6 +3098,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINE`
 | -------------- | ------------------------------------------------------- |
 | `message`      | The string to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(String message, List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param         | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| `message`     | The string to use to set the entry&apos;s message field |
+| `lockResults` | The list of `Approval.LockResult` instances to log      |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(String message, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param            | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `message`        | The string to use to set the entry&apos;s message field |
+| `processResults` | The list of `Approval.ProcessResult` instances to log   |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `fine(String message, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINE`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log    |
 
 ##### Return
 
@@ -2646,6 +3402,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `finer(LogMessage logMessage, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`   | The instance of `Approval.LockResult` to log                              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(LogMessage logMessage, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log                           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(LogMessage logMessage, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `finer(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.FINER`
@@ -2782,6 +3601,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 | -------------- | ------------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(LogMessage logMessage, List<Approval.LockResult> lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`    | The instance of `List&lt;Approval.LockResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(LogMessage logMessage, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `logMessage`     | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResults` | The instance of `List&lt;Approval.ProcessResult&gt;` to log               |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(LogMessage logMessage, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResults` | The instance of `List&lt;Approval.UnlockResult&gt;` to log                |
 
 ##### Return
 
@@ -3023,6 +3905,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `finer(String message, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param        | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `message`    | The string to use to set the entry&apos;s message field |
+| `lockResult` | The instance of `Approval.LockResult` to log            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(String message, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log         |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(String message, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `message`      | The string to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `finer(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.FINER`
@@ -3159,6 +4104,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINER`
 | -------------- | ------------------------------------------------------- |
 | `message`      | The string to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(String message, List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param         | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| `message`     | The string to use to set the entry&apos;s message field |
+| `lockResults` | The list of `Approval.LockResult` instances to log      |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(String message, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param            | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `message`        | The string to use to set the entry&apos;s message field |
+| `processResults` | The list of `Approval.ProcessResult` instances to log   |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finer(String message, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINER`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log    |
 
 ##### Return
 
@@ -3400,6 +4408,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `finest(LogMessage logMessage, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`   | The instance of `Approval.LockResult` to log                              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(LogMessage logMessage, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log                           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(LogMessage logMessage, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `finest(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
@@ -3536,6 +4607,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 | -------------- | ------------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(LogMessage logMessage, List<Approval.LockResult> lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`    | The instance of `List&lt;Approval.LockResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(LogMessage logMessage, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `logMessage`     | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResults` | The instance of `List&lt;Approval.ProcessResult&gt;` to log               |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(LogMessage logMessage, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResults` | The instance of `List&lt;Approval.UnlockResult&gt;` to log                |
 
 ##### Return
 
@@ -3777,6 +4911,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `finest(String message, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param        | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `message`    | The string to use to set the entry&apos;s message field |
+| `lockResult` | The instance of `Approval.LockResult` to log            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(String message, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log         |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(String message, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `message`      | The string to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `finest(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
@@ -3913,6 +5110,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
 | -------------- | ------------------------------------------------------- |
 | `message`      | The string to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(String message, List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param         | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| `message`     | The string to use to set the entry&apos;s message field |
+| `lockResults` | The list of `Approval.LockResult` instances to log      |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(String message, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param            | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `message`        | The string to use to set the entry&apos;s message field |
+| `processResults` | The list of `Approval.ProcessResult` instances to log   |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `finest(String message, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.FINEST`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log    |
 
 ##### Return
 
@@ -4376,6 +5636,69 @@ Adds the specified Apex type to the list of ignored origin locations for the cur
 | ---------- | ------------------------------------ |
 | `apexType` | The Apex type of the class to ignore |
 
+#### `info(LogMessage logMessage, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`   | The instance of `Approval.LockResult` to log                              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(LogMessage logMessage, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log                           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(LogMessage logMessage, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `info(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.INFO`
@@ -4512,6 +5835,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 | -------------- | ------------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(LogMessage logMessage, List<Approval.LockResult> lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`    | The instance of `List&lt;Approval.LockResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(LogMessage logMessage, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `logMessage`     | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResults` | The instance of `List&lt;Approval.ProcessResult&gt;` to log               |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(LogMessage logMessage, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResults` | The instance of `List&lt;Approval.UnlockResult&gt;` to log                |
 
 ##### Return
 
@@ -4753,6 +6139,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `info(String message, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param        | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `message`    | The string to use to set the entry&apos;s message field |
+| `lockResult` | The instance of `Approval.LockResult` to log            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(String message, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log         |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(String message, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `message`      | The string to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `info(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.INFO`
@@ -4889,6 +6338,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.INFO`
 | -------------- | ------------------------------------------------------- |
 | `message`      | The string to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(String message, List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param         | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| `message`     | The string to use to set the entry&apos;s message field |
+| `lockResults` | The list of `Approval.LockResult` instances to log      |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(String message, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param            | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `message`        | The string to use to set the entry&apos;s message field |
+| `processResults` | The list of `Approval.ProcessResult` instances to log   |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `info(String message, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.INFO`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log    |
 
 ##### Return
 
@@ -5779,6 +7291,69 @@ Sets the current scenario, which can be used to identify modules or groupings of
 
 Pauses saving for the current transaction. Any calls to saveLog() are ignored until saving is resumed.
 
+#### `warn(LogMessage logMessage, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`   | The instance of `Approval.LockResult` to log                              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(LogMessage logMessage, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log                           |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(LogMessage logMessage, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `warn(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.WARN`
@@ -5915,6 +7490,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 | -------------- | ------------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(LogMessage logMessage, List<Approval.LockResult> lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `lockResult`    | The instance of `List&lt;Approval.LockResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(LogMessage logMessage, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `logMessage`     | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `processResults` | The instance of `List&lt;Approval.ProcessResult&gt;` to log               |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(LogMessage logMessage, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `unlockResults` | The instance of `List&lt;Approval.UnlockResult&gt;` to log                |
 
 ##### Return
 
@@ -6243,6 +7881,69 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `warn(String message, Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param        | Description                                             |
+| ------------ | ------------------------------------------------------- |
+| `message`    | The string to use to set the entry&apos;s message field |
+| `lockResult` | The instance of `Approval.LockResult` to log            |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(String message, Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `processResult` | The instance of `Approval.ProcessResult` to log         |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(String message, Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param          | Description                                             |
+| -------------- | ------------------------------------------------------- |
+| `message`      | The string to use to set the entry&apos;s message field |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `warn(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `System.LoggingLevel.WARN`
@@ -6379,6 +8080,69 @@ Creates a new log entry with logging level == `System.LoggingLevel.WARN`
 | -------------- | ------------------------------------------------------- |
 | `message`      | The string to use to set the entry&apos;s message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log          |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(String message, List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param         | Description                                             |
+| ------------- | ------------------------------------------------------- |
+| `message`     | The string to use to set the entry&apos;s message field |
+| `lockResults` | The list of `Approval.LockResult` instances to log      |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(String message, List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param            | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `message`        | The string to use to set the entry&apos;s message field |
+| `processResults` | The list of `Approval.ProcessResult` instances to log   |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `warn(String message, List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Creates a new log entry with logging level == `System.LoggingLevel.WARN`
+
+##### Parameters
+
+| Param           | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `message`       | The string to use to set the entry&apos;s message field |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log    |
 
 ##### Return
 
