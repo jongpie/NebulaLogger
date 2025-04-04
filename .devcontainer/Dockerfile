@@ -1,10 +1,5 @@
 FROM salesforce/cli:2.82.6-full
 
-# Set up container user
-# RUN useradd -ms /bin/bash vscode && \
-#   mkdir -p /home/vscode && \
-#   chown -R vscode:vscode /home/vscode
-
 # Set up sf plugins
 RUN mkdir $HOME/.config && mkdir $HOME/.config/sf \
   # && echo '[ "@jongpie/sfdx-bummer-plugin", "jamessimone/sf-trace-plugin", "sf-trace-plugin" ]' > $HOME/.config/sf/unsignedPluginAllowList.json \
