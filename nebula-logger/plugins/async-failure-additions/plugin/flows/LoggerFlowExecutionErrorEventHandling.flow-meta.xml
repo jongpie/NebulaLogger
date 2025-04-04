@@ -17,7 +17,7 @@
         <nameSegment>LogFlowExecutionErrorEventHandler</nameSegment>
         <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>62.0</apiVersion>
+    <apiVersion>63.0</apiVersion>
     <description>`FlowExecutionErrorEvent` messages are created and fired by the platform when Screen Flows have unhandled errors, but Apex can&apos;t subscribe to them, so we use this platform event-driven Flow to call an Apex action to log errors. Subscribers can enable this functionality using a Logger Parameter: &quot;Is FlowExecutionErrorEvent Handled?&quot;</description>
     <interviewLabel>Nebula Logger: Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Nebula Logger: Flow Execution Error Event Handling</label>
