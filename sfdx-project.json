@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "62.0",
+  "sourceApiVersion": "63.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.9.NEXT",
-      "versionName": "New EntrySaveReason__c Fields on LogEntryEvent__e and LogEntry__c",
-      "versionDescription": "Added new fields EntrySaveReason__c on LogEntryEvent__e & LogEntry__c to explicitly track why an entry is saved. This is now also used in LogEntryEventHandler.filterLogEntryEventsToSave() to ensure these types of entries are saved in LogEntry__c.",
+      "versionNumber": "4.16.0.NEXT",
+      "versionName": "Spring '25 Release",
+      "versionDescription": "Updated all metadata to API v63.0, made some bugfixes & improvements to CallableLogger",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
