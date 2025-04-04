@@ -429,6 +429,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
   }
 
+  @SuppressWarnings('PMD.UnusedLocalVariable')
   private void upsertLogEntryTags() {
     if (LoggerParameter.ENABLE_TAGGING == false || LoggerParameter.NORMALIZE_TAG_DATA == false || this.tagNames.isEmpty()) {
       return;
@@ -499,6 +500,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     return logOwnerId;
   }
 
+  @SuppressWarnings('PMD.UnusedLocalVariable')
   private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
     Map<String, Id> tagNameToId = new Map<String, Id>();
 
