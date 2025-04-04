@@ -295,7 +295,7 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_adds_new_entry_when_using_omnistudio_approach() {
+  static void it_adds_new_entry_that_meets_user_logging_level_when_using_omnistudio_approach() {
     Logger.transactionQuiddity = System.Quiddity.REMOTE_ACTION;
     String loggingLevelName = System.LoggingLevel.FINE.name();
     String message = 'some log entry message';
@@ -314,12 +314,40 @@ private class CallableLogger_Tests {
     System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
     System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
     System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
-    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) omnistudioOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    LogEntryEventBuilder builder = ((LogEntryEventBuilder) omnistudioOutput.get('logEntryEventBuilder'));
+    System.Assert.isTrue(builder.shouldSave(), 'Expected builder.shouldSave() to return true');
+    LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
     System.Assert.areEqual(loggingLevelName, logEntryEvent.LoggingLevel__c);
     System.Assert.areEqual(message, logEntryEvent.Message__c);
     System.Assert.isNull(logEntryEvent.OriginLocation__c, 'Expected a null for OriginLocation__c, received: ' + logEntryEvent.OriginLocation__c);
     System.Assert.areEqual(TEST_OMNI_PROCESS_ID, logEntryEvent.OriginSourceId__c);
     System.Assert.areEqual('OmniStudio', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_gracefully_no_ops_new_entry_for_unmet_logging_level_when_using_omnistudio_approach() {
+    Logger.transactionQuiddity = System.Quiddity.REMOTE_ACTION;
+    String userLoggingLevelName = System.LoggingLevel.WARN.name();
+    Logger.getUserSettings().LoggingLevel__c = userLoggingLevelName;
+    String entryLoggingLevelName = System.LoggingLevel.FINE.name();
+    String message = 'some log entry message';
+    Map<String, Object> omnistudioInput = new Map<String, Object>{
+      'loggingLevel' => entryLoggingLevelName,
+      'message' => message,
+      'omniProcessId' => TEST_OMNI_PROCESS_ID
+    };
+    Map<String, Object> omnistudioOutput = new Map<String, Object>();
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    callableLoggerInstance.call('newEntry', new Map<String, Object>{ 'input' => omnistudioInput, 'output' => omnistudioOutput });
+
+    System.Assert.areEqual(5, omnistudioOutput.size(), System.JSON.serializePretty(omnistudioOutput.keySet()));
+    System.Assert.areEqual(true, omnistudioOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + omnistudioOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), omnistudioOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), omnistudioOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), omnistudioOutput.get('requestId'));
+    LogEntryEventBuilder builder = ((LogEntryEventBuilder) omnistudioOutput.get('logEntryEventBuilder'));
+    System.Assert.isFalse(builder.shouldSave(), 'Expected builder.shouldSave() to return false');
   }
 
   @IsTest

@@ -159,13 +159,15 @@ global without sharing class CallableLogger implements System.Callable {
         }
       }
       if (CallableLogger.isOmniStudioInput(input)) {
-        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-
-        logEntryEvent.OriginLocation__c = null;
-        logEntryEvent.OriginSourceApiName__c = null;
-        logEntryEvent.OriginSourceId__c = (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID);
-        logEntryEvent.OriginSourceMetadataType__c = null;
-        logEntryEvent.OriginType__c = 'OmniStudio';
+        logEntryEventBuilder.setField(
+          new Map<Schema.SObjectField, Object>{
+          LogEntryEvent__e.OriginLocation__c => null,
+          LogEntryEvent__e.OriginSourceApiName__c => null,
+          LogEntryEvent__e.OriginSourceId__c => (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID),
+          LogEntryEvent__e.OriginSourceMetadataType__c => null,
+          LogEntryEvent__e.OriginType__c => 'OmniStudio'
+          }
+        );
       }
 
       return logEntryEventBuilder;
