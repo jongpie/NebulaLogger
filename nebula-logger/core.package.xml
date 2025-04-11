@@ -145,6 +145,7 @@
         <members>LogEntryEvent__e.DatabaseResultCollectionType__c</members>
         <members>LogEntryEvent__e.DatabaseResultJson__c</members>
         <members>LogEntryEvent__e.DatabaseResultType__c</members>
+        <members>LogEntryEvent__e.EntrySaveReason__c</members>
         <members>LogEntryEvent__e.EntryScenario__c</members>
         <members>LogEntryEvent__e.EpochTimestamp__c</members>
         <members>LogEntryEvent__e.ExceptionLocation__c</members>
@@ -331,6 +332,7 @@
         <members>LogEntry__c.DatabaseResultCollectionType__c</members>
         <members>LogEntry__c.DatabaseResultJson__c</members>
         <members>LogEntry__c.DatabaseResultType__c</members>
+        <members>LogEntry__c.EntrySaveReason__c</members>
         <members>LogEntry__c.EntryScenarioLink__c</members>
         <members>LogEntry__c.EntryScenarioName__c</members>
         <members>LogEntry__c.EntryScenarioText__c</members>
@@ -694,6 +696,7 @@
         <members>LogEntry__c.ExceptionLocation__c</members>
         <members>LogEntry__c.OriginLocation__c</members>
         <members>Log__c.LogRetentionDate__c</members>
+        <members>Log__c.ParentLogTransactionId__c</members>
         <name>CustomIndex</name>
     </types>
     <types>

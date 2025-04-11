@@ -231,6 +231,51 @@ private class LogEntryEventHandler_Tests {
   }
 
   @IsTest
+  static void it_should_create_log_and_log_entry_data_when_event_save_reason_is_override() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+    LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+    Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+    System.Assert.areEqual(0, countOfLogs);
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    System.Assert.areEqual(0, countOfLogEntries);
+    LoggerSettings__c settings = Logger.getUserSettings();
+    settings.IsEnabled__c = true;
+    settings.IsSavingEnabled__c = true;
+    settings.DefaultPlatformEventStorageLocation__c = LogEntryEventHandler.DEFAULT_STORAGE_LOCATION_NAME;
+    settings.DefaultPlatformEventStorageLoggingLevel__c = System.LoggingLevel.ERROR.name();
+    settings.LoggingLevel__c = System.LoggingLevel.WARN.name();
+    upsert settings;
+    LogEntryEvent__e logEntryEventWithOverride = createLogEntryEvent();
+    logEntryEventWithOverride.EntrySaveReason__c = 'Save Overridden';
+    logEntryEventWithOverride.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+    logEntryEventWithOverride.Message__c = 'Entry with save reason == Save Overridden';
+    LogEntryEvent__e logEntryEventWithoutOverride = createLogEntryEvent();
+    logEntryEventWithoutOverride.EntrySaveReason__c = 'Any other value';
+    logEntryEventWithoutOverride.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+    logEntryEventWithoutOverride.Message__c = 'Entry with a different save reason';
+
+    List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus()
+      .publishRecords(new List<SObject>{ logEntryEventWithOverride, logEntryEventWithoutOverride });
+    LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+    System.Assert.areEqual(2, saveResults.size());
+    System.Assert.isTrue(saveResults.get(0).isSuccess(), saveResults.get(0).getErrors().toString());
+    System.Assert.isTrue(saveResults.get(1).isSuccess(), saveResults.get(1).getErrors().toString());
+    System.Assert.areEqual(
+      1,
+      LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+      'Handler class should have executed one time for AFTER_INSERT'
+    );
+    countOfLogs = [SELECT COUNT() FROM Log__c];
+    System.Assert.areEqual(1, countOfLogs);
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    System.Assert.areEqual(1, countOfLogEntries);
+    System.Assert.areEqual(logEntryEventWithOverride.Message__c, [SELECT Message__c FROM LogEntry__c].Message__c);
+  }
+
+  @IsTest
   static void it_should_normalize_event_data_into_log_and_log_entry_when_no_scenario_specified() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -1430,6 +1475,7 @@ private class LogEntryEventHandler_Tests {
             DatabaseResultCollectionType__c,
             DatabaseResultJson__c,
             DatabaseResultType__c,
+            EntrySaveReason__c,
             EntryScenario__c,
             EntryScenario__r.Name,
             EntryScenario__r.UniqueId__c,
@@ -1653,6 +1699,7 @@ private class LogEntryEventHandler_Tests {
     );
     System.Assert.areEqual(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c, 'logEntry.DatabaseResultJson__c was not properly set');
     System.Assert.areEqual(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c, 'logEntry.DatabaseResultType__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.EntrySaveReason__c, logEntry.EntrySaveReason__c, 'logEntry.EntrySaveReason__c was not properly set');
     System.Assert.areEqual(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c, 'logEntry.EpochTimestamp__c was not properly set');
     System.Assert.areEqual(logEntryEvent.ExceptionLocation__c, logEntry.ExceptionLocation__c, 'logEntry.ExceptionLocation__c was not properly set');
     System.Assert.areEqual(

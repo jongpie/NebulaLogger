@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EntrySaveReason__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <inlineHelpText>Indicates if entry was saved based on the logging user's settings, or based on a developer override in code</inlineHelpText>
+    <label>Entry Save Reason</label>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Logging Level Met</fullName>
+                <default>false</default>
+                <label>Logging Level Met</label>
+            </value>
+            <value>
+                <fullName>Save Overridden</fullName>
+                <default>false</default>
+                <label>Save Overridden</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
