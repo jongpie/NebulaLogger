@@ -54,7 +54,11 @@ public class LoggerMockDataCreator {
       return (Approval.LockResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Approval.LockResult.class);
     } else {
       return (Approval.LockResult) System.JSON.deserialize(
-        '{"success":false, "id": "' + recordId + '", "errors":[{"message": "insufficient access rights on cross-reference id: "' + recordId + '", "statusCode": "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"}]}',
+        '{"success":false, "id": "' +
+          recordId +
+          '", "errors":[{"message": "insufficient access rights on cross-reference id: ' +
+          recordId +
+          '", "statusCode": "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"}]}',
         Approval.LockResult.class
       );
     }
@@ -83,7 +87,9 @@ public class LoggerMockDataCreator {
       return (Approval.ProcessResult) System.JSON.deserialize('{"success": true, "entityId": "' + recordId + '"}', Approval.ProcessResult.class);
     } else {
       return (Approval.ProcessResult) System.JSON.deserialize(
-        '{"success":false, "entityId": "' + recordId + '", "errors":[{"message": "No applicable approval process was found.", "statusCode": "NO_APPLICABLE_PROCESS"}]}',
+        '{"success":false, "entityId": "' +
+          recordId +
+          '", "errors":[{"message": "No applicable approval process was found.", "statusCode": "NO_APPLICABLE_PROCESS"}]}',
         Approval.ProcessResult.class
       );
     }
@@ -112,7 +118,11 @@ public class LoggerMockDataCreator {
       return (Approval.UnlockResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Approval.UnlockResult.class);
     } else {
       return (Approval.UnlockResult) System.JSON.deserialize(
-        '{"success":false, "id": "' + recordId + '", "errors":[{"message": "insufficient access rights on cross-reference id: "' + recordId + '", "statusCode": "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"}]}',
+        '{"success":false, "id": "' +
+          recordId +
+          '", "errors":[{"message": "insufficient access rights on cross-reference id: ' +
+          recordId +
+          '", "statusCode": "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"}]}',
         Approval.UnlockResult.class
       );
     }
