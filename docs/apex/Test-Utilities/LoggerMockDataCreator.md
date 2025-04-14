@@ -30,46 +30,6 @@ AggregateResult
 
 The mock instance of `AggregateResult`
 
-#### `createDataBuilder(Schema.SObjectType sobjectType)` → `SObjectTestDataBuilder`
-
-Creates a new builder instance for the specified `SObjectType`, including creating a new `SObject` record. The new `SObject` record is created with any default field values that have been configured on the `SObjectType`.
-
-##### Parameters
-
-| Param         | Description                                                         |
-| ------------- | ------------------------------------------------------------------- |
-| `sobjectType` | The `SObjectType` to use for generating a new test `SObject` record |
-
-##### Return
-
-**Type**
-
-SObjectTestDataBuilder
-
-**Description**
-
-A new instance of `SObjectTestDataBuilder` for the specified `SObjectType`
-
-#### `createDataBuilder(SObject record)` → `SObjectTestDataBuilder`
-
-Creates a new builder instance for the specified `SObject` record
-
-##### Parameters
-
-| Param    | Description                                                     |
-| -------- | --------------------------------------------------------------- |
-| `record` | The existing test `SObject` record to populate with sample data |
-
-##### Return
-
-**Type**
-
-SObjectTestDataBuilder
-
-**Description**
-
-A new instance of `SObjectTestDataBuilder` for the specified `SObject`
-
 #### `createApprovalLockResult(Boolean isSuccess)` → `Approval.LockResult`
 
 Creates a mock instance of `Approval.LockResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
@@ -150,7 +110,7 @@ Approval.ProcessResult
 
 **Description**
 
-The mock instance of `Approval.ProcessResult`
+The mock instance of `Approval.UnlockResult`
 
 #### `createApprovalUnlockResult(Boolean isSuccess)` → `Approval.UnlockResult`
 
@@ -192,6 +152,46 @@ Approval.UnlockResult
 **Description**
 
 The mock instance of `Approval.UnlockResult`
+
+#### `createDataBuilder(Schema.SObjectType sobjectType)` → `SObjectTestDataBuilder`
+
+Creates a new builder instance for the specified `SObjectType`, including creating a new `SObject` record. The new `SObject` record is created with any default field values that have been configured on the `SObjectType`.
+
+##### Parameters
+
+| Param         | Description                                                         |
+| ------------- | ------------------------------------------------------------------- |
+| `sobjectType` | The `SObjectType` to use for generating a new test `SObject` record |
+
+##### Return
+
+**Type**
+
+SObjectTestDataBuilder
+
+**Description**
+
+A new instance of `SObjectTestDataBuilder` for the specified `SObjectType`
+
+#### `createDataBuilder(SObject record)` → `SObjectTestDataBuilder`
+
+Creates a new builder instance for the specified `SObject` record
+
+##### Parameters
+
+| Param    | Description                                                     |
+| -------- | --------------------------------------------------------------- |
+| `record` | The existing test `SObject` record to populate with sample data |
+
+##### Return
+
+**Type**
+
+SObjectTestDataBuilder
+
+**Description**
+
+A new instance of `SObjectTestDataBuilder` for the specified `SObject`
 
 #### `createDatabaseDeleteResult(Boolean isSuccess)` → `Database.DeleteResult`
 

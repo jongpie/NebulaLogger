@@ -30,6 +30,10 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 ### Properties
 
+#### `ENTRY_SAVE_REASON_LOGGING_LEVEL_MET` → `String`
+
+#### `ENTRY_SAVE_REASON_OVERRIDE` → `String`
+
 #### `aggregateQueriesMax` → `Integer`
 
 #### `asyncCallsMax` → `Integer`
@@ -140,14 +144,14 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setDatabaseResult(Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+#### `setApprovalResult(Approval.LockResult lockResult)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
 | Param        | Description                                  |
-| -------------|----------------------------------------------|
+| ------------ | -------------------------------------------- |
 | `lockResult` | The instance of `Approval.LockResult` to log |
 
 ##### Return
@@ -160,14 +164,14 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setDatabaseResult(Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+#### `setApprovalResult(Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
 | Param           | Description                                     |
-|-----------------|-------------------------------------------------|
+| --------------- | ----------------------------------------------- |
 | `processResult` | The instance of `Approval.ProcessResult` to log |
 
 ##### Return
@@ -180,15 +184,75 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setDatabaseResult(Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+#### `setApprovalResult(Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
 | Param          | Description                                    |
-|----------------|------------------------------------------------|
+| -------------- | ---------------------------------------------- |
 | `unlockResult` | The instance of `Approval.UnlockResult` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param         | Description                                        |
+| ------------- | -------------------------------------------------- |
+| `lockResults` | The list of `Approval.LockResult` instances to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param            | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| `processResults` | The list of `Approval.ProcessResult` instances to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param           | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log |
 
 ##### Return
 
@@ -340,66 +404,6 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setDatabaseResult(List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
-
-Sets the log entry event&apos;s database operation result fields
-
-##### Parameters
-
-| Param         | Description                                        |
-|---------------|----------------------------------------------------|
-| `lockResults` | The list of `Approval.LockResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The same instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `setDatabaseResult(List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
-
-Sets the log entry event&apos;s database operation result fields
-
-##### Parameters
-
-| Param            | Description                                           |
-|------------------|-------------------------------------------------------|
-| `processResults` | The list of `Approval.ProcessResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The same instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `setDatabaseResult(List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
-
-Sets the log entry event&apos;s database operation result fields
-
-##### Parameters
-
-| Param           | Description                                          |
-|-----------------|------------------------------------------------------|
-| `unlockResults` | The list of `Approval.UnlockResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The same instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `setDatabaseResult(List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s database operation result fields
@@ -426,9 +430,9 @@ Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
-| Param                    | Description                                          |
-| ------------------------ | ---------------------------------------------------- |
-| `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult`s to log |
+| Param                    | Description                                                   |
+| ------------------------ | ------------------------------------------------------------- |
+| `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
 ##### Return
 
@@ -792,7 +796,7 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setRecord(System.Iterable<Id> recordsIds)` → `LogEntryEventBuilder`
+#### `setRecord(System.Iterable<Id> recordIds)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s record fields
 
