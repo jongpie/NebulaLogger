@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.9.NEXT",
-      "versionName": "New EntrySaveReason__c Fields on LogEntryEvent__e and LogEntry__c",
-      "versionDescription": "Added new fields EntrySaveReason__c on LogEntryEvent__e & LogEntry__c to explicitly track why an entry is saved. This is now also used in LogEntryEventHandler.filterLogEntryEventsToSave() to ensure these types of entries are saved in LogEntry__c.",
+      "versionNumber": "4.15.10.NEXT",
+      "versionName": "Approval logging",
+      "versionDescription": "Added new methods in LogEntryEventBuilder for logging instances of Approval.LockResult ,Approval.ProcessResult, Approval.UnlockResult, as well as lists of each class",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
