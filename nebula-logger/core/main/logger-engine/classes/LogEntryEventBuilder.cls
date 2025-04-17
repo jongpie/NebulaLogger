@@ -196,6 +196,64 @@ global with sharing class LogEntryEventBuilder {
     return this;
   }
 
+  // Approval-result builder methods. All of these methods re-use the DatabaseResult* fields,
+  // since these are still sort of DML results, and at least at this time, it's not worth introducing
+  // brand new fields just for approval results.
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  lockResult The instance of `Approval.LockResult` to log
+   * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(Approval.LockResult lockResult) {
+    return this.setDatabaseDetails(new List<Approval.LockResult>{ lockResult }, Approval.LockResult.class, lockResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  processResult The instance of `Approval.ProcessResult` to log
+   * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(Approval.ProcessResult processResult) {
+    return this.setDatabaseDetails(new List<Approval.ProcessResult>{ processResult }, Approval.ProcessResult.class, processResult?.getEntityId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  unlockResult The instance of `Approval.UnlockResult` to log
+   * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(Approval.UnlockResult unlockResult) {
+    return this.setDatabaseDetails(new List<Approval.UnlockResult>{ unlockResult }, Approval.UnlockResult.class, unlockResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  lockResults The list of `Approval.LockResult` instances to log
+   * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(List<Approval.LockResult> lockResults) {
+    return this.setDatabaseDetails(lockResults, Approval.LockResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  processResults The list of `Approval.ProcessResult` instances to log
+   * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(List<Approval.ProcessResult> processResults) {
+    return this.setDatabaseDetails(processResults, Approval.ProcessResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  unlockResults The list of `Approval.UnlockResult` instances to log
+   * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(List<Approval.UnlockResult> unlockResults) {
+    return this.setDatabaseDetails(unlockResults, Approval.UnlockResult.class, null);
+  }
+
   // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
   // but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
 
@@ -493,18 +551,16 @@ global with sharing class LogEntryEventBuilder {
    * @param  recordsIds The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
-  global LogEntryEventBuilder setRecord(System.Iterable<Id> recordsIds) {
+  global LogEntryEventBuilder setRecord(System.Iterable<Id> recordIds) {
     if (this.shouldSave() == false) {
       return this;
     }
 
     List<SObject> records;
-    if (recordsIds != null) {
+    if (recordIds != null) {
       records = new List<SObject>();
-      for (Id recordId : recordsIds) {
-        SObject record = recordId.getSObjectType().newSObject();
-        record.Id = recordId;
-        records.add(record);
+      for (Id recordId : recordIds) {
+        records.add(recordId.getSObjectType().newSObject(recordId));
       }
     }
 
