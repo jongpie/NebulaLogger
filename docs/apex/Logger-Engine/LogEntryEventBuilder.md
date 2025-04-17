@@ -802,9 +802,9 @@ Sets the log entry event&apos;s record fields
 
 ##### Parameters
 
-| Param        | Description                                                                                                                                   |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `recordsIds` | The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry |
+| Param       | Description                                                                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `recordIds` | The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry |
 
 ##### Return
 
