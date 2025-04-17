@@ -214,6 +214,7 @@
     "Nebula Logger - Core@4.15.7-jest-test-cleanup-and-stacktrace-parsing-bugfix": "04t5Y0000015pEnQAI",
     "Nebula Logger - Core@4.15.8-log__c.parentlogtransactionid__c-custom-index": "04t5Y0000015pFCQAY",
     "Nebula Logger - Core@4.15.9-new-entrysavereason__c-fields-on-logentryevent__e-and-logentry__c": "04t5Y0000015pGKQAY",
+    "Nebula Logger - Core@4.15.10-approval-logging": "04t5Y0000015pGeQAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
