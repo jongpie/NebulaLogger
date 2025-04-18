@@ -1,0 +1,82 @@
+{
+  "name": "Nebula Logger Dev Container",
+  "dockerFile": "Dockerfile",
+  "features": {},
+  "remoteUser": "root",
+  "mounts": [
+    "source=${localWorkspaceFolder}/.npm,target=/home/vscode/.npm,type=bind",
+    "source=${localWorkspaceFolder}/.sf,target=/home/vscode/.sf,type=bind",
+    "source=${localWorkspaceFolder}/.sfdx,target=/home/vscode/.sfdx,type=bind"
+  ],
+  "postCreateCommand": "npm ci",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "codeAnalyzer.enableV5": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "explorer.copyRelativePathSeparator": "/",
+        "explorer.fileNesting.enabled": true,
+        "explorer.fileNesting.expand": false,
+        "explorer.fileNesting.patterns": {
+          "*.cls": "${capture}.cls-meta.xml",
+          "*.page": "${capture}.page-meta.xml",
+          "*.trigger": "${capture}.trigger-meta.xml",
+          "*.view": "${capture}.view-meta.xml",
+          "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock"
+        },
+        "files.autoSave": "onFocusChange",
+        "files.trimTrailingWhitespace": true,
+        "gitlens.views.scm.grouped.views": {
+          "branches": false,
+          "commits": false,
+          "contributors": false,
+          "launchpad": false,
+          "remotes": false,
+          "repositories": false,
+          "searchAndCompare": false,
+          "stashes": false,
+          "tags": false,
+          "worktrees": false
+        },
+        "salesforcedx-vscode-apex.java.home": "/usr/lib/jvm/java-11-openjdk-amd64",
+        "salesforcedx-vscode-core.show-cli-success-msg": false,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "albymor.increment-selection",
+        "bibhasdn.unique-lines",
+        "chuckjonas.apex-pmd",
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "financialforce.lana",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "gruntfuggly.todo-tree",
+        "mhutchie.git-graph",
+        "modicatech.apex-code-coverage-visualizer",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-wsl",
+        "ms-vscode.sublime-keybindings",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml",
+        "salesforce.salesforce-vscode-slds",
+        "salesforce.salesforcedx-einstein-gpt",
+        "salesforce.salesforcedx-vscode-apex-debugger",
+        "salesforce.salesforcedx-vscode-apex-replay-debugger",
+        "salesforce.salesforcedx-vscode-apex",
+        "salesforce.salesforcedx-vscode-core",
+        "salesforce.salesforcedx-vscode-expanded",
+        "salesforce.salesforcedx-vscode-lightning",
+        "salesforce.salesforcedx-vscode-lwc",
+        "salesforce.salesforcedx-vscode-soql",
+        "salesforce.salesforcedx-vscode-visualforce",
+        "salesforce.salesforcedx-vscode",
+        "salesforce.sfdx-code-analyzer-vscode",
+        "wmaurer.change-case"
+      ]
+    }
+  }
+}

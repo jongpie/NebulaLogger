@@ -1,6 +1,6 @@
 {
   "name": "nebula-logger",
-  "version": "4.15.10",
+  "version": "4.16.0",
   "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
   "author": "Jonathan Gillespie",
   "license": "MIT",
@@ -79,10 +79,10 @@
     "@cparra/apexdocs": "1.13.7",
     "@jongpie/sfdx-bummer-plugin": "^0.0.20",
     "@lwc/eslint-plugin-lwc": "^1.8.2",
-    "@salesforce/cli": "^2.67.7",
+    "@salesforce/cli": "^2.82.6",
     "@salesforce/eslint-config-lwc": "^3.6.0",
     "@salesforce/sfdx-lwc-jest": "^7.0.1",
-    "@salesforce/sfdx-scanner": "^4.7.0",
+    "@salesforce/sfdx-scanner": "^4.11.0",
     "@types/jest-when": "^3.5.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -90,9 +90,9 @@
     "husky": "^9.1.7",
     "jest-when": "^3.7.0",
     "jsdoc-to-markdown": "^9.1.1",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.4.1",
-    "prettier-plugin-apex": "^2.2.2",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-apex": "^2.2.5",
     "pwsh": "^0.3.0"
   }
 }
