@@ -5,23 +5,23 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
 
-## Unlocked Package - v4.15.10
+## Unlocked Package - v4.16.0
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015pGeQAI)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015pGeQAI)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015pGyQAI)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015pGyQAI)
 [![View Documentation](./images/btn-view-documentation.png)](https://github.com/jongpie/NebulaLogger/wiki)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015pGeQAI`
+`sf package install --wait 20 --security-type AdminsOnly --package 04t5Y0000015pGyQAI`
 
 ---
 
-## Managed Package - v4.15.0
+## Managed Package - v4.16.0
 
-[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015odFQAQ)
-[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015odFQAQ)
-[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/15?closed=1)
+[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015pGtQAI)
+[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015pGtQAI)
+[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/16?closed=1)
 
-`sf package install --wait 30 --security-type AdminsOnly --package 04t5Y0000015odFQAQ`
+`sf package install --wait 30 --security-type AdminsOnly --package 04t5Y0000015pGtQAI`
 
 ---
 

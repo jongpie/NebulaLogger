@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "62.0",
+  "sourceApiVersion": "63.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.15.10.NEXT",
-      "versionName": "Approval logging",
-      "versionDescription": "Added new methods in LogEntryEventBuilder for logging instances of Approval.LockResult, Approval.ProcessResult, Approval.UnlockResult, as well as lists of each class",
+      "versionNumber": "4.16.0.NEXT",
+      "versionName": "Spring '25 Release",
+      "versionDescription": "Updated all metadata to API v63.0, made some bugfixes & improvements to CallableLogger",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
@@ -215,6 +215,7 @@
     "Nebula Logger - Core@4.15.8-log__c.parentlogtransactionid__c-custom-index": "04t5Y0000015pFCQAY",
     "Nebula Logger - Core@4.15.9-new-entrysavereason__c-fields-on-logentryevent__e-and-logentry__c": "04t5Y0000015pGKQAY",
     "Nebula Logger - Core@4.15.10-approval-logging": "04t5Y0000015pGeQAI",
+    "Nebula Logger - Core@4.16.0-spring-'25-release": "04t5Y0000015pGyQAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
