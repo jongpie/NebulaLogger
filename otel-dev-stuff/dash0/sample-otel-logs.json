@@ -1,0 +1,524 @@
+{
+  "resourceLogs": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "dash0.resource.id",
+            "value": {
+              "stringValue": "16574556923206152081"
+            }
+          },
+          {
+            "key": "dash0.resource.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice-65cd7f66bf-x76b8"
+            }
+          },
+          {
+            "key": "dash0.resource.type",
+            "value": {
+              "stringValue": "k8s.pod"
+            }
+          },
+          {
+            "key": "app.kubernetes.io/component",
+            "value": {
+              "stringValue": "currencyservice"
+            }
+          },
+          {
+            "key": "app.kubernetes.io/instance",
+            "value": {
+              "stringValue": "opentelemetry-demo"
+            }
+          },
+          {
+            "key": "app.kubernetes.io/name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice"
+            }
+          },
+          {
+            "key": "cloud.account.id",
+            "value": {
+              "stringValue": "034437667956"
+            }
+          },
+          {
+            "key": "cloud.availability_zone",
+            "value": {
+              "stringValue": "eu-west-1a"
+            }
+          },
+          {
+            "key": "cloud.platform",
+            "value": {
+              "stringValue": "aws_ec2"
+            }
+          },
+          {
+            "key": "cloud.provider",
+            "value": {
+              "stringValue": "aws"
+            }
+          },
+          {
+            "key": "cloud.region",
+            "value": {
+              "stringValue": "eu-west-1"
+            }
+          },
+          {
+            "key": "dash0.auth.token",
+            "value": {
+              "stringValue": "hxZyXot"
+            }
+          },
+          {
+            "key": "host.id",
+            "value": {
+              "stringValue": "i-06928f1511c114373"
+            }
+          },
+          {
+            "key": "host.image.id",
+            "value": {
+              "stringValue": "ami-009d05c905c688c58"
+            }
+          },
+          {
+            "key": "host.name",
+            "value": {
+              "stringValue": "ip-10-1-34-161.eu-west-1.compute.internal"
+            }
+          },
+          {
+            "key": "host.type",
+            "value": {
+              "stringValue": "m5.xlarge"
+            }
+          },
+          {
+            "key": "k8s.deployment.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice"
+            }
+          },
+          {
+            "key": "k8s.deployment.uid",
+            "value": {
+              "stringValue": "e5b0f827-135a-4414-beb2-f17cb8f2880d"
+            }
+          },
+          {
+            "key": "k8s.namespace.name",
+            "value": {
+              "stringValue": "otel-demo"
+            }
+          },
+          {
+            "key": "k8s.node.name",
+            "value": {
+              "stringValue": "ip-10-1-34-161.eu-west-1.compute.internal"
+            }
+          },
+          {
+            "key": "k8s.pod.ip",
+            "value": {
+              "stringValue": "10.1.1.212"
+            }
+          },
+          {
+            "key": "k8s.pod.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice-65cd7f66bf-x76b8"
+            }
+          },
+          {
+            "key": "k8s.pod.start_time",
+            "value": {
+              "stringValue": "2025-04-10T12:56:01Z"
+            }
+          },
+          {
+            "key": "k8s.pod.uid",
+            "value": {
+              "stringValue": "1711c683-e62e-41de-8398-03fb40c06f11"
+            }
+          },
+          {
+            "key": "k8s.replicaset.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice-65cd7f66bf"
+            }
+          },
+          {
+            "key": "k8s.replicaset.uid",
+            "value": {
+              "stringValue": "2231dd6a-fb6e-4a83-bf1f-1ef6829d36e8"
+            }
+          },
+          {
+            "key": "kubectl.kubernetes.io/restartedAt",
+            "value": {
+              "stringValue": "2023-07-28T13:39:08+02:00"
+            }
+          },
+          {
+            "key": "opentelemetry.io/name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice"
+            }
+          },
+          {
+            "key": "pod-template-hash",
+            "value": {
+              "stringValue": "65cd7f66bf"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "currencyservice"
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": "opentelemetry-demo"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "cpp"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.13.0"
+            }
+          }
+        ],
+        "droppedAttributesCount": 0
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.30.0",
+      "scopeLogs": [
+        {
+          "logRecords": [
+            {
+              "attributes": [
+                {
+                  "key": "dash0.log.ai.message_inferred",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "dash0.log.message",
+                  "value": {
+                    "stringValue": "Convert conversion successful"
+                  }
+                }
+              ],
+              "body": {
+                "stringValue": "Convert conversion successful"
+              },
+              "droppedAttributesCount": 0,
+              "flags": 1,
+              "observedTimeUnixNano": "1745779502555755329",
+              "severityNumber": 9,
+              "severityText": "INFO",
+              "spanId": "H6qlb4ZOHas=",
+              "timeUnixNano": "1745779502555755329",
+              "traceId": "PRlhOclyWR3NizZzyRwhmw=="
+            }
+          ],
+          "schemaUrl": "https://opentelemetry.io/schemas/1.30.0",
+          "scope": {
+            "attributes": [],
+            "droppedAttributesCount": 0,
+            "name": "currencyservice",
+            "version": "1.13.0"
+          }
+        }
+      ]
+    }
+  ],
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "dash0.resource.id",
+            "value": {
+              "stringValue": "16574556923206152081"
+            }
+          },
+          {
+            "key": "dash0.resource.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice-65cd7f66bf-x76b8"
+            }
+          },
+          {
+            "key": "dash0.resource.type",
+            "value": {
+              "stringValue": "k8s.pod"
+            }
+          },
+          {
+            "key": "app.kubernetes.io/component",
+            "value": {
+              "stringValue": "currencyservice"
+            }
+          },
+          {
+            "key": "app.kubernetes.io/instance",
+            "value": {
+              "stringValue": "opentelemetry-demo"
+            }
+          },
+          {
+            "key": "app.kubernetes.io/name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice"
+            }
+          },
+          {
+            "key": "dash0.auth.token",
+            "value": {
+              "stringValue": "hxZyXot"
+            }
+          },
+          {
+            "key": "k8s.deployment.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice"
+            }
+          },
+          {
+            "key": "k8s.deployment.uid",
+            "value": {
+              "stringValue": "e5b0f827-135a-4414-beb2-f17cb8f2880d"
+            }
+          },
+          {
+            "key": "k8s.namespace.name",
+            "value": {
+              "stringValue": "otel-demo"
+            }
+          },
+          {
+            "key": "k8s.node.name",
+            "value": {
+              "stringValue": "ip-10-1-34-161.eu-west-1.compute.internal"
+            }
+          },
+          {
+            "key": "k8s.pod.ip",
+            "value": {
+              "stringValue": "10.1.1.212"
+            }
+          },
+          {
+            "key": "k8s.pod.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice-65cd7f66bf-x76b8"
+            }
+          },
+          {
+            "key": "k8s.pod.start_time",
+            "value": {
+              "stringValue": "2025-04-10T12:56:01Z"
+            }
+          },
+          {
+            "key": "k8s.pod.uid",
+            "value": {
+              "stringValue": "1711c683-e62e-41de-8398-03fb40c06f11"
+            }
+          },
+          {
+            "key": "k8s.replicaset.name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice-65cd7f66bf"
+            }
+          },
+          {
+            "key": "k8s.replicaset.uid",
+            "value": {
+              "stringValue": "2231dd6a-fb6e-4a83-bf1f-1ef6829d36e8"
+            }
+          },
+          {
+            "key": "kubectl.kubernetes.io/restartedAt",
+            "value": {
+              "stringValue": "2023-07-28T13:39:08+02:00"
+            }
+          },
+          {
+            "key": "opentelemetry.io/name",
+            "value": {
+              "stringValue": "opentelemetry-demo-currencyservice"
+            }
+          },
+          {
+            "key": "pod-template-hash",
+            "value": {
+              "stringValue": "65cd7f66bf"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "currencyservice"
+            }
+          },
+          {
+            "key": "service.namespace",
+            "value": {
+              "stringValue": "opentelemetry-demo"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "cpp"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.13.0"
+            }
+          }
+        ],
+        "droppedAttributesCount": 0
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.30.0",
+      "scopeSpans": [
+        {
+          "schemaUrl": "https://opentelemetry.io/schemas/1.30.0",
+          "scope": {
+            "attributes": [],
+            "droppedAttributesCount": 0,
+            "name": "currencyservice",
+            "version": ""
+          },
+          "spans": [
+            {
+              "attributes": [
+                {
+                  "key": "app.currency.conversion.from",
+                  "value": {
+                    "stringValue": "USD"
+                  }
+                },
+                {
+                  "key": "app.currency.conversion.to",
+                  "value": {
+                    "stringValue": "CHF"
+                  }
+                },
+                {
+                  "key": "dash0.operation.name",
+                  "value": {
+                    "stringValue": "oteldemo.CurrencyService Convert"
+                  }
+                },
+                {
+                  "key": "dash0.operation.ruleId",
+                  "value": {
+                    "stringValue": "rpc service and method"
+                  }
+                },
+                {
+                  "key": "dash0.operation.type",
+                  "value": {
+                    "stringValue": "rpc"
+                  }
+                },
+                {
+                  "key": "dash0.span.type",
+                  "value": {
+                    "stringValue": "rpc"
+                  }
+                },
+                {
+                  "key": "rpc.grpc.status_code",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "rpc.method",
+                  "value": {
+                    "stringValue": "Convert"
+                  }
+                },
+                {
+                  "key": "rpc.service",
+                  "value": {
+                    "stringValue": "oteldemo.CurrencyService"
+                  }
+                },
+                {
+                  "key": "rpc.system",
+                  "value": {
+                    "stringValue": "grpc"
+                  }
+                }
+              ],
+              "droppedAttributesCount": 0,
+              "droppedEventsCount": 0,
+              "droppedLinksCount": 0,
+              "endTimeUnixNano": "1745779502559418521",
+              "events": [
+                {
+                  "attributes": [],
+                  "droppedAttributesCount": 0,
+                  "name": "Processing currency conversion request",
+                  "timeUnixNano": "1745779502555736676"
+                },
+                {
+                  "attributes": [],
+                  "droppedAttributesCount": 0,
+                  "name": "Conversion successful, response sent back",
+                  "timeUnixNano": "1745779502555750662"
+                }
+              ],
+              "flags": 0,
+              "kind": 2,
+              "links": [],
+              "name": "CurrencyService/Convert",
+              "parentSpanId": "kOqHsMDfuPw=",
+              "spanId": "H6qlb4ZOHas=",
+              "startTimeUnixNano": "1745779502555729613",
+              "status": {
+                "code": 1,
+                "message": ""
+              },
+              "traceId": "PRlhOclyWR3NizZzyRwhmw==",
+              "traceState": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

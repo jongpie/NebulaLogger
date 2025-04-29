@@ -12,6 +12,11 @@
     </template>
     <template if:true={isLoaded}>
       <lightning-tabset>
+        <lightning-tab data-id="otel-content" label="OpenTelemetry (OTel)" value="otel" onactive={handleTabActivated}>
+          <div class="content">
+            <c-logger-code-viewer code={currentMode.data} language="json"></c-logger-code-viewer>
+          </div>
+        </lightning-tab>
         <lightning-tab data-id="json-content" label="Record JSON" value="json" onactive={handleTabActivated}>
           <div class="content">
             <c-logger-code-viewer code={currentMode.data} language="json"></c-logger-code-viewer>

@@ -23,11 +23,13 @@ export default class LogViewer extends LightningElement {
   isLoaded = false;
   logEntriesRelationshipName = '';
   log = {};
+  otelLogsPayload = {};
   currentMode = {};
   dataCopied = false;
 
   _logFileContent;
   _logJSONContent;
+  _logOTelContent;
 
   @wire(getLog, { logId: '$recordId' })
   wiredGetLog(result) {
@@ -36,8 +38,12 @@ export default class LogViewer extends LightningElement {
       this.logEntriesRelationshipName = result.data.logEntriesRelationshipName;
       reconstructedLog[this.logEntriesRelationshipName] = JSON.parse(JSON.stringify(result.data.logEntries));
       this.log = reconstructedLog;
+
+      this.otelLogsPayload = result.data.
+
       this._loadLogFileContent();
       this._loadLogJSONContent();
+      this._loadLogOTelContent();
       this.isLoaded = true;
     }
   }
@@ -70,6 +76,10 @@ export default class LogViewer extends LightningElement {
       case 'json':
         this.currentMode.data = this._logJSONContent;
         this.currentMode.extension = 'json';
+        break;
+      case 'otel':
+        this.currentMode.data = this._logOTelContent;
+        this.currentMode.extension = 'otel';
         break;
     }
   }
@@ -143,5 +153,17 @@ export default class LogViewer extends LightningElement {
         return obj;
       }, {});
     this._logJSONContent = JSON.stringify(formattedLog, null, '\t');
+  }
+
+  _loadLogOTelContent() {
+    // Sort the keys (fields) in the log object
+    let formattedOTelLogsPayload;
+    formattedOTelLogsPayload = Object.keys(this.otelLogsPayload)
+      .sort()
+      .reduce((obj, key) => {
+        obj[key] = this.otelLogsPayload[key];
+        return obj;
+      }, {});
+    this._logOTelContent = JSON.stringify(formattedOTelLogsPayload, null, '\t');
   }
 }

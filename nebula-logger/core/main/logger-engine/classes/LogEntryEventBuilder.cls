@@ -869,6 +869,7 @@ global with sharing class LogEntryEventBuilder {
     // Set the string value of timestamp to a second field as a workaround
     // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
     this.logEntryEvent.EpochTimestamp__c = timestamp.getTime();
+    this.logEntryEvent.OTelTimeUnixNano__c = LoggerOTelSchema.toEpochNanos(timestamp);
     this.logEntryEvent.Timestamp__c = timestamp;
     this.logEntryEvent.TimestampString__c = '' + this.logEntryEvent.EpochTimestamp__c;
 
@@ -987,10 +988,16 @@ global with sharing class LogEntryEventBuilder {
   }
 
   private static LogEntryEvent__e getLogEntryEventTemplate(System.LoggingLevel entryLoggingLevel) {
+    LoggerOTelSchema.SeverityLevel otelSeverityLevel = new LoggerOTelSchema.SeverityLevel(entryLoggingLevel);
+
     LogEntryEvent__e logEntryEventTemplate = new LogEntryEvent__e(
       LoggingLevel__c = entryLoggingLevel.name(),
       LoggingLevelOrdinal__c = entryLoggingLevel.ordinal(),
       OriginType__c = 'Apex',
+      // TODO add & set more new fields for OTel (trace ID, span ID, service name, etc).
+      // TODO decide if the fields will include an OTel prefix or not.
+      OTelSeverityNumber__c = otelSeverityLevel.SeverityNumber,
+      OTelSeverityText__c = otelSeverityLevel.SeverityText,
       TriggerIsExecuting__c = Trigger.isExecuting,
       TriggerOperationType__c = Trigger.operationType?.name(),
       TriggerSObjectType__c = Trigger.new?.getSObjectType().toString()

@@ -12,8 +12,6 @@ REST Resource class for external integrations to interact with Nebula Logger
 
 #### `body` → `String`
 
-#### `endpointRequest` → `EndpointRequest`
-
 #### `errors` → `List<EndpointError>`
 
 #### `headerKeys` → `List<String>`
@@ -74,6 +72,10 @@ Processes any HTTP POST requests sent
 
 ##### Constructors
 
+###### `OTelAttribute(String key, Boolean value)`
+
+###### `OTelAttribute(String key, Integer value)`
+
 ###### `OTelAttribute(String key, String value)`
 
 ---
@@ -92,11 +94,19 @@ Processes any HTTP POST requests sent
 
 ##### Constructors
 
+###### `OTelAttributeValue(Boolean value)`
+
+###### `OTelAttributeValue(Integer value)`
+
 ###### `OTelAttributeValue(String value)`
 
 ---
 
 ##### Properties
+
+###### `boolValue` → `Boolean`
+
+###### `intValue` → `Integer`
 
 ###### `stringValue` → `String`
 
@@ -112,9 +122,17 @@ Processes any HTTP POST requests sent
 
 ###### `body` → `OTelAttributeValue`
 
+###### `name` → `String`
+
+###### `severityNumber` → `Integer`
+
 ###### `severityText` → `String`
 
+###### `spanId` → `String`
+
 ###### `timeUnixNano` → `String`
+
+###### `traceId` → `String`
 
 ---
 

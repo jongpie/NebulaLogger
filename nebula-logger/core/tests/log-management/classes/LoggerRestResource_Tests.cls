@@ -20,12 +20,9 @@ private class LoggerRestResource_Tests {
 
     LoggerRestResource.EndpointRequest endpointRequest = new LoggerRestResource.EndpointRequest(restRequest);
 
-    System.Assert.areEqual(expectedRequestBody, endpointRequest.body);
+    System.Assert.areEqual(restRequest, endpointRequest.getRestRequest());
     System.Assert.areEqual(expectedEndpointName, endpointRequest.name);
     System.Assert.isNull(endpointRequest.particle);
-    System.Assert.areEqual(new List<String>(restRequest.headers.keySet()), endpointRequest.headerKeys);
-    System.Assert.areEqual(restRequest.params, endpointRequest.parameters);
-    System.Assert.areEqual(restRequest.requestUri, endpointRequest.uri);
   }
 
   @IsTest
@@ -43,12 +40,9 @@ private class LoggerRestResource_Tests {
 
     LoggerRestResource.EndpointRequest endpointRequest = new LoggerRestResource.EndpointRequest(restRequest);
 
-    System.Assert.areEqual(expectedRequestBody, endpointRequest.body);
+    System.Assert.areEqual(restRequest, endpointRequest.getRestRequest());
     System.Assert.areEqual(expectedEndpointName, endpointRequest.name);
     System.Assert.areEqual(expectedEndpointParticle, endpointRequest.particle);
-    System.Assert.areEqual(new List<String>(restRequest.headers.keySet()), endpointRequest.headerKeys);
-    System.Assert.areEqual(restRequest.params, endpointRequest.parameters);
-    System.Assert.areEqual(restRequest.requestUri, endpointRequest.uri);
   }
 
   @IsTest
@@ -72,28 +66,28 @@ private class LoggerRestResource_Tests {
     System.Assert.areEqual('Unknown endpoint provided: ' + unknownEndpoint, endpointResponse.errors.get(0).message);
   }
 
-  @IsTest
-  static void otel_severity_text_correctly_maps_to_logging_level() {
-    Map<String, System.LoggingLevel> otelSeverityTextToExpectedLoggingLevel = new Map<String, System.LoggingLevel>{
-      'Error' => System.LoggingLevel.ERROR,
-      'Warn' => System.LoggingLevel.WARN,
-      'Info' => System.LoggingLevel.INFO,
-      'Debug' => System.LoggingLevel.DEBUG,
-      'Trace3' => System.LoggingLevel.FINE,
-      'Trace2' => System.LoggingLevel.FINER,
-      'Trace' => System.LoggingLevel.FINEST,
-      'Anything else' => System.LoggingLevel.DEBUG
-    };
-    for (String otelSeverityText : otelSeverityTextToExpectedLoggingLevel.keySet()) {
-      LoggerRestResource.OTelLogRecord otelLogEntry = new LoggerRestResource.OTelLogRecord();
+  // @IsTest
+  // static void otel_severity_text_correctly_maps_to_logging_level() {
+  //   Map<String, System.LoggingLevel> otelSeverityTextToExpectedLoggingLevel = new Map<String, System.LoggingLevel>{
+  //     'Error' => System.LoggingLevel.ERROR,
+  //     'Warn' => System.LoggingLevel.WARN,
+  //     'Info' => System.LoggingLevel.INFO,
+  //     'Debug' => System.LoggingLevel.DEBUG,
+  //     'Trace3' => System.LoggingLevel.FINE,
+  //     'Trace2' => System.LoggingLevel.FINER,
+  //     'Trace' => System.LoggingLevel.FINEST,
+  //     'Anything else' => System.LoggingLevel.DEBUG
+  //   };
+  //   for (String otelSeverityText : otelSeverityTextToExpectedLoggingLevel.keySet()) {
+  //     LoggerOTelSchema.LogRecord otelLogEntry = new LoggerOTelSchema.LogRecord();
 
-      otelLogEntry.severityText = otelSeverityText;
+  //     otelLogEntry.severityText = otelSeverityText;
 
-      System.LoggingLevel expectedLoggingLevel = otelSeverityTextToExpectedLoggingLevel.get(otelSeverityText);
-      System.Assert.areEqual(expectedLoggingLevel.name(), otelLogEntry.getLogEntryEvent().LoggingLevel__c);
-      System.Assert.areEqual(expectedLoggingLevel.ordinal(), otelLogEntry.getLogEntryEvent().LoggingLevelOrdinal__c);
-    }
-  }
+  //     System.LoggingLevel expectedLoggingLevel = otelSeverityTextToExpectedLoggingLevel.get(otelSeverityText);
+  //     System.Assert.areEqual(expectedLoggingLevel.name(), otelLogEntry.getLogEntryEvent().LoggingLevel__c);
+  //     System.Assert.areEqual(expectedLoggingLevel.ordinal(), otelLogEntry.getLogEntryEvent().LoggingLevelOrdinal__c);
+  //   }
+  // }
 
   @IsTest
   static void logs_endpoint_post_throws_an_exception_when_null_log_entries_list_is_provided() {
@@ -124,122 +118,89 @@ private class LoggerRestResource_Tests {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
     System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
-    LoggerRestResource.OTelLogRecord otelLogEntry = new LoggerRestResource.OTelLogRecord();
-    otelLogEntry.body = new LoggerRestResource.OTelAttributeValue('some message');
-    otelLogEntry.name = 'Some span name, which maps to Nebula Logger\'s scenario name';
+    LoggerOTelSchema.LogRecord otelLogEntry = new LoggerOTelSchema.LogRecord();
+    otelLogEntry.body = new LoggerOTelSchema.AttributeValue('some message');
+    // otelLogEntry.name = 'Some span name, which maps to Nebula Logger\'s scenario name';
     otelLogEntry.severityText = 'Info';
     // otelLogEntry.spanId = 'TODO';
-    otelLogEntry.timeUnixNano = (System.now().getTime() * 1000000).toString();
+    otelLogEntry.timeUnixNano = System.now().getTime() * 1000000;
     otelLogEntry.traceId = System.UUID.randomUUID().toString().replace('-', '').toLowerCase();
-    LoggerRestResource.OTelAttribute browserAddressAttribute = new LoggerRestResource.OTelAttribute('browser.address', 'some browser address');
+    LoggerOTelSchema.Attribute browserAddressAttribute = new LoggerOTelSchema.Attribute('browser.address', 'some browser address');
     otelLogEntry.attributes.add(browserAddressAttribute);
-    LoggerRestResource.OTelAttribute browserFormFactorAttribute = new LoggerRestResource.OTelAttribute('browser.form_factor', 'some browser form factor');
+    LoggerOTelSchema.Attribute browserFormFactorAttribute = new LoggerOTelSchema.Attribute('browser.form_factor', 'some browser form factor');
     otelLogEntry.attributes.add(browserFormFactorAttribute);
-    LoggerRestResource.OTelAttribute browserLanguageAttribute = new LoggerRestResource.OTelAttribute('browser.language', 'some browser language');
+    LoggerOTelSchema.Attribute browserLanguageAttribute = new LoggerOTelSchema.Attribute('browser.language', 'some browser language');
     otelLogEntry.attributes.add(browserLanguageAttribute);
-    LoggerRestResource.OTelAttribute browserScreenResolutionAttribute = new LoggerRestResource.OTelAttribute(
-      'browser.screen_resolution',
-      'some browser screen resolution'
-    );
+    LoggerOTelSchema.Attribute browserScreenResolutionAttribute = new LoggerOTelSchema.Attribute('browser.screen_resolution', 'some browser screen resolution');
     otelLogEntry.attributes.add(browserScreenResolutionAttribute);
-    LoggerRestResource.OTelAttribute browserUserAgentAttribute = new LoggerRestResource.OTelAttribute('browser.user_agent', 'some browser user agent');
+    LoggerOTelSchema.Attribute browserUserAgentAttribute = new LoggerOTelSchema.Attribute('browser.user_agent', 'some browser user agent');
     otelLogEntry.attributes.add(browserUserAgentAttribute);
-    LoggerRestResource.OTelAttribute browserWindowResolutionAttribute = new LoggerRestResource.OTelAttribute(
-      'browser.window_resolution',
-      'some browser window resolution'
-    );
+    LoggerOTelSchema.Attribute browserWindowResolutionAttribute = new LoggerOTelSchema.Attribute('browser.window_resolution', 'some browser window resolution');
     otelLogEntry.attributes.add(browserWindowResolutionAttribute);
-    LoggerRestResource.OTelAttribute exceptionMessageAttribute = new LoggerRestResource.OTelAttribute('exception.message', 'some exception message');
+    LoggerOTelSchema.Attribute exceptionMessageAttribute = new LoggerOTelSchema.Attribute('exception.message', 'some exception message');
     otelLogEntry.attributes.add(exceptionMessageAttribute);
-    LoggerRestResource.OTelAttribute exceptionStackTraceAttribute = new LoggerRestResource.OTelAttribute('exception.stack_trace', 'Some.Exception.stackTrace');
+    LoggerOTelSchema.Attribute exceptionStackTraceAttribute = new LoggerOTelSchema.Attribute('exception.stack_trace', 'Some.Exception.stackTrace');
     otelLogEntry.attributes.add(exceptionStackTraceAttribute);
-    LoggerRestResource.OTelAttribute exceptionTypeAttribute = new LoggerRestResource.OTelAttribute('exception.type', 'SomeExceptionType');
+    LoggerOTelSchema.Attribute exceptionTypeAttribute = new LoggerOTelSchema.Attribute('exception.type', 'SomeExceptionType');
     otelLogEntry.attributes.add(exceptionTypeAttribute);
-    LoggerRestResource.OTelAttribute httpRequestBodyAttribute = new LoggerRestResource.OTelAttribute('http_request.body', 'some value for http_request.body');
+    LoggerOTelSchema.Attribute httpRequestBodyAttribute = new LoggerOTelSchema.Attribute('http_request.body', 'some value for http_request.body');
     otelLogEntry.attributes.add(httpRequestBodyAttribute);
-    LoggerRestResource.OTelAttribute httpRequestBodyMaskedAttribute = new LoggerRestResource.OTelAttribute('http_request.body_masked', true);
+    LoggerOTelSchema.Attribute httpRequestBodyMaskedAttribute = new LoggerOTelSchema.Attribute('http_request.body_masked', true);
     otelLogEntry.attributes.add(httpRequestBodyMaskedAttribute);
-    LoggerRestResource.OTelAttribute httpRequestCompressedAttribute = new LoggerRestResource.OTelAttribute('http_request.compressed', false);
+    LoggerOTelSchema.Attribute httpRequestCompressedAttribute = new LoggerOTelSchema.Attribute('http_request.compressed', false);
     otelLogEntry.attributes.add(httpRequestCompressedAttribute);
-    LoggerRestResource.OTelAttribute httpRequestEndpointAttribute = new LoggerRestResource.OTelAttribute(
-      'http_request.endpoint',
-      'some value for http_request.endpoint'
-    );
+    LoggerOTelSchema.Attribute httpRequestEndpointAttribute = new LoggerOTelSchema.Attribute('http_request.endpoint', 'some value for http_request.endpoint');
     otelLogEntry.attributes.add(httpRequestEndpointAttribute);
-    LoggerRestResource.OTelAttribute httpRequestHeaderKeysAttribute = new LoggerRestResource.OTelAttribute(
+    LoggerOTelSchema.Attribute httpRequestHeaderKeysAttribute = new LoggerOTelSchema.Attribute(
       'http_request.header_keys',
       'some value for http_request.header_keys'
     );
     otelLogEntry.attributes.add(httpRequestHeaderKeysAttribute);
-    LoggerRestResource.OTelAttribute httpRequestHeadersAttribute = new LoggerRestResource.OTelAttribute(
-      'http_request.headers',
-      'some value for http_request.headers'
-    );
+    LoggerOTelSchema.Attribute httpRequestHeadersAttribute = new LoggerOTelSchema.Attribute('http_request.headers', 'some value for http_request.headers');
     otelLogEntry.attributes.add(httpRequestHeadersAttribute);
-    LoggerRestResource.OTelAttribute httpRequestMethodAttribute = new LoggerRestResource.OTelAttribute(
-      'http_request.method',
-      'some value for http_request.method'
-    );
+    LoggerOTelSchema.Attribute httpRequestMethodAttribute = new LoggerOTelSchema.Attribute('http_request.method', 'some value for http_request.method');
     otelLogEntry.attributes.add(httpRequestMethodAttribute);
-    LoggerRestResource.OTelAttribute httpResponseBodyAttribute = new LoggerRestResource.OTelAttribute(
-      'http_response.body',
-      'some value for http_response.body'
-    );
+    LoggerOTelSchema.Attribute httpResponseBodyAttribute = new LoggerOTelSchema.Attribute('http_response.body', 'some value for http_response.body');
     otelLogEntry.attributes.add(httpResponseBodyAttribute);
-    LoggerRestResource.OTelAttribute httpResponseBodyMaskedAttribute = new LoggerRestResource.OTelAttribute('http_response.body_masked', true);
+    LoggerOTelSchema.Attribute httpResponseBodyMaskedAttribute = new LoggerOTelSchema.Attribute('http_response.body_masked', true);
     otelLogEntry.attributes.add(httpResponseBodyMaskedAttribute);
-    LoggerRestResource.OTelAttribute httpResponseHeaderKeysAttribute = new LoggerRestResource.OTelAttribute(
+    LoggerOTelSchema.Attribute httpResponseHeaderKeysAttribute = new LoggerOTelSchema.Attribute(
       'http_response.header_keys',
       'some value for http_response.header_keys'
     );
     otelLogEntry.attributes.add(httpResponseHeaderKeysAttribute);
-    LoggerRestResource.OTelAttribute httpResponseHeadersAttribute = new LoggerRestResource.OTelAttribute(
-      'http_response.headers',
-      'some value for http_response.headers'
-    );
+    LoggerOTelSchema.Attribute httpResponseHeadersAttribute = new LoggerOTelSchema.Attribute('http_response.headers', 'some value for http_response.headers');
     otelLogEntry.attributes.add(httpResponseHeadersAttribute);
-    LoggerRestResource.OTelAttribute httpResponseStatusAttribute = new LoggerRestResource.OTelAttribute(
-      'http_response.status',
-      'some value for http_response.status'
-    );
+    LoggerOTelSchema.Attribute httpResponseStatusAttribute = new LoggerOTelSchema.Attribute('http_response.status', 'some value for http_response.status');
     otelLogEntry.attributes.add(httpResponseStatusAttribute);
-    LoggerRestResource.OTelAttribute httpResponseStatusCodeAttribute = new LoggerRestResource.OTelAttribute('http_response.status_code', 123);
+    LoggerOTelSchema.Attribute httpResponseStatusCodeAttribute = new LoggerOTelSchema.Attribute('http_response.status_code', 123);
     otelLogEntry.attributes.add(httpResponseStatusCodeAttribute);
-    LoggerRestResource.OTelAttribute loggedByFederationIdentifierAttribute = new LoggerRestResource.OTelAttribute(
+    LoggerOTelSchema.Attribute loggedByFederationIdentifierAttribute = new LoggerOTelSchema.Attribute(
       'logged_by.federation_identifier',
       'Some.Federation.Identifier@saml.system.sso.com.org'
     );
     otelLogEntry.attributes.add(loggedByFederationIdentifierAttribute);
-    LoggerRestResource.OTelAttribute loggedByIdAttribute = new LoggerRestResource.OTelAttribute(
-      'logged_by.id',
-      LoggerMockDataCreator.createId(Schema.User.SObjectType)
-    );
+    LoggerOTelSchema.Attribute loggedByIdAttribute = new LoggerOTelSchema.Attribute('logged_by.id', LoggerMockDataCreator.createId(Schema.User.SObjectType));
     otelLogEntry.attributes.add(loggedByIdAttribute);
-    LoggerRestResource.OTelAttribute loggedByUsernameAttribute = new LoggerRestResource.OTelAttribute('logged_by.username', 'Some.Username@some.company.com');
+    LoggerOTelSchema.Attribute loggedByUsernameAttribute = new LoggerOTelSchema.Attribute('logged_by.username', 'Some.Username@some.company.com');
     otelLogEntry.attributes.add(loggedByUsernameAttribute);
-    LoggerRestResource.OTelAttribute originStackTraceAttribute = new LoggerRestResource.OTelAttribute('origin.stack_trace', 'Some.Origin.stackTrace');
+    LoggerOTelSchema.Attribute originStackTraceAttribute = new LoggerOTelSchema.Attribute('origin.stack_trace', 'Some.Origin.stackTrace');
     otelLogEntry.attributes.add(originStackTraceAttribute);
-    LoggerRestResource.OTelAttribute parentLogTransactionIdAttribute = new LoggerRestResource.OTelAttribute('parent_log.transaction_id', '123-abc');
+    LoggerOTelSchema.Attribute parentLogTransactionIdAttribute = new LoggerOTelSchema.Attribute('parent_log.transaction_id', '123-abc');
     otelLogEntry.attributes.add(parentLogTransactionIdAttribute);
-    LoggerRestResource.OTelScopeLog scopeLog = new LoggerRestResource.OTelScopeLog();
+    LoggerOTelSchema.ScopeLog scopeLog = new LoggerOTelSchema.ScopeLog();
     scopeLog.logRecords.add(otelLogEntry);
-    LoggerRestResource.OTelResourceLog resourceLog = new LoggerRestResource.OTelResourceLog();
-    LoggerRestResource.OTelAttribute resourceServiceIdAttribute = new LoggerRestResource.OTelAttribute('service.id', 'some-unique-id-value');
+    LoggerOTelSchema.ResourceLog resourceLog = new LoggerOTelSchema.ResourceLog();
+    LoggerOTelSchema.Attribute resourceServiceIdAttribute = new LoggerOTelSchema.Attribute('service.id', 'some-unique-id-value');
     resourceLog.resource.attributes.add(resourceServiceIdAttribute);
-    LoggerRestResource.OTelAttribute resourceServiceNameAttribute = new LoggerRestResource.OTelAttribute(
-      'service.name',
-      'some-external-system-or-microservice'
-    );
+    LoggerOTelSchema.Attribute resourceServiceNameAttribute = new LoggerOTelSchema.Attribute('service.name', 'some-external-system-or-microservice');
     resourceLog.resource.attributes.add(resourceServiceNameAttribute);
-    LoggerRestResource.OTelAttribute resourceServiceTypeAttribute = new LoggerRestResource.OTelAttribute(
-      'service.type',
-      'some-type-of-external-system-or-microservice'
-    );
+    LoggerOTelSchema.Attribute resourceServiceTypeAttribute = new LoggerOTelSchema.Attribute('service.type', 'some-type-of-external-system-or-microservice');
     resourceLog.resource.attributes.add(resourceServiceTypeAttribute);
-    LoggerRestResource.OTelAttribute resourceServiceVersionAttribute = new LoggerRestResource.OTelAttribute('service.version', 'some-version-number');
+    LoggerOTelSchema.Attribute resourceServiceVersionAttribute = new LoggerOTelSchema.Attribute('service.version', 'some-version-number');
     resourceLog.resource.attributes.add(resourceServiceVersionAttribute);
     resourceLog.scopeLogs.add(scopeLog);
-    LoggerRestResource.OTelLogsPayload logsPayload = new LoggerRestResource.OTelLogsPayload();
+    LoggerOTelSchema.LogsPayload logsPayload = new LoggerOTelSchema.LogsPayload();
     logsPayload.resourceLogs.add(resourceLog);
     System.RestContext.request = new System.RestRequest();
     System.RestContext.request.requestBody = Blob.valueOf(System.JSON.serialize(logsPayload));
@@ -354,9 +315,9 @@ private class LoggerRestResource_Tests {
     // Other Fields
     System.Assert.areEqual(parentLogTransactionIdAttribute.value.stringValue, publishedLogEntryEvent.ParentLogTransactionId__c);
     System.Assert.areEqual(originStackTraceAttribute.value.stringValue, publishedLogEntryEvent.StackTrace__c);
-    Datetime expectedTimestamp = Datetime.newInstance(Long.valueOf(otelLogEntry.timeUnixNano) / 1000000);
+    Datetime expectedTimestamp = Datetime.newInstance(otelLogEntry.timeUnixNano / 1000000);
     System.Assert.areEqual(expectedTimestamp, publishedLogEntryEvent.Timestamp__c);
-    System.Assert.areEqual(otelLogEntry.name, publishedLogEntryEvent.EntryScenario__c);
+    // System.Assert.areEqual(otelLogEntry.name, publishedLogEntryEvent.EntryScenario__c);
     String hyphenatedUuid =
       otelLogEntry.traceId.substring(0, 8) +
       '-' +

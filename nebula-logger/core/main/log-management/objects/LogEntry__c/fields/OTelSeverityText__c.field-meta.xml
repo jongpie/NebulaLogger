@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OTelSeverityText__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII;GDPR;CCPA</complianceGroup>
+    <label>OTelSeverityText</label>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>LoggerOTelSeverityText</valueSetName>
+    </valueSet>
+</CustomField>

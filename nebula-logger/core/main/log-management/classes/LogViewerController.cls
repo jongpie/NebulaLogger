@@ -19,7 +19,21 @@ public with sharing class LogViewerController {
     logDto.log = queryLog(logId);
     logDto.logEntries = queryLogEntries(logId);
     logDto.logEntriesRelationshipName = getNamespacePrefix() + 'LogEntries__r';
+
+    // TODO need to revist, this Log__c would not have child LogEntries__r populated (or tags within those entries)
+    logDto.otelLogsPayload = LoggerOTelAdapter.convertToOTel(logDto.log);
+
     return logDto;
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static LoggerOTelSchema.LogsPayload getOTelLogPayload(Id logId) {
+    LogDTO logDto = getLog(logId);
+
+    // TODO need to finalize if/how/when/where log will have child records for logEntries, etc.
+    LoggerOTelSchema.LogsPayload logsPayload = LoggerOTelAdapter.convertToOTel(logDto.log);
+
+    return logsPayload;
   }
 
   private static Log__c queryLog(Id logId) {
@@ -53,5 +67,7 @@ public with sharing class LogViewerController {
     public List<LogEntry__c> logEntries;
     @AuraEnabled
     public String logEntriesRelationshipName;
+    @AuraEnabled
+    public LoggerOTelSchema.LogsPayload otelLogsPayload;
   }
 }

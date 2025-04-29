@@ -30,6 +30,8 @@ LogDTO
 
 The matching record, with all fields that the current user can access
 
+#### `getOTelLog(Id logId)` → `LogDTO`
+
 ---
 
 ### Inner Classes

@@ -23,6 +23,8 @@
     <testClassName>LoggerEngineDataSelector_Tests</testClassName>
     <testClassName>LoggerFieldMapper_Tests</testClassName>
     <testClassName>LoggerHomeHeaderController_Tests</testClassName>
+    <testClassName>LoggerOTelAdapter_Tests</testClassName>
+    <testClassName>LoggerOTelSchema_Tests</testClassName>
     <testClassName>LoggerParameter_Tests</testClassName>
     <testClassName>LoggerPlugin_Tests</testClassName>
     <testClassName>LoggerRestResource_Tests</testClassName>

@@ -124,9 +124,13 @@ Builds and sends email notifications when internal exceptions occur within the l
 
 Controller class for the LWC `loggerHomeHeader`
 
+### [LoggerOTelAdapter](Log-Management/LoggerOTelAdapter)
+
+Class used to handle the translation between Nebula Logger-specific concepts/data model and OpenTelemetry&apos;s (OTel) schema. All of this is specific to Nebula Logger.
+
 ### [LoggerRestResource](Log-Management/LoggerRestResource)
 
-REST Resource class for external integrations to create &amp; retrieve logging data
+REST Resource class for external integrations to interact with Nebula Logger
 
 ### [LoggerSObjectMetadata](Log-Management/LoggerSObjectMetadata)
 
@@ -165,6 +169,10 @@ Selector class used for all queries that are specific to the configuration layer
 ### [LoggerFieldMapper](Configuration/LoggerFieldMapper)
 
 Maps fields values from custom fields on `LogEntryEvent__e` to equivalent fields on `Log__c`, `LogEntry__c`, and `LoggerScenario__c`
+
+### [LoggerOTelSchema](Configuration/LoggerOTelSchema)
+
+Class used to handle the translation between some Salesforce concepts and OpenTelemetry&apos;s (OTel) schema. None of this is specific to Nebula Logger, this only handles the translation between OTel &amp; what Salesforce provides out-of-the-box.
 
 ### [LoggerParameter](Configuration/LoggerParameter)
 
