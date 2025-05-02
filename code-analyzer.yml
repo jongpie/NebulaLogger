@@ -28,856 +28,855 @@ log_folder: null # Last calculated by the config command as: "C:\\Users\\JONATH~
 #       tags: ["Recommended", "Suggestion"]
 # -------------------------------------------
 rules:
-
   # ======================================================================
   # ESLINT ENGINE RULE OVERRIDES
   # ======================================================================
   eslint:
-    "@lwc/lwc-platform/no-aura":
+    '@lwc/lwc-platform/no-aura':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc-platform/no-aura-libs":
+    '@lwc/lwc-platform/no-aura-libs':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc-platform/no-community-import":
+    '@lwc/lwc-platform/no-community-import':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc-platform/no-create-context-provider":
+    '@lwc/lwc-platform/no-create-context-provider':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-deprecated-module-import":
+    '@lwc/lwc-platform/no-deprecated-module-import':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-dynamic-import-identifier":
+    '@lwc/lwc-platform/no-dynamic-import-identifier':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-forcegen-namespace":
+    '@lwc/lwc-platform/no-forcegen-namespace':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc-platform/no-inline-disable":
+    '@lwc/lwc-platform/no-inline-disable':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop":
+    '@lwc/lwc-platform/no-interop':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-create":
+    '@lwc/lwc-platform/no-interop-create':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-dispatch":
+    '@lwc/lwc-platform/no-interop-dispatch':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-execute":
+    '@lwc/lwc-platform/no-interop-execute':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-execute-privileged":
+    '@lwc/lwc-platform/no-interop-execute-privileged':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-execute-raw-response":
+    '@lwc/lwc-platform/no-interop-execute-raw-response':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-get-event":
+    '@lwc/lwc-platform/no-interop-get-event':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-get-module":
+    '@lwc/lwc-platform/no-interop-get-module':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-is-external-definition":
+    '@lwc/lwc-platform/no-interop-is-external-definition':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-load-definitions":
+    '@lwc/lwc-platform/no-interop-load-definitions':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-module-instrumentation":
+    '@lwc/lwc-platform/no-interop-module-instrumentation':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-module-storage":
+    '@lwc/lwc-platform/no-interop-module-storage':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-register":
+    '@lwc/lwc-platform/no-interop-register':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-render":
+    '@lwc/lwc-platform/no-interop-render':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-interop-sanitize":
+    '@lwc/lwc-platform/no-interop-sanitize':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-process-env":
+    '@lwc/lwc-platform/no-process-env':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc-platform/no-site-import":
+    '@lwc/lwc-platform/no-site-import':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc-platform/no-wire-service":
+    '@lwc/lwc-platform/no-wire-service':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc-platform/valid-dynamic-import-hint":
+    '@lwc/lwc-platform/valid-dynamic-import-hint':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/no-api-reassignments":
+    '@lwc/lwc/no-api-reassignments':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/no-async-operation":
+    '@lwc/lwc/no-async-operation':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/no-attributes-during-construction":
+    '@lwc/lwc/no-attributes-during-construction':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc/no-deprecated":
+    '@lwc/lwc/no-deprecated':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/no-disallowed-lwc-imports":
+    '@lwc/lwc/no-disallowed-lwc-imports':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/no-document-query":
+    '@lwc/lwc/no-document-query':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc/no-inner-html":
+    '@lwc/lwc/no-inner-html':
       severity: 2
       tags:
         - Recommended
         - LWC
         - Security
         - Javascript
-    "@lwc/lwc/no-leading-uppercase-api-name":
+    '@lwc/lwc/no-leading-uppercase-api-name':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc/no-template-children":
+    '@lwc/lwc/no-template-children':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc/no-unexpected-wire-adapter-usages":
+    '@lwc/lwc/no-unexpected-wire-adapter-usages':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/no-unknown-wire-adapters":
+    '@lwc/lwc/no-unknown-wire-adapters':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/prefer-custom-event":
+    '@lwc/lwc/prefer-custom-event':
       severity: 3
       tags:
         - Recommended
         - LWC
         - BestPractices
         - Javascript
-    "@lwc/lwc/valid-api":
+    '@lwc/lwc/valid-api':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc/valid-graphql-wire-adapter-callback-parameters":
+    '@lwc/lwc/valid-graphql-wire-adapter-callback-parameters':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc/valid-track":
+    '@lwc/lwc/valid-track':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@lwc/lwc/valid-wire":
+    '@lwc/lwc/valid-wire':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@salesforce/lightning/valid-apex-method-invocation":
+    '@salesforce/lightning/valid-apex-method-invocation':
       severity: 3
       tags:
         - Recommended
         - LWC
         - ErrorProne
         - Javascript
-    "@typescript-eslint/ban-ts-comment":
+    '@typescript-eslint/ban-ts-comment':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-array-constructor":
+    '@typescript-eslint/no-array-constructor':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/no-duplicate-enum-values":
+    '@typescript-eslint/no-duplicate-enum-values':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-empty-object-type":
+    '@typescript-eslint/no-empty-object-type':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/no-explicit-any":
+    '@typescript-eslint/no-explicit-any':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/no-extra-non-null-assertion":
+    '@typescript-eslint/no-extra-non-null-assertion':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-misused-new":
+    '@typescript-eslint/no-misused-new':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-namespace":
+    '@typescript-eslint/no-namespace':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/no-non-null-asserted-optional-chain":
+    '@typescript-eslint/no-non-null-asserted-optional-chain':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-require-imports":
+    '@typescript-eslint/no-require-imports':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-this-alias":
+    '@typescript-eslint/no-this-alias':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/no-unnecessary-type-constraint":
+    '@typescript-eslint/no-unnecessary-type-constraint':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/no-unsafe-declaration-merging":
+    '@typescript-eslint/no-unsafe-declaration-merging':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-unsafe-function-type":
+    '@typescript-eslint/no-unsafe-function-type':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-unused-expressions":
+    '@typescript-eslint/no-unused-expressions':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/no-unused-vars":
+    '@typescript-eslint/no-unused-vars':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/no-wrapper-object-types":
+    '@typescript-eslint/no-wrapper-object-types':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Typescript
-    "@typescript-eslint/prefer-as-const":
+    '@typescript-eslint/prefer-as-const':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/prefer-namespace-keyword":
+    '@typescript-eslint/prefer-namespace-keyword':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "@typescript-eslint/triple-slash-reference":
+    '@typescript-eslint/triple-slash-reference':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Typescript
-    "constructor-super":
+    'constructor-super':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-    "for-direction":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "getter-return":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-async-promise-executor":
+    'for-direction':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-case-declarations":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "no-class-assign":
+    'getter-return':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-    "no-compare-neg-zero":
+    'no-async-promise-executor':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-cond-assign":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-const-assign":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-constant-condition":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-control-regex":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-debugger":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-delete-var":
+    'no-case-declarations':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Javascript
         - Typescript
-    "no-dupe-args":
+    'no-class-assign':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-    "no-dupe-class-members":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-dupe-else-if":
+    'no-compare-neg-zero':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-dupe-keys":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-duplicate-case":
+    'no-cond-assign':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-empty":
+    'no-const-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-constant-condition':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-control-regex':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-debugger':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-delete-var':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Javascript
         - Typescript
-    "no-empty-character-class":
+    'no-dupe-args':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-dupe-class-members':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-dupe-else-if':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-empty-pattern":
+    'no-dupe-keys':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-duplicate-case':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-ex-assign":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-extra-boolean-cast":
+    'no-empty':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Javascript
         - Typescript
-    "no-fallthrough":
+    'no-empty-character-class':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-func-assign":
+    'no-empty-pattern':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-    "no-global-assign":
+        - Typescript
+    'no-ex-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-extra-boolean-cast':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Javascript
         - Typescript
-    "no-import-assign":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-inner-declarations":
+    'no-fallthrough':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-invalid-regexp":
+    'no-func-assign':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-        - Typescript
-    "no-irregular-whitespace":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-loss-of-precision":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-misleading-character-class":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-new-symbol":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-nonoctal-decimal-escape":
+    'no-global-assign':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Javascript
         - Typescript
-    "no-obj-calls":
+    'no-import-assign':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-    "no-octal":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-prototype-builtins":
+    'no-inner-declarations':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-redeclare":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-    "no-regex-spaces":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "no-self-assign":
+    'no-invalid-regexp':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-setter-return":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-shadow-restricted-names":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "no-sparse-arrays":
+    'no-irregular-whitespace':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-this-before-super":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-undef":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-unexpected-multiline":
+    'no-loss-of-precision':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-unreachable":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-    "no-unsafe-finally":
+    'no-misleading-character-class':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "no-unsafe-negation":
+    'no-new-symbol':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-    "no-unsafe-optional-chaining":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-unused-labels":
+    'no-nonoctal-decimal-escape':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Javascript
         - Typescript
-    "no-unused-vars":
+    'no-obj-calls':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
-    "no-useless-backreference":
-      severity: 2
-      tags:
-        - Recommended
-        - ErrorProne
-        - Javascript
-        - Typescript
-    "no-useless-catch":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "no-useless-escape":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "no-var":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "no-with":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "prefer-const":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "prefer-rest-params":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "prefer-spread":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "require-yield":
-      severity: 3
-      tags:
-        - Recommended
-        - BestPractices
-        - Javascript
-        - Typescript
-    "use-isnan":
+    'no-octal':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Javascript
         - Typescript
-    "valid-typeof":
+    'no-prototype-builtins':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-redeclare':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+    'no-regex-spaces':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-self-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-setter-return':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-shadow-restricted-names':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-sparse-arrays':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-this-before-super':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-undef':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-unexpected-multiline':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-unreachable':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-unsafe-finally':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-unsafe-negation':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-unsafe-optional-chaining':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-unused-labels':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-unused-vars':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-useless-backreference':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-useless-catch':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-useless-escape':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-var':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-with':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'prefer-const':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'prefer-rest-params':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'prefer-spread':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'require-yield':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'use-isnan':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'valid-typeof':
       severity: 2
       tags:
         - Recommended
@@ -889,25 +888,25 @@ rules:
   # RETIRE-JS ENGINE RULE OVERRIDES
   # ======================================================================
   retire-js:
-    "LibraryWithKnownCriticalSeverityVulnerability":
+    'LibraryWithKnownCriticalSeverityVulnerability':
       severity: 1
       tags:
         - Recommended
         - Security
         - Javascript
-    "LibraryWithKnownHighSeverityVulnerability":
+    'LibraryWithKnownHighSeverityVulnerability':
       severity: 2
       tags:
         - Recommended
         - Security
         - Javascript
-    "LibraryWithKnownMediumSeverityVulnerability":
+    'LibraryWithKnownMediumSeverityVulnerability':
       severity: 3
       tags:
         - Recommended
         - Security
         - Javascript
-    "LibraryWithKnownLowSeverityVulnerability":
+    'LibraryWithKnownLowSeverityVulnerability':
       severity: 4
       tags:
         - Recommended
@@ -918,30 +917,30 @@ rules:
   # REGEX ENGINE RULE OVERRIDES
   # ======================================================================
   regex:
-    "NoTrailingWhitespace":
+    'NoTrailingWhitespace':
       severity: 5
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "AvoidTermsWithImplicitBias":
+    'AvoidTermsWithImplicitBias':
       severity: 5
       tags:
         - Recommended
         - BestPractices
-    "AvoidOldSalesforceApiVersions":
+    'AvoidOldSalesforceApiVersions':
       severity: 2
       tags:
         - Recommended
         - Security
         - Xml
-    "AvoidGetHeapSizeInLoop":
+    'AvoidGetHeapSizeInLoop':
       severity: 2
       tags:
         - Recommended
         - Performance
         - Apex
-    "MinVersionForAbstractVirtualClassesWithPrivateMethod":
+    'MinVersionForAbstractVirtualClassesWithPrivateMethod':
       severity: 2
       tags:
         - Recommended
@@ -952,25 +951,25 @@ rules:
   # CPD ENGINE RULE OVERRIDES
   # ======================================================================
   cpd:
-    "DetectCopyPasteForApex":
+    'DetectCopyPasteForApex':
       severity: 5
       tags:
         - Recommended
         - Design
         - Apex
-    "DetectCopyPasteForJavascript":
+    'DetectCopyPasteForJavascript':
       severity: 5
       tags:
         - Recommended
         - Design
         - Javascript
-    "DetectCopyPasteForTypescript":
+    'DetectCopyPasteForTypescript':
       severity: 5
       tags:
         - Recommended
         - Design
         - Typescript
-    "DetectCopyPasteForVisualforce":
+    'DetectCopyPasteForVisualforce':
       severity: 5
       tags:
         - Recommended
@@ -981,379 +980,379 @@ rules:
   # PMD ENGINE RULE OVERRIDES
   # ======================================================================
   pmd:
-    "ApexBadCrypto":
+    'ApexBadCrypto':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexCRUDViolation":
+    'ApexCRUDViolation':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexCSRF":
+    'ApexCSRF':
       severity: 1
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexDangerousMethods":
+    'ApexDangerousMethods':
       severity: 3
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexDoc":
+    'ApexDoc':
       severity: 4
       tags:
         - Recommended
         - Documentation
         - Apex
-    "ApexInsecureEndpoint":
+    'ApexInsecureEndpoint':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexOpenRedirect":
+    'ApexOpenRedirect':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexSharingViolations":
+    'ApexSharingViolations':
       severity: 3
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexSOQLInjection":
+    'ApexSOQLInjection':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexSuggestUsingNamedCred":
+    'ApexSuggestUsingNamedCred':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexUnitTestClassShouldHaveAsserts":
+    'ApexUnitTestClassShouldHaveAsserts':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "ApexUnitTestClassShouldHaveRunAs":
+    'ApexUnitTestClassShouldHaveRunAs':
       severity: 4
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "ApexUnitTestMethodShouldHaveIsTestAnnotation":
+    'ApexUnitTestMethodShouldHaveIsTestAnnotation':
       severity: 2
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "ApexUnitTestShouldNotUseSeeAllDataTrue":
+    'ApexUnitTestShouldNotUseSeeAllDataTrue':
       severity: 2
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "ApexXSSFromEscapeFalse":
+    'ApexXSSFromEscapeFalse':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "ApexXSSFromURLParam":
+    'ApexXSSFromURLParam':
       severity: 2
       tags:
         - Recommended
         - Security
         - Apex
-    "AvoidDebugStatements":
+    'AvoidDebugStatements':
       severity: 4
       tags:
         - Recommended
         - Performance
         - Apex
-    "AvoidDeeplyNestedIfStmts":
+    'AvoidDeeplyNestedIfStmts':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "AvoidDirectAccessTriggerMap":
+    'AvoidDirectAccessTriggerMap':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "AvoidGlobalModifier":
+    'AvoidGlobalModifier':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "AvoidHardcodingId":
+    'AvoidHardcodingId':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "AvoidLogicInTrigger":
+    'AvoidLogicInTrigger':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "AvoidNonExistentAnnotations":
+    'AvoidNonExistentAnnotations':
       severity: 4
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "AvoidNonRestrictiveQueries":
+    'AvoidNonRestrictiveQueries':
       severity: 4
       tags:
         - Recommended
         - Performance
         - Apex
-    "ClassNamingConventions":
+    'ClassNamingConventions':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "CognitiveComplexity":
+    'CognitiveComplexity':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "CyclomaticComplexity":
+    'CyclomaticComplexity':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "DebugsShouldUseLoggingLevel":
+    'DebugsShouldUseLoggingLevel':
       severity: 4
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "EagerlyLoadedDescribeSObjectResult":
+    'EagerlyLoadedDescribeSObjectResult':
       severity: 2
       tags:
         - Recommended
         - Performance
         - Apex
-    "EmptyCatchBlock":
+    'EmptyCatchBlock':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "EmptyIfStmt":
+    'EmptyIfStmt':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "EmptyStatementBlock":
+    'EmptyStatementBlock':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "EmptyTryOrFinallyBlock":
+    'EmptyTryOrFinallyBlock':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "EmptyWhileStmt":
+    'EmptyWhileStmt':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "ExcessiveClassLength":
+    'ExcessiveClassLength':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "ExcessiveParameterList":
+    'ExcessiveParameterList':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "ExcessivePublicCount":
+    'ExcessivePublicCount':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "FieldDeclarationsShouldBeAtStart":
+    'FieldDeclarationsShouldBeAtStart':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "FieldNamingConventions":
+    'FieldNamingConventions':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "ForLoopsMustUseBraces":
+    'ForLoopsMustUseBraces':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "FormalParameterNamingConventions":
+    'FormalParameterNamingConventions':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "IfElseStmtsMustUseBraces":
+    'IfElseStmtsMustUseBraces':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "IfStmtsMustUseBraces":
+    'IfStmtsMustUseBraces':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "InaccessibleAuraEnabledGetter":
+    'InaccessibleAuraEnabledGetter':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "LocalVariableNamingConventions":
+    'LocalVariableNamingConventions':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "MethodNamingConventions":
+    'MethodNamingConventions':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "MethodWithSameNameAsEnclosingClass":
+    'MethodWithSameNameAsEnclosingClass':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "NcssConstructorCount":
+    'NcssConstructorCount':
       severity: 4
       tags:
         - Recommended
         - Design
         - Apex
-    "NcssMethodCount":
+    'NcssMethodCount':
       severity: 4
       tags:
         - Recommended
         - Design
         - Apex
-    "OneDeclarationPerLine":
+    'OneDeclarationPerLine':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "OperationWithHighCostInLoop":
+    'OperationWithHighCostInLoop':
       severity: 3
       tags:
         - Recommended
         - Performance
         - Apex
-    "OperationWithLimitsInLoop":
+    'OperationWithLimitsInLoop':
       severity: 3
       tags:
         - Recommended
         - Performance
         - Apex
-    "OverrideBothEqualsAndHashcode":
+    'OverrideBothEqualsAndHashcode':
       severity: 2
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "PropertyNamingConventions":
+    'PropertyNamingConventions':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
-    "QueueableWithoutFinalizer":
+    'QueueableWithoutFinalizer':
       severity: 4
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "TestMethodsMustBeInTestClasses":
+    'TestMethodsMustBeInTestClasses':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
-    "TooManyFields":
+    'TooManyFields':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "UnusedLocalVariable":
+    'UnusedLocalVariable':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Apex
-    "UnusedMethod":
+    'UnusedMethod':
       severity: 3
       tags:
         - Recommended
         - Design
         - Apex
-    "VfCsrf":
+    'VfCsrf':
       severity: 2
       tags:
         - Recommended
         - Security
         - Visualforce
-    "VfHtmlStyleTagXss":
+    'VfHtmlStyleTagXss':
       severity: 2
       tags:
         - Recommended
         - Security
         - Visualforce
-    "VfUnescapeEl":
+    'VfUnescapeEl':
       severity: 2
       tags:
         - Recommended
         - Security
         - Visualforce
-    "WhileLoopsMustUseBraces":
+    'WhileLoopsMustUseBraces':
       severity: 3
       tags:
         - Recommended
@@ -1363,33 +1362,31 @@ rules:
   # ======================================================================
   # FLOWTEST ENGINE RULE OVERRIDES
   # ======================================================================
-  flowtest:
-    "PreventPassingUserDataIntoElementWithoutSharing":
-      severity: 2
-      tags:
-        - Recommended
-        - Security
-        - Xml
-    "PreventPassingUserDataIntoElementWithSharing":
-      severity: 4
-      tags:
-        - Recommended
-        - Security
-        - Xml
+  # flowtest:
+  #   'PreventPassingUserDataIntoElementWithoutSharing':
+  #     severity: 2
+  #     tags:
+  #       - Recommended
+  #       - Security
+  #       - Xml
+  #   'PreventPassingUserDataIntoElementWithSharing':
+  #     severity: 4
+  #     tags:
+  #       - Recommended
+  #       - Security
+  #       - Xml
 
 # Engine specific custom configuration settings of the format engines.{engine_name}.{property_name} = {value} where:
 #   {engine_name} is the name of the engine containing the setting that you want to override.
 #   {property_name} is the name of a property that you would like to override.
 # Each engine may have its own set of properties available to help customize that particular engine's behavior.
 engines:
-
   # ======================================================================
   # ESLINT ENGINE CONFIGURATION
   # To learn more about this configuration, visit:
   #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-eslint.html#eslint-configuration-reference
   # ======================================================================
   eslint:
-
     # Whether to turn off the 'eslint' engine so that it is not included when running Code Analyzer commands.
     disable_engine: false
 
@@ -1402,7 +1399,7 @@ engines:
     # Your project's ".eslintignore" file. May be an absolute path or a path relative to the config_root.
     # If null and auto_discover_eslint_config is true, then Code Analyzer will attempt to discover/apply it automatically.
     # See https://eslint.org/docs/v8.x/use/configure/ignore#the-eslintignore-file to learn more.
-    eslint_ignore_file: null
+    eslint_ignore_file: .eslintignore
 
     # Whether to have Code Analyzer automatically discover/apply any ESLint configuration and ignore files from your workspace.
     auto_discover_eslint_config: false
@@ -1437,7 +1434,6 @@ engines:
   #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-retire-js.html#retirejs-configuration-reference
   # ======================================================================
   retire-js:
-
     # Whether to turn off the 'retire-js' engine so that it is not included when running Code Analyzer commands.
     disable_engine: false
 
@@ -1447,7 +1443,6 @@ engines:
   #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-regex.html#regex-configuration-reference
   # ======================================================================
   regex:
-
     # Whether to turn off the 'regex' engine so that it is not included when running Code Analyzer commands.
     disable_engine: false
 
@@ -1466,7 +1461,7 @@ engines:
     #     'tags'              - [Optional] The string array of tag values to apply to this rule by default.
     #                           Default: ['Recommended']
     # ---- [Example usage]: ---------------------
-    # engines: 
+    # engines:
     #   regex:
     #     custom_rules:
     #       "NoTodoComments":
@@ -1485,7 +1480,6 @@ engines:
   #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-cpd.html#cpd-configuration-reference
   # ======================================================================
   cpd:
-
     # Whether to turn off the 'cpd' engine so that it is not included when running Code Analyzer commands.
     disable_engine: false
 
@@ -1544,7 +1538,6 @@ engines:
   #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-pmd.html#pmd-configuration-reference
   # ======================================================================
   pmd:
-
     # Whether to turn off the 'pmd' engine so that it is not included when running Code Analyzer commands.
     disable_engine: false
 
@@ -1601,15 +1594,13 @@ engines:
   #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-flowtest.html#flowtest-configuration-reference
   # ======================================================================
   flowtest:
-
     # Whether to turn off the 'flowtest' engine so that it is not included when running Code Analyzer commands.
-    disable_engine: false
+    disable_engine: true
 
     # Indicates the specific Python command to use for the 'flowtest' engine.
     # May be provided as the name of a command that exists on the path, or an absolute file path location.
     # If unspecified, or specified as null, then an attempt will be made to automatically discover a Python command from your environment.
-    python_command: null # Last calculated by the config command as: "python"
-
+    # python_command: null # Last calculated by the config command as: "python"
 # ======================================================================
 # END OF CODE ANALYZER CONFIGURATION
 # ======================================================================
