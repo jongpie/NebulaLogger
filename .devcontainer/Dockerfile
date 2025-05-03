@@ -1,15 +1,26 @@
 FROM node:22.15.0-bookworm
 
+WORKDIR /workspaces/NebulaLogger
+
+# Updates + locale setup
+RUN apt-get update && \
+  apt-get install -y locales && \
+  sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && \
+  locale-gen en_US.UTF-8 && \
+  update-locale LANG=en_US.UTF-8
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+# Set up npm dependencies (including sf CLI)
 # https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_dev_cli_env_variables.htm
+ENV FORCE_SHOW_SPINNER=true
 # ENV SF_CONTAINER_MODE=true
 ENV SF_DISABLE_AUTOUPDATE=true
 ENV SF_DISABLE_TELEMETRY=true
 ENV SF_LOG_LEVEL=debug
 ENV SF_SKIP_NEW_VERSION_CHECK=true
-
-WORKDIR /workspaces/NebulaLogger
-
-# Setup npm dependencies (including sf CLI)
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci
