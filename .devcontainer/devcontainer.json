@@ -5,7 +5,7 @@
   "features": {},
   "remoteUser": "root",
   "workspaceFolder": "/workspaces/NebulaLogger",
-  "postCreateCommand": "chmod +x scripts/dev/devcontainer-post-start.sh",
+  "postCreateCommand": "chmod +x scripts/dev/auto-log-fetcher.sh; chmod +x scripts/dev/devcontainer-post-start.sh",
   "postStartCommand": "./scripts/dev/devcontainer-post-start.sh",
   "mounts": [
     "source=nebula-logger-dev-npm-cache,target=/root/.npm,type=volume",
@@ -15,9 +15,6 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "codeAnalyzer.analyzeOnOpen.enabled": false,
-        "codeAnalyzer.normalizeSeverity.enabled": false,
-        "codeAnalyzer.scanner.engines": "pmd,retire-js,eslint-lwc",
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
         "explorer.copyRelativePathSeparator": "/",
@@ -28,7 +25,7 @@
           "*.page": "${capture}.page-meta.xml",
           "*.trigger": "${capture}.trigger-meta.xml",
           "*.view": "${capture}.view-meta.xml",
-          "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock"
+          "package.json": "package-lock.json"
         },
         "files.autoSave": "onFocusChange",
         "files.trimTrailingWhitespace": true,
