@@ -1,18 +1,23 @@
 {
   "name": "Nebula Logger Dev Container",
+  "context": "..",
   "dockerFile": "Dockerfile",
   "features": {},
   "remoteUser": "root",
+  "workspaceFolder": "/workspaces/NebulaLogger",
+  "postCreateCommand": "chmod +x scripts/dev/devcontainer-post-start.sh",
+  "postStartCommand": "./scripts/dev/devcontainer-post-start.sh",
   "mounts": [
-    "source=${localWorkspaceFolder}/.npm,target=/home/vscode/.npm,type=bind",
-    "source=${localWorkspaceFolder}/.sf,target=/home/vscode/.sf,type=bind",
-    "source=${localWorkspaceFolder}/.sfdx,target=/home/vscode/.sfdx,type=bind"
+    "source=nebula-logger-dev-npm-cache,target=/root/.npm,type=volume",
+    "source=nebula-logger-dev-sf,target=/root/.sf,type=volume",
+    "source=nebula-logger-dev-sfdx,target=/root/.sfdx,type=volume"
   ],
-  "postCreateCommand": "npm ci",
   "customizations": {
     "vscode": {
       "settings": {
-        "codeAnalyzer.enableV5": true,
+        "codeAnalyzer.analyzeOnOpen.enabled": false,
+        "codeAnalyzer.normalizeSeverity.enabled": false,
+        "codeAnalyzer.scanner.engines": "pmd,retire-js,eslint-lwc",
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
         "explorer.copyRelativePathSeparator": "/",
@@ -39,7 +44,7 @@
           "tags": false,
           "worktrees": false
         },
-        "salesforcedx-vscode-apex.java.home": "/usr/lib/jvm/java-11-openjdk-amd64",
+        "salesforcedx-vscode-apex.java.home": "/root/.sdkman/candidates/java/current",
         "salesforcedx-vscode-core.show-cli-success-msg": false,
         "terminal.integrated.defaultProfile.linux": "bash"
       },
@@ -54,6 +59,8 @@
         "github.vscode-github-actions",
         "github.vscode-pull-request-github",
         "gruntfuggly.todo-tree",
+        "janisdd.vscode-edit-csv",
+        "mechatroner.rainbow-csv",
         "mhutchie.git-graph",
         "modicatech.apex-code-coverage-visualizer",
         "ms-azuretools.vscode-docker",
