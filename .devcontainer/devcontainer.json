@@ -2,9 +2,8 @@
   "name": "Nebula Logger Dev Container",
   "context": "..",
   "dockerFile": "Dockerfile",
-  "features": {},
   "remoteUser": "root",
-  "workspaceFolder": "/workspaces/NebulaLogger",
+  "workspaceFolder": "/NebulaLogger",
   "postCreateCommand": "chmod +x scripts/dev/auto-log-fetcher.sh; chmod +x scripts/dev/devcontainer-post-start.sh",
   "postStartCommand": "./scripts/dev/devcontainer-post-start.sh",
   "mounts": [
