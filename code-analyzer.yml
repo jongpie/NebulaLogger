@@ -1522,7 +1522,11 @@ engines:
     # operators, literals, and more. See https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html to learn more.
     # If a value for a language is unspecified, then the default value of 100 will be used for that language.
     minimum_tokens:
-      apex: 100
+      # NebulaLogger Note: CPD doesn't currently support suppressions for specific violations, and Nebula Logger's
+      # Flow classes have existing violations because @AuraEnabled properties can't be inherited, so there are several properties
+      # copy-pasted between the different classes. In place of being able to suppress these violations, the minimum_tokens for Apex
+      # has been increased from 100 to 150
+      apex: 150
       html: 100
       javascript: 100
       typescript: 100
