@@ -120,7 +120,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
   private List<LogEntry__c> requeryLogEntriesToArchive(List<LogEntry__c> logEntries) {
     String logLookupRelationshipName = Schema.LogEntry__c.Log__c.toString().removeEnd('__c') + '__r';
     List<String> logFieldsToQuery = new List<String>();
-    for (String fieldName : Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet()) {
+    for (String fieldName : Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet()) {
       logFieldsToQuery.add(logLookupRelationshipName + '.' + fieldName);
     }
     String closedByUsernameField = getParentFieldPath(
@@ -131,7 +131,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
       new List<Schema.SObjectField>{ Schema.LogEntry__c.Log__c, Schema.Log__c.ParentLog__c, Schema.Log__c.TransactionId__c }
     );
     logFieldsToQuery.add(parentLogTransactionIdField);
-    List<String> logEntryFieldsToQuery = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+    List<String> logEntryFieldsToQuery = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet());
     logEntryFieldsToQuery.addAll(logFieldsToQuery);
 
     String tagLookupRelationshipName = Schema.LogEntryTag__c.Tag__c.toString().removeEnd('__c') + '__r';

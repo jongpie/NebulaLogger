@@ -12,7 +12,7 @@ public with sharing class LogMassDeleteExtension {
   private static final String DELETE_ACCESS_ERROR = 'You do not have access to delete logs records';
 
   @TestVisible
-  private static Boolean userHasLogDeleteAccess = Schema.Log__c.SObjectType.getDescribe().isDeletable();
+  private static Boolean userHasLogDeleteAccess = Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isDeletable();
 
   private ApexPages.StandardSetController controller;
 

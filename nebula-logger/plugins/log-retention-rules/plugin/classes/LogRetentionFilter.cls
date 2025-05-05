@@ -449,7 +449,7 @@ public without sharing class LogRetentionFilter {
           fieldApiName = fieldPathPiece + 'Id';
         }
 
-        Schema.SObjectField field = currentSObjectType.getDescribe().fields.getMap().get(fieldApiName);
+        Schema.SObjectField field = currentSObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().get(fieldApiName);
 
         // TODO add support for polymorphic fields
         if (i < lastFieldIndex) {

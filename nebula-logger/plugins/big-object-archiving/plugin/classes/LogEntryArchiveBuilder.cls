@@ -315,7 +315,7 @@ public without sharing class LogEntryArchiveBuilder {
 
   private void truncateFieldValues() {
     for (String fieldName : this.logEntryArchive.getPopulatedFieldsAsMap().keySet()) {
-      Schema.SObjectField field = Schema.LogEntryArchive__b.SObjectType.getDescribe().fields.getMap().get(fieldName);
+      Schema.SObjectField field = Schema.LogEntryArchive__b.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().get(fieldName);
       if (field.getDescribe().getSoapType() == Schema.SoapType.STRING) {
         String fieldValue = (String) this.logEntryArchive.get(field);
         this.logEntryArchive.put(field, fieldValue?.left(field.getDescribe().getLength()));

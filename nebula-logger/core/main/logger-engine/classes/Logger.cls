@@ -86,6 +86,7 @@ global with sharing class Logger {
     set;
   }
 
+  @SuppressWarnings('PMD.AvoidUnauthorizedGetSessionIdInApex')
   private static final String USER_SESSION_ID {
     get {
       if (USER_SESSION_ID == null) {

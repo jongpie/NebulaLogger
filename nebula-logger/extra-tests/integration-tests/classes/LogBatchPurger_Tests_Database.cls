@@ -45,7 +45,7 @@ private class LogBatchPurger_Tests_Database {
 
     Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
     System.runAs(standardUser) {
-      System.Assert.isFalse(Schema.Log__c.SObjectType.getDescribe().isDeletable());
+      System.Assert.isFalse(Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isDeletable());
 
       try {
         System.Test.startTest();

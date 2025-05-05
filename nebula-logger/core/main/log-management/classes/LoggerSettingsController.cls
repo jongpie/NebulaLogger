@@ -28,7 +28,8 @@ public without sharing class LoggerSettingsController {
    */
   @AuraEnabled(cacheable=true)
   public static Boolean canUserModifyLoggerSettings() {
-    return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() || System.FeatureManagement.checkPermission('CanModifyLoggerSettings');
+    return Schema.LoggerSettings__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isUpdateable() ||
+      System.FeatureManagement.checkPermission('CanModifyLoggerSettings');
   }
 
   /**
@@ -314,7 +315,7 @@ public without sharing class LoggerSettingsController {
   }
 
   private static List<LoggerSettings__c> queryLoggerSettings() {
-    Set<String> fieldNames = new Set<String>(Schema.LoggerSettings__c.SObjectType.getDescribe().fields.getMap().keySet());
+    Set<String> fieldNames = new Set<String>(Schema.LoggerSettings__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet());
     fieldNames.add('CreatedBy.Username');
     fieldNames.add('LastModifiedBy.Username');
     fieldNames.add('SetupOwner.Name');

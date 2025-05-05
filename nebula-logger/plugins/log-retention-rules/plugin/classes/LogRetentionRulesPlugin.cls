@@ -38,9 +38,9 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
 
   private List<LogEntry__c> requeryLogEntries(List<LogEntry__c> logEntries) {
     // Requery the LogEntry__c records so the parent Log__c fields can be included/used in rules
-    List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+    List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet());
 
-    List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
+    List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet());
     logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
     for (String logFieldName : logFieldNames) {
       String logRelationshipPrefix = Schema.LogEntry__c.Log__c.toString().substringBeforeLast('__c') + '__r';

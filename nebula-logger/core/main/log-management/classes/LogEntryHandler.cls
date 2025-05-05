@@ -401,7 +401,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     String displayFieldApiName;
     List<String> fallbackFieldApiNames = new List<String>();
     for (String fieldName : educatedGuesses) {
-      Schema.SObjectField field = sobjectType.getDescribe().fields.getMap().get(fieldName);
+      Schema.SObjectField field = sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().get(fieldName);
 
       if (field == null) {
         continue;

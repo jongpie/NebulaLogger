@@ -69,7 +69,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
    * @throws NoAccessException when there is no delete access to Logs
    */
   global Database.QueryLocator start(Database.BatchableContext batchableContext) {
-    if (Schema.Log__c.SObjectType.getDescribe().isDeletable() == false) {
+    if (Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isDeletable() == false) {
       NoAccessException noDeleteAccessException = new NoAccessException();
       noDeleteAccessException.setMessage(NO_DELETE_ACCESS_EXCEPTION_MESSAGE);
       throw noDeleteAccessException;

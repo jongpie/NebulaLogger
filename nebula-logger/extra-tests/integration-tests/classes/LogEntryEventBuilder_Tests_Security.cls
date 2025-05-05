@@ -21,7 +21,10 @@ private class LogEntryEventBuilder_Tests_Security {
 
     LogEntryEventBuilder builder;
     System.runAs(standardUser) {
-      System.Assert.isFalse(Schema.AccountBrand.SObjectType.getDescribe().isAccessible(), 'AccountBrand was accessible, and should not have been.');
+      System.Assert.isFalse(
+        Schema.AccountBrand.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible(),
+        'AccountBrand was accessible, and should not have been.'
+      );
       System.Assert.areEqual(
         false,
         Schema.AccountBrand.CompanyName.getDescribe().isAccessible(),
@@ -68,7 +71,10 @@ private class LogEntryEventBuilder_Tests_Security {
 
     LogEntryEventBuilder builder;
     System.runAs(standardUser) {
-      System.Assert.isFalse(Schema.AccountBrand.SObjectType.getDescribe().isAccessible(), 'AccountBrand was accessible, and should not have been.');
+      System.Assert.isFalse(
+        Schema.AccountBrand.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible(),
+        'AccountBrand was accessible, and should not have been.'
+      );
       System.Assert.areEqual(
         false,
         Schema.AccountBrand.CompanyName.getDescribe().isAccessible(),
@@ -114,7 +120,10 @@ private class LogEntryEventBuilder_Tests_Security {
 
     LogEntryEventBuilder builder;
     System.runAs(standardUser) {
-      System.Assert.isFalse(Schema.AccountBrand.SObjectType.getDescribe().isAccessible(), 'AccountBrand was accessible, and should not have been.');
+      System.Assert.isFalse(
+        Schema.AccountBrand.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible(),
+        'AccountBrand was accessible, and should not have been.'
+      );
       System.Assert.areEqual(
         false,
         Schema.AccountBrand.CompanyName.getDescribe().isAccessible(),

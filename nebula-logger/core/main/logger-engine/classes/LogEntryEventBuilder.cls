@@ -1220,7 +1220,7 @@ global with sharing class LogEntryEventBuilder {
     String sobjectClassification;
 
     // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
-    if (sobjectType.getDescribe().isCustomSetting()) {
+    if (sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isCustomSetting()) {
       sobjectClassification = 'Custom Setting Object';
     }
 
@@ -1232,7 +1232,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // Finally, if we still don't have a classification, assume it's a standard object
-    if (String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+    if (String.isBlank(sobjectClassification) && SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isCustom() == false) {
       sobjectClassification = 'Standard Object';
     }
 
@@ -1269,7 +1269,7 @@ global with sharing class LogEntryEventBuilder {
 
   private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
     String sobjectFullName = sobjectType.toString();
-    String sobjectLocalName = sobjectType.getDescribe().getLocalName();
+    String sobjectLocalName = SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).getLocalName();
 
     // Remove the trailing '__' if present
     String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
