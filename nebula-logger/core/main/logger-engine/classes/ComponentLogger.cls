@@ -26,7 +26,7 @@ public inherited sharing class ComponentLogger {
   private static final Map<String, Schema.SObjectField> LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD {
     get {
       if (LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD == null) {
-        LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD = Schema.LogEntryEvent__e.SObjectType.getDescribe().fields.getMap();
+        LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD = Schema.LogEntryEvent__e.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap();
       }
       return LOG_ENTRY_EVENT_FIELD_NAME_TO_FIELD;
     }

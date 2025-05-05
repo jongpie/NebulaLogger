@@ -45,7 +45,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isTrue(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }
@@ -81,7 +81,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isTrue(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }
@@ -105,7 +105,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }
@@ -129,7 +129,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }
@@ -154,7 +154,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isTrue(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }
@@ -179,7 +179,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }
@@ -204,7 +204,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }
@@ -229,7 +229,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
     LogEntryMetadataViewerController.LogEntryMetadata returnedMetadata;
 
     System.runAs(minimumAccessUser) {
-      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe().isAccessible());
+      System.Assert.isFalse(Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible());
       System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME));
       returnedMetadata = LogEntryMetadataViewerController.getMetadata(mockLogEntry.Id, sourceMetadata);
     }

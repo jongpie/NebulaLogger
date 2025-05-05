@@ -45,7 +45,8 @@ public without sharing class LogEntryMetadataViewerController {
   }
 
   private static Boolean canViewLogEntryMetadata() {
-    return Schema.ApexClass.SObjectType.getDescribe().isAccessible() || System.FeatureManagement.checkPermission('CanViewLogEntryMetadata');
+    return Schema.ApexClass.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isAccessible() ||
+      System.FeatureManagement.checkPermission('CanViewLogEntryMetadata');
   }
 
   private static LoggerStackTrace.SourceMetadataType getSourceMetadataType(String sourceMetadata) {

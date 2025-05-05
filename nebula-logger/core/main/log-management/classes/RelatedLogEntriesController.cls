@@ -137,7 +137,7 @@ public with sharing class RelatedLogEntriesController {
 
     String displayFieldApiName;
     for (String fieldName : educatedGuesses) {
-      Schema.SObjectField field = lookupSObjectType.getDescribe().fields.getMap().get(fieldName);
+      Schema.SObjectField field = lookupSObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().get(fieldName);
 
       if (field != null) {
         Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
@@ -227,7 +227,7 @@ public with sharing class RelatedLogEntriesController {
     private FieldSetMetadata(Schema.SObjectType sobjectType, String fieldSetName) {
       this.fields = new List<FieldMetadata>();
 
-      Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);
+      Schema.FieldSet fieldSet = sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fieldSets.getMap().get(fieldSetName);
       for (Schema.FieldSetMember fieldSetMember : fieldSet.getFields()) {
         // Enforce field-level security (FLS)
         if (fieldSetMember.getSObjectField().getDescribe().isAccessible()) {

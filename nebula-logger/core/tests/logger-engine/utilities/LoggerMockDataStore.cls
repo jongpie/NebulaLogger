@@ -237,7 +237,7 @@ public without sharing class LoggerMockDataStore {
     SOBJECT_TYPE_TO_ALL_FIELDS.put(sobjectType, new List<Schema.SObjectField>());
     SOBJECT_TYPE_TO_REQUIRED_FIELDS.put(sobjectType, new List<Schema.SObjectField>());
     SOBJECT_TYPE_TO_STRING_FIELDS.put(sobjectType, new List<Schema.SObjectField>());
-    for (Schema.SObjectField field : sobjectType.getDescribe().fields.getMap().values()) {
+    for (Schema.SObjectField field : sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().values()) {
       if (field.getDescribe().isCreateable() == false) {
         continue;
       }

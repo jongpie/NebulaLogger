@@ -225,7 +225,7 @@ public without sharing virtual class LogManagementDataSelector {
   public virtual Log__c getLogById(Id logId) {
     String queryTemplate = 'SELECT {0} FROM {1} WHERE Id = :logId';
 
-    List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
+    List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet());
     logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
     List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), Schema.Log__c.SObjectType.toString() };
 
@@ -241,7 +241,7 @@ public without sharing virtual class LogManagementDataSelector {
   public virtual LogEntry__c getLogEntryById(Id logEntryId) {
     String queryTemplate = 'SELECT {0} FROM {1} WHERE Id = :logEntryId';
 
-    List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+    List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet());
     List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ','), Schema.LogEntry__c.SObjectType.toString() };
 
     String query = String.format(queryTemplate, textReplacements);
@@ -256,7 +256,7 @@ public without sharing virtual class LogManagementDataSelector {
   public virtual List<LogEntry__c> getLogEntriesByLogId(Id logId) {
     String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} = :logId ORDER BY {3}';
 
-    List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+    List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().keySet());
     List<String> textReplacements = new List<String>{
       String.join(logEntryFieldNames, ', '),
       Schema.LogEntry__c.SObjectType.toString(),

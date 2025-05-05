@@ -28,7 +28,7 @@ public without sharing class LoggerSObjectMetadata {
    * @return   An instance of `LoggerSObjectMetadata.SObjectSchema` for the specified `SObjectType`
    */
   public static SObjectSchema getSchema(Schema.SObjectType sobjectType) {
-    Schema.DescribeSObjectResult describe = sobjectType.getDescribe();
+    Schema.DescribeSObjectResult describe = sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED);
 
     SObjectSchema schema = new SObjectSchema();
     schema.apiName = describe.getName();

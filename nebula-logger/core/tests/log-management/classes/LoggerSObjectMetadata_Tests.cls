@@ -35,18 +35,18 @@ private class LoggerSObjectMetadata_Tests {
 
   private static void validateSObjectDetails(Schema.SObjectType sobjectType, LoggerSObjectMetadata.SObjectSchema sobjectSchema) {
     // SObject details
-    System.Assert.areEqual(sobjectType.getDescribe().getLabel(), sobjectSchema.label);
-    System.Assert.areEqual(sobjectType.getDescribe().getLabelPlural(), sobjectSchema.labelPlural);
-    System.Assert.areEqual(sobjectType.getDescribe().getLocalName(), sobjectSchema.localApiName);
+    System.Assert.areEqual(sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).getLabel(), sobjectSchema.label);
+    System.Assert.areEqual(sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).getLabelPlural(), sobjectSchema.labelPlural);
+    System.Assert.areEqual(sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).getLocalName(), sobjectSchema.localApiName);
     System.Assert.areEqual(sobjectType.toString(), sobjectSchema.apiName);
-    System.Assert.areEqual(sobjectType.getDescribe().fields.getMap().size(), sobjectSchema.fields.size());
+    System.Assert.areEqual(sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().size(), sobjectSchema.fields.size());
 
     // Field details
-    for (Schema.SObjectField field : sobjectType.getDescribe().fields.getMap().values()) {
+    for (Schema.SObjectField field : sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().values()) {
       System.Assert.isTrue(sobjectSchema.fields.containsKey(field.getDescribe().getLocalName()));
     }
     for (LoggerSObjectMetadata.FieldSchema fieldSchema : sobjectSchema.fields.values()) {
-      Schema.SObjectField matchingField = sobjectType.getDescribe().fields.getMap().get(fieldSchema.apiName);
+      Schema.SObjectField matchingField = sobjectType.getDescribe(SObjectDescribeOptions.DEFERRED).fields.getMap().get(fieldSchema.apiName);
       System.Assert.areEqual(matchingField.getDescribe().getLocalName(), fieldSchema.localApiName);
       System.Assert.areEqual(matchingField.getDescribe().getInlineHelpText(), fieldSchema.inlineHelpText);
       System.Assert.areEqual(matchingField.getDescribe().getLabel(), fieldSchema.label);

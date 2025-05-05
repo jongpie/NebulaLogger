@@ -23,7 +23,8 @@ public with sharing class LogBatchPurgeController {
    */
   @AuraEnabled
   public static Boolean canUserRunLogBatchPurger() {
-    return Schema.Log__c.SObjectType.getDescribe().isDeletable() || System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION);
+    return Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isDeletable() ||
+      System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION);
   }
 
   /**
@@ -36,9 +37,9 @@ public with sharing class LogBatchPurgeController {
   @AuraEnabled
   public static Map<String, Object> getMetrics(String dateFilterOption) {
     Map<String, Object> result = new Map<String, Object>();
-    result.put(Schema.Log__c.SObjectType.getDescribe().getLocalName(), getLogObjectSummary(dateFilterOption));
-    result.put(Schema.LogEntry__c.SObjectType.getDescribe().getLocalName(), getLogEntryObjectSummary(dateFilterOption));
-    result.put(Schema.LogEntryTag__c.SObjectType.getDescribe().getLocalName(), getLogEntryTagObjectSummary(dateFilterOption));
+    result.put(Schema.Log__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).getLocalName(), getLogObjectSummary(dateFilterOption));
+    result.put(Schema.LogEntry__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).getLocalName(), getLogEntryObjectSummary(dateFilterOption));
+    result.put(Schema.LogEntryTag__c.SObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).getLocalName(), getLogEntryTagObjectSummary(dateFilterOption));
     return result;
   }
 
