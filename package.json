@@ -76,15 +76,13 @@
   },
   "devDependencies": {
     "@cparra/apexdocs": "1.13.7",
-    "@salesforce/cli": "^2.86.9",
-    "@salesforce/sfdx-lwc-jest": "^7.0.1",
     "@types/jest-when": "^3.5.5",
     "husky": "^9.1.7",
     "jest-when": "^3.7.0",
     "jsdoc-to-markdown": "^9.1.1",
     "lint-staged": "^15.5.0",
     "prettier": "^3.5.3",
-    "prettier-plugin-apex": "^2.2.5",
+    "prettier-plugin-apex": "^2.2.6",
     "pwsh": "^0.3.0"
   }
 }
