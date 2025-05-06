@@ -1,55 +1,25 @@
-FROM node:22.15.0-bookworm
+FROM node:23.10.0-bookworm
 
+ARG GIT_VERSION=2.49.0
 ARG SF_CLI_VERSION=2.86.9
 ARG SF_LWC_JEST_VERSION=7.0.1
-# ARG PRETTIER_VERSION=3.5.3
-# ARG PRETTIER_PLUGIN_APEX_VERSION=2.2.5
 
-# WORKDIR /workspaces/NebulaLogger
+RUN apt-get update && apt-get install -y \
+  gnupg \
+  jq \
+  locales \
+  openssh-client \
+  && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
+  && locale-gen en_US.UTF-8 \
+  && update-locale LANG=en_US.UTF-8
+ENV LANG=en_US.UTF-8 \
+  LANGUAGE=en_US:en \
+  LC_ALL=en_US.UTF-8
 
-# Updates + locale setup
-RUN apt-get update && \
-  apt-get install -y locales && \
-  sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && \
-  locale-gen en_US.UTF-8 && \
-  update-locale LANG=en_US.UTF-8
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
-
-# Set up npm dependencies (including sf CLI)
-# COPY package.json ./
-# COPY package-lock.json ./
-# COPY package*.json ./
-# RUN npm ci
-
-# TODO new
-# RUN npm install --global @salesforce/cli@${SF_CLI_VERSION} \
-#   && npm install --global @salesforce/sfdx-lwc-jest@${SF_LWC_JEST_VERSION} \
-#   && npm install --global prettier@${PRETTIER_VERSION} \
-#   && npm install --global prettier-plugin-apex@${PRETTIER_PLUGIN_APEX_VERSION}
+# Install & setup CLI - docs for environment variables: https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_dev_cli_env_variables.htm
 RUN npm install --global \
   @salesforce/cli@${SF_CLI_VERSION} \
   @salesforce/sfdx-lwc-jest@${SF_LWC_JEST_VERSION}
-  # prettier@${PRETTIER_VERSION}
-  # prettier-plugin-apex@${PRETTIER_PLUGIN_APEX_VERSION}
-# "@cparra/apexdocs": "1.13.7",
-# "@salesforce/cli": "^2.86.9",
-# "@salesforce/sfdx-lwc-jest": "^7.0.1",
-# "@types/jest-when": "^3.5.5",
-# "husky": "^9.1.7",
-# "jest-when": "^3.7.0",
-# "jsdoc-to-markdown": "^9.1.1",
-# "lint-staged": "^15.5.0",
-# "prettier": "^3.5.3",
-# "prettier-plugin-apex": "^2.2.5",
-# "pwsh": "^0.3.0"
-
-# Now that the npm dependencies are installed locally via package.json, make global shortcuts for them
-# so they can be easily used within the devcontainer/VS Code.
-# RUN ln -s ./node_modules/.bin/prettier /usr/local/bin/prettier
-# RUN ln -s ./node_modules/.bin/sf /usr/local/bin/sf
-# sf CLI environment variables: https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_dev_cli_env_variables.htm
 ENV FORCE_SHOW_SPINNER=true \
   SF_DISABLE_AUTOUPDATE=true \
   SF_DISABLE_TELEMETRY=true \
@@ -78,4 +48,5 @@ ENV PATH="$JAVA_HOME/bin:$PATH"
 
 # Set up Oh My Bash
 RUN bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" \
+  # Another possible theme option: powerline-icon
   && sed -i 's/OSH_THEME=.*/OSH_THEME="agnoster"/' ~/.bashrc
