@@ -13,7 +13,8 @@ if sf org display --json > /dev/null 2>&1; then
   sf lightning debug
   wait
 
-  ./auto-log-fetcher.sh
+  # SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  # "$SCRIPT_DIR/auto-fetch-logs.sh"
 else
   echo "No default org set — skipping script."
 fi
