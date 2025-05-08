@@ -1021,7 +1021,8 @@ rules:
         - JavaScript
         - TypeScript
     'capitalized-comments':
-      severity: 3
+      # NebulaLogger: Default is 3
+      severity: 4
       tags:
         - BestPractices
         - JavaScript
@@ -2006,7 +2007,8 @@ rules:
         - JavaScript
         - TypeScript
     'no-warning-comments':
-      severity: 3
+      # NebulaLogger: Default is 3
+      severity: 4
       tags:
         - BestPractices
         - JavaScript
@@ -2256,7 +2258,7 @@ rules:
       tags:
         - Recommended
         - Security
-        - Xml
+        - XML
     'AvoidGetHeapSizeInLoop':
       severity: 2
       tags:
@@ -2280,6 +2282,11 @@ rules:
         - Recommended
         - Design
         - Apex
+    'DetectCopyPasteForHtml':
+      severity: 5
+      tags:
+        - Design
+        - Html
     'DetectCopyPasteForJavascript':
       severity: 5
       tags:
@@ -2298,11 +2305,21 @@ rules:
         - Recommended
         - Design
         - Visualforce
+    'DetectCopyPasteForXml':
+      severity: 5
+      tags:
+        - Design
+        - Xml
 
   # ======================================================================
   # PMD ENGINE RULE OVERRIDES
   # ======================================================================
   pmd:
+    'ApexAssertionsShouldIncludeMessage':
+      severity: 3
+      tags:
+        - BestPractices
+        - Apex
     'ApexBadCrypto':
       severity: 2
       tags:
@@ -2399,6 +2416,40 @@ rules:
         - Recommended
         - Security
         - Apex
+    'AssignmentInOperand':
+      severity: 3
+      tags:
+        - CodeStyle
+        - JavaScript
+    'AvoidApiSessionId':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidAuraWithLockerDisabled':
+      severity: 1
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidChangeProtectionUnprotected':
+      severity: 1
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidConsoleStatements':
+      severity: 3
+      tags:
+        - Performance
+        - JavaScript
+    'AvoidCreateElementScriptLinkTag':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
     'AvoidDebugStatements':
       severity: 4
       tags:
@@ -2417,24 +2468,137 @@ rules:
         - Recommended
         - ErrorProne
         - Apex
+    'AvoidDisableProtocolSecurityRemoteSiteSetting':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidGetInstanceWithTaint':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidGlobalInstallUninstallHandlers':
+      severity: 1
+      tags:
+        - AppExchange
+        - Security
+        - Apex
     'AvoidGlobalModifier':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Apex
+    'AvoidHardCodedCredentialsInAura':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - HTML
+    'AvoidHardcodedCredentialsInFieldDecls':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidHardcodedCredentialsInHttpHeader':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidHardcodedCredentialsInSetPassword':
+      severity: 1
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidHardcodedCredentialsInVarAssign':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidHardcodedCredentialsInVarDecls':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidHardcodedSecretsInVFAttrs':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
     'AvoidHardcodingId':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
+    'AvoidInlineStyles':
+      severity: 4
+      tags:
+        - BestPractices
+        - HTML
+    'AvoidInsecureHttpRemoteSiteSetting':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidInvalidCrudContentDistribution':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidJavaScriptCustomObject':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidJavaScriptHomePageComponent':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidJavaScriptInUrls':
+      severity: 1
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidJavaScriptWebLink':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidLmcIsExposedTrue':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - XML
     'AvoidLogicInTrigger':
       severity: 3
       tags:
         - Recommended
         - BestPractices
         - Apex
+    'AvoidLwcBubblesComposedTrue':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - JavaScript
     'AvoidNonExistentAnnotations':
       severity: 4
       tags:
@@ -2447,6 +2611,70 @@ rules:
         - Recommended
         - Performance
         - Apex
+    'AvoidSControls':
+      severity: 1
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'AvoidSecurityEnforcedOldApiVersion':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidStatefulDatabaseResult':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'AvoidTrailingComma':
+      severity: 2
+      tags:
+        - ErrorProne
+        - JavaScript
+    'AvoidUnauthorizedApiSessionIdInApex':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidUnauthorizedApiSessionIdInVisualforce':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
+    'AvoidUnauthorizedGetSessionIdInApex':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidUnauthorizedGetSessionIdInVisualforce':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
+    'AvoidUnescapedHtmlInAura':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - HTML
+    'AvoidUnsafePasswordManagementUse':
+      severity: 1
+      tags:
+        - AppExchange
+        - Security
+        - Apex
+    'AvoidWithStatement':
+      severity: 2
+      tags:
+        - BestPractices
+        - JavaScript
     'ClassNamingConventions':
       severity: 3
       tags:
@@ -2459,6 +2687,11 @@ rules:
         - Recommended
         - Design
         - Apex
+    'ConsistentReturn':
+      severity: 3
+      tags:
+        - BestPractices
+        - JavaScript
     'CyclomaticComplexity':
       severity: 3
       tags:
@@ -2507,6 +2740,11 @@ rules:
         - Recommended
         - ErrorProne
         - Apex
+    'EqualComparison':
+      severity: 3
+      tags:
+        - ErrorProne
+        - JavaScript
     'ExcessiveClassLength':
       severity: 3
       tags:
@@ -2543,30 +2781,85 @@ rules:
         - Recommended
         - CodeStyle
         - Apex
+    'ForLoopsMustUseBraces-javascript':
+      severity: 3
+      tags:
+        - CodeStyle
+        - JavaScript
     'FormalParameterNamingConventions':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
+    'GlobalVariable':
+      severity: 2
+      tags:
+        - BestPractices
+        - JavaScript
     'IfElseStmtsMustUseBraces':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
+    'IfElseStmtsMustUseBraces-javascript':
+      severity: 3
+      tags:
+        - CodeStyle
+        - JavaScript
     'IfStmtsMustUseBraces':
       severity: 3
       tags:
         - Recommended
         - CodeStyle
         - Apex
+    'IfStmtsMustUseBraces-javascript':
+      severity: 3
+      tags:
+        - CodeStyle
+        - JavaScript
     'InaccessibleAuraEnabledGetter':
       severity: 3
       tags:
         - Recommended
         - ErrorProne
         - Apex
+    'InaccurateNumericLiteral':
+      severity: 3
+      tags:
+        - ErrorProne
+        - JavaScript
+    'LimitConnectedAppScope':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - XML
+    'LoadCSSApexStylesheet':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
+    'LoadCSSLinkHref':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
+    'LoadJavaScriptHtmlScript':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
+    'LoadJavaScriptIncludeScript':
+      severity: 2
+      tags:
+        - AppExchange
+        - Security
+        - Visualforce
     'LocalVariableNamingConventions':
       severity: 3
       tags:
@@ -2585,6 +2878,16 @@ rules:
         - Recommended
         - ErrorProne
         - Apex
+    'MissingEncoding':
+      severity: 3
+      tags:
+        - BestPractices
+        - XML
+    'MistypedCDATASection':
+      severity: 3
+      tags:
+        - ErrorProne
+        - XML
     'NcssConstructorCount':
       severity: 4
       tags:
@@ -2597,6 +2900,16 @@ rules:
         - Recommended
         - Design
         - Apex
+    'NcssTypeCount':
+      severity: 4
+      tags:
+        - Design
+        - Apex
+    'NoElseReturn':
+      severity: 3
+      tags:
+        - CodeStyle
+        - JavaScript
     'OneDeclarationPerLine':
       severity: 3
       tags:
@@ -2627,11 +2940,27 @@ rules:
         - Recommended
         - CodeStyle
         - Apex
+    'ProtectSensitiveData':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - XML
     'QueueableWithoutFinalizer':
       severity: 4
       tags:
         - Recommended
         - BestPractices
+        - Apex
+    'ScopeForInVariable':
+      severity: 2
+      tags:
+        - BestPractices
+        - JavaScript
+    'StdCyclomaticComplexity':
+      severity: 3
+      tags:
+        - Design
         - Apex
     'TestMethodsMustBeInTestClasses':
       severity: 3
@@ -2645,6 +2974,26 @@ rules:
         - Recommended
         - Design
         - Apex
+    'UnnecessaryBlock':
+      severity: 3
+      tags:
+        - CodeStyle
+        - JavaScript
+    'UnnecessaryParentheses':
+      severity: 4
+      tags:
+        - CodeStyle
+        - JavaScript
+    'UnnecessaryTypeAttribute':
+      severity: 3
+      tags:
+        - BestPractices
+        - HTML
+    'UnreachableCode':
+      severity: 2
+      tags:
+        - CodeStyle
+        - JavaScript
     'UnusedLocalVariable':
       severity: 3
       tags:
@@ -2657,6 +3006,22 @@ rules:
         - Recommended
         - Design
         - Apex
+    'UseAltAttributeForImages':
+      severity: 3
+      tags:
+        - BestPractices
+        - HTML
+    'UseBaseWithParseInt':
+      severity: 2
+      tags:
+        - BestPractices
+        - JavaScript
+    'UseHttpsCallbackUrlConnectedApp':
+      severity: 3
+      tags:
+        - AppExchange
+        - Security
+        - XML
     'VfCsrf':
       severity: 2
       tags:
@@ -2681,29 +3046,78 @@ rules:
         - Recommended
         - CodeStyle
         - Apex
+    'WhileLoopsMustUseBraces-javascript':
+      severity: 3
+      tags:
+        - CodeStyle
+        - JavaScript
 
   # ======================================================================
-  # FLOWTEST ENGINE RULE OVERRIDES
+  # SFGE ENGINE RULE OVERRIDES
   # ======================================================================
-  # flowtest:
-  #   'PreventPassingUserDataIntoElementWithoutSharing':
-  #     severity: 2
-  #     tags:
-  #       - Recommended
-  #       - Security
-  #       - Xml
-  #   'PreventPassingUserDataIntoElementWithSharing':
-  #     severity: 4
-  #     tags:
-  #       - Recommended
-  #       - Security
-  #       - Xml
+  sfge:
+    'ApexFlsViolation':
+      severity: 2
+      tags:
+        - DevPreview
+        - Security
+        - Apex
+    'ApexNullPointerException':
+      severity: 3
+      tags:
+        - DevPreview
+        - ErrorProne
+        - Apex
+    'AvoidDatabaseOperationInLoop':
+      severity: 2
+      tags:
+        - DevPreview
+        - Performance
+        - Apex
+    'AvoidMultipleMassSchemaLookups':
+      severity: 2
+      tags:
+        - DevPreview
+        - Performance
+        - Apex
+    'DatabaseOperationsMustUseWithSharing':
+      severity: 2
+      tags:
+        - DevPreview
+        - Security
+        - Apex
+    'MissingNullCheckOnSoqlVariable':
+      severity: 3
+      tags:
+        - DevPreview
+        - Performance
+        - Apex
+    'UnimplementedType':
+      severity: 4
+      tags:
+        - DevPreview
+        - Performance
+        - Apex
 
 # Engine specific custom configuration settings of the format engines.{engine_name}.{property_name} = {value} where:
 #   {engine_name} is the name of the engine containing the setting that you want to override.
 #   {property_name} is the name of a property that you would like to override.
 # Each engine may have its own set of properties available to help customize that particular engine's behavior.
 engines:
+  # ======================================================================
+  # FLOW SCANNER ENGINE CONFIGURATION
+  # To learn more about this configuration, visit:
+  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-flow.html#flow-scanner-configuration-reference
+  # ======================================================================
+  flow:
+    # Whether to turn off the 'flow' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: true
+
+    # Indicates the specific Python command to use for the 'Flow Scanner' engine.
+    # May be provided as the name of a command that exists on the path, or an absolute file path location.
+    # If unspecified, or specified as null, then an attempt will be made to automatically discover a Python command from your environment.
+    python_command: null
+
   # ======================================================================
   # ESLINT ENGINE CONFIGURATION
   # To learn more about this configuration, visit:
@@ -2722,7 +3136,7 @@ engines:
     # Your project's ".eslintignore" file. May be an absolute path or a path relative to the config_root.
     # If null and auto_discover_eslint_config is true, then Code Analyzer will attempt to discover/apply it automatically.
     # See https://eslint.org/docs/v8.x/use/configure/ignore#the-eslintignore-file to learn more.
-    eslint_ignore_file: .eslintignore
+    eslint_ignore_file: null
 
     # Whether to have Code Analyzer automatically discover/apply any ESLint configuration and ignore files from your workspace.
     auto_discover_eslint_config: false
@@ -2916,18 +3330,41 @@ engines:
     custom_rulesets: []
 
   # ======================================================================
-  # FLOWTEST ENGINE CONFIGURATION
+  # SFGE ENGINE CONFIGURATION
+  # This engine is in Developer Preview and is subject to change.
   # To learn more about this configuration, visit:
-  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-flowtest.html#flowtest-configuration-reference
+  #   [PLACEHOLDER LINK]
   # ======================================================================
-  flowtest:
-    # Whether to turn off the 'flowtest' engine so that it is not included when running Code Analyzer commands.
-    disable_engine: true
+  sfge:
+    # Whether to turn off the 'sfge' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: false
 
-    # Indicates the specific Python command to use for the 'flowtest' engine.
+    # Whether to prevent 'sfge' from throwing LimitReached violations for complex paths.
+    # By default, Salesforce Graph Engine attempts to detect complex paths that might cause OutOfMemory errors,
+    # and throws LimitReached violations for these paths to continue evaluating other paths safely. The allowed
+    # complexity is dynamically calculated based on the max Java heap size available, but in some cases you may
+    # desire to disable this check in addition to increasing java_max_heap_size.
+    disable_limit_reached_violations: false
+
+    # Indicates the specific 'java' command associated with the JRE or JDK to use for the 'sfge' engine.
     # May be provided as the name of a command that exists on the path, or an absolute file path location.
-    # If unspecified, or specified as null, then an attempt will be made to automatically discover a Python command from your environment.
-    # python_command: null # Last calculated by the config command as: "python"
+    # If unspecified, or specified as null, then an attempt will be made to automatically discover a 'java' command from your environment.
+    java_command: null # Last calculated by the config command as: "java"
+
+    # Specifies the maximum size (in bytes) of the Java heap. The specified value is appended to the '-Xmx' Java
+    # command option. The value must be a multiple of 1024, and greater than 2MB. Append the letters 'k', 'K', 'kb',
+    # or 'KB' to indicate kilobytes, 'm', 'M', 'mb', or 'MB' to indicate megabytes, and 'g', 'G', 'gb', or 'GB' to
+    # indicate gigabytes. If unspecified, or specified as null, then the JVM will dynamically choose a default value
+    # at runtime based on system configuration.
+    java_max_heap_size: null
+
+    # Specifies the number of Java threads available for parallel execution. Increasing the thread count allows for
+    # Salesforce Graph Engine to evaluate more paths at the same time.
+    java_thread_count: 4
+
+    # Specifies the maximum time (in milliseconds) a specific Java thread may execute before Salesforce Graph Engine
+    # issues a Timeout violation.
+    java_thread_timeout: 900000
 # ======================================================================
 # END OF CODE ANALYZER CONFIGURATION
 # ======================================================================
