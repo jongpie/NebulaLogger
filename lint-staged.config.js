@@ -2,14 +2,32 @@ module.exports = {
   'sfdx-project.json': () => {
     return `npm run package:version:number:fix`;
   },
-  '*.{apex,cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}': filenames => filenames.map(filename => `prettier --write '${filename}'`),
-  '**/lwc/**': filenames => {
-    return [`eslint --config ./config/linters/.eslintrc.json ${filenames.join(' ')} --fix`];
-    // FIXME this command should only run tests for the changed LWCs (instead of running tests for all LWCs)
-    // return [`eslint --config ./config/linters/.eslintrc.json ${filenames.join(' ')} --fix`, `npm run test:lwc`];
+  '*.{apex,cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}': filenames => {
+    return filenames.map(filename => `prettier --write '${filename}'`);
   },
+  // Analyze & test Apex code
   '*.{cls,trigger}': filenames => {
-    return filenames.map(filename => `sf scanner run --pmdconfig ./config/linters/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target '${filename}'`);
-    // return [`npm run scan:apex`, `npm run docs:fix && git add ./docs/ && git commit --amend --no-edit`];
+    const testClasses = new Set(
+      filenames
+        .map(filename => {
+          const match = filename.match(/([^\/]+?)(_Tests)?\.cls$/);
+          return match ? `${match[1]}_Tests` : null;
+        })
+        .filter(Boolean)
+    );
+
+    return [
+      ...filenames.map(f => `sf code-analyzer run --rule-selector pmd:1 --rule-selector pmd:2 --rule-selector pmd:3 --workspace '${f}'`),
+      ...([...testClasses].length ? [`sf apex run test ${[...testClasses].map(testClass => `--class-names ${testClass}`).join(' ')}`] : [])
+    ];
+  },
+  // Analyze & test LWC code
+  '**/lwc/**/*.{js,ts,html}': filenames => {
+    const uniqueLwcDirectories = [...new Set(filenames.map(f => f.match(/^(.*\/lwc\/[^\/]+)/)?.[1]).filter(Boolean))];
+
+    return [
+      ...filenames.map(filename => `sf code-analyzer run --rule-selector eslint --workspace '${filename}'`),
+      ...uniqueLwcDirectories.map(directory => `npx sfdx-lwc-jest -- --findRelatedTests '${directory}'`)
+    ];
   }
 };

@@ -22,7 +22,7 @@ public without sharing class LoggerHomeHeaderController {
     environment.organizationApiVersion = Logger.getOrganizationApiVersion();
     environment.organizationCreatedByUsername = organization.CreatedBy.Username;
     environment.organizationDomainUrl = System.URL.getOrgDomainUrl()?.toExternalForm();
-    environment.organizationFormattedCreatedDate = organization.CreatedDate.format();
+    environment.organizationFormattedCreatedDate = organization.CreatedDate?.format();
     environment.organizationId = System.UserInfo.getOrganizationId();
     environment.organizationInstanceName = organization.InstanceName;
     environment.organizationName = System.UserInfo.getOrganizationName();

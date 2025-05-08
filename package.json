@@ -63,7 +63,7 @@
     "scan:apex:pmd": "sf code-analyzer run --rule-selector pmd:1 --rule-selector pmd:2 --rule-selector pmd:3 --view detail --workspace nebula-logger/core/**/*.cls --workspace nebula-logger/extra-tests/**/*.cls --workspace nebula-logger/plugins/**/*.cls",
     "scan:project:appexchange": "sf code-analyzer run --rule-selector AppExchange --view detail --workspace nebula-logger/core/**/*.* --workspace nebula-logger/plugins/**/*.*",
     "scan:lwc": "npm run scan:lwc:eslint && npm run scan:lwc:retire-js",
-    "scan:lwc:eslint": "sf code-analyzer run --rule-selector eslint --view detail --workspace nebula-logger/core/**/*.* --workspace nebula-logger/plugins/**/*.*",
+    "scan:lwc:eslint": "sf code-analyzer run --rule-selector eslint:1 --rule-selector eslint:2 --rule-selector eslint:3 --view detail --workspace nebula-logger/core/**/*.*",
     "scan:lwc:retire-js": "sf code-analyzer run --rule-selector retire-js --view detail --workspace nebula-logger/core/**/*.* --workspace nebula-logger/plugins/**/*.*",
     "test": "npm run test:lwc && npm run test:apex",
     "test:apex": "npx sf apex run test --concise --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",

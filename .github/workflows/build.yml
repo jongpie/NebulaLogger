@@ -1,10 +1,10 @@
 # Pipeline for Nebula Logger
 name: Build
 
-env:
-  SF_DISABLE_AUTOUPDATE: true
-  SF_LOG_LEVEL: debug
-  SF_SKIP_NEW_VERSION_CHECK: true
+# env:
+#   SF_DISABLE_AUTOUPDATE: true
+#   SF_LOG_LEVEL: debug
+#   SF_SKIP_NEW_VERSION_CHECK: true
 
 on:
   push:
@@ -27,6 +27,8 @@ jobs:
   code-quality-tests:
     name: 'Run Code Quality Tests'
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -76,7 +78,7 @@ jobs:
       - name: 'Verify Apex with SFDX Scanner'
         run: |
           npm run sf:plugins:link:scanner
-          npm run scan:apex
+          npm run scan:apex:pmd
 
       # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
       # - name: 'Verify docs are updated'
@@ -89,6 +91,8 @@ jobs:
     name: 'Run LWC Jest Tests'
     needs: [code-quality-tests]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -122,6 +126,8 @@ jobs:
     name: 'Run Advanced Scratch Org Tests'
     needs: [code-quality-tests]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -183,10 +189,10 @@ jobs:
       # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
       # integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
+        run: npm run test:apex
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex:nocoverage -- --synchronous
+        run: npm run test:apex -- --synchronous
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -197,6 +203,8 @@ jobs:
     name: 'Run Base Scratch Org Tests'
     needs: [code-quality-tests]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -251,10 +259,10 @@ jobs:
       # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
       # integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
+        run: npm run test:apex
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex:nocoverage -- --synchronous
+        run: npm run test:apex -- --synchronous
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -265,6 +273,8 @@ jobs:
     name: 'Run Event Monitoring Scratch Org Tests'
     needs: [code-quality-tests]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -319,10 +329,10 @@ jobs:
       # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
       # integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
+        run: npm run test:apex
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex:nocoverage -- --synchronous
+        run: npm run test:apex -- --synchronous
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -333,6 +343,8 @@ jobs:
     name: 'Run Experience Cloud Scratch Org Tests'
     needs: [code-quality-tests, advanced-scratch-org-tests]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -390,10 +402,10 @@ jobs:
       # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
       # integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
+        run: npm run test:apex
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex:nocoverage -- --synchronous
+        run: npm run test:apex -- --synchronous
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -404,6 +416,8 @@ jobs:
     name: 'Run OmniStudio Scratch Org Tests'
     needs: [code-quality-tests, base-scratch-org-tests]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -465,10 +479,10 @@ jobs:
       # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
       # integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
+        run: npm run test:apex
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex:nocoverage -- --synchronous
+        run: npm run test:apex -- --synchronous
 
       - name: 'Delete Base Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -479,6 +493,8 @@ jobs:
     name: 'Run Platform Cache Scratch Org Tests'
     needs: [code-quality-tests, event-monitoring-scratch-org-tests]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -533,10 +549,10 @@ jobs:
       # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
       # integration testing to ensure that everything works with or without an active session.
       - name: 'Run Apex Tests Asynchronously'
-        run: npm run test:apex:nocoverage
+        run: npm run test:apex
 
       - name: 'Run Apex Tests Synchronously'
-        run: npm run test:apex:nocoverage -- --synchronous
+        run: npm run test:apex -- --synchronous
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -559,6 +575,8 @@ jobs:
         platform-cache-scratch-org-tests
       ]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -601,6 +619,8 @@ jobs:
     name: 'Create Core Package Release Candidate'
     needs: [create-managed-package-beta]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
@@ -771,6 +791,8 @@ jobs:
         platform-cache-scratch-org-tests
       ]
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jongpie/nebula-logger-dev
     steps:
       - name: 'Checkout source code'
         uses: actions/checkout@v4
