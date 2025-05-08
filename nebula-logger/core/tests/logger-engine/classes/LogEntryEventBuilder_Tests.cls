@@ -515,6 +515,35 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_properly_truncate_loooooong_message_when_data_mask_rule_is_applied() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    Integer fieldMaxLength = LogEntryEvent__e.Message__c.getDescribe().getLength();
+    String sensitiveStringThatWillBeExpandedByDataMasking =
+      'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    String expectedSanitizedString =
+      'Here is my fake social XXX-XX-9999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    System.Assert.isTrue(
+      expectedSanitizedString.length() > sensitiveStringThatWillBeExpandedByDataMasking.length(),
+      'Test has started under the wrong conditions!'
+    );
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(sensitiveStringThatWillBeExpandedByDataMasking);
+
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageTruncated__c);
+    System.Assert.areNotEqual(sensitiveStringThatWillBeExpandedByDataMasking, builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(expectedSanitizedString.left(fieldMaxLength), builder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(fieldMaxLength, builder.getLogEntryEvent().Message__c.length());
+  }
+
+  @IsTest
   static void it_should_apply_data_mask_rule_to_record_json_when_enabled() {
     LoggerSettings__c userSettings = getUserSettings();
     userSettings.IsDataMaskingEnabled__c = true;
@@ -536,24 +565,100 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_properly_truncate_loooooong_record_json_when_data_mask_rule_is_applied() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    Integer fieldMaxLength = LogEntryEvent__e.RecordJson__c.getDescribe().getLength();
+    String sensitiveStringThatWillBeExpandedByDataMasking =
+      'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    String expectedSanitizedString =
+      'Here is my fake social XXX-XX-9999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    System.Assert.isTrue(
+      expectedSanitizedString.length() > sensitiveStringThatWillBeExpandedByDataMasking.length(),
+      'Test has started under the wrong conditions!'
+    );
+    Schema.Account account = new Schema.Account(Name = sensitiveStringThatWillBeExpandedByDataMasking);
+    String accountJson = System.JSON.serializePretty(account);
+    String expectedSanitizedAccountJson = System.JSON.serializePretty(new Schema.Account(Name = expectedSanitizedString));
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setRecord(account);
+
+    System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonMasked__c);
+    // TODO consider adding a new field RecordJsonTruncated__c, similar to MessageTruncated__c
+    // System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonTruncated__c);
+    System.Assert.areNotEqual(sensitiveStringThatWillBeExpandedByDataMasking, builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(expectedSanitizedAccountJson.left(fieldMaxLength), builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(fieldMaxLength, builder.getLogEntryEvent().RecordJson__c.length());
+  }
+
+  @IsTest
   static void it_should_apply_data_mask_rule_to_record_list_json_when_enabled() {
     LoggerSettings__c userSettings = getUserSettings();
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
     LogEntryEventBuilder.setMockDataMaskRule(rule);
-
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     List<Schema.Account> accounts = new List<Schema.Account>{ new Schema.Account(Name = sensitiveString) };
     String accountListJson = System.JSON.serializePretty(accounts);
     String expectedSanitizedAccountListJson = System.JSON.serializePretty(new List<Schema.Account>{ new Schema.Account(Name = expectedSanitizedString) });
+
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
     builder.setRecord(accounts);
 
     System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonMasked__c);
     System.Assert.areNotEqual(accountListJson, builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual(expectedSanitizedAccountListJson, builder.getLogEntryEvent().RecordJson__c);
+  }
+
+  @IsTest
+  static void it_should_properly_truncate_loooooong_record_list_json_when_data_mask_rule_is_applied() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    Integer fieldMaxLength = LogEntryEvent__e.RecordJson__c.getDescribe().getLength();
+    String sensitiveStringThatWillBeExpandedByDataMasking =
+      'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    String expectedSanitizedString =
+      'Here is my fake social XXX-XX-9999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    System.Assert.isTrue(
+      expectedSanitizedString.length() > sensitiveStringThatWillBeExpandedByDataMasking.length(),
+      'Test has started under the wrong conditions!'
+    );
+    List<Schema.Account> accounts = new List<Schema.Account>{ new Schema.Account(Name = sensitiveStringThatWillBeExpandedByDataMasking) };
+    String accountListJson = System.JSON.serializePretty(accounts);
+    String expectedSanitizedAccountListJson = System.JSON.serializePretty(new List<Schema.Account>{ new Schema.Account(Name = expectedSanitizedString) });
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setRecord(accounts);
+
+    System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonMasked__c);
+    // TODO consider adding a new field RecordJsonTruncated__c, similar to MessageTruncated__c
+    // System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonTruncated__c);
+    System.Assert.areNotEqual(sensitiveStringThatWillBeExpandedByDataMasking, builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(expectedSanitizedAccountListJson.left(fieldMaxLength), builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(fieldMaxLength, builder.getLogEntryEvent().RecordJson__c.length());
+  }
+
+  @IsTest
+  static void it_should_apply_data_mask_rule_to_record_map_json_when_enabled() {
+    System.Assert.fail('TODO add tests for Map<Id, SObject>, these were apparently never added for data masking');
+  }
+
+  @IsTest
+  static void it_should_properly_truncate_loooooong_record_map_json_when_data_mask_rule_is_applied() {
+    System.Assert.fail('TODO add tests for Map<Id, SObject>, these were apparently never added for data masking');
   }
 
   @IsTest
@@ -577,6 +682,38 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_properly_truncate_loooooong_record_http_request_body_when_data_mask_rule_is_applied() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    Integer fieldMaxLength = LogEntryEvent__e.HttpRequestBody__c.getDescribe().getLength();
+    String sensitiveStringThatWillBeExpandedByDataMasking =
+      'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    String expectedSanitizedString =
+      'Here is my fake social XXX-XX-9999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    System.Assert.isTrue(
+      expectedSanitizedString.length() > sensitiveStringThatWillBeExpandedByDataMasking.length(),
+      'Test has started under the wrong conditions!'
+    );
+    System.HttpRequest httpRequest = LoggerMockDataCreator.createHttpRequest();
+    httpRequest.setBody(sensitiveStringThatWillBeExpandedByDataMasking);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setHttpRequestDetails(httpRequest);
+
+    System.Assert.isTrue(builder.getLogEntryEvent().HttpRequestBodyMasked__c);
+    // TODO consider adding a new field HttpRequestBodyTruncated__c, similar to MessageTruncated__c
+    // System.Assert.isTrue(builder.getLogEntryEvent().HttpRequestBodyTruncated__c);
+    System.Assert.areNotEqual(sensitiveStringThatWillBeExpandedByDataMasking, builder.getLogEntryEvent().HttpRequestBody__c);
+    System.Assert.areEqual(expectedSanitizedString.left(fieldMaxLength), builder.getLogEntryEvent().HttpRequestBody__c);
+    System.Assert.areEqual(fieldMaxLength, builder.getLogEntryEvent().HttpRequestBody__c.length());
+  }
+
+  @IsTest
   static void it_should_apply_data_mask_rule_to_http_response_body_when_enabled() {
     LoggerSettings__c userSettings = getUserSettings();
     userSettings.IsDataMaskingEnabled__c = true;
@@ -594,6 +731,38 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isTrue(builder.getLogEntryEvent().HttpResponseBodyMasked__c);
     System.Assert.areNotEqual(sensitiveString, builder.getLogEntryEvent().HttpResponseBody__c);
     System.Assert.areEqual(expectedSanitizedString, builder.getLogEntryEvent().HttpResponseBody__c);
+  }
+
+  @IsTest
+  static void it_should_properly_truncate_loooooong_record_http_response_body_when_data_mask_rule_is_applied() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    Integer fieldMaxLength = LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength();
+    String sensitiveStringThatWillBeExpandedByDataMasking =
+      'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    String expectedSanitizedString =
+      'Here is my fake social XXX-XX-9999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    System.Assert.isTrue(
+      expectedSanitizedString.length() > sensitiveStringThatWillBeExpandedByDataMasking.length(),
+      'Test has started under the wrong conditions!'
+    );
+    System.HttpResponse httpResponse = LoggerMockDataCreator.createHttpResponse();
+    httpResponse.setBody(sensitiveStringThatWillBeExpandedByDataMasking);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setHttpResponseDetails(httpResponse);
+
+    System.Assert.isTrue(builder.getLogEntryEvent().HttpResponseBodyMasked__c);
+    // TODO consider adding a new field HttpResponseBodyTruncated__c, similar to MessageTruncated__c
+    // System.Assert.isTrue(builder.getLogEntryEvent().HttpResponseBodyTruncated__c);
+    System.Assert.areNotEqual(sensitiveStringThatWillBeExpandedByDataMasking, builder.getLogEntryEvent().HttpResponseBody__c);
+    System.Assert.areEqual(expectedSanitizedString.left(fieldMaxLength), builder.getLogEntryEvent().HttpResponseBody__c);
+    System.Assert.areEqual(fieldMaxLength, builder.getLogEntryEvent().HttpResponseBody__c.length());
   }
 
   @IsTest
@@ -617,6 +786,38 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_properly_truncate_loooooong_record_rest_request_body_when_data_mask_rule_is_applied() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    Integer fieldMaxLength = LogEntryEvent__e.RestRequestBody__c.getDescribe().getLength();
+    String sensitiveStringThatWillBeExpandedByDataMasking =
+      'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    String expectedSanitizedString =
+      'Here is my fake social XXX-XX-9999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    System.Assert.isTrue(
+      expectedSanitizedString.length() > sensitiveStringThatWillBeExpandedByDataMasking.length(),
+      'Test has started under the wrong conditions!'
+    );
+    System.RestRequest restRequest = new System.RestRequest();
+    restRequest.requestBody = Blob.valueOf(sensitiveStringThatWillBeExpandedByDataMasking);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setRestRequestDetails(restRequest);
+
+    System.Assert.isTrue(builder.getLogEntryEvent().RestRequestBodyMasked__c);
+    // TODO consider adding a new field RestRequestBodyTruncated__c, similar to MessageTruncated__c
+    // System.Assert.isTrue(builder.getLogEntryEvent().RestRequestBodyTruncated__c);
+    System.Assert.areNotEqual(sensitiveStringThatWillBeExpandedByDataMasking, builder.getLogEntryEvent().RestRequestBody__c);
+    System.Assert.areEqual(expectedSanitizedString.left(fieldMaxLength), builder.getLogEntryEvent().RestRequestBody__c);
+    System.Assert.areEqual(fieldMaxLength, builder.getLogEntryEvent().RestRequestBody__c.length());
+  }
+
+  @IsTest
   static void it_should_apply_data_mask_rule_to_rest_response_body_when_enabled() {
     LoggerSettings__c userSettings = getUserSettings();
     userSettings.IsDataMaskingEnabled__c = true;
@@ -634,6 +835,38 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isTrue(builder.getLogEntryEvent().RestResponseBodyMasked__c);
     System.Assert.areNotEqual(sensitiveString, builder.getLogEntryEvent().RestResponseBody__c);
     System.Assert.areEqual(expectedSanitizedString, builder.getLogEntryEvent().RestResponseBody__c);
+  }
+
+  @IsTest
+  static void it_should_properly_truncate_loooooong_record_rest_response_body_when_data_mask_rule_is_applied() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    Integer fieldMaxLength = LogEntryEvent__e.RestResponseBody__c.getDescribe().getLength();
+    String sensitiveStringThatWillBeExpandedByDataMasking =
+      'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    String expectedSanitizedString =
+      'Here is my fake social XXX-XX-9999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
+      'A'.repeat(fieldMaxLength);
+    System.Assert.isTrue(
+      expectedSanitizedString.length() > sensitiveStringThatWillBeExpandedByDataMasking.length(),
+      'Test has started under the wrong conditions!'
+    );
+    System.RestResponse restResponse = new System.RestResponse();
+    restResponse.responseBody = Blob.valueOf(sensitiveStringThatWillBeExpandedByDataMasking);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setRestResponseDetails(restResponse);
+
+    System.Assert.isTrue(builder.getLogEntryEvent().RestResponseBodyMasked__c);
+    // TODO consider adding a new field RestResponseBodyTruncated__c, similar to MessageTruncated__c
+    // System.Assert.isTrue(builder.getLogEntryEvent().RestResponseBodyTruncated__c);
+    System.Assert.areNotEqual(sensitiveStringThatWillBeExpandedByDataMasking, builder.getLogEntryEvent().RestResponseBody__c);
+    System.Assert.areEqual(expectedSanitizedString.left(fieldMaxLength), builder.getLogEntryEvent().RestResponseBody__c);
+    System.Assert.areEqual(fieldMaxLength, builder.getLogEntryEvent().RestResponseBody__c.length());
   }
 
   @IsTest
