@@ -6,6 +6,36 @@
 @IsTest
 private class CMDT_DataMaskingRules_Tests {
   @IsTest
+  static void it_includes_a_valid_data_mask_rule_for_american_express_credit_card_number() {
+    // This is an integration test that intentionally relies on the org's LogEntryDataMaskRule__mdt record,
+    // since this is a rule that's included as part of Nebula Logger.
+    LogEntryDataMaskRule__mdt dataMaskRule = LogEntryDataMaskRule__mdt.getInstance('AmericanExpressCreditCardNumber');
+    System.Assert.isNotNull(dataMaskRule);
+    Map<String, String> inputToExpectedOutput = new Map<String, String>{
+      // ✅ Valid matches that should be masked.
+      '3782 822463 10005' => '****-******-10005',
+      '3411-234567-12345' => '****-******-12345',
+      '378282246310005' => '****-******-10005',
+      // ❌ Invalid matches - null is used as a placeholder here to indicate no masking should occur.
+      // AMEX-looking value is part of a bigger string, so could be a false positive
+      'x3782 822463 10005.' => null,
+      // Contains trailing alphanumeric characters — should not match
+      '341123456712345abc' => null,
+      // Invalid BIN (doesn't start with 34 or 37)
+      '123456789012345' => null,
+      // Too short (only 14 digits)
+      '3714 496353 984' => null
+    };
+    for (String input : inputToExpectedOutput.keySet()) {
+      String expectedOutput = inputToExpectedOutput.get(input) ?? input;
+
+      String maskedOutput = input.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+
+      System.Assert.areEqual(expectedOutput, maskedOutput);
+    }
+  }
+
+  @IsTest
   static void it_includes_a_valid_data_mask_rule_for_mastercard_credit_card_number() {
     // This is an integration test that intentionally relies on the org's LogEntryDataMaskRule__mdt record,
     // since this is a rule that's included as part of Nebula Logger.

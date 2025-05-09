@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>American Express Credit Card Number</label>
+    <protected>false</protected>
+    <values>
+        <field>ApplyToMessage__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>ApplyToRecordJson__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>ReplacementRegEx__c</field>
+        <value xsi:type="xsd:string">$1****-******-$4</value>
+    </values>
+    <values>
+        <field>SensitiveDataRegEx__c</field>
+        <value xsi:type="xsd:string">(^|[^0-9A-Za-z])(3[47]\d{2})([- ]?)\d{6}\3(\d{5})(?=[^0-9A-Za-z]|$)</value>
+    </values>
+</CustomMetadata>
