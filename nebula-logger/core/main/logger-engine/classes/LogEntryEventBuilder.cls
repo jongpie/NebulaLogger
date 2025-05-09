@@ -157,18 +157,11 @@ global with sharing class LogEntryEventBuilder {
   global LogEntryEventBuilder setMessage(String message) {
     // To help with debugging unit tests, always run System.debug statement in a test context
     if ((this.shouldSave() || System.Test.isRunningTest()) && this.logEntryEvent != null) {
-      String truncatedMessage = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
-      Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-      String cleanedMessage = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedMessage);
-      Boolean messageMasked = cleanedMessage != truncatedMessage;
+      TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(this.userSettings, Schema.LogEntryEvent__e.Message__c, message);
 
-      // Some data masking rules could increase the string length (like adding dashes to SSN: '444119999' --> 'XXX-XX-9999'),
-      // so truncate again just to be sure that it will fit.
-      cleanedMessage = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
-
-      this.logEntryEvent.Message__c = cleanedMessage;
-      this.logEntryEvent.MessageMasked__c = messageMasked;
-      this.logEntryEvent.MessageTruncated__c = messageTruncated;
+      this.logEntryEvent.Message__c = textCleaner.textValue;
+      this.logEntryEvent.MessageMasked__c = textCleaner.wasMasked;
+      this.logEntryEvent.MessageTruncated__c = textCleaner.wasTruncated;
       this.logToApexDebug(message);
     }
     return this;
@@ -454,24 +447,20 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.RecordCollectionSize__c = 1;
     this.logEntryEvent.RecordCollectionType__c = 'Single';
 
-    String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
       Schema.LogEntryEvent__e.RecordJson__c,
       getJson(record, this.userSettings.IsRecordFieldStrippingEnabled__c)
     );
+    this.logEntryEvent.RecordJson__c = textCleaner.textValue;
+    this.logEntryEvent.RecordJsonMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RecordJsonTruncated__c = textCleaner.wasMasked;
+
     if (record == null) {
-      this.logEntryEvent.RecordJson__c = truncatedRecordJson;
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      String cleanedRecordJson = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRecordJson);
-      Boolean recordJsonMasked = cleanedRecordJson != truncatedRecordJson;
-
-      // TODO truncate again
-      cleanedRecordJson = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, cleanedRecordJson);
-
       this.logEntryEvent.RecordId__c = record.Id;
-      this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-      this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
       this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
@@ -493,24 +482,20 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.RecordCollectionSize__c = records?.size();
     this.logEntryEvent.RecordCollectionType__c = 'List';
 
-    Schema.SObjectType sobjectType = records?.getSObjectType();
-    String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
       Schema.LogEntryEvent__e.RecordJson__c,
       getJson(records, this.userSettings.IsRecordFieldStrippingEnabled__c)
     );
+    this.logEntryEvent.RecordJson__c = textCleaner.textValue;
+    this.logEntryEvent.RecordJsonMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RecordJsonTruncated__c = textCleaner.wasTruncated;
+
+    Schema.SObjectType sobjectType = records?.getSObjectType();
     if (sobjectType == null) {
-      this.logEntryEvent.RecordJson__c = truncatedRecordJson;
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      String cleanedRecordJson = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRecordJson);
-      Boolean recordJsonMasked = cleanedRecordJson != truncatedRecordJson;
-
-      // TODO truncate again
-      cleanedRecordJson = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, cleanedRecordJson);
-
-      this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-      this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
       this.logEntryEvent.RecordSObjectType__c = sobjectType.toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
@@ -532,24 +517,21 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.RecordCollectionSize__c = recordIdToRecord?.size();
     this.logEntryEvent.RecordCollectionType__c = 'Map';
 
-    List<SObject> recordsList = recordIdToRecord?.values();
-    Schema.SObjectType sobjectType = recordIdToRecord?.size() > 0 ? recordsList.get(0)?.getSObjectType() : null;
-    String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
       Schema.LogEntryEvent__e.RecordJson__c,
       getJson(recordIdToRecord, this.userSettings.IsRecordFieldStrippingEnabled__c)
     );
+    this.logEntryEvent.RecordJson__c = textCleaner.textValue;
+    this.logEntryEvent.RecordJsonMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RecordJsonTruncated__c = textCleaner.wasTruncated;
+
+    List<SObject> recordsList = recordIdToRecord?.values();
+    Schema.SObjectType sobjectType = recordIdToRecord?.size() > 0 ? recordsList.get(0)?.getSObjectType() : null;
     if (sobjectType == null) {
-      this.logEntryEvent.RecordJson__c = truncatedRecordJson;
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      String cleanedRecordJson = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRecordJson);
-      Boolean recordJsonMasked = cleanedRecordJson != truncatedRecordJson;
-
-      // TODO truncate again
-
-      this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-      this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
       this.logEntryEvent.RecordSObjectType__c = sobjectType.toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
@@ -599,13 +581,6 @@ global with sharing class LogEntryEventBuilder {
       return this;
     }
 
-    String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestBody__c, request.getBody());
-    String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
-    Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
-
-    // TODO truncate again
-    cleanedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestBody__c, cleanedRequestBody);
-
     String formattedHeaderKeysString;
     String formattedHeadersString;
     if (headersToLog != null & headersToLog.isEmpty() == false) {
@@ -619,8 +594,11 @@ global with sharing class LogEntryEventBuilder {
       }
     }
 
-    this.logEntryEvent.HttpRequestBody__c = cleanedRequestBody;
-    this.logEntryEvent.HttpRequestBodyMasked__c = requestBodyMasked;
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(this.userSettings, Schema.LogEntryEvent__e.HttpRequestBody__c, request.getBody());
+
+    this.logEntryEvent.HttpRequestBody__c = textCleaner.textValue;
+    this.logEntryEvent.HttpRequestBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.HttpRequestBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.HttpRequestCompressed__c = request.getCompressed();
     this.logEntryEvent.HttpRequestEndpoint__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestEndpoint__c, request.getEndpoint());
     this.logEntryEvent.HttpRequestEndpointAddress__c = LoggerDataStore.truncateFieldValue(
@@ -643,13 +621,6 @@ global with sharing class LogEntryEventBuilder {
       return this;
     }
 
-    String truncatedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseBody__c, response.getBody());
-    String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
-    Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
-
-    // TODO truncate again
-    cleanedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseBody__c, cleanedResponseBody);
-
     String formattedHeadersString;
     if (LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES) {
       List<String> headers = new List<String>();
@@ -658,8 +629,12 @@ global with sharing class LogEntryEventBuilder {
       }
       formattedHeadersString = String.join(headers, NEW_LINE_DELIMITER);
     }
-    this.logEntryEvent.HttpResponseBody__c = cleanedResponseBody;
-    this.logEntryEvent.HttpResponseBodyMasked__c = responseBodyMasked;
+
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(this.userSettings, Schema.LogEntryEvent__e.HttpResponseBody__c, response.getBody());
+
+    this.logEntryEvent.HttpResponseBody__c = textCleaner.textValue;
+    this.logEntryEvent.HttpResponseBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.HttpResponseBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), NEW_LINE_DELIMITER);
     this.logEntryEvent.HttpResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseHeaders__c, formattedHeadersString);
     this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
@@ -676,14 +651,6 @@ global with sharing class LogEntryEventBuilder {
     if (this.shouldSave() == false || request == null) {
       return this;
     }
-
-    String stringifiedRequestBody = request.requestBody?.toString();
-    String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestBody__c, stringifiedRequestBody);
-    String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
-    Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
-
-    // TODO truncate again
-    cleanedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseBody__c, cleanedRequestBody);
 
     String formattedHeaderKeysString;
     String formattedHeadersString;
@@ -706,8 +673,15 @@ global with sharing class LogEntryEventBuilder {
       formattedParametersString = String.join(parameters, NEW_LINE_DELIMITER);
     }
 
-    this.logEntryEvent.RestRequestBody__c = cleanedRequestBody;
-    this.logEntryEvent.RestRequestBodyMasked__c = requestBodyMasked;
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
+      Schema.LogEntryEvent__e.RestRequestBody__c,
+      request.requestBody?.toString()
+    );
+
+    this.logEntryEvent.RestRequestBody__c = textCleaner.textValue;
+    this.logEntryEvent.RestRequestBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RestRequestBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.RestRequestHeaderKeys__c = formattedHeaderKeysString;
     this.logEntryEvent.RestRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestHeaders__c, formattedHeadersString);
     this.logEntryEvent.RestRequestMethod__c = request.httpMethod;
@@ -728,14 +702,6 @@ global with sharing class LogEntryEventBuilder {
       return this;
     }
 
-    String stringifiedResponseBody = response.responseBody?.toString();
-    String truncatedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestResponseBody__c, stringifiedResponseBody);
-    String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
-    Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
-
-    // TODO truncate again
-    cleanedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseBody__c, cleanedResponseBody);
-
     String formattedHeaderKeysString;
     String formattedHeadersString;
     if (response.headers != null) {
@@ -749,8 +715,15 @@ global with sharing class LogEntryEventBuilder {
       }
     }
 
-    this.logEntryEvent.RestResponseBody__c = cleanedResponseBody;
-    this.logEntryEvent.RestResponseBodyMasked__c = responseBodyMasked;
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
+      Schema.LogEntryEvent__e.RestResponseBody__c,
+      response.responseBody?.toString()
+    );
+
+    this.logEntryEvent.RestResponseBody__c = textCleaner.textValue;
+    this.logEntryEvent.RestResponseBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RestResponseBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.RestResponseHeaderKeys__c = formattedHeaderKeysString;
     this.logEntryEvent.RestResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestResponseHeaders__c, formattedHeadersString);
     this.logEntryEvent.RestResponseStatusCode__c = response.statusCode;
@@ -1381,6 +1354,48 @@ global with sharing class LogEntryEventBuilder {
       this.requestId = requestId;
       this.systemMode = systemMode;
       this.transactionId = transactionId;
+    }
+  }
+
+  private class TextFieldValueCleaner {
+    public final Schema.SObjectField textField;
+    public final String textValue;
+    public final Boolean isDataMaskingEnabled;
+    public final Boolean wasMasked;
+    public final Boolean wasTruncated;
+
+    public TextFieldValueCleaner(LoggerSettings__c settings, Schema.SObjectField textField, String originalTextValue) {
+      this.textField = textField;
+      this.isDataMaskingEnabled = settings.IsDataMaskingEnabled__c;
+      this.wasTruncated = String.isBlank(originalTextValue) ? false : originalTextValue.length() > textField.getDescribe().getLength();
+
+      String cleanedValue = LoggerDataStore.truncateFieldValue(this.textField, originalTextValue);
+      if (this.isDataMaskingEnabled) {
+        String maskedValue = this.applyDataMaskRules(cleanedValue);
+        this.wasMasked = cleanedValue != maskedValue;
+        // Some data masking rules could increase the string length (like adding dashes to SSN: '444119999' --> 'XXX-XX-9999'),
+        // so truncate again just to be sure that it will fit.
+        cleanedValue = LoggerDataStore.truncateFieldValue(this.textField, maskedValue);
+      } else {
+        this.wasMasked = false;
+      }
+
+      this.textValue = cleanedValue;
+    }
+
+    private String applyDataMaskRules(String textValueToMask) {
+      if (String.isBlank(textValueToMask)) {
+        return textValueToMask;
+      }
+
+      String maskedTextValue = textValueToMask;
+      for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
+        if (dataMaskRule.IsEnabled__c) {
+          maskedTextValue = maskedTextValue.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+        }
+      }
+
+      return maskedTextValue;
     }
   }
 
