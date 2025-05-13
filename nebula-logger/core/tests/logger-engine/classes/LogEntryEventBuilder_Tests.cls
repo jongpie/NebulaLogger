@@ -583,7 +583,6 @@ private class LogEntryEventBuilder_Tests {
       'Test has started under the wrong conditions!'
     );
     Schema.Account account = new Schema.Account(Name = sensitiveStringThatWillBeExpandedByDataMasking);
-    String accountJson = System.JSON.serializePretty(account);
     String expectedSanitizedAccountJson = System.JSON.serializePretty(new Schema.Account(Name = expectedSanitizedString));
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -636,7 +635,6 @@ private class LogEntryEventBuilder_Tests {
       'Test has started under the wrong conditions!'
     );
     List<Schema.Account> accounts = new List<Schema.Account>{ new Schema.Account(Name = sensitiveStringThatWillBeExpandedByDataMasking) };
-    String accountListJson = System.JSON.serializePretty(accounts);
     String expectedSanitizedAccountListJson = System.JSON.serializePretty(new List<Schema.Account>{ new Schema.Account(Name = expectedSanitizedString) });
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -695,7 +693,6 @@ private class LogEntryEventBuilder_Tests {
     Map<Id, Schema.Account> accountIdToAccount = new Map<Id, Schema.Account>{
       mockAccountId => new Schema.Account(Name = sensitiveStringThatWillBeExpandedByDataMasking)
     };
-    String accountMapJson = System.JSON.serializePretty(accountIdToAccount);
     String expectedSanitizedAccountMapJson = System.JSON.serializePretty(
       new Map<Id, Schema.Account>{ mockAccountId => new Schema.Account(Name = expectedSanitizedString) }
     );

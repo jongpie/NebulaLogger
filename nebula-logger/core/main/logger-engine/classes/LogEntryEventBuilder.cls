@@ -1357,6 +1357,7 @@ global with sharing class LogEntryEventBuilder {
     }
   }
 
+  @SuppressWarnings('PMD.ApexDoc')
   private class TextFieldValueCleaner {
     public final Schema.SObjectField textField;
     public final String textValue;

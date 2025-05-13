@@ -3,7 +3,8 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@IsTest
+@SuppressWarnings('PMD.MethodNamingConventions')
+@IsTest(IsParallel=true)
 private class CMDT_DataMaskingRules_Tests {
   @IsTest
   static void it_includes_a_valid_data_mask_rule_for_american_express_credit_card_number() {
