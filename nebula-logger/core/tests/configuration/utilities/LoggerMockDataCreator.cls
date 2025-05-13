@@ -785,13 +785,27 @@ public class LoggerMockDataCreator {
       Map<String, Object> populatedFields = this.record.getPopulatedFieldsAsMap();
       for (Schema.SObjectField field : fields) {
         Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+        if (fieldDescribe.isUpdateable() == false && fieldDescribe.isCustom() == false) {
+          continue;
+        }
+
         // If a field was already populated by using the constructor 'TestDataFactory(SObject record)', then don't change it
-        if (populatedFields.containsKey(fieldDescribe.getName())) {
+        // The exception is booleans, because they'll be populated with their default values.
+        // (Note: this^ coooould cause issues in some tests later, possibly. But for the moment, all tests are working as expected.)
+        if (populatedFields.containsKey(fieldDescribe.getName()) && fieldDescribe.getSoapType() != Schema.SoapType.BOOLEAN) {
           continue;
         }
 
         Object fieldValue;
-        if (fieldDescribe.getDefaultValue() != null) {
+        if (fieldDescribe.getSoapType() == Schema.SoapType.BOOLEAN) {
+          // For boolean fields, invert the default value as a way to know that the
+          // the value was set, instead of the platform using the default value
+          Boolean defaultValue = (Boolean) fieldDescribe.getDefaultValue();
+          // Several standard fields on User (and possibly other standard objects/fields?)
+          // actually return null for their default value - this is known, in technical terms,
+          // as "absolutely ridiculous", and I hate it. So, here's a silly extra null check for those fields.
+          fieldValue = defaultValue == null ? true : !defaultValue;
+        } else if (fieldDescribe.getDefaultValue() != null) {
           // If there is a default value setup for the field, use it
           fieldValue = fieldDescribe.getDefaultValue();
         } else {

@@ -1489,6 +1489,7 @@ private class LogEntryEventHandler_Tests {
             ExceptionType__c,
             HttpRequestBody__c,
             HttpRequestBodyMasked__c,
+            HttpRequestBodyTruncated__c,
             HttpRequestCompressed__c,
             HttpRequestEndpoint__c,
             HttpRequestEndpointAddress__c,
@@ -1497,6 +1498,7 @@ private class LogEntryEventHandler_Tests {
             HttpRequestMethod__c,
             HttpResponseBody__c,
             HttpResponseBodyMasked__c,
+            HttpResponseBodyTruncated__c,
             HttpResponseHeaderKeys__c,
             HttpResponseHeaders__c,
             HttpResponseStatus__c,
@@ -1551,11 +1553,13 @@ private class LogEntryEventHandler_Tests {
             RecordId__c,
             RecordJson__c,
             RecordJsonMasked__c,
+            RecordJsonTruncated__c,
             RecordSObjectClassification__c,
             RecordSObjectType__c,
             RecordSObjectTypeNamespace__c,
             RestRequestBody__c,
             RestRequestBodyMasked__c,
+            RestRequestBodyTruncated__c,
             RestRequestHeaderKeys__c,
             RestRequestHeaders__c,
             RestRequestMethod__c,
@@ -1565,6 +1569,7 @@ private class LogEntryEventHandler_Tests {
             RestRequestUri__c,
             RestResponseBody__c,
             RestResponseBodyMasked__c,
+            RestResponseBodyTruncated__c,
             RestResponseHeaderKeys__c,
             RestResponseHeaders__c,
             RestResponseStatusCode__c,
@@ -1721,6 +1726,11 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c, 'logEntry.ExceptionType__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestBody__c, logEntry.HttpRequestBody__c, 'logEntry.HttpRequestBody__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestBodyMasked__c, logEntry.HttpRequestBodyMasked__c, 'logEntry.HttpRequestBodyMasked__c was not properly set');
+    System.Assert.areEqual(
+      logEntryEvent.HttpRequestBodyTruncated__c,
+      logEntry.HttpRequestBodyTruncated__c,
+      'logEntry.HttpRequestBodyTruncated__c was not properly set'
+    );
     System.Assert.areEqual(logEntryEvent.HttpRequestCompressed__c, logEntry.HttpRequestCompressed__c, 'logEntry.HttpRequestCompressed__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestEndpoint__c, logEntry.HttpRequestEndpoint__c, 'logEntry.HttpRequestEndpoint__c was not properly set');
     System.Assert.areEqual(
@@ -1736,6 +1746,11 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.HttpResponseBodyMasked__c,
       logEntry.HttpResponseBodyMasked__c,
       'logEntry.HttpResponseBodyMasked__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.HttpResponseBodyTruncated__c,
+      logEntry.HttpResponseBodyTruncated__c,
+      'logEntry.HttpResponseBodyTruncated__c was not properly set'
     );
     System.Assert.areEqual(
       logEntryEvent.HttpResponseHeaderKeys__c,
@@ -1873,6 +1888,7 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
     System.Assert.areEqual(logEntryEvent.RecordJsonMasked__c, logEntry.RecordJsonMasked__c, 'logEntry.RecordJsonMasked__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.RecordJsonTruncated__c, logEntry.RecordJsonTruncated__c, 'logEntry.RecordJsonTruncated__c was not properly set');
     System.Assert.areEqual(
       logEntryEvent.RecordSObjectClassification__c,
       logEntry.RecordSObjectClassification__c,
@@ -1889,6 +1905,11 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.RestRequestBodyMasked__c,
       logEntry.RestRequestBodyMasked__c,
       'logEntry.RestRequestBodyMasked__c, was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.RestRequestBodyTruncated__c,
+      logEntry.RestRequestBodyTruncated__c,
+      'logEntry.RestRequestBodyTruncated__c, was not properly set'
     );
     System.Assert.areEqual(
       logEntryEvent.RestRequestHeaderKeys__c,
@@ -1918,6 +1939,11 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.RestResponseBodyMasked__c,
       logEntry.RestResponseBodyMasked__c,
       'logEntry.RestResponseBodyMasked__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.RestResponseBodyTruncated__c,
+      logEntry.RestResponseBodyTruncated__c,
+      'logEntry.RestResponseBodyTruncated__c was not properly set'
     );
     System.Assert.areEqual(
       logEntryEvent.RestResponseHeaderKeys__c,

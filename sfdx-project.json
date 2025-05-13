@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.16.0.NEXT",
-      "versionName": "Spring '25 Release",
-      "versionDescription": "Updated all metadata to API v63.0, made some bugfixes & improvements to CallableLogger",
+      "versionNumber": "4.16.1.NEXT",
+      "versionName": "Data Masking & String Truncation Improvements",
+      "versionDescription": "Fixed several issues with the included data masking rules in LogEntryDataMaskRule__mdt, added several new *Truncation__c fields (like LogEntry__c.HttpRequestBodyTruncated__c & LogEntry__c.HttpResponseBodyTruncated__c), and fixed issues with string truncation to ensure the value is properly truncated after data masking has occurred.",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
