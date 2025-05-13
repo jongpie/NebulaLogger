@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <defaultValue>false</defaultValue>
-    <inlineHelpText>Indicates if the message was truncated due to being too long to fit into the Message field</inlineHelpText>
+    <inlineHelpText>Indicates if the text in Message was truncated due to being too long to fit into the field</inlineHelpText>
     <label>Message Truncated</label>
     <securityClassification>Confidential</securityClassification>
     <trackTrending>false</trackTrending>

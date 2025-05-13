@@ -4,6 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <defaultValue>false</defaultValue>
+    <inlineHelpText>Indicates if the text in HTTP Request Body was truncated due to being too long to fit into the field</inlineHelpText>
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
