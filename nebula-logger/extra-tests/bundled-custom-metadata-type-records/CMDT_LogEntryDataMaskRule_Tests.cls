@@ -3,9 +3,16 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @group Extra Tests
+ * @description Integration test class used to validate that the bundled records in LogEntryDataMask__mdt
+ *              work as expected.
+ * @see LoggerConfigurationSelector
+ * @see LogEntryEventBuilder
+ */
 @SuppressWarnings('PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
-private class CMDT_DataMaskingRules_Tests {
+private class CMDT_LogEntryDataMaskRule_Tests {
   @IsTest
   static void it_includes_a_valid_data_mask_rule_for_american_express_credit_card_number() {
     // This is an integration test that intentionally relies on the org's LogEntryDataMaskRule__mdt record,
