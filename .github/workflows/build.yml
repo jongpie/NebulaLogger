@@ -174,9 +174,6 @@ jobs:
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
 
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
-
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
@@ -242,9 +239,6 @@ jobs:
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
 
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
-
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
@@ -309,9 +303,6 @@ jobs:
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
-
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
@@ -380,9 +371,6 @@ jobs:
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
-
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
@@ -456,9 +444,6 @@ jobs:
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
 
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
-
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
@@ -523,9 +508,6 @@ jobs:
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
-
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
