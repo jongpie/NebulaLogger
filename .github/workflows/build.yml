@@ -77,7 +77,7 @@ jobs:
 
       - name: 'Verify Apex with SFDX Scanner'
         run: |
-          npm run sf:plugins:link:scanner
+          npx sf plugins install code-analyzer
           npm run scan:apex:pmd
 
       # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
