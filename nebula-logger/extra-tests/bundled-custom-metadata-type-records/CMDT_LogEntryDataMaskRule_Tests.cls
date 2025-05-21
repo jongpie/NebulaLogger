@@ -156,10 +156,10 @@ private class CMDT_LogEntryDataMaskRule_Tests {
     System.Assert.isNotNull(dataMaskRule);
     Map<String, String> inputToExpectedOutput = new Map<String, String>{
       // ✅ Valid matches that should be masked.
-      '123-45-6789' => '***-**-6789',
-      '123456789' => '***-**-6789',
-      '123 45 6789' => '***-**-6789',
-      'xyz 123-45-6789.' => 'xyz ***-**-6789.',
+      '123-45-6789' => 'XXX-XX-6789',
+      '123456789' => 'XXX-XX-6789',
+      '123 45 6789' => 'XXX-XX-6789',
+      'xyz 123-45-6789.' => 'xyz XXX-XX-6789.',
       // ❌ Invalid matches - null is used as a placeholder here to indicate no masking should occur.
       // v1 SSN-looking value is part of a bigger string, so could be a false positive
       '123-45-6789abc' => null,
