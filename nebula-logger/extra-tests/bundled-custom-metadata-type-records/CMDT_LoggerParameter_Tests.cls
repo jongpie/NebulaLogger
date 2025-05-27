@@ -7,6 +7,7 @@
  * @group Extra Tests
  * @description Integration test class used to validate that the bundled records in LoggerParameter__mdt
  *              have the expected default values.
+ * @see LoggerConfigurationSelector
  * @see LoggerParameter
  */
 @SuppressWarnings('PMD.MethodNamingConventions')

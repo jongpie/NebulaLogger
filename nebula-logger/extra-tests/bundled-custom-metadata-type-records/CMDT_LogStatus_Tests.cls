@@ -5,7 +5,7 @@
 
 /**
  * @group Extra Tests
- * @description Integration test class used to validate that the bundled records in LoggerSObjectHandler__mdt
+ * @description Integration test class used to validate that the bundled records in LogStatus__mdt
  *              have the expected default values.
  * @see LoggerConfigurationSelector
  * @see LogHandler
