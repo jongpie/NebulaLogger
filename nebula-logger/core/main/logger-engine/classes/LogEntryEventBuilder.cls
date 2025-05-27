@@ -515,7 +515,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                  The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setRecord(Map<Id, SObject> recordIdToRecord) {
-    if (this.shouldSave == false) {
+    if (this.shouldSave() == false) {
       return this;
     }
 

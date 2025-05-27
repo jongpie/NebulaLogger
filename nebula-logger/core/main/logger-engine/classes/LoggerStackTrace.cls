@@ -134,6 +134,10 @@ public without sharing class LoggerStackTrace {
     }
 
     String firstStackTraceLine = cleansedStackTraceLines.get(0);
+    if (firstStackTraceLine == 'External entry point' && cleansedStackTraceLines.size() > 1) {
+      firstStackTraceLine = cleansedStackTraceLines.get(1);
+    }
+
     String cleanedLocation = firstStackTraceLine;
     if (cleanedLocation.contains(':')) {
       cleanedLocation = cleanedLocation.substringBefore(':');

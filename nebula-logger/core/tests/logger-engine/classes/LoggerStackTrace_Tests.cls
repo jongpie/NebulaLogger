@@ -237,6 +237,18 @@ private class LoggerStackTrace_Tests {
     System.Assert.isNull(stackTrace.Source);
   }
 
+  @IsTest
+  static void it_should_ignore_external_entry_point_stack_trace_line() {
+    String externalEntryPointStackTrace = 'External entry point';
+    String mockStackTrace = externalEntryPointStackTrace + '\n' + 'Class.SomeClass.someMethod: line 1, column 1';
+
+    LoggerStackTrace stackTrace = new LoggerStackTrace(mockStackTrace);
+
+    System.Assert.areEqual(LoggerStackTrace.SourceLanguage.Apex, stackTrace.Language);
+    System.Assert.areEqual('SomeClass.someMethod', stackTrace.Location);
+    System.Assert.areEqual(mockStackTrace, stackTrace.ParsedStackTraceString);
+  }
+
   private class DebugStringExample {
     private System.Exception constructorStackTraceGenerator;
     private System.Exception methodStackTraceGenerator;
