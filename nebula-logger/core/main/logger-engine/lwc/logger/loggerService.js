@@ -57,12 +57,6 @@ export default class LoggerService {
 
   constructor() {
     this._loadSettingsFromServer();
-
-    if (areSystemMessagesEnabled && !LoggerService.hasInitialized) {
-      this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));
-
-      LoggerService.hasInitialized = true;
-    }
   }
 
   // TODO deprecate? Or make it async?
@@ -170,6 +164,12 @@ export default class LoggerService {
           supportedLoggingLevels: Object.freeze(retrievedSettings.supportedLoggingLevels),
           userLoggingLevel: Object.freeze(retrievedSettings.userLoggingLevel)
         });
+
+        if (areSystemMessagesEnabled && this.#settings.isConsoleLoggingEnabled && !LoggerService.hasInitialized) {
+          this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));
+
+          LoggerService.hasInitialized = true;
+        }
       } catch (error) {
         /* eslint-disable-next-line no-console */
         console.error(error);
@@ -183,10 +183,12 @@ export default class LoggerService {
 
   _newEntry(loggingLevel, message, originStackTraceError) {
     originStackTraceError = originStackTraceError ?? new Error();
+
     const logEntryBuilder = new LogEntryEventBuilder(loggingLevel, new BrowserContext())
       .parseStackTrace(originStackTraceError)
       .setMessage(message)
       .setScenario(this.#scenario);
+
     const logEntry = logEntryBuilder.getComponentLogEntry();
     Object.assign(logEntry.fieldToValue, this.#componentFieldToValue);
 
