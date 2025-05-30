@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UnsupportedTargetSObjectType</fullName>
+    <active>true</active>
+    <errorConditionFormula>TargetSObjectType__r.DeveloperName != &apos;LogEntryEvent&apos;</errorConditionFormula>
+    <errorDisplayField>TargetSObjectType__c</errorDisplayField>
+    <errorMessage>Only LogEntryEvent__e is supported as the Target SObject Type</errorMessage>
+</ValidationRule>

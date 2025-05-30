@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>MasterLabel</columns>
+    <columns>DeveloperName</columns>
+    <columns>IsEnabled__c</columns>
+    <columns>LogEntryDataMaskRule__c</columns>
+    <columns>TargetSObjectType__c</columns>
+    <columns>TargetField__c</columns>
+    <columns>NamespacePrefix</columns>
+    <columns>IsProtected</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

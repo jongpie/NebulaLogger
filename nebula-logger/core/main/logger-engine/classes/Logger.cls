@@ -3546,6 +3546,23 @@ global with sharing class Logger {
     return newEntry(loggingLevel).setMessage(message);
   }
 
+  // Data masking control methods
+
+  // Auto-applies all enabled LogEntryDataMaskRule__mdt records for every provided fieldsToMask
+  global static void addDataMaskingFields(List<Schema.SObjectField> fieldsToMask) {
+    // Auto-applies all enabled LogEntryDataMaskRule__mdt records for every provided fieldsToMask
+    // Logger.addDataMaskingFields(new List<Schema.SObjectField>());
+  }
+
+  global static void addDataMaskingFields(String dataMaskRuleDeveloperName, List<Schema.SObjectField> fieldsToMask) {
+    // Logger.addDataMaskingFields('VisaCreditCardNumber', new List<Schema.SObjectField>());
+  }
+
+  global static void setDataMaskingFields(String dataMaskRuleDeveloperName, List<Schema.SObjectField> fieldsToMask) {
+    // This should include a system message - "I hope you wanted this" - James Simone
+    // Logger.setDataMaskingFields('VisaCreditCardNumber', new List<Schema.SObjectField>());
+  }
+
   // Save control methods
   /**
    * @description Returns the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
