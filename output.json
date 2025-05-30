@@ -1,0 +1,94 @@
+{
+  "records": [
+    {
+      "attributes": {
+        "type": "Package2Member",
+        "url": "/services/data/v64.0/tooling/sobjects/Package2Member/03vAH00000000JjYAI"
+      },
+      "Id": "03vAH00000000JjYAI",
+      "SubscriberPackageId": "033B0000000Tc2FIAS",
+      "SubscriberPackage": {
+        "attributes": {
+          "type": "SubscriberPackage",
+          "url": "/services/data/v64.0/tooling/sobjects/SubscriberPackage/033B0000000Tc2FIAS"
+        },
+        "Name": "Platform Core"
+      },
+      "CurrentPackageVersionId": "04tWt000000A45ZIAS",
+      "CurrentPackageVersion": {
+        "attributes": {
+          "type": "SubscriberPackageVersion",
+          "url": "/services/data/v64.0/tooling/sobjects/SubscriberPackageVersion/04tWt000000A45ZIAS"
+        },
+        "IsManaged": true,
+        "Name": "Update ACCENG_Query equals method to ensure strict equality checks are performed",
+        "AppExchangePackageName": null,
+        "AppExchangePublisherName": null,
+        "MajorVersion": 1,
+        "MinorVersion": 7,
+        "BuildNumber": 0,
+        "IsBeta": false,
+        "IsOrgDependent": true,
+        "IsSecurityReviewed": false,
+        "PublisherName": null,
+        "ReleaseNotesUrl": null,
+        "ReleaseState": "Released"
+      },
+      "SubjectId": "01pAH0000008fHfYAI",
+      "Subject": {
+        "attributes": {
+          "type": "Name",
+          "url": "/services/data/v64.0/tooling/sobjects/ApexClass/01pAH0000008fHfYAI"
+        },
+        "Name": "Logger",
+        "Type": "01p"
+      }
+    },
+    {
+      "attributes": {
+        "type": "Package2Member",
+        "url": "/services/data/v64.0/tooling/sobjects/Package2Member/03vAH00000000KMYAY"
+      },
+      "Id": "03vAH00000000KMYAY",
+      "SubscriberPackageId": "033B0000000Tc2FIAS",
+      "SubscriberPackage": {
+        "attributes": {
+          "type": "SubscriberPackage",
+          "url": "/services/data/v64.0/tooling/sobjects/SubscriberPackage/033B0000000Tc2FIAS"
+        },
+        "Name": "Platform Core"
+      },
+      "CurrentPackageVersionId": "04tWt000000A45ZIAS",
+      "CurrentPackageVersion": {
+        "attributes": {
+          "type": "SubscriberPackageVersion",
+          "url": "/services/data/v64.0/tooling/sobjects/SubscriberPackageVersion/04tWt000000A45ZIAS"
+        },
+        "IsManaged": true,
+        "Name": "Update ACCENG_Query equals method to ensure strict equality checks are performed",
+        "AppExchangePackageName": null,
+        "AppExchangePublisherName": null,
+        "MajorVersion": 1,
+        "MinorVersion": 7,
+        "BuildNumber": 0,
+        "IsBeta": false,
+        "IsOrgDependent": true,
+        "IsSecurityReviewed": false,
+        "PublisherName": null,
+        "ReleaseNotesUrl": null,
+        "ReleaseState": "Released"
+      },
+      "SubjectId": "01pAH0000008fHVYAY",
+      "Subject": {
+        "attributes": {
+          "type": "Name",
+          "url": "/services/data/v64.0/tooling/sobjects/ApexClass/01pAH0000008fHVYAY"
+        },
+        "Name": "LogEntryEventHandler",
+        "Type": "01p"
+      }
+    }
+  ],
+  "totalSize": 2,
+  "done": true
+}

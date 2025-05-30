@@ -1,0 +1,25 @@
+SELECT
+    Id,
+    SubscriberPackageId,
+    SubscriberPackage.Name,
+    CurrentPackageVersionId,
+    CurrentPackageVersion.IsManaged,
+    CurrentPackageVersion.Name,
+    CurrentPackageVersion.AppExchangePackageName,
+    CurrentPackageVersion.AppExchangePublisherName,
+
+    CurrentPackageVersion.MajorVersion,
+    CurrentPackageVersion.MinorVersion,
+    CurrentPackageVersion.BuildNumber,
+
+    CurrentPackageVersion.IsBeta,
+    CurrentPackageVersion.IsOrgDependent,
+    CurrentPackageVersion.IsSecurityReviewed,
+    CurrentPackageVersion.PublisherName,
+    CurrentPackageVersion.ReleaseNotesUrl,
+    CurrentPackageVersion.ReleaseState,
+    SubjectId,
+    Subject.Name,
+    Subject.Type
+FROM Package2Member
+WHERE Subject.Name IN ('Logger', 'LogEntryEventHandler')
