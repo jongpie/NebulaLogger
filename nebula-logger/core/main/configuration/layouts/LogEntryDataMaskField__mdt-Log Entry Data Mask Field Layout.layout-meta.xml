@@ -27,17 +27,21 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Rule Details</label>
+        <label>Field Details</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>SensitiveDataRegEx__c</field>
+                <field>LogEntryDataMaskRule__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>TargetSObjectType__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Required</behavior>
-                <field>ReplacementRegEx__c</field>
+                <field>TargetField__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -79,22 +83,13 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedLists>
-        <fields>MasterLabel</fields>
-        <fields>DeveloperName</fields>
-        <fields>NamespacePrefix</fields>
-        <fields>IsEnabled__c</fields>
-        <fields>TargetSObjectType__c</fields>
-        <fields>TargetField__c</fields>
-        <relatedList>LogEntryDataMaskField__mdt.LogEntryDataMaskRule__c</relatedList>
-    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00hDJ000003GPjD</masterLabel>
+        <masterLabel>00hDJ000003Gvfb</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

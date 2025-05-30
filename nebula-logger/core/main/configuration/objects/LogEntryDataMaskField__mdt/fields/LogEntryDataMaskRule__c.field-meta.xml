@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LogEntryDataMaskRule__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Log Entry Data Mask Rule</label>
+    <referenceTo>LogEntryDataMaskRule__mdt</referenceTo>
+    <relationshipLabel>Log Entry Data Mask Fields</relationshipLabel>
+    <relationshipName>LogEntryDataMaskFields</relationshipName>
+    <required>true</required>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TargetSObjectType__c</fullName>
+    <!-- TODO revisit/finalize fieldManageability  -->
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Only Log__c, LogEntry__c, and LoggerScenario__c are supported as the Target SObject Type</inlineHelpText>
+    <label>Target SObject Type</label>
+    <referenceTo>EntityDefinition</referenceTo>
+    <relationshipLabel>Log_Entry_Data_Mask_Fields</relationshipLabel>
+    <relationshipName>LogEntryDataMaskFields</relationshipName>
+    <required>false</required>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>

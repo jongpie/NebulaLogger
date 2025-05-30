@@ -6,7 +6,7 @@
     <defaultValue>true</defaultValue>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>When checked, the data mask rule is applied to log entry messages (stored in LogEntryEvent__e.RecordJson__c and LogEntry__c.RecordJson__c)</inlineHelpText>
-    <label>Apply to Record JSON</label>
+    <label>DEPRECATED: Apply to Record JSON</label>
     <securityClassification>Confidential</securityClassification>
     <type>Checkbox</type>
 </CustomField>
