@@ -65,10 +65,30 @@ describe('logger tests', () => {
     jest.clearAllMocks();
   });
 
-  it('calls console.info a single time on initialization', async () => {
-    // this test is non-parameterized due to issues with console.info
-    // being actually set to jest.fn() in it.each calls
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('does not call console functions when console logging is disabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
+    enableSystemMessages();
+    const logger = await loggingFunction();
+    await flushPromises('Resolve async task queue');
+
+    logger.error('some message');
+    logger.warn('some message');
+    logger.info('some message');
+    logger.debug('some message');
+    logger.fine('some message');
+    logger.finer('some message');
+    logger.finest('some message');
+
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalledTimes(0);
+    expect(console.info).toHaveBeenCalledTimes(0);
+    expect(console.debug).toHaveBeenCalledTimes(0);
+    expect(console.log).toHaveBeenCalledTimes(0);
+  });
+
+  it('calls console functions when console logging is enabled', async () => {
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
     enableSystemMessages();
     const logger = getLogger();
     await flushPromises('Resolve async task queue');
@@ -82,10 +102,20 @@ describe('logger tests', () => {
     logger.finest('some message');
 
     await flushPromises('Resolve async task queue');
-    expect(console.info).toHaveBeenCalledTimes(1);
+    await flushPromises('Resolve async task queue');
+    await flushPromises('Resolve async task queue');
+    await flushPromises('Resolve async task queue');
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    // console.info is called 2 times: once for logger init, and once for the logger.info() call above
+    expect(console.info).toHaveBeenCalledTimes(2);
     const expectedInitializationMessage = 'ℹ️ INFO: logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2);
     // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
     expect(console.info.mock.calls[0][2]).toBe(expectedInitializationMessage);
+    // console.info is called 4 times: one time each for logger.debug(), logger.fine(), logger.finer(), and logger.finest() calls above
+    expect(console.debug).toHaveBeenCalledTimes(4);
+    // Currently, console.log() isn't used by Nebula Logger
+    expect(console.log).toHaveBeenCalledTimes(0);
   });
 
   it.each([[createLogger], [getLogger], [getMarkupLogger]])('returns user settings', async loggingFunction => {
