@@ -156,6 +156,7 @@
         <members>LogEntryEvent__e.ExceptionStackTrace__c</members>
         <members>LogEntryEvent__e.ExceptionType__c</members>
         <members>LogEntryEvent__e.HttpRequestBodyMasked__c</members>
+        <members>LogEntryEvent__e.HttpRequestBodyTruncated__c</members>
         <members>LogEntryEvent__e.HttpRequestBody__c</members>
         <members>LogEntryEvent__e.HttpRequestCompressed__c</members>
         <members>LogEntryEvent__e.HttpRequestEndpointAddress__c</members>
@@ -164,6 +165,7 @@
         <members>LogEntryEvent__e.HttpRequestHeaders__c</members>
         <members>LogEntryEvent__e.HttpRequestMethod__c</members>
         <members>LogEntryEvent__e.HttpResponseBodyMasked__c</members>
+        <members>LogEntryEvent__e.HttpResponseBodyTruncated__c</members>
         <members>LogEntryEvent__e.HttpResponseBody__c</members>
         <members>LogEntryEvent__e.HttpResponseHeaderKeys__c</members>
         <members>LogEntryEvent__e.HttpResponseHeaders__c</members>
@@ -248,12 +250,14 @@
         <members>LogEntryEvent__e.RecordCollectionType__c</members>
         <members>LogEntryEvent__e.RecordId__c</members>
         <members>LogEntryEvent__e.RecordJsonMasked__c</members>
+        <members>LogEntryEvent__e.RecordJsonTruncated__c</members>
         <members>LogEntryEvent__e.RecordJson__c</members>
         <members>LogEntryEvent__e.RecordSObjectClassification__c</members>
         <members>LogEntryEvent__e.RecordSObjectTypeNamespace__c</members>
         <members>LogEntryEvent__e.RecordSObjectType__c</members>
         <members>LogEntryEvent__e.RequestId__c</members>
         <members>LogEntryEvent__e.RestRequestBodyMasked__c</members>
+        <members>LogEntryEvent__e.RestRequestBodyTruncated__c</members>
         <members>LogEntryEvent__e.RestRequestBody__c</members>
         <members>LogEntryEvent__e.RestRequestHeaderKeys__c</members>
         <members>LogEntryEvent__e.RestRequestHeaders__c</members>
@@ -263,6 +267,7 @@
         <members>LogEntryEvent__e.RestRequestResourcePath__c</members>
         <members>LogEntryEvent__e.RestRequestUri__c</members>
         <members>LogEntryEvent__e.RestResponseBodyMasked__c</members>
+        <members>LogEntryEvent__e.RestResponseBodyTruncated__c</members>
         <members>LogEntryEvent__e.RestResponseBody__c</members>
         <members>LogEntryEvent__e.RestResponseHeaderKeys__c</members>
         <members>LogEntryEvent__e.RestResponseHeaders__c</members>
@@ -394,6 +399,7 @@
         <members>LogEntry__c.HasRestResponseHeaders__c</members>
         <members>LogEntry__c.HasStackTrace__c</members>
         <members>LogEntry__c.HttpRequestBodyMasked__c</members>
+        <members>LogEntry__c.HttpRequestBodyTruncated__c</members>
         <members>LogEntry__c.HttpRequestBody__c</members>
         <members>LogEntry__c.HttpRequestCompressed__c</members>
         <members>LogEntry__c.HttpRequestEndpointAddress__c</members>
@@ -402,6 +408,7 @@
         <members>LogEntry__c.HttpRequestHeaders__c</members>
         <members>LogEntry__c.HttpRequestMethod__c</members>
         <members>LogEntry__c.HttpResponseBodyMasked__c</members>
+        <members>LogEntry__c.HttpResponseBodyTruncated__c</members>
         <members>LogEntry__c.HttpResponseBody__c</members>
         <members>LogEntry__c.HttpResponseHeaderKeys__c</members>
         <members>LogEntry__c.HttpResponseHeaders__c</members>
@@ -490,6 +497,7 @@
         <members>LogEntry__c.RecordDetailedLink__c</members>
         <members>LogEntry__c.RecordId__c</members>
         <members>LogEntry__c.RecordJsonMasked__c</members>
+        <members>LogEntry__c.RecordJsonTruncated__c</members>
         <members>LogEntry__c.RecordJson__c</members>
         <members>LogEntry__c.RecordLink__c</members>
         <members>LogEntry__c.RecordName__c</members>
@@ -497,6 +505,7 @@
         <members>LogEntry__c.RecordSObjectTypeNamespace__c</members>
         <members>LogEntry__c.RecordSObjectType__c</members>
         <members>LogEntry__c.RestRequestBodyMasked__c</members>
+        <members>LogEntry__c.RestRequestBodyTruncated__c</members>
         <members>LogEntry__c.RestRequestBody__c</members>
         <members>LogEntry__c.RestRequestHeaderKeys__c</members>
         <members>LogEntry__c.RestRequestHeaders__c</members>
@@ -506,6 +515,7 @@
         <members>LogEntry__c.RestRequestResourcePath__c</members>
         <members>LogEntry__c.RestRequestUri__c</members>
         <members>LogEntry__c.RestResponseBodyMasked__c</members>
+        <members>LogEntry__c.RestResponseBodyTruncated__c</members>
         <members>LogEntry__c.RestResponseBody__c</members>
         <members>LogEntry__c.RestResponseHeaderKeys__c</members>
         <members>LogEntry__c.RestResponseHeaders__c</members>
@@ -700,6 +710,7 @@
         <name>CustomIndex</name>
     </types>
     <types>
+        <members>LogEntryDataMaskRule.AmericanExpressCreditCardNumber</members>
         <members>LogEntryDataMaskRule.MastercardCreditCardNumber</members>
         <members>LogEntryDataMaskRule.SocialSecurityNumber</members>
         <members>LogEntryDataMaskRule.VisaCreditCardNumber</members>

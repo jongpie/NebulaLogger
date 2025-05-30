@@ -199,11 +199,11 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.MessageTruncated__c</fieldItem>
-                <identifier>RecordMessageTruncated__cField</identifier>
+                <fieldItem>Record.MessageMasked__c</fieldItem>
+                <identifier>RecordMessageMasked__cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.MessageTruncated__c}</leftValue>
+                        <leftValue>{!Record.MessageMasked__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
@@ -216,11 +216,11 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.MessageMasked__c</fieldItem>
-                <identifier>RecordMessageMasked__cField</identifier>
+                <fieldItem>Record.MessageTruncated__c</fieldItem>
+                <identifier>RecordMessageTruncated__cField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.MessageMasked__c}</leftValue>
+                        <leftValue>{!Record.MessageTruncated__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
@@ -1185,6 +1185,23 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.RecordJsonTruncated__c</fieldItem>
+                <identifier>RecordRecordJsonTruncated__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RecordJsonTruncated__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.RecordJson__c</fieldItem>
                 <identifier>RecordRecordJson__cField</identifier>
                 <visibilityRule>
@@ -1360,8 +1377,15 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HttpRequestBody__c</fieldItem>
-                <identifier>RecordHttpRequestBody_cField1</identifier>
+                <fieldItem>Record.HttpRequestBodyMasked__c</fieldItem>
+                <identifier>RecordHttpRequestBodyMasked__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HttpRequestBodyMasked__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -1370,8 +1394,25 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HttpRequestBodyMasked__c</fieldItem>
-                <identifier>RecordHttpRequestBodyMasked_cField1</identifier>
+                <fieldItem>Record.HttpRequestBodyTruncated__c</fieldItem>
+                <identifier>RecordHttpRequestBodyTruncated__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HttpRequestBodyTruncated__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HttpRequestBody__c</fieldItem>
+                <identifier>RecordHttpRequestBody_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-4cea44fd-c4f1-41ed-bada-eace6229f158</name>
@@ -1452,8 +1493,15 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HttpResponseBody__c</fieldItem>
-                <identifier>RecordHttpResponseBody_cField1</identifier>
+                <fieldItem>Record.HttpResponseBodyMasked__c</fieldItem>
+                <identifier>RecordHttpResponseBodyMasked__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HttpResponseBodyMasked__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -1462,8 +1510,25 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HttpResponseBodyMasked__c</fieldItem>
-                <identifier>RecordHttpResponseBodyMasked_cField1</identifier>
+                <fieldItem>Record.HttpResponseBodyTruncated__c</fieldItem>
+                <identifier>RecordHttpResponseBodyTruncated__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HttpResponseBodyTruncated__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HttpResponseBody__c</fieldItem>
+                <identifier>RecordHttpResponseBody_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-1f2467a3-2a30-4aad-ace3-80afc0a517d2</name>
@@ -1635,10 +1700,34 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RestRequestBody__c</fieldItem>
-                <identifier>RecordRestRequestBody_cField</identifier>
+                <fieldItem>Record.RestRequestBodyMasked__c</fieldItem>
+                <identifier>RecordRestRequestBodyMasked__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RestRequestBodyMasked__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RestRequestBodyTruncated__c</fieldItem>
+                <identifier>RecordRestRequestBodyTruncated__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RestRequestBodyTruncated__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -1647,8 +1736,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RestRequestBodyMasked__c</fieldItem>
-                <identifier>RecordRestRequestBodyMasked_cField</identifier>
+                <fieldItem>Record.RestRequestBody__c</fieldItem>
+                <identifier>RecordRestRequestBody_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-6411b37c-0886-4766-a9c5-5ede0e60cb97</name>
@@ -1717,10 +1806,34 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RestResponseBody__c</fieldItem>
-                <identifier>RecordRestResponseBody_cField</identifier>
+                <fieldItem>Record.RestResponseBodyMasked__c</fieldItem>
+                <identifier>RecordRestResponseBodyMasked__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RestResponseBodyMasked__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RestResponseBodyTruncated__c</fieldItem>
+                <identifier>RecordRestResponseBodyTruncated__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RestResponseBodyTruncated__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -1729,8 +1842,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RestResponseBodyMasked__c</fieldItem>
-                <identifier>RecordRestResponseBodyMasked_cField</identifier>
+                <fieldItem>Record.RestResponseBody__c</fieldItem>
+                <identifier>RecordRestResponseBody_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-c8e76a2d-dfaa-4163-b3cf-bbe5fa9cbec8</name>

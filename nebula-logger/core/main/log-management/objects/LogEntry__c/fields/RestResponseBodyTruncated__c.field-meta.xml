@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RestResponseBodyTruncated__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>Indicates if the text in REST Response Body was truncated due to being too long to fit into the field</inlineHelpText>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>REST Response Body Truncated</label>
+    <securityClassification>Confidential</securityClassification>
+    <type>Checkbox</type>
+</CustomField>
