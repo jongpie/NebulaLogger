@@ -11,10 +11,10 @@
       "postInstallScript": "LoggerInstallHandler",
       "scopeProfiles": true,
       "ancestorVersion": "HIGHEST",
-      "versionNumber": "4.16.0.NEXT",
-      "versionName": "Spring '25 Release",
-      "versionDescription": "View the v4.16.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/16?closed=1",
-      "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases/tag/v4.16.0"
+      "versionNumber": "4.17.0.NEXT",
+      "versionName": "Summer '25 Release",
+      "versionDescription": "View the v4.17.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/17?closed=1",
+      "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases/tag/v4.17.0"
     }
   ],
   "packageAliases": {

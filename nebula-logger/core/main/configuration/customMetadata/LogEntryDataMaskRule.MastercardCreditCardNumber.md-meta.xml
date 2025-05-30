@@ -16,10 +16,10 @@
     </values>
     <values>
         <field>ReplacementRegEx__c</field>
-        <value xsi:type="xsd:string">$1****-****-****-$5</value>
+        <value xsi:type="xsd:string">$1****-****-****-$4</value>
     </values>
     <values>
         <field>SensitiveDataRegEx__c</field>
-        <value xsi:type="xsd:string">(^|[ ])(5\d{3})[- ]*(\d{4})[- ]*(\d{4})[- ]*(\d{4})</value>
+        <value xsi:type="xsd:string">(^|[^0-9])(5[1-5]\d{2}|222[1-9]|22[3-9]\d|2[3-6]\d{2}|27[01]\d|2720)([- ]?)\d{4}\3\d{4}\3(\d{4})(?!\d)</value>
     </values>
 </CustomMetadata>
