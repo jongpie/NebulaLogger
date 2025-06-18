@@ -52,6 +52,8 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 #### `heapSizeMax` → `Integer`
 
+#### `isDataMaskingEnabled` → `Boolean`
+
 #### `mobilePushApexCallsMax` → `Integer`
 
 #### `publishImmediateDmlStatementsMax` → `Integer`
@@ -66,9 +68,19 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 #### `soslSearchesMax` → `Integer`
 
+#### `textField` → `Schema.SObjectField`
+
+#### `textValue` → `String`
+
+#### `wasMasked` → `Boolean`
+
+#### `wasTruncated` → `Boolean`
+
 ---
 
 ### Methods
+
+#### `TextFieldValueCleaner(LoggerSettings__c settings, Schema.SObjectField textField, String originalTextValue)` → `public`
 
 #### `addTag(String tag)` → `LogEntryEventBuilder`
 

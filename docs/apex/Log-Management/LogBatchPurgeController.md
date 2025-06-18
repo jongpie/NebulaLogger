@@ -74,7 +74,7 @@ The instance of `List&lt;PicklistOption&gt;`, containing all picklist options fo
 
 #### `runBatchPurge()` → `String`
 
-execute the logBatchPurger batch with batch size 2000
+Executes the LogBatchPurger batch job with the default batch size
 
 ##### Return
 

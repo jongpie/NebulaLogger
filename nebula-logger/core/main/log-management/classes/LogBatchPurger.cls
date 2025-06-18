@@ -10,7 +10,6 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
-  private static final Integer DEFAULT_BATCH_SIZE = 2000;
   private static final Date LOG_RETENTION_END_DATE = System.today();
   @TestVisible
   private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
@@ -36,10 +35,10 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
   /**
    * @description Returns the default batch size used when running `LogBatchPurger`
-   * @return   The default `Integer` value of `2000`
+   * @return   The `Integer` value configured in the custom metadata record `LoggerParameter.LogBatchPurgerDefaultBatchSize`, or `500` as the default
    */
   public static Integer getDefaultBatchSize() {
-    return DEFAULT_BATCH_SIZE;
+    return LoggerParameter.LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE;
   }
 
   /**

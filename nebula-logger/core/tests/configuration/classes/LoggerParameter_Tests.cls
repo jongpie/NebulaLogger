@@ -103,6 +103,20 @@ private class LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_should_return_constant_value_for_log_batch_purger_default_batch_size() {
+    Integer mockValue = 1234;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+      DeveloperName = 'LogBatchPurgerDefaultBatchSize',
+      Value__c = System.JSON.serialize(mockValue)
+    );
+    LoggerParameter.setMock(mockParameter);
+
+    Integer returnedValue = LoggerParameter.LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE;
+
+    System.Assert.areEqual(mockValue, returnedValue);
+  }
+
+  @IsTest
   static void it_should_return_constant_value_for_normalize_scenario_data() {
     Boolean mockValue = false;
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = System.JSON.serialize(mockValue));
