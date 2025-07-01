@@ -218,6 +218,7 @@
     "Nebula Logger - Core@4.16.0-spring-'25-release": "04t5Y0000015pGyQAI",
     "Nebula Logger - Core@4.16.1-data-masking-&-string-truncation-improvements": "04tKe0000011MXEIA2",
     "Nebula Logger - Core@4.16.2-origin-location-parsing-improvements": "04tKe0000011Mi9IAE",
+    "Nebula Logger - Core@4.16.3-configurable-batch-size-for-logbatchpurger": "04tKe0000011Mr1IAE",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
