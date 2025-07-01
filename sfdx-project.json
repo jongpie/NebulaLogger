@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.16.2.NEXT",
-      "versionName": "Origin Location Parsing Improvements",
-      "versionDescription": "Tweaked how origin location is parsed when External entry point is the first line of a stack trace",
+      "versionNumber": "4.16.3.NEXT",
+      "versionName": "Configurable Batch Size for LogBatchPurger",
+      "versionDescription": "Added new LoggerParameter__mdt record LogBatchPurgerDefaultBatchSize to control the default batch size used by the batchable Apex class LogBatchPurger",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
