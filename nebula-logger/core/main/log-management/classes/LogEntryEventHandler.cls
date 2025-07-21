@@ -738,6 +738,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     public void execute(System.QueueableContext qc) {
+      Logger.setScenario('Nebula Logger: Status API Integration');
       Logger.StatusApiResponse statusApiResponse = Logger.callStatusApi();
 
       if (statusApiResponse == null) {

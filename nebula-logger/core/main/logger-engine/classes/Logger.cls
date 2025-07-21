@@ -3282,6 +3282,14 @@ global with sharing class Logger {
     return finest().setMessage(message);
   }
 
+  public static LogEntryEventBuilder internal(System.LoggingLevel entryLoggingLevel, String message) {
+    setScenario(getSystemMessagesScenario());
+    LogEntryEventBuilder builder = newEntry(entryLoggingLevel, message);
+    endScenario(getSystemMessagesScenario());
+
+    return builder;
+  }
+
   /**
    * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
    * @param  loggingLevel  The logging level to use for the log entry
@@ -3556,6 +3564,10 @@ global with sharing class Logger {
     return currentEntryScenario;
   }
 
+  public static String getSystemMessagesScenario() {
+    return 'Nebula Logger Internal Message';
+  }
+
   /**
    * @description Sets the current scenario, which can be used to identify modules or groupings of  for the current transaction
    * @param  scenario The name to use for the current transaction's scenario
@@ -3571,9 +3583,9 @@ global with sharing class Logger {
       }
     }
 
-    if (String.isNotBlank(scenario) && scenario == currentEntryScenario) {
-      return;
-    }
+    // if (String.isNotBlank(scenario) && scenario == currentEntryScenario) {
+    //   return;
+    // }
 
     currentEntryScenario = scenario;
     orderedScenarios.add(scenario);
@@ -3968,47 +3980,60 @@ global with sharing class Logger {
   }
 
   private static String getSavingLogSystemMessage(String saveMethodName) {
-    String savingLogMessage = 'Logger - Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
-    switch on getCurrentQuiddity() {
-      when ANONYMOUS {
-        savingLogMessage += 'Anonymous Apex';
-      }
-      when AURA, VF {
-        savingLogMessage += 'Aura/Lightning/VF component';
-      }
-      when BATCH_ACS, BATCH_APEX, BATCH_CHUNK_PARALLEL, BATCH_CHUNK_SERIAL {
-        savingLogMessage += 'Apex batch job';
-      }
-      when INVOCABLE_ACTION {
-        savingLogMessage += 'Flow invocation';
-      }
-      when QUEUEABLE {
-        savingLogMessage += 'Apex queueable job';
-      }
-      when REST {
-        savingLogMessage += 'Apex REST callout';
-      }
-      when SCHEDULED {
-        savingLogMessage += 'Scheduled job';
-      }
-      when SYNCHRONOUS {
-        savingLogMessage += 'Apex synchronous DML';
-      }
-      when null {
-        savingLogMessage += 'unknown context';
-      }
-      when else {
-        savingLogMessage += getCurrentQuiddity()?.name();
-      }
-    }
-    savingLogMessage += ', save method is ' + saveMethodName;
-    savingLogMessage +=
-      '. Logger.saveLog() has been called ' +
-      saveLogCallCount +
-      (saveLogCallCount == 1 ? ' time' : ' times') +
-      ' in the current transaction.';
+    // Map<String, Object> saveSystemContext = new Map<String, Object>{
+    //   'numberOfEntries' => LOG_ENTRIES_BUFFER.size(),
+    //   'quiddity' => getCurrentQuiddity()?.name() ?? 'unknown context',
+    //   'saveLogCallCount' => saveLogCallCount,
+    //   'saveMethodName' => saveMethodName
+    // };
+    LogMessage savingLogMessage = new LogMessage(
+      'Logger - Saving {0} log entries via quiddity context {1}, save method is {2}. Logger.saveLog() has been called {3} in the current transaction.',
+      LOG_ENTRIES_BUFFER.size(),
+      getCurrentQuiddity()?.name() ?? 'unknown context',
+      saveMethodName,
+      saveLogCallCount + (saveLogCallCount == 1 ? ' time' : ' times')
+    );
+    // String savingLogMessage = 'Logger - Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
+    // switch on getCurrentQuiddity() {
+    //   when ANONYMOUS {
+    //     savingLogMessage += 'Anonymous Apex';
+    //   }
+    //   when AURA, VF {
+    //     savingLogMessage += 'Aura/Lightning/VF component';
+    //   }
+    //   when BATCH_ACS, BATCH_APEX, BATCH_CHUNK_PARALLEL, BATCH_CHUNK_SERIAL {
+    //     savingLogMessage += 'Apex batch job';
+    //   }
+    //   when INVOCABLE_ACTION {
+    //     savingLogMessage += 'Flow invocation';
+    //   }
+    //   when QUEUEABLE {
+    //     savingLogMessage += 'Apex queueable job';
+    //   }
+    //   when REST {
+    //     savingLogMessage += 'Apex REST callout';
+    //   }
+    //   when SCHEDULED {
+    //     savingLogMessage += 'Scheduled job';
+    //   }
+    //   when SYNCHRONOUS {
+    //     savingLogMessage += 'Apex synchronous DML';
+    //   }
+    //   when null {
+    //     savingLogMessage += 'unknown context';
+    //   }
+    //   when else {
+    //     savingLogMessage += getCurrentQuiddity()?.name();
+    //   }
+    // }
+    // savingLogMessage += ', save method is ' + saveMethodName;
+    // savingLogMessage +=
+    //   '. Logger.saveLog() has been called ' +
+    //   saveLogCallCount +
+    //   (saveLogCallCount == 1 ? ' time' : ' times') +
+    //   ' in the current transaction.';
 
-    return savingLogMessage;
+    return savingLogMessage.getMessage();
   }
 
   // Inner class for saving log entries via a queuable job
@@ -4027,6 +4052,8 @@ global with sharing class Logger {
      * @param queueableContext The context of the current queue, provided by the platform
      */
     global void execute(System.QueueableContext queueableContext) {
+      // TODO fix this so it works when RequireScenarioUsage == true
+      Logger.setScenario('Nebula Logger: Queueable Saver');
       Logger.setAsyncContext(queueableContext);
       LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
     }

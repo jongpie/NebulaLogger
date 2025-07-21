@@ -444,6 +444,19 @@ private class Logger_Tests {
   }
 
   @IsTest
+  static void it_should_set_and_end_scenario_when_same_scenario_is_specified_multiple_times() {
+    System.Assert.isNull(Logger.getScenario());
+    String mockScenario = 'some test scenario for this transaction';
+    System.Assert.areEqual(mockScenario, Logger.getScenario(), 'The mock scenario should have been set as the current scenario');
+
+    Logger.setScenario(mockScenario);
+    Logger.setScenario(mockScenario);
+    Logger.endScenario(mockScenario);
+
+    System.Assert.areEqual(mockScenario, Logger.getScenario(), 'The mock scenario should still be used since setScenario() was called twice');
+  }
+
+  @IsTest
   static void it_should_revert_to_previous_scenario_when_current_scenario_is_ended() {
     System.Assert.isNull(Logger.getScenario());
     String firstMockScenario = 'some test scenario ';
