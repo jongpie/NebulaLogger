@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LogEntryEventStream from 'c/logEntryEventStream';
 import { jestMockPublish } from 'lightning/empApi';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';

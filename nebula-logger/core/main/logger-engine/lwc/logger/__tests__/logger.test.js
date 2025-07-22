@@ -1,7 +1,6 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import FORM_FACTOR from '@salesforce/client/formFactor';
-import { BrowserContext } from '../loggerService';
-import LoggerService from '../loggerService';
+import LoggerService, { BrowserContext } from '../loggerService';
 // Recommended import getLogger & deprecated import createLogger
 import { getLogger, createLogger } from 'c/logger';
 // Legacy markup-based approach

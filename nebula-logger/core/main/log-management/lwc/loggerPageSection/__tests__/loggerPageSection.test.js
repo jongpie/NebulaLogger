@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LoggerPageSection from 'c/loggerPageSection';
 
 describe('c-logger-page-section', () => {
