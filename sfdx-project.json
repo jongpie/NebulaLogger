@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.16.3.NEXT",
-      "versionName": "Configurable Batch Size for LogBatchPurger",
-      "versionDescription": "Added new LoggerParameter__mdt record LogBatchPurgerDefaultBatchSize to control the default batch size used by the batchable Apex class LogBatchPurger",
+      "versionNumber": "4.16.4.NEXT",
+      "versionName": "Bugfix: Logger LWC Initialization Message",
+      "versionDescription": "Fixed issue where the logger LWC initialization message was always being logged, even when JavaScript console logging was disabled via LoggerSettings__c.IsConsoleLoggingEnabled__c",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
