@@ -1,6 +1,7 @@
 import { createElement } from 'lwc';
 import FORM_FACTOR from '@salesforce/client/formFactor';
-import { BrowserContext, enableSystemMessages, disableSystemMessages } from '../loggerService';
+import { BrowserContext } from '../loggerService';
+import LoggerService from '../loggerService';
 // Recommended import getLogger & deprecated import createLogger
 import { getLogger, createLogger } from 'c/logger';
 // Legacy markup-based approach
@@ -47,9 +48,13 @@ const getMarkupLogger = async () => {
 };
 
 describe('logger tests', () => {
-  beforeAll(() => {
-    disableSystemMessages();
+  beforeEach(() => {
     setTimeout = callbackFunction => callbackFunction();
+
+    // Reset the static flags to ensure each test starts with a clean state
+    LoggerService.areSystemMessagesEnabled = false;
+    LoggerService.hasInitialized = false;
+
     // One of logger's features (when enabled) is to auto-call the browser's console
     // so devs can see a log entry easily. But during Jest tests, seeing all of the
     // console statements is... a bit overwhelming, so the global console functions
@@ -60,14 +65,13 @@ describe('logger tests', () => {
     console.info = jest.fn();
     console.debug = jest.fn();
     console.log = jest.fn();
-  });
-  afterEach(() => {
-    jest.clearAllMocks();
+
+    jest.resetAllMocks();
   });
 
   it.each([[createLogger], [getLogger], [getMarkupLogger]])('does not call console functions when console logging is disabled', async loggingFunction => {
-    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS });
-    enableSystemMessages();
+    getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: false });
+    LoggerService.areSystemMessagesEnabled = false;
     const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
 
@@ -87,10 +91,10 @@ describe('logger tests', () => {
     expect(console.log).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console functions when console logging is enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls console functions when console logging is enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    enableSystemMessages();
-    const logger = getLogger();
+    LoggerService.areSystemMessagesEnabled = true;
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
 
     logger.error('some message');
@@ -102,9 +106,6 @@ describe('logger tests', () => {
     logger.finest('some message');
 
     await flushPromises('Resolve async task queue');
-    await flushPromises('Resolve async task queue');
-    await flushPromises('Resolve async task queue');
-    await flushPromises('Resolve async task queue');
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.warn).toHaveBeenCalledTimes(1);
     // console.info is called 2 times: once for logger init, and once for the logger.info() call above
@@ -112,7 +113,7 @@ describe('logger tests', () => {
     const expectedInitializationMessage = 'ℹ️ INFO: logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2);
     // The first 2 args (index 0 & 1) passed to console statements are a 'Nebula Logger' prefix & text formatting
     expect(console.info.mock.calls[0][2]).toBe(expectedInitializationMessage);
-    // console.info is called 4 times: one time each for logger.debug(), logger.fine(), logger.finer(), and logger.finest() calls above
+    // console.debug is called 4 times: one time each for logger.debug(), logger.fine(), logger.finer(), and logger.finest() calls above
     expect(console.debug).toHaveBeenCalledTimes(4);
     // Currently, console.log() isn't used by Nebula Logger
     expect(console.log).toHaveBeenCalledTimes(0);
@@ -234,9 +235,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console.warn for an WARN entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls console.warn for an WARN entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel WARN';
 
@@ -252,9 +253,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls lightning/logger.log for an WARN entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls lightning/logger.log for an WARN entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel WARN';
 
@@ -288,9 +289,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console.info for an INFO entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls console.info for an INFO entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel INFO';
 
@@ -311,9 +312,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls lightning/logger.log for an INFO entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls lightning/logger.log for an INFO entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel INFO';
 
@@ -347,9 +348,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console.debug for an DEBUG entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls console.debug for an DEBUG entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel DEBUG';
 
@@ -365,9 +366,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls lightning/logger.log for an DEBUG entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls lightning/logger.log for an DEBUG entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel DEBUG';
 
@@ -401,9 +402,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console.debug for an FINE entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls console.debug for an FINE entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINE';
 
@@ -419,9 +420,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls lightning/logger.log for an FINE entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls lightning/logger.log for an FINE entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINE';
 
@@ -455,9 +456,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console.debug for an FINER entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls console.debug for an FINER entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINER';
 
@@ -473,9 +474,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls lightning/logger.log for an FINER entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls lightning/logger.log for an FINER entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINER';
 
@@ -509,9 +510,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls console.debug for an FINEST entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls console.debug for an FINEST entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINEST';
 
@@ -527,9 +528,9 @@ describe('logger tests', () => {
     expect(lightningLog).toHaveBeenCalledTimes(0);
   });
 
-  it('calls lightning/logger.log for an FINEST entry when enabled', async () => {
+  it.each([[createLogger], [getLogger], [getMarkupLogger]])('calls lightning/logger.log for an FINEST entry when enabled', async loggingFunction => {
     getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isLightningLoggerEnabled: true });
-    const logger = getLogger();
+    const logger = await loggingFunction();
     await flushPromises('Resolve async task queue');
     const message = 'component log entry with loggingLevel FINEST';
 

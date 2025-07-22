@@ -26,16 +26,6 @@ const LOGGING_LEVEL_EMOJIS = {
   FINEST: '🌟'
 };
 
-let areSystemMessagesEnabled = true;
-
-export function enableSystemMessages() {
-  areSystemMessagesEnabled = true;
-}
-
-export function disableSystemMessages() {
-  areSystemMessagesEnabled = false;
-}
-
 export class BrowserContext {
   address = window.location.href;
   formFactor = FORM_FACTOR;
@@ -47,6 +37,7 @@ export class BrowserContext {
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 export default class LoggerService {
+  static areSystemMessagesEnabled = true;
   static hasInitialized = false;
 
   #componentFieldToValue = {};
@@ -165,13 +156,10 @@ export default class LoggerService {
           userLoggingLevel: Object.freeze(retrievedSettings.userLoggingLevel)
         });
 
-        if (areSystemMessagesEnabled && !LoggerService.hasInitialized) {
-          LoggerService.hasInitialized = true;
-
-          if (this.#settings.isConsoleLoggingEnabled) {
-            this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));
-          }
+        if (!LoggerService.hasInitialized && LoggerService.areSystemMessagesEnabled && this.#settings.isConsoleLoggingEnabled) {
+          this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));
         }
+        LoggerService.hasInitialized = true;
       } catch (error) {
         /* eslint-disable-next-line no-console */
         console.error(error);
