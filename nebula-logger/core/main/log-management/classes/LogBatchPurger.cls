@@ -165,11 +165,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
    * @return                  The same instance of `LogBatchPurger`, useful for chaining methods
    */
   public LogBatchPurger setChainedBatchSize(Integer chainedBatchSize) {
-    if (chainedBatchSize != null) {
-      this.chainedBatchSize = chainedBatchSize;
-    } else {
-      this.chainedBatchSize = getDefaultBatchSize();
-    }
+    this.chainedBatchSize = chainedBatchSize ?? LogBatchPurger.getDefaultBatchSize();
+
     return this;
   }
 

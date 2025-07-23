@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LogViewer from 'c/logViewer';
 import getLog from '@salesforce/apex/LogViewerController.getLog';
 

@@ -1,5 +1,5 @@
 // UI
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LoggerSettings from 'c/loggerSettings';
 
 // LoggerSettings__c metadata

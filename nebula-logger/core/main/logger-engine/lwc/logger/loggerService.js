@@ -10,7 +10,7 @@ import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
-const CURRENT_VERSION_NUMBER = 'v4.16.3';
+const CURRENT_VERSION_NUMBER = 'v4.16.4';
 
 const CONSOLE_OUTPUT_CONFIG = {
   messagePrefix: `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `,
@@ -26,16 +26,6 @@ const LOGGING_LEVEL_EMOJIS = {
   FINEST: '🌟'
 };
 
-let areSystemMessagesEnabled = true;
-
-export function enableSystemMessages() {
-  areSystemMessagesEnabled = true;
-}
-
-export function disableSystemMessages() {
-  areSystemMessagesEnabled = false;
-}
-
 export class BrowserContext {
   address = window.location.href;
   formFactor = FORM_FACTOR;
@@ -47,6 +37,7 @@ export class BrowserContext {
 
 /* eslint-disable @lwc/lwc/no-dupe-class-members */
 export default class LoggerService {
+  static areSystemMessagesEnabled = true;
   static hasInitialized = false;
 
   #componentFieldToValue = {};
@@ -57,12 +48,6 @@ export default class LoggerService {
 
   constructor() {
     this._loadSettingsFromServer();
-
-    if (areSystemMessagesEnabled && !LoggerService.hasInitialized) {
-      this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));
-
-      LoggerService.hasInitialized = true;
-    }
   }
 
   // TODO deprecate? Or make it async?
@@ -170,6 +155,11 @@ export default class LoggerService {
           supportedLoggingLevels: Object.freeze(retrievedSettings.supportedLoggingLevels),
           userLoggingLevel: Object.freeze(retrievedSettings.userLoggingLevel)
         });
+
+        if (!LoggerService.hasInitialized && LoggerService.areSystemMessagesEnabled && this.#settings.isConsoleLoggingEnabled) {
+          this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));
+        }
+        LoggerService.hasInitialized = true;
       } catch (error) {
         /* eslint-disable-next-line no-console */
         console.error(error);
@@ -183,10 +173,12 @@ export default class LoggerService {
 
   _newEntry(loggingLevel, message, originStackTraceError) {
     originStackTraceError = originStackTraceError ?? new Error();
+
     const logEntryBuilder = new LogEntryEventBuilder(loggingLevel, new BrowserContext())
       .parseStackTrace(originStackTraceError)
       .setMessage(message)
       .setScenario(this.#scenario);
+
     const logEntry = logEntryBuilder.getComponentLogEntry();
     Object.assign(logEntry.fieldToValue, this.#componentFieldToValue);
 

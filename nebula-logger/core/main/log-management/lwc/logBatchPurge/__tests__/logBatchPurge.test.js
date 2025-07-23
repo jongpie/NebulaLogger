@@ -1,5 +1,5 @@
 // UI
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LightningConfirm from 'lightning/confirm';
 import logBatchPurge from 'c/logBatchPurge';
 import { when } from 'jest-when';
