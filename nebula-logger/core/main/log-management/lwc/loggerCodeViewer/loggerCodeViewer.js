@@ -8,156 +8,79 @@ import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import loggerStaticResources from '@salesforce/resourceUrl/LoggerResources';
 
 export default class LoggerCodeViewer extends LightningElement {
-  _code;
-  _language;
-  _startingLineNumber;
-  _targetLineNumber;
+  @api code;
+  @api language;
+  @api startingLineNumber;
+  @api targetLineNumber;
 
   isLoaded = false;
+
   _Prism;
-
-  @api
-  get code() {
-    return this._code;
-  }
-  set code(value) {
-    this._code = value;
-    if (this.isLoaded) {
-      this._renderCode();
-    }
-  }
-
-  @api
-  get language() {
-    return this._language;
-  }
-  set language(value) {
-    this._language = value;
-    if (this.isLoaded) {
-      this._renderCode();
-    }
-  }
-
-  @api
-  get startingLineNumber() {
-    return this._startingLineNumber;
-  }
-  set startingLineNumber(value) {
-    this._startingLineNumber = value;
-    if (this.isLoaded) {
-      this._renderCode();
-    }
-  }
-
-  @api
-  get targetLineNumber() {
-    return this._targetLineNumber;
-  }
-  set targetLineNumber(value) {
-    this._targetLineNumber = value;
-    if (this.isLoaded) {
-      this._renderCode();
-    }
-  }
 
   async renderedCallback() {
     if (this.isLoaded) {
       return;
     }
 
-    try {
-      await Promise.all([loadStyle(this, loggerStaticResources + '/prism.css'), loadScript(this, loggerStaticResources + '/prism.js')]);
+    await Promise.all([loadStyle(this, loggerStaticResources + '/prism.css'), loadScript(this, loggerStaticResources + '/prism.js')]);
 
-      // eslint-disable-next-line no-undef
-      this._Prism = Prism;
-
-      this._renderCode();
-      this.isLoaded = true;
-    } catch (error) {
-      console.error('Error loading Prism.js:', error);
-    }
-  }
-
-  _renderCode() {
     const container = this.template.querySelector('.prism-viewer');
-    if (!container) return;
-
-    // Clear any existing content
-    container.innerHTML = '';
-
-    // Create the pre element with proper attributes for line highlighting
-    const preElement = document.createElement('pre');
-    preElement.setAttribute('data-start', this.startingLineNumber || 1);
-
-    // Set line highlighting attributes
-    if (this.targetLineNumber) {
-      preElement.setAttribute('data-line', this.targetLineNumber);
-      preElement.setAttribute('data-line-offset', this.targetLineNumber);
-    }
-
-    // Create the code element
-    const codeElement = document.createElement('code');
-    codeElement.className = `language-${this.language || 'text'}`;
-    codeElement.textContent = this.code || '';
-
-    // Assemble the structure
-    preElement.appendChild(codeElement);
-    container.appendChild(preElement);
-
-    // Use multiple timing strategies to ensure highlighting works
-    this._applyHighlighting(container, preElement);
-  }
-
-  _applyHighlighting(container, preElement) {
-    // Strategy 1: Immediate highlighting
+    // data-line and data-line-offset are effectively the same thing within Prism...
+    // but the core Prism code uses data-start for line numbers,
+    // and the line-highlight plugin uses data-line-offset for highlighting a line number
+    // (╯°□°）╯︵ ┻━┻
+    // eslint-disable-next-line @lwc/lwc/no-inner-html
+    container.innerHTML =
+      `<pre data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
+      `<code class="language-${this.language}">${this.code}</code>` +
+      `</pre>`;
+    // eslint-disable-next-line no-undef
+    this._Prism = Prism;
     if (this._Prism) {
-      this._Prism.highlightAllUnder(container);
+      // For some reason, calling highlightAll() twice is necessary to get the line highlighting to work.
+      // When it's called only once, the line highlighting is not applied (when there is only one instance of the code viewer LWC on the page).
+      //
+      //
+      //
+      // Why? I don't know. (╯‵□′)╯︵┻━┻
+      //
+      //
+      //
+      // Is this a bug in Prism?
+      // Is this a bug in LWC?
+      // Is this a bug in Salesforce?
+      // Is this a bug in the universe?
+      //
+      //
+      //
+      // I don't know.
+      //
+      // I just simply don't know ¯\_(ツ)_/¯
+      //
+      //
+      //
+      // Perhaps there are some things in life that we'll never understand.
+      //
+      //
+      // Things that are simply beyond our comprehension.
+      //
+      //
+      // But I DO know is that (👉ﾟヮﾟ)👉 calling highlightAll() twice in a row 👈(ﾟヮﾟ👈) seems to circumvent the issue.
+      //
+      //
+      // So here we are, calling it twice...
+      //
+      // ...with just 1 extra line of code.....
+      // ........................................
+      // ......................
+      // ...............................
+      // ..............
+      // ........................................and a whole bunch of ridiculous comments about it ^_^
+      this._Prism.highlightAll();
+      // o_O
+      this._Prism.highlightAll();
     }
 
-    // Strategy 2: Delayed highlighting to ensure DOM is ready
-    setTimeout(() => {
-      if (this._Prism) {
-        this._Prism.highlightAllUnder(container);
-
-        // Force line highlighting plugin to work
-        if (this.targetLineNumber && this._Prism.plugins.lineHighlight) {
-          // Trigger the line highlighting plugin manually
-          const highlightFunction = this._Prism.plugins.lineHighlight.highlightLines(preElement);
-          if (typeof highlightFunction === 'function') {
-            highlightFunction();
-          }
-        }
-      }
-    }, 0);
-
-    // Strategy 3: Additional delay for edge cases
-    setTimeout(() => {
-      if (this._Prism) {
-        this._Prism.highlightAllUnder(container);
-
-        // Force a re-render of line highlighting if target line is specified
-        if (this.targetLineNumber && this._Prism.plugins.lineHighlight) {
-          // Trigger line highlighting manually
-          const event = new Event('DOMContentLoaded');
-          document.dispatchEvent(event);
-        }
-      }
-    }, 50);
-
-    // Strategy 4: Final attempt with longer delay for stubborn cases
-    setTimeout(() => {
-      if (this._Prism && this.targetLineNumber) {
-        // Force re-highlighting and ensure line highlighting is applied
-        this._Prism.highlightAllUnder(container);
-
-        // Manually create line highlighting if plugin didn't work
-        if (this._Prism.plugins.lineHighlight) {
-          const highlightFunction = this._Prism.plugins.lineHighlight.highlightLines(preElement);
-          if (typeof highlightFunction === 'function') {
-            highlightFunction();
-          }
-        }
-      }
-    }, 100);
+    this.isLoaded = true;
   }
 }
