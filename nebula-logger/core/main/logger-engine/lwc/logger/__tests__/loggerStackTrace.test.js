@@ -1,15 +1,84 @@
-import LoggerStackTrace from '../loggerStackTrace';
+const LoggerStackTrace = require('../loggerStackTrace').default;
 
-const CHROME_BROWSER_ERROR_DEBUG_MODE = require('./data/chromeBrowserError_debugMode.json');
-const CHROME_BROWSER_ERROR_WITHOUT_DEBUG_MODE = require('./data/chromeBrowserError_withoutDebugMode.json');
-const EDGE_BROWSER_ERROR_DEBUG_MODE = require('./data/edgeBrowserError_debugMode.json');
-const EDGE_BROWSER_ERROR_WITHOUT_DEBUG_MODE = require('./data/edgeBrowserError_withoutDebugMode.json');
-const FIREFOX_BROWSER_ERROR_DEBUG_MODE = require('./data/firefoxBrowserError_debugMode.json');
-const FIREFOX_BROWSER_ERROR_WITHOUT_DEBUG_MODE = require('./data/firefoxBrowserError_withoutDebugMode.json');
-
-// 🔥🔥🔥🔥🔥 Something broke with Chrome stack traces, maybe others?
-// https://github.com/jongpie/NebulaLogger/issues/881
-const FIREFOX_BROWSER_ERROR_DEBUG_MODE_BROKEN = require('./data/firefoxBrowserError_debugMode_broken.json');
+// Define the test data structure organized by Salesforce API version
+const STACK_TRACE_DATA = {
+  v61: {
+    chrome: {
+      debug: {
+        data: require('./data/v61_chrome_debug.json'),
+        expected: {
+          componentName: 'c/loggerChromeLWCEmbedDemo',
+          functionName: 'logInfoExample',
+          metadataType: 'LightningComponentBundle'
+        }
+      },
+      withoutDebug: {
+        data: require('./data/v61_chrome_without_debug.json'),
+        expected: {
+          componentName: 'c/loggerAuraEmbedDemo',
+          functionName: 'saveLogExample',
+          metadataType: 'AuraDefinitionBundle'
+        }
+      }
+    },
+    firefox: {
+      debug: {
+        data: require('./data/v61_firefox_debug.json'),
+        expected: {
+          componentName: 'c/loggerFirefoxLWCImportDemo',
+          functionName: 'logInfoExample',
+          metadataType: 'LightningComponentBundle'
+        }
+      },
+      withoutDebug: {
+        data: require('./data/v61_firefox_without_debug.json'),
+        expected: {
+          componentName: 'c/loggerAuraEmbedDemo',
+          functionName: 'saveLogExample',
+          metadataType: 'AuraDefinitionBundle'
+        }
+      }
+    },
+    edge: {
+      debug: {
+        data: require('./data/v61_edge_debug.json'),
+        expected: {
+          componentName: 'c/loggerEdgeAuraEmbedDemo',
+          functionName: 'saveLogExample',
+          metadataType: 'AuraDefinitionBundle'
+        }
+      },
+      withoutDebug: {
+        data: require('./data/v61_edge_without_debug.json'),
+        expected: {
+          componentName: 'c/loggerAuraEmbedDemo',
+          functionName: 'saveLogExample',
+          metadataType: 'AuraDefinitionBundle'
+        }
+      }
+    }
+  },
+  v64: {
+    firefox: {
+      debug: {
+        data: require('./data/v64_firefox_debug.json'),
+        expected: {
+          componentName: 'c/blahhhhh',
+          functionName: 'logInfoExample',
+          metadataType: 'LightningComponentBundle'
+        }
+      },
+      withoutDebug: {
+        data: require('./data/v64_firefox_without_debug.json'),
+        expected: {
+          componentName: 'c/blahhhhh',
+          functionName: 'TODO get a real one without debug!',
+          metadataType: 'LightningComponentBundle'
+        }
+      }
+    }
+  }
+};
 
 // These tests are very basic (at least for now), but provide validation
 // that the stack trace parsing works as expected.
@@ -47,73 +116,59 @@ describe('logger stack trace parsing tests', () => {
     expect(originStackTrace.metadataType).toBeUndefined();
   });
 
-  it('correctly parses Chrome stack trace when debug mode is enabled', async () => {
+  it('correctly handles non-null error with undefined stack trace', async () => {
+    const originStackTraceError = new Error();
+    originStackTraceError.stack = undefined;
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(CHROME_BROWSER_ERROR_DEBUG_MODE);
+    const originStackTrace = loggerStackTrace.parse(originStackTraceError);
 
-    expect(originStackTrace.componentName).toEqual('c/loggerChromeLWCEmbedDemo');
-    expect(originStackTrace.functionName).toEqual('logInfoExample');
-    expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
+    expect(originStackTrace.componentName).toBeUndefined();
+    expect(originStackTrace.functionName).toBeUndefined();
+    expect(originStackTrace.metadataType).toBeUndefined();
   });
 
-  it('correctly parses Chrome stack trace when debug mode is disabled', async () => {
-    const loggerStackTrace = new LoggerStackTrace();
+  describe('Salesforce API v64', () => {
+    it.each(Object.values(STACK_TRACE_DATA.v64.firefox))('correctly parses Firefox stack trace in debug mode', async testStackTrace => {
+      const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(CHROME_BROWSER_ERROR_WITHOUT_DEBUG_MODE);
+      const originStackTrace = loggerStackTrace.parse(testStackTrace.data);
+      const expected = testStackTrace.expected;
 
-    expect(originStackTrace.componentName).toEqual('c/loggerAuraEmbedDemo');
-    expect(originStackTrace.functionName).toEqual('saveLogExample');
-    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
+      expect(originStackTrace.componentName).toEqual(expected.componentName);
+      expect(originStackTrace.functionName).toEqual(expected.functionName);
+      expect(originStackTrace.metadataType).toEqual(expected.metadataType);
+    });
   });
 
-  it('correctly parses Edge stack trace when debug mode is enabled', async () => {
-    const loggerStackTrace = new LoggerStackTrace();
+  
 
-    const originStackTrace = loggerStackTrace.parse(EDGE_BROWSER_ERROR_DEBUG_MODE);
+  // Dynamic tests organized by Salesforce API version
+  Object.entries(STACK_TRACE_DATA).forEach(([apiVersion, browsers]) => {
+    describe(`Salesforce API ${apiVersion}`, () => {
+      Object.entries(browsers).forEach(([browser, debugModes]) => {
+        describe(`${browser} browser`, () => {
+          const loggerStackTrace = new LoggerStackTrace();
 
-    expect(originStackTrace.componentName).toEqual('c/loggerEdgeAuraEmbedDemo');
-    expect(originStackTrace.functionName).toEqual('saveLogExample');
-    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
-  });
+          it(`correctly parses ${browser} stack trace in debug mode`, () => {
+            const originStackTrace = loggerStackTrace.parse(debugModes.debug.data);
+            const expected = debugModes.debug.expected;
 
-  it('correctly parses Edge stack trace when debug mode is disabled', async () => {
-    const loggerStackTrace = new LoggerStackTrace();
+            expect(originStackTrace.componentName).toEqual(expected.componentName);
+            expect(originStackTrace.functionName).toEqual(expected.functionName);
+            expect(originStackTrace.metadataType).toEqual(expected.metadataType);
+          });
 
-    const originStackTrace = loggerStackTrace.parse(EDGE_BROWSER_ERROR_WITHOUT_DEBUG_MODE);
+          it(`correctly parses ${browser} stack trace without debug mode`, () => {
+            const originStackTrace = loggerStackTrace.parse(debugModes.withoutDebug.data);
+            const expected = debugModes.withoutDebug.expected;
 
-    expect(originStackTrace.componentName).toEqual('c/loggerAuraEmbedDemo');
-    expect(originStackTrace.functionName).toEqual('saveLogExample');
-    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
-  });
-
-  it('correctly parses Firefox stack trace when debug mode is enabled', async () => {
-    const loggerStackTrace = new LoggerStackTrace();
-
-    const originStackTrace = loggerStackTrace.parse(FIREFOX_BROWSER_ERROR_DEBUG_MODE);
-
-    expect(originStackTrace.componentName).toEqual('c/loggerFirefoxLWCImportDemo');
-    expect(originStackTrace.functionName).toEqual('logInfoExample');
-    expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
-  });
-
-  it('handles this weird broken stuff in parses Firefox stack trace when debug mode is enabled', async () => {
-    const loggerStackTrace = new LoggerStackTrace();
-
-    const originStackTrace = loggerStackTrace.parse(FIREFOX_BROWSER_ERROR_DEBUG_MODE_BROKEN);
-
-    expect(originStackTrace.componentName).toEqual('c/blahhhhh');
-    expect(originStackTrace.functionName).toEqual('logInfoExample');
-    expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
-  });
-
-  it('correctly parses Firefox stack trace when debug mode is disabled', async () => {
-    const loggerStackTrace = new LoggerStackTrace();
-
-    const originStackTrace = loggerStackTrace.parse(FIREFOX_BROWSER_ERROR_WITHOUT_DEBUG_MODE);
-
-    expect(originStackTrace.componentName).toEqual('c/loggerAuraEmbedDemo');
-    expect(originStackTrace.functionName).toEqual('saveLogExample');
-    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
+            expect(originStackTrace.componentName).toEqual(expected.componentName);
+            expect(originStackTrace.functionName).toEqual(expected.functionName);
+            expect(originStackTrace.metadataType).toEqual(expected.metadataType);
+          });
+        });
+      });
+    });
   });
 });
