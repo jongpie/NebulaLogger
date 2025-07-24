@@ -133,6 +133,7 @@ var _self = 'undefined' != typeof window ? window : 'undefined' != typeof Worker
           a.hooks.run('before-highlightall', r),
             (r.elements = Array.prototype.slice.apply(r.container.querySelectorAll(r.selector))),
             a.hooks.run('before-all-elements-highlight', r);
+          console.info('>>> elements: ' + r.elements.length, JSON.stringify(r.elements), r.elements);
           for (var i, l = 0; (i = r.elements[l++]); ) a.highlightElement(i, !0 === n, r.callback);
         },
         highlightElement: function (n, t, r) {
@@ -154,8 +155,10 @@ var _self = 'undefined' != typeof window ? window : 'undefined' != typeof Worker
             (a.hooks.run('before-sanity-check', s),
             (o = s.element.parentElement) && 'pre' === o.nodeName.toLowerCase() && !o.hasAttribute('tabindex') && o.setAttribute('tabindex', '0'),
             !s.code)
-          )
+          ) {
+            console.info('>>> sanity check failed, we have all gone insane!!!! ahhhhh! (～￣▽￣)～');
             return a.hooks.run('complete', s), void (r && r.call(s.element));
+          }
           if ((a.hooks.run('before-highlight', s), s.grammar))
             if (t && e.Worker) {
               var c = new Worker(a.filename);
