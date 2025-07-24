@@ -7,6 +7,10 @@ const EDGE_BROWSER_ERROR_WITHOUT_DEBUG_MODE = require('./data/edgeBrowserError_w
 const FIREFOX_BROWSER_ERROR_DEBUG_MODE = require('./data/firefoxBrowserError_debugMode.json');
 const FIREFOX_BROWSER_ERROR_WITHOUT_DEBUG_MODE = require('./data/firefoxBrowserError_withoutDebugMode.json');
 
+// 🔥🔥🔥🔥🔥 Something broke with Chrome stack traces, maybe others?
+// https://github.com/jongpie/NebulaLogger/issues/881
+const FIREFOX_BROWSER_ERROR_DEBUG_MODE_BROKEN = require('./data/firefoxBrowserError_debugMode_broken.json');
+
 // These tests are very basic (at least for now), but provide validation
 // that the stack trace parsing works as expected.
 //
@@ -89,6 +93,16 @@ describe('logger stack trace parsing tests', () => {
     const originStackTrace = loggerStackTrace.parse(FIREFOX_BROWSER_ERROR_DEBUG_MODE);
 
     expect(originStackTrace.componentName).toEqual('c/loggerFirefoxLWCImportDemo');
+    expect(originStackTrace.functionName).toEqual('logInfoExample');
+    expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
+  });
+
+  it('handles this weird broken stuff in parses Firefox stack trace when debug mode is enabled', async () => {
+    const loggerStackTrace = new LoggerStackTrace();
+
+    const originStackTrace = loggerStackTrace.parse(FIREFOX_BROWSER_ERROR_DEBUG_MODE_BROKEN);
+
+    expect(originStackTrace.componentName).toEqual('c/blahhhhh');
     expect(originStackTrace.functionName).toEqual('logInfoExample');
     expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
   });

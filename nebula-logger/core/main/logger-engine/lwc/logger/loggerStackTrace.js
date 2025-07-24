@@ -3,6 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+// 🔥🔥🔥🔥🔥 Something broke with Chrome stack traces, maybe others?
+// https://github.com/jongpie/NebulaLogger/issues/881
+
 /*
 The code below is originally from the project stacktrace.js - also released under the MIT License.
 It provides cross-browser stack trace parsing, which is utilized internally by Nebula Logger
@@ -180,7 +183,7 @@ export default class LoggerStackTrace {
 
   _cleanStackTraceParticle(stackTraceParticle) {
     const lwcModulesFileNamePrefix = 'modules/';
-    if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
+    if (stackTraceParticle.fileName?.includes(lwcModulesFileNamePrefix)) {
       stackTraceParticle.metadataType = 'LightningComponentBundle';
 
       stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
