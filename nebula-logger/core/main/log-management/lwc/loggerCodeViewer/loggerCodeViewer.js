@@ -32,10 +32,13 @@ export default class LoggerCodeViewer extends LightningElement {
     // eslint-disable-next-line @lwc/lwc/no-inner-html
     container.innerHTML =
       `<pre data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
-      `<code class="language-${this.language}">${this.code}</code>` +
+      `<code class="language-${this.language} line-numbers">${this.code}</code>` +
       `</pre>`;
     // eslint-disable-next-line no-undef
     this._Prism = Prism;
+    // Prism.hooks.add('complete', e => {
+    //   console.info('>>> complete', e);
+    // });
     if (this._Prism) {
       // For some reason, calling highlightAll() twice is necessary to get the line highlighting to work.
       // When it's called only once, the line highlighting is not applied (when there is only one instance of the code viewer LWC on the page).
@@ -76,9 +79,11 @@ export default class LoggerCodeViewer extends LightningElement {
       // ...............................
       // ..............
       // ........................................and a whole bunch of ridiculous comments about it ^_^
-      this._Prism.highlightAll();
+      this._Prism.highlightAll(false, () => console.info('>>> made it here 1! '));
+      debugger;
+      // this._Prism.highlightAll(false, () => console.info('>>> made it here 2! '));
       // o_O
-      this._Prism.highlightAll();
+      // this._Prism.highlightAll();
     }
 
     this.isLoaded = true;
