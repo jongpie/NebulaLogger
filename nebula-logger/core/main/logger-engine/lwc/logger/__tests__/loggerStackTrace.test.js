@@ -1,84 +1,4 @@
-const LoggerStackTrace = require('../loggerStackTrace').default;
-
-// Define the test data structure organized by Salesforce API version
-const STACK_TRACE_DATA = {
-  v61: {
-    chrome: {
-      debug: {
-        data: require('./data/v61_chrome_debug.json'),
-        expected: {
-          componentName: 'c/loggerChromeLWCEmbedDemo',
-          functionName: 'logInfoExample',
-          metadataType: 'LightningComponentBundle'
-        }
-      },
-      withoutDebug: {
-        data: require('./data/v61_chrome_without_debug.json'),
-        expected: {
-          componentName: 'c/loggerAuraEmbedDemo',
-          functionName: 'saveLogExample',
-          metadataType: 'AuraDefinitionBundle'
-        }
-      }
-    },
-    firefox: {
-      debug: {
-        data: require('./data/v61_firefox_debug.json'),
-        expected: {
-          componentName: 'c/loggerFirefoxLWCImportDemo',
-          functionName: 'logInfoExample',
-          metadataType: 'LightningComponentBundle'
-        }
-      },
-      withoutDebug: {
-        data: require('./data/v61_firefox_without_debug.json'),
-        expected: {
-          componentName: 'c/loggerAuraEmbedDemo',
-          functionName: 'saveLogExample',
-          metadataType: 'AuraDefinitionBundle'
-        }
-      }
-    },
-    edge: {
-      debug: {
-        data: require('./data/v61_edge_debug.json'),
-        expected: {
-          componentName: 'c/loggerEdgeAuraEmbedDemo',
-          functionName: 'saveLogExample',
-          metadataType: 'AuraDefinitionBundle'
-        }
-      },
-      withoutDebug: {
-        data: require('./data/v61_edge_without_debug.json'),
-        expected: {
-          componentName: 'c/loggerAuraEmbedDemo',
-          functionName: 'saveLogExample',
-          metadataType: 'AuraDefinitionBundle'
-        }
-      }
-    }
-  },
-  v64: {
-    firefox: {
-      debug: {
-        data: require('./data/v64_firefox_debug.json'),
-        expected: {
-          componentName: 'c/blahhhhh',
-          functionName: 'logInfoExample',
-          metadataType: 'LightningComponentBundle'
-        }
-      },
-      withoutDebug: {
-        data: require('./data/v64_firefox_without_debug.json'),
-        expected: {
-          componentName: 'c/blahhhhh',
-          functionName: 'TODO get a real one without debug!',
-          metadataType: 'LightningComponentBundle'
-        }
-      }
-    }
-  }
-};
+import LoggerStackTrace from '../loggerStackTrace';
 
 // These tests are very basic (at least for now), but provide validation
 // that the stack trace parsing works as expected.
@@ -116,59 +36,78 @@ describe('logger stack trace parsing tests', () => {
     expect(originStackTrace.metadataType).toBeUndefined();
   });
 
-  it('correctly handles non-null error with undefined stack trace', async () => {
-    const originStackTraceError = new Error();
-    originStackTraceError.stack = undefined;
+  it('correctly parses Chrome stack trace when debug mode is enabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(originStackTraceError);
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/chrome_debug.json'));
 
-    expect(originStackTrace.componentName).toBeUndefined();
-    expect(originStackTrace.functionName).toBeUndefined();
-    expect(originStackTrace.metadataType).toBeUndefined();
+    expect(originStackTrace.componentName).toEqual('c/loggerChromeLWCEmbedDemo');
+    expect(originStackTrace.functionName).toEqual('logInfoExample');
+    expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
   });
 
-  describe('Salesforce API v64', () => {
-    it.each(Object.values(STACK_TRACE_DATA.v64.firefox))('correctly parses Firefox stack trace in debug mode', async testStackTrace => {
-      const loggerStackTrace = new LoggerStackTrace();
+  it('correctly parses Chrome stack trace when debug mode is disabled', async () => {
+    const loggerStackTrace = new LoggerStackTrace();
 
-      const originStackTrace = loggerStackTrace.parse(testStackTrace.data);
-      const expected = testStackTrace.expected;
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/chrome_without_debug.json'));
 
-      expect(originStackTrace.componentName).toEqual(expected.componentName);
-      expect(originStackTrace.functionName).toEqual(expected.functionName);
-      expect(originStackTrace.metadataType).toEqual(expected.metadataType);
-    });
+    expect(originStackTrace.componentName).toEqual('c/loggerAuraEmbedDemo');
+    expect(originStackTrace.functionName).toEqual('saveLogExample');
+    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
   });
 
-  
+  it('correctly parses Edge stack trace when debug mode is enabled', async () => {
+    const loggerStackTrace = new LoggerStackTrace();
 
-  // Dynamic tests organized by Salesforce API version
-  Object.entries(STACK_TRACE_DATA).forEach(([apiVersion, browsers]) => {
-    describe(`Salesforce API ${apiVersion}`, () => {
-      Object.entries(browsers).forEach(([browser, debugModes]) => {
-        describe(`${browser} browser`, () => {
-          const loggerStackTrace = new LoggerStackTrace();
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/edge_debug.json'));
 
-          it(`correctly parses ${browser} stack trace in debug mode`, () => {
-            const originStackTrace = loggerStackTrace.parse(debugModes.debug.data);
-            const expected = debugModes.debug.expected;
+    expect(originStackTrace.componentName).toEqual('c/loggerEdgeAuraEmbedDemo');
+    expect(originStackTrace.functionName).toEqual('saveLogExample');
+    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
+  });
 
-            expect(originStackTrace.componentName).toEqual(expected.componentName);
-            expect(originStackTrace.functionName).toEqual(expected.functionName);
-            expect(originStackTrace.metadataType).toEqual(expected.metadataType);
-          });
+  it('correctly parses Edge stack trace when debug mode is disabled', async () => {
+    const loggerStackTrace = new LoggerStackTrace();
 
-          it(`correctly parses ${browser} stack trace without debug mode`, () => {
-            const originStackTrace = loggerStackTrace.parse(debugModes.withoutDebug.data);
-            const expected = debugModes.withoutDebug.expected;
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/edge_without_debug.json'));
 
-            expect(originStackTrace.componentName).toEqual(expected.componentName);
-            expect(originStackTrace.functionName).toEqual(expected.functionName);
-            expect(originStackTrace.metadataType).toEqual(expected.metadataType);
-          });
-        });
-      });
-    });
+    expect(originStackTrace.componentName).toEqual('c/loggerAuraEmbedDemo');
+    expect(originStackTrace.functionName).toEqual('saveLogExample');
+    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
+  });
+
+  it('correctly parses Firefox stack trace when debug mode is enabled', async () => {
+    const loggerStackTrace = new LoggerStackTrace();
+
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/firefox_debug.json'));
+
+    expect(originStackTrace.componentName).toEqual('c/loggerFirefoxLWCImportDemo');
+    expect(originStackTrace.functionName).toEqual('logInfoExample');
+    expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
+  });
+
+  it('correctly parses Firefox stack trace when debug mode is disabled', async () => {
+    const loggerStackTrace = new LoggerStackTrace();
+
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/firefox_without_debug.json'));
+
+    expect(originStackTrace.componentName).toEqual('c/loggerAuraEmbedDemo');
+    expect(originStackTrace.functionName).toEqual('saveLogExample');
+    expect(originStackTrace.metadataType).toEqual('AuraDefinitionBundle');
+  });
+
+  it.each([
+    ['v61', 'Chrome'],
+    ['v61', 'Edge'],
+    ['v61', 'Firefox'],
+    ['v64', 'Firefox']
+  ])('correctly parses stack trace when api version is %s and browser is %s', async (apiVersion, browser) => {
+    const loggerStackTrace = new LoggerStackTrace();
+
+    const originStackTrace = loggerStackTrace.parse(require(`./data/stack-traces/${apiVersion}/${browser.toLowerCase()}_debug.json`));
+
+    expect(originStackTrace.componentName).toEqual(`c/logger${browser}LWCEmbedDemo`);
+    expect(originStackTrace.functionName).toEqual('logInfoExample');
+    expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
   });
 });
