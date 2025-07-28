@@ -37,7 +37,7 @@ export default class LoggerCodeViewer extends LightningElement {
   }
 
   _highlightCode() {
-    // For some reason, calling highlightAll() twice is necessary to get the line highlighting to work.
+    // For some reason, calling Prism.highlightAll() twice is necessary (see below) to get the line highlighting to work.
     // When it's called only once, the line highlighting is not applied (when there is only one instance of the code viewer LWC on the page).
     //
     //
@@ -79,9 +79,9 @@ export default class LoggerCodeViewer extends LightningElement {
     //
 
     // eslint-disable-next-line no-undef
-    this._Prism.highlightAll();
+    Prism.highlightAll();
     // o_O
     // eslint-disable-next-line no-undef
-    this._Prism.highlightAll();
+    Prism.highlightAll();
   }
 }
