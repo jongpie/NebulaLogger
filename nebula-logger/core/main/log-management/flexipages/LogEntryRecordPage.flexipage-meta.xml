@@ -686,6 +686,16 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>sectionType</name>
+                    <value>Message</value>
+                </componentInstanceProperties>
+                <componentName>logEntryPageSection</componentName>
+                <identifier>c_logEntryPageSection</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-3a75f17f-589a-49f4-bdec-38f730e94676</value>
                 </componentInstanceProperties>
@@ -1569,6 +1579,26 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>sectionType</name>
+                    <value>HTTP Request</value>
+                </componentInstanceProperties>
+                <componentName>logEntryPageSection</componentName>
+                <identifier>c_logEntryPageSection2</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>sectionType</name>
+                    <value>HTTP Response</value>
+                </componentInstanceProperties>
+                <componentName>logEntryPageSection</componentName>
+                <identifier>c_logEntryPageSection3</identifier>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
