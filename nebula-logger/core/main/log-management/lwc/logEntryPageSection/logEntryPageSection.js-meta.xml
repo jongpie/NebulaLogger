@@ -9,7 +9,7 @@
             <objects>
                 <object>LogEntry__c</object>
             </objects>
-            <property name="sectionType" label="Section Type" required="true" type="String" datasource="Message,Exception,HTTP Request,HTTP Response,Related Record Details" />
+            <property name="sectionType" label="Section Type" required="true" type="String" datasource="Message,Exception,HTTP Request,HTTP Response,Database Result Details,Related Record Details" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
