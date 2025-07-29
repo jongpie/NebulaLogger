@@ -3,12 +3,17 @@ This file is originally from prismjs.com - all credits to that project for Prism
 */
 
 /* PrismJS 1.30.0
-https://prismjs.com/download.html#themes=prism-dark&languages=markup+css+clike+javascript+apex+sql&plugins=line-highlight+line-numbers+show-language+highlight-keywords+toolbar+copy-to-clipboard */
+https://prismjs.com/download#themes=prism-tomorrow&languages=markup+css+clike+javascript+apex+http+javadoclike+json+json5+jsonp+jsstacktrace+sql+typescript&plugins=line-highlight+line-numbers+show-language+toolbar+copy-to-clipboard+download-button */
+/**
+ * prism.js tomorrow night eighties for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/chriskempson/tomorrow-theme
+ * @author Rose Pritchard
+ */
+
 code[class*='language-'],
 pre[class*='language-'] {
-  color: #fff;
-  background: 0 0;
-  text-shadow: 0 -0.1em 0.2em #000;
+  color: #ccc;
+  background: none;
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   font-size: 1em;
   text-align: left;
@@ -17,130 +22,145 @@ pre[class*='language-'] {
   word-break: normal;
   word-wrap: normal;
   line-height: 1.5;
+
   -moz-tab-size: 4;
   -o-tab-size: 4;
   tab-size: 4;
+
   -webkit-hyphens: none;
   -moz-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
 }
-@media print {
-  code[class*='language-'],
-  pre[class*='language-'] {
-    text-shadow: none;
-  }
-}
-:not(pre) > code[class*='language-'],
-/* Commented out for Nebula Logger */
-/* pre[class*='language-'] {
-  background: #4c3f33;
-} */
+
+/* Code blocks */
 pre[class*='language-'] {
   padding: 1em;
   margin: 0.5em 0;
   overflow: auto;
-  /* Commented out + customized for Nebula Logger */
-  /*
-  border: 0.3em solid #7a6651;
-  border-radius: 0.5em;
-  box-shadow: 1px 1px 0.5em #000 inset;
-  */
-  box-shadow: 0px 0px 3em #000 inset;
 }
+
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
+  background: #2d2d2d;
+}
+
+/* Inline code */
 :not(pre) > code[class*='language-'] {
-  padding: 0.15em 0.2em 0.05em;
+  padding: 0.1em;
   border-radius: 0.3em;
-  border: 0.13em solid #7a6651;
-  box-shadow: 1px 1px 0.3em -0.1em #000 inset;
   white-space: normal;
 }
-.token.cdata,
+
 .token.comment,
+.token.block-comment,
+.token.prolog,
 .token.doctype,
-.token.prolog {
-  /* Color changed for Nebula Logger */
-  color: #a8a8a8;
-  /* Original color */
-  /* color: #997f66; */
+.token.cdata {
+  color: #999;
 }
+
 .token.punctuation {
-  opacity: 0.7;
+  color: #ccc;
 }
-.token.namespace {
-  opacity: 0.7;
-}
-.token.boolean,
-.token.constant,
-.token.number,
-.token.property,
-.token.symbol,
-.token.tag {
-  color: #d1939e;
-}
+
+.token.tag,
 .token.attr-name,
-.token.builtin,
-.token.char,
-.token.inserted,
+.token.namespace,
+.token.deleted {
+  color: #e2777a;
+}
+
+.token.function-name {
+  color: #6196cc;
+}
+
+.token.boolean,
+.token.number,
+.token.function {
+  color: #f08d49;
+}
+
+.token.property,
+.token.class-name,
+.token.constant,
+.token.symbol {
+  color: #f8c555;
+}
+
 .token.selector,
-.token.string {
-  color: #bce051;
-}
-.language-css .token.string,
-.style .token.string,
-.token.entity,
-.token.operator,
-.token.url,
-.token.variable {
-  color: #f4b73d;
-}
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-  color: #d1939e;
-}
 .token.important,
-.token.regex {
-  color: #e90;
+.token.atrule,
+.token.keyword,
+.token.builtin {
+  color: #cc99cd;
 }
-.token.bold,
-.token.important {
-  font-weight: 700;
+
+.token.string,
+.token.char,
+.token.attr-value,
+.token.regex,
+.token.variable {
+  color: #7ec699;
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+  color: #67cdcc;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
 }
 .token.italic {
   font-style: italic;
 }
+
 .token.entity {
   cursor: help;
 }
-.token.deleted {
-  color: red;
+
+.token.inserted {
+  color: green;
 }
+
 pre[data-line] {
   position: relative;
   padding: 1em 0 1em 3em;
 }
+
 .line-highlight {
   position: absolute;
   left: 0;
   right: 0;
   padding: inherit 0;
-  margin-top: 1em;
+  margin-top: 1em; /* Same as .prism’s padding-top */
+
   /* Background color customized for Nebula Logger */
   background: hsla(24, 20%, 80%, 0.4);
   /* Original background colors */
-  /* background: hsla(24, 20%, 50%, 0.08);
-  background: linear-gradient(to right, hsla(24, 20%, 50%, 0.1) 70%, hsla(24, 20%, 50%, 0)); */
+  /* background: hsla(24, 20%, 50%,.08);
+	background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0)); */
+
   pointer-events: none;
+
   line-height: inherit;
   white-space: pre;
 }
+
 @media print {
   .line-highlight {
+    /*
+		 * This will prevent browsers from replacing the background color with white.
+		 * It's necessary because the element is layered on top of the displayed code.
+		 */
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
   }
 }
+
 .line-highlight:before,
 .line-highlight[data-end]:after {
   content: attr(data-start);
@@ -150,23 +170,26 @@ pre[data-line] {
   min-width: 1em;
   padding: 0 0.5em;
   background-color: hsla(24, 20%, 50%, 0.4);
-  color: #f4f1ef;
+  color: hsl(24, 20%, 95%);
   font: bold 65%/1.5 sans-serif;
   text-align: center;
   vertical-align: 0.3em;
   border-radius: 999px;
   text-shadow: none;
-  box-shadow: 0 1px #fff;
+  box-shadow: 0 1px white;
 }
+
 .line-highlight[data-end]:after {
   content: attr(data-end);
   top: auto;
   bottom: 0.4em;
 }
-.line-numbers .line-highlight:after,
-.line-numbers .line-highlight:before {
+
+.line-numbers .line-highlight:before,
+.line-numbers .line-highlight:after {
   content: none;
 }
+
 pre[id].linkable-line-numbers span.line-numbers-rows {
   pointer-events: all;
 }
@@ -176,33 +199,39 @@ pre[id].linkable-line-numbers span.line-numbers-rows > span:before {
 pre[id].linkable-line-numbers span.line-numbers-rows > span:hover:before {
   background-color: rgba(128, 128, 128, 0.2);
 }
+
 pre[class*='language-'].line-numbers {
   position: relative;
   padding-left: 3.8em;
   counter-reset: linenumber;
 }
+
 pre[class*='language-'].line-numbers > code {
   position: relative;
   white-space: inherit;
 }
+
 .line-numbers .line-numbers-rows {
   position: absolute;
   pointer-events: none;
   top: 0;
   font-size: 100%;
   left: -3.8em;
-  width: 3em;
+  width: 3em; /* works for line-numbers below 1000 lines */
   letter-spacing: -1px;
   border-right: 1px solid #999;
+
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
+
 .line-numbers-rows > span {
   display: block;
   counter-increment: linenumber;
 }
+
 .line-numbers-rows > span:before {
   content: counter(linenumber);
   color: #999;
@@ -210,9 +239,11 @@ pre[class*='language-'].line-numbers > code {
   padding-right: 0.8em;
   text-align: right;
 }
+
 div.code-toolbar {
   position: relative;
 }
+
 div.code-toolbar > .toolbar {
   position: absolute;
   z-index: 10;
@@ -221,30 +252,38 @@ div.code-toolbar > .toolbar {
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }
+
 div.code-toolbar:hover > .toolbar {
   opacity: 1;
 }
+
+/* Separate line b/c rules are thrown out if selector is invalid.
+   IE11 and old Edge versions don't support :focus-within. */
 div.code-toolbar:focus-within > .toolbar {
   opacity: 1;
 }
+
 div.code-toolbar > .toolbar > .toolbar-item {
   display: inline-block;
 }
+
 div.code-toolbar > .toolbar > .toolbar-item > a {
   cursor: pointer;
 }
+
 div.code-toolbar > .toolbar > .toolbar-item > button {
-  background: 0 0;
+  background: none;
   border: 0;
   color: inherit;
   font: inherit;
   line-height: normal;
   overflow: visible;
   padding: 0;
-  -webkit-user-select: none;
+  -webkit-user-select: none; /* for button */
   -moz-user-select: none;
   -ms-user-select: none;
 }
+
 div.code-toolbar > .toolbar > .toolbar-item > a,
 div.code-toolbar > .toolbar > .toolbar-item > button,
 div.code-toolbar > .toolbar > .toolbar-item > span {
@@ -256,12 +295,13 @@ div.code-toolbar > .toolbar > .toolbar-item > span {
   box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
   border-radius: 0.5em;
 }
-div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+
 div.code-toolbar > .toolbar > .toolbar-item > a:hover,
-div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
 div.code-toolbar > .toolbar > .toolbar-item > button:hover,
-div.code-toolbar > .toolbar > .toolbar-item > span:focus,
-div.code-toolbar > .toolbar > .toolbar-item > span:hover {
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
   color: inherit;
   text-decoration: none;
 }
