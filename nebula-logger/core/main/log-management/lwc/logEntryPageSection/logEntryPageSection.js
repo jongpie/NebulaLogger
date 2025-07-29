@@ -92,8 +92,8 @@ export default class LogEntryPageSection extends LightningElement {
   get sectionConfig() {
     const configs = {
       Message: {
-        title: 'Message',
-        icon: 'utility:message'
+        title: 'Message Details'
+        // icon: 'utility:message'
       },
       Exception: {
         title: 'Exception Details',

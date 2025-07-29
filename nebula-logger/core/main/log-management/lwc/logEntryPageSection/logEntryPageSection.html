@@ -31,14 +31,16 @@
       <span slot="content">
         <lightning-layout multiple-rows vertical-align="start">
           <template for:each={sectionFields} for:item="field">
-            <lightning-layout-item key={field.apiName} size="12" class="slds-m-bottom_medium">
+            <lightning-layout-item key={field.apiName} size="12">
               <div class="slds-form-element">
-                <label class="slds-form-element__label">{field.label}</label>
-                <div class="slds-form-element__control">
-                  <template if:true={field.useCodeViewer}>
-                    <c-logger-code-viewer code={field.value} language={field.codeViewerLanguage} data-id={field.apiName}></c-logger-code-viewer>
-                  </template>
-                  <template if:false={field.useCodeViewer}>
+                <template if:true={field.useCodeViewer}>
+                  <c-logger-code-viewer code={field.value} language={field.codeViewerLanguage} data-id={field.apiName}
+                    ><span slot="title">{field.label}</span></c-logger-code-viewer
+                  >
+                </template>
+                <template if:false={field.useCodeViewer}>
+                  <label class="slds-form-element__label">{field.label}</label>
+                  <div class="slds-form-element__control">
                     <template if:true={field.isLongText}>
                       <lightning-textarea value={field.value} read-only variant="label-hidden" rows="5"></lightning-textarea>
                     </template>
@@ -50,8 +52,8 @@
                         <lightning-formatted-text value={field.value} class="slds-form-element__static"></lightning-formatted-text>
                       </template>
                     </template>
-                  </template>
-                </div>
+                  </div>
+                </template>
               </div>
             </lightning-layout-item>
           </template>
