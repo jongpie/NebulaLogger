@@ -1010,6 +1010,8 @@ global with sharing class LogEntryEventBuilder {
       logEntryEventTemplate.LimitsSoqlQueryLocatorRowsMax__c = CACHED_TRANSACTION_LIMITS.soqlQueryLocatorRowsMax;
       logEntryEventTemplate.LimitsSoqlQueryRowsMax__c = CACHED_TRANSACTION_LIMITS.soqlQueryRowsMax;
       logEntryEventTemplate.LimitsSoslSearchesMax__c = CACHED_TRANSACTION_LIMITS.soslSearchesMax;
+      logEntryEventTemplate.LimitsApexCursorMax__c = CACHED_TRANSACTION_LIMITS.apexCursorMax;
+      logEntryEventTemplate.LimitsFetchCallsOnApexCursorMax__c = CACHED_TRANSACTION_LIMITS.fetchCallOnApexCursorMax;
 
       logEntryEventTemplate.LimitsAggregateQueriesUsed__c = System.Limits.getAggregateQueries();
       logEntryEventTemplate.LimitsAsyncCallsUsed__c = System.Limits.getAsyncCalls();
@@ -1026,6 +1028,8 @@ global with sharing class LogEntryEventBuilder {
       logEntryEventTemplate.LimitsSoqlQueryLocatorRowsUsed__c = System.Limits.getQueryLocatorRows();
       logEntryEventTemplate.LimitsSoqlQueryRowsUsed__c = System.Limits.getQueryRows();
       logEntryEventTemplate.LimitsSoslSearchesUsed__c = System.Limits.getSoslQueries();
+      logEntryEventTemplate.LimitsApexCursorUsed__c = System.Limits.getApexCursorRows();
+      logEntryEventTemplate.LimitsFetchCallsOnApexCursorUsed__c = System.Limits.getFetchCallsOnApexCursor();
 
       // this is the most CPU-intensive Limits call BY FAR, so we gate it behind its own LoggerParameter record
       if (LoggerParameter.STORE_HEAP_SIZE_LIMIT) {
@@ -1418,5 +1422,7 @@ global with sharing class LogEntryEventBuilder {
     public final Integer soqlQueryLocatorRowsMax = System.Limits.getLimitQueryLocatorRows();
     public final Integer soqlQueryRowsMax = System.Limits.getLimitQueryRows();
     public final Integer soslSearchesMax = System.Limits.getLimitSoslQueries();
+    public final Integer apexCursorMax = System.Limits.getLimitApexCursorRows();
+    public final Integer fetchCallOnApexCursorMax = System.Limits.getLimitFetchCallsOnApexCursor();
   }
 }

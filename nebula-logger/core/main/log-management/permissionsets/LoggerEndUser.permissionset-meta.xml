@@ -349,6 +349,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.LimitsApexCursorMax__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.LimitsApexCursorUsed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.LimitsAsyncCallsMax__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -435,6 +445,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.LimitsEmailInvocations__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.LimitsFetchCallsOnApexCursorMax__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.LimitsFetchCallsOnApexCursorUsed__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

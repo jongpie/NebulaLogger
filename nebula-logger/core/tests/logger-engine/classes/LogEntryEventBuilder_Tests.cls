@@ -115,6 +115,8 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(expectedQueryLocatorRows, logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c);
     System.Assert.areEqual(expectedQueryRows, logEntryEvent.LimitsSoqlQueryRowsUsed__c);
     System.Assert.areEqual(System.Limits.getSoslQueries(), logEntryEvent.LimitsSoslSearchesUsed__c);
+    System.Assert.areEqual(System.Limits.getApexCursorRows(), logEntryEvent.LimitsApexCursorUsed__c);
+    System.Assert.areEqual(System.Limits.getFetchCallsOnApexCursor(), logEntryEvent.LimitsFetchCallsOnApexCursorUsed__c);
     System.Assert.areEqual(System.Limits.getLimitAggregateQueries(), logEntryEvent.LimitsAggregateQueriesMax__c);
     System.Assert.areEqual(System.Limits.getLimitAsyncCalls(), logEntryEvent.LimitsAsyncCallsMax__c);
     System.Assert.areEqual(System.Limits.getLimitCallouts(), logEntryEvent.LimitsCalloutsMax__c);
@@ -131,6 +133,8 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(System.Limits.getLimitQueryLocatorRows(), logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c);
     System.Assert.areEqual(System.Limits.getLimitQueryRows(), logEntryEvent.LimitsSoqlQueryRowsMax__c);
     System.Assert.areEqual(System.Limits.getLimitSoslQueries(), logEntryEvent.LimitsSoslSearchesMax__c);
+    System.Assert.areEqual(System.Limits.getLimitApexCursorRows(), logEntryEvent.LimitsApexCursorMax__c);
+    System.Assert.areEqual(System.Limits.getLimitFetchCallsOnApexCursor(), logEntryEvent.LimitsFetchCallsOnApexCursorMax__c);
   }
 
   @IsTest
