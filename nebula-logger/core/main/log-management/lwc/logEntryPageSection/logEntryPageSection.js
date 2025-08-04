@@ -13,9 +13,6 @@ import DATABASE_RESULT_COLLECTION_SIZE_FIELD from '@salesforce/schema/LogEntry__
 import DATABASE_RESULT_COLLECTION_TYPE_FIELD from '@salesforce/schema/LogEntry__c.DatabaseResultCollectionType__c';
 import DATABASE_RESULT_JSON_FIELD from '@salesforce/schema/LogEntry__c.DatabaseResultJson__c';
 import DATABASE_RESULT_TYPE_FIELD from '@salesforce/schema/LogEntry__c.DatabaseResultType__c';
-import EXCEPTION_MESSAGE_FIELD from '@salesforce/schema/LogEntry__c.ExceptionMessage__c';
-import EXCEPTION_STACK_TRACE_FIELD from '@salesforce/schema/LogEntry__c.ExceptionStackTrace__c';
-import EXCEPTION_TYPE_FIELD from '@salesforce/schema/LogEntry__c.ExceptionType__c';
 import HTTP_REQUEST_BODY_FIELD from '@salesforce/schema/LogEntry__c.HttpRequestBody__c';
 import HTTP_REQUEST_COMPRESSED_FIELD from '@salesforce/schema/LogEntry__c.HttpRequestCompressed__c';
 import HTTP_REQUEST_ENDPOINT_ADDRESS_FIELD from '@salesforce/schema/LogEntry__c.HttpRequestEndpointAddress__c';
@@ -27,21 +24,15 @@ import HTTP_RESPONSE_HEADERS_FIELD from '@salesforce/schema/LogEntry__c.HttpResp
 import HTTP_RESPONSE_HEADER_KEYS_FIELD from '@salesforce/schema/LogEntry__c.HttpResponseHeaderKeys__c';
 import HTTP_RESPONSE_STATUS_CODE_FIELD from '@salesforce/schema/LogEntry__c.HttpResponseStatusCode__c';
 import HTTP_RESPONSE_STATUS_FIELD from '@salesforce/schema/LogEntry__c.HttpResponseStatus__c';
-import MESSAGE_FIELD from '@salesforce/schema/LogEntry__c.Message__c';
-import MESSAGE_MASKED_FIELD from '@salesforce/schema/LogEntry__c.MessageMasked__c';
-import MESSAGE_TRUNCATED_FIELD from '@salesforce/schema/LogEntry__c.MessageTruncated__c';
 import RELATED_RECORD_ID_FIELD from '@salesforce/schema/LogEntry__c.RecordId__c';
 import RELATED_RECORD_JSON_FIELD from '@salesforce/schema/LogEntry__c.RecordJson__c';
 import RELATED_RECORD_NAME_FIELD from '@salesforce/schema/LogEntry__c.RecordName__c';
 import RELATED_RECORD_SOBJECT_CLASSIFICATION_FIELD from '@salesforce/schema/LogEntry__c.RecordSObjectClassification__c';
 import RELATED_RECORD_SOBJECT_TYPE_FIELD from '@salesforce/schema/LogEntry__c.RecordSObjectType__c';
 import RELATED_RECORD_COLLECTION_SIZE_FIELD from '@salesforce/schema/LogEntry__c.RecordCollectionSize__c';
-import STACK_TRACE_FIELD from '@salesforce/schema/LogEntry__c.StackTrace__c';
 
 // Define field sets for each section type
 const SECTION_FIELD_SETS = {
-  Message: [MESSAGE_FIELD, MESSAGE_MASKED_FIELD, MESSAGE_TRUNCATED_FIELD, STACK_TRACE_FIELD],
-  Exception: [EXCEPTION_TYPE_FIELD, EXCEPTION_MESSAGE_FIELD, EXCEPTION_STACK_TRACE_FIELD],
   'HTTP Request': [
     HTTP_REQUEST_ENDPOINT_ADDRESS_FIELD,
     HTTP_REQUEST_METHOD_FIELD,
@@ -76,17 +67,13 @@ const SECTION_FIELD_SETS = {
 // Define which fields should use loggerCodeViewer and their language
 const CODE_VIEWER_FIELDS = {
   DatabaseResultJson__c: 'json',
-  ExceptionMessage__c: 'text',
-  ExceptionStackTrace__c: 'apex',
   HttpRequestBody__c: 'json',
   HttpRequestHeaders__c: 'http',
   HttpRequestHeaderKeys__c: 'http',
   HttpResponseBody__c: 'json',
   HttpResponseHeaders__c: 'http',
   HttpResponseHeaderKeys__c: 'http',
-  Message__c: 'text',
-  RecordJson__c: 'json',
-  StackTrace__c: 'apex'
+  RecordJson__c: 'json'
 };
 
 // Function to get the correct field name based on namespace
@@ -120,7 +107,7 @@ function _shouldRenderField(fieldApiName, fieldValue) {
 // Function to check if a field should use code viewer
 function _shouldUseCodeViewer(fieldApiName) {
   const baseFieldName = _getCodeViewerFieldName(fieldApiName);
-  return CODE_VIEWER_FIELDS.hasOwnProperty(baseFieldName);
+  return baseFieldName in CODE_VIEWER_FIELDS;
 }
 
 // Function to get the language for a field
@@ -147,29 +134,21 @@ export default class LogEntryPageSection extends LightningElement {
 
   get sectionConfig() {
     const configs = {
-      Message: {
-        title: 'Message Details',
-        icon: 'utility:news'
-      },
-      Exception: {
-        title: 'Exception Details',
-        icon: 'utility:error'
-      },
       'HTTP Request': {
-        title: 'HTTP Callout Request',
-        icon: 'utility:upload'
+        title: 'HTTP Callout Request'
+        // icon: 'utility:upload'
       },
       'HTTP Response': {
-        title: 'HTTP Callout Response',
-        icon: 'utility:download'
+        title: 'HTTP Callout Response'
+        // icon: 'utility:download'
       },
       'Database Result Details': {
-        title: 'Database Result Details',
-        icon: 'utility:database'
+        title: 'Database Result Details'
+        // icon: 'utility:database'
       },
       'Related Record Details': {
-        title: 'Related Record Details',
-        icon: 'utility:summarydetail'
+        title: 'Related Record Details'
+        // icon: 'utility:summarydetail'
       }
     };
     return configs[this.sectionType] || { title: this.sectionType, icon: 'utility:info' };
@@ -189,13 +168,15 @@ export default class LogEntryPageSection extends LightningElement {
       try {
         this.fieldMetadata = await getSchemaForName({ sobjectApiName: 'LogEntry__c' });
         this.sectionFields = this._buildSectionFields();
-      } catch (error) {
-        console.error('Error loading field metadata:', error);
+      } catch (thrownError) {
+        // eslint-disable-next-line no-console
+        console.error('Error loading field metadata:', thrownError);
         this.sectionFields = this._buildSectionFields();
       }
 
       this.hasLoaded = true;
     } else if (error) {
+      // eslint-disable-next-line no-console
       console.error('Error loading log entry:', error);
       this.hasLoaded = true;
     }
