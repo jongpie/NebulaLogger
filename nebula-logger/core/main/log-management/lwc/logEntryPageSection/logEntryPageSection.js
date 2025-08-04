@@ -40,7 +40,7 @@ import STACK_TRACE_FIELD from '@salesforce/schema/LogEntry__c.StackTrace__c';
 
 // Define field sets for each section type
 const SECTION_FIELD_SETS = {
-  Message: [MESSAGE_FIELD, STACK_TRACE_FIELD, MESSAGE_MASKED_FIELD, MESSAGE_TRUNCATED_FIELD],
+  Message: [MESSAGE_FIELD, MESSAGE_MASKED_FIELD, MESSAGE_TRUNCATED_FIELD, STACK_TRACE_FIELD],
   Exception: [EXCEPTION_TYPE_FIELD, EXCEPTION_MESSAGE_FIELD, EXCEPTION_STACK_TRACE_FIELD],
   'HTTP Request': [
     HTTP_REQUEST_ENDPOINT_ADDRESS_FIELD,
@@ -103,6 +103,20 @@ function _getCodeViewerFieldName(fieldApiName) {
   return baseFieldName + '__c';
 }
 
+function _shouldRenderField(fieldApiName, fieldValue) {
+  switch (fieldApiName) {
+    // For some long textarea fields, only show them if they have a value
+    case 'HttpRequestHeaderKeys__c':
+    case 'HttpRequestHeaders__c':
+    case 'HttpResponseHeaderKeys__c':
+    case 'HttpResponseHeaders__c':
+      return !!fieldValue;
+
+    default:
+      return true;
+  }
+}
+
 // Function to check if a field should use code viewer
 function _shouldUseCodeViewer(fieldApiName) {
   const baseFieldName = _getCodeViewerFieldName(fieldApiName);
@@ -134,8 +148,8 @@ export default class LogEntryPageSection extends LightningElement {
   get sectionConfig() {
     const configs = {
       Message: {
-        title: 'Message Details'
-        // icon: 'utility:message'
+        title: 'Message Details',
+        icon: 'utility:news'
       },
       Exception: {
         title: 'Exception Details',
@@ -155,7 +169,7 @@ export default class LogEntryPageSection extends LightningElement {
       },
       'Related Record Details': {
         title: 'Related Record Details',
-        icon: 'utility:record'
+        icon: 'utility:summarydetail'
       }
     };
     return configs[this.sectionType] || { title: this.sectionType, icon: 'utility:info' };
@@ -194,6 +208,11 @@ export default class LogEntryPageSection extends LightningElement {
       const fieldValue = getFieldValue(this.logEntry, field);
       if (fieldValue !== null && fieldValue !== undefined && fieldValue !== '') {
         const fieldApiName = field.fieldApiName;
+
+        if (!_shouldRenderField(fieldApiName, fieldValue)) {
+          return;
+        }
+
         const shouldUseCodeViewer = _shouldUseCodeViewer(fieldApiName);
         const codeViewerLanguage = shouldUseCodeViewer ? _getCodeViewerLanguage(fieldApiName) : null;
 
