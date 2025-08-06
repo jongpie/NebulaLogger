@@ -424,6 +424,7 @@
         <members>LogEntry__c.LimitsAggregateQueries__c</members>
         <members>LogEntry__c.LimitsApexCursorRowsMax__c</members>
         <members>LogEntry__c.LimitsApexCursorRowsUsed__c</members>
+        <members>LogEntry__c.LimitsApexCursorRows__c</members>
         <members>LogEntry__c.LimitsAsyncCallsMax__c</members>
         <members>LogEntry__c.LimitsAsyncCallsUsed__c</members>
         <members>LogEntry__c.LimitsAsyncCalls__c</members>
@@ -444,6 +445,7 @@
         <members>LogEntry__c.LimitsEmailInvocations__c</members>
         <members>LogEntry__c.LimitsFetchCallsOnApexCursorMax__c</members>
         <members>LogEntry__c.LimitsFetchCallsOnApexCursorUsed__c</members>
+        <members>LogEntry__c.LimitsFetchCallsOnApexCursor__c</members>
         <members>LogEntry__c.LimitsFutureCallsMax__c</members>
         <members>LogEntry__c.LimitsFutureCallsUsed__c</members>
         <members>LogEntry__c.LimitsFutureCalls__c</members>

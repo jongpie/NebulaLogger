@@ -349,12 +349,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.LimitsApexCursorMax__c</field>
+        <field>LogEntry__c.LimitsApexCursorRowsMax__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.LimitsApexCursorUsed__c</field>
+        <field>LogEntry__c.LimitsApexCursorRowsUsed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.LimitsApexCursorRows__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -455,6 +460,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.LimitsFetchCallsOnApexCursorUsed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.LimitsFetchCallsOnApexCursor__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
