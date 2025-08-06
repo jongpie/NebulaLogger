@@ -250,6 +250,32 @@ jobs:
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
 
+      # This is the only place in Nebula Logger's pipeline where the `LoggerCore` test suite runs & the results are sent to Codecov.io.
+      # This is specifically done in the base scratch org, using only the `LoggerCore test` suite, in order to help validate that the core metadata
+      # provides sufficient code coverage for teams that deploy Nebula Logger's metadata directly to their org, instead of installing one of Nebula Logger's 2GP packages.
+      #   1. Many teams cannot use one of the 2GP packages for various reasons, including company policies, security concerns, etc.,
+      #      and being able to deploy the core metadata is something that should be supported.
+      #   2. And even though the pipeline runs the `extra-tests` directory to validate logging works correctly in various types of scratch orgs,
+      #      for teams that are trying to deploy Nebula Logger's metadata, it's critical that the core tests have sufficient code coverage to be deployed to a prod org.
+      #       - In the past, this has not always been the case, resulting in some teams having deployment issues & project delays due to the low code coverage
+      #         that was (formerly) provided by some of the core tests classes.
+      #       - In orgs that do not have some optional Salesforce features enabled/available (e.g., orgs without Experience Cloud, OmniStudio, Platform Cache, etc.),
+      #         the code coverage can be especially low, so using the base scratch org acts
+      #
+
+      # So now only the core test suite's results, from a base scratch org, are used for reporting code coverage, even though the project's overall code coverage
+      # is much higher when using the `extra-tests` directory.
+      - name: 'Get Core Test Suite Code Coverage'
+        run: npm run test:apex:suite:core
+
+      # This is the only scratch org that's used for uploading code coverage
+      - name: 'Upload Apex test code coverage to Codecov.io'
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          flags: Apex
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
         if: ${{ always() }}
@@ -620,32 +646,6 @@ jobs:
 
       - name: 'Create & Install Package Version'
         run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md  -targetusername base_package_subscriber_scratch_org
-
-      # This is the only place in Nebula Logger's pipeline where the `LoggerCore` test suite runs & the results are sent to Codecov.io.
-      # This is specifically done in the base scratch org, using only the `LoggerCore test` suite, in order to help validate that the core metadata
-      # provides sufficient code coverage for teams that deploy Nebula Logger's metadata directly to their org, instead of installing one of Nebula Logger's 2GP packages.
-      #   1. Many teams cannot use one of the 2GP packages for various reasons, including company policies, security concerns, etc.,
-      #      and being able to deploy the core metadata is something that should be supported.
-      #   2. And even though the pipeline runs the `extra-tests` directory to validate logging works correctly in various types of scratch orgs,
-      #      for teams that are trying to deploy Nebula Logger's metadata, it's critical that the core tests have sufficient code coverage to be deployed to a prod org.
-      #       - In the past, this has not always been the case, resulting in some teams having deployment issues & project delays due to the low code coverage
-      #         that was (formerly) provided by some of the core tests classes.
-      #       - In orgs that do not have some optional Salesforce features enabled/available (e.g., orgs without Experience Cloud, OmniStudio, Platform Cache, etc.),
-      #         the code coverage can be especially low, so using the base scratch org acts
-      #
-
-      # So now only the core test suite's results, from a base scratch org, are used for reporting code coverage, even though the project's overall code coverage
-      # is much higher when using the `extra-tests` directory.
-      - name: 'Get Core Test Suite Code Coverage'
-        run: npm run test:apex:suite:core
-
-      # This is the only scratch org that's used for uploading code coverage
-      - name: 'Upload Apex test code coverage to Codecov.io'
-        uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true
-          flags: Apex
-          token: ${{ secrets.CODECOV_TOKEN }}
 
       # The metadata API / sf CLI support deploying metadata using package manifest XML files - see docs for more details:
       #     Docs: https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/manifest_samples.htm
