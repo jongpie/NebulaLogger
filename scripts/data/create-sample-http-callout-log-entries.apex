@@ -5,6 +5,7 @@ System.HttpRequest httpRequest = new System.HttpRequest();
 httpRequest.setEndpoint('https://jsonplaceholder.typicode.com/todos/1');
 httpRequest.setHeader('some-header', 'some value');
 httpRequest.setHeader('another-header', 'another value');
+httpRequest.setHeader('yet-another-header', 'yet another value');
 httpRequest.setMethod('GET');
 
 System.HttpResponse httpResponse = new System.Http().send(httpRequest);
