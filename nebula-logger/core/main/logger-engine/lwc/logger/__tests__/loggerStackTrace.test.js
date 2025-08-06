@@ -8,7 +8,7 @@ import LoggerStackTrace from '../loggerStackTrace';
 // approach could/should eventually be done using stack traces generated from more
 // targets & browsers, but for now we're just testing the parsing logic for
 // Chrome, Edge, and Firefox.
-describe('logger stack trace parsing tests for API v61.0', () => {
+describe('logger stack trace parsing tests', () => {
   afterEach(async () => {
     jest.clearAllMocks();
   });
@@ -39,7 +39,7 @@ describe('logger stack trace parsing tests for API v61.0', () => {
   it('correctly parses Chrome LWC v61.0 stack trace when debug mode is enabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/chrome_lwc_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/chrome_LightningComponentBundle_debugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerLWCEmbedDemo');
     expect(originStackTrace.functionName).toEqual('logInfoExample');
@@ -49,7 +49,7 @@ describe('logger stack trace parsing tests for API v61.0', () => {
   it('correctly parses Chrome LWC v61.0 stack trace when debug mode is disabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/chrome_lwc_without_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/chrome_AuraDefinitionBundle_withoutDebugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerLWCEmbedDemo');
     expect(originStackTrace.functionName).toEqual('logInfoExample');
@@ -59,7 +59,7 @@ describe('logger stack trace parsing tests for API v61.0', () => {
   it('correctly parses Edge LWC v61.0 stack trace when debug mode is enabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/edge_lwc_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/edge_LightningComponentBundle_debugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerEdgeAuraEmbedDemo');
     expect(originStackTrace.functionName).toEqual('saveLogExample');
@@ -69,7 +69,7 @@ describe('logger stack trace parsing tests for API v61.0', () => {
   it('correctly parses Edge LWC v61.0 stack trace when debug mode is disabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/edge_lwc_without_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/edge_LightningComponentBundle_withoutDebugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerAuraEmbedDemo');
     expect(originStackTrace.functionName).toEqual('saveLogExample');
@@ -79,7 +79,7 @@ describe('logger stack trace parsing tests for API v61.0', () => {
   it('correctly parses Firefox LWC v61.0 stack trace when debug mode is enabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/firefox_lwc_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/firefox_LightningComponentBundle_debugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerFirefoxLWCImportDemo');
     expect(originStackTrace.functionName).toEqual('logInfoExample');
@@ -89,7 +89,7 @@ describe('logger stack trace parsing tests for API v61.0', () => {
   it('correctly parses Firefox LWC v61.0 stack trace when debug mode is disabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/firefox_lwc_without_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v61/firefox_LightningComponentBundle_withoutDebugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerFirefoxLWCImportDemo');
     expect(originStackTrace.functionName).toEqual('logInfoExample');
@@ -106,24 +106,18 @@ describe('logger stack trace parsing tests for API v61.0', () => {
   //   const loggerStackTrace = new LoggerStackTrace();
 
   //   const originStackTrace = loggerStackTrace.parse(
-  //     require(`./data/stack-traces/${apiVersion}/${browser.toLowerCase()}_${componentType.toLowerCase()}_debug.json`)
+  //     require(`./data/stack-traces/${apiVersion}/${browser.toLowerCase()}_${componentType.toLowerCase()}_debugMode.json`)
   //   );
 
   //   expect(originStackTrace.componentName).toEqual(`c/logger${browser}EmbedDemo`);
   //   expect(originStackTrace.functionName).toEqual('logInfoExample');
   //   expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
   // });
-});
-
-describe('logger stack trace parsing tests for API v64.0', () => {
-  afterEach(async () => {
-    jest.clearAllMocks();
-  });
 
   it('correctly parses Firefox LWC v64.0 stack trace when debug mode is enabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v64/firefox_lwc_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v64/firefox_LightningComponentBundle_debugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerFirefoxLWCImportDemo');
     expect(originStackTrace.functionName).toEqual('logInfoExample');
@@ -133,7 +127,7 @@ describe('logger stack trace parsing tests for API v64.0', () => {
   it('correctly parses Firefox LWC v64.0 stack trace when debug mode is disabled', async () => {
     const loggerStackTrace = new LoggerStackTrace();
 
-    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v64/firefox_lwc_without_debug.json'));
+    const originStackTrace = loggerStackTrace.parse(require('./data/stack-traces/v64/firefox_LightningComponentBundle_withoutDebugMode.json'));
 
     expect(originStackTrace.componentName).toEqual('c/loggerFirefoxLWCImportDemo');
     expect(originStackTrace.functionName).toEqual('logInfoExample');

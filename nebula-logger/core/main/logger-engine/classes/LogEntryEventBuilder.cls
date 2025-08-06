@@ -608,6 +608,9 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.HttpRequestHeaderKeys__c = formattedHeaderKeysString;
     this.logEntryEvent.HttpRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestHeaders__c, formattedHeadersString);
     this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
+
+    this.logToApexDebug(request, formattedHeaderKeysString, formattedHeadersString);
+
     return this;
   }
 
@@ -912,8 +915,21 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.EntrySaveReason__c = isEntryLoggingLevelEnabled ? ENTRY_SAVE_REASON_LOGGING_LEVEL_MET : ENTRY_SAVE_REASON_OVERRIDE;
   }
 
+  private void logToApexDebug(System.HttpRequest request, String formattedHeaderKeysString, String formattedHeadersString) {
+    Map<String, Object> requestMap = new Map<String, Object>();
+    requestMap.put('body', textCleaner.textValue);
+    requestMap.put('compressed', request.getCompressed());
+    requestMap.put('endpoint', request.getEndpoint());
+    // requestMap.put('headerKeys', formattedHeaderKeysString.split(NEW_LINE_DELIMITER));
+    // requestMap.put('headers', formattedHeadersString.split(NEW_LINE_DELIMITER));
+    requestMap.put('method', request.getMethod());
+
+    System.debug(this.entryLoggingLevel, System.JSON.serializePretty(requestMap));
+  }
+
   @SuppressWarnings('PMD.AvoidDebugStatements')
   private void logToApexDebug(String message) {
+    // TODO change this to no-op when running in the managed package (since calling System.debug() there doesn't work anyway)
     if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false) {
       return;
     }
