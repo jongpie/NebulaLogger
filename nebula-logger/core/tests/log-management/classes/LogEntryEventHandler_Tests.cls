@@ -1503,8 +1503,11 @@ private class LogEntryEventHandler_Tests {
             HttpResponseHeaders__c,
             HttpResponseStatus__c,
             HttpResponseStatusCode__c,
+            Id,
             LimitsAggregateQueriesMax__c,
             LimitsAggregateQueriesUsed__c,
+            LimitsApexCursorMax__c,
+            LimitsApexCursorUsed__c,
             LimitsAsyncCallsMax__c,
             LimitsAsyncCallsUsed__c,
             LimitsCalloutsMax__c,
@@ -1517,6 +1520,8 @@ private class LogEntryEventHandler_Tests {
             LimitsDmlStatementsUsed__c,
             LimitsEmailInvocationsMax__c,
             LimitsEmailInvocationsUsed__c,
+            LimitsFetchCallsOnApexCursorMax__c,
+            LimitsFetchCallsOnApexCursorUsed__c,
             LimitsFutureCallsMax__c,
             LimitsFutureCallsUsed__c,
             LimitsHeapSizeMax__c,
@@ -1533,14 +1538,13 @@ private class LogEntryEventHandler_Tests {
             LimitsSoqlQueryLocatorRowsUsed__c,
             LimitsSoqlQueryRowsMax__c,
             LimitsSoqlQueryRowsUsed__c,
-            LimitsSoslSearchesUsed__c,
             LimitsSoslSearchesMax__c,
+            LimitsSoslSearchesUsed__c,
             Log__c,
             LoggingLevel__c,
             LoggingLevelOrdinal__c,
             Message__c,
             MessageTruncated__c,
-            Id,
             Name,
             OriginLocation__c,
             OriginSourceActionName__c,
@@ -1579,11 +1583,7 @@ private class LogEntryEventHandler_Tests {
             TransactionEntryNumber__c,
             TriggerIsExecuting__c,
             TriggerOperationType__c,
-            TriggerSObjectType__c,
-            LimitsApexCursorUsed__c,
-        	LimitsApexCursorMax__c,
-        	LimitsFetchCallsOnApexCursorUsed__c,
-        	LimitsFetchCallsOnApexCursorMax__c
+            TriggerSObjectType__c
           FROM LogEntries__r
         )
       FROM Log__c
@@ -1778,6 +1778,8 @@ private class LogEntryEventHandler_Tests {
       logEntry.LimitsAggregateQueriesUsed__c,
       'logEntry.LimitsAggregateQueriesUsed__c was not properly set'
     );
+    System.Assert.areEqual(logEntryEvent.LimitsApexCursorUsed__c, logEntry.LimitsApexCursorUsed__c, 'logEntry.LimitsApexCursorUsed__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.LimitsApexCursorMax__c, logEntry.LimitsApexCursorMax__c, 'logEntry.LimitsApexCursorMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c, 'logEntry.LimitsAsyncCallsMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsUsed__c, logEntry.LimitsAsyncCallsUsed__c, 'logEntry.LimitsAsyncCallsUsed__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsCalloutsMax__c, logEntry.LimitsCalloutsMax__c, 'logEntry.LimitsCalloutsMax__c was not properly set');
@@ -1805,6 +1807,16 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.LimitsEmailInvocationsUsed__c,
       logEntry.LimitsEmailInvocationsUsed__c,
       'logEntry.LimitsEmailInvocationsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsFetchCallsOnApexCursorMax__c,
+      logEntry.LimitsFetchCallsOnApexCursorMax__c,
+      'logEntry.LimitsFetchCallsOnApexCursorMax__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsFetchCallsOnApexCursorUsed__c,
+      logEntry.LimitsFetchCallsOnApexCursorUsed__c,
+      'logEntry.LimitsFetchCallsOnApexCursorUsed__c was not properly set'
     );
     System.Assert.areEqual(logEntryEvent.LimitsFutureCallsMax__c, logEntry.LimitsFutureCallsMax__c, 'logEntry.LimitsFutureCallsMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsFutureCallsUsed__c, logEntry.LimitsFutureCallsUsed__c, 'logEntry.LimitsFutureCallsUsed__c was not properly set');
@@ -1868,10 +1880,6 @@ private class LogEntryEventHandler_Tests {
       'logEntry.LimitsSoslSearchesUsed__c was not properly set'
     );
     System.Assert.areEqual(logEntryEvent.LimitsSoslSearchesMax__c, logEntry.LimitsSoslSearchesMax__c, 'logEntry.LimitsSoslSearchesMax__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.LimitsApexCursorUsed__c, logEntry.LimitsApexCursorUsed__c, 'logEntry.LimitsApexCursorUsed__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.LimitsApexCursorMax__c, logEntry.LimitsApexCursorMax__c, 'logEntry.LimitsApexCursorMax__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.LimitsFetchCallsOnApexCursorUsed__c, logEntry.LimitsFetchCallsOnApexCursorUsed__c, 'logEntry.LimitsFetchCallsOnApexCursorUsed__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.LimitsFetchCallsOnApexCursorMax__c, logEntry.LimitsFetchCallsOnApexCursorMax__c, 'logEntry.LimitsFetchCallsOnApexCursorMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoggingLevel__c, logEntry.LoggingLevel__c, 'logEntry.LoggingLevel__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoggingLevelOrdinal__c, logEntry.LoggingLevelOrdinal__c, 'logEntry.LoggingLevelOrdinal__c was not properly set');
     System.Assert.areEqual(logEntryEvent.Message__c, logEntry.Message__c, 'logEntry.Message__c was not properly set');

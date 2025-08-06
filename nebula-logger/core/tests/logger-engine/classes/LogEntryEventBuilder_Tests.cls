@@ -98,6 +98,7 @@ private class LogEntryEventBuilder_Tests {
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 
     System.Assert.areEqual(System.Limits.getAggregateQueries(), logEntryEvent.LimitsAggregateQueriesUsed__c);
+    System.Assert.areEqual(System.Limits.getApexCursorRows(), logEntryEvent.LimitsApexCursorUsed__c);
     System.Assert.areEqual(System.Limits.getAsyncCalls(), logEntryEvent.LimitsAsyncCallsUsed__c);
     System.Assert.areEqual(System.Limits.getCallouts(), logEntryEvent.LimitsCalloutsUsed__c);
     // For some limits, it's impossible to have an accurate expected value, so just validate that it's not null
@@ -105,6 +106,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(System.Limits.getDmlRows(), logEntryEvent.LimitsDmlRowsUsed__c);
     System.Assert.areEqual(System.Limits.getDmlStatements(), logEntryEvent.LimitsDmlStatementsUsed__c);
     System.Assert.areEqual(System.Limits.getEmailInvocations(), logEntryEvent.LimitsEmailInvocationsUsed__c);
+    System.Assert.areEqual(System.Limits.getFetchCallsOnApexCursor(), logEntryEvent.LimitsFetchCallsOnApexCursorUsed__c);
     System.Assert.areEqual(System.Limits.getFutureCalls(), logEntryEvent.LimitsFutureCallsUsed__c);
     // For some limits, it's impossible to have an accurate expected value, so just validate that it's not null
     System.Assert.isNotNull(logEntryEvent.LimitsHeapSizeUsed__c);
@@ -115,15 +117,15 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(expectedQueryLocatorRows, logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c);
     System.Assert.areEqual(expectedQueryRows, logEntryEvent.LimitsSoqlQueryRowsUsed__c);
     System.Assert.areEqual(System.Limits.getSoslQueries(), logEntryEvent.LimitsSoslSearchesUsed__c);
-    System.Assert.areEqual(System.Limits.getApexCursorRows(), logEntryEvent.LimitsApexCursorUsed__c);
-    System.Assert.areEqual(System.Limits.getFetchCallsOnApexCursor(), logEntryEvent.LimitsFetchCallsOnApexCursorUsed__c);
     System.Assert.areEqual(System.Limits.getLimitAggregateQueries(), logEntryEvent.LimitsAggregateQueriesMax__c);
+    System.Assert.areEqual(System.Limits.getLimitApexCursorRows(), logEntryEvent.LimitsApexCursorMax__c);
     System.Assert.areEqual(System.Limits.getLimitAsyncCalls(), logEntryEvent.LimitsAsyncCallsMax__c);
     System.Assert.areEqual(System.Limits.getLimitCallouts(), logEntryEvent.LimitsCalloutsMax__c);
     System.Assert.areEqual(System.Limits.getLimitCpuTime(), logEntryEvent.LimitsCpuTimeMax__c);
     System.Assert.areEqual(System.Limits.getLimitDmlRows(), logEntryEvent.LimitsDmlRowsMax__c);
     System.Assert.areEqual(System.Limits.getLimitDmlStatements(), logEntryEvent.LimitsDmlStatementsMax__c);
     System.Assert.areEqual(System.Limits.getLimitEmailInvocations(), logEntryEvent.LimitsEmailInvocationsMax__c);
+    System.Assert.areEqual(System.Limits.getLimitFetchCallsOnApexCursor(), logEntryEvent.LimitsFetchCallsOnApexCursorMax__c);
     System.Assert.areEqual(System.Limits.getLimitFutureCalls(), logEntryEvent.LimitsFutureCallsMax__c);
     System.Assert.areEqual(System.Limits.getLimitHeapSize(), logEntryEvent.LimitsHeapSizeMax__c);
     System.Assert.areEqual(System.Limits.getLimitMobilePushApexCalls(), logEntryEvent.LimitsMobilePushApexCallsMax__c);
@@ -133,8 +135,6 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(System.Limits.getLimitQueryLocatorRows(), logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c);
     System.Assert.areEqual(System.Limits.getLimitQueryRows(), logEntryEvent.LimitsSoqlQueryRowsMax__c);
     System.Assert.areEqual(System.Limits.getLimitSoslQueries(), logEntryEvent.LimitsSoslSearchesMax__c);
-    System.Assert.areEqual(System.Limits.getLimitApexCursorRows(), logEntryEvent.LimitsApexCursorMax__c);
-    System.Assert.areEqual(System.Limits.getLimitFetchCallsOnApexCursor(), logEntryEvent.LimitsFetchCallsOnApexCursorMax__c);
   }
 
   @IsTest
@@ -167,12 +167,14 @@ private class LogEntryEventBuilder_Tests {
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 
     System.Assert.isNull(logEntryEvent.LimitsAggregateQueriesUsed__c);
+    System.Assert.isNull(logEntryEvent.LimitsApexCursorUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsAsyncCallsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsCalloutsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsCpuTimeUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsDmlRowsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsDmlStatementsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsEmailInvocationsUsed__c);
+    System.Assert.isNull(logEntryEvent.LimitsFetchCallsOnApexCursorUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsFutureCallsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsHeapSizeUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsMobilePushApexCallsUsed__c);
@@ -183,12 +185,14 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(logEntryEvent.LimitsSoqlQueryRowsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsSoslSearchesUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsAggregateQueriesMax__c);
+    System.Assert.isNull(logEntryEvent.LimitsApexCursorMax__c);
     System.Assert.isNull(logEntryEvent.LimitsAsyncCallsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsCalloutsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsCpuTimeMax__c);
     System.Assert.isNull(logEntryEvent.LimitsDmlRowsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsDmlStatementsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsEmailInvocationsMax__c);
+    System.Assert.isNull(logEntryEvent.LimitsFetchCallsOnApexCursorMax__c);
     System.Assert.isNull(logEntryEvent.LimitsFutureCallsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsHeapSizeMax__c);
     System.Assert.isNull(logEntryEvent.LimitsMobilePushApexCallsMax__c);

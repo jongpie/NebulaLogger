@@ -41,26 +41,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <description>Provides read-only access to Nebula Logger&apos;s data &amp; custom features</description>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.LimitsApexCursorMax__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.LimitsApexCursorUsed__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.LimitsFetchCallsOnApexCursorMax__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.LimitsFetchCallsOnApexCursorUsed__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Nebula Logger: Log Viewer</label>
     <objectPermissions>
