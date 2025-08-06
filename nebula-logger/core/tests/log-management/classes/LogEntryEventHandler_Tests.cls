@@ -1506,8 +1506,8 @@ private class LogEntryEventHandler_Tests {
             Id,
             LimitsAggregateQueriesMax__c,
             LimitsAggregateQueriesUsed__c,
-            LimitsApexCursorMax__c,
-            LimitsApexCursorUsed__c,
+            LimitsApexCursorRowsMax__c,
+            LimitsApexCursorRowsUsed__c,
             LimitsAsyncCallsMax__c,
             LimitsAsyncCallsUsed__c,
             LimitsCalloutsMax__c,
@@ -1778,8 +1778,16 @@ private class LogEntryEventHandler_Tests {
       logEntry.LimitsAggregateQueriesUsed__c,
       'logEntry.LimitsAggregateQueriesUsed__c was not properly set'
     );
-    System.Assert.areEqual(logEntryEvent.LimitsApexCursorUsed__c, logEntry.LimitsApexCursorUsed__c, 'logEntry.LimitsApexCursorUsed__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.LimitsApexCursorMax__c, logEntry.LimitsApexCursorMax__c, 'logEntry.LimitsApexCursorMax__c was not properly set');
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorRowsUsed__c,
+      logEntry.LimitsApexCursorRowsUsed__c,
+      'logEntry.LimitsApexCursorRowsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorRowsMax__c,
+      logEntry.LimitsApexCursorRowsMax__c,
+      'logEntry.LimitsApexCursorRowsMax__c was not properly set'
+    );
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c, 'logEntry.LimitsAsyncCallsMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsUsed__c, logEntry.LimitsAsyncCallsUsed__c, 'logEntry.LimitsAsyncCallsUsed__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsCalloutsMax__c, logEntry.LimitsCalloutsMax__c, 'logEntry.LimitsCalloutsMax__c was not properly set');

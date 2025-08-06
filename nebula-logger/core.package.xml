@@ -175,8 +175,8 @@
         <members>LogEntryEvent__e.LimitsAggregateQueriesMax__c</members>
         <members>LogEntryEvent__e.LimitsAggregateQueriesUsed__c</members>
         <members>LogEntryEvent__e.LimitsAggregateQueryMax__c</members>
-        <members>LogEntryEvent__e.LimitsApexCursorMax__c</members>
-        <members>LogEntryEvent__e.LimitsApexCursorUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorRowsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorRowsUsed__c</members>
         <members>LogEntryEvent__e.LimitsAsyncCallsMax__c</members>
         <members>LogEntryEvent__e.LimitsAsyncCallsUsed__c</members>
         <members>LogEntryEvent__e.LimitsCalloutsMax__c</members>
@@ -422,8 +422,8 @@
         <members>LogEntry__c.LimitsAggregateQueriesMax__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesUsed__c</members>
         <members>LogEntry__c.LimitsAggregateQueries__c</members>
-        <members>LogEntry__c.LimitsApexCursorMax__c</members>
-        <members>LogEntry__c.LimitsApexCursorUsed__c</members>
+        <members>LogEntry__c.LimitsApexCursorRowsMax__c</members>
+        <members>LogEntry__c.LimitsApexCursorRowsUsed__c</members>
         <members>LogEntry__c.LimitsAsyncCallsMax__c</members>
         <members>LogEntry__c.LimitsAsyncCallsUsed__c</members>
         <members>LogEntry__c.LimitsAsyncCalls__c</members>

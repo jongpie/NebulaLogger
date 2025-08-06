@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LimitsApexCursorUsed__c</fullName>
+    <fullName>LimitsApexCursorRowsUsed__c</fullName>
     <externalId>false</externalId>
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>Apex Cursor Used</label>
+    <label>Apex Cursor Rows Used</label>
     <precision>10</precision>
     <required>false</required>
     <scale>0</scale>

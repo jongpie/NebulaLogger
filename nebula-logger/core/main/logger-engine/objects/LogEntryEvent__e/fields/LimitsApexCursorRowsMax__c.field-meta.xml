@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LimitsApexCursorMax__c</fullName>
+    <fullName>LimitsApexCursorRowsMax__c</fullName>
     <externalId>false</externalId>
-    <label>Apex Cursor Max</label>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Apex Cursor Rows Max</label>
     <precision>10</precision>
     <required>false</required>
     <scale>0</scale>
-    <trackTrending>false</trackTrending>
     <type>Number</type>
     <unique>false</unique>
 </CustomField>
