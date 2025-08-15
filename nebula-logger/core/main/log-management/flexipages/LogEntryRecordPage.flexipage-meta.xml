@@ -860,6 +860,26 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexCursorFetchCalls__c</fieldItem>
+                <identifier>RecordLimitsApexCursorFetchCalls__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexCursorRows__c</fieldItem>
+                <identifier>RecordLimitsApexCursorRows__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.LimitsAsyncCalls__c</fieldItem>
                 <identifier>RecordLimitsAsyncCalls__cField</identifier>
             </fieldInstance>
@@ -913,7 +933,11 @@
                 <fieldItem>Record.LimitsEmailInvocations__c</fieldItem>
                 <identifier>RecordLimitsEmailInvocations__cField</identifier>
             </fieldInstance>
-        </itemInstances>
+        </itemInstances>        
+        <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -924,10 +948,6 @@
                 <identifier>RecordLimitsFutureCalls__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -2079,6 +2099,10 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-ec9d7630-d727-4e4a-9a1a-3ebabfc68c45</value>

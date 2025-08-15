@@ -98,6 +98,8 @@ private class LogEntryEventBuilder_Tests {
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 
     System.Assert.areEqual(System.Limits.getAggregateQueries(), logEntryEvent.LimitsAggregateQueriesUsed__c);
+    System.Assert.areEqual(System.Limits.getFetchCallsOnApexCursor(), logEntryEvent.LimitsApexCursorFetchCallsUsed__c);
+    System.Assert.areEqual(System.Limits.getApexCursorRows(), logEntryEvent.LimitsApexCursorRowsUsed__c);
     System.Assert.areEqual(System.Limits.getAsyncCalls(), logEntryEvent.LimitsAsyncCallsUsed__c);
     System.Assert.areEqual(System.Limits.getCallouts(), logEntryEvent.LimitsCalloutsUsed__c);
     // For some limits, it's impossible to have an accurate expected value, so just validate that it's not null
@@ -116,6 +118,8 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(expectedQueryRows, logEntryEvent.LimitsSoqlQueryRowsUsed__c);
     System.Assert.areEqual(System.Limits.getSoslQueries(), logEntryEvent.LimitsSoslSearchesUsed__c);
     System.Assert.areEqual(System.Limits.getLimitAggregateQueries(), logEntryEvent.LimitsAggregateQueriesMax__c);
+    System.Assert.areEqual(System.Limits.getLimitFetchCallsOnApexCursor(), logEntryEvent.LimitsApexCursorFetchCallsMax__c);
+    System.Assert.areEqual(System.Limits.getLimitApexCursorRows(), logEntryEvent.LimitsApexCursorRowsMax__c);
     System.Assert.areEqual(System.Limits.getLimitAsyncCalls(), logEntryEvent.LimitsAsyncCallsMax__c);
     System.Assert.areEqual(System.Limits.getLimitCallouts(), logEntryEvent.LimitsCalloutsMax__c);
     System.Assert.areEqual(System.Limits.getLimitCpuTime(), logEntryEvent.LimitsCpuTimeMax__c);
@@ -163,6 +167,8 @@ private class LogEntryEventBuilder_Tests {
     LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true).getLogEntryEvent();
 
     System.Assert.isNull(logEntryEvent.LimitsAggregateQueriesUsed__c);
+    System.Assert.isNull(logEntryEvent.LimitsApexCursorFetchCallsUsed__c);
+    System.Assert.isNull(logEntryEvent.LimitsApexCursorRowsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsAsyncCallsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsCalloutsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsCpuTimeUsed__c);
@@ -179,6 +185,8 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(logEntryEvent.LimitsSoqlQueryRowsUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsSoslSearchesUsed__c);
     System.Assert.isNull(logEntryEvent.LimitsAggregateQueriesMax__c);
+    System.Assert.isNull(logEntryEvent.LimitsApexCursorFetchCallsMax__c);
+    System.Assert.isNull(logEntryEvent.LimitsApexCursorRowsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsAsyncCallsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsCalloutsMax__c);
     System.Assert.isNull(logEntryEvent.LimitsCpuTimeMax__c);
