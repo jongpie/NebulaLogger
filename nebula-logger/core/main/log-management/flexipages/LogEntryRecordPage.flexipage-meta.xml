@@ -860,6 +860,16 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexCursorFetchCalls__c</fieldItem>
+                <identifier>RecordLimitsApexCursorFetchCalls__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.LimitsApexCursorRows__c</fieldItem>
                 <identifier>RecordLimitsApexCursorRows__cField</identifier>
             </fieldInstance>
@@ -923,17 +933,7 @@
                 <fieldItem>Record.LimitsEmailInvocations__c</fieldItem>
                 <identifier>RecordLimitsEmailInvocations__cField</identifier>
             </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.LimitsFetchCallsOnApexCursor__c</fieldItem>
-                <identifier>RecordLimitsFetchCallsOnApexCursor__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
+        </itemInstances>        
         <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
         <type>Facet</type>
     </flexiPageRegions>

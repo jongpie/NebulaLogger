@@ -1506,6 +1506,8 @@ private class LogEntryEventHandler_Tests {
             Id,
             LimitsAggregateQueriesMax__c,
             LimitsAggregateQueriesUsed__c,
+            LimitsApexCursorFetchCallsMax__c,
+            LimitsApexCursorFetchCallsUsed__c,
             LimitsApexCursorRowsMax__c,
             LimitsApexCursorRowsUsed__c,
             LimitsAsyncCallsMax__c,
@@ -1520,8 +1522,6 @@ private class LogEntryEventHandler_Tests {
             LimitsDmlStatementsUsed__c,
             LimitsEmailInvocationsMax__c,
             LimitsEmailInvocationsUsed__c,
-            LimitsFetchCallsOnApexCursorMax__c,
-            LimitsFetchCallsOnApexCursorUsed__c,
             LimitsFutureCallsMax__c,
             LimitsFutureCallsUsed__c,
             LimitsHeapSizeMax__c,
@@ -1779,6 +1779,16 @@ private class LogEntryEventHandler_Tests {
       'logEntry.LimitsAggregateQueriesUsed__c was not properly set'
     );
     System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorFetchCallsMax__c,
+      logEntry.LimitsApexCursorFetchCallsMax__c,
+      'logEntry.LimitsApexCursorFetchCallsMax__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorFetchCallsUsed__c,
+      logEntry.LimitsApexCursorFetchCallsUsed__c,
+      'logEntry.LimitsApexCursorFetchCallsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
       logEntryEvent.LimitsApexCursorRowsUsed__c,
       logEntry.LimitsApexCursorRowsUsed__c,
       'logEntry.LimitsApexCursorRowsUsed__c was not properly set'
@@ -1815,16 +1825,6 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.LimitsEmailInvocationsUsed__c,
       logEntry.LimitsEmailInvocationsUsed__c,
       'logEntry.LimitsEmailInvocationsUsed__c was not properly set'
-    );
-    System.Assert.areEqual(
-      logEntryEvent.LimitsFetchCallsOnApexCursorMax__c,
-      logEntry.LimitsFetchCallsOnApexCursorMax__c,
-      'logEntry.LimitsFetchCallsOnApexCursorMax__c was not properly set'
-    );
-    System.Assert.areEqual(
-      logEntryEvent.LimitsFetchCallsOnApexCursorUsed__c,
-      logEntry.LimitsFetchCallsOnApexCursorUsed__c,
-      'logEntry.LimitsFetchCallsOnApexCursorUsed__c was not properly set'
     );
     System.Assert.areEqual(logEntryEvent.LimitsFutureCallsMax__c, logEntry.LimitsFutureCallsMax__c, 'logEntry.LimitsFutureCallsMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsFutureCallsUsed__c, logEntry.LimitsFutureCallsUsed__c, 'logEntry.LimitsFutureCallsUsed__c was not properly set');

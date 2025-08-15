@@ -175,6 +175,8 @@
         <members>LogEntryEvent__e.LimitsAggregateQueriesMax__c</members>
         <members>LogEntryEvent__e.LimitsAggregateQueriesUsed__c</members>
         <members>LogEntryEvent__e.LimitsAggregateQueryMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorFetchCallsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorFetchCallsUsed__c</members>
         <members>LogEntryEvent__e.LimitsApexCursorRowsMax__c</members>
         <members>LogEntryEvent__e.LimitsApexCursorRowsUsed__c</members>
         <members>LogEntryEvent__e.LimitsAsyncCallsMax__c</members>
@@ -189,8 +191,6 @@
         <members>LogEntryEvent__e.LimitsDmlStatementsUsed__c</members>
         <members>LogEntryEvent__e.LimitsEmailInvocationsMax__c</members>
         <members>LogEntryEvent__e.LimitsEmailInvocationsUsed__c</members>
-        <members>LogEntryEvent__e.LimitsFetchCallsOnApexCursorMax__c</members>
-        <members>LogEntryEvent__e.LimitsFetchCallsOnApexCursorUsed__c</members>
         <members>LogEntryEvent__e.LimitsFutureCallsMax__c</members>
         <members>LogEntryEvent__e.LimitsFutureCallsUsed__c</members>
         <members>LogEntryEvent__e.LimitsHeapSizeMax__c</members>
@@ -422,6 +422,9 @@
         <members>LogEntry__c.LimitsAggregateQueriesMax__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesUsed__c</members>
         <members>LogEntry__c.LimitsAggregateQueries__c</members>
+        <members>LogEntry__c.LimitsApexCursorFetchCallsMax__c</members>
+        <members>LogEntry__c.LimitsApexCursorFetchCallsUsed__c</members>
+        <members>LogEntry__c.LimitsApexCursorFetchCalls__c</members>
         <members>LogEntry__c.LimitsApexCursorRowsMax__c</members>
         <members>LogEntry__c.LimitsApexCursorRowsUsed__c</members>
         <members>LogEntry__c.LimitsApexCursorRows__c</members>
@@ -443,9 +446,6 @@
         <members>LogEntry__c.LimitsEmailInvocationsMax__c</members>
         <members>LogEntry__c.LimitsEmailInvocationsUsed__c</members>
         <members>LogEntry__c.LimitsEmailInvocations__c</members>
-        <members>LogEntry__c.LimitsFetchCallsOnApexCursorMax__c</members>
-        <members>LogEntry__c.LimitsFetchCallsOnApexCursorUsed__c</members>
-        <members>LogEntry__c.LimitsFetchCallsOnApexCursor__c</members>
         <members>LogEntry__c.LimitsFutureCallsMax__c</members>
         <members>LogEntry__c.LimitsFutureCallsUsed__c</members>
         <members>LogEntry__c.LimitsFutureCalls__c</members>

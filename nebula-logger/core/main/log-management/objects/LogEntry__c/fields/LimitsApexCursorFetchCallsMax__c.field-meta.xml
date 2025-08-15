@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LimitsFetchCallsOnApexCursorMax__c</fullName>
+    <fullName>LimitsApexCursorFetchCallsMax__c</fullName>
     <externalId>false</externalId>
-    <label>Fetch Calls On Apex Cursor Max</label>
+    <label>Apex Cursor Fetch Calls Max</label>
     <precision>10</precision>
     <required>false</required>
     <scale>0</scale>
