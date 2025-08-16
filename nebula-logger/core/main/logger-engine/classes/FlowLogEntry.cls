@@ -61,7 +61,7 @@ global inherited sharing class FlowLogEntry {
    * @description Optionally relate the log entry to a particular record ID
    */
   @InvocableVariable(required=false label='(Optional) Record ID')
-  global Id recordId;
+  global String recordId;
 
   /**
    * @description Optionally specify the name to use for the current transaction's scenario
@@ -96,7 +96,9 @@ global inherited sharing class FlowLogEntry {
     List<FlowLogger.LogEntry> shadowLogEntries = new List<FlowLogger.LogEntry>();
     for (FlowLogEntry flowLogEntry : flowLogEntries) {
       FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) System.JSON.deserialize(System.JSON.serialize(flowLogEntry), FlowLogger.LogEntry.class);
-      shadowLogEntry.addToLoggerBuffer()?.setRecordId(flowLogEntry.recordId);
+      if(!String.isBlank(flowLogEntry.recordId)) {
+        shadowLogEntry.addToLoggerBuffer()?.setRecordId(Id.valueOf(flowLogEntry.recordId));
+      }
 
       shadowLogEntries.add(shadowLogEntry);
     }
