@@ -154,4 +154,191 @@ describe('c-logger-home-header', () => {
     expect(navigateArgument.type).toBe('standard__webPage');
     expect(navigateArgument.attributes.url).toBe(`https://github.com/jongpie/NebulaLogger/releases/tag/${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber}`);
   });
+
+  // New test cases to improve coverage
+  it('handles title when loggerVersionNumber is undefined', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit({ ...MOCK_ENVIRONMENT_DETAILS, loggerVersionNumber: undefined });
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
+    expect(headerTitleElement.innerHTML).toBe('Nebula Logger');
+  });
+
+  it('handles enabledPluginsSummary when loggerEnabledPlugins is undefined', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit({ ...MOCK_ENVIRONMENT_DETAILS, loggerEnabledPlugins: undefined });
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    const pluginsSummaryElement = element.shadowRoot.querySelector('[data-id="enabled-plugins-summary"]');
+    expect(pluginsSummaryElement).toBeFalsy();
+  });
+
+  it('handles enabledPluginsSummary when loggerEnabledPlugins is null', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit({ ...MOCK_ENVIRONMENT_DETAILS, loggerEnabledPlugins: null });
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    const pluginsSummaryElement = element.shadowRoot.querySelector('[data-id="enabled-plugins-summary"]');
+    expect(pluginsSummaryElement).toBeFalsy();
+  });
+
+  it('handles enabledPluginsSummary when loggerEnabledPlugins is empty string', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit({ ...MOCK_ENVIRONMENT_DETAILS, loggerEnabledPlugins: '' });
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    const pluginsSummaryElement = element.shadowRoot.querySelector('[data-id="enabled-plugins-summary"]');
+    expect(pluginsSummaryElement).toBeFalsy();
+  });
+
+  it('handles View Status Site button click', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit(MOCK_ENVIRONMENT_DETAILS);
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    // Open modal first
+    const viewEnvironmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
+    viewEnvironmentDetailsButton.click();
+    await Promise.resolve('Render modal');
+
+    const navigationHandler = jest.fn();
+    element.addEventListener('navigate', navigationHandler);
+
+    const viewStatusSiteButton = element.shadowRoot.querySelector('lightning-button[data-id="view-status-site-btn"]');
+    viewStatusSiteButton.click();
+    await Promise.resolve('Resolve navigation');
+
+    expect(navigationHandler).toHaveBeenCalledTimes(1);
+    const navigateArgument = navigationHandler.mock.calls[0][0].detail.pageReference;
+    expect(navigateArgument).toBeTruthy();
+    expect(navigateArgument.type).toBe('standard__webPage');
+    expect(navigateArgument.attributes.url).toBe(`https://status.salesforce.com/instances/${MOCK_ENVIRONMENT_DETAILS.organizationInstanceName}`);
+  });
+
+  it('handles modal close button click', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit(MOCK_ENVIRONMENT_DETAILS);
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    // Open modal first
+    const viewEnvironmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
+    viewEnvironmentDetailsButton.click();
+    await Promise.resolve('Render modal');
+
+    // Verify modal is open
+    let modalElement = element.shadowRoot.querySelector('.slds-modal');
+    expect(modalElement).toBeTruthy();
+
+    // Click close button
+    const closeButton = element.shadowRoot.querySelector('lightning-button[data-id="close-btn"]');
+    closeButton.click();
+    await Promise.resolve('Resolve close button click');
+
+    // Verify modal is closed
+    modalElement = element.shadowRoot.querySelector('.slds-modal');
+    expect(modalElement).toBeFalsy();
+  });
+
+  it('handles modal header close button click', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit(MOCK_ENVIRONMENT_DETAILS);
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    // Open modal first
+    const viewEnvironmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
+    viewEnvironmentDetailsButton.click();
+    await Promise.resolve('Render modal');
+
+    // Verify modal is open
+    let modalElement = element.shadowRoot.querySelector('.slds-modal');
+    expect(modalElement).toBeTruthy();
+
+    // Click header close button
+    const headerCloseButton = element.shadowRoot.querySelector('button.slds-modal__close');
+    headerCloseButton.click();
+    await Promise.resolve('Resolve header close button click');
+
+    // Verify modal is closed
+    modalElement = element.shadowRoot.querySelector('.slds-modal');
+    expect(modalElement).toBeFalsy();
+  });
+
+  it('handles keydown events that are not Escape', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+    getEnvironmentDetails.emit(MOCK_ENVIRONMENT_DETAILS);
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    // Open modal first
+    const viewEnvironmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
+    viewEnvironmentDetailsButton.click();
+    await Promise.resolve('Render modal');
+
+    // Verify modal is open
+    let modalElement = element.shadowRoot.querySelector('.slds-modal');
+    expect(modalElement).toBeTruthy();
+
+    // Send non-Escape keydown event
+    const enterKeyEvent = new KeyboardEvent('keydown', { code: 'Enter' });
+    modalElement.dispatchEvent(enterKeyEvent);
+    await Promise.resolve('Resolve non-escape keydown event');
+
+    // Modal should still be open
+    modalElement = element.shadowRoot.querySelector('.slds-modal');
+    expect(modalElement).toBeTruthy();
+  });
+
+  it('handles wire service with no data gracefully', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+
+    // Emit undefined data
+    getEnvironmentDetails.emit(undefined);
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    // Component should handle undefined data gracefully
+    const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
+    expect(headerTitleElement.innerHTML).toBe('Nebula Logger');
+  });
+
+  it('handles wire service with empty data gracefully', async () => {
+    const element = createElement('c-logger-home-header', {
+      is: LoggerHomeHeader
+    });
+    document.body.appendChild(element);
+
+    // Emit empty data
+    getEnvironmentDetails.emit({});
+    await Promise.resolve('Resolve getEnvironmentDetails()');
+
+    // Component should handle empty data gracefully
+    const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
+    expect(headerTitleElement.innerHTML).toBe('Nebula Logger');
+  });
 });

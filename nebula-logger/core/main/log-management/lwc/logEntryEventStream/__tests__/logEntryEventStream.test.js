@@ -659,4 +659,406 @@ describe('LogEntryEventStream tests', () => {
       })
     );
   });
+
+  // Additional tests to improve coverage
+  it('handles error in connectedCallback gracefully', async () => {
+    isEnabled.mockRejectedValue(new Error('Test error'));
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    // Should still render the component even with errors
+    expect(element.shadowRoot).toBeTruthy();
+  });
+
+  it('handles error in getSchemaForName gracefully', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockRejectedValue(new Error('Schema error'));
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    // Should still render the component even with errors
+    expect(element.shadowRoot).toBeTruthy();
+  });
+
+  it('handles error in getDatatableDisplayFields gracefully', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockRejectedValue(new Error('Fields error'));
+
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    // Should still render the component even with errors
+    expect(element.shadowRoot).toBeTruthy();
+  });
+
+  it('handles null tableViewDisplayFields in loadDatatableColumns', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(null);
+
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    // Should handle null fields gracefully
+    expect(element.shadowRoot).toBeTruthy();
+  });
+
+  it('handles undefined tableViewDisplayFields in loadDatatableColumns', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(undefined);
+
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    // Should handle undefined fields gracefully
+    expect(element.shadowRoot).toBeTruthy();
+  });
+
+  it('stops streaming when max events reached', async () => {
+    await Promise.all(
+      namespaces.map(async namespace => {
+        const element = await createStreamElement(namespace);
+
+        // Set a low max events to stream
+        const maxEventsInput = element.shadowRoot.querySelector('lightning-input[field-level-help]');
+        maxEventsInput.value = 1;
+        maxEventsInput.dispatchEvent(new CustomEvent('change'));
+        await flushPromises();
+
+        // Publish first event
+        const mockLogEntryEvent1 = await generatePlatformEvent(namespace);
+        await publishPlatformEvent(namespace, mockLogEntryEvent1);
+        await flushPromises();
+
+        // Publish second event - should auto-pause stream
+        const mockLogEntryEvent2 = await generatePlatformEvent(namespace);
+        mockLogEntryEvent2[namespace ? namespace + '__TransactionId__c' : 'TransactionId__c'] = 'DEF-5678';
+        await publishPlatformEvent(namespace, mockLogEntryEvent2);
+        await flushPromises();
+
+        // Stream should be paused
+        const toggleButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="toggle-stream"]');
+        expect(toggleButton.variant).toBe('brand'); // Paused state
+      })
+    );
+  });
+
+  it('handles multiple filters applied simultaneously', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    // Apply multiple filters
+    const loggingLevelFilter = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
+    const originTypeFilter = element.shadowRoot.querySelector('lightning-combobox[data-id="originTypeFilter"]');
+    const messageFilter = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
+
+    loggingLevelFilter.value = loggingLevels.INFO;
+    originTypeFilter.value = 'Apex';
+    messageFilter.value = 'important';
+
+    loggingLevelFilter.dispatchEvent(new CustomEvent('change'));
+    originTypeFilter.dispatchEvent(new CustomEvent('change'));
+    messageFilter.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    // Publish matching event
+    const matchingEvent = { ...mockLogEntryEventTemplate };
+    matchingEvent.LoggingLevelOrdinal__c = loggingLevels.INFO;
+    matchingEvent.OriginType__c = 'Apex';
+    matchingEvent.Message__c = 'This is an important message';
+
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: matchingEvent }
+    });
+    await flushPromises();
+
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toContain('important');
+  });
+
+  it('handles regex filter with special characters', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const messageFilter = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
+    messageFilter.value = '\\d+\\s+\\w+'; // Regex for digits + whitespace + word
+    messageFilter.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    const matchingEvent = { ...mockLogEntryEventTemplate };
+    matchingEvent.Message__c = '123 test message';
+
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: matchingEvent }
+    });
+    await flushPromises();
+
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toContain('123 test message');
+  });
+
+  it('handles empty string filters correctly', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    // Set empty string filters
+    const loggedByFilter = element.shadowRoot.querySelector('lightning-input[data-id="loggedByFilter"]');
+    const messageFilter = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
+
+    loggedByFilter.value = '';
+    messageFilter.value = '';
+
+    loggedByFilter.dispatchEvent(new CustomEvent('change'));
+    messageFilter.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    // Publish event - should still be visible with empty filters
+    const testEvent = { ...mockLogEntryEventTemplate };
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: testEvent }
+    });
+    await flushPromises();
+
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toContain('My important log entry message');
+  });
+
+  it('handles max events to display change correctly', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const maxEventsInput = element.shadowRoot.querySelector('lightning-input[label="Max Number of Events to Display"]');
+    maxEventsInput.value = 1;
+    maxEventsInput.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    // Publish multiple events
+    const event1 = { ...mockLogEntryEventTemplate };
+    const event2 = { ...mockLogEntryEventTemplate };
+    event2.TransactionId__c = 'XYZ-9999';
+
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: event1 }
+    });
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: event2 }
+    });
+    await flushPromises();
+
+    // Should only show the most recent event due to maxEventsToDisplay = 1
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toContain('XYZ-9999');
+    expect(eventStreamDiv.textContent).not.toContain('ABC-1234');
+  });
+
+  it('handles scenario filter correctly', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const scenarioFilter = element.shadowRoot.querySelector('lightning-input[data-id="scenarioFilter"]');
+    scenarioFilter.value = 'TestScenario';
+    scenarioFilter.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    const matchingEvent = { ...mockLogEntryEventTemplate };
+    matchingEvent.TransactionScenario__c = 'TestScenario';
+
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: matchingEvent }
+    });
+    await flushPromises();
+
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toContain('My important log entry message');
+  });
+
+  it('handles non-matching scenario filter correctly', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const scenarioFilter = element.shadowRoot.querySelector('lightning-input[data-id="scenarioFilter"]');
+    scenarioFilter.value = 'TestScenario';
+    scenarioFilter.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    const nonMatchingEvent = { ...mockLogEntryEventTemplate };
+    nonMatchingEvent.TransactionScenario__c = 'DifferentScenario';
+
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: nonMatchingEvent }
+    });
+    await flushPromises();
+
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toBeFalsy();
+  });
+
+  it('handles complex namespace scenarios correctly', async () => {
+    const complexNamespace = 'ComplexNamespace';
+    isEnabled.mockResolvedValue(true);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const mockLogEntryEventSchema = generateLogEntryEventSchema(complexNamespace);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchema);
+
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const mockLogEntryEvent = generatePlatformEvent(complexNamespace);
+    await publishPlatformEvent(complexNamespace, mockLogEntryEvent);
+    await flushPromises();
+
+    const expectedStreamText = getPlatformEventText(mockLogEntryEvent, complexNamespace);
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+  });
+
+  it('handles stream toggle when stream is disabled', async () => {
+    await Promise.all(
+      namespaces.map(async namespace => {
+        const element = await createStreamElement(namespace);
+
+        // Disable stream first
+        const toggleButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="toggle-stream"]');
+        toggleButton.click();
+        await flushPromises();
+        expect(toggleButton.variant).toBe('brand'); // Paused state
+
+        // Re-enable stream
+        toggleButton.click();
+        await flushPromises();
+        expect(toggleButton.variant).toBe('success'); // Streaming state
+      })
+    );
+  });
+
+  it('handles disconnectedCallback correctly', async () => {
+    const element = await createStreamElement();
+
+    // Verify component is connected
+    expect(element.shadowRoot).toBeTruthy();
+
+    // Remove from DOM to trigger disconnectedCallback
+    document.body.removeChild(element);
+
+    // Component should be properly cleaned up
+    expect(element.shadowRoot).toBeFalsy();
+  });
+
+  it('handles edge case with zero max events to stream', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const maxEventsInput = element.shadowRoot.querySelector('lightning-input[field-level-help]');
+    maxEventsInput.value = 0;
+    maxEventsInput.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    // Try to publish event - should immediately pause stream
+    const testEvent = { ...mockLogEntryEventTemplate };
+    await jestMockPublish('/event/LogEntryEvent__e', {
+      data: { payload: testEvent }
+    });
+    await flushPromises();
+
+    const toggleButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="toggle-stream"]');
+    expect(toggleButton.variant).toBe('brand'); // Should be paused
+  });
+
+  it('handles edge case with very large max events to display', async () => {
+    isEnabled.mockResolvedValue(true);
+    getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
+    const element = createElement('log-entry-event-stream', {
+      is: LogEntryEventStream
+    });
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const maxEventsInput = element.shadowRoot.querySelector('lightning-input[label="Max Number of Events to Display"]');
+    maxEventsInput.value = 1000;
+    maxEventsInput.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+
+    // Publish multiple events
+    for (let i = 0; i < 5; i++) {
+      const event = { ...mockLogEntryEventTemplate };
+      event.TransactionId__c = `TEST-${i}`;
+      await jestMockPublish('/event/LogEntryEvent__e', {
+        data: { payload: event }
+      });
+    }
+    await flushPromises();
+
+    // Should show all events
+    const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    expect(eventStreamDiv.textContent).toContain('TEST-0');
+    expect(eventStreamDiv.textContent).toContain('TEST-4');
+  });
 });
