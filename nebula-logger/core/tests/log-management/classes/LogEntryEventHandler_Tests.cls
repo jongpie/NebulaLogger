@@ -1603,7 +1603,7 @@ private class LogEntryEventHandler_Tests {
       orgEnvironmentType = 'Production';
     }
 
-    Id logOwnerId = logEntryEvent.LoggedById__c == null ? System.UserInfo.getUserId() : logEntryEvent.LoggedById__c;
+    Id logOwnerId = logEntryEvent.LoggedById__c ?? System.UserInfo.getUserId();
 
     System.Assert.areEqual(logEntryEvent.ApiVersion__c, log.ApiVersion__c, 'log.ApiVersion__c was not properly set');
     System.Assert.areEqual(logEntryEvent.AsyncContextChildJobId__c, log.AsyncContextChildJobId__c, 'log.AsyncContextChildJobId__c was not properly set');
@@ -1611,13 +1611,24 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.AsyncContextTriggerId__c, log.AsyncContextTriggerId__c, 'log.AsyncContextTriggerId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.AsyncContextType__c, log.AsyncContextType__c, 'log.AsyncContextTriggerId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
-    System.Assert.areEqual(
-      logEntryEvent.LoggedByFederationIdentifier__c,
-      log.LoggedByFederationIdentifier__c,
-      'log.LoggedByFederationIdentifier__c was not properly set'
-    );
+    if (LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY) {
+      System.Assert.areEqual(
+        logEntryEvent.LoggedByFederationIdentifier__c,
+        log.LoggedByFederationIdentifier__c,
+        'log.LoggedByFederationIdentifier__c was not properly set'
+      );
+      System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
+      System.Assert.areEqual(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
+      // Profile fields
+      System.Assert.areEqual(
+        logEntryEvent.UserLicenseDefinitionKey__c,
+        log.UserLicenseDefinitionKey__c,
+        'log.UserLicenseDefinitionKey__c was not properly set'
+      );
+      System.Assert.areEqual(logEntryEvent.UserLicenseId__c, log.UserLicenseId__c, 'log.UserLicenseId__c was not properly set');
+      System.Assert.areEqual(logEntryEvent.UserLicenseName__c, log.UserLicenseName__c, 'log.UserLicenseName__c was not properly set');
+    }
     System.Assert.areEqual(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoginDomain__c, log.LoginDomain__c, 'log.LoginDomain__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c, 'log.LoginHistoryId__c was not properly set');
@@ -1629,7 +1640,6 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.ParentSessionId__c, log.ParentSessionId__c, 'log.ParentSessionId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
     System.Assert.areEqual(logEntryEvent.RequestId__c, log.RequestId__c, 'log.RequestId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');
@@ -1657,26 +1667,27 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.UserType__c, log.UserType__c, 'log.UserType__c was not properly set');
 
     // Org fields
-    System.Assert.areEqual(logEntryEvent.OrganizationDomainUrl__c, log.OrganizationDomainUrl__c, 'log.OrganizationDomainUrl__c was not properly set');
-    System.Assert.areEqual(
-      logEntryEvent.OrganizationEnvironmentType__c,
-      log.OrganizationEnvironmentType__c,
-      'log.OrganizationEnvironmentType__c was not properly set'
-    );
-    System.Assert.areEqual(logEntryEvent.OrganizationId__c, log.OrganizationId__c, 'log.OrganizationId__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.OrganizationInstanceName__c, log.OrganizationInstanceName__c, 'log.OrganizationInstanceName__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.OrganizationName__c, log.OrganizationName__c, 'log.OrganizationName__c was not properly set');
-    System.Assert.areEqual(
-      logEntryEvent.OrganizationNamespacePrefix__c,
-      log.OrganizationNamespacePrefix__c,
-      'log.OrganizationNamespacePrefix__c was not properly set'
-    );
-    System.Assert.areEqual(logEntryEvent.OrganizationType__c, log.OrganizationType__c, 'log.OrganizationType__c was not properly set');
-
-    // Profile fields
-    System.Assert.areEqual(logEntryEvent.UserLicenseDefinitionKey__c, log.UserLicenseDefinitionKey__c, 'log.UserLicenseDefinitionKey__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.UserLicenseId__c, log.UserLicenseId__c, 'log.UserLicenseId__c was not properly set');
-    System.Assert.areEqual(logEntryEvent.UserLicenseName__c, log.UserLicenseName__c, 'log.UserLicenseName__c was not properly set');
+    if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY) {
+      System.Assert.areEqual(logEntryEvent.OrganizationDomainUrl__c, log.OrganizationDomainUrl__c, 'log.OrganizationDomainUrl__c was not properly set');
+      System.Assert.areEqual(
+        logEntryEvent.OrganizationEnvironmentType__c,
+        log.OrganizationEnvironmentType__c,
+        'log.OrganizationEnvironmentType__c was not properly set'
+      );
+      System.Assert.areEqual(logEntryEvent.OrganizationId__c, log.OrganizationId__c, 'log.OrganizationId__c was not properly set');
+      System.Assert.areEqual(
+        logEntryEvent.OrganizationInstanceName__c,
+        log.OrganizationInstanceName__c,
+        'log.OrganizationInstanceName__c was not properly set'
+      );
+      System.Assert.areEqual(logEntryEvent.OrganizationName__c, log.OrganizationName__c, 'log.OrganizationName__c was not properly set');
+      System.Assert.areEqual(
+        logEntryEvent.OrganizationNamespacePrefix__c,
+        log.OrganizationNamespacePrefix__c,
+        'log.OrganizationNamespacePrefix__c was not properly set'
+      );
+      System.Assert.areEqual(logEntryEvent.OrganizationType__c, log.OrganizationType__c, 'log.OrganizationType__c was not properly set');
+    }
   }
 
   private static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
