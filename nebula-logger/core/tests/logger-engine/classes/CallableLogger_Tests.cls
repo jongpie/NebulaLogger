@@ -592,6 +592,35 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
+  static void it_adds_new_entry_with_delete_result_and_null_type_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.DeleteResult result = LoggerMockDataCreator.createDatabaseDeleteResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result });
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.isNull(logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_delete_result_and_null_type_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
   static void it_adds_new_entry_with_delete_result_list_when_using_standard_approach() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
     String message = 'some log entry message';
@@ -619,6 +648,36 @@ private class CallableLogger_Tests {
     System.Assert.isNull(logEntryEvent.Tags__c);
     System.Assert.areEqual(
       CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_delete_result_list_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_delete_result_list_and_null_type_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.DeleteResult> resultList = LoggerMockDataCreator.createDatabaseDeleteResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'resultList' => resultList });
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.isNull(logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_delete_result_list_and_null_type_when_using_standard_approach',
       logEntryEvent.OriginLocation__c
     );
     System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
