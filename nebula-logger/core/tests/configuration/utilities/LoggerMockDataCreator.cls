@@ -158,6 +158,21 @@ public class LoggerMockDataCreator {
   }
 
   /**
+   * @description Creates a list of mock instances of `Database.DeleteResult` - mocks are used instead of actual instances
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  numOfResults The number of `Database.DeleteResult` instances to create
+   * @param  isSuccess    Indicates if the generated mocks should have `isSuccess`
+   * @return   The list of mock instances of `Database.DeleteResult`
+   */
+  public static List<Database.DeleteResult> createDatabaseDeleteResultList(Integer numOfResults, Boolean isSuccess) {
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
+    for (Integer i = 0; i < numOfResults; i++) {
+      deleteResults.add(LoggerMockDataCreator.createDatabaseDeleteResult(isSuccess));
+    }
+    return deleteResults;
+  }
+
+  /**
    * @description Creates a mock instance of `Database.EmptyRecycleBinResult` - a mock is used instead of an actual instance
    *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
    *              record ID is automatically included.
@@ -186,6 +201,21 @@ public class LoggerMockDataCreator {
         Database.EmptyRecycleBinResult.class
       );
     }
+  }
+
+  /**
+   * @description Creates a list of mock instances of `Database.EmptyRecycleBinResult` - mocks are used instead of actual
+   *              instances to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  numOfResults The number of `Database.EmptyRecycleBinResult` instances to create
+   * @param  isSuccess    Indicates if the generated mocks should have `isSuccess`
+   * @return   The list of mock instances of `Database.EmptyRecycleBinResult`
+   */
+  public static List<Database.EmptyRecycleBinResult> createDatabaseEmptyRecycleBinResultList(Integer numOfResults, Boolean isSuccess) {
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>();
+    for (Integer i = 0; i < numOfResults; i++) {
+      emptyRecycleBinResults.add(LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(isSuccess));
+    }
+    return emptyRecycleBinResults;
   }
 
   /**
@@ -218,11 +248,26 @@ public class LoggerMockDataCreator {
   }
 
   /**
+   * @description Creates a list of mock instances of `Database.LeadConvertResult` - mocks are used instead of actual instances
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  numOfResults The number of `Database.LeadConvertResult` instances to create
+   * @param  isSuccess    Indicates if the generated mocks should have `isSuccess`
+   * @return   The list of mock instances of `Database.LeadConvertResult`
+   */
+  public static List<Database.LeadConvertResult> createDatabaseLeadConvertResultList(Integer numOfResults, Boolean isSuccess) {
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>();
+    for (Integer i = 0; i < numOfResults; i++) {
+      leadConvertResults.add(LoggerMockDataCreator.createDatabaseLeadConvertResult(isSuccess));
+    }
+    return leadConvertResults;
+  }
+
+  /**
    * @description Creates a mock instance of `Database.MergeResult` - a mock is used instead of an actual instance
    *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
    *              record ID is automatically included.
    * @param  isSuccess Indicates if the generated mock should have `isSuccess`
-   * @return   The mock instance of `Database.MergeResult`
+   * @return   The list of mock instances of `Database.MergeResult`
    */
   public static Database.MergeResult createDatabaseMergeResult(Boolean isSuccess) {
     return createDatabaseMergeResult(isSuccess, createId(Schema.Account.SObjectType));
@@ -244,6 +289,21 @@ public class LoggerMockDataCreator {
         Database.MergeResult.class
       );
     }
+  }
+
+  /**
+   * @description Creates a list of mock instances of `Database.MergeResult` - a mock is used instead of an actual
+   *              instance to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  numOfResults Indicates how many `Database.MergeResult` instances to create
+   * @param  isSuccess    Indicates if the generated mocks should have `isSuccess`
+   * @return   The list of mock instances of `Database.MergeResult`
+   */
+  public static List<Database.MergeResult> createDatabaseMergeResultList(Integer numOfResults, Boolean isSuccess) {
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>();
+    for (Integer i = 0; i < numOfResults; i++) {
+      mergeResults.add(LoggerMockDataCreator.createDatabaseMergeResult(isSuccess));
+    }
+    return mergeResults;
   }
 
   /**
@@ -276,6 +336,21 @@ public class LoggerMockDataCreator {
   }
 
   /**
+   * @description Creates a list of mock instances of `Database.SaveResult` - mocks are used instead of actual instances
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  numOfResults The number of `Database.SaveResult` instances to create
+   * @param  isSuccess    Indicates if the generated mocks should have `isSuccess`
+   * @return   The list of mock instances of `Database.SaveResult`
+   */
+  public static List<Database.SaveResult> createDatabaseSaveResultList(Integer numOfResults, Boolean isSuccess) {
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
+    for (Integer i = 0; i < numOfResults; i++) {
+      saveResults.add(LoggerMockDataCreator.createDatabaseSaveResult(isSuccess));
+    }
+    return saveResults;
+  }
+
+  /**
    * @description Creates a mock instance of `Database.UndeleteResult` - a mock is used instead of an actual instance
    *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
    *              record ID is automatically included.
@@ -302,6 +377,21 @@ public class LoggerMockDataCreator {
         Database.UndeleteResult.class
       );
     }
+  }
+
+  /**
+   * @description Creates a list of mock instances of `Database.UndeleteResult` - mocks are used instead of actual instances
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  numOfResults The number of `Database.UndeleteResult` instances to create
+   * @param  isSuccess    Indicates if the generated mocks should have `isSuccess`
+   * @return   The list of mock instances of `Database.UndeleteResult`
+   */
+  public static List<Database.UndeleteResult> createDatabaseUndeleteResultList(Integer numOfResults, Boolean isSuccess) {
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
+    for (Integer i = 0; i < numOfResults; i++) {
+      undeleteResults.add(LoggerMockDataCreator.createDatabaseUndeleteResult(isSuccess));
+    }
+    return undeleteResults;
   }
 
   /**
@@ -338,6 +428,23 @@ public class LoggerMockDataCreator {
         Database.UpsertResult.class
       );
     }
+  }
+
+  /**
+   * @description Creates a list of mock instances of `Database.UpsertResult` - mocks are used instead of actual instances
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+   *              record ID is automatically included.
+   * @param  numOfResults The number of `Database.UpsertResult` instances to create
+   * @param  isSuccess    Indicates if the generated mock should have `isSuccess`
+   * @param  isCreated    Indicates if the generated mock should have `isCreated`
+   * @return   The list of mock instances of `Database.UpsertResult`
+   */
+  public static List<Database.UpsertResult> createDatabaseUpsertResultList(Integer numOfResults, Boolean isSuccess, Boolean isCreated) {
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>();
+    for (Integer i = 0; i < numOfResults; i++) {
+      upsertResults.add(LoggerMockDataCreator.createDatabaseUpsertResult(isSuccess, isCreated));
+    }
+    return upsertResults;
   }
 
   /**

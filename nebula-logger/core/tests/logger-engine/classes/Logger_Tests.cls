@@ -11501,51 +11501,27 @@ private class Logger_Tests {
   }
 
   static List<Database.DeleteResult> getDeleteResultList() {
-    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
-    for (Integer i = 0; i < 3; i++) {
-      deleteResults.add(LoggerMockDataCreator.createDatabaseDeleteResult(true));
-    }
-    return deleteResults;
+    return LoggerMockDataCreator.createDatabaseDeleteResultList(3, true);
   }
 
   static List<Database.EmptyRecycleBinResult> getEmptyRecycleBinResultList() {
-    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>();
-    for (Integer i = 0; i < 3; i++) {
-      emptyRecycleBinResults.add(LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true));
-    }
-    return emptyRecycleBinResults;
+    return LoggerMockDataCreator.createDatabaseEmptyRecycleBinResultList(3, true);
   }
 
   static List<Database.LeadConvertResult> getLeadConvertResultList() {
-    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>();
-    for (Integer i = 0; i < 3; i++) {
-      leadConvertResults.add(LoggerMockDataCreator.createDatabaseLeadConvertResult(true));
-    }
-    return leadConvertResults;
+    return LoggerMockDataCreator.createDatabaseLeadConvertResultList(3, true);
   }
 
   static List<Database.SaveResult> getSaveResultList() {
-    List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
-    for (Integer i = 0; i < 3; i++) {
-      saveResults.add(LoggerMockDataCreator.createDatabaseSaveResult(true));
-    }
-    return saveResults;
-  }
-
-  static List<Database.UpsertResult> getUpsertResultList() {
-    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>();
-    for (Integer i = 0; i < 3; i++) {
-      upsertResults.add(LoggerMockDataCreator.createDatabaseUpsertResult(true, true));
-    }
-    return upsertResults;
+    return LoggerMockDataCreator.createDatabaseSaveResultList(3, true);
   }
 
   static List<Database.UndeleteResult> getUndeleteResultList() {
-    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
-    for (Integer i = 0; i < 3; i++) {
-      undeleteResults.add(LoggerMockDataCreator.createDatabaseUndeleteResult(true));
-    }
-    return undeleteResults;
+    return LoggerMockDataCreator.createDatabaseUndeleteResultList(3, true);
+  }
+
+  static List<Database.UpsertResult> getUpsertResultList() {
+    return LoggerMockDataCreator.createDatabaseUpsertResultList(3, true, true);
   }
 
   static String getOriginLocation() {
