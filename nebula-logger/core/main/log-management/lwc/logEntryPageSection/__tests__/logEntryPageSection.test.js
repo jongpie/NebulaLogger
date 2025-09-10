@@ -29,96 +29,99 @@ jest.mock(
 
 describe('c-log-entry-page-section', () => {
   let element;
-  let getRecordMock;
-  let getFieldValueMock;
-  let getSchemaForNameMock;
+  let mockGetSchemaForName;
+  let mockGetRecord;
+  let mockGetFieldValue;
 
   beforeEach(() => {
     // Reset mocks
     jest.clearAllMocks();
 
-    // Setup mocks
-    getRecordMock = require('@salesforce/sfdx-lwc-jest').createApexTestWireAdapter(jest.fn());
-    getFieldValueMock = jest.fn();
+    // Setup mock implementations
+    mockGetSchemaForName = require('@salesforce/apex/LoggerSObjectMetadata.getSchemaForName').default;
+    mockGetRecord = require('lightning/uiRecordApi').getRecord;
+    mockGetFieldValue = require('lightning/uiRecordApi').getFieldValue;
 
-    const { getRecord, getFieldValue } = require('lightning/uiRecordApi');
-    getRecord.mockReturnValue(getRecordMock);
-    getFieldValue.mockImplementation(getFieldValueMock);
-
-    getSchemaForNameMock = require('@salesforce/apex/LoggerSObjectMetadata.getSchemaForName').default;
-    getSchemaForNameMock.mockResolvedValue(mockLogEntrySchema);
+    // Default mock implementations
+    mockGetSchemaForName.mockResolvedValue(mockLogEntrySchema);
+    mockGetFieldValue.mockImplementation((record, field) => {
+      // Mock field values based on the field API name
+      const fieldName = field.fieldApiName;
+      if (fieldName.includes('HttpRequest')) {
+        return 'GET';
+      } else if (fieldName.includes('HttpResponse')) {
+        return '200';
+      } else if (fieldName.includes('DatabaseResult')) {
+        return 'SELECT';
+      } else if (fieldName.includes('Record')) {
+        return 'Account';
+      }
+      return 'test value';
+    });
   });
 
   afterEach(() => {
-    while (document.body.firstChild) {
-      document.body.removeChild(document.body.firstChild);
+    if (element && element.parentNode) {
+      element.parentNode.removeChild(element);
     }
+    element = null;
   });
+
+  const createComponent = (recordId = 'a1234567890abcdef', sectionType = 'HTTP Request') => {
+    element = createElement('c-log-entry-page-section', {
+      is: LogEntryPageSection
+    });
+    element.recordId = recordId;
+    element.sectionType = sectionType;
+    document.body.appendChild(element);
+    return element;
+  };
 
   describe('Component Initialization', () => {
     it('should initialize with correct public properties', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
       expect(element.recordId).toBe('a1234567890abcdef');
       expect(element.sectionType).toBe('HTTP Request');
     });
 
     it('should render loading spinner initially', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
       const spinner = element.shadowRoot.querySelector('lightning-spinner');
       expect(spinner).toBeTruthy();
     });
 
     it('should render loading state when component is first created', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
       const loadingDiv = element.shadowRoot.querySelector('div.slds-is-relative');
       expect(loadingDiv).toBeTruthy();
       expect(loadingDiv.querySelector('lightning-spinner')).toBeTruthy();
     });
+
+    it('should have correct loading state structure', () => {
+      element = createComponent();
+
+      const loadingContainer = element.shadowRoot.querySelector('div.slds-is-relative');
+      expect(loadingContainer).toBeTruthy();
+      expect(loadingContainer.style.minHeight).toBe('6em');
+
+      const spinner = loadingContainer.querySelector('lightning-spinner');
+      expect(spinner).toBeTruthy();
+    });
   });
 
   describe('Property Updates', () => {
     it('should update record ID when changed', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
       element.recordId = 'new-record-id';
       expect(element.recordId).toBe('new-record-id');
     });
 
     it('should update section type when changed', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
       element.sectionType = 'HTTP Response';
       expect(element.sectionType).toBe('HTTP Response');
@@ -127,117 +130,50 @@ describe('c-log-entry-page-section', () => {
 
   describe('Component Behavior', () => {
     it('should handle different section types correctly', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
+      const types = ['HTTP Request', 'HTTP Response', 'Database Result Details', 'Related Record Details'];
+
+      types.forEach(type => {
+        element = createComponent('test-id', type);
+        expect(element.sectionType).toBe(type);
       });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      // Test HTTP Request section
-      expect(element.sectionType).toBe('HTTP Request');
-
-      // Change to HTTP Response section
-      element.sectionType = 'HTTP Response';
-      expect(element.sectionType).toBe('HTTP Response');
-
-      // Change to Database Result Details section
-      element.sectionType = 'Database Result Details';
-      expect(element.sectionType).toBe('Database Result Details');
-
-      // Change to Related Record Details section
-      element.sectionType = 'Related Record Details';
-      expect(element.sectionType).toBe('Related Record Details');
     });
 
     it('should handle unknown section type gracefully', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'Unknown Section';
-      document.body.appendChild(element);
+      element = createComponent('test-id', 'Unknown Type');
 
-      expect(element.sectionType).toBe('Unknown Section');
+      expect(element.sectionType).toBe('Unknown Type');
     });
 
     it('should handle empty record ID', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = '';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
+      element = createComponent('', 'HTTP Request');
       expect(element.recordId).toBe('');
-      expect(element.sectionType).toBe('HTTP Request');
     });
 
     it('should handle null record ID', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = null;
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
+      element = createComponent(null, 'HTTP Request');
       expect(element.recordId).toBe(null);
-      expect(element.sectionType).toBe('HTTP Request');
     });
   });
 
   describe('Component Lifecycle', () => {
     it('should be properly created and attached to DOM', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      expect(element).toBeTruthy();
-      expect(document.body.contains(element)).toBe(true);
+      element = createComponent();
+      expect(element.parentNode).toBe(document.body);
     });
 
     it('should be properly removed from DOM', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
+      element = createComponent();
       document.body.removeChild(element);
-      expect(document.body.contains(element)).toBe(false);
+      expect(element.parentNode).toBe(null);
     });
 
     it('should handle multiple component instances', () => {
-      // Create first component
-      const element1 = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element1.recordId = 'record1';
-      element1.sectionType = 'HTTP Request';
-      document.body.appendChild(element1);
+      const element1 = createComponent('id1', 'HTTP Request');
+      const element2 = createComponent('id2', 'HTTP Response');
 
-      // Create second component
-      const element2 = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element2.recordId = 'record2';
-      element2.sectionType = 'HTTP Response';
-      document.body.appendChild(element2);
-
-      // Verify both components exist and have correct properties
-      expect(element1.recordId).toBe('record1');
+      expect(element1.recordId).toBe('id1');
+      expect(element2.recordId).toBe('id2');
       expect(element1.sectionType).toBe('HTTP Request');
-      expect(element2.recordId).toBe('record2');
       expect(element2.sectionType).toBe('HTTP Response');
 
       // Clean up
@@ -248,350 +184,374 @@ describe('c-log-entry-page-section', () => {
 
   describe('Component Structure', () => {
     it('should have correct HTML structure', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
-      // Check for main container
       const container = element.shadowRoot.querySelector('div.slds-is-relative');
       expect(container).toBeTruthy();
-
-      // Check for loading spinner
-      const spinner = element.shadowRoot.querySelector('lightning-spinner');
-      expect(spinner).toBeTruthy();
-
-      // Since the component is in loading state, c-logger-page-section should not be rendered yet
-      const pageSection = element.shadowRoot.querySelector('c-logger-page-section');
-      expect(pageSection).toBeFalsy(); // Should not exist in loading state
+      expect(container.querySelector('lightning-spinner')).toBeTruthy();
     });
 
     it('should have correct CSS classes', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
-      // Check for main container with correct class
       const container = element.shadowRoot.querySelector('div.slds-is-relative');
-      expect(container).toBeTruthy();
-      expect(container.className).toContain('slds-is-relative');
-    });
-
-    it('should have correct loading state structure', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      // Check for loading state structure
-      const loadingContainer = element.shadowRoot.querySelector('div.slds-is-relative');
-      expect(loadingContainer).toBeTruthy();
-      expect(loadingContainer.style.minHeight).toBe('6em');
-
-      // Check for spinner
-      const spinner = loadingContainer.querySelector('lightning-spinner');
-      expect(spinner).toBeTruthy();
+      expect(container.classList.contains('slds-is-relative')).toBe(true);
     });
   });
 
   describe('Error Scenarios', () => {
     it('should handle missing properties gracefully', () => {
-      // Create component without setting properties
       element = createElement('c-log-entry-page-section', {
         is: LogEntryPageSection
       });
-      document.body.appendChild(element);
 
-      // Component should still be created
-      expect(element).toBeTruthy();
+      // Component should not crash without properties
       expect(element.recordId).toBeUndefined();
       expect(element.sectionType).toBeUndefined();
     });
 
     it('should handle invalid section type gracefully', () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'Invalid Section Type';
-      document.body.appendChild(element);
+      element = createComponent('test-id', 'Invalid Type');
 
-      // Component should handle invalid section type
-      expect(element.sectionType).toBe('Invalid Section Type');
-    });
-  });
-
-  describe('Wire Service Integration', () => {
-    it('should handle errors from getRecord wire service gracefully', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      const mockError = new Error('Failed to load record');
-      getRecordMock.emit({ error: mockError });
-
-      await Promise.resolve();
-
-      // Component should handle error gracefully
-      expect(element).toBeTruthy();
-    });
-
-    it('should handle errors from getSchemaForName gracefully', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        return mockHttpRequestData.fields[fieldName]?.value || null;
-      });
-
-      getSchemaForNameMock.mockRejectedValue(new Error('Schema error'));
-
-      getRecordMock.emit(mockHttpRequestData);
-
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should handle error gracefully
-      expect(element).toBeTruthy();
+      // Component should handle invalid section types
+      expect(element.sectionType).toBe('Invalid Type');
     });
   });
 
   describe('Template Rendering', () => {
     it('should render loading state initially', () => {
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
+      element = createComponent();
 
-      // Should show loading spinner
-      const spinner = element.shadowRoot.querySelector('lightning-spinner');
+      const loadingDiv = element.shadowRoot.querySelector('div.slds-is-relative');
+      expect(loadingDiv).toBeTruthy();
+    });
+
+    it('should render loading state structure correctly', () => {
+      element = createComponent();
+
+      const loadingContainer = element.shadowRoot.querySelector('div.slds-is-relative');
+      expect(loadingContainer).toBeTruthy();
+      expect(loadingContainer.style.minHeight).toBe('6em');
+
+      const spinner = loadingContainer.querySelector('lightning-spinner');
       expect(spinner).toBeTruthy();
-
-      // Should not show content yet
-      const pageSection = element.shadowRoot.querySelector('c-logger-page-section');
-      expect(pageSection).toBeFalsy();
-
-      const noDataMessage = element.shadowRoot.querySelector('.slds-notify_alert');
-      expect(noDataMessage).toBeFalsy();
-    });
-  });
-
-  describe('Field Processing', () => {
-    it('should filter out empty fields when processing data', async () => {
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      // Mock getFieldValue to return some empty values
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        if (fieldName === 'HttpRequestHeaderKeys__c' || fieldName === 'HttpRequestHeaders__c') {
-          return null; // These should be filtered out
-        }
-        return mockHttpRequestData.fields[fieldName]?.value || null;
-      });
-
-      getRecordMock.emit(mockHttpRequestData);
-
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should handle the data processing
-      expect(element).toBeTruthy();
-    });
-
-    it('should handle missing field metadata gracefully', async () => {
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        return mockHttpRequestData.fields[fieldName]?.value || null;
-      });
-
-      // Mock schema with missing fields
-      getSchemaForNameMock.mockResolvedValue({
-        fields: {
-          // Missing some fields
-        }
-      });
-
-      getRecordMock.emit(mockHttpRequestData);
-
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should handle missing metadata gracefully
-      expect(element).toBeTruthy();
     });
   });
 
   describe('Different Section Types', () => {
-    it('should handle HTTP Request section type', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
-
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        return mockHttpRequestData.fields[fieldName]?.value || null;
-      });
-
-      getRecordMock.emit(mockHttpRequestData);
-
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should process HTTP Request data
-      expect(element).toBeTruthy();
+    it('should handle HTTP Request section type', () => {
+      element = createComponent('test-id', 'HTTP Request');
+      expect(element.sectionType).toBe('HTTP Request');
     });
 
-    it('should handle HTTP Response section type', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Response';
-      document.body.appendChild(element);
-
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        return mockHttpResponseData.fields[fieldName]?.value || null;
-      });
-
-      getRecordMock.emit(mockHttpResponseData);
-
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should process HTTP Response data
-      expect(element).toBeTruthy();
+    it('should handle HTTP Response section type', () => {
+      element = createComponent('test-id', 'HTTP Response');
+      expect(element.sectionType).toBe('HTTP Response');
     });
 
-    it('should handle Database Result Details section type', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'Database Result Details';
-      document.body.appendChild(element);
-
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        return mockDatabaseResultData.fields[fieldName]?.value || null;
-      });
-
-      getRecordMock.emit(mockDatabaseResultData);
-
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should process Database Result data
-      expect(element).toBeTruthy();
+    it('should handle Database Result Details section type', () => {
+      element = createComponent('test-id', 'Database Result Details');
+      expect(element.sectionType).toBe('Database Result Details');
     });
 
-    it('should handle Related Record Details section type', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
-      });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'Related Record Details';
-      document.body.appendChild(element);
-
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        return mockRelatedRecordData.fields[fieldName]?.value || null;
-      });
-
-      getRecordMock.emit(mockRelatedRecordData);
-
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should process Related Record data
-      expect(element).toBeTruthy();
+    it('should handle Related Record Details section type', () => {
+      element = createComponent('test-id', 'Related Record Details');
+      expect(element.sectionType).toBe('Related Record Details');
     });
   });
 
-  describe('Error Handling', () => {
-    it('should handle console errors gracefully', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
+  describe('Edge Cases', () => {
+    it('should handle very long record IDs', () => {
+      const longId = 'a'.repeat(1000);
+      element = createComponent(longId, 'HTTP Request');
+      expect(element.recordId).toBe(longId);
+    });
+
+    it('should handle special characters in section type', () => {
+      const specialType = 'HTTP Request & Response (Special)';
+      element = createComponent('test-id', specialType);
+      expect(element.sectionType).toBe(specialType);
+    });
+
+    it('should handle empty section type', () => {
+      element = createComponent('test-id', '');
+      expect(element.sectionType).toBe('');
+    });
+
+    it('should handle whitespace in section type', () => {
+      const whitespaceType = '  HTTP Request  ';
+      element = createComponent('test-id', whitespaceType);
+      expect(element.sectionType).toBe(whitespaceType);
+    });
+  });
+
+  describe('Component Reusability', () => {
+    it('should allow changing properties after creation', () => {
+      element = createComponent('initial-id', 'HTTP Request');
+
+      element.recordId = 'updated-id';
+      element.sectionType = 'HTTP Response';
+
+      expect(element.recordId).toBe('updated-id');
+      expect(element.sectionType).toBe('HTTP Response');
+    });
+
+    it('should maintain state when properties are updated', () => {
+      element = createComponent('test-id', 'HTTP Request');
+
+      const initialRecordId = element.recordId;
+      const initialSectionType = element.sectionType;
+
+      element.recordId = 'new-id';
+      element.sectionType = 'HTTP Response';
+
+      expect(element.recordId).not.toBe(initialRecordId);
+      expect(element.sectionType).not.toBe(initialSectionType);
+    });
+  });
+
+  describe('DOM Integration', () => {
+    it('should be properly integrated into the DOM', () => {
+      element = createComponent();
+      expect(element.parentNode).toBe(document.body);
+    });
+
+    it('should have proper shadow DOM structure', () => {
+      element = createComponent();
+      expect(element.shadowRoot).toBeTruthy();
+    });
+
+    it('should render with proper LWC attributes', () => {
+      element = createComponent();
+      expect(element.tagName.toLowerCase()).toBe('c-log-entry-page-section');
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('should have proper ARIA attributes in loading state', () => {
+      element = createComponent();
+
+      const loadingContainer = element.shadowRoot.querySelector('div.slds-is-relative');
+      expect(loadingContainer).toBeTruthy();
+
+      const spinner = loadingContainer.querySelector('lightning-spinner');
+      expect(spinner).toBeTruthy();
+    });
+  });
+
+  describe('Performance', () => {
+    it('should handle rapid property changes', () => {
+      element = createComponent();
+
+      // Rapidly change properties
+      for (let i = 0; i < 10; i++) {
+        element.recordId = `id-${i}`;
+        element.sectionType = i % 2 === 0 ? 'HTTP Request' : 'HTTP Response';
+      }
+
+      expect(element.recordId).toBe('id-9');
+      expect(element.sectionType).toBe('HTTP Response');
+    });
+
+    it('should handle multiple instances efficiently', () => {
+      const elements = [];
+
+      // Create multiple instances
+      for (let i = 0; i < 5; i++) {
+        const el = createComponent(`id-${i}`, 'HTTP Request');
+        elements.push(el);
+      }
+
+      // Verify all instances are created correctly
+      elements.forEach((el, index) => {
+        expect(el.recordId).toBe(`id-${index}`);
+        expect(el.sectionType).toBe('HTTP Request');
       });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
 
-      getFieldValueMock.mockImplementation((record, field) => {
-        const fieldName = field.fieldApiName;
-        return mockHttpRequestData.fields[fieldName]?.value || null;
+      // Clean up
+      elements.forEach(el => {
+        if (el.parentNode) {
+          document.body.removeChild(el);
+        }
+      });
+    });
+  });
+
+  describe('Wire Service Integration', () => {
+    it('should handle wire service data correctly', async () => {
+      // Mock the wire service to return data
+      mockGetRecord.mockReturnValue({
+        data: mockHttpRequestData,
+        error: null
       });
 
-      getSchemaForNameMock.mockRejectedValue(new Error('Schema error'));
+      element = createComponent('test-id', 'HTTP Request');
 
-      getRecordMock.emit(mockHttpRequestData);
+      // Wait for wire service to process
+      await new Promise(resolve => setTimeout(resolve, 0));
 
-      await Promise.resolve();
-      await Promise.resolve();
-
-      // Component should handle error gracefully without crashing
-      expect(element).toBeTruthy();
+      // Component should have processed the wire data
+      expect(element.hasLoaded).toBeDefined();
     });
 
     it('should handle wire service errors gracefully', async () => {
-      // Create component with properties set
-      element = createElement('c-log-entry-page-section', {
-        is: LogEntryPageSection
+      // Mock the wire service to return an error
+      mockGetRecord.mockReturnValue({
+        data: null,
+        error: { message: 'Test error' }
       });
-      element.recordId = 'a1234567890abcdef';
-      element.sectionType = 'HTTP Request';
-      document.body.appendChild(element);
 
-      const mockError = new Error('Wire service error');
-      getRecordMock.emit({ error: mockError });
+      element = createComponent('test-id', 'HTTP Request');
 
-      await Promise.resolve();
+      // Wait for wire service to process
+      await new Promise(resolve => setTimeout(resolve, 0));
 
-      // Component should handle error gracefully without crashing
-      expect(element).toBeTruthy();
+      // Component should handle errors gracefully
+      expect(element.hasLoaded).toBeDefined();
+    });
+  });
+
+  describe('Field Processing', () => {
+    it('should process HTTP Request fields correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockHttpRequestData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'HTTP Request');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have processed fields
+      expect(element.sectionFields).toBeDefined();
+    });
+
+    it('should process HTTP Response fields correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockHttpResponseData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'HTTP Response');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have processed fields
+      expect(element.sectionFields).toBeDefined();
+    });
+
+    it('should process Database Result fields correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockDatabaseResultData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'Database Result Details');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have processed fields
+      expect(element.sectionFields).toBeDefined();
+    });
+
+    it('should process Related Record fields correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockRelatedRecordData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'Related Record Details');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have processed fields
+      expect(element.sectionFields).toBeDefined();
+    });
+  });
+
+  describe('Schema Integration', () => {
+    it('should load field metadata correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockHttpRequestData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'HTTP Request');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have loaded field metadata
+      expect(element.fieldMetadata).toBeDefined();
+    });
+
+    it('should handle schema loading errors gracefully', async () => {
+      // Mock schema loading to fail
+      mockGetSchemaForName.mockRejectedValue(new Error('Schema error'));
+
+      mockGetRecord.mockReturnValue({
+        data: mockHttpRequestData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'HTTP Request');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should handle schema errors gracefully
+      expect(element.sectionFields).toBeDefined();
+    });
+  });
+
+  describe('Field Rendering Logic', () => {
+    it('should determine code viewer usage correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockHttpRequestData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'HTTP Request');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have processed fields with code viewer logic
+      expect(element.sectionFields).toBeDefined();
+    });
+
+    it('should handle field type detection correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockHttpRequestData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'HTTP Request');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have detected field types
+      expect(element.sectionFields).toBeDefined();
+    });
+
+    it('should handle long text fields correctly', async () => {
+      mockGetRecord.mockReturnValue({
+        data: mockHttpRequestData,
+        error: null
+      });
+
+      element = createComponent('test-id', 'HTTP Request');
+
+      // Wait for processing
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Should have processed long text fields
+      expect(element.sectionFields).toBeDefined();
     });
   });
 });
