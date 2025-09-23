@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Ignored Apex Origins</label>
+    <protected>false</protected>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">A list of Apex class names that should be ignored when parsing stack traces. Any stack trace lines containing these class names will be removed from the parsed stack trace. This is useful for filtering out utility or framework classes from stack traces. The value should be a JSON array of strings, e.g., [&quot;MyUtilityClass&quot;, &quot;AnotherFrameworkClass&quot;].</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">[]</value>
+    </values>
+</CustomMetadata>
