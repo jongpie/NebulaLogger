@@ -460,7 +460,11 @@ global with sharing class LogEntryEventBuilder {
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      this.logEntryEvent.RecordId__c = record.Id;
+      try {
+        this.logEntryEvent.RecordId__c = record.Id;
+      } catch (System.SObjectException ex) {
+        // Certain SObjectTypes (such as Platform Events) do not have the ID field; that's OK, just skip setting it
+      }
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
       this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
