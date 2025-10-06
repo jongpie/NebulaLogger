@@ -462,8 +462,12 @@ global with sharing class LogEntryEventBuilder {
     } else {
       try {
         this.logEntryEvent.RecordId__c = record.Id;
-      } catch (System.SObjectException ex) {
-        // Certain SObjectTypes (such as Platform Events) do not have the ID field; that's OK, just skip setting it
+      } catch (System.SObjectException sobjectException) {
+        // Some SObject Types (such as Platform Events) do not have the ID field;
+        // that's OK, just skip setting it.
+        if (sobjectException.getMessage().contains('Invalid field Id') == false) {
+          throw sobjectException;
+        }
       }
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
       this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().toString();
