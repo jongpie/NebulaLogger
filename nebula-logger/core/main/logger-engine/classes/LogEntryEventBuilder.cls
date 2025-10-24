@@ -230,7 +230,7 @@ global with sharing class LogEntryEventBuilder {
    * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(List<Approval.LockResult> lockResults) {
-    return this.setDatabaseDetails(lockResults, Approval.LockResult.class, null);
+    return this.setDatabaseDetails(lockResults, Approval.LockResult.class, ((Approval.LockResult)fetchOnlyElement(lockResults))?.getId());
   }
 
   /**
@@ -239,7 +239,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(List<Approval.ProcessResult> processResults) {
-    return this.setDatabaseDetails(processResults, Approval.ProcessResult.class, null);
+    return this.setDatabaseDetails(processResults, Approval.ProcessResult.class, ((Approval.ProcessResult)fetchOnlyElement(processResults))?.getEntityId());
   }
 
   /**
@@ -248,7 +248,7 @@ global with sharing class LogEntryEventBuilder {
    * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(List<Approval.UnlockResult> unlockResults) {
-    return this.setDatabaseDetails(unlockResults, Approval.UnlockResult.class, null);
+    return this.setDatabaseDetails(unlockResults, Approval.UnlockResult.class, ((Approval.UnlockResult)fetchOnlyElement(unlockResults))?.getId());
   }
 
   // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
@@ -332,7 +332,7 @@ global with sharing class LogEntryEventBuilder {
    * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
-    return this.setDatabaseDetails(deleteResults, Database.DeleteResult.class, null);
+    return this.setDatabaseDetails(deleteResults, Database.DeleteResult.class, ((Database.DeleteResult)fetchOnlyElement(deleteResults))?.getId());
   }
 
   /**
@@ -341,7 +341,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                        The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.EmptyRecycleBinResult> emptyRecycleBinResults) {
-    return this.setDatabaseDetails(emptyRecycleBinResults, Database.EmptyRecycleBinResult.class, null);
+    return this.setDatabaseDetails(emptyRecycleBinResults, Database.EmptyRecycleBinResult.class, ((Database.EmptyRecycleBinResult)fetchOnlyElement(emptyRecycleBinResults))?.getId());
   }
 
   /**
@@ -350,7 +350,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                    The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.LeadConvertResult> leadConvertResults) {
-    return this.setDatabaseDetails(leadConvertResults, Database.LeadConvertResult.class, null);
+    return this.setDatabaseDetails(leadConvertResults, Database.LeadConvertResult.class, ((Database.LeadConvertResult)fetchOnlyElement(leadConvertResults))?.getLeadId());
   }
 
   /**
@@ -359,7 +359,7 @@ global with sharing class LogEntryEventBuilder {
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.MergeResult> mergeResults) {
-    return this.setDatabaseDetails(mergeResults, Database.MergeResult.class, null);
+    return this.setDatabaseDetails(mergeResults, Database.MergeResult.class, ((Database.MergeResult)fetchOnlyElement(mergeResults))?.getId());
   }
 
   /**
@@ -368,7 +368,7 @@ global with sharing class LogEntryEventBuilder {
    * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.SaveResult> saveResults) {
-    return this.setDatabaseDetails(saveResults, Database.SaveResult.class, null);
+    return this.setDatabaseDetails(saveResults, Database.SaveResult.class, ((Database.SaveResult)fetchOnlyElement(saveResults))?.getId());
   }
 
   /**
@@ -377,7 +377,7 @@ global with sharing class LogEntryEventBuilder {
    * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.UpsertResult> upsertResults) {
-    return this.setDatabaseDetails(upsertResults, Database.UpsertResult.class, null);
+    return this.setDatabaseDetails(upsertResults, Database.UpsertResult.class, ((Database.UpsertResult)fetchOnlyElement(upsertResults))?.getId());
   }
 
   /**
@@ -386,7 +386,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                 The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(List<Database.UndeleteResult> undeleteResults) {
-    return this.setDatabaseDetails(undeleteResults, Database.UndeleteResult.class, null);
+    return this.setDatabaseDetails(undeleteResults, Database.UndeleteResult.class, ((Database.UndeleteResult)fetchOnlyElement(undeleteResults))?.getId());
   }
 
   /**
@@ -1329,6 +1329,10 @@ global with sharing class LogEntryEventBuilder {
 
     System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(System.AccessType.READABLE, records, false);
     return securityDecision.getRecords();
+  }
+
+  private static Object fetchOnlyElement(List<Object> objs) {
+    return objs?.size() == 1 ? objs.get(0) : null;
   }
 
   @SuppressWarnings('PMD.ApexDoc')
