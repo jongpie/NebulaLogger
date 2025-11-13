@@ -114,6 +114,10 @@
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
+        <name>CanStreamLogEntryEvents</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>CanViewLogEntryMetadata</name>
     </customPermissions>
     <customSettingAccesses>
