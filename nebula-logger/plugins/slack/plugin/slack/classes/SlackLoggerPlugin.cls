@@ -21,6 +21,8 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     Schema.LogEntry__c.StackTrace__c
   };
   @TestVisible
+  private static final String LOGGER_SCENARIO = 'Slack Plugin';
+  @TestVisible
   private static final String NOTIFICATION_COLOR_RED = '#FF7373';
   @TestVisible
   private static final String NOTIFICATION_COLOR_ORANGE = '#FFC873';
@@ -34,12 +36,13 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
   private static final String NOTIFICATION_TITLE = 'Salesforce Log Alert';
 
   private List<Log__c> logs;
+  private String parentLogTransactionId;
 
   /**
    * @description Default constructor
    */
-  @SuppressWarnings('PMD.EmptyStatementBlock')
   public SlackLoggerPlugin() {
+    this.parentLogTransactionId = Logger.getParentLogTransactionId() ?? Logger.getTransactionId();
   }
 
   private SlackLoggerPlugin(List<Log__c> unsentLogs) {
@@ -57,6 +60,9 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
       return;
     }
 
+    Logger.setParentLogTransactionId(this.parentLogTransactionId);
+    Logger.setScenario(LOGGER_SCENARIO);
+
     this.logs = (List<Log__c>) context.triggerNew;
     switch on context.triggerOperationType {
       when BEFORE_INSERT, BEFORE_UPDATE {
@@ -66,6 +72,8 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         this.sendAsyncSlackNotifications();
       }
     }
+
+    Logger.endScenario(LOGGER_SCENARIO);
   }
 
   /**
@@ -73,6 +81,9 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
    * @param queueableContext Context of the current queuable instance.
    */
   public void execute(System.QueueableContext queueableContext) {
+    Logger.setParentLogTransactionId(this.parentLogTransactionId);
+    Logger.setScenario(LOGGER_SCENARIO);
+
     // Since this runs in an async context, requery the logs just in case any field values have changed
     this.requeryLogs();
     // TODO bulkify tags querying
@@ -118,6 +129,8 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     if (unsentLogs.size() > 0) {
       System.enqueueJob(new SlackLoggerPlugin(unsentLogs));
     }
+
+    Logger.endScenario(LOGGER_SCENARIO);
   }
 
   private void flagLogsForSlackNotification() {
