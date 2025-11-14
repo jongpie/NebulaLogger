@@ -31,6 +31,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     this.setFlowDefinitionFields();
     this.setFlowVersionFields();
     this.setOmniProcessFields();
+    this.setParentLogFields();
     this.setRecordNames();
     this.setCheckboxFields();
   }
@@ -260,6 +261,12 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
       logEntry.OriginSourceLastModifiedByUsername__c = omniProcessProxy.LastModifiedBy?.Username;
       logEntry.OriginSourceLastModifiedDate__c = omniProcessProxy.LastModifiedDate;
       logEntry.OriginSourceMetadataType__c = originSourceMetadataType;
+    }
+  }
+
+  private void setParentLogFields() {
+    for (LogEntry__c logEntry : this.logEntries) {
+      logEntry.ParentLog__c = logEntry.ParentLogId__c;
     }
   }
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ParentLog__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Parent Log</label>
+    <referenceTo>Log__c</referenceTo>
+    <relationshipLabel>Descendant Log Entries</relationshipLabel>
+    <relationshipName>ChildLogEntries</relationshipName>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

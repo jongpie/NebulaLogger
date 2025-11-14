@@ -56,6 +56,26 @@ private class LogEntryHandler_Tests {
   }
 
   @IsTest
+  static void it_should_populate_parent_log_lookup_when_log_has_parent_log() {
+    Log__c parentLog = [SELECT Id FROM Log__c LIMIT 1];
+    Log__c childLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    childLog.ParentLog__c = parentLog.Id;
+    insert childLog;
+    LogEntry__c logEntry = new LogEntry__c(Log__c = childLog.Id);
+
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+    System.Assert.areEqual(
+      2,
+      LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+      'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+    );
+    logEntry = [SELECT Id, ParentLogId__c, ParentLog__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+    System.Assert.areEqual(parentLog.Id, logEntry.ParentLogId__c);
+    System.Assert.areEqual(parentLog.Id, logEntry.ParentLog__c);
+  }
+
+  @IsTest
   static void it_should_populate_related_record_fields_on_log_entry_with_related_user_record_id() {
     Log__c log = [SELECT Id FROM Log__c LIMIT 1];
     Schema.User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId()];

@@ -8,7 +8,7 @@
     <inlineHelpText>The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.</inlineHelpText>
     <label>Parent Log</label>
     <referenceTo>Log__c</referenceTo>
-    <relationshipLabel>Related Logs</relationshipLabel>
+    <relationshipLabel>Descendant Logs</relationshipLabel>
     <relationshipName>ChildLogs</relationshipName>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
