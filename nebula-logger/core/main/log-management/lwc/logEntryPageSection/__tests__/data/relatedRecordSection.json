@@ -1,0 +1,22 @@
+{
+  "fields": {
+    "RecordId__c": {
+      "value": "0011234567890ABC"
+    },
+    "RecordName__c": {
+      "value": "Acme Corporation"
+    },
+    "RecordSObjectType__c": {
+      "value": "Account"
+    },
+    "RecordSObjectClassification__c": {
+      "value": "Standard"
+    },
+    "RecordCollectionSize__c": {
+      "value": 1
+    },
+    "RecordJson__c": {
+      "value": "{\"Id\": \"0011234567890ABC\", \"Name\": \"Acme Corporation\", \"Industry\": \"Technology\", \"Type\": \"Customer\", \"BillingCity\": \"San Francisco\", \"BillingState\": \"CA\"}"
+    }
+  }
+}
