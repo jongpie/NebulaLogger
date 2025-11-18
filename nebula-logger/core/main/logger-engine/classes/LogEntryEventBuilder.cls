@@ -460,7 +460,10 @@ global with sharing class LogEntryEventBuilder {
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      this.logEntryEvent.RecordId__c = record.Id;
+      // Some SObjects, like platform events, don't have an Id field, so we need to check if it's populated first
+      if (record.getPopulatedFieldsAsMap().containsKey('Id')) {
+        this.logEntryEvent.RecordId__c = (String) record.get('Id');
+      }
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
       this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
@@ -608,6 +611,9 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.HttpRequestHeaderKeys__c = formattedHeaderKeysString;
     this.logEntryEvent.HttpRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestHeaders__c, formattedHeadersString);
     this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
+
+    this.logToApexDebug(request, formattedHeaderKeysString, formattedHeadersString);
+
     return this;
   }
 
@@ -913,7 +919,21 @@ global with sharing class LogEntryEventBuilder {
   }
 
   @SuppressWarnings('PMD.AvoidDebugStatements')
+  private void logToApexDebug(System.HttpRequest request, String formattedHeaderKeysString, String formattedHeadersString) {
+    Map<String, Object> requestMap = new Map<String, Object>();
+    // requestMap.put('body', textCleaner.textValue);
+    // requestMap.put('compressed', request.getCompressed());
+    // requestMap.put('endpoint', request.getEndpoint());
+    // // requestMap.put('headerKeys', formattedHeaderKeysString.split(NEW_LINE_DELIMITER));
+    // // requestMap.put('headers', formattedHeadersString.split(NEW_LINE_DELIMITER));
+    // requestMap.put('method', request.getMethod());
+
+    System.debug(this.entryLoggingLevel, System.JSON.serializePretty(requestMap));
+  }
+
+  @SuppressWarnings('PMD.AvoidDebugStatements')
   private void logToApexDebug(String message) {
+    // TODO change this to no-op when running in the managed package (since calling System.debug() there doesn't work anyway)
     if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false) {
       return;
     }
