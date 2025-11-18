@@ -1,0 +1,156 @@
+{
+  "namespacePrefix": null,
+  "localApiName": "LogEntry__c",
+  "labelPlural": "Log Entries",
+  "label": "Log Entry",
+  "fields": {
+    "HttpRequestEndpointAddress__c": {
+      "type": "string",
+      "localApiName": "HttpRequestEndpointAddress__c",
+      "label": "HTTP Request Endpoint Address",
+      "inlineHelpText": null,
+      "apiName": "HttpRequestEndpointAddress__c"
+    },
+    "HttpRequestMethod__c": {
+      "type": "string",
+      "localApiName": "HttpRequestMethod__c",
+      "label": "HTTP Request Method",
+      "inlineHelpText": null,
+      "apiName": "HttpRequestMethod__c"
+    },
+    "HttpRequestCompressed__c": {
+      "type": "boolean",
+      "localApiName": "HttpRequestCompressed__c",
+      "label": "HTTP Request Compressed",
+      "inlineHelpText": null,
+      "apiName": "HttpRequestCompressed__c"
+    },
+    "HttpRequestHeaderKeys__c": {
+      "type": "textarea",
+      "localApiName": "HttpRequestHeaderKeys__c",
+      "label": "HTTP Request Header Keys",
+      "inlineHelpText": null,
+      "apiName": "HttpRequestHeaderKeys__c"
+    },
+    "HttpRequestHeaders__c": {
+      "type": "textarea",
+      "localApiName": "HttpRequestHeaders__c",
+      "label": "HTTP Request Headers",
+      "inlineHelpText": null,
+      "apiName": "HttpRequestHeaders__c"
+    },
+    "HttpRequestBody__c": {
+      "type": "textarea",
+      "localApiName": "HttpRequestBody__c",
+      "label": "HTTP Request Body",
+      "inlineHelpText": null,
+      "apiName": "HttpRequestBody__c"
+    },
+    "HttpResponseStatusCode__c": {
+      "type": "int",
+      "localApiName": "HttpResponseStatusCode__c",
+      "label": "HTTP Response Status Code",
+      "inlineHelpText": null,
+      "apiName": "HttpResponseStatusCode__c"
+    },
+    "HttpResponseStatus__c": {
+      "type": "string",
+      "localApiName": "HttpResponseStatus__c",
+      "label": "HTTP Response Status",
+      "inlineHelpText": null,
+      "apiName": "HttpResponseStatus__c"
+    },
+    "HttpResponseHeaderKeys__c": {
+      "type": "textarea",
+      "localApiName": "HttpResponseHeaderKeys__c",
+      "label": "HTTP Response Header Keys",
+      "inlineHelpText": null,
+      "apiName": "HttpResponseHeaderKeys__c"
+    },
+    "HttpResponseHeaders__c": {
+      "type": "textarea",
+      "localApiName": "HttpResponseHeaders__c",
+      "label": "HTTP Response Headers",
+      "inlineHelpText": null,
+      "apiName": "HttpResponseHeaders__c"
+    },
+    "HttpResponseBody__c": {
+      "type": "textarea",
+      "localApiName": "HttpResponseBody__c",
+      "label": "HTTP Response Body",
+      "inlineHelpText": null,
+      "apiName": "HttpResponseBody__c"
+    },
+    "DatabaseResultType__c": {
+      "type": "string",
+      "localApiName": "DatabaseResultType__c",
+      "label": "Database Result Type",
+      "inlineHelpText": null,
+      "apiName": "DatabaseResultType__c"
+    },
+    "DatabaseResultCollectionType__c": {
+      "type": "string",
+      "localApiName": "DatabaseResultCollectionType__c",
+      "label": "Database Result Collection Type",
+      "inlineHelpText": null,
+      "apiName": "DatabaseResultCollectionType__c"
+    },
+    "DatabaseResultCollectionSize__c": {
+      "type": "int",
+      "localApiName": "DatabaseResultCollectionSize__c",
+      "label": "Database Result Collection Size",
+      "inlineHelpText": null,
+      "apiName": "DatabaseResultCollectionSize__c"
+    },
+    "DatabaseResultJson__c": {
+      "type": "textarea",
+      "localApiName": "DatabaseResultJson__c",
+      "label": "Database Result JSON",
+      "inlineHelpText": null,
+      "apiName": "DatabaseResultJson__c"
+    },
+    "RecordId__c": {
+      "type": "string",
+      "localApiName": "RecordId__c",
+      "label": "Related Record ID",
+      "inlineHelpText": null,
+      "apiName": "RecordId__c"
+    },
+    "RecordName__c": {
+      "type": "string",
+      "localApiName": "RecordName__c",
+      "label": "Related Record Name",
+      "inlineHelpText": null,
+      "apiName": "RecordName__c"
+    },
+    "RecordSObjectType__c": {
+      "type": "string",
+      "localApiName": "RecordSObjectType__c",
+      "label": "Related Record SObject Type",
+      "inlineHelpText": null,
+      "apiName": "RecordSObjectType__c"
+    },
+    "RecordSObjectClassification__c": {
+      "type": "string",
+      "localApiName": "RecordSObjectClassification__c",
+      "label": "Related Record SObject Classification",
+      "inlineHelpText": null,
+      "apiName": "RecordSObjectClassification__c"
+    },
+    "RecordCollectionSize__c": {
+      "type": "int",
+      "localApiName": "RecordCollectionSize__c",
+      "label": "Related Record Collection Size",
+      "inlineHelpText": null,
+      "apiName": "RecordCollectionSize__c"
+    },
+    "RecordJson__c": {
+      "type": "textarea",
+      "localApiName": "RecordJson__c",
+      "label": "Related Record JSON",
+      "inlineHelpText": null,
+      "apiName": "RecordJson__c"
+    }
+  },
+  "apiName": "LogEntry__c"
+}
