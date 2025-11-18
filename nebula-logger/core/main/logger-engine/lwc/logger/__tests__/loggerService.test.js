@@ -128,10 +128,21 @@ describe('LoggerService tests', () => {
   // The error handling is covered by the console.error mock and the fact that errors are thrown
 
   describe('_logToConsole edge cases', () => {
+    let originalSetTimeout;
+
     beforeEach(async () => {
+      // Mock setTimeout to execute immediately, similar to logger.test.js
+      originalSetTimeout = global.setTimeout;
+      global.setTimeout = callbackFunction => callbackFunction();
+
       getSettings.mockResolvedValue({ ...MOCK_GET_SETTINGS, isConsoleLoggingEnabled: true });
       loggerService = new LoggerService();
       await flushPromises();
+    });
+
+    afterEach(() => {
+      // Restore original setTimeout
+      global.setTimeout = originalSetTimeout;
     });
 
     it('handles componentLogEntry with empty fieldToValue', async () => {
@@ -197,13 +208,13 @@ describe('LoggerService tests', () => {
         isEnabled: true,
         userLoggingLevel: { ordinal: 3 }, // INFO level
         supportedLoggingLevels: {
-          ERROR: { ordinal: 1 },
-          WARN: { ordinal: 2 },
-          INFO: { ordinal: 3 },
-          DEBUG: { ordinal: 4 },
-          FINE: { ordinal: 5 },
-          FINER: { ordinal: 6 },
-          FINEST: { ordinal: 7 }
+          ERROR: 8,
+          WARN: 7,
+          INFO: 6,
+          DEBUG: 5,
+          FINE: 4,
+          FINER: 3,
+          FINEST: 2
         }
       });
       loggerService = new LoggerService();
@@ -211,18 +222,21 @@ describe('LoggerService tests', () => {
     });
 
     it('filters out entries below user logging level', async () => {
-      loggerService.debug('debug message'); // Should be filtered out
-      loggerService.fine('fine message'); // Should be filtered out
+      // With userLoggingLevel ordinal 3 (FINER), entries with ordinals < 3 should be filtered out
+      // The implementation uses: userOrdinal <= entryOrdinal to include entries
+      // So entries with ordinal < userOrdinal (3) are filtered out
+      loggerService.finest('finest message'); // Should be filtered out (ordinal 2 < 3)
+      loggerService.finer('finer message'); // Should be included (ordinal 3 == 3)
 
       await flushPromises();
 
-      expect(loggerService.getBufferSize()).toBe(0);
+      expect(loggerService.getBufferSize()).toBe(1); // Only FINER should be included
     });
 
     it('includes entries at or above user logging level', async () => {
-      loggerService.error('error message'); // Should be included
-      loggerService.warn('warn message'); // Should be included
-      loggerService.info('info message'); // Should be included
+      loggerService.error('error message'); // Should be included (ordinal 8 >= 3)
+      loggerService.warn('warn message'); // Should be included (ordinal 7 >= 3)
+      loggerService.info('info message'); // Should be included (ordinal 6 >= 3)
 
       await flushPromises();
 

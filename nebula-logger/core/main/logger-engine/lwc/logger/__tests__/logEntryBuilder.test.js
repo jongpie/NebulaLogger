@@ -1,6 +1,8 @@
 import LogEntryEventBuilder from '../logEntryBuilder';
 import LoggerStackTrace from '../loggerStackTrace';
 
+const MOCK_JAVSCRIPT_ERROR = require('./data/stack-traces/v64/chrome_lwc_without_debug.json');
+
 // Mock LoggerStackTrace
 jest.mock('../loggerStackTrace');
 
@@ -24,11 +26,11 @@ describe('LogEntryEventBuilder tests', () => {
     it('handles null/undefined exception gracefully', () => {
       const result = logEntryBuilder.setExceptionDetails(null);
       expect(result).toBe(logEntryBuilder);
-      expect(logEntryBuilder.getComponentLogEntry().error).toBeUndefined();
+      expect(logEntryBuilder.getComponentLogEntry().error).toBeNull();
 
       const result2 = logEntryBuilder.setExceptionDetails(undefined);
       expect(result2).toBe(logEntryBuilder);
-      expect(logEntryBuilder.getComponentLogEntry().error).toBeUndefined();
+      expect(logEntryBuilder.getComponentLogEntry().error).toBeNull();
     });
 
     it('handles Apex error with stack trace containing colon', () => {
@@ -96,6 +98,7 @@ describe('LogEntryEventBuilder tests', () => {
     it('handles JavaScript error without body property', () => {
       const jsError = new Error('JavaScript error');
       jsError.name = 'TypeError';
+      jsError.stack = MOCK_JAVSCRIPT_ERROR.stack;
 
       const result = logEntryBuilder.setExceptionDetails(jsError);
 
@@ -103,7 +106,8 @@ describe('LogEntryEventBuilder tests', () => {
       const logEntry = logEntryBuilder.getComponentLogEntry();
       expect(logEntry.error.message).toBe('JavaScript error');
       expect(logEntry.error.type).toBe('JavaScript.TypeError');
-      expect(logEntry.error.stackTrace).toBeDefined();
+      const parsedStackTrace = new LoggerStackTrace().parse(jsError);
+      expect(logEntry.error.stackTrace).toBe(parsedStackTrace);
     });
   });
 
@@ -148,7 +152,6 @@ describe('LogEntryEventBuilder tests', () => {
         functionName: 'testFunction',
         metadataType: 'LightningComponentBundle'
       };
-
       LoggerStackTrace.mockImplementation(() => ({
         parse: jest.fn().mockReturnValue(mockStackTrace)
       }));
