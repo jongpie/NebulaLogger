@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.16.5.NEXT",
-      "versionName": "Capture Apex Cursor Transaction Limits",
-      "versionDescription": "Added auto-capturing of transaction limits for Apex cursor rows & fetch calls, stored in new fields on LogEntryEvent__e & LogEntry__c",
+      "versionNumber": "4.17.0.NEXT",
+      "versionName": "Summer '25 Release",
+      "versionDescription": "Updated all metadata to API v64.0, added logEntryPageSection LWC to LogEntry__c page, improved testing in Apex & LWC",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
