@@ -81,7 +81,7 @@
     "@cparra/apexdocs": "1.13.7",
     "@jongpie/sfdx-bummer-plugin": "^0.0.20",
     "@lwc/eslint-plugin-lwc": "^1.8.2",
-    "@salesforce/cli": "^2.82.6",
+    "@salesforce/cli": "^2.113.6",
     "@salesforce/eslint-config-lwc": "^3.6.0",
     "@salesforce/sfdx-lwc-jest": "^7.4.0",
     "@salesforce/sfdx-scanner": "^4.11.0",
