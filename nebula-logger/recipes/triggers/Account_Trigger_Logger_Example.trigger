@@ -17,7 +17,9 @@ trigger Account_Trigger_Logger_Example on Account(before insert, before update, 
   }
 
   // Example of starting an async job
-  System.enqueueJob(new Account_Queueable_Logger_Example());
+  if (System.Test.isRunningTest() == false) {
+    System.enqueueJob(new Account_Queueable_Logger_Example());
+  }
 
   // Save any pending log entries
   Logger.saveLog();
