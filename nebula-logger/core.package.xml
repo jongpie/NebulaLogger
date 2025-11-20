@@ -852,6 +852,7 @@
         <members>logBatchPurge</members>
         <members>logEntryEventStream</members>
         <members>logEntryMetadataViewer</members>
+        <members>logEntryPageSection</members>
         <members>logOrganizationLimits</members>
         <members>logViewer</members>
         <members>logger</members>
@@ -963,5 +964,5 @@
         <members>Log__c.MassDelete</members>
         <name>WebLink</name>
     </types>
-    <version>63.0</version>
+    <version>64.0</version>
 </Package>
