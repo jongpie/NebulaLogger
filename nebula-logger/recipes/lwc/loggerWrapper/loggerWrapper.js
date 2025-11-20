@@ -7,7 +7,6 @@ export function logMessage(message) {
     .filter(line => !line.includes('loggerWrapper.js'))
     .join('\n');
 
-
   const logger = getLogger();
   logger.info(message).parseStackTrace(customStackTraceError);
   logger.saveLog();
