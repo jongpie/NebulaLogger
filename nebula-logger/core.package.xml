@@ -852,7 +852,6 @@
         <members>logBatchPurge</members>
         <members>logEntryEventStream</members>
         <members>logEntryMetadataViewer</members>
-        <members>logEntryPageSection</members>
         <members>logOrganizationLimits</members>
         <members>logViewer</members>
         <members>logger</members>
