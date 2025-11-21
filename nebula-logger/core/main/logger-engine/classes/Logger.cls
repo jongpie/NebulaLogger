@@ -3968,47 +3968,18 @@ global with sharing class Logger {
   }
 
   private static String getSavingLogSystemMessage(String saveMethodName) {
-    String savingLogMessage = 'Logger - Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
-    switch on getCurrentQuiddity() {
-      when ANONYMOUS {
-        savingLogMessage += 'Anonymous Apex';
+    String messageTemplate = 'Logger - Saving {0} log entries via {1}, save method is {2}. Logger.saveLog() has been called {3} in the current transaction.';
+    LogMessage savingLogMessage = new LogMessage(
+      messageTemplate,
+      new List<Object>{
+        LOG_ENTRIES_BUFFER.size(),
+        (getCurrentQuiddity() ?? System.Quiddity.UNDEFINED).name(),
+        saveMethodName,
+        saveLogCallCount + (saveLogCallCount == 1 ? ' time' : ' times')
       }
-      when AURA, VF {
-        savingLogMessage += 'Aura/Lightning/VF component';
-      }
-      when BATCH_ACS, BATCH_APEX, BATCH_CHUNK_PARALLEL, BATCH_CHUNK_SERIAL {
-        savingLogMessage += 'Apex batch job';
-      }
-      when INVOCABLE_ACTION {
-        savingLogMessage += 'Flow invocation';
-      }
-      when QUEUEABLE {
-        savingLogMessage += 'Apex queueable job';
-      }
-      when REST {
-        savingLogMessage += 'Apex REST callout';
-      }
-      when SCHEDULED {
-        savingLogMessage += 'Scheduled job';
-      }
-      when SYNCHRONOUS {
-        savingLogMessage += 'Apex synchronous DML';
-      }
-      when null {
-        savingLogMessage += 'unknown context';
-      }
-      when else {
-        savingLogMessage += getCurrentQuiddity()?.name();
-      }
-    }
-    savingLogMessage += ', save method is ' + saveMethodName;
-    savingLogMessage +=
-      '. Logger.saveLog() has been called ' +
-      saveLogCallCount +
-      (saveLogCallCount == 1 ? ' time' : ' times') +
-      ' in the current transaction.';
+    );
 
-    return savingLogMessage;
+    return savingLogMessage.getMessage();
   }
 
   // Inner class for saving log entries via a queuable job
