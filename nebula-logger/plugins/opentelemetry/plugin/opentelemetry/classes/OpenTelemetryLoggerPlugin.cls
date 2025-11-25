@@ -119,7 +119,8 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
   private void sendAsyncOpenTelemetryLogs() {
     List<Log__c> logsToSend = new List<Log__c>();
     for (Log__c log : this.logs) {
-      if (log.SendToOpenTelemetry__c) {
+      // Only send logs that are flagged for export AND have not already been exported
+      if (log.SendToOpenTelemetry__c && log.OpenTelemetryExportDate__c == null) {
         logsToSend.add(log);
       }
     }

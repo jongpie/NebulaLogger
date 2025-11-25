@@ -224,6 +224,38 @@ private class OpenTelemetryLoggerPlugin_Tests {
     System.Assert.isTrue(requestBody.contains('NullPointerException'), 'Should include exception type value');
   }
 
+  @IsTest
+  static void it_should_not_send_logs_that_have_already_been_exported() {
+    System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.ERROR;
+    LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
+    List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
+    
+    // Simulate that the log has already been exported by setting the export date
+    logs[0].OpenTelemetryExportDate__c = System.now();
+    update logs[0];
+    
+    // Re-query to ensure we have the updated record
+    logs = queryLogs(logEntryLoggingLevel);
+    
+    LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    System.Test.startTest();
+    OpenTelemetryLoggerPlugin plugin = new OpenTelemetryLoggerPlugin();
+    plugin.execute(pluginConfiguration, context);
+    System.Assert.areEqual(0, System.Limits.getAsyncCalls(), 'The queueable job should not have been enqueued for already-exported logs');
+    System.Test.stopTest();
+
+    // Verify no HTTP callout was made
+    System.Assert.isNull(calloutMock.request, 'HTTP request should NOT have been made for already-exported logs');
+    
+    // Verify the export date hasn't changed
+    Log__c log = queryLogs(logEntryLoggingLevel).get(0);
+    System.Assert.isTrue(log.SendToOpenTelemetry__c, 'SendToOpenTelemetry__c should still be true');
+    System.Assert.isNotNull(log.OpenTelemetryExportDate__c, 'OpenTelemetryExportDate__c should remain populated');
+  }
+
   private static LoggerPlugin__mdt mockConfigurations(System.LoggingLevel notificationLoggingLevel) {
     return mockConfigurations(notificationLoggingLevel, null);
   }
