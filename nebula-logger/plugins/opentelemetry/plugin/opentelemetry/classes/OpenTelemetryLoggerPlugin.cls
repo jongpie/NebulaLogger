@@ -426,7 +426,7 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
   private class Scope {
     public String name;
     public String version;
-    public List<Attribute>;
+    public List<Attribute> attributes;
   }
 
   @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
