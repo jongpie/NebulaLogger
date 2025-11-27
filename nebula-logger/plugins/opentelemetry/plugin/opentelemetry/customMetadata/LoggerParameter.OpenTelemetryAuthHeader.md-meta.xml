@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Optional authentication header for OpenTelemetry endpoint. Format: &apos;HeaderName: HeaderValue&apos; (e.g., &apos;Authorization: Bearer your-token&apos; or &apos;x-api-key: your-key&apos;). Leave blank if using Named Credentials or if no authentication is required</value>
+        <value xsi:type="xsd:string">Optional authentication header for OpenTelemetry endpoint. Format: &apos;HeaderName: HeaderValue&apos; (e.g., &apos;Authorization: Bearer token&apos; or &apos;x-api-key: key123&apos;). This value can be retrieved from a Named Credential by using merge fields like {!$Credential.NamedCredentialName}. Leave blank if no authentication is required</value>
     </values>
     <values>
         <field>Value__c</field>

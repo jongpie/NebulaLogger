@@ -188,7 +188,9 @@ private class OpenTelemetryLoggerPlugin_Tests {
   @IsTest
   static void it_should_include_auth_header_when_configured() {
     System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.ERROR;
-    String authHeader = 'Authorization: Bearer test-token-123';
+    // Simulate the value that would be retrieved from a Named Credential
+    // Format: "HeaderName: HeaderValue"
+    String authHeader = 'x-api-key: test-api-key-123';
     LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel, authHeader);
     List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
     LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
@@ -201,7 +203,27 @@ private class OpenTelemetryLoggerPlugin_Tests {
     System.Test.stopTest();
 
     System.Assert.isNotNull(calloutMock.request, 'HTTP request should have been made');
-    System.Assert.areEqual('Bearer test-token-123', calloutMock.request.getHeader('Authorization'), 'Authorization header should be set');
+    System.Assert.areEqual('test-api-key-123', calloutMock.request.getHeader('x-api-key'), 'x-api-key header should be set correctly');
+  }
+
+  @IsTest
+  static void it_should_parse_bearer_token_auth_header_when_configured() {
+    System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.ERROR;
+    // Simulate a Bearer token from a Named Credential
+    String authHeader = 'Authorization: Bearer test-token-xyz';
+    LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel, authHeader);
+    List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
+    LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    System.Test.startTest();
+    OpenTelemetryLoggerPlugin plugin = new OpenTelemetryLoggerPlugin();
+    plugin.execute(pluginConfiguration, context);
+    System.Test.stopTest();
+
+    System.Assert.isNotNull(calloutMock.request, 'HTTP request should have been made');
+    System.Assert.areEqual('Bearer test-token-xyz', calloutMock.request.getHeader('Authorization'), 'Authorization header should be set correctly with Bearer token');
   }
 
   @IsTest
