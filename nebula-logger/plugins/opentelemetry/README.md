@@ -72,8 +72,8 @@ The endpoint URL should be the OTLP HTTP endpoint, typically ending in `/v1/logs
 3. Go to Setup --> Custom Metadata Types --> Logger Parameters. Configure the following parameters:
 
    - **Parameter 'OpenTelemetry Endpoint'** - You can configure this endpoint in 1 of 2 ways:
-     - Easier but less secure: Paste the OTLP endpoint URL into the `Value__c` field and save the Parameter record
-     - More secure: Create a new Named Credential ([see section below for step-by-step instructions](#setting-up-named-credentials)), using the endpoint URL. Within the Parameter 'OpenTelemetry Endpoint', enter `callout:<your named credential>` into the `Value__c` field and save the Parameter record
+     - **Option 1 - Direct URL** (Easier but less secure): Paste the OTLP endpoint URL into the `Value__c` field (e.g., `https://otel-collector.example.com/v1/logs`) and save the Parameter record
+     - **Option 2 - Named Credentials** (Recommended, more secure): Create a new Named Credential ([see section below for step-by-step instructions](#setting-up-named-credentials)), using the endpoint URL. Within the Parameter 'OpenTelemetry Endpoint', enter `callout:<YourNamedCredentialAPIName>` into the `Value__c` field (e.g., `callout:OpenTelemetryCollector`) and save the Parameter record
    
    - **Parameter 'OpenTelemetry Notification Logging Level'** - Set the desired logging level value that should trigger logs to be exported to OpenTelemetry. It controls which logging level (ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST) will trigger the exports.
    
@@ -81,7 +81,7 @@ The endpoint URL should be the OTLP HTTP endpoint, typically ending in `/v1/logs
    
    - **Parameter 'OpenTelemetry Service Version'** (Optional) - Set the service version. Defaults to '1.0.0' if not specified.
    
-   - **Parameter 'OpenTelemetry Auth Header'** (Optional) - If your endpoint requires authentication and you're not using Named Credentials, you can specify the authentication header here in the format `HeaderName: HeaderValue` (e.g., `Authorization: Bearer your-token` or `x-api-key: your-key`). Leave blank if using Named Credentials or if no authentication is required.
+   - **Parameter 'OpenTelemetry Auth Header'** (Optional) - Configure additional authentication headers if required by your OpenTelemetry endpoint. The value should be in the format `HeaderName: HeaderValue` (e.g., `x-api-key: your-key` or `Authorization: Bearer your-token`). To securely store credentials, you can use Named Credential merge fields like `{!$Credential.YourNamedCredentialName}` which Salesforce will automatically resolve at runtime. Leave this parameter blank if no authentication is required or if authentication is already handled by the Named Credential configured for the endpoint URL.
 
 4. If not using Named Credentials, add a Remote Site Setting for your OpenTelemetry endpoint:
    - Go to Setup --> Remote Site Settings --> New Remote Site
@@ -93,35 +93,205 @@ The OpenTelemetry integration should now be setup & working - any new logs that 
 
 #### Setting up Named Credentials
 
-_Note: these instructions are for setting up the improved Named Credentials, as legacy credentials are deprecated as of Winter '23. For more info, see [Salesforce's documentation](https://help.salesforce.com/s/articleView?id=sf.named_credentials_about.htm&type=5)._
+Named Credentials provide a secure way to store authentication details and endpoint URLs in Salesforce. They offer several advantages:
 
-1. **Create a new External Credential.** This will define how Salesforce should authenticate with the OTLP endpoint.
+- **Enhanced Security**: Credentials are encrypted and never exposed in code or logs
+- **No Remote Site Settings Required**: Named Credentials automatically bypass the need for Remote Site Settings
+- **Centralized Management**: Update endpoint URLs and credentials in one place
+- **Certificate Support**: Can handle mutual TLS authentication and custom certificates
+- **Audit Trail**: Changes to credentials are tracked in Salesforce's setup audit trail
 
-   - Go to the Named Credentials page in setup, click `New` under the External Credentials tab.
-   - Enter a name (for example, `OpenTelemetry Endpoint`)
-   - Select the appropriate Authentication Protocol:
-     - For API key authentication: Select `Password Authentication` and configure accordingly
-     - For bearer token: Select `JWT` or `Password Authentication`
-     - For no authentication: Select `No Authentication`
+##### Setup Steps
 
-2. **Create a Principle for the External Credential.** This will define the credentials that should be used when calling out to the OTLP endpoint.
+_Note: these instructions are for the improved Named Credentials (recommended). Legacy Named Credentials are deprecated as of Winter '23. For more info, see [Salesforce's documentation](https://help.salesforce.com/s/articleView?id=sf.named_credentials_about.htm&type=5)._
 
-   - In the Principals section of the External Credential you just created, click `New`.
-   - Enter a parameter name (for example: `Default` or `Standard`).
-   - If using authentication, enter the required credentials (API key, username/password, etc.)
+**Step 1: Create an External Credential**
 
-3. **Create a new Named Credential.** This is where the OTLP endpoint URL will be stored.
+An External Credential defines how Salesforce should authenticate with the OTLP endpoint.
 
-   - Go back to the main Named Credentials page and click `New` in the Named Credentials tab.
-   - Enter a name for the Named Credential (for example: `OpenTelemetry_Collector`).
-   - Paste the OTLP endpoint URL into the URL field (e.g., `https://otel-collector.example.com/v1/logs`).
-   - In the External Credential dropdown, select the one you created in step 1.
+1. Go to **Setup** → **Named Credentials** → Click **New** under the **External Credentials** tab
+2. Configure the External Credential:
+   - **Label**: `OpenTelemetry Endpoint` (or a descriptive name)
+   - **Name**: `OpenTelemetryEndpoint` (no spaces - this is the API name)
+   - **Authentication Protocol**: Select based on your OTLP endpoint's requirements:
+     - **No Authentication**: If your endpoint is internal or doesn't require auth
+     - **Password Authentication**: For API keys or basic authentication
+     - **JWT**: For JWT-based authentication
+     - **OAuth 2.0**: For OAuth flows
+     - **Custom**: For other authentication methods
+3. Click **Save**
 
-4. **Grant the Platform Integration User access to the External Credential.** This will allow the Platform Integration user (the running user for queueable jobs) to make callouts to the OTLP endpoint.
+**Step 2: Create a Principal for the External Credential**
 
-   - Create a new permission set or open an existing one
-   - Go to the External Credential Principal Access section of the permission set and grant access to the External Credential you created in step 1.
-   - Assign the permission set to the user that runs async jobs (typically the Automated Process user or the user whose context the queueable runs in).
+A Principal stores the actual credentials that will be used when calling the OTLP endpoint.
+
+1. On the External Credential detail page, scroll to the **Principals** section
+2. Click **New**
+3. Configure the Principal:
+   - **Parameter Name**: `Default` (or another descriptive name)
+   - **Identity Type**: `Named Principal` (credentials are shared across all users)
+   - **Authentication Parameters**: Enter based on the protocol selected in Step 1:
+     - For **Password Authentication** with API key:
+       - Sequence: 1
+       - Parameter Name: Custom (e.g., `x-api-key` or `Authorization`)
+       - Value: Your API key or token
+     - For **Basic Auth**:
+       - Username: Your username
+       - Password: Your password
+     - For **JWT** or **OAuth**: Configure according to your provider's requirements
+4. Click **Save**
+
+**Step 3: Create a Named Credential**
+
+The Named Credential combines the External Credential with the endpoint URL.
+
+1. Go to **Setup** → **Named Credentials** → Click **New** under the **Named Credentials** tab
+2. Configure the Named Credential:
+   - **Label**: `OpenTelemetry Collector` (descriptive label)
+   - **Name**: `OpenTelemetryCollector` (no spaces - this is what you'll use in the `callout:` URL)
+   - **URL**: Your complete OTLP endpoint URL (e.g., `https://otel-collector.example.com/v1/logs`)
+   - **External Credential**: Select the External Credential you created in Step 1
+   - **Callout Options** (check these):
+     - ✅ **Allow Formulas in HTTP Header**: Enables dynamic header values
+     - ✅ **Generate Authorization Header**: If using authentication that requires it
+   - **Enabled for Callouts**: ✅ Checked (default)
+3. Click **Save**
+
+**Step 4: Grant Access to the External Credential**
+
+The Automated Process user (which runs queueable jobs) needs access to use the External Credential.
+
+1. Go to **Setup** → **Permission Sets** → Click **New**
+   - Or use an existing permission set if preferred
+2. Create/edit a permission set:
+   - **Label**: `OpenTelemetry Integration Access` (or similar)
+   - **API Name**: `OpenTelemetry_Integration_Access`
+3. Click **Save**, then on the permission set detail page:
+   - Scroll to **External Credential Principal Access**
+   - Click **Edit**
+   - Select the External Credential Principal you created in Step 2
+   - Click **Add** to move it to the **Enabled External Credential Principal Access** section
+   - Click **Save**
+4. Assign the permission set:
+   - Click **Manage Assignments** → **Add Assignment**
+   - Search for **Automated Process** user
+   - Select it and click **Assign**
+   - Click **Done**
+
+**Step 5: Configure the Logger Parameter**
+
+Finally, update the Logger Parameter to use your Named Credential:
+
+1. Go to **Setup** → **Custom Metadata Types** → **Logger Parameter** → **Manage Records**
+2. Click on **OpenTelemetry Endpoint**
+3. Set **Value** to: `callout:OpenTelemetryCollector` (using the **Name** field from Step 3)
+4. Click **Save**
+
+##### Named Credential Configuration Examples
+
+**Example 1: API Key Authentication**
+
+If your OpenTelemetry endpoint requires an API key, you can store the credential value in a format that includes both the header name and value. The plugin will parse and apply it correctly.
+
+```
+External Credential:
+  Name: OpenTelemetryEndpoint
+  Auth Protocol: Password Authentication
+
+Principal:
+  Parameter Name: Custom (store the full header string)
+  Value: x-api-key: sk_live_1234567890abcdef
+
+Named Credential:
+  Name: OpenTelemetryCollector
+  URL: https://otel.example.com/v1/logs
+
+Logger Parameter Value (Endpoint):
+  callout:OpenTelemetryCollector
+
+Logger Parameter Value (Auth Header):
+  x-api-key: {!$Credential.OpenTelemetryEndpoint}
+  (Salesforce will replace the merge field with the actual credential value at runtime)
+```
+
+**Example 2: Bearer Token Authentication**
+
+For Bearer token authentication, store the complete Authorization header value in the Named Credential.
+
+```
+External Credential:
+  Name: OpenTelemetryAuth
+  Auth Protocol: Password Authentication
+
+Principal:
+  Parameter Name: Custom
+  Value: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+Named Credential:
+  Name: OpenTelemetryCollector
+  URL: https://api.observability.com/v1/logs
+
+Logger Parameter Value (Endpoint):
+  callout:OpenTelemetryCollector
+
+Logger Parameter Value (Auth Header):
+  Authorization: {!$Credential.OpenTelemetryAuth}
+  (Or embed the token directly: Authorization: Bearer {!$Credential.OpenTelemetryAuth})
+```
+
+**Example 3: No Authentication (Internal Endpoint)**
+
+For internal endpoints that don't require authentication, simply leave the Auth Header parameter blank.
+
+```
+External Credential:
+  Name: OpenTelemetryEndpoint
+  Auth Protocol: No Authentication
+
+Named Credential:
+  Name: OpenTelemetryCollector
+  URL: https://internal-otel-collector.local/v1/logs
+
+Logger Parameter Value (Endpoint):
+  callout:OpenTelemetryCollector
+
+Logger Parameter Value (Auth Header):
+  Leave blank (no authentication required)
+```
+
+**Example 4: Direct Value (Not using Named Credentials for Auth Header)**
+
+You can also set the auth header directly without using Named Credentials, though this is less secure:
+
+```
+Logger Parameter Value (Endpoint):
+  https://otel.example.com/v1/logs
+  (Don't forget to configure Remote Site Settings!)
+
+Logger Parameter Value (Auth Header):
+  x-api-key: hardcoded-key-here
+  (Not recommended for production - use Named Credentials instead)
+```
+
+##### Troubleshooting Named Credentials
+
+**Issue: "Unauthorized endpoint" error**
+- **Solution**: Named Credentials automatically bypass Remote Site Settings, but verify the Named Credential is properly configured and the URL is correct
+
+**Issue: "Unauthorized" or 401 errors**
+- **Solution**: 
+  - Verify the Principal credentials are correct
+  - Check that the authentication header format matches your endpoint's requirements
+  - Ensure "Generate Authorization Header" is checked if using Bearer token authentication
+
+**Issue: "You do not have the level of access necessary to perform the operation you requested"**
+- **Solution**: Verify the Automated Process user has been assigned the permission set with External Credential Principal Access
+
+**Issue: Logs show callout error "Unable to tunnel through proxy"**
+- **Solution**: This typically indicates a network connectivity issue. Verify:
+  - The endpoint URL is accessible from Salesforce
+  - Any firewall rules allow traffic from Salesforce IP ranges
+  - The SSL certificate on the endpoint is valid
 
 ---
 

@@ -18,7 +18,11 @@ sf project deploy start --source-dir nebula-logger/plugins/opentelemetry/plugin
 
 Or deploy the metadata using your preferred deployment method (VS Code, Workbench, Change Sets, etc.)
 
-### 2. Configure Remote Site Settings (if not using Named Credentials)
+### 2. Configure Remote Site Settings OR Named Credentials
+
+You must configure either Remote Site Settings (Option A) OR Named Credentials (Option B - Recommended).
+
+**Option A: Remote Site Settings** (if NOT using Named Credentials)
 
 1. Go to **Setup** → **Remote Site Settings**
 2. Click **New Remote Site**
@@ -28,13 +32,25 @@ Or deploy the metadata using your preferred deployment method (VS Code, Workbenc
    - Check **Active**
 4. Click **Save**
 
+**Option B: Named Credentials** (Recommended - More Secure)
+
+Named Credentials provide better security and don't require Remote Site Settings. See the [detailed Named Credentials setup guide in the main README](README.md#setting-up-named-credentials) for complete instructions.
+
+Quick setup:
+1. **Setup** → **Named Credentials** → **External Credentials** → **New**
+2. Create External Credential with appropriate authentication protocol
+3. Add a Principal with your credentials (API key, token, etc.)
+4. **Named Credentials** → **New** → Link to External Credential and add endpoint URL
+5. Create/edit a permission set to grant External Credential Principal Access
+6. Assign permission set to **Automated Process** user
+
 ### 3. Configure Logger Parameters
 
 1. Go to **Setup** → **Custom Metadata Types** → **Logger Parameter** → **Manage Records**
 
 2. Click on **OpenTelemetry Endpoint**:
-   - Set **Value**: Your OTLP endpoint URL (e.g., `https://otel-collector.example.com/v1/logs`)
-   - Or use Named Credential: `callout:YourNamedCredential`
+   - **Using Direct URL**: Set **Value** to your OTLP endpoint URL (e.g., `https://otel-collector.example.com/v1/logs`)
+   - **Using Named Credential** (Recommended): Set **Value** to `callout:YourNamedCredentialAPIName` (e.g., `callout:OpenTelemetryCollector`)
    - Click **Save**
 
 3. Click on **OpenTelemetry Notification Logging Level**:
@@ -49,11 +65,14 @@ Or deploy the metadata using your preferred deployment method (VS Code, Workbenc
    - Set **Value**: Version identifier (e.g., `1.0.0`, `2023-Q4`)
    - Default: `1.0.0`
 
-6. (Optional) Configure **OpenTelemetry Auth Header** (if not using Named Credentials):
-   - Set **Value**: Authentication header in format `HeaderName: HeaderValue`
-   - Example: `Authorization: Bearer your-api-token`
-   - Or: `x-api-key: your-api-key`
-   - Leave blank if using Named Credentials
+6. (Optional) Configure **OpenTelemetry Auth Header**:
+   - **Format**: `HeaderName: HeaderValue` (e.g., `x-api-key: your-key` or `Authorization: Bearer your-token`)
+   - **Using Named Credentials**: To securely store credentials, use merge fields like `{!$Credential.YourNamedCredentialName}`
+     - Example: `x-api-key: {!$Credential.OpenTelemetryAuth}`
+     - Salesforce will automatically resolve the merge field at runtime
+   - **Direct value** (less secure): Enter the auth header directly (e.g., `x-api-key: hardcoded-key`)
+   - **If no authentication is required**: Leave this blank
+   - Click **Save**
 
 ### 4. Enable the Plugin
 
@@ -116,9 +135,18 @@ Then verify:
 
 ### Common Issues
 
-- **401 Unauthorized**: Check your authentication configuration (Auth Header or Named Credentials)
+- **401 Unauthorized**: 
+  - Check your authentication configuration
+  - Verify the Auth Header parameter is in the correct format: `HeaderName: HeaderValue`
+  - If using Named Credential merge fields (e.g., `{!$Credential.Name}`), ensure the credential exists and is accessible
+  - Verify the Named Credential's External Credential Principal has correct credentials
+  - Verify "Generate Authorization Header" is checked on the Named Credential if using Bearer token authentication
 - **404 Not Found**: Verify the endpoint URL includes the full path (e.g., `/v1/logs`)
-- **No callout**: Verify Remote Site Settings are configured for your endpoint domain
+- **No callout**: 
+  - If using direct URL: Verify Remote Site Settings are configured for your endpoint domain
+  - If using Named Credentials: Verify the Automated Process user has access to the External Credential Principal (via permission set)
+- **"You do not have the level of access necessary"**: The Automated Process user needs the permission set with External Credential Principal Access assigned
+- **Auth header not working**: Ensure the parameter value is in the exact format `HeaderName: HeaderValue` with a colon separator
 
 ---
 

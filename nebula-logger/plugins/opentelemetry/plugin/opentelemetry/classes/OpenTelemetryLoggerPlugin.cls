@@ -210,11 +210,14 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
     request.setHeader('Content-Type', 'application/json');
     
     // Add authentication header if configured
+    // Expected format from Named Credential: "HeaderName: HeaderValue"
+    // e.g., "Authorization: Bearer token123" or "x-api-key: key123"
     if (String.isNotBlank(AUTH_HEADER)) {
-      // Expected format: "Authorization: Bearer <token>" or "x-api-key: <key>"
       List<String> headerParts = AUTH_HEADER.split(':', 2);
       if (headerParts.size() == 2) {
-        request.setHeader(headerParts[0].trim(), headerParts[1].trim());
+        String headerName = headerParts[0].trim();
+        String headerValue = headerParts[1].trim();
+        request.setHeader(headerName, headerValue);
       }
     }
 
