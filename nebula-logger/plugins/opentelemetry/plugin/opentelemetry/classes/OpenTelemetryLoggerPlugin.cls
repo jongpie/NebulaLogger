@@ -64,6 +64,9 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
    * @param queueableContext Context of the current queueable instance.
    */
   public void execute(System.QueueableContext queueableContext) {
+    // Attach finalizer at the start to handle any errors during execution
+    System.attachFinalizer(this);
+    
     // Since this runs in an async context, requery the logs just in case any field values have changed
     this.requeryLogs();
 
@@ -73,7 +76,7 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
 
     List<Log__c> sentLogs = new List<Log__c>();
     List<Log__c> unsentLogs = new List<Log__c>();    
-    DateTime exportTimeNow = System.now();
+    DateTime exportTime = System.now();
 
     for (Log__c log : this.logs) {
       if (System.Limits.getCallouts() == System.Limits.getLimitCallouts()) {
@@ -93,7 +96,7 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
         Logger.finest('Sent log entries to OpenTelemetry endpoint').setHttpResponseDetails(response);
       }
 
-      log.OpenTelemetryExportDate__c = exportTimeNow;
+      log.OpenTelemetryExportDate__c = exportTime;
       sentLogs.add(log);
     }
     Logger.saveLog();
@@ -101,8 +104,7 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
 
     // If any logs couldn't be sent due to governor limits, start a new instance of the job
     if (unsentLogs.size() > 0) {
-      Id jobId = System.enqueueJob(new OpenTelemetryLoggerPlugin(unsentLogs));
-      System.attachFinalizer(new OpenTelemetryLoggerPlugin(unsentLogs));
+      System.enqueueJob(new OpenTelemetryLoggerPlugin(unsentLogs));
     }
   }
 
@@ -159,9 +161,9 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
     }
     // Since plugins are called from trigger handlers, and triggers can't make callouts
     // run this class as a queueable (async) job
+    // The finalizer will be attached inside the queueable's execute method
     if (logsToSend.isEmpty() == false) {
-      Id jobId = System.enqueueJob(new OpenTelemetryLoggerPlugin(logsToSend));
-      System.attachFinalizer(new OpenTelemetryLoggerPlugin(logsToSend));
+      System.enqueueJob(new OpenTelemetryLoggerPlugin(logsToSend));
     }
   }
 
