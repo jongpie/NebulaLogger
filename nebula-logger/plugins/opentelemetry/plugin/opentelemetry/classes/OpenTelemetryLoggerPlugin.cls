@@ -8,7 +8,7 @@
  * @description Optional plugin that integrates with OpenTelemetry to send log records using the OTLP format
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
-public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.Triggerable, System.Queueable, Database.AllowsCallouts {
+public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.Triggerable, System.Queueable, System.Finalizer, Database.AllowsCallouts {
   @TestVisible
   private static final String ENDPOINT = LoggerParameter.getString('OpenTelemetryEndpoint', null);
   @TestVisible
@@ -72,8 +72,9 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
     }
 
     List<Log__c> sentLogs = new List<Log__c>();
-    List<Log__c> unsentLogs = new List<Log__c>();
-    
+    List<Log__c> unsentLogs = new List<Log__c>();    
+    DateTime exportTimeNow = System.now();
+
     for (Log__c log : this.logs) {
       if (System.Limits.getCallouts() == System.Limits.getLimitCallouts()) {
         // If there are too many logs to send in the same transaction
@@ -92,7 +93,7 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
         Logger.finest('Sent log entries to OpenTelemetry endpoint').setHttpResponseDetails(response);
       }
 
-      log.OpenTelemetryExportDate__c = System.now();
+      log.OpenTelemetryExportDate__c = exportTimeNow;
       sentLogs.add(log);
     }
     Logger.saveLog();
@@ -100,8 +101,40 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
 
     // If any logs couldn't be sent due to governor limits, start a new instance of the job
     if (unsentLogs.size() > 0) {
-      System.enqueueJob(new OpenTelemetryLoggerPlugin(unsentLogs));
+      Id jobId = System.enqueueJob(new OpenTelemetryLoggerPlugin(unsentLogs));
+      System.attachFinalizer(new OpenTelemetryLoggerPlugin(unsentLogs));
     }
+  }
+
+  /**
+   * @description Handles errors that occur during queueable execution. Required by the System.Finalizer interface.
+   * @param finalizerContext Context of the current finalizer instance containing error information.
+   */
+  public void execute(System.FinalizerContext finalizerContext) {
+    if (finalizerContext.getResult() == System.ParentJobResult.SUCCESS) {
+      return;
+    }
+
+    // Log the error that occurred during queueable execution
+    String errorMessage = 'OpenTelemetry queueable job failed';
+    Exception jobException = finalizerContext.getException();
+    
+    if (jobException != null) {
+      Logger.error(errorMessage, jobException);
+    } else {
+      Logger.error(errorMessage);
+    }
+    
+    // Add context about which logs were being processed
+    if (this.logs != null && !this.logs.isEmpty()) {
+      List<Id> logIds = new List<Id>();
+      for (Log__c log : this.logs) {
+        logIds.add(log.Id);
+      }
+      Logger.error('Failed to send ' + this.logs.size() + ' log(s) to OpenTelemetry. Log IDs: ' + String.join(logIds, ', '));
+    }
+    
+    Logger.saveLog();
   }
 
   private void flagLogsForOpenTelemetryExport() {
@@ -127,7 +160,8 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
     // Since plugins are called from trigger handlers, and triggers can't make callouts
     // run this class as a queueable (async) job
     if (logsToSend.isEmpty() == false) {
-      System.enqueueJob(new OpenTelemetryLoggerPlugin(logsToSend));
+      Id jobId = System.enqueueJob(new OpenTelemetryLoggerPlugin(logsToSend));
+      System.attachFinalizer(new OpenTelemetryLoggerPlugin(logsToSend));
     }
   }
 
