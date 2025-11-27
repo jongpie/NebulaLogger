@@ -80,8 +80,6 @@ The endpoint URL should be the OTLP HTTP endpoint, typically ending in `/v1/logs
    - **Parameter 'OpenTelemetry Service Name'** (Optional) - Set the service name to identify your Salesforce org in the observability platform. Defaults to 'Salesforce' if not specified.
    
    - **Parameter 'OpenTelemetry Service Version'** (Optional) - Set the service version. Defaults to '1.0.0' if not specified.
-   
-   - **Parameter 'OpenTelemetry Auth Header'** (Optional) - Configure additional authentication headers if required by your OpenTelemetry endpoint. The value should be in the format `HeaderName: HeaderValue` (e.g., `x-api-key: your-key` or `Authorization: Bearer your-token`). To securely store credentials, you can use Named Credential merge fields like `{!$Credential.YourNamedCredentialName}` which Salesforce will automatically resolve at runtime. Leave this parameter blank if no authentication is required or if authentication is already handled by the Named Credential configured for the endpoint URL.
 
 4. If not using Named Credentials, add a Remote Site Setting for your OpenTelemetry endpoint:
    - Go to Setup --> Remote Site Settings --> New Remote Site
@@ -159,24 +157,32 @@ The Named Credential combines the External Credential with the endpoint URL.
 
 **Step 4: Grant Access to the External Credential**
 
-The Automated Process user (which runs queueable jobs) needs access to use the External Credential.
+**CRITICAL STEP**: The Automated Process user (which runs queueable jobs) needs access to use the External Credential. **Without this step, the plugin will fail with an error: "We couldn't access the credential(s)."**
 
 1. Go to **Setup** → **Permission Sets** → Click **New**
    - Or use an existing permission set if preferred
 2. Create/edit a permission set:
    - **Label**: `OpenTelemetry Integration Access` (or similar)
    - **API Name**: `OpenTelemetry_Integration_Access`
+   - **License**: Select `--None--` (this allows it to be assigned to system users like Automated Process)
 3. Click **Save**, then on the permission set detail page:
    - Scroll to **External Credential Principal Access**
    - Click **Edit**
-   - Select the External Credential Principal you created in Step 2
-   - Click **Add** to move it to the **Enabled External Credential Principal Access** section
+   - Find the External Credential Principal you created in Step 2
+     - It will show as "ExternalCredentialName - PrincipalName" (e.g., "honeycomb - Default")
+   - Select it and click **Add** to move it to the **Enabled External Credential Principal Access** section
    - Click **Save**
 4. Assign the permission set:
    - Click **Manage Assignments** → **Add Assignment**
-   - Search for **Automated Process** user
+   - **IMPORTANT**: Search for **Automated Process** user
+     - Type "Automated Process" in the search box
+     - You should see a user with User Type = "System User"
    - Select it and click **Assign**
    - Click **Done**
+
+**Verification:**
+- Go back to the permission set and confirm "Automated Process" appears in the list of assignments
+- The Automated Process user should now have access to call your OpenTelemetry endpoint using the Named Credential
 
 **Step 5: Configure the Logger Parameter**
 
@@ -191,7 +197,7 @@ Finally, update the Logger Parameter to use your Named Credential:
 
 **Example 1: API Key Authentication**
 
-If your OpenTelemetry endpoint requires an API key, you can store the credential value in a format that includes both the header name and value. The plugin will parse and apply it correctly.
+Configure Named Credentials with the External Credential containing your API key authentication details.
 
 ```
 External Credential:
@@ -199,8 +205,8 @@ External Credential:
   Auth Protocol: Password Authentication
 
 Principal:
-  Parameter Name: Custom (store the full header string)
-  Value: x-api-key: sk_live_1234567890abcdef
+  Header: x-api-key
+  Value: sk_live_1234567890abcdef
 
 Named Credential:
   Name: OpenTelemetryCollector
@@ -208,40 +214,33 @@ Named Credential:
 
 Logger Parameter Value (Endpoint):
   callout:OpenTelemetryCollector
-
-Logger Parameter Value (Auth Header):
-  x-api-key: {!$Credential.OpenTelemetryEndpoint}
-  (Salesforce will replace the merge field with the actual credential value at runtime)
 ```
 
 **Example 2: Bearer Token Authentication**
 
-For Bearer token authentication, store the complete Authorization header value in the Named Credential.
+For Bearer token authentication, configure the External Credential with authentication details.
 
 ```
 External Credential:
-  Name: OpenTelemetryAuth
+  Name: OpenTelemetryEndpoint
   Auth Protocol: Password Authentication
 
 Principal:
-  Parameter Name: Custom
-  Value: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  Header: Authorization
+  Value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 Named Credential:
   Name: OpenTelemetryCollector
   URL: https://api.observability.com/v1/logs
+  Generate Authorization Header: ✅
 
 Logger Parameter Value (Endpoint):
   callout:OpenTelemetryCollector
-
-Logger Parameter Value (Auth Header):
-  Authorization: {!$Credential.OpenTelemetryAuth}
-  (Or embed the token directly: Authorization: Bearer {!$Credential.OpenTelemetryAuth})
 ```
 
 **Example 3: No Authentication (Internal Endpoint)**
 
-For internal endpoints that don't require authentication, simply leave the Auth Header parameter blank.
+For internal endpoints that don't require authentication, use No Authentication protocol.
 
 ```
 External Credential:
@@ -254,26 +253,17 @@ Named Credential:
 
 Logger Parameter Value (Endpoint):
   callout:OpenTelemetryCollector
-
-Logger Parameter Value (Auth Header):
-  Leave blank (no authentication required)
-```
-
-**Example 4: Direct Value (Not using Named Credentials for Auth Header)**
-
-You can also set the auth header directly without using Named Credentials, though this is less secure:
-
-```
-Logger Parameter Value (Endpoint):
-  https://otel.example.com/v1/logs
-  (Don't forget to configure Remote Site Settings!)
-
-Logger Parameter Value (Auth Header):
-  x-api-key: hardcoded-key-here
-  (Not recommended for production - use Named Credentials instead)
 ```
 
 ##### Troubleshooting Named Credentials
+
+**Issue: "We couldn't access the credential(s). You might not have the required permissions, or the external credential might not exist"**
+- **Solution**: This is the most common issue. The Automated Process user needs access to the External Credential Principal.
+  - Go to **Setup** → **Permission Sets**
+  - Find the permission set with External Credential Principal Access
+  - Verify the External Credential Principal is enabled in the permission set
+  - Verify the **Automated Process** user is assigned to this permission set
+  - The External Credential name must match exactly (case-sensitive)
 
 **Issue: "Unauthorized endpoint" error**
 - **Solution**: Named Credentials automatically bypass Remote Site Settings, but verify the Named Credential is properly configured and the URL is correct
@@ -283,9 +273,6 @@ Logger Parameter Value (Auth Header):
   - Verify the Principal credentials are correct
   - Check that the authentication header format matches your endpoint's requirements
   - Ensure "Generate Authorization Header" is checked if using Bearer token authentication
-
-**Issue: "You do not have the level of access necessary to perform the operation you requested"**
-- **Solution**: Verify the Automated Process user has been assigned the permission set with External Credential Principal Access
 
 **Issue: Logs show callout error "Unable to tunnel through proxy"**
 - **Solution**: This typically indicates a network connectivity issue. Verify:
@@ -453,8 +440,9 @@ Once your logs are in an OpenTelemetry-compatible backend, you can query them us
 
 If you're seeing HTTP errors:
 
-1. **401 Unauthorized**: Check your authentication configuration
-   - Verify the `OpenTelemetry Auth Header` parameter or Named Credential credentials
+1. **401 Unauthorized**: Check your Named Credential authentication configuration
+   - Verify the External Credential Principal credentials are correct
+   - Ensure "Generate Authorization Header" is checked if using Bearer token authentication
    
 2. **404 Not Found**: Verify the endpoint URL is correct
    - Ensure it includes the full path (e.g., `/v1/logs`)
@@ -483,7 +471,7 @@ The plugin is designed to handle governor limits efficiently:
 
 ## Security Best Practices
 
-1. **Use Named Credentials**: Instead of storing endpoint URLs and API keys directly in custom metadata, use Named Credentials for better security
+1. **Use Named Credentials**: Always use Named Credentials to securely store endpoint URLs and authentication credentials
 2. **Restrict Field Access**: Use the provided permission set to control who can view/edit the OpenTelemetry fields
 3. **Monitor Callouts**: Regularly review callout logs to detect any unauthorized access attempts
 4. **Secure Your Endpoint**: Ensure your OTLP endpoint uses HTTPS and proper authentication

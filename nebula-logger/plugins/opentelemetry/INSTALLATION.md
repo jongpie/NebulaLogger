@@ -39,12 +39,51 @@ Named Credentials provide better security and don't require Remote Site Settings
 Quick setup:
 1. **Setup** → **Named Credentials** → **External Credentials** → **New**
 2. Create External Credential with appropriate authentication protocol
-3. Add a Principal with your credentials (API key, token, etc.)
-4. **Named Credentials** → **New** → Link to External Credential and add endpoint URL
-5. Create/edit a permission set to grant External Credential Principal Access
-6. Assign permission set to **Automated Process** user
+3. Add a principal with your credentials (API key, token, etc.)
+4. Add header key value pair in case you are setting the key via header
+5. **Named Credentials** → **New** → Link to External Credential and add endpoint URL
+6. Select the External Credentials which you created in step 1~3
+7. Select callout options (e.g. Generating Auth Header, Allow Formulas in HTTP Header, etc.)
+8. **IMPORTANT**: Grant the Automated Process user access to the External Credential (see detailed steps below)
 
-### 3. Configure Logger Parameters
+### 3. Grant Access to External Credential (Required for Named Credentials)
+
+If you're using Named Credentials, you MUST grant the Automated Process user access to the External Credential. Without this, you'll get an error: "We couldn't access the credential(s)."
+
+**Steps to Grant Access:**
+
+1. Go to **Setup** → **Permission Sets** → Click **New**
+2. Create a new permission set:
+   - **Label**: `OpenTelemetry External Credential Access` (or any name you prefer)
+   - **API Name**: `OpenTelemetry_External_Credential_Access`
+   - **License**: Select `--None--`
+3. Click **Save**
+
+4. On the permission set detail page:
+   - Scroll down to **External Credential Principal Access** section
+   - Click **Edit**
+   - Find your External Credential Principal (e.g., "honeycomb - Default" or whatever you named it)
+   - Select it and click **Add** to move it to the **Enabled External Credential Principal Access** section
+   - Click **Save**
+
+5. Assign the permission set to the Automated Process user:
+   - Still on the permission set detail page, click **Manage Assignments**
+   - Click **Add Assignment**
+   - In the search box, type "Automated Process"
+   - Select the **Automated Process** user (it should show "System User" as the User Type)
+   - Click **Assign**
+   - Click **Done**
+
+6. Verify the assignment:
+   - Go back to the permission set detail page
+   - You should see "Automated Process" in the list of assigned users
+
+**Troubleshooting:**
+- If you can't find "Automated Process" user, make sure you're searching for it (not filtering by profile)
+- If the error persists, verify the External Credential name matches exactly what you configured in the Named Credential
+- Check that the External Credential Principal is not expired or disabled
+
+### 4. Configure Logger Parameters
 
 1. Go to **Setup** → **Custom Metadata Types** → **Logger Parameter** → **Manage Records**
 
@@ -65,23 +104,14 @@ Quick setup:
    - Set **Value**: Version identifier (e.g., `1.0.0`, `2023-Q4`)
    - Default: `1.0.0`
 
-6. (Optional) Configure **OpenTelemetry Auth Header**:
-   - **Format**: `HeaderName: HeaderValue` (e.g., `x-api-key: your-key` or `Authorization: Bearer your-token`)
-   - **Using Named Credentials**: To securely store credentials, use merge fields like `{!$Credential.YourNamedCredentialName}`
-     - Example: `x-api-key: {!$Credential.OpenTelemetryAuth}`
-     - Salesforce will automatically resolve the merge field at runtime
-   - **Direct value** (less secure): Enter the auth header directly (e.g., `x-api-key: hardcoded-key`)
-   - **If no authentication is required**: Leave this blank
-   - Click **Save**
-
-### 4. Enable the Plugin
+### 5. Enable the Plugin
 
 1. Go to **Setup** → **Custom Metadata Types** → **Logger Plugin** → **Manage Records**
 2. Click on **OpenTelemetry integration**
 3. Ensure **Is Enabled** is checked
 4. Click **Save**
 
-### 5. Assign Permissions (Optional)
+### 6. Assign Permissions (Optional)
 
 If you want users to be able to view/edit the OpenTelemetry fields on Log records:
 
@@ -89,7 +119,7 @@ If you want users to be able to view/edit the OpenTelemetry fields on Log record
 2. Find **Nebula Logger: OpenTelemetry Plugin Admin**
 3. Assign it to the appropriate users or integrate it into your permission set groups
 
-### 6. Test the Integration
+### 7. Test the Integration
 
 Create a test log to verify the integration:
 
@@ -135,18 +165,24 @@ Then verify:
 
 ### Common Issues
 
+- **"We couldn't access the credential(s)" error**: 
+  - **MOST COMMON ISSUE**: The Automated Process user doesn't have access to the External Credential Principal
+  - **Solution**: Follow the steps in Section 3 above to grant access via a permission set
+  - Verify the External Credential name matches exactly (case-sensitive)
+  - Ensure the permission set assignment to Automated Process user was successful
+  
 - **401 Unauthorized**: 
-  - Check your authentication configuration
-  - Verify the Auth Header parameter is in the correct format: `HeaderName: HeaderValue`
-  - If using Named Credential merge fields (e.g., `{!$Credential.Name}`), ensure the credential exists and is accessible
-  - Verify the Named Credential's External Credential Principal has correct credentials
-  - Verify "Generate Authorization Header" is checked on the Named Credential if using Bearer token authentication
+  - Check your Named Credential authentication configuration
+  - Verify the External Credential Principal has correct credentials
+  - Ensure "Generate Authorization Header" is checked on the Named Credential if using Bearer token authentication
+  
 - **404 Not Found**: Verify the endpoint URL includes the full path (e.g., `/v1/logs`)
+
 - **No callout**: 
   - If using direct URL: Verify Remote Site Settings are configured for your endpoint domain
   - If using Named Credentials: Verify the Automated Process user has access to the External Credential Principal (via permission set)
-- **"You do not have the level of access necessary"**: The Automated Process user needs the permission set with External Credential Principal Access assigned
-- **Auth header not working**: Ensure the parameter value is in the exact format `HeaderName: HeaderValue` with a colon separator
+
+- **"You do not have the level of access necessary"**: The Automated Process user needs the permission set with External Credential Principal Access assigned (see Section 3)
 
 ---
 
