@@ -21,8 +21,6 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
   );
   @TestVisible
   private static final String OTLP_VERSION = '1.0.0';
-  @TestVisible
-  private static final String AUTH_HEADER = LoggerParameter.getString('OpenTelemetryAuthHeader', null);
 
   private List<Log__c> logs;
 
@@ -208,18 +206,6 @@ public without sharing class OpenTelemetryLoggerPlugin implements LoggerPlugin.T
     request.setEndpoint(ENDPOINT);
     request.setMethod('POST');
     request.setHeader('Content-Type', 'application/json');
-    
-    // Add authentication header if configured
-    // Expected format from Named Credential: "HeaderName: HeaderValue"
-    // e.g., "Authorization: Bearer token123" or "x-api-key: key123"
-    if (String.isNotBlank(AUTH_HEADER)) {
-      List<String> headerParts = AUTH_HEADER.split(':', 2);
-      if (headerParts.size() == 2) {
-        String headerName = headerParts[0].trim();
-        String headerValue = headerParts[1].trim();
-        request.setHeader(headerName, headerValue);
-      }
-    }
 
     // Build the OTLP JSON payload
     String payload = this.buildOtlpPayload(log);
