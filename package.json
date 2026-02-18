@@ -69,7 +69,7 @@
     "test:apex:nocoverage": "npx sf apex run test --concise --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
     "test:apex:suite:core": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --code-coverage --detailed-coverage --output-dir ./test-coverage/apex",
     "test:apex:suite:core:nocoverage": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --output-dir ./test-coverage/apex",
-    "test:lwc": "sfdx-lwc-jest --coverage",
+    "test:lwc": "sf force lightning lwc test run --coverage",
     "test:lwc:core": "sfdx-lwc-jest --coverage -- --testPathPattern nebula-logger/core/",
     "test:lwc:core:nocoverage": "sfdx-lwc-jest -- --testPathPattern nebula-logger/core/",
     "test:lwc:nocoverage": "sfdx-lwc-jest",
