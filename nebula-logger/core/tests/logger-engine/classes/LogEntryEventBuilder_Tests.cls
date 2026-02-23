@@ -1461,7 +1461,7 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
-  static void it_should_set_record_fields_for_record_when_platform_event() {
+  static void it_should_set_record_fields_for_record_when_unpublished_platform_event() {
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
     System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
@@ -1470,13 +1470,37 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
     // To avoid creating a new platform event just for testing purposes, Nebula Logger's LogEntryEvent__e is reused
-    LogEntryEvent__e platformEvent = new LogEntryEvent__e();
-    builder.setRecordId(platformEvent);
+    LogEntryEvent__e unpublishedPlatformEvent = new LogEntryEvent__e();
+    builder.setRecordId(unpublishedPlatformEvent);
 
     System.Assert.areEqual(1, builder.getLogEntryEvent().RecordCollectionSize__c);
     System.Assert.areEqual('Single', builder.getLogEntryEvent().RecordCollectionType__c);
     System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
-    System.Assert.areEqual(System.JSON.serializePretty(platformEvent), builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(System.JSON.serializePretty(unpublishedPlatformEvent), builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual('Platform Event Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+    System.Assert.areEqual(LogEntryEvent__e.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_set_record_fields_for_record_when_published_platform_event() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+    // To avoid creating a new platform event just for testing purposes, Nebula Logger's LogEntryEvent__e is reused
+    LogEntryEvent__e publishedPlatformEvent = new LogEntryEvent__e();
+    LoggerMockDataCreator.createDataBuilder(publishedPlatformEvent).populateRequiredFields();
+    System.EventBus.publish(publishedPlatformEvent);
+    System.Test.getEventBus().deliver();
+    builder.setRecordId(publishedPlatformEvent);
+
+    System.Assert.areEqual(1, builder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('Single', builder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(publishedPlatformEvent), builder.getLogEntryEvent().RecordJson__c);
     System.Assert.areEqual('Platform Event Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
     System.Assert.areEqual(LogEntryEvent__e.SObjectType.toString(), builder.getLogEntryEvent().RecordSObjectType__c);
   }

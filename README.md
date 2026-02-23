@@ -5,13 +5,13 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
 
-## Unlocked Package - v4.17.0
+## Unlocked Package - v4.17.1
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg70000000rNhAAI)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg70000000rNhAAI)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000157JAAQ)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000157JAAQ)
 [![View Documentation](./images/btn-view-documentation.png)](https://github.com/jongpie/NebulaLogger/wiki)
 
-`sf package install --wait 20 --security-type AdminsOnly --package 04tg70000000rNhAAI`
+`sf package install --wait 20 --security-type AdminsOnly --package 04tg7000000157JAAQ`
 
 ---
 
