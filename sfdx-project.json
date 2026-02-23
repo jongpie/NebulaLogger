@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.17.0.NEXT",
-      "versionName": "Summer '25 Release",
-      "versionDescription": "Updated all metadata to API v64.0, added logEntryPageSection LWC to LogEntry__c page, improved testing in Apex & LWC",
+      "versionNumber": "4.17.1.NEXT",
+      "versionName": "Bugfix: Allowing to log SObject without ID field",
+      "versionDescription": "Updated LogEntryEventBuilder to handle the few types of SObjects that do not have an Id field (most notably, Platform Events)",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
