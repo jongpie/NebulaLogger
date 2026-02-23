@@ -10,6 +10,11 @@ private class LogEntryEventHandler_Tests {
 
   private static Integer currentLogEntryNumber = 1;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_the_logEntryEvent_sobjectType() {
     System.Assert.areEqual(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
