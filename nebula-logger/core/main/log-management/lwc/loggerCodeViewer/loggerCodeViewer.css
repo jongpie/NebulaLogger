@@ -1,4 +1,11 @@
 :host {
-  --sds-c-card-color-background: #2d2d2d;
+  /* SLDS v1 support */
+  --slds-c-card-color-background: #2d2d2d;
   --slds-c-card-text-color: #ccc;
+  --slds-c-card-footer-color-border: #2d2d2d;
+
+  /* SLDS v2 support */
+  --slds-c-card-color-background: light-dark(#2d2d2d, #ccc);
+  --slds-g-color-on-surface-3: light-dark(#ccc, #2d2d2d);
+  --slds-g-color-border-1: light-dark(#2d2d2d, #ccc);
 }

@@ -180,7 +180,7 @@ export default class LoggerStackTrace {
 
   _cleanStackTraceParticle(stackTraceParticle) {
     const lwcModulesFileNamePrefix = 'modules/';
-    if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
+    if (stackTraceParticle.fileName?.includes(lwcModulesFileNamePrefix)) {
       stackTraceParticle.metadataType = 'LightningComponentBundle';
 
       stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
@@ -188,7 +188,7 @@ export default class LoggerStackTrace {
       );
     }
     const auraComponentsContent = '/components/';
-    if (stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
+    if (!stackTraceParticle.metadataType && stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
       stackTraceParticle.metadataType = 'AuraDefinitionBundle';
 
       stackTraceParticle.fileName = stackTraceParticle.fileName.substring(

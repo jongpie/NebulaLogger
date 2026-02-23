@@ -7,11 +7,7 @@ import { LightningElement, api } from 'lwc';
 import LoggerService from './loggerService';
 
 export default class Logger extends LightningElement {
-  #loggerService;
-
-  connectedCallback() {
-    this.#loggerService = new LoggerService();
-  }
+  #loggerService = new LoggerService();
 
   /**
    * @description Returns **read-only** information about the current user's settings, stored in `LoggerSettings__c`
