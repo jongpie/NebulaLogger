@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.17.1.NEXT",
-      "versionName": "Bugfix: Allowing to log SObject without ID field",
-      "versionDescription": "Updated LogEntryEventBuilder to handle the few types of SObjects that do not have an Id field (most notably, Platform Events)",
+      "versionNumber": "4.17.2.NEXT",
+      "versionName": "Bugfix: Modal Close Buttons Not Rendered Correctly",
+      "versionDescription": "Removed some SLDS classes from the modal X close buttons in several LWCs to the X is properly rendered",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
