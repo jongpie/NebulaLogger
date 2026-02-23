@@ -1,0 +1,49 @@
+<template>
+  <c-logger-page-section>
+    <span slot="title">Message Details</span>
+    <span slot="content">
+      <lightning-record-view-form class="slds-m-top_small" record-id={recordId} object-api-name={objectApiName}>
+        <lightning-layout>
+          <lightning-layout-item size="4">
+            <lightning-output-field field-name={messageMaskedField}></lightning-output-field>
+          </lightning-layout-item>
+          <lightning-layout-item size="4">
+            <lightning-output-field field-name={messageTruncatedField}></lightning-output-field>
+          </lightning-layout-item>
+          <lightning-layout-item size="4">
+            <lightning-combobox
+              class="slds-m-bottom_medium"
+              label="View Mode"
+              value={viewMode}
+              options={viewOptions}
+              onchange={handleViewModeChange}
+            ></lightning-combobox>
+          </lightning-layout-item>
+        </lightning-layout>
+
+        <template if:true={isMarkdown}>
+          <div class="slds-m-top_small slds-form-element slds-form-element_readonly slds-form-element--readonly">
+            <span class="slds-form-element__label">Message</span>
+            <div class="slds-form-element__control">
+              <div class="slds-text-longform">
+                <c-logger-markdown-viewer class="slds-m-top_x-large" content={message}></c-logger-markdown-viewer>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template if:false={isMarkdown}>
+          <lightning-output-field field-name={messageField}></lightning-output-field>
+        </template>
+
+        <template if:true={stackTraceLanguage}>
+          <c-logger-code-viewer class="slds-m-top_small" code={stackTrace} language={stackTraceLanguage}
+            ><span slot="title">Stack Trace</span></c-logger-code-viewer
+          >
+        </template>
+        <template if:false={stackTraceLanguage}>
+          <lightning-output-field field-name={stackTraceField}></lightning-output-field>
+        </template>
+      </lightning-record-view-form>
+    </span>
+  </c-logger-page-section>
+</template>

@@ -1,0 +1,14 @@
+<template>
+  <div class={wrapperClass}>
+    <div class="skeleton slds-skeleton" if:true={showSkeleton}>
+      <div class="slds-skeleton__text slds-m-bottom_x-small"></div>
+      <div class="slds-skeleton__text slds-m-bottom_x-small"></div>
+      <div class="slds-skeleton__text slds-m-bottom_x-small"></div>
+      <div class="slds-skeleton__text slds-m-bottom_x-small"></div>
+    </div>
+
+    <div class="contentWrap slds-text-longform">
+      <div class="markdown-viewer" lwc:dom="manual"></div>
+    </div>
+  </div>
+</template>

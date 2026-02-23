@@ -1,0 +1,22 @@
+.wrap {
+  position: relative;
+}
+
+.skeleton {
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+
+.contentWrap {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.wrap.is-loaded .skeleton {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wrap.is-loaded .contentWrap {
+  opacity: 1;
+}

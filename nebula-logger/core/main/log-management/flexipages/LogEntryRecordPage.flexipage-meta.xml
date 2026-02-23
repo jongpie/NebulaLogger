@@ -197,85 +197,6 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MessageMasked__c</fieldItem>
-                <identifier>RecordMessageMasked__cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.MessageMasked__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MessageTruncated__c</fieldItem>
-                <identifier>RecordMessageTruncated__cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.MessageTruncated__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Message__c</fieldItem>
-                <identifier>RecordMessage__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.StackTrace__c</fieldItem>
-                <identifier>RecordStackTrace_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasStackTrace__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-30caba7c-11da-4321-bccd-e97e901d03f4</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-30caba7c-11da-4321-bccd-e97e901d03f4</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-3a75f17f-589a-49f4-bdec-38f730e94676</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OriginSourceApiName__c</fieldItem>
@@ -685,20 +606,8 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-3a75f17f-589a-49f4-bdec-38f730e94676</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Message Details</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection2</identifier>
+                <componentName>logEntryMessageViewer</componentName>
+                <identifier>c_logEntryMessageViewer</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -933,7 +842,7 @@
                 <fieldItem>Record.LimitsEmailInvocations__c</fieldItem>
                 <identifier>RecordLimitsEmailInvocations__cField</identifier>
             </fieldInstance>
-        </itemInstances>        
+        </itemInstances>
         <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
         <type>Facet</type>
     </flexiPageRegions>
