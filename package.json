@@ -1,6 +1,6 @@
 {
   "name": "nebula-logger",
-  "version": "4.16.5",
+  "version": "4.17.1",
   "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
   "author": "Jonathan Gillespie",
   "license": "MIT",
@@ -69,8 +69,10 @@
     "test:apex:nocoverage": "npx sf apex run test --concise --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
     "test:apex:suite:core": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --code-coverage --detailed-coverage --output-dir ./test-coverage/apex",
     "test:apex:suite:core:nocoverage": "npx sf apex run test --concise --suite-names LoggerCore --wait 30 --result-format human --output-dir ./test-coverage/apex",
-    "test:lwc": "sfdx-lwc-jest --skipApiVersionCheck --coverage",
-    "test:lwc:nocoverage": "sfdx-lwc-jest --skipApiVersionCheck",
+    "test:lwc": "sfdx-lwc-jest --coverage",
+    "test:lwc:core": "sfdx-lwc-jest --coverage -- --testPathPattern nebula-logger/core/",
+    "test:lwc:core:nocoverage": "sfdx-lwc-jest -- --testPathPattern nebula-logger/core/",
+    "test:lwc:nocoverage": "sfdx-lwc-jest",
     "test:nocoverage": "npm run test:lwc:nocoverage && npm run test:apex:nocoverage"
   },
   "devDependencies": {
@@ -79,9 +81,9 @@
     "@cparra/apexdocs": "1.13.7",
     "@jongpie/sfdx-bummer-plugin": "^0.0.20",
     "@lwc/eslint-plugin-lwc": "^1.8.2",
-    "@salesforce/cli": "^2.82.6",
+    "@salesforce/cli": "^2.113.6",
     "@salesforce/eslint-config-lwc": "^3.6.0",
-    "@salesforce/sfdx-lwc-jest": "^7.0.1",
+    "@salesforce/sfdx-lwc-jest": "^7.4.0",
     "@salesforce/sfdx-scanner": "^4.11.0",
     "@types/jest-when": "^3.5.5",
     "eslint": "^8.57.0",

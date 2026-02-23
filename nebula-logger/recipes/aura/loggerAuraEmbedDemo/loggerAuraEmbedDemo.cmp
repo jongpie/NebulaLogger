@@ -2,6 +2,8 @@
   access="global"
   implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickAction,lightning:availableForFlowScreens"
 >
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <aura:handler name="render" value="{!this}" action="{!c.handleRender}" />
   <aura:attribute name="logMessage" type="String" default="Something to log" />
 
   <c:logger aura:id="logger" />
