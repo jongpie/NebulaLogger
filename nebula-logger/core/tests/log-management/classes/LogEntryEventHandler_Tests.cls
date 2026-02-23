@@ -4,8 +4,9 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
-@IsTest(IsParallel=false)
+@IsTest(IsParallel=true)
 private class LogEntryEventHandler_Tests {
+  private static final String AUTOMATED_PROCESS_USERNAME = 'autoproc@' + System.UserInfo.getOrganizationId();
   private static final String MOCK_TRANSACTION_ID = System.UUID.randomUUID().toString();
 
   private static Integer currentLogEntryNumber = 1;
@@ -597,11 +598,10 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
     Schema.User automatedProcessUser = [
       SELECT Id, TimeZoneSidKey
       FROM User
-      WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+      WHERE Username = :AUTOMATED_PROCESS_USERNAME AND Profile.Name = NULL
     ];
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
@@ -624,11 +624,10 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    String automatedProcessUsername = 'autoproc@' + System.UserInfo.getOrganizationId();
     Schema.User automatedProcessUser = [
       SELECT Id, TimeZoneSidKey
       FROM User
-      WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+      WHERE Username = :AUTOMATED_PROCESS_USERNAME AND Profile.Name = NULL
     ];
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
@@ -652,12 +651,19 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    Schema.User loggerScenarioOwner = LoggerMockDataCreator.createUser();
-    insert loggerScenarioOwner;
+    Schema.User loggingUser = [
+      SELECT Id, ProfileId, UserRoleId
+      FROM User
+      WHERE Username = :AUTOMATED_PROCESS_USERNAME AND Profile.Name = NULL
+    ];
+    Schema.User loggerScenarioOwner = [SELECT Id, ProfileId, UserRoleId FROM User WHERE Id = :System.UserInfo.getUserId()];
     LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
     insert loggerScenario;
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+    logEntryEvent.LoggedById__c = loggingUser.Id;
+    logEntryEvent.ProfileId__c = loggingUser.ProfileId;
     logEntryEvent.TransactionScenario__c = loggerScenario.UniqueId__c;
+    logEntryEvent.UserRoleId__c = loggingUser.UserRoleId;
     LoggerScenarioRule.setMock(
       new LoggerScenarioRule__mdt(IsEnabled__c = true, IsLogAssignmentEnabled__c = String.valueOf(true), Scenario__c = logEntryEvent.TransactionScenario__c)
     );
@@ -1389,6 +1395,7 @@ private class LogEntryEventHandler_Tests {
     logEntryEvent.TransactionId__c = MOCK_TRANSACTION_ID;
     logEntryEvent.UserLoggingLevel__c = System.LoggingLevel.INFO.name();
     logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
+    logEntryEvent.UserRoleId__c = System.UserInfo.getUserRoleId();
     logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(logEntryEvent, Schema.LogEntryEvent__e.EventUuid, System.UUID.randomUUID());
 
     return logEntryEvent;
