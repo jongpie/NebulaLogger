@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
-@IsTest(IsParallel=false)
+@IsTest(IsParallel=true)
 private class LoggerSettingsController_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests

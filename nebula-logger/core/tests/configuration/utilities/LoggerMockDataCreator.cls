@@ -22,16 +22,6 @@ public class LoggerMockDataCreator {
   private static Integer userMockUsernameCount = 0;
 
   /**
-   * @description Instances of `AggregateResult` can not be created directly in Apex.
-   *              This method uses a workaround to generate a mock, although it will not have any fields or aggregate values populated on the object.
-   * @return   The mock instance of `AggregateResult`
-   */
-  public static AggregateResult createAggregateResult() {
-    Map<String, Object> emptyAggregateKeyValues = new Map<String, Object>();
-    return (AggregateResult) System.JSON.deserialize(System.JSON.serialize(emptyAggregateKeyValues), AggregateResult.class);
-  }
-
-  /**
    * @description Creates a mock instance of `Approval.LockResult` - a mock is used instead of an actual instance
    *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
    *              record ID is automatically included.

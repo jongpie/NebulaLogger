@@ -6,7 +6,7 @@
 @SuppressWarnings(
   'PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount'
 )
-@IsTest(IsParallel=false)
+@IsTest(IsParallel=true)
 private class LogEntryEventBuilder_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests
@@ -1507,30 +1507,22 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_skip_stripping_inaccessible_fields_for_aggregate_result() {
-    Schema.User standardUser = LoggerMockDataCreator.createUser();
-    AggregateResult mockAggregateResult = LoggerMockDataCreator.createAggregateResult();
+    AggregateResult mockAggregateResult = [SELECT MAX(CreatedDate) FROM User];
 
-    LogEntryEventBuilder builder;
-    System.runAs(standardUser) {
-      LoggerSettings__c userSettings = getUserSettings();
-      userSettings.IsRecordFieldStrippingEnabled__c = true;
-      builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockAggregateResult);
-    }
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsRecordFieldStrippingEnabled__c = true;
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockAggregateResult);
 
     System.Assert.areEqual(System.JSON.serializePretty(mockAggregateResult), builder.getLogEntryEvent().RecordJson__c);
   }
 
   @IsTest
   static void it_should_skip_stripping_inaccessible_fields_for_aggregate_results() {
-    Schema.User standardUser = LoggerMockDataCreator.createUser();
-    List<AggregateResult> mockAggregateResults = new List<AggregateResult>{ LoggerMockDataCreator.createAggregateResult() };
+    List<AggregateResult> mockAggregateResults = [SELECT ProfileId, COUNT(Id) FROM User GROUP BY ProfileId LIMIT 10];
 
-    LogEntryEventBuilder builder;
-    System.runAs(standardUser) {
-      LoggerSettings__c userSettings = getUserSettings();
-      userSettings.IsRecordFieldStrippingEnabled__c = true;
-      builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockAggregateResults);
-    }
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsRecordFieldStrippingEnabled__c = true;
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true).setRecord(mockAggregateResults);
 
     System.Assert.areEqual(System.JSON.serializePretty(mockAggregateResults), builder.getLogEntryEvent().RecordJson__c);
   }

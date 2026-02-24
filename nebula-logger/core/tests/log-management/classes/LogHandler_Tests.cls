@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest(IsParallel=false)
+@IsTest(IsParallel=true)
 private class LogHandler_Tests {
   private static final String HIGH_PRIORITY = Schema.Log__c.Priority__c.getDescribe().getPicklistValues().get(0).getValue();
   private static final String MEDIUM_PRIORITY = Schema.Log__c.Priority__c.getDescribe().getPicklistValues().get(1).getValue();
@@ -235,6 +235,7 @@ private class LogHandler_Tests {
   static void it_should_set_owner_when_default_configured_with_user_id() {
     setupConfigurations();
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+    // TODO fix this
     Schema.User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
     insert expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
@@ -257,6 +258,7 @@ private class LogHandler_Tests {
   static void it_should_set_owner_when_default_configured_with_username() {
     setupConfigurations();
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+    // TODO fix this
     Schema.User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
     insert expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
