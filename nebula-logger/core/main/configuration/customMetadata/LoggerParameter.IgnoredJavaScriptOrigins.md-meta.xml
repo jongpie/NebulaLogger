@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Ignored JavaScript Origins</label>
+    <protected>false</protected>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">A comma-separated list of JavaScript file name patterns to ignore when parsing stack traces. For example: &apos;jquery,analytics.js,third-party-lib&apos;
+
+These patterns will be used to filter out utility libraries, third-party scripts, or other files that should not appear in stack traces. This helps clean up JavaScript stack traces for better readability and debugging.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string"></value>
+    </values>
+</CustomMetadata>

@@ -103,6 +103,25 @@ private class LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_should_return_constant_value_for_ignored_javascript_origins() {
+    List<String> mockValue = new List<String>{ 'c/someUtilityComponent', 'c/anotherWrapper' };
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IgnoredJavaScriptOrigins', Value__c = System.JSON.serialize(mockValue));
+    LoggerParameter.setMock(mockParameter);
+
+    List<String> returnedValue = LoggerParameter.IGNORED_JAVASCRIPT_ORIGINS;
+
+    System.Assert.areEqual(mockValue, returnedValue);
+  }
+
+  @IsTest
+  static void it_should_return_empty_list_as_default_for_ignored_javascript_origins() {
+    List<String> returnedValue = LoggerParameter.IGNORED_JAVASCRIPT_ORIGINS;
+
+    System.Assert.isNotNull(returnedValue);
+    System.Assert.areEqual(0, returnedValue.size(), 'Default value should be an empty list');
+  }
+
+  @IsTest
   static void it_should_return_constant_value_for_log_batch_purger_default_batch_size() {
     Integer mockValue = 1234;
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(

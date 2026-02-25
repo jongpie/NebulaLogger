@@ -43,6 +43,32 @@ private class ComponentLogger_Tests {
       Integer returnedOrdinal = componentLoggerSettings.supportedLoggingLevels.get(currentLoggingLevel.name());
       System.Assert.areEqual(currentLoggingLevel.ordinal(), returnedOrdinal);
     }
+    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins);
+    System.Assert.areEqual(LoggerParameter.IGNORED_JAVASCRIPT_ORIGINS, componentLoggerSettings.ignoredJavaScriptOrigins);
+  }
+
+  @IsTest
+  static void it_should_return_configured_ignored_javascript_origins_in_settings() {
+    List<String> mockIgnoredOrigins = new List<String>{ 'c/someUtilityComponent', 'c/anotherWrapper' };
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+      DeveloperName = 'IgnoredJavaScriptOrigins',
+      Value__c = System.JSON.serialize(mockIgnoredOrigins)
+    );
+    LoggerParameter.setMock(mockParameter);
+
+    ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
+
+    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins);
+    System.Assert.areEqual(mockIgnoredOrigins.size(), componentLoggerSettings.ignoredJavaScriptOrigins.size());
+    System.Assert.areEqual(mockIgnoredOrigins, componentLoggerSettings.ignoredJavaScriptOrigins);
+  }
+
+  @IsTest
+  static void it_should_return_empty_ignored_javascript_origins_by_default_in_settings() {
+    ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
+
+    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins);
+    System.Assert.areEqual(0, componentLoggerSettings.ignoredJavaScriptOrigins.size(), 'Default should be an empty list');
   }
 
   @IsTest
