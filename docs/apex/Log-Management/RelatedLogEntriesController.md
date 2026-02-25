@@ -10,7 +10,7 @@ Controller class for the lightning web component `related-log-entries`
 
 ### Methods
 
-#### `getQueryResult(Id recordId,String fieldSetName,Integer rowLimit,Integer rowOffset,String sortByFieldName,String sortDirection,String search)` → `LogEntryQueryResult`
+#### `getQueryResult(Id recordId,String fieldSetName,Integer rowLimit,String sortByFieldName,String sortDirection,String search)` → `LogEntryQueryResult`
 
 Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
 
@@ -21,7 +21,6 @@ Used by the component relatedLogEntries to get log entries for a particular reco
 | `recordId`        | Used to filter LogEntry**c records where RecordId**c == recordId |
 | `fieldSetName`    | The API/developer name of the field set                          |
 | `rowLimit`        | The max number of rows to query                                  |
-| `rowOffset`       | Reserved for future use                                          |
 | `sortByFieldName` | The field to sort by                                             |
 | `sortDirection`   | The direction to sort by (asc or desc))                          |
 | `search`          | An optional search term to filter by                             |
@@ -127,9 +126,5 @@ Contains the plural label of the log entry sObject, fetched using a describe cal
 ###### `records` → `List<LogEntry__c>`
 
 contains the log entry results from the query.
-
-###### `totalLogEntriesCount` → `Integer`
-
-Contains the number of records returned via the log entries query.
 
 ---

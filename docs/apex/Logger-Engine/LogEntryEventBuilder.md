@@ -36,6 +36,10 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 #### `aggregateQueriesMax` → `Integer`
 
+#### `apexCursorFetchCallsMax` → `Integer`
+
+#### `apexCursorRowsMax` → `Integer`
+
 #### `asyncCallsMax` → `Integer`
 
 #### `calloutsMax` → `Integer`

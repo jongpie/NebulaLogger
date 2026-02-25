@@ -200,27 +200,6 @@ private class LogManagementDataSelector_Tests {
   }
 
   @IsTest
-  static void it_returns_count_of_related_record_log_entries() {
-    Id targetRecordId = System.UserInfo.getUserId();
-    LoggerSObjectHandler.shouldExecute(false);
-    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
-    List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    LogEntry__c nonMatchingLogEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = 1);
-    nonMatchingLogEntry.Log__c = log.Id;
-    logEntries.add(nonMatchingLogEntry);
-    LogEntry__c matchingLogEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = 2);
-    matchingLogEntry.Log__c = log.Id;
-    matchingLogEntry.RecordId__c = targetRecordId;
-    logEntries.add(matchingLogEntry);
-    insert logEntries;
-
-    Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(targetRecordId);
-
-    System.Assert.areEqual(1, returnedCount);
-  }
-
-  @IsTest
   static void it_returns_deleteable_user_record_access() {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c deleteableRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
@@ -489,31 +468,6 @@ private class LogManagementDataSelector_Tests {
     List<Schema.Group> returnedResults = LogManagementDataSelector.getInstance().getQueuesByDeveloperName(targetQueueNames);
 
     System.Assert.areEqual(expectedResults, returnedResults);
-  }
-
-  @IsTest
-  static void it_returns_related_log_entries_for_specified_record_id() {
-    Id targetRecordId = System.UserInfo.getUserId();
-    LoggerSObjectHandler.shouldExecute(false);
-    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
-    List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    LogEntry__c nonMatchingLogEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = 1);
-    nonMatchingLogEntry.Log__c = log.Id;
-    logEntries.add(nonMatchingLogEntry);
-    LogEntry__c matchingLogEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = 2);
-    matchingLogEntry.Log__c = log.Id;
-    matchingLogEntry.RecordId__c = targetRecordId;
-    logEntries.add(matchingLogEntry);
-    insert logEntries;
-    String fieldsClause = String.join(new List<String>{ Schema.LogEntry__c.Id.toString(), Schema.LogEntry__c.Timestamp__c.toString() }, ', ');
-    String orderByClause = Schema.LogEntry__c.Timestamp__c.toString();
-    Integer rowLimit = 3;
-
-    List<LogEntry__c> returnedResults = LogManagementDataSelector.getInstance().getRecordLogEntries(targetRecordId, fieldsClause, orderByClause, rowLimit);
-
-    System.Assert.areEqual(1, returnedResults.size());
-    System.Assert.areEqual(matchingLogEntry.Id, returnedResults.get(0).Id);
   }
 
   @IsTest
