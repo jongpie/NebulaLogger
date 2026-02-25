@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.17.2.NEXT",
-      "versionName": "Bugfix: Modal Close Buttons Not Rendered Correctly",
-      "versionDescription": "Removed some SLDS classes from the modal X close buttons in several LWCs to the X is properly rendered",
+      "versionNumber": "4.17.3.NEXT",
+      "versionName": "relatedLogEntries LWC Improvements",
+      "versionDescription": "Improved relatedLogEntries LWC so it queries & finds even more LogEntry__c records, added support for picklist labels, improved layout so it visually better aligns with the appearance of standard related lists",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
