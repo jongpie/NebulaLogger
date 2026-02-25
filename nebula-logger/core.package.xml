@@ -735,6 +735,7 @@
         <members>LoggerParameter.EnableLoggerSystemMessages</members>
         <members>LoggerParameter.EnableStackTraceParsing</members>
         <members>LoggerParameter.EnableTagging</members>
+        <members>LoggerParameter.IgnoredJavaScriptOrigins</members>
         <members>LoggerParameter.LogBatchPurgerDefaultBatchSize</members>
         <members>LoggerParameter.LogEntryEventStreamDisplayFields</members>
         <members>LoggerParameter.NormalizeScenarioData</members>

@@ -168,4 +168,45 @@ describe('logger stack trace parsing tests', () => {
     expect(originStackTrace.functionName).toEqual('logInfoWithoutDebugExample');
     expect(originStackTrace.metadataType).toEqual('LightningComponentBundle');
   });
+
+  it('correctly applies instance-level ignored origins', async () => {
+    const loggerStackTrace = new LoggerStackTrace();
+    loggerStackTrace.setIgnoredOrigins(['jquery', 'analytics']);
+
+    // Create a mock error with a stack trace that includes ignored origins
+    const mockError = new Error('Test error');
+    mockError.stack = `Error: Test error
+    at someFunction (https://example.com/jquery.min.js:1:1)
+    at anotherFunction (https://example.com/analytics.js:2:2)
+    at validFunction (https://example.com/myComponent.js:3:3)`;
+
+    const originStackTrace = loggerStackTrace.parse(mockError);
+
+    // Should skip the ignored files and use the valid one
+    expect(originStackTrace.fileName).toContain('myComponent.js');
+    expect(originStackTrace.fileName).not.toContain('jquery');
+    expect(originStackTrace.fileName).not.toContain('analytics');
+  });
+
+  it('correctly applies global ignored origins', async () => {
+    // Set global ignored origins
+    LoggerStackTrace.setGlobalIgnoredOrigins(['global-ignored']);
+
+    const loggerStackTrace = new LoggerStackTrace();
+
+    // Create a mock error with a stack trace that includes globally ignored origins
+    const mockError = new Error('Test error');
+    mockError.stack = `Error: Test error
+    at someFunction (https://example.com/global-ignored.js:1:1)
+    at validFunction (https://example.com/myComponent.js:3:3)`;
+
+    const originStackTrace = loggerStackTrace.parse(mockError);
+
+    // Should skip the globally ignored file and use the valid one
+    expect(originStackTrace.fileName).toContain('myComponent.js');
+    expect(originStackTrace.fileName).not.toContain('global-ignored');
+
+    // Clean up global state
+    LoggerStackTrace.setGlobalIgnoredOrigins([]);
+  });
 });
