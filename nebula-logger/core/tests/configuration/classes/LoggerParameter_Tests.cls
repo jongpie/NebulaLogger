@@ -110,7 +110,7 @@ private class LoggerParameter_Tests {
 
     List<String> returnedValue = LoggerParameter.IGNORED_JAVASCRIPT_ORIGINS;
 
-    System.Assert.areEqual(mockValue, returnedValue);
+    System.Assert.areEqual(mockValue, returnedValue, 'Returned value does not match expected parameter value');
   }
 
   @IsTest

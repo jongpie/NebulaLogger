@@ -43,8 +43,7 @@ private class ComponentLogger_Tests {
       Integer returnedOrdinal = componentLoggerSettings.supportedLoggingLevels.get(currentLoggingLevel.name());
       System.Assert.areEqual(currentLoggingLevel.ordinal(), returnedOrdinal);
     }
-    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins);
-    System.Assert.areEqual(LoggerParameter.IGNORED_JAVASCRIPT_ORIGINS, componentLoggerSettings.ignoredJavaScriptOrigins);
+    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins, 'ignoredJavaScriptOrigins should never be null but empty list by default');
   }
 
   @IsTest
@@ -58,16 +57,20 @@ private class ComponentLogger_Tests {
 
     ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
 
-    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins);
-    System.Assert.areEqual(mockIgnoredOrigins.size(), componentLoggerSettings.ignoredJavaScriptOrigins.size());
-    System.Assert.areEqual(mockIgnoredOrigins, componentLoggerSettings.ignoredJavaScriptOrigins);
+    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins, 'ignoredJavaScriptOrigins wrongly returned as null when a value was configured');
+    System.Assert.areEqual(
+      mockIgnoredOrigins.size(),
+      componentLoggerSettings.ignoredJavaScriptOrigins.size(),
+      'Size of ignored JavaScript origins list did not match expected size'
+    );
+    System.Assert.areEqual(mockIgnoredOrigins, componentLoggerSettings.ignoredJavaScriptOrigins, 'Ignored JavaScript origins did not match expected values');
   }
 
   @IsTest
   static void it_should_return_empty_ignored_javascript_origins_by_default_in_settings() {
     ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
 
-    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins);
+    System.Assert.isNotNull(componentLoggerSettings.ignoredJavaScriptOrigins, 'ignoredJavaScriptOrigins should never be null but empty list by default');
     System.Assert.areEqual(0, componentLoggerSettings.ignoredJavaScriptOrigins.size(), 'Default should be an empty list');
   }
 
