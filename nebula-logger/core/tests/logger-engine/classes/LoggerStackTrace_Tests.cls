@@ -265,6 +265,38 @@ private class LoggerStackTrace_Tests {
     System.Assert.isTrue(stackTrace.ParsedStackTraceString.contains(externalEntryPointStackTrace));
   }
 
+  @IsTest
+  static void it_should_ignore_stack_trace_line_when_matching_class_name_has_been_declaratively_ignored() {
+    String ignoredClassName = 'SomeIgnoredUtilityClass';
+    String ignoredStackTraceLine = 'Class.' + ignoredClassName + '.someMethod: line 99999, column 1';
+    String nonIgnoredTopLevelClassName = 'TheNextClassNameInTheStack';
+    Integer nonIgnoredTopLevelClassLineNumber = 987;
+    String nonIgnoredMethodName = 'doSomething';
+    String expectedOriginLocation = nonIgnoredTopLevelClassName + '.' + nonIgnoredMethodName;
+    String relevantStackTraceLines =
+      'Class.' +
+      expectedOriginLocation +
+      ': line ' +
+      nonIgnoredTopLevelClassLineNumber +
+      ', column 1' +
+      '\nAnonymousBlock: line 1, column 1';
+    String mockStackTrace = ignoredStackTraceLine + '\n' + relevantStackTraceLines;
+
+    LoggerConfigurationSelector.useMocks();
+    LoggerParameter__mdt ignoredOriginsParameter = new LoggerParameter__mdt(DeveloperName = 'IgnoredApexOrigins', Value__c = '["' + ignoredClassName + '"]');
+    LoggerConfigurationSelector.mockLoggerParameters.put(ignoredOriginsParameter.DeveloperName, ignoredOriginsParameter);
+
+    LoggerStackTrace stackTrace = new LoggerStackTrace(mockStackTrace);
+
+    System.Assert.areEqual(LoggerStackTrace.SourceLanguage.Apex, stackTrace.Language);
+    System.Assert.areEqual(expectedOriginLocation, stackTrace.Location);
+    System.Assert.areEqual(relevantStackTraceLines, stackTrace.ParsedStackTraceString);
+    System.Assert.areEqual(nonIgnoredTopLevelClassName, stackTrace.Source.ApiName);
+    System.Assert.areEqual(nonIgnoredMethodName, stackTrace.Source.ActionName);
+    System.Assert.areEqual(nonIgnoredTopLevelClassLineNumber, stackTrace.Source.LineNumber);
+    System.Assert.areEqual(LoggerStackTrace.SourceMetadataType.ApexClass, stackTrace.Source.MetadataType);
+  }
+
   private class DebugStringExample {
     private System.Exception constructorStackTraceGenerator;
     private System.Exception methodStackTraceGenerator;
