@@ -19,7 +19,7 @@ public with sharing class RelatedLogEntriesController {
    * @param  recordId        Used to filter LogEntry__c records where RecordId__c == recordId
    * @param  fieldSetName    The API/developer name of the field set
    * @param  rowLimit        The max number of rows to query
-   * @param  rowOffset       Reserved for future use
+
    * @param  sortByFieldName The field to sort by
    * @param  sortDirection   The direction to sort by (asc or desc))
    * @param  search          An optional search term to filter by
@@ -31,57 +31,52 @@ public with sharing class RelatedLogEntriesController {
     Id recordId,
     String fieldSetName,
     Integer rowLimit,
-    Integer rowOffset,
     String sortByFieldName,
     String sortDirection,
     String search
   ) {
-    // TODO use rowOffset to implement infinite-loading
     FieldSetMetadata fieldSetMetdata = new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
 
     String fieldsClause = getFieldsClause(fieldSetMetdata.fields);
     String orderByClause = getOrderByClause(sortByFieldName, sortDirection);
 
-    List<LogEntry__c> records;
-    if (String.isNotBlank(search) && search.length() >= 3) {
-      records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
-    } else {
-      records = LogManagementDataSelector.getInstance().getRecordLogEntries(recordId, fieldsClause, orderByClause, rowLimit);
-    }
-
-    // Somewhat redundant security check for FLS (but extra security > less security)
-    System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(System.AccessType.READABLE, records);
-    records = securityDecision.getRecords();
-
-    Integer totalLogEntriesCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(recordId);
-
-    return new LogEntryQueryResult(fieldSetMetdata, records, totalLogEntriesCount);
+    List<LogEntry__c> records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
+    return new LogEntryQueryResult(fieldSetMetdata, records);
   }
-
-  // Private static helper methods
 
   @SuppressWarnings('PMD.ExcessiveParameterList')
   private static List<LogEntry__c> search(Id recordId, String searchTerm, String fieldsClause, String orderByClause, Integer rowLimit) {
-    searchTerm = '\'*' + String.escapeSingleQuotes(searchTerm) + '*\'';
+    // SOSL can search for a 15-character ID, but for some reason, using the 18-character version returns no results (╯‵□′)╯︵┻━┻
+    String fullSearchExpression = '*' + String.escapeSingleQuotes(String.valueOf(recordId).left(15)) + '*';
+    if (String.isNotBlank(searchTerm)) {
+      fullSearchExpression += ' AND *' + String.escapeSingleQuotes(searchTerm) + '*';
+    }
+    fullSearchExpression = '\'' + fullSearchExpression + '\'';
 
     List<Object> searchTextReplacements = new List<Object>{
-      searchTerm,
+      fullSearchExpression,
       String.valueOf(Schema.LogEntry__c.SObjectType),
       fieldsClause,
-      String.valueOf(Schema.LogEntry__c.RecordId__c),
       orderByClause,
       rowLimit
     };
-    String logEntrySearch = 'FIND {0} IN ALL FIELDS RETURNING {1}({2} WHERE {3} = :recordId ORDER BY {4} LIMIT {5})';
-    logEntrySearch = String.format(logEntrySearch, searchTextReplacements);
+    String logEntrySearch = String.format('FIND {0} IN ALL FIELDS RETURNING {1} ({2} ORDER BY {3} LIMIT {4})', searchTextReplacements);
 
-    return (List<LogEntry__c>) System.Search.query(logEntrySearch).get(0);
+    List<LogEntry__c> matches = (List<LogEntry__c>) System.Search.query(logEntrySearch).get(0);
+
+    // Somewhat redundant security check for FLS (but extra security > less security)
+    return System.Security.stripInaccessible(System.AccessType.READABLE, matches).getRecords();
   }
 
   private static String getFieldsClause(List<FieldMetadata> fields) {
-    List<String> fieldNames = new List<String>();
+    // Make sure these fields are always included, even if they're not in the fieldset, in case the LWC needs them
+    Set<String> fieldNames = new Set<String>{
+      LogEntry__c.DatabaseResultJson__c.toString(),
+      LogEntry__c.RecordId__c.toString(),
+      LogEntry__c.RecordJson__c.toString()
+    };
     for (FieldMetadata fieldMetadata : fields) {
-      fieldNames.add(fieldMetadata.fieldName);
+      fieldNames.add(fieldMetadata.type == 'picklist' ? ('toLabel(' + fieldMetadata.fieldName + ')') : fieldMetadata.fieldName);
 
       // For lookups, also include the display name of parent object
       if (fieldMetadata.lookupDisplayFieldName != null) {
@@ -186,19 +181,12 @@ public with sharing class RelatedLogEntriesController {
     @AuraEnabled
     public List<LogEntry__c> records { get; set; }
 
-    /**
-     * @description Contains the number of records returned via the log entries query.
-     */
-    @AuraEnabled
-    public Integer totalLogEntriesCount { get; set; }
-
-    private LogEntryQueryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records, Integer totalLogEntriesCount) {
+    private LogEntryQueryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records) {
       this.fieldSet = fieldSetMetadata;
       this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
       this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
       this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
       this.records = records;
-      this.totalLogEntriesCount = totalLogEntriesCount;
     }
   }
 
@@ -235,7 +223,7 @@ public with sharing class RelatedLogEntriesController {
         }
       }
 
-      String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
+      String namespacePrefix = String.isBlank(fieldSet.getNamespace()) ? '' : fieldSet.getNamespace() + '__';
 
       this.label = fieldSet.getLabel();
       this.name = namespacePrefix + fieldSet.getName();
