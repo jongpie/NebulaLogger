@@ -25,6 +25,9 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String ARGUMENT_RECORD = 'record';
   private static final String ARGUMENT_RECORD_LIST = 'recordList';
   private static final String ARGUMENT_RECORD_MAP = 'recordMap';
+  private static final String ARGUMENT_RESULT = 'result';
+  private static final String ARGUMENT_RESULT_LIST = 'resultList';
+  private static final String ARGUMENT_RESULT_TYPE = 'resultType';
   private static final String ARGUMENT_REQUEST_ID = 'requestId';
   private static final String ARGUMENT_SAVE_LOG = 'saveLog';
   private static final String ARGUMENT_SAVE_METHOD_NAME = 'saveMethodName';
@@ -157,6 +160,11 @@ global without sharing class CallableLogger implements System.Callable {
       }
       if (input.containsKey(ARGUMENT_RECORD_MAP)) {
         logEntryEventBuilder.setRecord((Map<Id, SObject>) input.get(ARGUMENT_RECORD_MAP));
+      }
+      if (input.containsKey(ARGUMENT_RESULT)) {
+        logEntryEventBuilder.setDatabaseResult((Object) input.get(ARGUMENT_RESULT), (System.Type) input.get(ARGUMENT_RESULT_TYPE));
+      } else if (input.containsKey(ARGUMENT_RESULT_LIST)) {
+        logEntryEventBuilder.setDatabaseResult((List<Object>) input.get(ARGUMENT_RESULT_LIST), (System.Type) input.get(ARGUMENT_RESULT_TYPE));
       }
       if (input.containsKey(ARGUMENT_TAGS)) {
         List<Object> tags = (List<Object>) input.get(ARGUMENT_TAGS);
