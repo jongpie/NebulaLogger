@@ -85,7 +85,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     this.currentSObjectType = input.sobjectType;
 
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.info('Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
+      Logger.info('Nebula Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
     }
     Logger.saveLog();
 
@@ -123,7 +123,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
       Logger.saveLog();
     } catch (System.Exception apexException) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.error('Logger - Error deleting logs', apexException);
+        Logger.error('Nebula Logger - Error deleting logs', apexException);
       }
       Logger.saveLog();
       throw apexException;
@@ -148,10 +148,14 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.info(
-        new LogMessage('Logger - Finished LogBatchPurger job for {0}, {1} total log records processed', this.currentSObjectType, this.totalProcessedRecords)
+        new LogMessage(
+          'Nebula Logger - Finished LogBatchPurger job for {0}, {1} total log records processed',
+          this.currentSObjectType,
+          this.totalProcessedRecords
+        )
       );
       if (nextBatchJobId != null) {
-        Logger.info(new LogMessage('Logger - Starting a new instance of LogBatchPurger job, job ID is: {0}', nextBatchJobId));
+        Logger.info(new LogMessage('Nebula Logger - Starting a new instance of LogBatchPurger job, job ID is: {0}', nextBatchJobId));
       }
       Logger.saveLog();
     }

@@ -61,7 +61,7 @@
             <apex:commandButton action="{!cancel}" value="Cancel" styleClass="slds-button slds-button_neutral" />
             <apex:commandButton
               action="{!deleteSelectedLogs}"
-              onclick="showSuccessMessage();"
+              onclick="showSuccessMessage()"
               value="Delete Logs"
               styleClass="slds-button slds-button_destructive"
             />

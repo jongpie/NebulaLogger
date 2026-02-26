@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "64.0",
+  "sourceApiVersion": "65.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.17.3.NEXT",
-      "versionName": "relatedLogEntries LWC Improvements",
-      "versionDescription": "Improved relatedLogEntries LWC so it queries & finds even more LogEntry__c records, added support for picklist labels, improved layout so it visually better aligns with the appearance of standard related lists",
+      "versionNumber": "4.18.0.NEXT",
+      "versionName": "Winter '26 Release",
+      "versionDescription": "Updated all metadata to API v65.0, added minimal CRUD access to LoggerEndUser permission set, upgraded to code-analyzer & resolved several scan violations logEntryPageSection LWC to LogEntry__c page, improved testing in Apex & LWC",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {

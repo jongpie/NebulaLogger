@@ -1,0 +1,1337 @@
+# ======================================================================
+# CODE ANALYZER CONFIGURATION
+# To learn more about this configuration, visit:
+#   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/config-custom.html
+# ======================================================================
+
+config_root: null
+log_folder: null
+
+# Rule override settings of the format rules.{engine_name}.{rule_name}.{property_name} = {override_value} where:
+#   {engine_name} is the name of the engine containing the rule that you want to override.
+#   {rule_name} is the name of the rule that you want to override.
+#   {property_name} can either be:
+#     'severity' - [Optional] The severity level value that you want to use to override the default severity level for the rule
+#                  Possible values: 1 or 'Critical', 2 or 'High', 3 or 'Moderate', 4 or 'Low', 5 or 'Info'
+#     'tags'     - [Optional] The string array of tag values that you want to use to override the default tags for the rule
+# ---- [Example usage]: ---------------------
+# rules:
+#   eslint:
+#     sort-vars:
+#       severity: "Info"
+#       tags: ["Recommended", "Suggestion"]
+# -------------------------------------------
+rules:
+  # ======================================================================
+  # ESLINT ENGINE RULE OVERRIDES
+  # ======================================================================
+  eslint:
+    '@lwc/lwc/no-deprecated':
+      severity: 3
+      tags:
+        - Recommended
+        - Javascript
+    '@lwc/lwc/no-disallowed-lwc-imports':
+      severity: 3
+      tags:
+        - Recommended
+        - Javascript
+    '@lwc/lwc/no-unexpected-wire-adapter-usages':
+      severity: 3
+      tags:
+        - Recommended
+        - Javascript
+    '@lwc/lwc/no-unknown-wire-adapters':
+      severity: 3
+      tags:
+        - Recommended
+        - Javascript
+    '@lwc/lwc/valid-api':
+      severity: 3
+      tags:
+        - Recommended
+        - Javascript
+    '@lwc/lwc/valid-track':
+      severity: 3
+      tags:
+        - Recommended
+        - Javascript
+    '@lwc/lwc/valid-wire':
+      severity: 3
+      tags:
+        - Recommended
+        - Javascript
+    '@typescript-eslint/ban-ts-comment':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-array-constructor':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/no-duplicate-enum-values':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-empty-object-type':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/no-explicit-any':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/no-extra-non-null-assertion':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-misused-new':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-namespace':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/no-non-null-asserted-optional-chain':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-require-imports':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-this-alias':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/no-unnecessary-type-constraint':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/no-unsafe-declaration-merging':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-unsafe-function-type':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-unused-expressions':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/no-unused-vars':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/no-wrapper-object-types':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Typescript
+    '@typescript-eslint/prefer-as-const':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/prefer-namespace-keyword':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    '@typescript-eslint/triple-slash-reference':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Typescript
+    'constructor-super':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'for-direction':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'getter-return':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-async-promise-executor':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-case-declarations':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-class-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-compare-neg-zero':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-cond-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-const-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-constant-condition':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-control-regex':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-debugger':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-delete-var':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-dupe-args':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-dupe-class-members':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-dupe-else-if':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-dupe-keys':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-duplicate-case':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-empty':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-empty-character-class':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-empty-pattern':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-ex-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-extra-boolean-cast':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-fallthrough':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-func-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-global-assign':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-import-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-inner-declarations':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-invalid-regexp':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-irregular-whitespace':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-loss-of-precision':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-misleading-character-class':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-new-symbol':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-nonoctal-decimal-escape':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-obj-calls':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-octal':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-prototype-builtins':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-redeclare':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+    'no-regex-spaces':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-self-assign':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-setter-return':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-shadow-restricted-names':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-sparse-arrays':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-this-before-super':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-undef':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-unexpected-multiline':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-unreachable':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-unsafe-finally':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-unsafe-negation':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-unsafe-optional-chaining':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-unused-labels':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-unused-vars':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+    'no-useless-backreference':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'no-useless-catch':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-useless-escape':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-var':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'no-with':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'prefer-const':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'prefer-rest-params':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'prefer-spread':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'require-yield':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Javascript
+        - Typescript
+    'use-isnan':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+    'valid-typeof':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Javascript
+        - Typescript
+
+  # ======================================================================
+  # RETIRE-JS ENGINE RULE OVERRIDES
+  # ======================================================================
+  retire-js:
+    'LibraryWithKnownCriticalSeverityVulnerability':
+      severity: 1
+      tags:
+        - Recommended
+        - Security
+        - Javascript
+    'LibraryWithKnownHighSeverityVulnerability':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Javascript
+    'LibraryWithKnownMediumSeverityVulnerability':
+      severity: 3
+      tags:
+        - Recommended
+        - Security
+        - Javascript
+    'LibraryWithKnownLowSeverityVulnerability':
+      severity: 4
+      tags:
+        - Recommended
+        - Security
+        - Javascript
+
+  # ======================================================================
+  # REGEX ENGINE RULE OVERRIDES
+  # ======================================================================
+  regex:
+    'NoTrailingWhitespace':
+      severity: 5
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'AvoidTermsWithImplicitBias':
+      severity: 5
+      tags:
+        - Recommended
+        - BestPractices
+    'AvoidOldSalesforceApiVersions':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Xml
+    'AvoidGetHeapSizeInLoop':
+      severity: 2
+      tags:
+        - Recommended
+        - Performance
+        - Apex
+    'MinVersionForAbstractVirtualClassesWithPrivateMethod':
+      severity: 2
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+
+  # ======================================================================
+  # CPD ENGINE RULE OVERRIDES
+  # ======================================================================
+  cpd:
+    'DetectCopyPasteForApex':
+      severity: 5
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'DetectCopyPasteForJavascript':
+      severity: 5
+      tags:
+        - Recommended
+        - Design
+        - Javascript
+    'DetectCopyPasteForTypescript':
+      severity: 5
+      tags:
+        - Recommended
+        - Design
+        - Typescript
+    'DetectCopyPasteForVisualforce':
+      severity: 5
+      tags:
+        - Recommended
+        - Design
+        - Visualforce
+
+  # ======================================================================
+  # PMD ENGINE RULE OVERRIDES
+  # ======================================================================
+  pmd:
+    'ApexBadCrypto':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexCRUDViolation':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexCSRF':
+      severity: 1
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexDangerousMethods':
+      severity: 3
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexDoc':
+      severity: 4
+      tags:
+        - Recommended
+        - Documentation
+        - Apex
+    'ApexInsecureEndpoint':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexOpenRedirect':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexSharingViolations':
+      severity: 3
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexSOQLInjection':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexSuggestUsingNamedCred':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexUnitTestClassShouldHaveAsserts':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'ApexUnitTestClassShouldHaveRunAs':
+      severity: 4
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'ApexUnitTestMethodShouldHaveIsTestAnnotation':
+      severity: 2
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'ApexUnitTestShouldNotUseSeeAllDataTrue':
+      severity: 2
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'ApexAssertionsShouldIncludeMessage':
+      severity: 4
+      tags:
+        - NotRecommended
+        - Apex
+    'ApexXSSFromEscapeFalse':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'ApexXSSFromURLParam':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Apex
+    'AvoidDebugStatements':
+      severity: 4
+      tags:
+        - Recommended
+        - Performance
+        - Apex
+    'AvoidDeeplyNestedIfStmts':
+      severity: 3
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'AvoidDirectAccessTriggerMap':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'AvoidGlobalModifier':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'AvoidHardcodingId':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'AvoidLogicInTrigger':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'AvoidNonExistentAnnotations':
+      severity: 4
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'AvoidNonRestrictiveQueries':
+      severity: 4
+      tags:
+        - Recommended
+        - Performance
+        - Apex
+    'ClassNamingConventions':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'CognitiveComplexity':
+      severity: 4
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'CyclomaticComplexity':
+      severity: 4
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'DebugsShouldUseLoggingLevel':
+      severity: 4
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'EagerlyLoadedDescribeSObjectResult':
+      # TODO revisit this rule --> change the severity back to the original value of 2
+      severity: 4
+      tags:
+        - Recommended
+        - Performance
+        - Apex
+    'EmptyCatchBlock':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'EmptyIfStmt':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'EmptyStatementBlock':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'EmptyTryOrFinallyBlock':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'EmptyWhileStmt':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'ExcessiveClassLength':
+      severity: 3
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'ExcessiveParameterList':
+      severity: 3
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'ExcessivePublicCount':
+      severity: 3
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'FieldDeclarationsShouldBeAtStart':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'FieldNamingConventions':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'ForLoopsMustUseBraces':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'FormalParameterNamingConventions':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'IfElseStmtsMustUseBraces':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'IfStmtsMustUseBraces':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'InaccessibleAuraEnabledGetter':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'LocalVariableNamingConventions':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'MethodNamingConventions':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'MethodWithSameNameAsEnclosingClass':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'NcssConstructorCount':
+      severity: 4
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'NcssMethodCount':
+      severity: 4
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'OneDeclarationPerLine':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'OperationWithHighCostInLoop':
+      severity: 3
+      tags:
+        - Recommended
+        - Performance
+        - Apex
+    'OperationWithLimitsInLoop':
+      severity: 3
+      tags:
+        - Recommended
+        - Performance
+        - Apex
+    'OverrideBothEqualsAndHashcode':
+      severity: 2
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'PropertyNamingConventions':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+    'QueueableWithoutFinalizer':
+      severity: 4
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'StdCyclomaticComplexity':
+      severity: 4
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'TestMethodsMustBeInTestClasses':
+      severity: 3
+      tags:
+        - Recommended
+        - ErrorProne
+        - Apex
+    'TooManyFields':
+      severity: 3
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'UnusedLocalVariable':
+      severity: 3
+      tags:
+        - Recommended
+        - BestPractices
+        - Apex
+    'UnusedMethod':
+      severity: 3
+      tags:
+        - Recommended
+        - Design
+        - Apex
+    'VfCsrf':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Visualforce
+    'VfHtmlStyleTagXss':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Visualforce
+    'VfUnescapeEl':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Visualforce
+    'WhileLoopsMustUseBraces':
+      severity: 3
+      tags:
+        - Recommended
+        - CodeStyle
+        - Apex
+
+  # ======================================================================
+  # FLOWTEST ENGINE RULE OVERRIDES
+  # ======================================================================
+  flowtest:
+    'PreventPassingUserDataIntoElementWithoutSharing':
+      severity: 2
+      tags:
+        - Recommended
+        - Security
+        - Xml
+    'PreventPassingUserDataIntoElementWithSharing':
+      severity: 4
+      tags:
+        - Recommended
+        - Security
+        - Xml
+
+# Engine specific custom configuration settings of the format engines.{engine_name}.{property_name} = {value} where:
+#   {engine_name} is the name of the engine containing the setting that you want to override.
+#   {property_name} is the name of a property that you would like to override.
+# Each engine may have its own set of properties available to help customize that particular engine's behavior.
+engines:
+  # ======================================================================
+  # ESLINT ENGINE CONFIGURATION
+  # To learn more about this configuration, visit:
+  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-eslint.html#eslint-configuration-reference
+  # ======================================================================
+  eslint:
+    # Whether to turn off the 'eslint' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: false
+
+    # Your project's main ESLint configuration file. May be an absolute path or a path relative to the config_root.
+    # If null and auto_discover_eslint_config is true, then Code Analyzer will attempt to discover/apply it automatically.
+    # Currently only legacy ESLInt config files are supported.
+    # See https://eslint.org/docs/v8.x/use/configure/configuration-files to learn more.
+    eslint_config_file: 'eslint.config.mjs'
+
+    # Your project's ".eslintignore" file. May be an absolute path or a path relative to the config_root.
+    # If null and auto_discover_eslint_config is true, then Code Analyzer will attempt to discover/apply it automatically.
+    # See https://eslint.org/docs/v8.x/use/configure/ignore#the-eslintignore-file to learn more.
+    eslint_ignore_file: null
+
+    # Whether to have Code Analyzer automatically discover/apply any ESLint configuration and ignore files from your workspace.
+    auto_discover_eslint_config: false
+
+    # Whether to turn off the default base configuration that supplies the standard ESLint rules for JavaScript files.
+    disable_javascript_base_config: true
+
+    # Whether to turn off the default base configuration that supplies the LWC rules for JavaScript files.
+    disable_lwc_base_config: true
+
+    # Whether to turn off the default base configuration that supplies the standard rules for TypeScript files.
+    disable_typescript_base_config: true
+
+    # Extensions of the files in your workspace that will be used to discover rules.
+    # To associate file extensions to the standard ESLint JavaScript rules, LWC rules, or custom JavaScript-based
+    # rules, add them under the 'javascript' language. To associate file extensions to the standard TypeScript
+    # rules or custom TypeScript-based rules, add them under the 'typescript' language. To allow for the
+    # discovery of custom rules that are associated with any other language, then add the associated file
+    # extensions under the 'other' language.
+    file_extensions:
+      javascript:
+        - .js
+        - .cjs
+        - .mjs
+      typescript:
+        - .ts
+      other: []
+
+  # ======================================================================
+  # RETIRE-JS ENGINE CONFIGURATION
+  # To learn more about this configuration, visit:
+  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-retire-js.html#retirejs-configuration-reference
+  # ======================================================================
+  retire-js:
+    # Whether to turn off the 'retire-js' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: false
+
+  # ======================================================================
+  # REGEX ENGINE CONFIGURATION
+  # To learn more about this configuration, visit:
+  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-regex.html#regex-configuration-reference
+  # ======================================================================
+  regex:
+    # Whether to turn off the 'regex' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: false
+
+    # Custom rules to be added to the 'regex' engine of the format custom_rules.{rule_name}.{rule_property_name} = {value} where:
+    #   {rule_name} is the name you would like to give to your custom rule
+    #   {rule_property_name} is the name of one of the rule properties. You may specify the following rule properties:
+    #     'regex'             - The regular expression that triggers a violation when matched against the contents of a file.
+    #     'file_extensions'   - The extensions of the files that you would like to test the regular expression against.
+    #     'description'       - A description of the rule's purpose
+    #     'violation_message' - [Optional] The message emitted when a rule violation occurs.
+    #                           This message is intended to help the user understand the violation.
+    #                           Default: 'A match of the regular expression {regex} was found for rule {rule_name}: {description}'
+    #     'severity'          - [Optional] The severity level to apply to this rule by default.
+    #                           Possible values: 1 or 'Critical', 2 or 'High', 3 or 'Moderate', 4 or 'Low', 5 or 'Info'
+    #                           Default: 3
+    #     'tags'              - [Optional] The string array of tag values to apply to this rule by default.
+    #                           Default: ['Recommended']
+    # ---- [Example usage]: ---------------------
+    # engines:
+    #   regex:
+    #     custom_rules:
+    #       "NoTodoComments":
+    #         regex: /\/\/[ \t]*TODO/gi
+    #         file_extensions: [".apex", ".cls", ".trigger"]
+    #         description: "Prevents TODO comments from being in apex code."
+    #         violation_message: "A comment with a TODO statement was found. Please remove TODO statements from your apex code."
+    #         severity: "Info"
+    #         tags: ["TechDebt"]
+    # -------------------------------------------
+    custom_rules: {}
+
+  # ======================================================================
+  # CPD ENGINE CONFIGURATION
+  # To learn more about this configuration, visit:
+  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-cpd.html#cpd-configuration-reference
+  # ======================================================================
+  cpd:
+    # Whether to turn off the 'cpd' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: false
+
+    # Indicates the specific 'java' command associated with the JRE or JDK to use for the 'cpd' engine.
+    # May be provided as the name of a command that exists on the path, or an absolute file path location.
+    # If unspecified, or specified as null, then an attempt will be made to automatically discover a 'java' command from your environment.
+    java_command: null # Last calculated by the config command as:
+
+    # Specifies the list of file extensions to associate to each rule language.
+    # The rule(s) associated with a given language will run against all the files in your workspace containing one of
+    # the specified file extensions. Each file extension can only be associated to one language. If a specific language
+    # is not specified, then a set of default file extensions for that language will be used.
+    file_extensions:
+      apex:
+        - .cls
+        - .trigger
+      html:
+        - .html
+        - .htm
+        - .xhtml
+        - .xht
+        - .shtml
+      javascript:
+        - .js
+        - .cjs
+        - .mjs
+      typescript:
+        - .ts
+      visualforce:
+        - .page
+        - .component
+      xml:
+        - .xml
+
+    # Specifies the minimum tokens threshold for each rule language.
+    # The minimum tokens threshold is the number of tokens required to be in a duplicate block of code in order to be
+    # reported as a violation. The concept of a token may be defined differently per language, but in general it is a
+    # distinct basic element of source code. For example, this could be language specific keywords, identifiers,
+    # operators, literals, and more. See https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html to learn more.
+    # If a value for a language is unspecified, then the default value of 100 will be used for that language.
+    minimum_tokens:
+      apex: 100
+      html: 100
+      javascript: 100
+      typescript: 100
+      visualforce: 100
+      xml: 100
+
+    # Indicates whether to ignore multiple copies of files of the same name and length.
+    skip_duplicate_files: false
+
+  # ======================================================================
+  # PMD ENGINE CONFIGURATION
+  # To learn more about this configuration, visit:
+  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-pmd.html#pmd-configuration-reference
+  # ======================================================================
+  pmd:
+    # Whether to turn off the 'pmd' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: false
+
+    # Indicates the specific 'java' command associated with the JRE or JDK to use for the 'pmd' engine.
+    # May be provided as the name of a command that exists on the path, or an absolute file path location.
+    # If unspecified, or specified as null, then an attempt will be made to automatically discover a 'java' command from your environment.
+    java_command: null # Last calculated by the config command as:
+
+    # Specifies the list of file extensions to associate to each rule language.
+    # The rule(s) associated with a given language will run against all the files in your workspace containing one of
+    # the specified file extensions. Each file extension can only be associated to one language. If a specific language
+    # is not specified, then a set of default file extensions for that language will be used.
+    file_extensions:
+      apex:
+        - .cls
+        - .trigger
+      html:
+        - .html
+        - .htm
+        - .xhtml
+        - .xht
+        - .shtml
+      javascript:
+        - .js
+        - .cjs
+        - .mjs
+      typescript:
+        - .ts
+      visualforce:
+        - .page
+        - .component
+      xml:
+        - .xml
+
+    # List of jar files and/or folders to add the Java classpath when running PMD.
+    # Each entry may be given as an absolute path or a relative path to 'config_root'.
+    # This field is primarily used to supply custom Java based rule definitions to PMD.
+    # See https://pmd.github.io/pmd/pmd_userdocs_extending_writing_java_rules.html
+    java_classpath_entries: []
+
+    # List of xml ruleset files containing custom PMD rules to be made available for rule selection.
+    # Each ruleset must be an xml file that is either:
+    #   - on disk (provided as an absolute path or a relative path to 'config_root')
+    #   - or a relative resource found on the Java classpath.
+    # Not all custom rules can be fully defined within an xml ruleset file. For example, Java based rules may be defined in jar files.
+    # In these cases, you will need to also add your additional files to the Java classpath using the 'java_classpath_entries' field.
+    # See https://pmd.github.io/pmd/pmd_userdocs_making_rulesets.html to learn more about PMD rulesets.
+    custom_rulesets: []
+
+  # ======================================================================
+  # FLOWTEST ENGINE CONFIGURATION
+  # To learn more about this configuration, visit:
+  #   https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/guide/engine-flowtest.html#flowtest-configuration-reference
+  # ======================================================================
+  flow:
+    # Whether to turn off the 'flowtest' engine so that it is not included when running Code Analyzer commands.
+    disable_engine: true
+
+    # Indicates the specific Python command to use for the 'flowtest' engine.
+    # May be provided as the name of a command that exists on the path, or an absolute file path location.
+    # If unspecified, or specified as null, then an attempt will be made to automatically discover a Python command from your environment.
+    python_command: null
+# ======================================================================
+# END OF CODE ANALYZER CONFIGURATION
+# ======================================================================

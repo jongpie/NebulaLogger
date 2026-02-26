@@ -574,6 +574,7 @@ public class LoggerParameter {
    * @return                        The `Boolean` value configured in the matching instance of `LoggerParameter__mdt`
    *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public static Boolean getBoolean(String parameterDeveloperName, Boolean defaultValue) {
     Boolean parameterValue = (Boolean) castParameterValue(parameterDeveloperName, Boolean.class);
     return parameterValue ?? defaultValue;

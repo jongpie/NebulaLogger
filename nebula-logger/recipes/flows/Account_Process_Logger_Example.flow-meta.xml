@@ -186,7 +186,6 @@
             </value>
         </inputParameters>
         <nameSegment>FlowLogEntry</nameSegment>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <processMetadataValues>
@@ -254,7 +253,6 @@
             </value>
         </inputParameters>
         <nameSegment>Account_Flow_Logger_Example</nameSegment>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <processMetadataValues>
@@ -358,9 +356,9 @@
             </value>
         </inputParameters>
         <nameSegment>FlowLogEntry</nameSegment>
-        <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>64.0</apiVersion>
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
         <processMetadataValues>
             <name>index</name>

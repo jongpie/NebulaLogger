@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.17.3';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.18.0';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -86,6 +86,7 @@ global with sharing class Logger {
     set;
   }
 
+  @SuppressWarnings('PMD.AvoidUnauthorizedGetSessionIdInApex')
   private static final String USER_SESSION_ID {
     get {
       if (USER_SESSION_ID == null) {
@@ -3511,6 +3512,7 @@ global with sharing class Logger {
    * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
    * @return              The new entry's instance of LogEntryEventBuilder
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, LogMessage logMessage, Boolean shouldSave) {
     return newEntry(loggingLevel, shouldSave).setMessage(logMessage);
   }
@@ -3532,6 +3534,7 @@ global with sharing class Logger {
    * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
    * @return              The new entry's instance of LogEntryEventBuilder
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, String message, Boolean shouldSave) {
     return newEntry(loggingLevel, shouldSave).setMessage(message);
   }
@@ -3785,7 +3788,11 @@ global with sharing class Logger {
       return System.LoggingLevel.valueOf(loggingLevelName?.trim().toUpperCase());
     } catch (NoSuchElementException ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        LogMessage logMessage = new LogMessage('Logger - Unknown logging level {0} specified, using {1}', loggingLevelName, FALLBACK_LOGGING_LEVEL.name());
+        LogMessage logMessage = new LogMessage(
+          'Nebula Logger - Unknown logging level {0} specified, using {1}',
+          loggingLevelName,
+          FALLBACK_LOGGING_LEVEL.name()
+        );
         finest(logMessage);
       }
       return FALLBACK_LOGGING_LEVEL;
@@ -3829,7 +3836,7 @@ global with sharing class Logger {
       return statusApiResponse;
     } catch (Exception ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        finest('Callout to api.status.salesforce.com failed').setExceptionDetails(ex);
+        finest('Nebula Logger - Callout to api.status.salesforce.com failed').setExceptionDetails(ex);
       }
       return null;
     }
@@ -3964,11 +3971,11 @@ global with sharing class Logger {
   }
 
   private static String getSuspendSavingLogSystemMessage() {
-    return 'Logger - Logging suspended, ignoring call to saveLog()';
+    return 'Nebula Logger - Logging suspended, ignoring call to saveLog()';
   }
 
   private static String getSavingLogSystemMessage(String saveMethodName) {
-    String messageTemplate = 'Logger - Saving {0} log entries via {1}, save method is {2}. Logger.saveLog() has been called {3} in the current transaction.';
+    String messageTemplate = 'Nebula Logger - Saving {0} log entries via {1}, save method is {2}. Logger.saveLog() has been called {3} in the current transaction.';
     LogMessage savingLogMessage = new LogMessage(
       messageTemplate,
       new List<Object>{
@@ -4114,6 +4121,7 @@ global with sharing class Logger {
   }
 
   // Inner class that matches the format expected by the REST API for saving SObjects
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   private class RestSaveRequest {
     /**
      * @description Boolean used when saving records.  If true, all records must save correctly or an exception

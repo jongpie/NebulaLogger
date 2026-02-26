@@ -5,7 +5,7 @@
 }
 
 .datatable-header {
-  height: 32px;
+  height: var(--slds-g-sizing-9, 32px);
 }
 
 .datatable-container {

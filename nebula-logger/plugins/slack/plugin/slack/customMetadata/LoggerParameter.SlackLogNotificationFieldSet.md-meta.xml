@@ -3,6 +3,10 @@
     <label>Slack Log Notification Field Set</label>
     <protected>false</protected>
     <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">The name of a field set on Log__c containing fields to include when sending notifications to Slack</value>
     </values>

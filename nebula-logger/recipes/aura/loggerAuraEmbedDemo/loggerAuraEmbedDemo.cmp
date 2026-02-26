@@ -12,7 +12,14 @@
     <div class="slds-var-m-around_medium">This component demonstrates how to use Nebula Logger in Aura components</div>
     <div class="slds-var-m-around_medium">
       <lightning:input label="Example Log Message" value="{!v.logMessage}" />
-      <lightning:button label="Save Log Entry" onclick="{!c.saveLogExample}" />
+      <lightning:button
+        label="Save Log Entry"
+        onclick="
+          {
+            !c.saveLogExample;
+          }
+        "
+      />
     </div>
   </lightning:card>
 </aura:component>
