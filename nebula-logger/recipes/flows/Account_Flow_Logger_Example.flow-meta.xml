@@ -4,8 +4,8 @@
         <description>Logs the account again after the field assignment has made changes to the account</description>
         <name>Log_Account_After_Change</name>
         <label>Log Account After Change</label>
-        <locationX>176</locationX>
-        <locationY>518</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>FlowRecordLogEntry</actionName>
         <actionType>apex</actionType>
         <dataTypeMappings>
@@ -39,14 +39,13 @@
         </inputParameters>
         <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <description>Logs the input account records before any changes are made to the record in this Flow</description>
         <name>Log_Account_Before_Changes</name>
         <label>Log Account Before Changes</label>
-        <locationX>176</locationX>
-        <locationY>158</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>FlowRecordLogEntry</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -83,15 +82,15 @@
         </inputParameters>
         <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <description>An example field update</description>
         <name>Update_Account</name>
         <label>Update Account</label>
-        <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>Account_Record.Phone</assignToReference>
             <operator>Assign</operator>
@@ -137,15 +136,15 @@ As an additional test, this Flow also has a really, really, really, really, real
     <recordUpdates>
         <name>Save_Account</name>
         <label>Save Account</label>
-        <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>Log_Account_After_Change</targetReference>
         </connector>
         <inputReference>Account_Record</inputReference>
     </recordUpdates>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Log_Account_Before_Changes</targetReference>

@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Log_after_screen</name>
         <label>Log after screen</label>
-        <locationX>176</locationX>
-        <locationY>518</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>FlowLogEntry</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -40,13 +40,12 @@
         </inputParameters>
         <nameSegment>FlowLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <name>Log_before_screen</name>
         <label>Log before screen</label>
-        <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>FlowRecordLogEntry</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -89,9 +88,9 @@
         </inputParameters>
         <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <description>A screen Flow used to help test the Apex class LogEntryHandler</description>
     <interviewLabel>LogEntryHandler Screen Tests for Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LogEntryHandler Screen Tests for Flow</label>
@@ -117,8 +116,8 @@
     <recordLookups>
         <name>Get_Current_User</name>
         <label>Get Current User</label>
-        <locationX>176</locationX>
-        <locationY>158</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Log_before_screen</targetReference>
@@ -139,8 +138,8 @@
     <screens>
         <name>Example_Flow_Screen</name>
         <label>Example Flow Screen</label>
-        <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -151,18 +150,34 @@
             <fieldType>ObjectProvided</fieldType>
             <isRequired>false</isRequired>
             <objectFieldReference>Get_Current_User.Department</objectFieldReference>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <fieldType>ObjectProvided</fieldType>
             <isRequired>false</isRequired>
             <objectFieldReference>Get_Current_User.AboutMe</objectFieldReference>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <pausedText>&lt;p&gt;Are you sure you want to pause this Flow?!&lt;/p&gt;</pausedText>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Current_User</targetReference>

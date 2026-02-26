@@ -26,12 +26,12 @@
     </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.SomeLogField__c</field>
+        <field>LogEntry__c.SomeLogEntryField__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.SomeLogEntryField__c</field>
+        <field>Log__c.SomeLogField__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -51,11 +51,11 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>Logger_LWC_Embed_Demo</tab>
+        <tab>Logger_LWC_Create_Logger_Import_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>Logger_LWC_Create_Logger_Import_Demo</tab>
+        <tab>Logger_LWC_Embed_Demo</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
