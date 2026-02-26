@@ -3788,7 +3788,7 @@ global with sharing class Logger {
       return System.LoggingLevel.valueOf(loggingLevelName?.trim().toUpperCase());
     } catch (NoSuchElementException ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        LogMessage logMessage = new LogMessage('Logger - Unknown logging level {0} specified, using {1}', loggingLevelName, FALLBACK_LOGGING_LEVEL.name());
+        LogMessage logMessage = new LogMessage('Nebula Logger - Unknown logging level {0} specified, using {1}', loggingLevelName, FALLBACK_LOGGING_LEVEL.name());
         finest(logMessage);
       }
       return FALLBACK_LOGGING_LEVEL;
@@ -3832,7 +3832,7 @@ global with sharing class Logger {
       return statusApiResponse;
     } catch (Exception ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        finest('Callout to api.status.salesforce.com failed').setExceptionDetails(ex);
+        finest('Nebula Logger - Callout to api.status.salesforce.com failed').setExceptionDetails(ex);
       }
       return null;
     }
@@ -3967,11 +3967,11 @@ global with sharing class Logger {
   }
 
   private static String getSuspendSavingLogSystemMessage() {
-    return 'Logger - Logging suspended, ignoring call to saveLog()';
+    return 'Nebula Logger - Logging suspended, ignoring call to saveLog()';
   }
 
   private static String getSavingLogSystemMessage(String saveMethodName) {
-    String messageTemplate = 'Logger - Saving {0} log entries via {1}, save method is {2}. Logger.saveLog() has been called {3} in the current transaction.';
+    String messageTemplate = 'Nebula Logger - Saving {0} log entries via {1}, save method is {2}. Logger.saveLog() has been called {3} in the current transaction.';
     LogMessage savingLogMessage = new LogMessage(
       messageTemplate,
       new List<Object>{
