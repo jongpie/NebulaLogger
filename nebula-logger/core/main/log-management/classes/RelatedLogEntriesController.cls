@@ -150,6 +150,7 @@ public with sharing class RelatedLogEntriesController {
   /**
    * @description Inner, wrapper class that contains query result information after querying related log entries.
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public class LogEntryQueryResult {
     /**
      * @description Contains the fieldSet associated with this query.
@@ -233,6 +234,7 @@ public with sharing class RelatedLogEntriesController {
   /**
    * @description An inner, wrapper class containing metadata information about an individual field.
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public class FieldMetadata {
     /**
      * @description A string containing the API name of the field, in particular the field path as it relates to the parent field set.

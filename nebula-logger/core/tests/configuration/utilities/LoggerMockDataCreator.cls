@@ -11,7 +11,9 @@
  * @see LoggerMockDataStore
  * @see LoggerTestConfigurator
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
+@SuppressWarnings(
+  'PMD.AvoidBooleanMethodParameters, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions'
+)
 @IsTest
 public class LoggerMockDataCreator {
   private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_ALL_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
@@ -389,8 +391,8 @@ public class LoggerMockDataCreator {
     String recordIdSuffix = String.valueOf(recordIdNumber++);
     SOBJECT_TYPE_TO_MOCK_ID_COUNT.put(sobjectType, recordIdNumber);
 
-    String recordIdKeyPrefix = sobjectType.getDescribe().getKeyPrefix();
-    Integer idFieldLength = sobjectType.getDescribe().fields.getMap().get('Id').getDescribe().getLength();
+    String recordIdKeyPrefix = SObjectType.getDescribe().getKeyPrefix();
+    Integer idFieldLength = SObjectType.getDescribe().fields.getMap().get('Id').getDescribe().getLength();
     Integer recordIdCenterLength = idFieldLength - recordIdKeyPrefix.length() - recordIdSuffix.length();
     return recordIdKeyPrefix + '0'.repeat(recordIdCenterLength) + recordIdSuffix;
   }
@@ -768,7 +770,7 @@ public class LoggerMockDataCreator {
 
       SOBJECT_TYPE_TO_ALL_FIELDS.put(this.sobjectType, new List<Schema.SObjectField>());
       SOBJECT_TYPE_TO_REQUIRED_FIELDS.put(this.sobjectType, new List<Schema.SObjectField>());
-      for (Schema.SObjectField field : this.sobjectType.getDescribe().fields.getMap().values()) {
+      for (Schema.SObjectField field : this.SObjectType.getDescribe().fields.getMap().values()) {
         if (field.getDescribe().isCreateable() == false) {
           continue;
         }

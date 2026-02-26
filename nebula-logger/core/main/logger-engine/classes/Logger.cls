@@ -86,6 +86,7 @@ global with sharing class Logger {
     set;
   }
 
+  @SuppressWarnings('PMD.AvoidUnauthorizedGetSessionIdInApex')
   private static final String USER_SESSION_ID {
     get {
       if (USER_SESSION_ID == null) {
@@ -3511,6 +3512,7 @@ global with sharing class Logger {
    * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
    * @return              The new entry's instance of LogEntryEventBuilder
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, LogMessage logMessage, Boolean shouldSave) {
     return newEntry(loggingLevel, shouldSave).setMessage(logMessage);
   }
@@ -3532,6 +3534,7 @@ global with sharing class Logger {
    * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
    * @return              The new entry's instance of LogEntryEventBuilder
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   global static LogEntryEventBuilder newEntry(System.LoggingLevel loggingLevel, String message, Boolean shouldSave) {
     return newEntry(loggingLevel, shouldSave).setMessage(message);
   }
@@ -4114,6 +4117,7 @@ global with sharing class Logger {
   }
 
   // Inner class that matches the format expected by the REST API for saving SObjects
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   private class RestSaveRequest {
     /**
      * @description Boolean used when saving records.  If true, all records must save correctly or an exception

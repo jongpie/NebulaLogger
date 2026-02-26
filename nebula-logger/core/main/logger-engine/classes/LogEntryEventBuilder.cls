@@ -123,7 +123,7 @@ global with sharing class LogEntryEventBuilder {
    * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
    * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
    */
-  @SuppressWarnings('PMD.NcssConstructorCount')
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters, PMD.NcssConstructorCount')
   public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave) {
     this.shouldSave = shouldSave;
     if (this.shouldSave()) {
@@ -1232,7 +1232,7 @@ global with sharing class LogEntryEventBuilder {
     String sobjectClassification;
 
     // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
-    if (sobjectType.getDescribe().isCustomSetting()) {
+    if (SObjectType.getDescribe().isCustomSetting()) {
       sobjectClassification = 'Custom Setting Object';
     }
 
@@ -1244,7 +1244,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // Finally, if we still don't have a classification, assume it's a standard object
-    if (String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+    if (String.isBlank(sobjectClassification) && SObjectType.getDescribe().isCustom() == false) {
       sobjectClassification = 'Standard Object';
     }
 
@@ -1281,7 +1281,7 @@ global with sharing class LogEntryEventBuilder {
 
   private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
     String sobjectFullName = sobjectType.toString();
-    String sobjectLocalName = sobjectType.getDescribe().getLocalName();
+    String sobjectLocalName = SObjectType.getDescribe().getLocalName();
 
     // Remove the trailing '__' if present
     String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
