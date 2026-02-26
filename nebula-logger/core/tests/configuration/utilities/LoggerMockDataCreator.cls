@@ -822,6 +822,7 @@ public class LoggerMockDataCreator {
       }
     }
 
+    @SuppressWarnings('PMD.NcssCount')
     private Object getTestValue(Schema.DescribeFieldResult fieldDescribe) {
       // Since Apex does not support case statements, we use several ugly IF-ELSE statements
       // Some more complex data types, like ID & Reference, require other objects to be created

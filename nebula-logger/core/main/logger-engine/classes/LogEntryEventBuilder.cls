@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-  'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+  'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
   public static final String ENTRY_SAVE_REASON_LOGGING_LEVEL_MET = 'Logging Level Met';
@@ -991,6 +991,7 @@ global with sharing class LogEntryEventBuilder {
     );
   }
 
+  @SuppressWarnings('PMD.NcssCount')
   private static LogEntryEvent__e getLogEntryEventTemplate(System.LoggingLevel entryLoggingLevel) {
     LogEntryEvent__e logEntryEventTemplate = new LogEntryEvent__e(
       LoggingLevel__c = entryLoggingLevel.name(),
