@@ -26,6 +26,11 @@ rules:
   # ESLINT ENGINE RULE OVERRIDES
   # ======================================================================
   eslint:
+    '@lwc/lwc/no-inline-disable':
+      severity: 4
+      tags:
+        - Recommended
+        - Javascript
     '@lwc/lwc/no-deprecated':
       severity: 3
       tags:
@@ -1141,7 +1146,7 @@ engines:
     disable_javascript_base_config: true
 
     # Whether to turn off the default base configuration that supplies the LWC rules for JavaScript files.
-    disable_lwc_base_config: true
+    disable_lwc_base_config: false
 
     # Whether to turn off the default base configuration that supplies the standard rules for TypeScript files.
     disable_typescript_base_config: true
