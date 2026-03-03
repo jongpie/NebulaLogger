@@ -20,6 +20,11 @@ global with sharing class LogEntryEventBuilder {
   private static final String HTTP_HEADER_FORMAT = '{0}: {1}';
   private static final String NEW_LINE_DELIMITER = '\n';
 
+  @TestVisible
+  private static final Integer DATA_MASK_REGEX_CHUNK_SIZE = 4000;
+  @TestVisible
+  private static final Integer DATA_MASK_REGEX_OVERLAP_SIZE = 20;
+
   private static String cachedOrganizationEnvironmentType;
 
   @TestVisible
@@ -1150,10 +1155,106 @@ global with sharing class LogEntryEventBuilder {
 
     for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
       if (dataMaskRule.IsEnabled__c) {
-        dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+        dataInput = applyDataMaskRuleToChunkedText(dataInput, dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
       }
     }
     return dataInput;
+  }
+
+  private static String applyDataMaskRuleToChunkedText(String text, String sensitiveDataRegEx, String replacementRegEx) {
+    if (text == null || text.length() <= DATA_MASK_REGEX_CHUNK_SIZE) {
+      return text == null ? text : text.replaceAll(sensitiveDataRegEx, replacementRegEx);
+    }
+
+    List<String> lines = text.split('\n', -1);
+    if (lines.size() > 1) {
+      List<String> processedLines = new List<String>();
+      for (String line : lines) {
+        if (line.length() <= DATA_MASK_REGEX_CHUNK_SIZE) {
+          processedLines.add(line.replaceAll(sensitiveDataRegEx, replacementRegEx));
+        } else {
+          processedLines.add(applyDataMaskRuleToLongLine(line, sensitiveDataRegEx, replacementRegEx));
+        }
+      }
+      return String.join(processedLines, '\n');
+    }
+
+    return applyDataMaskRuleToLongLine(text, sensitiveDataRegEx, replacementRegEx);
+  }
+
+  private static String applyDataMaskRuleToLongLine(String line, String sensitiveDataRegEx, String replacementRegEx) {
+    System.Pattern regex = System.Pattern.compile(sensitiveDataRegEx);
+    Integer step = DATA_MASK_REGEX_CHUNK_SIZE - DATA_MASK_REGEX_OVERLAP_SIZE;
+
+    // Pass 1: Find all matches using overlapping chunks, deduplicating by start position.
+    // When the same start position is found by multiple chunks, keep the longest match
+    // (the chunk with more trailing context produces the most accurate match).
+    Map<Integer, Integer> endByStart = new Map<Integer, Integer>();
+    Map<Integer, List<String>> groupsByStart = new Map<Integer, List<String>>();
+
+    for (Integer i = 0; i < line.length(); i += step) {
+      Integer chunkEnd = Math.min(i + DATA_MASK_REGEX_CHUNK_SIZE, line.length());
+      System.Matcher m = regex.matcher(line.substring(i, chunkEnd));
+      while (m.find()) {
+        Integer absStart = i + m.start();
+        Integer absEnd = i + m.end();
+        if (!endByStart.containsKey(absStart) || absEnd > endByStart.get(absStart)) {
+          endByStart.put(absStart, absEnd);
+          List<String> groups = new List<String>();
+          for (Integer g = 0; g <= m.groupCount(); g++) {
+            groups.add(m.group(g));
+          }
+          groupsByStart.put(absStart, groups);
+        }
+      }
+    }
+
+    if (endByStart.isEmpty()) {
+      return line;
+    }
+
+    // Sort match positions to guarantee left-to-right processing
+    List<Integer> sortedStarts = new List<Integer>(endByStart.keySet());
+    sortedStarts.sort();
+
+    // Pass 2: Build result — copy gaps, expand replacements
+    String result = '';
+    Integer pos = 0;
+    for (Integer start : sortedStarts) {
+      if (start < pos) {
+        continue; // Skip match fully consumed by a previous replacement
+      }
+      result += line.substring(pos, start);
+      result += expandReplacement(replacementRegEx, groupsByStart.get(start));
+      pos = endByStart.get(start);
+    }
+    result += line.substring(pos);
+    return result;
+  }
+
+  private static String expandReplacement(String replacement, List<String> groups) {
+    String result = '';
+    for (Integer i = 0; i < replacement.length(); i++) {
+      if (replacement.substring(i, i + 1) == '$' && i + 1 < replacement.length()) {
+        // Parse the group number following '$'
+        Integer j = i + 1;
+        while (j < replacement.length() && replacement.substring(j, j + 1) >= '0' && replacement.substring(j, j + 1) <= '9') {
+          j++;
+        }
+        if (j > i + 1) {
+          Integer groupNum = Integer.valueOf(replacement.substring(i + 1, j));
+          if (groupNum >= 1 && groupNum < groups.size() && groups[groupNum] != null) {
+            result += groups[groupNum];
+          } else {
+            result += replacement.substring(i, j);
+          }
+          i = j - 1; // -1 because the for loop increments
+          continue;
+        }
+      }
+      result += replacement.substring(i, i + 1);
+    }
+    return result;
   }
 
   private static String getJson(SObject record, Boolean isRecordFieldStrippingEnabled) {
@@ -1404,7 +1505,7 @@ global with sharing class LogEntryEventBuilder {
       String maskedTextValue = textValueToMask;
       for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
         if (dataMaskRule.IsEnabled__c) {
-          maskedTextValue = maskedTextValue.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+          maskedTextValue = applyDataMaskRuleToChunkedText(maskedTextValue, dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
         }
       }
 
