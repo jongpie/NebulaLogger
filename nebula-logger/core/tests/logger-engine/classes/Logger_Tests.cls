@@ -11451,7 +11451,7 @@ private class Logger_Tests {
     Logger.saveLog();
     System.Assert.areEqual(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-    System.Assert.areEqual('Callout to api.status.salesforce.com failed', logEntryEvent.Message__c);
+    System.Assert.areEqual('Nebula Logger - Callout to api.status.salesforce.com failed', logEntryEvent.Message__c);
     System.Assert.areEqual('System.CalloutException', logEntryEvent.ExceptionType__c);
     Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
     String expectedExceptionMessage =
