@@ -62,7 +62,7 @@ jest.mock(
 // Mock setTimeout for testing the dataCopied reset
 jest.useFakeTimers();
 
-describe('Log Viewer LWC tests', () => {
+describe('Logger JSON Viewer lwc tests', () => {
   beforeEach(() => {
     // Reset mock link properties between tests
     mockLink.href = '';
@@ -79,81 +79,86 @@ describe('Log Viewer LWC tests', () => {
     jest.clearAllTimers();
   });
 
-  it('sets document title', async () => {
-    const logViewerElement = createElement('c-log-viewer', { is: LogViewer });
-    logViewerElement.recordId = 'test-log-id';
-    document.body.appendChild(logViewerElement);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve(); // Wait for component rerender
-
-    expect(logViewerElement.title).toEqual(MOCK_GET_LOG.log.Name);
-  });
-
-  it('defaults to brand button variant', async () => {
+  it('renders with expected initial state', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender after loading log record');
+    expect(logViewer.shadowRoot.querySelector('lightning-spinner')).toBeTruthy();
 
-    const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
+    getLog.emit({ ...MOCK_GET_LOG });
+    await Promise.resolve('resolves component rerender after loading log record');
 
     expect(logViewer.title).toEqual(MOCK_GET_LOG.log.Name);
-    expect(inputButton.variant).toEqual('brand');
+    const tabSet = logViewer.shadowRoot.querySelector('lightning-tabset');
+    expect(tabSet).toBeTruthy();
+    const tabs = logViewer.shadowRoot.querySelectorAll('lightning-tab');
+    expect(tabs.length).toBe(2);
+    const jsonTab = tabs[0];
+    expect(jsonTab.label).toBe('Record JSON');
+    expect(jsonTab.value).toBe('json');
+    const fileTab = tabs[1];
+    expect(fileTab.label).toBe('Log File');
+    expect(fileTab.value).toBe('file');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
+    expect(copyButton.variant).toEqual('brand');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
+    expect(downloadButton.variant).toBeUndefined();
   });
 
-  it('copies the JSON to the clipboard', async () => {
+  it('copies JSON content to the clipboard', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
     logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
     getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
     await Promise.resolve('resolves component rerender after loading log record');
+    // Activate JSON tab
+    const jsonTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
+    expect(jsonTab).toBeTruthy();
+    jsonTab.dispatchEvent(new CustomEvent('active'));
+    await Promise.resolve('resolves dispatchEvent() for JSON tab');
+    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
+    expect(codeViewer).toBeTruthy();
+    expect(codeViewer.code).toBeDefined();
 
-    let copyBtn = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
-    expect(copyBtn).toBeTruthy();
-    copyBtn.click();
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
+    expect(copyButton.variant).toEqual('brand');
+    copyButton.click();
 
     await Promise.resolve('resolves copy-to-clipboard function');
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
-    expect(tab.value).toEqual('json');
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
+    expect(copyButton.variant).toEqual('success');
     const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('c-logger-code-viewer').code);
     const reconstructedLog = { ...MOCK_GET_LOG.log };
     reconstructedLog[MOCK_GET_LOG.logEntriesRelationshipName] = [...MOCK_GET_LOG.logEntries];
     expect(clipboardContent).toEqual(reconstructedLog);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
+    // Fast-forward time to trigger the timeout
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve('resolves timeout callback for setting button variant');
+    // Check that the button's variant has reverted to 'brand' after a delay
+    expect(copyButton.variant).toEqual('brand');
   });
 
-  it('copies the log file to the clipboard', async () => {
+  it('copies log file content to the clipboard', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
     getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
     await Promise.resolve('resolves component rerender after loading log record');
+    // Activate file tab
+    const fileTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
+    expect(fileTab).toBeTruthy();
+    fileTab.dispatchEvent(new CustomEvent('active'));
+    await Promise.resolve('resolves dispatchEvent() for file tab');
+    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
+    expect(codeViewer).toBeTruthy();
+    expect(codeViewer.code).toBeDefined();
 
-    let copyBtn = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
-    expect(copyBtn).toBeTruthy();
-    copyBtn.click();
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
+    expect(copyButton.variant).toEqual('brand');
+    copyButton.click();
 
     await Promise.resolve('resolves copy-to-clipboard function');
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
-    expect(tab.value).toEqual('file');
-    tab.dispatchEvent(new CustomEvent('active'));
+    expect(copyButton.variant).toEqual('success');
     await Promise.resolve('resolves dispatchEvent() for tab');
-    let expectedContentLines = [];
+    const expectedContentLines = [];
     MOCK_GET_LOG.logEntries.forEach(logEntry => {
       const columns = [];
       columns.push('[' + new Date(logEntry.EpochTimestamp__c).toISOString() + ' - ' + logEntry.LoggingLevel__c + ']');
@@ -165,71 +170,37 @@ describe('Log Viewer LWC tests', () => {
     const clipboardContent = logViewer.shadowRoot.querySelector('c-logger-code-viewer').code;
     expect(clipboardContent).toEqual(expectedContentLines.join('\n\n' + '-'.repeat(36) + '\n\n'));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
-  });
-
-  it('handles tab activation for JSON content', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender after loading log record');
-
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
-    expect(tab).toBeTruthy();
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-
-    // Test through DOM since currentMode is not @api
-    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
-    expect(codeViewer).toBeTruthy();
-    expect(codeViewer.code).toBeDefined();
-  });
-
-  it('handles tab activation for file content', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender after loading log record');
-
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
-    expect(tab).toBeTruthy();
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-
-    // Test through DOM since currentMode is not @api
-    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
-    expect(codeViewer).toBeTruthy();
-    expect(codeViewer.code).toBeDefined();
+    // Fast-forward time to trigger the timeout
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve('resolves timeout callback for setting button variant');
+    // Check that the button's variant has reverted to 'brand' after a delay
+    expect(copyButton.variant).toEqual('brand');
   });
 
   it('downloads JSON file correctly', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
     logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
+    // await Promise.resolve(); // Wait for component to connect
+    // await Promise.resolve(); // Wait for wire service to initialize
     getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
+    // await Promise.resolve(); // Wait for wire service callback
     await Promise.resolve('resolves component rerender after loading log record');
-
-    // Activate JSON tab first
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
-    expect(tab).toBeTruthy();
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
+    // Activate JSON tab
+    const jsonTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
+    expect(jsonTab).toBeTruthy();
+    jsonTab.dispatchEvent(new CustomEvent('active'));
+    await Promise.resolve('resolves dispatchEvent() for JSON tab');
+    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
+    expect(codeViewer).toBeTruthy();
+    expect(codeViewer.code).toBeDefined();
 
     // Click download button
-    const downloadBtn = logViewer.shadowRoot.querySelector('lightning-button');
-    downloadBtn.click();
-    await Promise.resolve('resolves download function');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
+    expect(downloadButton.label).toEqual('Download Record JSON');
+    downloadButton.click();
 
+    await Promise.resolve('resolves download function');
     expect(mockCreateElement).toHaveBeenCalledWith('a');
     expect(mockLink.href).toContain('data:text;charset=utf-8,encoded_');
     expect(mockLink.target).toEqual('_blank');
@@ -248,18 +219,18 @@ describe('Log Viewer LWC tests', () => {
     getLog.emit({ ...MOCK_GET_LOG });
     await Promise.resolve(); // Wait for wire service callback
     await Promise.resolve('resolves component rerender after loading log record');
-
-    // Activate file tab first
+    // Activate file tab
     const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
     expect(tab).toBeTruthy();
     tab.dispatchEvent(new CustomEvent('active'));
     await Promise.resolve('resolves dispatchEvent() for tab');
 
     // Click download button
-    const downloadBtn = logViewer.shadowRoot.querySelector('lightning-button');
-    downloadBtn.click();
-    await Promise.resolve('resolves download function');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
+    expect(downloadButton.label).toEqual('Download Log File');
+    downloadButton.click();
 
+    await Promise.resolve('resolves download function');
     expect(mockCreateElement).toHaveBeenCalledWith('a');
     expect(mockLink.href).toContain('data:text;charset=utf-8,encoded_');
     expect(mockLink.target).toEqual('_blank');
@@ -267,39 +238,6 @@ describe('Log Viewer LWC tests', () => {
     expect(mockLink.download).toContain(MOCK_GET_LOG.log.OrganizationId__c);
     expect(mockLink.download).toContain('.log');
     expect(mockLink.click).toHaveBeenCalled();
-  });
-
-  it('handles copy to clipboard with success state and timeout reset', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender after loading log record');
-
-    // Activate JSON tab first
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
-    expect(tab).toBeTruthy();
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-
-    // Click copy button
-    const copyBtn = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
-    expect(copyBtn).toBeTruthy();
-    copyBtn.click();
-    await Promise.resolve('resolves copy-to-clipboard function');
-
-    // Check that dataCopied is set to true through variant (dataCopied is not @api)
-    expect(copyBtn.variant).toEqual('success');
-
-    // Fast-forward time to trigger the timeout
-    jest.advanceTimersByTime(5000);
-    await Promise.resolve(); // Wait for timeout callback
-
-    // Check that dataCopied is reset to false through variant
-    expect(copyBtn.variant).toEqual('brand');
   });
 
   it('handles wire service with no data gracefully', async () => {
@@ -311,212 +249,10 @@ describe('Log Viewer LWC tests', () => {
 
     // Emit undefined data
     getLog.emit(undefined);
-    await Promise.resolve(); // Wait for wire service callback
     await Promise.resolve('resolves component rerender');
 
     // Test isLoaded indirectly through DOM (isLoaded is not @api)
     const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
     expect(spinner).toBeTruthy(); // Spinner should be visible when not loaded
-  });
-
-  // it('handles wire service with empty data gracefully', async () => {
-  //   const logViewer = createElement('c-log-viewer', { is: LogViewer });
-  //   logViewer.recordId = 'test-log-id';
-  //   document.body.appendChild(logViewer);
-  //   await Promise.resolve(); // Wait for component to connect
-  //   await Promise.resolve(); // Wait for wire service to initialize
-
-  //   // Emit empty data (component should handle this gracefully)
-  //   getLog.emit({});
-  //   await Promise.resolve(); // Wait for wire service callback
-  //   await Promise.resolve('resolves component rerender');
-
-  //   // Test isLoaded indirectly through DOM (isLoaded is not @api)
-  //   const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
-  //   expect(spinner).toBeTruthy(); // Spinner should be visible when not loaded
-  // });
-
-  // it('handles wire service with partial data gracefully', async () => {
-  //   const logViewer = createElement('c-log-viewer', { is: LogViewer });
-  //   logViewer.recordId = 'test-log-id';
-  //   document.body.appendChild(logViewer);
-  //   await Promise.resolve(); // Wait for component to connect
-  //   await Promise.resolve(); // Wait for wire service to initialize
-
-  //   // Emit partial data (missing log or logEntries)
-  //   getLog.emit({ log: MOCK_GET_LOG.log });
-  //   await Promise.resolve(); // Wait for wire service callback
-  //   await Promise.resolve('resolves component rerender');
-
-  //   // Test isLoaded indirectly through DOM (isLoaded is not @api)
-  //   const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
-  //   expect(spinner).toBeTruthy(); // Spinner should be visible when not loaded
-  // });
-
-  it('handles log entries with missing fields gracefully', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-
-    // Create mock data with missing fields
-    const mockDataWithMissingFields = {
-      log: { ...MOCK_GET_LOG.log },
-      logEntries: [
-        {
-          EpochTimestamp__c: null,
-          LoggingLevel__c: null,
-          Message__c: null,
-          StackTrace__c: null
-        }
-      ],
-      logEntriesRelationshipName: MOCK_GET_LOG.logEntriesRelationshipName
-    };
-
-    getLog.emit(mockDataWithMissingFields);
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender');
-
-    // Test isLoaded indirectly through DOM (isLoaded is not @api)
-    const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
-    expect(spinner).toBeFalsy(); // Spinner should be hidden when loaded
-
-    // Activate file tab to test _loadLogFileContent with missing fields
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
-    expect(tab).toBeTruthy();
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-
-    // Should handle null/undefined values gracefully
-    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
-    expect(codeViewer).toBeTruthy();
-  });
-
-  it('handles empty log entries array', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-
-    // Create mock data with empty log entries
-    const mockDataWithEmptyEntries = {
-      log: { ...MOCK_GET_LOG.log },
-      logEntries: [],
-      logEntriesRelationshipName: MOCK_GET_LOG.logEntriesRelationshipName
-    };
-
-    getLog.emit(mockDataWithEmptyEntries);
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender');
-
-    // Test isLoaded indirectly through DOM (isLoaded is not @api)
-    const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
-    expect(spinner).toBeFalsy(); // Spinner should be hidden when loaded
-
-    // Activate file tab to test _loadLogFileContent with empty array
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
-    expect(tab).toBeTruthy();
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-
-    // Should handle empty array gracefully
-    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
-    expect(codeViewer).toBeTruthy();
-  });
-
-  it('handles deprecated logId property', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.logId = 'deprecated-id';
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender');
-
-    // Test isLoaded indirectly through DOM (isLoaded is not @api)
-    const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
-    expect(spinner).toBeFalsy(); // Spinner should be hidden when loaded
-    expect(logViewer.logId).toBe('deprecated-id');
-  });
-
-  it('updates download button label based on current mode', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender');
-
-    // Test downloadButtonLabel indirectly through DOM (downloadButtonLabel is not @api)
-    const downloadBtn = logViewer.shadowRoot.querySelector('lightning-button');
-    expect(downloadBtn).toBeTruthy();
-    // Initially no mode set, so label should contain "undefined"
-    expect(downloadBtn.label).toContain('Download');
-
-    // Activate JSON tab
-    const jsonTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
-    expect(jsonTab).toBeTruthy();
-    jsonTab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-
-    expect(downloadBtn.label).toEqual('Download Record JSON');
-
-    // Activate file tab
-    const fileTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
-    expect(fileTab).toBeTruthy();
-    fileTab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-
-    expect(downloadBtn.label).toEqual('Download Log File');
-  });
-
-  it('handles copy to clipboard when no mode is selected', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender');
-
-    // Click copy button without selecting a tab first
-    const copyBtn = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
-    if (copyBtn) {
-      copyBtn.click();
-      await Promise.resolve('resolves copy-to-clipboard function');
-
-      // Should handle undefined currentMode.data gracefully
-      expect(document.execCommand).toHaveBeenCalledWith('copy');
-    }
-  });
-
-  it('handles download when no mode is selected', async () => {
-    const logViewer = createElement('c-log-viewer', { is: LogViewer });
-    logViewer.recordId = 'test-log-id';
-    document.body.appendChild(logViewer);
-    await Promise.resolve(); // Wait for component to connect
-    await Promise.resolve(); // Wait for wire service to initialize
-    getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve(); // Wait for wire service callback
-    await Promise.resolve('resolves component rerender');
-
-    // Click download button without selecting a tab first
-    const downloadBtn = logViewer.shadowRoot.querySelector('lightning-button');
-    if (downloadBtn) {
-      downloadBtn.click();
-      await Promise.resolve('resolves download function');
-
-      // Should handle undefined currentMode.data gracefully
-      expect(mockCreateElement).toHaveBeenCalledWith('a');
-      expect(mockLink.click).toHaveBeenCalled();
-    }
   });
 });

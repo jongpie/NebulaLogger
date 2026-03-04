@@ -46,12 +46,12 @@ describe('c-log-organization-limits', () => {
     expect(warningNotifyElements.length).toBe(1);
     const warningNotifyHeader2Elements = element.shadowRoot.querySelectorAll('.slds-alert_warning h2');
     expect(warningNotifyHeader2Elements.length).toBe(1);
-    expect(warningNotifyHeader2Elements[0].innerHTML).toBe('Could not parse Organization Limits JSON data, the current value is displayed below.');
+    expect(warningNotifyHeader2Elements[0].textContent).toBe('Could not parse Organization Limits JSON data, the current value is displayed below.');
     const layoutItems = element.shadowRoot.querySelectorAll('lightning-layout-item');
     expect(layoutItems.length).toBe(1);
     const staticFormElements = element.shadowRoot.querySelectorAll('.slds-form-element__static');
     expect(staticFormElements.length).toBe(1);
-    expect(staticFormElements[0].innerHTML).toBe('');
+    expect(staticFormElements[0].textContent).toBe('');
   });
 
   it('displays message when JSON is invalid', async () => {
@@ -69,11 +69,11 @@ describe('c-log-organization-limits', () => {
     expect(warningNotifyElements.length).toBe(1);
     const warningNotifyHeader2Elements = element.shadowRoot.querySelectorAll('.slds-alert_warning h2');
     expect(warningNotifyHeader2Elements.length).toBe(1);
-    expect(warningNotifyHeader2Elements[0].innerHTML).toBe('Could not parse Organization Limits JSON data, the current value is displayed below.');
+    expect(warningNotifyHeader2Elements[0].textContent).toBe('Could not parse Organization Limits JSON data, the current value is displayed below.');
     const layoutItems = element.shadowRoot.querySelectorAll('lightning-layout-item');
     expect(layoutItems.length).toBe(1);
     const staticFormElements = element.shadowRoot.querySelectorAll('.slds-form-element__static');
     expect(staticFormElements.length).toBe(1);
-    expect(staticFormElements[0].innerHTML).toBe(mockGetRecordWithInvalidLimitsJson.fields.OrganizationLimits__c.value);
+    expect(staticFormElements[0].textContent).toBe(mockGetRecordWithInvalidLimitsJson.fields.OrganizationLimits__c.value);
   });
 });

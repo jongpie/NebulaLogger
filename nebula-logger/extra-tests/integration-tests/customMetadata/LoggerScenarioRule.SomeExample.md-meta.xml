@@ -27,6 +27,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>IsJavaScriptLightningLoggerEnabled__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>IsLogAssignmentEnabled__c</field>
         <value xsi:nil="true"/>
     </values>

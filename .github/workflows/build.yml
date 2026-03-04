@@ -70,12 +70,11 @@ jobs:
         if: ${{ (github.event_name == 'pull_request') && (github.event.pull_request.draft == false) && (steps.changes.outputs.core == 'true') }}
         run: npm run package:version:number:verify
 
-      - name: 'Verify LWC with ESLint'
+      - name: 'Verify LWC with Code Analyzer'
         run: npm run scan:lwc
 
-      - name: 'Verify Apex with SFDX Scanner'
+      - name: 'Verify Apex with Code Analyzer'
         run: |
-          npm run sf:plugins:link:scanner
           npm run scan:apex
 
       # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
