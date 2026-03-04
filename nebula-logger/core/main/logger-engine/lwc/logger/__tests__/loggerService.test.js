@@ -1,13 +1,11 @@
 import LoggerService, { BrowserContext } from '../loggerService';
-import LogEntryEventBuilder from '../logEntryBuilder';
-import LoggerServiceTaskQueue from '../loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
-import { log as lightningLog } from 'lightning/logger';
 
 const MOCK_GET_SETTINGS = require('./data/getLoggerSettings.json');
 
 const flushPromises = async () => {
+  // eslint-disable-next-line
   await new Promise(process.nextTick);
 };
 
@@ -94,12 +92,14 @@ describe('LoggerService tests', () => {
       loggerService.error('test message');
       await flushPromises();
 
+      let thrownError;
       try {
         await loggerService.saveLog();
       } catch (error) {
-        expect(error.message).toBe('Save failed');
+        thrownError = error;
       }
 
+      expect(thrownError.message).toBe('Save failed');
       expect(console.error).toHaveBeenCalledTimes(2); // Once for the error, once for the log entry
     });
 
@@ -113,12 +113,14 @@ describe('LoggerService tests', () => {
       loggerService.error('test message');
       await flushPromises();
 
+      let thrownError;
       try {
         await loggerService.saveLog();
       } catch (error) {
-        expect(error.message).toBe('Save failed');
+        thrownError = error;
       }
 
+      expect(thrownError.message).toBe('Save failed');
       // Should not log to console when console logging is disabled
       expect(console.error).not.toHaveBeenCalled();
     });

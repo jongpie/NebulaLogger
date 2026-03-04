@@ -188,7 +188,7 @@ export default class LoggerService {
 
         if (this.#settings.isConsoleLoggingEnabled) {
           // Use setTimeout() so any extra fields included in the log entry are added first before printing to the console
-          // eslint-disable-next-line @lwc/lwc/no-async-operation
+          // eslint-disable-next-line
           setTimeout(() => {
             this._logToConsole(logEntry.loggingLevel, logEntry.message, logEntry);
           }, 1000);
