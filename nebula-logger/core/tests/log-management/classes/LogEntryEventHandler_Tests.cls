@@ -655,8 +655,9 @@ private class LogEntryEventHandler_Tests {
     Schema.User loggerScenarioOwner = LoggerMockDataCreator.createUser();
     insert loggerScenarioOwner;
     LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
-    
-    System.runAs(loggerScenarioOwner) {
+
+    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+    System.runAs(currentUser) {
       insert loggerScenario;
       LogEntryEvent__e logEntryEvent = createLogEntryEvent();
       logEntryEvent.TransactionScenario__c = loggerScenario.UniqueId__c;
