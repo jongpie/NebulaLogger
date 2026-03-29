@@ -38,7 +38,7 @@ public without sharing class LogEntryFieldSetPicklist extends VisualEditor.Dynam
   }
 
   private VisualEditor.DataRow createDataRow(Schema.FieldSet fieldSet) {
-    String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
+    String namespacePrefix = String.isBlank(fieldSet.getNamespace()) ? '' : fieldSet.getNamespace() + '__';
     return new VisualEditor.DataRow(fieldSet.getLabel(), namespacePrefix + fieldSet.getName());
   }
 }

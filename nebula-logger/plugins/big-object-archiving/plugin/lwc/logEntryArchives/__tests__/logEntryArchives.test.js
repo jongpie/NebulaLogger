@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LogEntryArchives from 'c/logEntryArchives';
 import getLogEntryArchives from '@salesforce/apex/LogEntryArchiveController.getLogEntryArchives';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';

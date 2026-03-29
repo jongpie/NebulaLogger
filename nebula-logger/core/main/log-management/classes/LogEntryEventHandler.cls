@@ -85,8 +85,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         continue;
       }
 
-      if (String.isBlank(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c)) {
-        // DefaultPlatformEventStorageLoggingLevel__c is optional - if it's null, then always save the event
+      // DefaultPlatformEventStorageLoggingLevel__c is optional - if it's null, then always save the event
+      if (
+        logEntryEvent.EntrySaveReason__c == LogEntryEventBuilder.ENTRY_SAVE_REASON_OVERRIDE ||
+        String.isBlank(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c)
+      ) {
         logEntryEventsToSave.add(logEntryEvent);
       } else {
         System.LoggingLevel userStorageLoggingLevel = System.LoggingLevel.valueOf(loggingUserSettings.DefaultPlatformEventStorageLoggingLevel__c);
@@ -272,6 +275,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
         DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
         DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
+        EntrySaveReason__c = logEntryEvent.EntrySaveReason__c,
         EpochTimestamp__c = logEntryEvent.EpochTimestamp__c,
         EventUuid__c = logEntryEvent.EventUuid,
         ExceptionLocation__c = logEntryEvent.ExceptionLocation__c,
@@ -283,6 +287,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         ExceptionType__c = logEntryEvent.ExceptionType__c,
         HttpRequestBody__c = logEntryEvent.HttpRequestBody__c,
         HttpRequestBodyMasked__c = logEntryEvent.HttpRequestBodyMasked__c,
+        HttpRequestBodyTruncated__c = logEntryEvent.HttpRequestBodyTruncated__c,
         HttpRequestCompressed__c = logEntryEvent.HttpRequestCompressed__c,
         HttpRequestEndpoint__c = logEntryEvent.HttpRequestEndpoint__c,
         HttpRequestEndpointAddress__c = logEntryEvent.HttpRequestEndpointAddress__c,
@@ -291,12 +296,17 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         HttpRequestMethod__c = logEntryEvent.HttpRequestMethod__c,
         HttpResponseBody__c = logEntryEvent.HttpResponseBody__c,
         HttpResponseBodyMasked__c = logEntryEvent.HttpResponseBodyMasked__c,
+        HttpResponseBodyTruncated__c = logEntryEvent.HttpResponseBodyTruncated__c,
         HttpResponseHeaderKeys__c = logEntryEvent.HttpResponseHeaderKeys__c,
         HttpResponseHeaders__c = logEntryEvent.HttpResponseHeaders__c,
         HttpResponseStatus__c = logEntryEvent.HttpResponseStatus__c,
         HttpResponseStatusCode__c = logEntryEvent.HttpResponseStatusCode__c,
         LimitsAggregateQueriesMax__c = logEntryEvent.LimitsAggregateQueriesMax__c,
         LimitsAggregateQueriesUsed__c = logEntryEvent.LimitsAggregateQueriesUsed__c,
+        LimitsApexCursorFetchCallsMax__c = logEntryEvent.LimitsApexCursorFetchCallsMax__c,
+        LimitsApexCursorFetchCallsUsed__c = logEntryEvent.LimitsApexCursorFetchCallsUsed__c,
+        LimitsApexCursorRowsMax__c = logEntryEvent.LimitsApexCursorRowsMax__c,
+        LimitsApexCursorRowsUsed__c = logEntryEvent.LimitsApexCursorRowsUsed__c,
         LimitsAsyncCallsMax__c = logEntryEvent.LimitsAsyncCallsMax__c,
         LimitsAsyncCallsUsed__c = logEntryEvent.LimitsAsyncCallsUsed__c,
         LimitsCalloutsMax__c = logEntryEvent.LimitsCalloutsMax__c,
@@ -345,11 +355,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         RecordId__c = logEntryEvent.RecordId__c,
         RecordJson__c = logEntryEvent.RecordJson__c,
         RecordJsonMasked__c = logEntryEvent.RecordJsonMasked__c,
+        RecordJsonTruncated__c = logEntryEvent.RecordJsonTruncated__c,
         RecordSObjectClassification__c = logEntryEvent.RecordSObjectClassification__c,
         RecordSObjectType__c = logEntryEvent.RecordSObjectType__c,
         RecordSObjectTypeNamespace__c = logEntryEvent.RecordSObjectTypeNamespace__c,
         RestRequestBody__c = logEntryEvent.RestRequestBody__c,
         RestRequestBodyMasked__c = logEntryEvent.RestRequestBodyMasked__c,
+        RestRequestBodyTruncated__c = logEntryEvent.RestRequestBodyTruncated__c,
         RestRequestHeaderKeys__c = logEntryEvent.RestRequestHeaderKeys__c,
         RestRequestHeaders__c = logEntryEvent.RestRequestHeaders__c,
         RestRequestMethod__c = logEntryEvent.RestRequestMethod__c,
@@ -359,6 +371,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         RestRequestUri__c = logEntryEvent.RestRequestUri__c,
         RestResponseBody__c = logEntryEvent.RestResponseBody__c,
         RestResponseBodyMasked__c = logEntryEvent.RestResponseBodyMasked__c,
+        RestResponseBodyTruncated__c = logEntryEvent.RestResponseBodyTruncated__c,
         RestResponseHeaderKeys__c = logEntryEvent.RestResponseHeaderKeys__c,
         RestResponseHeaders__c = logEntryEvent.RestResponseHeaders__c,
         RestResponseStatusCode__c = logEntryEvent.RestResponseStatusCode__c,
@@ -425,6 +438,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
   }
 
+  @SuppressWarnings('PMD.UnusedLocalVariable')
   private void upsertLogEntryTags() {
     if (LoggerParameter.ENABLE_TAGGING == false || LoggerParameter.NORMALIZE_TAG_DATA == false || this.tagNames.isEmpty()) {
       return;
@@ -495,6 +509,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     return logOwnerId;
   }
 
+  @SuppressWarnings('PMD.UnusedLocalVariable')
   private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
     Map<String, Id> tagNameToId = new Map<String, Id>();
 

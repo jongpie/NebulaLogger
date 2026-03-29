@@ -4,7 +4,7 @@
   "hasSampleData": true,
   "country": "US",
   "language": "en_US",
-  "features": ["Communities", "EinsteinGPTPlatform", "EventLogFile", "OmniStudioDesigner", "OmniStudioMetadata", "OmniStudioRuntime", "PlatformCache"],
+  "features": ["Communities", "EinsteinGPTPlatform", "EventLogFile", "OmniStudioDesigner", "OmniStudioRuntime", "PlatformCache"],
   "settings": {
     "apexSettings": {
       "enableAuraApexCtrlAuthUserAccessCheckPref": true,
@@ -32,6 +32,10 @@
     },
     "flowSettings": {
       "canDebugFlowAsAnotherUser": true
+    },
+    "omniStudioSettings": {
+      "enableOmniStudioMetadata": true,
+      "enableStandardOmniStudioRuntime": true
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": true

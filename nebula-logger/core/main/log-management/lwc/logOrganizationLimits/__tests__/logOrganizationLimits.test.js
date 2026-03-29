@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LogOrganizationLimits from 'c/logOrganizationLimits';
 import { getRecord } from 'lightning/uiRecordApi';
 

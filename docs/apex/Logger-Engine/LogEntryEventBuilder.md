@@ -30,7 +30,15 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 ### Properties
 
+#### `ENTRY_SAVE_REASON_LOGGING_LEVEL_MET` → `String`
+
+#### `ENTRY_SAVE_REASON_OVERRIDE` → `String`
+
 #### `aggregateQueriesMax` → `Integer`
+
+#### `apexCursorFetchCallsMax` → `Integer`
+
+#### `apexCursorRowsMax` → `Integer`
 
 #### `asyncCallsMax` → `Integer`
 
@@ -48,6 +56,8 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 #### `heapSizeMax` → `Integer`
 
+#### `isDataMaskingEnabled` → `Boolean`
+
 #### `mobilePushApexCallsMax` → `Integer`
 
 #### `publishImmediateDmlStatementsMax` → `Integer`
@@ -62,9 +72,19 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 #### `soslSearchesMax` → `Integer`
 
+#### `textField` → `Schema.SObjectField`
+
+#### `textValue` → `String`
+
+#### `wasMasked` → `Boolean`
+
+#### `wasTruncated` → `Boolean`
+
 ---
 
 ### Methods
+
+#### `TextFieldValueCleaner(LoggerSettings__c settings, Schema.SObjectField textField, String originalTextValue)` → `public`
 
 #### `addTag(String tag)` → `LogEntryEventBuilder`
 
@@ -129,6 +149,126 @@ Parses the provided stack trace and sets the log entry&apos;s origin &amp; stack
 | Param              | Description                          |
 | ------------------ | ------------------------------------ |
 | `stackTraceString` | The Apex stack trace string to parse |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(Approval.LockResult lockResult)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param        | Description                                  |
+| ------------ | -------------------------------------------- |
+| `lockResult` | The instance of `Approval.LockResult` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(Approval.ProcessResult processResult)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param           | Description                                     |
+| --------------- | ----------------------------------------------- |
+| `processResult` | The instance of `Approval.ProcessResult` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(Approval.UnlockResult unlockResult)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param          | Description                                    |
+| -------------- | ---------------------------------------------- |
+| `unlockResult` | The instance of `Approval.UnlockResult` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(List<Approval.LockResult> lockResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param         | Description                                        |
+| ------------- | -------------------------------------------------- |
+| `lockResults` | The list of `Approval.LockResult` instances to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(List<Approval.ProcessResult> processResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param            | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| `processResults` | The list of `Approval.ProcessResult` instances to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setApprovalResult(List<Approval.UnlockResult> unlockResults)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s database operation result fields
+
+##### Parameters
+
+| Param           | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| `unlockResults` | The list of `Approval.UnlockResult` instances to log |
 
 ##### Return
 
@@ -306,9 +446,9 @@ Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
-| Param                    | Description                                          |
-| ------------------------ | ---------------------------------------------------- |
-| `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult`s to log |
+| Param                    | Description                                                   |
+| ------------------------ | ------------------------------------------------------------- |
+| `emptyRecycleBinResults` | The list of `Database.EmptyRecycleBinResult` instances to log |
 
 ##### Return
 
@@ -672,15 +812,15 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `setRecord(System.Iterable<Id> recordsIds)` → `LogEntryEventBuilder`
+#### `setRecord(System.Iterable<Id> recordIds)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s record fields
 
 ##### Parameters
 
-| Param        | Description                                                                                                                                   |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `recordsIds` | The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry |
+| Param       | Description                                                                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `recordIds` | The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry |
 
 ##### Return
 

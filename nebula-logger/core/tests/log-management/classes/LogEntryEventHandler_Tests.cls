@@ -10,6 +10,11 @@ private class LogEntryEventHandler_Tests {
 
   private static Integer currentLogEntryNumber = 1;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_return_the_logEntryEvent_sobjectType() {
     System.Assert.areEqual(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
@@ -228,6 +233,51 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(0, countOfLogs);
     countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
+  }
+
+  @IsTest
+  static void it_should_create_log_and_log_entry_data_when_event_save_reason_is_override() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+    LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+    Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+    System.Assert.areEqual(0, countOfLogs);
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    System.Assert.areEqual(0, countOfLogEntries);
+    LoggerSettings__c settings = Logger.getUserSettings();
+    settings.IsEnabled__c = true;
+    settings.IsSavingEnabled__c = true;
+    settings.DefaultPlatformEventStorageLocation__c = LogEntryEventHandler.DEFAULT_STORAGE_LOCATION_NAME;
+    settings.DefaultPlatformEventStorageLoggingLevel__c = System.LoggingLevel.ERROR.name();
+    settings.LoggingLevel__c = System.LoggingLevel.WARN.name();
+    upsert settings;
+    LogEntryEvent__e logEntryEventWithOverride = createLogEntryEvent();
+    logEntryEventWithOverride.EntrySaveReason__c = 'Save Overridden';
+    logEntryEventWithOverride.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+    logEntryEventWithOverride.Message__c = 'Entry with save reason == Save Overridden';
+    LogEntryEvent__e logEntryEventWithoutOverride = createLogEntryEvent();
+    logEntryEventWithoutOverride.EntrySaveReason__c = 'Any other value';
+    logEntryEventWithoutOverride.LoggingLevel__c = System.LoggingLevel.FINEST.name();
+    logEntryEventWithoutOverride.Message__c = 'Entry with a different save reason';
+
+    List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus()
+      .publishRecords(new List<SObject>{ logEntryEventWithOverride, logEntryEventWithoutOverride });
+    LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+    System.Assert.areEqual(2, saveResults.size());
+    System.Assert.isTrue(saveResults.get(0).isSuccess(), saveResults.get(0).getErrors().toString());
+    System.Assert.isTrue(saveResults.get(1).isSuccess(), saveResults.get(1).getErrors().toString());
+    System.Assert.areEqual(
+      1,
+      LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+      'Handler class should have executed one time for AFTER_INSERT'
+    );
+    countOfLogs = [SELECT COUNT() FROM Log__c];
+    System.Assert.areEqual(1, countOfLogs);
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    System.Assert.areEqual(1, countOfLogEntries);
+    System.Assert.areEqual(logEntryEventWithOverride.Message__c, [SELECT Message__c FROM LogEntry__c].Message__c);
   }
 
   @IsTest
@@ -1430,6 +1480,7 @@ private class LogEntryEventHandler_Tests {
             DatabaseResultCollectionType__c,
             DatabaseResultJson__c,
             DatabaseResultType__c,
+            EntrySaveReason__c,
             EntryScenario__c,
             EntryScenario__r.Name,
             EntryScenario__r.UniqueId__c,
@@ -1443,6 +1494,7 @@ private class LogEntryEventHandler_Tests {
             ExceptionType__c,
             HttpRequestBody__c,
             HttpRequestBodyMasked__c,
+            HttpRequestBodyTruncated__c,
             HttpRequestCompressed__c,
             HttpRequestEndpoint__c,
             HttpRequestEndpointAddress__c,
@@ -1451,12 +1503,18 @@ private class LogEntryEventHandler_Tests {
             HttpRequestMethod__c,
             HttpResponseBody__c,
             HttpResponseBodyMasked__c,
+            HttpResponseBodyTruncated__c,
             HttpResponseHeaderKeys__c,
             HttpResponseHeaders__c,
             HttpResponseStatus__c,
             HttpResponseStatusCode__c,
+            Id,
             LimitsAggregateQueriesMax__c,
             LimitsAggregateQueriesUsed__c,
+            LimitsApexCursorFetchCallsMax__c,
+            LimitsApexCursorFetchCallsUsed__c,
+            LimitsApexCursorRowsMax__c,
+            LimitsApexCursorRowsUsed__c,
             LimitsAsyncCallsMax__c,
             LimitsAsyncCallsUsed__c,
             LimitsCalloutsMax__c,
@@ -1485,14 +1543,13 @@ private class LogEntryEventHandler_Tests {
             LimitsSoqlQueryLocatorRowsUsed__c,
             LimitsSoqlQueryRowsMax__c,
             LimitsSoqlQueryRowsUsed__c,
-            LimitsSoslSearchesUsed__c,
             LimitsSoslSearchesMax__c,
+            LimitsSoslSearchesUsed__c,
             Log__c,
             LoggingLevel__c,
             LoggingLevelOrdinal__c,
             Message__c,
             MessageTruncated__c,
-            Id,
             Name,
             OriginLocation__c,
             OriginSourceActionName__c,
@@ -1505,11 +1562,13 @@ private class LogEntryEventHandler_Tests {
             RecordId__c,
             RecordJson__c,
             RecordJsonMasked__c,
+            RecordJsonTruncated__c,
             RecordSObjectClassification__c,
             RecordSObjectType__c,
             RecordSObjectTypeNamespace__c,
             RestRequestBody__c,
             RestRequestBodyMasked__c,
+            RestRequestBodyTruncated__c,
             RestRequestHeaderKeys__c,
             RestRequestHeaders__c,
             RestRequestMethod__c,
@@ -1519,6 +1578,7 @@ private class LogEntryEventHandler_Tests {
             RestRequestUri__c,
             RestResponseBody__c,
             RestResponseBodyMasked__c,
+            RestResponseBodyTruncated__c,
             RestResponseHeaderKeys__c,
             RestResponseHeaders__c,
             RestResponseStatusCode__c,
@@ -1653,6 +1713,7 @@ private class LogEntryEventHandler_Tests {
     );
     System.Assert.areEqual(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c, 'logEntry.DatabaseResultJson__c was not properly set');
     System.Assert.areEqual(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c, 'logEntry.DatabaseResultType__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.EntrySaveReason__c, logEntry.EntrySaveReason__c, 'logEntry.EntrySaveReason__c was not properly set');
     System.Assert.areEqual(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c, 'logEntry.EpochTimestamp__c was not properly set');
     System.Assert.areEqual(logEntryEvent.ExceptionLocation__c, logEntry.ExceptionLocation__c, 'logEntry.ExceptionLocation__c was not properly set');
     System.Assert.areEqual(
@@ -1674,6 +1735,11 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c, 'logEntry.ExceptionType__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestBody__c, logEntry.HttpRequestBody__c, 'logEntry.HttpRequestBody__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestBodyMasked__c, logEntry.HttpRequestBodyMasked__c, 'logEntry.HttpRequestBodyMasked__c was not properly set');
+    System.Assert.areEqual(
+      logEntryEvent.HttpRequestBodyTruncated__c,
+      logEntry.HttpRequestBodyTruncated__c,
+      'logEntry.HttpRequestBodyTruncated__c was not properly set'
+    );
     System.Assert.areEqual(logEntryEvent.HttpRequestCompressed__c, logEntry.HttpRequestCompressed__c, 'logEntry.HttpRequestCompressed__c was not properly set');
     System.Assert.areEqual(logEntryEvent.HttpRequestEndpoint__c, logEntry.HttpRequestEndpoint__c, 'logEntry.HttpRequestEndpoint__c was not properly set');
     System.Assert.areEqual(
@@ -1689,6 +1755,11 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.HttpResponseBodyMasked__c,
       logEntry.HttpResponseBodyMasked__c,
       'logEntry.HttpResponseBodyMasked__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.HttpResponseBodyTruncated__c,
+      logEntry.HttpResponseBodyTruncated__c,
+      'logEntry.HttpResponseBodyTruncated__c was not properly set'
     );
     System.Assert.areEqual(
       logEntryEvent.HttpResponseHeaderKeys__c,
@@ -1711,6 +1782,26 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.LimitsAggregateQueriesUsed__c,
       logEntry.LimitsAggregateQueriesUsed__c,
       'logEntry.LimitsAggregateQueriesUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorFetchCallsMax__c,
+      logEntry.LimitsApexCursorFetchCallsMax__c,
+      'logEntry.LimitsApexCursorFetchCallsMax__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorFetchCallsUsed__c,
+      logEntry.LimitsApexCursorFetchCallsUsed__c,
+      'logEntry.LimitsApexCursorFetchCallsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorRowsUsed__c,
+      logEntry.LimitsApexCursorRowsUsed__c,
+      'logEntry.LimitsApexCursorRowsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorRowsMax__c,
+      logEntry.LimitsApexCursorRowsMax__c,
+      'logEntry.LimitsApexCursorRowsMax__c was not properly set'
     );
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c, 'logEntry.LimitsAsyncCallsMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsUsed__c, logEntry.LimitsAsyncCallsUsed__c, 'logEntry.LimitsAsyncCallsUsed__c was not properly set');
@@ -1826,6 +1917,7 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
     System.Assert.areEqual(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
     System.Assert.areEqual(logEntryEvent.RecordJsonMasked__c, logEntry.RecordJsonMasked__c, 'logEntry.RecordJsonMasked__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.RecordJsonTruncated__c, logEntry.RecordJsonTruncated__c, 'logEntry.RecordJsonTruncated__c was not properly set');
     System.Assert.areEqual(
       logEntryEvent.RecordSObjectClassification__c,
       logEntry.RecordSObjectClassification__c,
@@ -1842,6 +1934,11 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.RestRequestBodyMasked__c,
       logEntry.RestRequestBodyMasked__c,
       'logEntry.RestRequestBodyMasked__c, was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.RestRequestBodyTruncated__c,
+      logEntry.RestRequestBodyTruncated__c,
+      'logEntry.RestRequestBodyTruncated__c, was not properly set'
     );
     System.Assert.areEqual(
       logEntryEvent.RestRequestHeaderKeys__c,
@@ -1871,6 +1968,11 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.RestResponseBodyMasked__c,
       logEntry.RestResponseBodyMasked__c,
       'logEntry.RestResponseBodyMasked__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.RestResponseBodyTruncated__c,
+      logEntry.RestResponseBodyTruncated__c,
+      'logEntry.RestResponseBodyTruncated__c was not properly set'
     );
     System.Assert.areEqual(
       logEntryEvent.RestResponseHeaderKeys__c,

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LimitsApexCursorFetchCalls__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <externalId>false</externalId>
+    <formula>IF(
+        (LimitsApexCursorFetchCallsUsed__c / LimitsApexCursorFetchCallsMax__c * 100) &gt;= 90,
+        &quot;⛔&quot;,
+        IF(
+            (LimitsApexCursorFetchCallsUsed__c / LimitsApexCursorFetchCallsMax__c * 100) &lt; 90 &amp;&amp; (LimitsApexCursorFetchCallsUsed__c / LimitsApexCursorFetchCallsMax__c * 100) &gt;= 80,
+            &quot;⚠️&quot;,
+            &quot;✅&quot;
+        )
+    )
+    + &apos; &apos; + IF(LimitsApexCursorFetchCallsMax__c = 0, &apos;100&apos;, TEXT(ROUND(LimitsApexCursorFetchCallsUsed__c / LimitsApexCursorFetchCallsMax__c * 100, 2))) + &apos;% (&apos;
+    + TEXT(LimitsApexCursorFetchCallsUsed__c) + &apos; / &apos; + TEXT(LimitsApexCursorFetchCallsMax__c) + &apos;)&apos;</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>✅ when 80% or less of the limit is used, ⚠️ when 80.1-89.9% is used, or ⛔ when 90% or more is used</inlineHelpText>
+    <label>Apex Cursor Fetch Calls</label>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

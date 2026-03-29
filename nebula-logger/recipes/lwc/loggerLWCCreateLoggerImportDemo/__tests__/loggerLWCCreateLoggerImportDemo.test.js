@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import { getLogger } from 'c/logger';
 import loggerLWCCreateLoggerImportDemo from 'c/loggerLWCCreateLoggerImportDemo';
 

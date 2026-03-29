@@ -14,7 +14,7 @@ export const jestMockPublish = jest.fn((channel, message) => {
 // On subscribe, store the callback function and resolve the promise
 export const subscribe = jest.fn((channel, replayId, onMessageCallback) => {
   _channels[channel] = { onMessageCallback };
-  Promise.resolve({
+  return Promise.resolve({
     id: '_' + Date.now(),
     channel: channel,
     replayId: replayId

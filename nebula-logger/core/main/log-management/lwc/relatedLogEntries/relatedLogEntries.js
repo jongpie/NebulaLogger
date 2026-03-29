@@ -17,13 +17,20 @@ export default class RelatedLogEntries extends LightningElement {
   @api search = '';
   @api queryResult;
 
-  @track showComponent = false;
-  @track title;
   @track wiredResult;
   @track isLoading = true;
 
+  get title() {
+    return this.queryResult ? this.queryResult.labelPlural + ' (' + this.queryResult.records.length + ')' : '';
+  }
+
+  get showComponent() {
+    return this.queryResult?.isAccessible === true;
+  }
+
   @api
   handleSort(event) {
+    this.isLoading = true;
     this.sortBy = event.detail.fieldName;
     this.sortDirection = event.detail.sortDirection;
   }
@@ -43,15 +50,11 @@ export default class RelatedLogEntries extends LightningElement {
     search: '$search'
   })
   wiredLogEntries(result) {
+    this.isLoading = true;
     this.wiredResult = result;
     if (result.data) {
-      let queryResult = this.processResult(result.data);
-      this.queryResult = queryResult;
-      this.showComponent = queryResult.isAccessible;
-      this.title = queryResult.labelPlural + ' (' + queryResult.totalLogEntriesCount + ' Total)';
+      this.queryResult = this.processResult(result.data);
     } else if (result.error) {
-      this.logEntryData = undefined;
-      this.logEntryColumns = undefined;
       /* eslint-disable-next-line no-console */
       console.log(result.error);
     }

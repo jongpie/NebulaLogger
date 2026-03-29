@@ -32,6 +32,103 @@ public class LoggerMockDataCreator {
   }
 
   /**
+   * @description Creates a mock instance of `Approval.LockResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+   *              record ID is automatically included.
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @return   The mock instance of `Approval.LockResult`
+   */
+  public static Approval.LockResult createApprovalLockResult(Boolean isSuccess) {
+    return createApprovalLockResult(isSuccess, createId(Schema.Account.SObjectType));
+  }
+
+  /**
+   * @description Creates a mock instance of `Approval.LockResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @param  recordId  The record ID to use within the mock result
+   * @return   The mock instance of `Approval.LockResult`
+   */
+  public static Approval.LockResult createApprovalLockResult(Boolean isSuccess, Id recordId) {
+    if (isSuccess) {
+      return (Approval.LockResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Approval.LockResult.class);
+    } else {
+      return (Approval.LockResult) System.JSON.deserialize(
+        '{"success":false, "id": "' +
+          recordId +
+          '", "errors":[{"message": "insufficient access rights on cross-reference id: ' +
+          recordId +
+          '", "statusCode": "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"}]}',
+        Approval.LockResult.class
+      );
+    }
+  }
+
+  /**
+   * @description Creates a mock instance of `Approval.ProcessResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+   *              record ID is automatically included.
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @return   The mock instance of `Approval.ProcessResult`
+   */
+  public static Approval.ProcessResult createApprovalProcessResult(Boolean isSuccess) {
+    return createApprovalProcessResult(isSuccess, createId(Schema.Account.SObjectType));
+  }
+
+  /**
+   * @description Creates a mock instance of `Approval.ProcessResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @param  recordId  The record ID to use within the mock result
+   * @return   The mock instance of `Approval.UnlockResult`
+   */
+  public static Approval.ProcessResult createApprovalProcessResult(Boolean isSuccess, Id recordId) {
+    if (isSuccess) {
+      return (Approval.ProcessResult) System.JSON.deserialize('{"success": true, "entityId": "' + recordId + '"}', Approval.ProcessResult.class);
+    } else {
+      return (Approval.ProcessResult) System.JSON.deserialize(
+        '{"success":false, "entityId": "' +
+          recordId +
+          '", "errors":[{"message": "No applicable approval process was found.", "statusCode": "NO_APPLICABLE_PROCESS"}]}',
+        Approval.ProcessResult.class
+      );
+    }
+  }
+
+  /**
+   * @description Creates a mock instance of `Approval.UnlockResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+   *              record ID is automatically included.
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @return   The mock instance of `Approval.UnlockResult`
+   */
+  public static Approval.UnlockResult createApprovalUnlockResult(Boolean isSuccess) {
+    return createApprovalUnlockResult(isSuccess, createId(Schema.Account.SObjectType));
+  }
+
+  /**
+   * @description Creates a mock instance of `Approval.UnlockResult` - a mock is used instead of an actual instance
+   *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+   * @param  isSuccess Indicates if the generated mock should have `isSuccess`
+   * @param  recordId  The record ID to use within the mock result
+   * @return   The mock instance of `Approval.UnlockResult`
+   */
+  public static Approval.UnlockResult createApprovalUnlockResult(Boolean isSuccess, Id recordId) {
+    if (isSuccess) {
+      return (Approval.UnlockResult) System.JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Approval.UnlockResult.class);
+    } else {
+      return (Approval.UnlockResult) System.JSON.deserialize(
+        '{"success":false, "id": "' +
+          recordId +
+          '", "errors":[{"message": "insufficient access rights on cross-reference id: ' +
+          recordId +
+          '", "statusCode": "INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY"}]}',
+        Approval.UnlockResult.class
+      );
+    }
+  }
+
+  /**
    * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
    *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
    *              record ID is automatically included.
@@ -688,13 +785,27 @@ public class LoggerMockDataCreator {
       Map<String, Object> populatedFields = this.record.getPopulatedFieldsAsMap();
       for (Schema.SObjectField field : fields) {
         Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+        if (fieldDescribe.isUpdateable() == false && fieldDescribe.isCustom() == false) {
+          continue;
+        }
+
         // If a field was already populated by using the constructor 'TestDataFactory(SObject record)', then don't change it
-        if (populatedFields.containsKey(fieldDescribe.getName())) {
+        // The exception is booleans, because they'll be populated with their default values.
+        // (Note: this^ coooould cause issues in some tests later, possibly. But for the moment, all tests are working as expected.)
+        if (populatedFields.containsKey(fieldDescribe.getName()) && fieldDescribe.getSoapType() != Schema.SoapType.BOOLEAN) {
           continue;
         }
 
         Object fieldValue;
-        if (fieldDescribe.getDefaultValue() != null) {
+        if (fieldDescribe.getSoapType() == Schema.SoapType.BOOLEAN) {
+          // For boolean fields, invert the default value as a way to know that the
+          // the value was set, instead of the platform using the default value
+          Boolean defaultValue = (Boolean) fieldDescribe.getDefaultValue();
+          // Several standard fields on User (and possibly other standard objects/fields?)
+          // actually return null for their default value - this is known, in technical terms,
+          // as "absolutely ridiculous", and I hate it. So, here's a silly extra null check for those fields.
+          fieldValue = defaultValue == null ? true : !defaultValue;
+        } else if (fieldDescribe.getDefaultValue() != null) {
           // If there is a default value setup for the field, use it
           fieldValue = fieldDescribe.getDefaultValue();
         } else {

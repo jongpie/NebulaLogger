@@ -30,6 +30,129 @@ AggregateResult
 
 The mock instance of `AggregateResult`
 
+#### `createApprovalLockResult(Boolean isSuccess)` → `Approval.LockResult`
+
+Creates a mock instance of `Approval.LockResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+
+##### Return
+
+**Type**
+
+Approval.LockResult
+
+**Description**
+
+The mock instance of `Approval.LockResult`
+
+#### `createApprovalLockResult(Boolean isSuccess, Id recordId)` → `Approval.LockResult`
+
+Creates a mock instance of `Approval.LockResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
+
+##### Return
+
+**Type**
+
+Approval.LockResult
+
+**Description**
+
+The mock instance of `Approval.LockResult`
+
+#### `createApprovalProcessResult(Boolean isSuccess)` → `Approval.ProcessResult`
+
+Creates a mock instance of `Approval.ProcessResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+
+##### Return
+
+**Type**
+
+Approval.ProcessResult
+
+**Description**
+
+The mock instance of `Approval.ProcessResult`
+
+#### `createApprovalProcessResult(Boolean isSuccess, Id recordId)` → `Approval.ProcessResult`
+
+Creates a mock instance of `Approval.ProcessResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
+
+##### Return
+
+**Type**
+
+Approval.ProcessResult
+
+**Description**
+
+The mock instance of `Approval.UnlockResult`
+
+#### `createApprovalUnlockResult(Boolean isSuccess)` → `Approval.UnlockResult`
+
+Creates a mock instance of `Approval.UnlockResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+
+##### Return
+
+**Type**
+
+Approval.UnlockResult
+
+**Description**
+
+The mock instance of `Approval.UnlockResult`
+
+#### `createApprovalUnlockResult(Boolean isSuccess, Id recordId)` → `Approval.UnlockResult`
+
+Creates a mock instance of `Approval.UnlockResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
+
+##### Parameters
+
+| Param       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `isSuccess` | Indicates if the generated mock should have `isSuccess` |
+| `recordId`  | The record ID to use within the mock result             |
+
+##### Return
+
+**Type**
+
+Approval.UnlockResult
+
+**Description**
+
+The mock instance of `Approval.UnlockResult`
+
 #### `createDataBuilder(Schema.SObjectType sobjectType)` → `SObjectTestDataBuilder`
 
 Creates a new builder instance for the specified `SObjectType`, including creating a new `SObject` record. The new `SObject` record is created with any default field values that have been configured on the `SObjectType`.

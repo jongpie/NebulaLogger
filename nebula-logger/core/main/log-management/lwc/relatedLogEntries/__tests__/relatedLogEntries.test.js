@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 import RelatedLogEntries from 'c/relatedLogEntries';
 import getQueryResult from '@salesforce/apex/RelatedLogEntriesController.getQueryResult';

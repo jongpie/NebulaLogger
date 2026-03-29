@@ -12,6 +12,9 @@
   'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
+  public static final String ENTRY_SAVE_REASON_LOGGING_LEVEL_MET = 'Logging Level Met';
+  public static final String ENTRY_SAVE_REASON_OVERRIDE = 'Save Overridden';
+
   private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
   private static final Schema.User CURRENT_USER = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
   private static final String HTTP_HEADER_FORMAT = '{0}: {1}';
@@ -128,6 +131,7 @@ global with sharing class LogEntryEventBuilder {
       this.entryLoggingLevel = entryLoggingLevel;
 
       this.logEntryEvent = getLogEntryEventTemplate(entryLoggingLevel);
+      this.setSaveReason();
       this.setTimestamp(System.now());
     }
   }
@@ -153,14 +157,11 @@ global with sharing class LogEntryEventBuilder {
   global LogEntryEventBuilder setMessage(String message) {
     // To help with debugging unit tests, always run System.debug statement in a test context
     if ((this.shouldSave() || System.Test.isRunningTest()) && this.logEntryEvent != null) {
-      String truncatedMessage = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
-      Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-      String cleanedMessage = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedMessage);
-      Boolean messageMasked = cleanedMessage != truncatedMessage;
+      TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(this.userSettings, Schema.LogEntryEvent__e.Message__c, message);
 
-      this.logEntryEvent.Message__c = cleanedMessage;
-      this.logEntryEvent.MessageMasked__c = messageMasked;
-      this.logEntryEvent.MessageTruncated__c = messageTruncated;
+      this.logEntryEvent.Message__c = textCleaner.textValue;
+      this.logEntryEvent.MessageMasked__c = textCleaner.wasMasked;
+      this.logEntryEvent.MessageTruncated__c = textCleaner.wasTruncated;
       this.logToApexDebug(message);
     }
     return this;
@@ -190,6 +191,64 @@ global with sharing class LogEntryEventBuilder {
     );
 
     return this;
+  }
+
+  // Approval-result builder methods. All of these methods re-use the DatabaseResult* fields,
+  // since these are still sort of DML results, and at least at this time, it's not worth introducing
+  // brand new fields just for approval results.
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  lockResult The instance of `Approval.LockResult` to log
+   * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(Approval.LockResult lockResult) {
+    return this.setDatabaseDetails(new List<Approval.LockResult>{ lockResult }, Approval.LockResult.class, lockResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  processResult The instance of `Approval.ProcessResult` to log
+   * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(Approval.ProcessResult processResult) {
+    return this.setDatabaseDetails(new List<Approval.ProcessResult>{ processResult }, Approval.ProcessResult.class, processResult?.getEntityId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  unlockResult The instance of `Approval.UnlockResult` to log
+   * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(Approval.UnlockResult unlockResult) {
+    return this.setDatabaseDetails(new List<Approval.UnlockResult>{ unlockResult }, Approval.UnlockResult.class, unlockResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  lockResults The list of `Approval.LockResult` instances to log
+   * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(List<Approval.LockResult> lockResults) {
+    return this.setDatabaseDetails(lockResults, Approval.LockResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  processResults The list of `Approval.ProcessResult` instances to log
+   * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(List<Approval.ProcessResult> processResults) {
+    return this.setDatabaseDetails(processResults, Approval.ProcessResult.class, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  unlockResults The list of `Approval.UnlockResult` instances to log
+   * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setApprovalResult(List<Approval.UnlockResult> unlockResults) {
+    return this.setDatabaseDetails(unlockResults, Approval.UnlockResult.class, null);
   }
 
   // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
@@ -388,21 +447,28 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.RecordCollectionSize__c = 1;
     this.logEntryEvent.RecordCollectionType__c = 'Single';
 
-    String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
       Schema.LogEntryEvent__e.RecordJson__c,
       getJson(record, this.userSettings.IsRecordFieldStrippingEnabled__c)
     );
+    this.logEntryEvent.RecordJson__c = textCleaner.textValue;
+    this.logEntryEvent.RecordJsonMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RecordJsonTruncated__c = textCleaner.wasMasked;
+
     if (record == null) {
-      this.logEntryEvent.RecordJson__c = truncatedRecordJson;
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      String cleanedRecordJson = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRecordJson);
-      Boolean recordJsonMasked = cleanedRecordJson != truncatedRecordJson;
-
-      this.logEntryEvent.RecordId__c = record.Id;
-      this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-      this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+      try {
+        this.logEntryEvent.RecordId__c = record.Id;
+      } catch (System.SObjectException sobjectException) {
+        // Some SObject Types (such as Platform Events) do not have the ID field;
+        // that's OK, just skip setting it.
+        if (sobjectException.getMessage().contains('Invalid field Id') == false) {
+          throw sobjectException;
+        }
+      }
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
       this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
@@ -424,21 +490,20 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.RecordCollectionSize__c = records?.size();
     this.logEntryEvent.RecordCollectionType__c = 'List';
 
-    Schema.SObjectType sobjectType = records?.getSObjectType();
-    String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
       Schema.LogEntryEvent__e.RecordJson__c,
       getJson(records, this.userSettings.IsRecordFieldStrippingEnabled__c)
     );
+    this.logEntryEvent.RecordJson__c = textCleaner.textValue;
+    this.logEntryEvent.RecordJsonMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RecordJsonTruncated__c = textCleaner.wasTruncated;
+
+    Schema.SObjectType sobjectType = records?.getSObjectType();
     if (sobjectType == null) {
-      this.logEntryEvent.RecordJson__c = truncatedRecordJson;
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      String cleanedRecordJson = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRecordJson);
-      Boolean recordJsonMasked = cleanedRecordJson != truncatedRecordJson;
-
-      this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-      this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
       this.logEntryEvent.RecordSObjectType__c = sobjectType.toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
@@ -453,29 +518,28 @@ global with sharing class LogEntryEventBuilder {
    * @return                  The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setRecord(Map<Id, SObject> recordIdToRecord) {
-    if (this.shouldSave == false) {
+    if (this.shouldSave() == false) {
       return this;
     }
 
     this.logEntryEvent.RecordCollectionSize__c = recordIdToRecord?.size();
     this.logEntryEvent.RecordCollectionType__c = 'Map';
 
-    List<SObject> recordsList = recordIdToRecord?.values();
-    Schema.SObjectType sobjectType = recordIdToRecord?.size() > 0 ? recordsList.get(0)?.getSObjectType() : null;
-    String truncatedRecordJson = LoggerDataStore.truncateFieldValue(
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
       Schema.LogEntryEvent__e.RecordJson__c,
       getJson(recordIdToRecord, this.userSettings.IsRecordFieldStrippingEnabled__c)
     );
+    this.logEntryEvent.RecordJson__c = textCleaner.textValue;
+    this.logEntryEvent.RecordJsonMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RecordJsonTruncated__c = textCleaner.wasTruncated;
+
+    List<SObject> recordsList = recordIdToRecord?.values();
+    Schema.SObjectType sobjectType = recordIdToRecord?.size() > 0 ? recordsList.get(0)?.getSObjectType() : null;
     if (sobjectType == null) {
-      this.logEntryEvent.RecordJson__c = truncatedRecordJson;
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      String cleanedRecordJson = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRecordJson);
-      Boolean recordJsonMasked = cleanedRecordJson != truncatedRecordJson;
-
-      this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-      this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
       this.logEntryEvent.RecordSObjectType__c = sobjectType.toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
@@ -486,21 +550,19 @@ global with sharing class LogEntryEventBuilder {
 
   /**
    * @description Sets the log entry event's record fields
-   * @param  recordsIds The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry
+   * @param  recordIds The Set of `SObject` records ids related to the entry. Will be converted to list and the JSON of the list is automatically added to the entry
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
-  global LogEntryEventBuilder setRecord(System.Iterable<Id> recordsIds) {
+  global LogEntryEventBuilder setRecord(System.Iterable<Id> recordIds) {
     if (this.shouldSave() == false) {
       return this;
     }
 
     List<SObject> records;
-    if (recordsIds != null) {
+    if (recordIds != null) {
       records = new List<SObject>();
-      for (Id recordId : recordsIds) {
-        SObject record = recordId.getSObjectType().newSObject();
-        record.Id = recordId;
-        records.add(record);
+      for (Id recordId : recordIds) {
+        records.add(recordId.getSObjectType().newSObject(recordId));
       }
     }
 
@@ -527,10 +589,6 @@ global with sharing class LogEntryEventBuilder {
       return this;
     }
 
-    String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestBody__c, request.getBody());
-    String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
-    Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
-
     String formattedHeaderKeysString;
     String formattedHeadersString;
     if (headersToLog != null & headersToLog.isEmpty() == false) {
@@ -544,8 +602,11 @@ global with sharing class LogEntryEventBuilder {
       }
     }
 
-    this.logEntryEvent.HttpRequestBody__c = cleanedRequestBody;
-    this.logEntryEvent.HttpRequestBodyMasked__c = requestBodyMasked;
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(this.userSettings, Schema.LogEntryEvent__e.HttpRequestBody__c, request.getBody());
+
+    this.logEntryEvent.HttpRequestBody__c = textCleaner.textValue;
+    this.logEntryEvent.HttpRequestBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.HttpRequestBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.HttpRequestCompressed__c = request.getCompressed();
     this.logEntryEvent.HttpRequestEndpoint__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestEndpoint__c, request.getEndpoint());
     this.logEntryEvent.HttpRequestEndpointAddress__c = LoggerDataStore.truncateFieldValue(
@@ -568,10 +629,6 @@ global with sharing class LogEntryEventBuilder {
       return this;
     }
 
-    String truncatedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseBody__c, response.getBody());
-    String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
-    Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
-
     String formattedHeadersString;
     if (LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES) {
       List<String> headers = new List<String>();
@@ -580,8 +637,12 @@ global with sharing class LogEntryEventBuilder {
       }
       formattedHeadersString = String.join(headers, NEW_LINE_DELIMITER);
     }
-    this.logEntryEvent.HttpResponseBody__c = cleanedResponseBody;
-    this.logEntryEvent.HttpResponseBodyMasked__c = responseBodyMasked;
+
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(this.userSettings, Schema.LogEntryEvent__e.HttpResponseBody__c, response.getBody());
+
+    this.logEntryEvent.HttpResponseBody__c = textCleaner.textValue;
+    this.logEntryEvent.HttpResponseBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.HttpResponseBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), NEW_LINE_DELIMITER);
     this.logEntryEvent.HttpResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseHeaders__c, formattedHeadersString);
     this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
@@ -598,11 +659,6 @@ global with sharing class LogEntryEventBuilder {
     if (this.shouldSave() == false || request == null) {
       return this;
     }
-
-    String stringifiedRequestBody = request.requestBody?.toString();
-    String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestBody__c, stringifiedRequestBody);
-    String cleanedRequestBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedRequestBody);
-    Boolean requestBodyMasked = cleanedRequestBody != truncatedRequestBody;
 
     String formattedHeaderKeysString;
     String formattedHeadersString;
@@ -625,8 +681,15 @@ global with sharing class LogEntryEventBuilder {
       formattedParametersString = String.join(parameters, NEW_LINE_DELIMITER);
     }
 
-    this.logEntryEvent.RestRequestBody__c = cleanedRequestBody;
-    this.logEntryEvent.RestRequestBodyMasked__c = requestBodyMasked;
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
+      Schema.LogEntryEvent__e.RestRequestBody__c,
+      request.requestBody?.toString()
+    );
+
+    this.logEntryEvent.RestRequestBody__c = textCleaner.textValue;
+    this.logEntryEvent.RestRequestBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RestRequestBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.RestRequestHeaderKeys__c = formattedHeaderKeysString;
     this.logEntryEvent.RestRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestHeaders__c, formattedHeadersString);
     this.logEntryEvent.RestRequestMethod__c = request.httpMethod;
@@ -647,11 +710,6 @@ global with sharing class LogEntryEventBuilder {
       return this;
     }
 
-    String stringifiedResponseBody = response.responseBody?.toString();
-    String truncatedResponseBody = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestResponseBody__c, stringifiedResponseBody);
-    String cleanedResponseBody = applyDataMaskRules(this.userSettings.IsDataMaskingEnabled__c, truncatedResponseBody);
-    Boolean responseBodyMasked = cleanedResponseBody != truncatedResponseBody;
-
     String formattedHeaderKeysString;
     String formattedHeadersString;
     if (response.headers != null) {
@@ -665,8 +723,15 @@ global with sharing class LogEntryEventBuilder {
       }
     }
 
-    this.logEntryEvent.RestResponseBody__c = cleanedResponseBody;
-    this.logEntryEvent.RestResponseBodyMasked__c = responseBodyMasked;
+    TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(
+      this.userSettings,
+      Schema.LogEntryEvent__e.RestResponseBody__c,
+      response.responseBody?.toString()
+    );
+
+    this.logEntryEvent.RestResponseBody__c = textCleaner.textValue;
+    this.logEntryEvent.RestResponseBodyMasked__c = textCleaner.wasMasked;
+    this.logEntryEvent.RestResponseBodyTruncated__c = textCleaner.wasTruncated;
     this.logEntryEvent.RestResponseHeaderKeys__c = formattedHeaderKeysString;
     this.logEntryEvent.RestResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestResponseHeaders__c, formattedHeadersString);
     this.logEntryEvent.RestResponseStatusCode__c = response.statusCode;
@@ -848,6 +913,13 @@ global with sharing class LogEntryEventBuilder {
     return this.logEntryEvent;
   }
 
+  private void setSaveReason() {
+    System.LoggingLevel userLoggingLevel = System.LoggingLevel.valueOf(this.userSettings.LoggingLevel__c);
+    Boolean isEntryLoggingLevelEnabled = this.entryLoggingLevel.ordinal() >= userLoggingLevel.ordinal();
+
+    this.logEntryEvent.EntrySaveReason__c = isEntryLoggingLevelEnabled ? ENTRY_SAVE_REASON_LOGGING_LEVEL_MET : ENTRY_SAVE_REASON_OVERRIDE;
+  }
+
   @SuppressWarnings('PMD.AvoidDebugStatements')
   private void logToApexDebug(String message) {
     if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false) {
@@ -861,6 +933,7 @@ global with sharing class LogEntryEventBuilder {
         if (String.isBlank(possibleReplacement)) {
           continue;
         }
+
         String logEntryFieldName = possibleReplacement.substringBefore('}');
         Object logEntryFieldValue = this.logEntryEvent.get(logEntryFieldName);
         if (logEntryFieldValue == null) {
@@ -930,6 +1003,8 @@ global with sharing class LogEntryEventBuilder {
 
     if (LoggerParameter.STORE_TRANSACTION_LIMITS) {
       logEntryEventTemplate.LimitsAggregateQueriesMax__c = CACHED_TRANSACTION_LIMITS.aggregateQueriesMax;
+      logEntryEventTemplate.LimitsApexCursorFetchCallsMax__c = CACHED_TRANSACTION_LIMITS.apexCursorFetchCallsMax;
+      logEntryEventTemplate.LimitsApexCursorRowsMax__c = CACHED_TRANSACTION_LIMITS.apexCursorRowsMax;
       logEntryEventTemplate.LimitsAsyncCallsMax__c = CACHED_TRANSACTION_LIMITS.asyncCallsMax;
       logEntryEventTemplate.LimitsCalloutsMax__c = CACHED_TRANSACTION_LIMITS.calloutsMax;
       logEntryEventTemplate.LimitsCpuTimeMax__c = CACHED_TRANSACTION_LIMITS.cpuTimeMax;
@@ -947,6 +1022,8 @@ global with sharing class LogEntryEventBuilder {
       logEntryEventTemplate.LimitsSoslSearchesMax__c = CACHED_TRANSACTION_LIMITS.soslSearchesMax;
 
       logEntryEventTemplate.LimitsAggregateQueriesUsed__c = System.Limits.getAggregateQueries();
+      logEntryEventTemplate.LimitsApexCursorFetchCallsUsed__c = System.Limits.getFetchCallsOnApexCursor();
+      logEntryEventTemplate.LimitsApexCursorRowsUsed__c = System.Limits.getApexCursorRows();
       logEntryEventTemplate.LimitsAsyncCallsUsed__c = System.Limits.getAsyncCalls();
       logEntryEventTemplate.LimitsCalloutsUsed__c = System.Limits.getCallouts();
       logEntryEventTemplate.LimitsCpuTimeUsed__c = System.Limits.getCpuTime();
@@ -955,8 +1032,8 @@ global with sharing class LogEntryEventBuilder {
       logEntryEventTemplate.LimitsEmailInvocationsUsed__c = System.Limits.getEmailInvocations();
       logEntryEventTemplate.LimitsFutureCallsUsed__c = System.Limits.getFutureCalls();
       logEntryEventTemplate.LimitsMobilePushApexCallsUsed__c = System.Limits.getMobilePushApexCalls();
-      logEntryEventTemplate.LimitsQueueableJobsUsed__c = System.Limits.getQueueableJobs();
       logEntryEventTemplate.LimitsPublishImmediateDmlStatementsUsed__c = System.Limits.getPublishImmediateDML();
+      logEntryEventTemplate.LimitsQueueableJobsUsed__c = System.Limits.getQueueableJobs();
       logEntryEventTemplate.LimitsSoqlQueriesUsed__c = System.Limits.getQueries();
       logEntryEventTemplate.LimitsSoqlQueryLocatorRowsUsed__c = System.Limits.getQueryLocatorRows();
       logEntryEventTemplate.LimitsSoqlQueryRowsUsed__c = System.Limits.getQueryRows();
@@ -1292,9 +1369,54 @@ global with sharing class LogEntryEventBuilder {
     }
   }
 
+  @SuppressWarnings('PMD.ApexDoc')
+  private class TextFieldValueCleaner {
+    public final Schema.SObjectField textField;
+    public final String textValue;
+    public final Boolean isDataMaskingEnabled;
+    public final Boolean wasMasked;
+    public final Boolean wasTruncated;
+
+    public TextFieldValueCleaner(LoggerSettings__c settings, Schema.SObjectField textField, String originalTextValue) {
+      this.textField = textField;
+      this.isDataMaskingEnabled = settings.IsDataMaskingEnabled__c;
+      this.wasTruncated = String.isBlank(originalTextValue) ? false : originalTextValue.length() > textField.getDescribe().getLength();
+
+      String cleanedValue = LoggerDataStore.truncateFieldValue(this.textField, originalTextValue);
+      if (this.isDataMaskingEnabled) {
+        String maskedValue = this.applyDataMaskRules(cleanedValue);
+        this.wasMasked = cleanedValue != maskedValue;
+        // Some data masking rules could increase the string length (like adding dashes to SSN: '444119999' --> 'XXX-XX-9999'),
+        // so truncate again just to be sure that it will fit.
+        cleanedValue = LoggerDataStore.truncateFieldValue(this.textField, maskedValue);
+      } else {
+        this.wasMasked = false;
+      }
+
+      this.textValue = cleanedValue;
+    }
+
+    private String applyDataMaskRules(String textValueToMask) {
+      if (String.isBlank(textValueToMask)) {
+        return textValueToMask;
+      }
+
+      String maskedTextValue = textValueToMask;
+      for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
+        if (dataMaskRule.IsEnabled__c) {
+          maskedTextValue = maskedTextValue.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+        }
+      }
+
+      return maskedTextValue;
+    }
+  }
+
   @SuppressWarnings('PMD.ApexDoc, PMD.TooManyFields')
   private class TransactionLimits {
     public final Integer aggregateQueriesMax = System.Limits.getLimitAggregateQueries();
+    public final Integer apexCursorFetchCallsMax = System.Limits.getLimitFetchCallsOnApexCursor();
+    public final Integer apexCursorRowsMax = System.Limits.getLimitApexCursorRows();
     public final Integer asyncCallsMax = System.Limits.getLimitAsyncCalls();
     public final Integer calloutsMax = System.Limits.getLimitCallouts();
     public final Integer cpuTimeMax = System.Limits.getLimitCpuTime();

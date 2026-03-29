@@ -457,29 +457,6 @@ List&lt;Schema.Group&gt;
 
 The list of matching `Schema.Group` records
 
-#### `getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit)` → `List<LogEntry__c>`
-
-Returns the list of `LogEntry__c` records related to the specified record ID
-
-##### Parameters
-
-| Param           | Description                                                                        |
-| --------------- | ---------------------------------------------------------------------------------- |
-| `recordId`      | The `ID` to use for filtering `LogEntry__c` records                                |
-| `fieldsClause`  | A comma-separated `String` of field API names to include in the query              |
-| `orderByClause` | A comma-separated `String` of field API names to use for sorting the query results |
-| `rowLimit`      | The maximum number of records to return                                            |
-
-##### Return
-
-**Type**
-
-List&lt;LogEntry\_\_c&gt;
-
-**Description**
-
-The list of matching `LogEntry__c` records
-
 #### `getTagsByName(Set<String> tagNames)` → `List<LoggerTag__c>`
 
 Returns a list of `LoggerTag__c` records with one of the specified tag names

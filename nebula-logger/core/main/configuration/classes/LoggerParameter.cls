@@ -103,6 +103,20 @@ public class LoggerParameter {
   }
 
   /**
+   * @description Controls the default batch size used by the batchable class `LogBatchPurger` when purging old logging data.
+   *              Controlled by the custom metadata record `LoggerParameter.LogBatchPurgerDefaultBatchSize`, or `500` as the default
+   */
+  public static final Integer LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE {
+    get {
+      if (LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE == null) {
+        LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE = getInteger('LogBatchPurgerDefaultBatchSize', 500);
+      }
+      return LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE;
+    }
+    private set;
+  }
+
+  /**
    * @description Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`,
    *              or in the fields `Log__c.TransactionScenarioName__c` & `LogEntry__c.EntryScenario__c`.
    *              Controlled by the custom metadata record `LoggerParameter.NormalizeScenarioData`, or `true` as the default

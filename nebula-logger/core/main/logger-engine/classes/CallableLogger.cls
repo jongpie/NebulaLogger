@@ -20,6 +20,7 @@ global without sharing class CallableLogger implements System.Callable {
   private static final String ARGUMENT_MESSAGE = 'message';
   private static final String ARGUMENT_PARENT_LOG_TRANSACTION_ID = 'parentLogTransactionId';
   private static final String ARGUMENT_SCENARIO = 'scenario';
+  private static final String ARGUMENT_SHOULD_SAVE = 'shouldSave';
   private static final String ARGUMENT_RECORD_ID = 'recordId';
   private static final String ARGUMENT_RECORD = 'record';
   private static final String ARGUMENT_RECORD_LIST = 'recordList';
@@ -130,12 +131,17 @@ global without sharing class CallableLogger implements System.Callable {
     @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount')
     private LogEntryEventBuilder newEntry(Map<String, Object> input) {
       // The value of loggingLevel could be either a string name or an enum value from System.LoggingLevel,
-      // so always first convert it to a string for consistency
-      String loggingLevelName = input.get(ARGUMENT_LOGGING_LEVEL)?.toString();
-      System.LoggingLevel loggingLevel = Logger.getLoggingLevel(loggingLevelName);
+      // so always first convert it to a string for consistency & safety.
+      String entryLoggingLevelName = input.get(ARGUMENT_LOGGING_LEVEL)?.toString();
+      System.LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(entryLoggingLevelName);
       String formattedMessage = CallableLogger.getFormattedMessage(input);
 
-      LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, formattedMessage);
+      // Similarly, the value of shouldSave could be an actual boolean value, or a string,
+      // so always first convert it to a string for consistency & safety.
+      String shouldSaveString = input.get(ARGUMENT_SHOULD_SAVE)?.toString();
+      Boolean shouldSaveEntry = String.isNotBlank(shouldSaveString) ? Boolean.valueOf(shouldSaveString.toString()) : Logger.isEnabled(entryLoggingLevel);
+
+      LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, formattedMessage, shouldSaveEntry);
 
       if (input.containsKey(ARGUMENT_EXCEPTION)) {
         logEntryEventBuilder.setExceptionDetails((System.Exception) input.get(ARGUMENT_EXCEPTION));
@@ -159,13 +165,15 @@ global without sharing class CallableLogger implements System.Callable {
         }
       }
       if (CallableLogger.isOmniStudioInput(input)) {
-        LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-
-        logEntryEvent.OriginLocation__c = null;
-        logEntryEvent.OriginSourceApiName__c = null;
-        logEntryEvent.OriginSourceId__c = (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID);
-        logEntryEvent.OriginSourceMetadataType__c = null;
-        logEntryEvent.OriginType__c = 'OmniStudio';
+        logEntryEventBuilder.setField(
+          new Map<Schema.SObjectField, Object>{
+            LogEntryEvent__e.OriginLocation__c => null,
+            LogEntryEvent__e.OriginSourceApiName__c => null,
+            LogEntryEvent__e.OriginSourceId__c => (String) input.get(OMNISTUDIO_ARGUMENT_INPUT_OMNI_PROCESS_ID),
+            LogEntryEvent__e.OriginSourceMetadataType__c => null,
+            LogEntryEvent__e.OriginType__c => 'OmniStudio'
+          }
+        );
       }
 
       return logEntryEventBuilder;

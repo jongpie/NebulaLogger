@@ -156,8 +156,8 @@ jobs:
         run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/advanced-scratch-def.json --wait 20 --set-default --json
 
       # https://help.salesforce.com/s/articleView?id=000394906&type=1
-      - name: 'Install OmniStudio managed package v250.7.1 (Summer ‘24 release)'
-        run: npx sf package install --package 04t4W000002Z6oC --security-type AdminsOnly --wait 30 --no-prompt
+      - name: "Install OmniStudio managed package v258.6 (Winter '26 release)"
+        run: npx sf package install --package 04tKb000000tAtyIAE --security-type AdminsOnly --wait 30 --no-prompt
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
@@ -173,9 +173,6 @@ jobs:
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
-
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
@@ -242,9 +239,6 @@ jobs:
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
 
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
-
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
@@ -255,6 +249,32 @@ jobs:
 
       - name: 'Run Apex Tests Synchronously'
         run: npm run test:apex:nocoverage -- --synchronous
+
+      # This is the only place in Nebula Logger's pipeline where the `LoggerCore` test suite runs & the results are sent to Codecov.io.
+      # This is specifically done in the base scratch org, using only the `LoggerCore test` suite, in order to help validate that the core metadata
+      # provides sufficient code coverage for teams that deploy Nebula Logger's metadata directly to their org, instead of installing one of Nebula Logger's 2GP packages.
+      #   1. Many teams cannot use one of the 2GP packages for various reasons, including company policies, security concerns, etc.,
+      #      and being able to deploy the core metadata is something that should be supported.
+      #   2. And even though the pipeline runs the `extra-tests` directory to validate logging works correctly in various types of scratch orgs,
+      #      for teams that are trying to deploy Nebula Logger's metadata, it's critical that the core tests have sufficient code coverage to be deployed to a prod org.
+      #       - In the past, this has not always been the case, resulting in some teams having deployment issues & project delays due to the low code coverage
+      #         that was (formerly) provided by some of the core tests classes.
+      #       - In orgs that do not have some optional Salesforce features enabled/available (e.g., orgs without Experience Cloud, OmniStudio, Platform Cache, etc.),
+      #         the code coverage can be especially low, so using the base scratch org acts
+      #
+
+      # So now only the core test suite's results, from a base scratch org, are used for reporting code coverage, even though the project's overall code coverage
+      # is much higher when using the `extra-tests` directory.
+      - name: 'Get Core Test Suite Code Coverage'
+        run: npm run test:apex:suite:core
+
+      # This is the only scratch org that's used for uploading code coverage
+      - name: 'Upload Apex test code coverage to Codecov.io'
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          flags: Apex
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: 'Delete Scratch Org'
         run: npx sf org delete scratch --no-prompt
@@ -309,9 +329,6 @@ jobs:
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
-
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
@@ -381,9 +398,6 @@ jobs:
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
 
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
-
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
       # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
@@ -438,8 +452,8 @@ jobs:
         run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ./config/scratch-orgs/omnistudio-scratch-def.json --wait 20 --set-default --json
 
       # https://help.salesforce.com/s/articleView?id=000394906&type=1
-      - name: 'Install OmniStudio managed package v250.7.1 (Summer ‘24 release)'
-        run: npx sf package install --package 04t4W000002Z6oC --security-type AdminsOnly --wait 30 --no-prompt
+      - name: "Install OmniStudio managed package v258.6 (Winter '26 release)"
+        run: npx sf package install --package 04tKb000000tAtyIAE --security-type AdminsOnly --wait 30 --no-prompt
 
       # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
       # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
@@ -455,9 +469,6 @@ jobs:
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
-
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
@@ -523,9 +534,6 @@ jobs:
 
       - name: 'Assign Logger Admin Permission Set'
         run: npm run permset:assign:admin
-
-      - name: 'Validate Custom Metadata Records'
-        run: npx sf apex run --file ./scripts/build/validate-custom-metadata-records.apex
 
       # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
       # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
@@ -638,32 +646,6 @@ jobs:
 
       - name: 'Create & Install Package Version'
         run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md  -targetusername base_package_subscriber_scratch_org
-
-      # This is the only place in Nebula Logger's pipeline where the `LoggerCore` test suite runs & the results are sent to Codecov.io.
-      # This is specifically done in the base scratch org, using only the `LoggerCore test` suite, in order to help validate that the core metadata
-      # provides sufficient code coverage for teams that deploy Nebula Logger's metadata directly to their org, instead of installing one of Nebula Logger's 2GP packages.
-      #   1. Many teams cannot use one of the 2GP packages for various reasons, including company policies, security concerns, etc.,
-      #      and being able to deploy the core metadata is something that should be supported.
-      #   2. And even though the pipeline runs the `extra-tests` directory to validate logging works correctly in various types of scratch orgs,
-      #      for teams that are trying to deploy Nebula Logger's metadata, it's critical that the core tests have sufficient code coverage to be deployed to a prod org.
-      #       - In the past, this has not always been the case, resulting in some teams having deployment issues & project delays due to the low code coverage
-      #         that was (formerly) provided by some of the core tests classes.
-      #       - In orgs that do not have some optional Salesforce features enabled/available (e.g., orgs without Experience Cloud, OmniStudio, Platform Cache, etc.),
-      #         the code coverage can be especially low, so using the base scratch org acts
-      #
-
-      # So now only the core test suite's results, from a base scratch org, are used for reporting code coverage, even though the project's overall code coverage
-      # is much higher when using the `extra-tests` directory.
-      - name: 'Get Core Test Suite Code Coverage'
-        run: npm run test:apex:suite:core
-
-      # This is the only scratch org that's used for uploading code coverage
-      - name: 'Upload Apex test code coverage to Codecov.io'
-        uses: codecov/codecov-action@v4
-        with:
-          fail_ci_if_error: true
-          flags: Apex
-          token: ${{ secrets.CODECOV_TOKEN }}
 
       # The metadata API / sf CLI support deploying metadata using package manifest XML files - see docs for more details:
       #     Docs: https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/manifest_samples.htm
