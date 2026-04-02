@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.17.3.NEXT",
-      "versionName": "relatedLogEntries LWC Improvements",
-      "versionDescription": "Improved relatedLogEntries LWC so it queries & finds even more LogEntry__c records, added support for picklist labels, improved layout so it visually better aligns with the appearance of standard related lists",
+      "versionNumber": "4.17.4.NEXT",
+      "versionName": "LoggerEmailSender_Tests Fix for New Platform Requirement of Verified Email Domains",
+      "versionDescription": "Updated LoggerEmailSender_Tests to first update the current user's email address to be a (fake) gmail.com address to avoid issues with the new & breaking-change that requires most email domains to be verified (even in tests)",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
