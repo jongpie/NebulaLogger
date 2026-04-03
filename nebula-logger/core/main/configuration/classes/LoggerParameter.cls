@@ -103,6 +103,22 @@ public class LoggerParameter {
   }
 
   /**
+   * @description A list of JavaScript file name patterns that should be ignored when parsing stack traces.
+   *              Any stack trace lines containing file names that match these patterns will be removed from the parsed stack trace.
+   *              This is useful for filtering out utility or framework files from stack traces.
+   *              Controlled by the custom metadata record `LoggerParameter.IgnoredJavaScriptOrigins`, or an empty list as the default
+   */
+  public static final List<String> IGNORED_JAVASCRIPT_ORIGINS {
+    get {
+      if (IGNORED_JAVASCRIPT_ORIGINS == null) {
+        IGNORED_JAVASCRIPT_ORIGINS = getStringList('IgnoredJavaScriptOrigins', new List<String>());
+      }
+      return IGNORED_JAVASCRIPT_ORIGINS;
+    }
+    private set;
+  }
+
+  /**
    * @description Controls the default batch size used by the batchable class `LogBatchPurger` when purging old logging data.
    *              Controlled by the custom metadata record `LoggerParameter.LogBatchPurgerDefaultBatchSize`, or `500` as the default
    */

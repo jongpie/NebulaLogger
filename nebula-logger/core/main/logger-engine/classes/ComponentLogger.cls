@@ -249,6 +249,13 @@ public inherited sharing class ComponentLogger {
     @AuraEnabled
     public ComponentLoggingLevel userLoggingLevel { get; set; }
 
+    /**
+     * @description A list of JavaScript file name patterns that should be ignored when parsing stack traces,
+     *              based on `LoggerParameter.IgnoredJavaScriptOrigins`
+     */
+    @AuraEnabled
+    public List<String> ignoredJavaScriptOrigins { get; set; }
+
     private ComponentLoggerSettings() {
       LoggerSettings__c userSettings = Logger.getUserSettings();
 
@@ -258,6 +265,7 @@ public inherited sharing class ComponentLogger {
       this.isLightningLoggerEnabled = userSettings.IsJavaScriptLightningLoggerEnabled__c;
       this.supportedLoggingLevels = getSupportedLoggingLevels();
       this.userLoggingLevel = getUserLoggingLevel();
+      this.ignoredJavaScriptOrigins = LoggerParameter.IGNORED_JAVASCRIPT_ORIGINS;
     }
 
     private Map<String, Integer> getSupportedLoggingLevels() {

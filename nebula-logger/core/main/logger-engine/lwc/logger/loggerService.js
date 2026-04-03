@@ -7,6 +7,7 @@ import FORM_FACTOR from '@salesforce/client/formFactor';
 import { log as lightningLog } from 'lightning/logger';
 import LogEntryEventBuilder from './logEntryBuilder';
 import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
+import LoggerStackTrace from './loggerStackTrace';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
@@ -68,6 +69,14 @@ export default class LoggerService {
 
   setScenario(scenario) {
     this.#scenario = scenario;
+  }
+
+  /**
+   * @description Sets the list of JavaScript file name patterns to ignore when parsing stack traces
+   * @param {String[]} ignoredOrigins - Array of file name patterns to ignore (e.g., ['jquery', 'analytics.js'])
+   */
+  setIgnoredOrigins(ignoredOrigins) {
+    LoggerStackTrace.setGlobalIgnoredOrigins(ignoredOrigins);
   }
 
   exception(message, exception, originStackTraceError) {
@@ -155,6 +164,9 @@ export default class LoggerService {
           supportedLoggingLevels: Object.freeze(retrievedSettings.supportedLoggingLevels),
           userLoggingLevel: Object.freeze(retrievedSettings.userLoggingLevel)
         });
+
+        // Configure LoggerStackTrace with ignored origins from settings
+        LoggerStackTrace.setGlobalIgnoredOrigins(this.#settings.ignoredJavaScriptOrigins);
 
         if (!LoggerService.hasInitialized && LoggerService.areSystemMessagesEnabled && this.#settings.isConsoleLoggingEnabled) {
           this._logToConsole('INFO', 'logger component initialized\n' + JSON.stringify(new BrowserContext(), null, 2));

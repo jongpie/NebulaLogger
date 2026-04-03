@@ -149,6 +149,31 @@ The code below is specific to Nebula Logger - it leverages stacktrace.js plus so
 additional parsing logic to handle Salesforce-specific stack traces in LWC & Aura components
 */
 export default class LoggerStackTrace {
+  static #globalIgnoredOrigins = [];
+
+  /**
+   * @description Sets the global list of file name patterns to ignore when parsing stack traces
+   * @param {String[]} ignoredOrigins - Array of file name patterns to ignore globally
+   */
+  static setGlobalIgnoredOrigins(ignoredOrigins) {
+    LoggerStackTrace.#globalIgnoredOrigins = ignoredOrigins || [];
+  }
+
+  #ignoredOrigins = [];
+
+  constructor() {
+    // Initialize with global ignored origins
+    this.#ignoredOrigins = [...LoggerStackTrace.#globalIgnoredOrigins];
+  }
+
+  /**
+   * @description Sets the list of file name patterns to ignore when parsing stack traces
+   * @param {String[]} ignoredOrigins - Array of file name patterns to ignore
+   */
+  setIgnoredOrigins(ignoredOrigins) {
+    this.#ignoredOrigins = ignoredOrigins || [];
+  }
+
   parse(originStackTraceError) {
     if (!originStackTraceError) {
       return this;
@@ -158,12 +183,8 @@ export default class LoggerStackTrace {
     let originStackTraceParticle;
     const parsedStackTraceLines = [];
     originStackTraceParticles.forEach(currentStackTraceParticle => {
-      if (!originStackTraceParticle && currentStackTraceParticle.fileName?.endsWith('/logger.js')) {
-        return;
-      }
-
-      const ignoredAuraFilenamesRegEx = /aura_prod(?:\.js|debug(?:\.js)?)$/;
-      if (!originStackTraceParticle && ignoredAuraFilenamesRegEx.test(currentStackTraceParticle.fileName)) {
+      // Check if this particle should be ignored
+      if (this._shouldIgnoreStackTraceParticle(currentStackTraceParticle, !originStackTraceParticle)) {
         return;
       }
 
@@ -176,6 +197,28 @@ export default class LoggerStackTrace {
     });
     const parsedStackTraceString = parsedStackTraceLines.join('\n');
     return { ...originStackTraceParticle, parsedStackTraceString };
+  }
+
+  _shouldIgnoreStackTraceParticle(stackTraceParticle, isFirstParticle) {
+    // Always ignore logger.js files
+    if (isFirstParticle && stackTraceParticle.fileName?.endsWith('/logger.js')) {
+      return true;
+    }
+
+    // Check configurable ignored origins
+    for (const ignoredOrigin of this.#ignoredOrigins) {
+      if (stackTraceParticle.fileName?.includes(ignoredOrigin)) {
+        return true;
+      }
+    }
+
+    // Check hardcoded patterns for backward compatibility
+    const ignoredAuraFilenamesRegEx = /aura_prod(?:\.js|debug(?:\.js)?)$/;
+    if (isFirstParticle && ignoredAuraFilenamesRegEx.test(stackTraceParticle.fileName)) {
+      return true;
+    }
+
+    return false;
   }
 
   _cleanStackTraceParticle(stackTraceParticle) {
