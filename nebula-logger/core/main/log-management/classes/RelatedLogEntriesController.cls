@@ -16,14 +16,14 @@ public with sharing class RelatedLogEntriesController {
 
   /**
    * @description Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
-   * @param  recordId        Used to filter LogEntry__c records where RecordId__c == recordId
-   * @param  fieldSetName    The API/developer name of the field set
-   * @param  rowLimit        The max number of rows to query
-
-   * @param  sortByFieldName The field to sort by
-   * @param  sortDirection   The direction to sort by (asc or desc))
-   * @param  search          An optional search term to filter by
-   * @return                 The instance of LogEntryQueryResult, containing matching records and metadata
+   * @param  recordId                The recordId to search for amidst all Log Entry fields
+   * @param  fieldSetName            The API/developer name of the field set
+   * @param  rowLimit                The max number of rows to query
+   * @param  sortByFieldName         The field to sort by
+   * @param  sortDirection           The direction to sort by (asc or desc)
+   * @param  search                  An optional search term to filter by
+   * @param  shouldEnableStrictSearch When true, used to filter returned LogEntry__c records where RecordId__c == recordId
+   * @return                         The instance of LogEntryQueryResult, containing matching records and metadata
    */
   @SuppressWarnings('PMD.ExcessiveParameterList')
   @AuraEnabled(cacheable=true)
