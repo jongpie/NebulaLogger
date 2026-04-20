@@ -54,7 +54,8 @@ private class RelatedLogEntriesController_Tests {
       rowLimit,
       sortByFieldName,
       sortDirection,
-      searchTerm
+      searchTerm,
+      false
     );
 
     System.Assert.areEqual(fieldSetName, result.fieldSet.name);
@@ -83,12 +84,44 @@ private class RelatedLogEntriesController_Tests {
       rowLimit,
       sortByFieldName,
       sortDirection,
-      searchTerm
+      searchTerm,
+      false
     );
 
     System.Assert.areEqual(fieldSetName, result.fieldSet.name);
     System.Assert.areEqual(1, result.records.size());
     System.Assert.areEqual(logEntryWithSearchTerm.Id, result.records[0].Id);
+  }
+
+  @IsTest
+  static void it_should_return_no_matching_logEntryQueryResult_when_search_term_provided_and_strict_mode_enabled() {
+    String fieldSetName = getFieldSetName();
+    Integer rowLimit = 10;
+    String sortByFieldName = 'Name';
+    String sortDirection = 'ASC';
+    String searchTerm = 'my searchTerm term';
+    Log__c log = [SELECT Id FROM Log__c];
+    LogEntry__c logEntryWithSearchTerm = new LogEntry__c(Log__c = log.Id, Message__c = searchTerm, RecordId__c = TARGET_RECORD_ID);
+    insert logEntryWithSearchTerm;
+
+    // TODO revisit how SOSL is tested - having to use setFixedSearchResults() means we're not really truly testing
+    // that the SOSL search query is working (other than confirming that the query string can be executed successfully),
+    // the test will just return the records specified
+    System.Test.setFixedSearchResults(new List<Id>{ logEntryWithSearchTerm.Id });
+    Boolean shouldEnableStrictSearch = true;
+    RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
+      // explicitly don't pass the same recordId to ensure that strict search is performed in WHERE clause
+      LoggerMockDataCreator.createId(Schema.User.SObjectType),
+      fieldSetName,
+      rowLimit,
+      sortByFieldName,
+      sortDirection,
+      searchTerm,
+      shouldEnableStrictSearch
+    );
+
+    System.Assert.areEqual(fieldSetName, result.fieldSet.name);
+    System.Assert.areEqual(0, result.records.size());
   }
 
   static String getFieldSetName() {

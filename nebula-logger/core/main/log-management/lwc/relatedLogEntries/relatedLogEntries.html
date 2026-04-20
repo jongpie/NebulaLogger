@@ -28,11 +28,17 @@
               variant="label-hidden"
             ></lightning-input>
             <lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon>
+            <lightning-input
+              type="checkbox"
+              checked={shouldEnableStrictSearch}
+              onchange={toggleEnableStrictSearch}
+              label="Filter To Only This Record"
+            ></lightning-input>
           </div>
         </header>
       </div>
       <div class="slds-card__body">
-        <lightning-spinner if:true={isLoading} size="small"></lightning-spinner>
+        <lightning-spinner alternative-text="loading related log entries..." lwc:if={isLoading} size="small"></lightning-spinner>
         <div class="slds-is-relative" if:true={queryResult}>
           <lightning-datatable
             key-field="id"

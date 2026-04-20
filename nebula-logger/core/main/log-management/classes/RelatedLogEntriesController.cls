@@ -33,21 +33,29 @@ public with sharing class RelatedLogEntriesController {
     Integer rowLimit,
     String sortByFieldName,
     String sortDirection,
-    String search
+    String search,
+    Boolean shouldEnableStrictSearch
   ) {
     FieldSetMetadata fieldSetMetdata = new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
 
     String fieldsClause = getFieldsClause(fieldSetMetdata.fields);
     String orderByClause = getOrderByClause(sortByFieldName, sortDirection);
 
-    List<LogEntry__c> records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
+    List<LogEntry__c> records = search(recordId, search, fieldsClause, orderByClause, rowLimit, shouldEnableStrictSearch);
     return new LogEntryQueryResult(fieldSetMetdata, records);
   }
 
   @SuppressWarnings('PMD.ExcessiveParameterList')
-  private static List<LogEntry__c> search(Id recordId, String searchTerm, String fieldsClause, String orderByClause, Integer rowLimit) {
+  private static List<LogEntry__c> search(
+    Id recordId,
+    String searchTerm,
+    String fieldsClause,
+    String orderByClause,
+    Integer rowLimit,
+    Boolean shouldEnableStrictSearch
+  ) {
     // SOSL can search for a 15-character ID, but for some reason, using the 18-character version returns no results (╯‵□′)╯︵┻━┻
-    String fullSearchExpression = '*' + String.escapeSingleQuotes(String.valueOf(recordId).left(15)) + '*';
+    String fullSearchExpression = '*' + String.escapeSingleQuotes(recordId.to15()) + '*';
     if (String.isNotBlank(searchTerm)) {
       fullSearchExpression += ' AND *' + String.escapeSingleQuotes(searchTerm) + '*';
     }
@@ -57,10 +65,11 @@ public with sharing class RelatedLogEntriesController {
       fullSearchExpression,
       String.valueOf(Schema.LogEntry__c.SObjectType),
       fieldsClause,
+      shouldEnableStrictSearch ? 'WHERE RecordId__c = :recordId' : '',
       orderByClause,
       rowLimit
     };
-    String logEntrySearch = String.format('FIND {0} IN ALL FIELDS RETURNING {1} ({2} ORDER BY {3} LIMIT {4})', searchTextReplacements);
+    String logEntrySearch = String.format('FIND {0} IN ALL FIELDS RETURNING {1} ({2} {3} ORDER BY {4} LIMIT {5})', searchTextReplacements);
 
     List<LogEntry__c> matches = (List<LogEntry__c>) System.Search.query(logEntrySearch).get(0);
 

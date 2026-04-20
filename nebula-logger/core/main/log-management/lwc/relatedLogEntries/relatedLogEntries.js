@@ -16,6 +16,7 @@ export default class RelatedLogEntries extends LightningElement {
   @api rowLimit;
   @api search = '';
   @api queryResult;
+  @api shouldEnableStrictSearch = false;
 
   @track wiredResult;
   @track isLoading = true;
@@ -42,12 +43,13 @@ export default class RelatedLogEntries extends LightningElement {
   }
 
   @wire(getQueryResult, {
-    recordId: '$recordId',
     fieldSetName: '$fieldSetName',
+    recordId: '$recordId',
     rowLimit: '$rowLimit',
+    search: '$search',
     sortByFieldName: '$sortBy',
     sortDirection: '$sortDirection',
-    search: '$search'
+    shouldEnableStrictSearch: '$shouldEnableStrictSearch'
   })
   wiredLogEntries(result) {
     this.isLoading = true;
@@ -65,6 +67,11 @@ export default class RelatedLogEntries extends LightningElement {
     this.isLoading = true;
     await refreshApex(this.wiredResult);
     this.isLoading = false;
+  }
+
+  toggleEnableStrictSearch() {
+    this.shouldEnableStrictSearch = !this.shouldEnableStrictSearch;
+    this.refresh();
   }
 
   // Parse the Apex results & add any UI-specific attributes based on field metadata
