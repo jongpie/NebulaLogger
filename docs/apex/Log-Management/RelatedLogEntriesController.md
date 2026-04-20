@@ -10,7 +10,7 @@ Controller class for the lightning web component `related-log-entries`
 
 ### Methods
 
-#### `getQueryResult(Id recordId,String fieldSetName,Integer rowLimit,String sortByFieldName,String sortDirection,String search)` → `LogEntryQueryResult`
+#### `getQueryResult(Id recordId,String fieldSetName,Integer rowLimit,String sortByFieldName,String sortDirection,String search,Boolean shouldEnableStrictSearch)` → `LogEntryQueryResult`
 
 Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
 
