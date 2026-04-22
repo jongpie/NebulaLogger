@@ -48,6 +48,7 @@ public without sharing virtual class LoggerEngineDataSelector {
     List<SObject> authSessionRecords = [
       SELECT
         Id,
+        IsAssociatedWithJwtAccessToken,
         LoginType,
         LoginHistoryId,
         LoginHistory.Application,
@@ -61,8 +62,12 @@ public without sharing virtual class LoggerEngineDataSelector {
         SourceIp,
         UsersId
       FROM AuthSession
-      WHERE UsersId IN :userIds AND IsCurrent = TRUE
-      ORDER BY ParentId NULLS FIRST
+      WHERE UsersId IN :userIds 
+      AND (
+        IsCurrent = TRUE
+        OR IsAssociatedWithJwtAccessToken = TRUE
+      )
+      ORDER BY ParentId NULLS LAST, IsCurrent DESC
     ];
 
     List<LoggerSObjectProxy.AuthSession> authSessionProxies = (List<LoggerSObjectProxy.AuthSession>) System.JSON.deserialize(
@@ -75,7 +80,9 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     for (LoggerSObjectProxy.AuthSession authSessionProxy : authSessionProxies) {
-      userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);
+      if (!userIdToAuthSessionProxy.containsKey(authSessionProxy.UsersId)) {
+        userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);
+      }
     }
     return userIdToAuthSessionProxy;
   }

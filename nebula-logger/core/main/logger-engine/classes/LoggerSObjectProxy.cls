@@ -27,6 +27,7 @@ public without sharing class LoggerSObjectProxy {
     public String SessionType;
     public String SourceIp;
     public Id UsersId;
+    public Boolean IsAssociatedWithJwtAccessToken;
   }
 
   /**
