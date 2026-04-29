@@ -69,11 +69,6 @@ export default class RelatedLogEntries extends LightningElement {
     this.isLoading = false;
   }
 
-  toggleEnableStrictSearch() {
-    this.shouldEnableStrictSearch = !this.shouldEnableStrictSearch;
-    this.refresh();
-  }
-
   // Parse the Apex results & add any UI-specific attributes based on field metadata
   processResult(queryResult) {
     if (queryResult.fieldSet === undefined) {
