@@ -16,10 +16,10 @@ export default class RelatedLogEntries extends LightningElement {
   @api rowLimit;
   @api search = '';
   @api queryResult;
-  @api shouldEnableStrictSearch = false;
 
   @track wiredResult;
   @track isLoading = true;
+  @track shouldEnableStrictSearch = true;
 
   get title() {
     return this.queryResult ? this.queryResult.labelPlural + ' (' + this.queryResult.records.length + ')' : '';
