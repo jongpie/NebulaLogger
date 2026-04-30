@@ -10,20 +10,21 @@ Controller class for the lightning web component `related-log-entries`
 
 ### Methods
 
-#### `getQueryResult(Id recordId,String fieldSetName,Integer rowLimit,String sortByFieldName,String sortDirection,String search)` → `LogEntryQueryResult`
+#### `getQueryResult(Id recordId,String fieldSetName,Integer rowLimit,String sortByFieldName,String sortDirection,String search,Boolean shouldEnableStrictSearch)` → `LogEntryQueryResult`
 
 Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
 
 ##### Parameters
 
-| Param             | Description                                                      |
-| ----------------- | ---------------------------------------------------------------- |
-| `recordId`        | Used to filter LogEntry**c records where RecordId**c == recordId |
-| `fieldSetName`    | The API/developer name of the field set                          |
-| `rowLimit`        | The max number of rows to query                                  |
-| `sortByFieldName` | The field to sort by                                             |
-| `sortDirection`   | The direction to sort by (asc or desc))                          |
-| `search`          | An optional search term to filter by                             |
+| Param                      | Description                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------ |
+| `recordId`                 | The recordId to search for amidst all Log Entry fields                               |
+| `fieldSetName`             | The API/developer name of the field set                                              |
+| `rowLimit`                 | The max number of rows to query                                                      |
+| `sortByFieldName`          | The field to sort by                                                                 |
+| `sortDirection`            | The direction to sort by (asc or desc)                                               |
+| `search`                   | An optional search term to filter by                                                 |
+| `shouldEnableStrictSearch` | When true, used to filter returned LogEntry**c records where RecordId**c == recordId |
 
 ##### Return
 
