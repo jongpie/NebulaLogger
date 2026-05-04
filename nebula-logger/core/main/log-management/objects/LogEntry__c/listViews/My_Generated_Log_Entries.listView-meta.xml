@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>My_Generated_Log_Entries</fullName>
+    <columns>NAME</columns>
+    <columns>OriginType__c</columns>
+    <columns>Log__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>WasLoggedByCurrentUser__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>My Generated Log Entries</label>
+</ListView>
