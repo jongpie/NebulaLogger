@@ -287,6 +287,7 @@ public without sharing virtual class LogManagementDataSelector {
       SELECT Id, ParentLogTransactionId__c, ParentLog__c, ParentLog__r.TransactionId__c, TransactionId__c
       FROM Log__c
       WHERE ParentLogTransactionId__c IN :parentTransactionIds AND ParentLog__c = NULL
+      WITH SYSTEM_MODE
     ];
   }
 

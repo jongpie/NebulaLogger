@@ -17,7 +17,7 @@ private class LogEntryHandler_Tests {
   static void setupData() {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
     System.Test.setCreatedDate(log.Id, System.now().addDays(-8));
   }
 
@@ -1194,12 +1194,12 @@ private class LogEntryHandler_Tests {
   @IsTest
   static void it_should_set_gracefully_skip_setting_flow_details_when_origin_location_is_not_valid_flow_api_name() {
     Log__c log = new Log__c(TransactionId__c = '1234');
-    insert log;
+    insert as system log;
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     String invalidOriginLocation = 'A_Very_Fake_Flow_API_Name';
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = invalidOriginLocation, OriginType__c = 'Flow');
 
-    insert logEntry;
+    insert as system logEntry;
 
     logEntry = [
       SELECT

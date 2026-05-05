@@ -389,7 +389,7 @@ private class LogManagementDataSelector_Tests {
       loggerScenario.UniqueId__c = 'some fake scenario ' + i;
       loggerScenarios.add(loggerScenario);
     }
-    insert loggerScenarios;
+    insert as system loggerScenarios;
     List<String> loggerScenarioIds = new List<Id>(new Map<Id, SObject>(loggerScenarios).keySet());
 
     List<LoggerScenario__c> returnedResults = LogManagementDataSelector.getInstance().getLoggerScenariosById(loggerScenarioIds);

@@ -18,7 +18,7 @@ private class LoggerDataStore_Tests {
   @IsTest
   static void it_should_delete_record() {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
     System.Assert.areEqual(1, System.Limits.getDmlStatements());
     System.Assert.areEqual(1, System.Limits.getDmlRows());
 
@@ -36,7 +36,7 @@ private class LoggerDataStore_Tests {
     List<Log__c> logsToDelete = new List<Log__c>();
     logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
     logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
-    insert logsToDelete;
+    insert as system logsToDelete;
     System.Assert.areEqual(1, System.Limits.getDmlStatements());
     System.Assert.areEqual(2, System.Limits.getDmlRows());
 
@@ -60,7 +60,7 @@ private class LoggerDataStore_Tests {
     List<Log__c> logsToDelete = new List<Log__c>();
     logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
     logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
-    insert logsToDelete;
+    insert as system logsToDelete;
     // Delete one of the logs first to cause a failure in the delete DML statement
     delete logsToDelete.get(0);
     System.Assert.areEqual(2, System.Limits.getDmlStatements());
@@ -84,7 +84,7 @@ private class LoggerDataStore_Tests {
   static void it_should_hard_delete_record() {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.TransactionId__c = '999';
-    insert log;
+    insert as system log;
     System.Assert.areEqual(1, System.Limits.getDmlStatements());
     System.Assert.areEqual(1, System.Limits.getDmlRows());
 
@@ -105,7 +105,7 @@ private class LoggerDataStore_Tests {
     List<Log__c> logsToDelete = new List<Log__c>();
     logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
     logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
-    insert logsToDelete;
+    insert as system logsToDelete;
     System.Assert.areEqual(1, System.Limits.getDmlStatements());
     System.Assert.areEqual(2, System.Limits.getDmlRows());
 
@@ -167,7 +167,7 @@ private class LoggerDataStore_Tests {
   @IsTest
   static void it_should_partially_insert_record_list_when_allOrNone_is_false() {
     Log__c existingRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert existingRecord;
+    insert as system existingRecord;
     List<Log__c> logsToInsert = new List<Log__c>();
     logsToInsert.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
     logsToInsert.add(existingRecord);
@@ -188,7 +188,7 @@ private class LoggerDataStore_Tests {
   @IsTest
   static void it_should_partially_insert_record_list_when_allOrNone_is_false_in_dml_options() {
     Log__c existingRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert existingRecord;
+    insert as system existingRecord;
     List<Log__c> logsToInsert = new List<Log__c>();
     logsToInsert.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
     logsToInsert.add(existingRecord);
@@ -211,7 +211,7 @@ private class LoggerDataStore_Tests {
   @IsTest
   static void it_should_undelete_record() {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
     delete log;
     log = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
     System.Assert.isTrue(log.IsDeleted);
@@ -232,7 +232,7 @@ private class LoggerDataStore_Tests {
     List<Log__c> logsToUndelete = new List<Log__c>();
     logsToUndelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
     logsToUndelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
-    insert logsToUndelete;
+    insert as system logsToUndelete;
     delete logsToUndelete;
     logsToUndelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToUndelete ALL ROWS];
     for (Log__c deletedLog : logsToUndelete) {
@@ -261,7 +261,7 @@ private class LoggerDataStore_Tests {
     List<Log__c> logsToUndelete = new List<Log__c>();
     logsToUndelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
     logsToUndelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
-    insert logsToUndelete;
+    insert as system logsToUndelete;
     delete logsToUndelete.get(0);
     logsToUndelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToUndelete ALL ROWS];
     System.Assert.isTrue(logsToUndelete.get(0).IsDeleted);
@@ -290,7 +290,7 @@ private class LoggerDataStore_Tests {
     List<Log__c> logsToUpdate = new List<Log__c>();
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
-    insert logsToUpdate;
+    insert as system logsToUpdate;
     logsToUpdate = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate];
     for (Log__c logToUpdate : logsToUpdate) {
       System.Assert.areEqual(originalScenario, logToUpdate.Scenario__c);
@@ -320,7 +320,7 @@ private class LoggerDataStore_Tests {
     String updatedScenario = 'Another, different scenario';
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.Scenario__c = originalScenario;
-    insert log;
+    insert as system log;
     log = [SELECT Id, Scenario__c FROM Log__c WHERE Id = :log.Id];
     System.Assert.areEqual(originalScenario, log.Scenario__c);
     log.Scenario__c = updatedScenario;
@@ -342,7 +342,7 @@ private class LoggerDataStore_Tests {
     String updatedScenario = 'Another, different scenario';
     List<Log__c> logsToUpdate = new List<Log__c>();
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
-    insert logsToUpdate;
+    insert as system logsToUpdate;
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
     for (Log__c log : logsToUpdate) {
       log.Scenario__c = updatedScenario;
@@ -368,7 +368,7 @@ private class LoggerDataStore_Tests {
     String updatedScenario = 'Another, different scenario';
     List<Log__c> logsToUpdate = new List<Log__c>();
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
-    insert logsToUpdate;
+    insert as system logsToUpdate;
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
     for (Log__c log : logsToUpdate) {
       log.Scenario__c = updatedScenario;
@@ -397,7 +397,7 @@ private class LoggerDataStore_Tests {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.Scenario__c = originalScenario;
     log.TransactionId__c = '1234';
-    insert log;
+    insert as system log;
     log = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id = :log.Id];
     System.Assert.areEqual(originalScenario, log.Scenario__c);
     log.Scenario__c = updatedScenario;
@@ -434,7 +434,7 @@ private class LoggerDataStore_Tests {
         .populateRequiredFields()
         .getRecord()
     );
-    insert logsToUpsert;
+    insert as system logsToUpsert;
     logsToUpsert = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id IN :logsToUpsert];
     for (Log__c logToUpdate : logsToUpsert) {
       System.Assert.areEqual(originalScenario, logToUpdate.Scenario__c);
@@ -473,7 +473,7 @@ private class LoggerDataStore_Tests {
         .populateRequiredFields()
         .getRecord()
     );
-    insert logsToUpsert;
+    insert as system logsToUpsert;
     logsToUpsert = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id IN :logsToUpsert];
     for (Log__c logToUpdate : logsToUpsert) {
       System.Assert.areEqual(originalScenario, logToUpdate.Scenario__c);

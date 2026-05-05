@@ -254,15 +254,15 @@ private class LogBatchPurgeController_Tests {
   @IsTest
   static void it_should_permit_user_to_execute_purge_batch_when_custom_permission_is_assigned() {
     Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
-    insert standardUser;
+    insert as system standardUser;
     Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
-    insert permissionSet;
+    insert as system permissionSet;
     SetupEntityAccess setupEntityAccess = new SetupEntityAccess(ParentId = permissionSet.Id, SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId());
     Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(
       AssigneeId = standardUser.Id,
       PermissionSetId = permissionSet.Id
     );
-    insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
+    insert as system new List<SObject>{ setupEntityAccess, permissionSetAssignment };
 
     System.runAs(standardUser) {
       System.Assert.isTrue(
@@ -297,11 +297,11 @@ private class LogBatchPurgeController_Tests {
   @IsTest
   static void it_should_not_permit_user_to_execute_purge_batch_when_custom_permission_is_not_assigned() {
     Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
-    insert standardUser;
+    insert as system standardUser;
     Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
-    insert permissionSet;
+    insert as system permissionSet;
     SetupEntityAccess setupEntityAccess = new SetupEntityAccess(ParentId = permissionSet.Id, SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId());
-    insert new List<SObject>{ setupEntityAccess };
+    insert as system new List<SObject>{ setupEntityAccess };
 
     System.runAs(standardUser) {
       System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), 'permission set assigned');
@@ -341,7 +341,7 @@ private class LogBatchPurgeController_Tests {
       log.LogRetentionDate__c = System.today();
       logs.add(log);
     }
-    insert logs;
+    insert as system logs;
     for (Log__c log : logs) {
       System.Test.setCreatedDate(log.Id, createDate);
     }
@@ -351,7 +351,7 @@ private class LogBatchPurgeController_Tests {
     Log__c log = new log__c(TransactionId__c = System.UUID.randomUUID().toString());
     log.LogPurgeAction__c = purgeAction;
     log.LogRetentionDate__c = System.today();
-    insert log;
+    insert as system log;
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 1; i <= noOfRecords; i++) {
       LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = i + 1);
@@ -359,7 +359,7 @@ private class LogBatchPurgeController_Tests {
       LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
     }
-    insert logEntries;
+    insert as system logEntries;
     for (LogEntry__c logEntry : logEntries) {
       System.Test.setCreatedDate(log.Id, createDate);
     }
@@ -369,7 +369,7 @@ private class LogBatchPurgeController_Tests {
     Log__c log = new log__c(TransactionId__c = System.UUID.randomUUID().toString());
     log.LogPurgeAction__c = purgeAction;
     log.LogRetentionDate__c = System.today();
-    insert log;
+    insert as system log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < noOfRecords; i++) {
@@ -377,12 +377,12 @@ private class LogBatchPurgeController_Tests {
       LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
     }
-    insert logEntries;
+    insert as system logEntries;
 
     String uniqueTagId = System.UUID.randomUUID().toString();
     LoggerTag__c tag = new LoggerTag__c(Name = uniqueTagId, UniqueId__c = uniqueTagId);
     LoggerMockDataCreator.createDataBuilder(tag).populateRequiredFields();
-    insert tag;
+    insert as system tag;
 
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
     for (LogEntry__c logEntry : logEntries) {
@@ -390,7 +390,7 @@ private class LogBatchPurgeController_Tests {
       LoggerMockDataCreator.createDataBuilder(logEntryTag).populateRequiredFields();
       logEntryTags.add(logEntryTag);
     }
-    insert logEntryTags;
+    insert as system logEntryTags;
     for (LogEntryTag__c logEntryTag : logEntryTags) {
       System.Test.setCreatedDate(logEntryTag.Id, createDate);
     }

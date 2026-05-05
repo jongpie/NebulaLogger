@@ -239,7 +239,7 @@ private class LogHandler_Tests {
     insert expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
-    insert currentUserSettings;
+    insert as system currentUserSettings;
     Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -261,7 +261,7 @@ private class LogHandler_Tests {
     insert expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;
-    insert currentUserSettings;
+    insert as system currentUserSettings;
     Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -282,7 +282,7 @@ private class LogHandler_Tests {
     Schema.Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.Id;
-    insert currentUserSettings;
+    insert as system currentUserSettings;
     Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -303,7 +303,7 @@ private class LogHandler_Tests {
     Schema.Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.DeveloperName;
-    insert currentUserSettings;
+    insert as system currentUserSettings;
     Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -323,7 +323,7 @@ private class LogHandler_Tests {
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = null;
-    insert currentUserSettings;
+    insert as system currentUserSettings;
     Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -398,7 +398,7 @@ private class LogHandler_Tests {
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
     settings.DefaultLogPurgeAction__c = defaultLogPurgeAction;
-    upsert settings;
+    upsert as system settings;
     Integer specifiedDaysToRetainLog = 50;
     Date retentionDate = System.today().addDays(specifiedDaysToRetainLog);
     String specifiedLogPurgeAction = 'A Different Action';
@@ -431,7 +431,7 @@ private class LogHandler_Tests {
     String expectedLogPurgeAction = 'Some Action';
     Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
     Logger.getUserSettings().DefaultLogPurgeAction__c = expectedLogPurgeAction;
-    upsert Logger.getUserSettings();
+    upsert as system Logger.getUserSettings();
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(LoggedBy__c = System.UserInfo.getUserId())).populateRequiredFields().getRecord();
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -453,7 +453,7 @@ private class LogHandler_Tests {
     Integer daysToRetainLog = 90;
     Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
     Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
-    upsert Logger.getUserSettings();
+    upsert as system Logger.getUserSettings();
     LoggerScenarioRule__mdt mockScenarioRule = new LoggerScenarioRule__mdt(
       IsEnabled__c = true,
       IsLogRetentionOverrideEnabled__c = String.valueOf(true),
@@ -484,10 +484,10 @@ private class LogHandler_Tests {
   static void it_should_have_null_retention_details_when_no_retention_configured() {
     setupConfigurations();
     LoggerSettings__c settings = Logger.getUserSettings();
-    insert settings;
+    insert as system settings;
     settings.DefaultNumberOfDaysToRetainLogs__c = null;
     settings.DefaultLogPurgeAction__c = null;
-    upsert settings;
+    upsert as system settings;
     settings = [SELECT Id, DefaultLogPurgeAction__c FROM LoggerSettings__c WHERE Id = :settings.Id];
     System.Assert.isNull(settings.DefaultLogPurgeAction__c);
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
@@ -555,7 +555,7 @@ private class LogHandler_Tests {
     setupConfigurations();
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.DefaultLogShareAccessLevel__c = 'Read';
-    upsert settings;
+    upsert as system settings;
     Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -565,7 +565,11 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+    List<Log__Share> logShares = [
+      SELECT AccessLevel, ParentId, RowCause, UserOrGroupId
+      FROM Log__Share
+      WHERE ParentId = :log.Id AND AccessLevel != 'All'
+    ];
     System.Assert.areEqual(1, logShares.size(), System.JSON.serializePretty(logShares));
     System.Assert.areEqual('Read', logShares.get(0).AccessLevel);
     System.Assert.areEqual(log.Id, logShares.get(0).ParentId);
@@ -578,7 +582,7 @@ private class LogHandler_Tests {
     setupConfigurations();
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.DefaultLogShareAccessLevel__c = 'Edit';
-    upsert settings;
+    upsert as system settings;
     Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -588,7 +592,11 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+    List<Log__Share> logShares = [
+      SELECT AccessLevel, ParentId, RowCause, UserOrGroupId
+      FROM Log__Share
+      WHERE ParentId = :log.Id AND AccessLevel != 'All'
+    ];
     System.Assert.areEqual(1, logShares.size(), System.JSON.serializePretty(logShares));
     System.Assert.areEqual('Edit', logShares.get(0).AccessLevel);
     System.Assert.areEqual(log.Id, logShares.get(0).ParentId);
@@ -601,7 +609,7 @@ private class LogHandler_Tests {
     setupConfigurations();
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.DefaultLogShareAccessLevel__c = null;
-    upsert settings;
+    upsert as system settings;
     Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -611,7 +619,11 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+    List<Log__Share> logShares = [
+      SELECT AccessLevel, ParentId, RowCause, UserOrGroupId
+      FROM Log__Share
+      WHERE ParentId = :log.Id AND AccessLevel != 'All'
+    ];
     System.Assert.areEqual(0, logShares.size(), System.JSON.serializePretty(logShares));
   }
 
@@ -620,7 +632,7 @@ private class LogHandler_Tests {
     setupConfigurations();
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.DefaultLogShareAccessLevel__c = 'FAKE LEVEL';
-    upsert settings;
+    upsert as system settings;
     Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -630,7 +642,11 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+    List<Log__Share> logShares = [
+      SELECT AccessLevel, ParentId, RowCause, UserOrGroupId
+      FROM Log__Share
+      WHERE ParentId = :log.Id AND AccessLevel != 'All'
+    ];
     System.Assert.areEqual(0, logShares.size(), System.JSON.serializePretty(logShares));
   }
 

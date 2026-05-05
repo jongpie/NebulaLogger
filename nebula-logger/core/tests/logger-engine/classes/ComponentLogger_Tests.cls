@@ -20,7 +20,7 @@ private class ComponentLogger_Tests {
     loggerSettings.IsJavaScriptConsoleLoggingEnabled__c = !((Boolean) LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c.getDescribe().getDefaultValue());
     loggerSettings.IsJavaScriptLightningLoggerEnabled__c = !((Boolean) LoggerSettings__c.IsJavaScriptLightningLoggerEnabled__c.getDescribe().getDefaultValue());
     loggerSettings.LoggingLevel__c = 'FINE';
-    upsert loggerSettings;
+    upsert as system loggerSettings;
 
     ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
 

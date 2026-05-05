@@ -14,11 +14,11 @@ private class LogBatchPurger_Tests_Database {
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = false;
     settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-    insert settings;
+    insert as system settings;
 
     Date scheduledDeletionDate = System.today().addDays(-7);
     Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate, TransactionId__c = '1234');
-    insert log;
+    insert as system log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES; i++) {
@@ -26,17 +26,17 @@ private class LogBatchPurger_Tests_Database {
 
       logEntries.add(logEntry);
     }
-    insert logEntries;
+    insert as system logEntries;
 
     LoggerTag__c tag = new LoggerTag__c(Name = 'My important tag');
-    insert tag;
+    insert as system tag;
 
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
     for (LogEntry__c logEntry : logEntries) {
       LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
       logEntryTags.add(logEntryTag);
     }
-    insert logEntryTags;
+    insert as system logEntryTags;
   }
 
   @IsTest

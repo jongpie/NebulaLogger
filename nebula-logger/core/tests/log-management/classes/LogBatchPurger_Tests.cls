@@ -26,12 +26,12 @@ private class LogBatchPurger_Tests {
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = false;
     settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-    insert settings;
+    insert as system settings;
 
     Date scheduledDeletionDate = System.today().addDays(-7);
     Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate);
     LoggerMockDataCreator.createDataBuilder(log).populateRequiredFields();
-    insert log;
+    insert as system log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES_TO_CREATE; i++) {
@@ -39,10 +39,10 @@ private class LogBatchPurger_Tests {
       LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
     }
-    insert logEntries;
+    insert as system logEntries;
 
     LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
-    insert tag;
+    insert as system tag;
 
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
     for (LogEntry__c logEntry : logEntries) {
@@ -50,7 +50,7 @@ private class LogBatchPurger_Tests {
       LoggerMockDataCreator.createDataBuilder(logEntryTag).populateRequiredFields();
       logEntryTags.add(logEntryTag);
     }
-    insert logEntryTags;
+    insert as system logEntryTags;
   }
 
   @IsTest
@@ -107,12 +107,12 @@ private class LogBatchPurger_Tests {
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = true;
     settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-    upsert settings;
+    upsert as system settings;
     LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
     System.Assert.isTrue(Logger.getUserSettings().IsEnabled__c);
     System.Assert.isTrue(LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
     System.Assert.areEqual(System.LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
-    List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
+    List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c WITH SYSTEM_MODE];
     List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
     System.Assert.areEqual(1, logs.size());
     System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
@@ -137,13 +137,13 @@ private class LogBatchPurger_Tests {
   static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_disabled() {
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = true;
-    upsert settings;
+    upsert as system settings;
     LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
     System.Assert.isTrue(Logger.getUserSettings().IsEnabled__c);
     System.Assert.isFalse(LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
     System.Assert.areEqual(System.LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
-    List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
-    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
+    List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c WITH SYSTEM_MODE];
+    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(1, logs.size());
     System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
     // Verify assumption that the log in the database has a deletion date in the past
@@ -166,15 +166,15 @@ private class LogBatchPurger_Tests {
   @IsTest
   static void it_should_not_delete_a_log_before_scheduled_deletion_date() {
     LoggerSObjectHandler.shouldExecute(false);
-    List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
-    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
+    List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c WITH SYSTEM_MODE];
+    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(1, logs.size());
     System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
     // Set the log's deletion date to be in the future
     Log__c log = logs.get(0);
     log.LogRetentionDate__c = System.today().addDays(7);
-    update log;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c];
+    update as system log;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WITH SYSTEM_MODE];
     System.Assert.isTrue(log.LogRetentionDate__c > System.today());
     System.Test.startTest();
     LoggerSObjectHandler.shouldExecute(false);
@@ -192,16 +192,16 @@ private class LogBatchPurger_Tests {
   @IsTest
   static void it_should_not_delete_a_log_without_a_scheduled_deletion_date_and_with_log_entries() {
     LoggerSObjectHandler.shouldExecute(false);
-    List<Log__c> logs = [SELECT Id, TotalLogEntries__c, LogRetentionDate__c FROM Log__c];
-    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
+    List<Log__c> logs = [SELECT Id, TotalLogEntries__c, LogRetentionDate__c FROM Log__c WITH SYSTEM_MODE];
+    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(1, logs.size());
     System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logs.get(0).TotalLogEntries__c);
     System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
     // Set the log's deletion date to be null
     Log__c log = logs.get(0);
     log.LogRetentionDate__c = null;
-    update log;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c];
+    update as system log;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WITH SYSTEM_MODE];
     System.Assert.isNull(log.LogRetentionDate__c);
     System.Test.startTest();
     LoggerSObjectHandler.shouldExecute(false);
@@ -221,10 +221,10 @@ private class LogBatchPurger_Tests {
     LoggerSObjectHandler.shouldExecute(false);
     Date retentionDate = System.today().addDays(-1);
     Log__c log = new Log__c(TransactionId__c = '5678');
-    insert log;
+    insert as system log;
     log.LogRetentionDate__c = retentionDate;
-    update log;
-    log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
+    update as system log;
+    log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(retentionDate, log.LogRetentionDate__c, 'Log should not have a retention date');
     System.Assert.areEqual(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
     System.Test.startTest();
@@ -242,10 +242,10 @@ private class LogBatchPurger_Tests {
   static void it_should_delete_a_log_without_a_scheduled_deletion_date_and_without_log_entries() {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = new Log__c(TransactionId__c = '5678');
-    insert log;
+    insert as system log;
     log.LogRetentionDate__c = null;
-    update log;
-    log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
+    update as system log;
+    log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isNull(log.LogRetentionDate__c, 'Log should not have a retention date');
     System.Assert.areEqual(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
     System.Test.startTest();

@@ -80,7 +80,7 @@ private class LogEntryEventHandler_Tests {
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.LoggingLevel__c = targetEventLoggingLevel.name();
     settings.DefaultPlatformEventStorageLoggingLevel__c = System.LoggingLevel.INFO.name();
-    upsert settings;
+    upsert as system settings;
     LogEntryEvent__e matchingLogEntryEvent = createLogEntryEvent();
     matchingLogEntryEvent.LoggingLevel__c = settings.DefaultPlatformEventStorageLoggingLevel__c;
     matchingLogEntryEvent.Message__c = 'This event should be saved in LogEntry__c';
@@ -120,7 +120,7 @@ private class LogEntryEventHandler_Tests {
     settings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     settings.DefaultPlatformEventStorageLocation__c = 'CUSTOM_OBJECTS';
     settings.DefaultPlatformEventStorageLoggingLevel__c = null;
-    upsert settings;
+    upsert as system settings;
     String someScenario = 'some scenario with a configured rule';
     LoggerScenarioRule.setMock(new LoggerScenarioRule__mdt(IsEnabled__c = true, Scenario__c = someScenario));
     LogEntryEvent__e firstMatchingLogEntryEvent = createLogEntryEvent();

@@ -147,7 +147,7 @@ private class Logger_Tests {
     expectedSettings.Id = null;
     expectedSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
-    insert expectedSettings;
+    insert as system expectedSettings;
     expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
     expectedSettings.Id = null;
     expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
@@ -172,7 +172,7 @@ private class Logger_Tests {
     profileSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
     profileSettings.StartTime__c = System.now().addDays(1);
-    insert profileSettings;
+    insert as system profileSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -185,7 +185,7 @@ private class Logger_Tests {
   @IsTest
   static void it_should_not_use_profile_settings_when_end_time_is_in_the_past() {
     LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
-    insert expectedSettings;
+    insert as system expectedSettings;
     expectedSettings = LoggerSettings__c.getOrgDefaults();
     expectedSettings.Id = null;
     expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
@@ -194,7 +194,7 @@ private class Logger_Tests {
     profileSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
     profileSettings.EndTime__c = System.now().addDays(-1);
-    insert profileSettings;
+    insert as system profileSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -206,17 +206,17 @@ private class Logger_Tests {
 
   @IsTest
   static void it_should_use_user_settings_when_configured() {
-    insert LoggerSettings__c.getOrgDefaults();
+    insert as system LoggerSettings__c.getOrgDefaults();
     LoggerSettings__c profileSettings = LoggerSettings__c.getOrgDefaults();
     profileSettings.Id = null;
     profileSettings.LoggingLevel__c = System.LoggingLevel.DEBUG.name();
     profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
-    insert profileSettings;
+    insert as system profileSettings;
     LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
     expectedSettings.Id = null;
     expectedSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
-    insert expectedSettings;
+    insert as system expectedSettings;
     expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getUserId());
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
@@ -231,7 +231,7 @@ private class Logger_Tests {
   static void it_should_not_use_user_settings_when_start_time_is_in_the_future() {
     LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
     expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
-    insert expectedSettings;
+    insert as system expectedSettings;
     expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
     expectedSettings.Id = null;
     expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
@@ -240,7 +240,7 @@ private class Logger_Tests {
     userSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     userSettings.SetupOwnerId = System.UserInfo.getUserId();
     userSettings.StartTime__c = System.now().addDays(1);
-    insert userSettings;
+    insert as system userSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -254,7 +254,7 @@ private class Logger_Tests {
   static void it_should_not_use_user_settings_when_end_time_is_in_the_past() {
     LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
     expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
-    insert expectedSettings;
+    insert as system expectedSettings;
     expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
     expectedSettings.Id = null;
     expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
@@ -263,7 +263,7 @@ private class Logger_Tests {
     userSettings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     userSettings.SetupOwnerId = System.UserInfo.getUserId();
     userSettings.EndTime__c = System.now().addDays(-1);
-    insert userSettings;
+    insert as system userSettings;
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -498,7 +498,7 @@ private class Logger_Tests {
     userSettingsToCreate.IsRecordFieldStrippingEnabled__c = true;
     userSettingsToCreate.LoggingLevel__c = System.LoggingLevel.INFO.name();
     userSettingsToCreate.SetupOwnerId = System.UserInfo.getUserId();
-    insert userSettingsToCreate;
+    insert as system userSettingsToCreate;
     LoggerSettings__c originalUserSettings = Logger.getUserSettings().clone();
     System.LoggingLevel originalLoggingLevel = Logger.getUserLoggingLevel();
     System.Assert.isNull(Logger.getScenario());
@@ -534,7 +534,7 @@ private class Logger_Tests {
     userSettingsToCreate.IsRecordFieldStrippingEnabled__c = true;
     userSettingsToCreate.LoggingLevel__c = System.LoggingLevel.INFO.name();
     userSettingsToCreate.SetupOwnerId = System.UserInfo.getUserId();
-    insert userSettingsToCreate;
+    insert as system userSettingsToCreate;
     LoggerSettings__c originalUserSettings = Logger.getUserSettings().clone();
     System.Assert.isNull(Logger.getScenario());
     String firstMockScenario = 'some test scenario ';
@@ -1617,7 +1617,7 @@ private class Logger_Tests {
 
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
     Logger.getUserSettings().DefaultSaveMethod__c = 'QUEUEABLE';
-    upsert Logger.getUserSettings();
+    upsert as system Logger.getUserSettings();
 
     System.Test.startTest();
 

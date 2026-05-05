@@ -82,6 +82,7 @@ public with sharing class LogBatchPurgeController {
         JobType IN ('ScheduledApex', 'BatchApex', 'BatchApexWorker')
         AND ApexClass.NamespacePrefix = :apexClassNamespacePrefix
         AND ApexClass.Name = :apexClassName
+      WITH SYSTEM_MODE
       ORDER BY CreatedDate DESC
       LIMIT 50
     ];
@@ -99,7 +100,7 @@ public with sharing class LogBatchPurgeController {
   @TestVisible
   private static List<AggregateResult> getLogObjectSummary(String dateFilterOption) {
     String query = 'select LogPurgeAction__c LogPurgeAction__c, count(id) from Log__c where CreatedDate=' + dateFilterOption + ' group by LogPurgeAction__c';
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   @TestVisible
@@ -108,7 +109,7 @@ public with sharing class LogBatchPurgeController {
       'select Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntry__c where CreatedDate=' +
       dateFilterOption +
       ' group by Log__r.LogPurgeAction__c';
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   @TestVisible
@@ -117,7 +118,7 @@ public with sharing class LogBatchPurgeController {
       'select LogEntry__r.Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntryTag__c where CreatedDate=' +
       dateFilterOption +
       ' group by LogEntry__r.Log__r.LogPurgeAction__c';
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   /**
