@@ -1,15 +1,13 @@
-FROM salesforce/cli:2.82.6-full
+FROM salesforce/cli:2.134.1-full
 
 # Set up sf plugins
-RUN mkdir $HOME/.config && mkdir $HOME/.config/sf \
-  # && echo '[ "@jongpie/sfdx-bummer-plugin", "jamessimone/sf-trace-plugin", "sf-trace-plugin" ]' > $HOME/.config/sf/unsignedPluginAllowList.json \
-  && echo '[ "@jongpie/sfdx-bummer-plugin" ]' > $HOME/.config/sf/unsignedPluginAllowList.json \
+RUN sf plugins trust allowlist add -n sf-trace-plugin -n @jongpie/sfdx-bummer-plugin \
+  && sf plugins trust allowlist list \
   # TODO migrate all scripts (including in build.yml) to use
   # the new code-analyzer plugin / eliminate sfdx-scanner
   && sf plugins install code-analyzer@ \
-  # && sf plugins install @salesforce/sfdx-scanner \
   && sf plugins install @jongpie/sfdx-bummer-plugin \
-  && echo y | sf plugins install jamessimone/sf-trace-plugin
+  && sf plugins install sf-trace-plugin
 
 # Set up Oh My Bash
 RUN bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" \
