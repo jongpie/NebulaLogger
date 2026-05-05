@@ -1,0 +1,55 @@
+# Marks stale issues and pull requests so the backlog stays actionable.
+#
+# - Only issues labeled `needs-info` (waiting on the reporter) are considered stale;
+#   accepted/triaged work is never auto-closed.
+# - Pull requests with no activity for 60 days are warned and closed after 14 more.
+# - Issues labeled `accepted`, `pinned`, `security`, or `Status: In Progress` are
+#   exempt.
+name: Mark Stale Issues and PRs
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Mark stale items
+        uses: actions/stale@v9
+        with:
+          operations-per-run: 100
+
+          # Issues — only close issues waiting on reporter info
+          days-before-issue-stale: 30
+          days-before-issue-close: 14
+          stale-issue-label: 'Status: Stale'
+          only-issue-labels: 'needs-info'
+          exempt-issue-labels: 'accepted,pinned,security,Status: In Progress,Type: Documentation'
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has been
+            waiting for more information for 30 days. It will be closed in 14 days
+            if no further activity occurs. If the issue is still relevant, please
+            respond with the requested details and the issue will be reopened.
+          close-issue-message: >
+            Closing this issue due to inactivity. Feel free to comment to reopen if
+            you still need help — please include the details requested above.
+
+          # Pull requests
+          days-before-pr-stale: 60
+          days-before-pr-close: 14
+          stale-pr-label: 'Status: Stale'
+          exempt-pr-labels: 'pinned,security,Status: In Progress,Do Not Merge'
+          stale-pr-message: >
+            This pull request has been automatically marked as stale because it has
+            had no activity for 60 days. It will be closed in 14 days if no further
+            activity occurs. If you'd like to continue this work, please push new
+            commits or leave a comment.
+          close-pr-message: >
+            Closing this pull request due to inactivity. Feel free to reopen or open
+            a new PR when you're ready to resume this work.

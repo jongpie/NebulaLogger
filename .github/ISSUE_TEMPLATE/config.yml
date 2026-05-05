@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Usage Questions & Discussions
+    url: https://github.com/jongpie/NebulaLogger/discussions
+    about: Please ask "How do I…?" and exploratory questions in Discussions, not Issues.
+  - name: Security Vulnerabilities
+    url: https://github.com/jongpie/NebulaLogger/security/advisories/new
+    about: Report security issues privately, not via a public issue.
+  - name: Documentation
+    url: https://jongpie.github.io/NebulaLogger/
+    about: Check the documentation site — most usage questions are already answered there.

@@ -1,0 +1,19 @@
+/***********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************/
+
+/* Match standard related list card boundary and list area */
+.logger-datatable-card .slds-card__body_inner {
+  padding: 0;
+}
+
+/* List view container: full width so datatable stretches like standard related list */
+.logger-datatable-card .listDisplays,
+.logger-datatable-card .listViewContainer {
+  width: 100%;
+}
+
+.logger-datatable-card .listViewContainer .slds-card__body {
+  width: 100%;
+}

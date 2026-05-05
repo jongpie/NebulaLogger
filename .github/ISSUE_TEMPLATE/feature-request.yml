@@ -1,12 +1,100 @@
 name: Feature Request
 description: Suggest an enhancement for Nebula Logger
-labels: ['Type: Enhancement']
+labels: ['Type: Enhancement', 'needs-triage']
 body:
-  - type: textarea
+  - type: markdown
     attributes:
-      label: New Feature Summary
-      description: A description of what feature you'd like to be added to Nebula Logger.
+      value: |
+        Thanks for the suggestion!
+
+        **Before submitting:** please search [existing issues](https://github.com/jongpie/NebulaLogger/issues?q=is%3Aissue) and [Discussions](https://github.com/jongpie/NebulaLogger/discussions).
+
+        **Please do not open a pull request for this feature until a maintainer labels this issue `accepted`.** Not every suggestion is a good fit — if you invest time building a PR for a feature that gets declined, that's time wasted for both of us.
+
+        If the idea is exploratory ("what if…?"), please open a [Discussion](https://github.com/jongpie/NebulaLogger/discussions) first instead of an issue.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched existing open and closed issues and Discussions, and this is not a duplicate.
+          required: true
+        - label: I have read the [CONTRIBUTING guide](https://github.com/jongpie/NebulaLogger/blob/main/CONTRIBUTING.md) and understand that I should not open a pull request until this issue is labeled `accepted`.
+          required: true
+        - label: This is a concrete feature request, not an exploratory idea. (Exploratory ideas belong in Discussions.)
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem are you trying to solve? Describe the situation and why the current behavior is insufficient.
       placeholder: |
-        Example: I'd like to be able to [...]
+        Today, when I try to ..., I have to ... because Nebula Logger does not ...
     validations:
       required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Proposed Feature
+      description: A clear, concise description of the feature you'd like to see.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Implementation Approach
+      description: If you've thought about how this could be implemented, describe it. New Apex APIs? New LWC? New setting? Be specific about public-API impact.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Other approaches you evaluated, and why this is the best one.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected Area
+      description: Which part of Nebula Logger does this touch?
+      multiple: true
+      options:
+        - Apex (logger runtime)
+        - Apex (log management / triggers)
+        - LWC / Aura components
+        - Flow / Process Builder
+        - Platform Events
+        - Big Objects / archiving
+        - Plugins (Slack, Log Retention Rules, etc.)
+        - Packaging / deployment
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: implementer
+    attributes:
+      label: Would you like to implement this yourself?
+      description: Only applies once the issue is labeled `accepted`.
+      options:
+        - 'Yes, I want to submit a PR once this issue is accepted'
+        - 'No, I am only suggesting the feature'
+        - 'Maybe, depends on complexity'
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Mockups, references to similar features in other libraries, links to prior Discussions, etc.
+    validations:
+      required: false

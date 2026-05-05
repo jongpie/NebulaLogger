@@ -1,0 +1,48 @@
+<template>
+  <article class="slds-card">
+    <!-- Gray header: SLDS page header structure + gray background utility -->
+    <div class="slds-card__header slds-page-header slds-page-header_joined slds-color__background_gray-2">
+      <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+          <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+              <lightning-icon icon-name={objectIcon} size="small" alternative-text={objectLabel}></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+              <div class="slds-page-header__name">
+                <div class="slds-page-header__name-title">
+                  <h1 class="slds-page-header__title slds-truncate" title={objectLabel}>{headerTitle}</h1>
+                </div>
+              </div>
+              <p class="slds-text-body--small">{lastRefreshedText}</p>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__col-actions">
+          <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+              <lightning-input
+                type="search"
+                placeholder="Search"
+                value={searchTerm}
+                onchange={handleSearchChange}
+                variant="label-hidden"
+                class="slds-m-right_small"
+              ></lightning-input>
+              <lightning-button label="New" variant="brand" onclick={handleNew}></lightning-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-card__body">
+      <lightning-datatable
+        key-field="id"
+        data={tableData}
+        columns={columns}
+        hide-checkbox-column
+      ></lightning-datatable>
+    </div>
+  </article>
+</template>

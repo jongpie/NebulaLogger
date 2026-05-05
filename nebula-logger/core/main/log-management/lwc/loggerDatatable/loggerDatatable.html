@@ -1,0 +1,85 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+  <article class="slds-card slds-card_boundary logger-datatable-card" aria-label={ariaLabel}>
+    <!-- Header: matches standard related list page header -->
+    <div class="slds-page-header slds-page-header_joined slds-page-header_bleed slds-shrink-none slds-is-relative slds-page-header_object-home">
+      <div class="slds-grid slds-wrap">
+        <!-- Title + icon -->
+        <div class="slds-col slds-has-flexi-truncate firstHeaderRow">
+          <div class="slds-media slds-no-space slds-grow">
+            <div class="slds-media__figure slds-m-right_small" if:true={iconName}>
+              <lightning-icon icon-name={iconName} size="small" alternative-text={title} title={title}></lightning-icon>
+            </div>
+            <div class="slds-media__body slds-align-middle">
+              <h2 class="slds-card__header-title">
+                <span class="slds-truncate slds-m-right_xx-small" title={title}>{title}</span>
+                <span class="slds-shrink-none slds-m-right_xx-small" title={titleWithCount}>({itemCount})</span>
+              </h2>
+            </div>
+          </div>
+        </div>
+        <!-- Settings + Refresh -->
+        <div class="slds-col slds-no-flex slds-grid slds-align-bottom">
+          <div class="slds-m-left_xx-small" if:true={showSettingsMenu}>
+            <lightning-button-menu
+              icon-name="utility:settings"
+              alternative-text="List View Controls"
+              menu-alignment="right"
+              class="slds-dropdown-trigger_click"
+              onselect={handleSettingsSelect}
+            ></lightning-button-menu>
+          </div>
+          <div class="slds-m-left_xx-small" if:true={showRefreshButton}>
+            <lightning-button-icon
+              icon-name="utility:refresh"
+              variant="border-filled"
+              title="Refresh"
+              onclick={handleRefresh}
+            ></lightning-button-icon>
+          </div>
+          <!-- New button (standard related list uses neutral button in button group) -->
+          <div class="slds-m-left_xx-small" if:true={showNewButton}>
+            <lightning-button label="New" variant="neutral" onclick={handleNew}></lightning-button>
+          </div>
+        </div>
+      </div>
+      <!-- Status line: "X items • Updated Y ago" -->
+      <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-align-bottom">
+          <p class="slds-text-body--small slds-text-color_weak" aria-live="polite" role="status">
+            <span>{itemCount} items</span>
+            <template if:true={statusSuffix}> • </template>
+            <span if:true={statusSuffix}>{statusSuffix}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- List view container: borders match standard related list -->
+    <div class="slds-grid listDisplays">
+      <div class="slds-grid slds-border__left slds-border__right listViewContainer slds-col">
+        <div class="slds-card__body slds-card__body_inner">
+          <lightning-spinner if:true={isLoading} size="small" alternative-text="Loading"></lightning-spinner>
+          <template if:false={isLoading}>
+            <lightning-datatable
+              key-field={keyField}
+              data={data}
+              columns={columns}
+              show-row-number-column={showRowNumberColumn}
+              hide-checkbox-column={hideCheckboxColumn}
+              onsort={handleSort}
+              sorted-by={sortedBy}
+              sorted-direction={sortedDirection}
+              default-sort-direction={defaultSortDirection}
+              class="logger-datatable-table"
+            ></lightning-datatable>
+          </template>
+        </div>
+      </div>
+    </div>
+  </article>
+</template>

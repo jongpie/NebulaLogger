@@ -1,7 +1,30 @@
 name: Bug Report
 description: File a bug report for Nebula Logger
-labels: ['Type: Bug']
+labels: ['Type: Bug', 'needs-triage']
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report.
+
+        **Before submitting:** please search [existing issues](https://github.com/jongpie/NebulaLogger/issues?q=is%3Aissue) to make sure this isn't a duplicate.
+
+        **Please do not open a pull request for this bug until a maintainer labels this issue `accepted`.** Submitting a PR alongside a new issue leads to wasted work when the issue turns out to be a duplicate, a misconfiguration, or out of scope.
+
+        For usage questions ("How do I…?"), please use [Discussions](https://github.com/jongpie/NebulaLogger/discussions) instead.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched existing open and closed issues and this is not a duplicate.
+          required: true
+        - label: I have read the [CONTRIBUTING guide](https://github.com/jongpie/NebulaLogger/blob/main/CONTRIBUTING.md) and understand that I should not open a pull request until this issue is labeled `accepted`.
+          required: true
+        - label: This is a bug, not a usage question. (Usage questions belong in Discussions.)
+          required: true
+
   - type: dropdown
     id: package-edition
     attributes:
@@ -10,6 +33,7 @@ body:
       options:
         - Unlocked Package
         - Managed Package
+        - Source (deployed from this repo directly)
     validations:
       required: true
 
@@ -17,15 +41,93 @@ body:
     id: package-version
     attributes:
       label: Package Version of Nebula Logger
-      description: The package version number (displayed under Setup --> Installed Packages)
-      placeholder: v4.6.0, v4.6.1, etc.
+      description: The package version number (displayed under Setup → Installed Packages).
+      placeholder: v4.18.0, v4.17.0, etc.
     validations:
       required: true
+
+  - type: dropdown
+    id: org-type
+    attributes:
+      label: Salesforce Org Type
+      options:
+        - Production
+        - Sandbox
+        - Scratch Org
+        - Developer Edition
+        - Trailhead Playground
+    validations:
+      required: true
+
+  - type: input
+    id: api-version
+    attributes:
+      label: Salesforce API Version
+      description: The API version of the org where the bug is reproducing (e.g. 62.0, 63.0).
+      placeholder: '63.0'
+    validations:
+      required: false
 
   - type: textarea
     id: summary
     attributes:
-      label: New Bug Summary
-      description: A description of what issue you are experiencing with Nebula Logger
+      label: Bug Summary
+      description: A clear, concise description of the bug.
     validations:
       required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Minimal, numbered steps that reliably reproduce the bug. Include any Apex snippets, flow configuration, or LWC usage needed.
+      placeholder: |
+        1. Install Nebula Logger v4.18.0 in a fresh scratch org
+        2. Run the following Apex in anonymous window: ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? Include exact error messages, stack traces, and screenshots if relevant.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: regression
+    attributes:
+      label: Is this a regression?
+      description: Did this work in a previous version of Nebula Logger?
+      options:
+        - 'No'
+        - 'Yes'
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround (if known)
+      description: Have you found a way to work around the issue? If so, describe it.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Anything else that might help — recent config changes, other installed packages, relevant debug logs, etc.
+    validations:
+      required: false

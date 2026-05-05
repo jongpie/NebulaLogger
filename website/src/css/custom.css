@@ -1,0 +1,176 @@
+/**
+ * Custom CSS for Nebula Logger documentation
+ */
+
+:root {
+  /* Primary colors - customize to match Nebula Logger branding */
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+
+  /* Code blocks */
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* Fonts */
+  --ifm-font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ifm-font-family-monospace: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+/* Dark mode overrides */
+[data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Custom styling for install button in header */
+.header-install-link {
+  background: var(--ifm-color-primary);
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.header-install-link:hover {
+  background: var(--ifm-color-primary-dark);
+  text-decoration: none;
+}
+
+/* Code blocks with copy button */
+.prism-code {
+  font-size: 0.9rem;
+}
+
+/* Admonitions (callouts) */
+.admonition {
+  margin-bottom: 1rem;
+}
+
+/* Tables */
+table {
+  display: table;
+  width: 100%;
+}
+
+/* Sidebar */
+.menu__link--active {
+  font-weight: 600;
+}
+
+/* Custom hero section for homepage */
+.hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.hero__title {
+  font-size: 3rem;
+}
+
+/* Badge styling */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.badge--primary {
+  background-color: var(--ifm-color-primary);
+}
+
+.badge--secondary {
+  background-color: #6c757d;
+}
+
+.badge--success {
+  background-color: #28a745;
+}
+
+/* Feature cards on homepage */
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.feature {
+  text-align: center;
+  padding: 2rem;
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Code inline */
+code {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  padding: 0.2rem 0.4rem;
+}
+
+[data-theme='dark'] code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Custom callout boxes */
+.callout {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--ifm-color-primary);
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+}
+
+[data-theme='dark'] .callout {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Version badge */
+.version-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--ifm-color-primary);
+  color: white;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+/* Social cards preview */
+meta[property='og:image'] {
+  content: url('/img/nebula-logger-social-card.jpg');
+}

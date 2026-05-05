@@ -1,0 +1,19 @@
+'Type: Documentation':
+  - changed-files:
+      - any-glob-to-any-file: ['docs/**', 'docs2/**', 'website/docs/**', '**/*.md']
+
+'Type: CI/CD':
+  - changed-files:
+      - any-glob-to-any-file: ['.github/workflows/**']
+
+'Area: Apex':
+  - changed-files:
+      - any-glob-to-any-file: ['**/*.cls', '**/*.trigger']
+
+'Area: LWC':
+  - changed-files:
+      - any-glob-to-any-file: ['**/lwc/**/*.js', '**/lwc/**/*.html', '**/lwc/**/*.css']
+
+'Area: Metadata':
+  - changed-files:
+      - any-glob-to-any-file: ['nebula-logger/**/*.xml', 'config/scratch-orgs/**/*.json', 'config/scratch-orgs/**/*.xml']

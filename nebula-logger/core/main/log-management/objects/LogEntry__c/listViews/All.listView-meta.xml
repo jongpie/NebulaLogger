@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
+    <columns>TimestampString__c</columns>
     <columns>NAME</columns>
     <columns>Log__c</columns>
     <columns>LoggingLevel__c</columns>

@@ -23,6 +23,7 @@ public with sharing class RelatedLogEntriesController {
    * @param  sortByFieldName The field to sort by
    * @param  sortDirection   The direction to sort by (asc or desc))
    * @param  search          An optional search term to filter by
+   * @param  filters         JSON string containing filter criteria for various fields
    * @return                 The instance of LogEntryQueryResult, containing matching records and metadata
    */
   @SuppressWarnings('PMD.ExcessiveParameterList')
@@ -33,19 +34,27 @@ public with sharing class RelatedLogEntriesController {
     Integer rowLimit,
     String sortByFieldName,
     String sortDirection,
-    String search
+    String search,
+    String filters
   ) {
     FieldSetMetadata fieldSetMetdata = new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
 
     String fieldsClause = getFieldsClause(fieldSetMetdata.fields);
     String orderByClause = getOrderByClause(sortByFieldName, sortDirection);
 
-    List<LogEntry__c> records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
+    List<LogEntry__c> records = search(recordId, search, fieldsClause, orderByClause, rowLimit, filters);
     return new LogEntryQueryResult(fieldSetMetdata, records);
   }
 
   @SuppressWarnings('PMD.ExcessiveParameterList')
-  private static List<LogEntry__c> search(Id recordId, String searchTerm, String fieldsClause, String orderByClause, Integer rowLimit) {
+  private static List<LogEntry__c> search(
+    Id recordId,
+    String searchTerm,
+    String fieldsClause,
+    String orderByClause,
+    Integer rowLimit,
+    String filtersJson
+  ) {
     // SOSL can search for a 15-character ID, but for some reason, using the 18-character version returns no results (╯‵□′)╯︵┻━┻
     String fullSearchExpression = '*' + String.escapeSingleQuotes(String.valueOf(recordId).left(15)) + '*';
     if (String.isNotBlank(searchTerm)) {
@@ -53,19 +62,137 @@ public with sharing class RelatedLogEntriesController {
     }
     fullSearchExpression = '\'' + fullSearchExpression + '\'';
 
+    // Build WHERE clause for additional filters
+    String whereClause = buildWhereClause(filtersJson);
+
     List<Object> searchTextReplacements = new List<Object>{
       fullSearchExpression,
       String.valueOf(Schema.LogEntry__c.SObjectType),
       fieldsClause,
+      whereClause,
       orderByClause,
       rowLimit
     };
-    String logEntrySearch = String.format('FIND {0} IN ALL FIELDS RETURNING {1} ({2} ORDER BY {3} LIMIT {4})', searchTextReplacements);
+    String logEntrySearch = String.format('FIND {0} IN ALL FIELDS RETURNING {1} ({2} {3} ORDER BY {4} LIMIT {5})', searchTextReplacements);
 
     List<LogEntry__c> matches = (List<LogEntry__c>) System.Search.query(logEntrySearch).get(0);
 
     // Somewhat redundant security check for FLS (but extra security > less security)
     return System.Security.stripInaccessible(System.AccessType.READABLE, matches).getRecords();
+  }
+
+  /**
+   * @description Retrieves the current user's username
+   * @return The username of the current user
+   */
+  @AuraEnabled(cacheable=true)
+  public static String getCurrentUsername() {
+    return System.UserInfo.getUserName();
+  }
+
+  /**
+   * @description Retrieves available tags for filtering log entries
+   * @param  recordId The record ID to filter tags by
+   * @return          List of tag unique IDs
+   */
+  @AuraEnabled(cacheable=true)
+  public static List<String> getAvailableTags(Id recordId) {
+    Set<String> tagUniqueIds = new Set<String>();
+
+    // Query LogEntryTag__c junction records to find all tags associated with log entries for this record
+    String query =
+      'SELECT Tag__r.UniqueId__c FROM LogEntryTag__c ' +
+      'WHERE LogEntry__r.RecordId__c = :recordId ' +
+      'AND Tag__r.UniqueId__c != null ' +
+      'GROUP BY Tag__r.UniqueId__c ' +
+      'ORDER BY Tag__r.UniqueId__c ASC ' +
+      'LIMIT 1000';
+
+    try {
+      List<LogEntryTag__c> logEntryTags = Database.query(query);
+      for (LogEntryTag__c logEntryTag : logEntryTags) {
+        if (String.isNotBlank(logEntryTag.Tag__r.UniqueId__c)) {
+          tagUniqueIds.add(logEntryTag.Tag__r.UniqueId__c);
+        }
+      }
+    } catch (Exception ex) {
+      // Log error silently and return empty list
+      System.debug(LoggingLevel.ERROR, 'Error querying available tags: ' + ex.getMessage());
+    }
+
+    List<String> sortedTags = new List<String>(tagUniqueIds);
+    sortedTags.sort();
+    return sortedTags;
+  }
+
+  private static String buildWhereClause(String filtersJson) {
+    if (String.isBlank(filtersJson)) {
+      return '';
+    }
+
+    List<String> conditions = new List<String>();
+
+    try {
+      Map<String, Object> filters = (Map<String, Object>) JSON.deserializeUntyped(filtersJson);
+
+      // Filter by logging level
+      if (filters.containsKey('loggingLevels')) {
+        List<Object> loggingLevels = (List<Object>) filters.get('loggingLevels');
+        if (loggingLevels != null && !loggingLevels.isEmpty()) {
+          List<String> escapedLevels = new List<String>();
+          for (Object level : loggingLevels) {
+            escapedLevels.add('\'' + String.escapeSingleQuotes(String.valueOf(level)) + '\'');
+          }
+          conditions.add('LoggingLevel__c IN (' + String.join(escapedLevels, ',') + ')');
+        }
+      }
+
+      // Filter by timestamp range
+      if (filters.containsKey('timestampStart') && filters.get('timestampStart') != null) {
+        String timestampStart = String.valueOf(filters.get('timestampStart'));
+        conditions.add('Timestamp__c >= ' + timestampStart);
+      }
+      if (filters.containsKey('timestampEnd') && filters.get('timestampEnd') != null) {
+        String timestampEnd = String.valueOf(filters.get('timestampEnd'));
+        conditions.add('Timestamp__c <= ' + timestampEnd);
+      }
+
+      // Filter by logged by username
+      if (filters.containsKey('loggedByUsername') && String.isNotBlank(String.valueOf(filters.get('loggedByUsername')))) {
+        String username = String.escapeSingleQuotes(String.valueOf(filters.get('loggedByUsername')));
+        conditions.add('LoggedByUsernameText__c = \'' + username + '\'');
+      }
+
+      // Filter by origin source metadata type
+      if (filters.containsKey('originSourceMetadataTypes')) {
+        List<Object> metadataTypes = (List<Object>) filters.get('originSourceMetadataTypes');
+        if (metadataTypes != null && !metadataTypes.isEmpty()) {
+          List<String> escapedTypes = new List<String>();
+          for (Object mdType : metadataTypes) {
+            escapedTypes.add('\'' + String.escapeSingleQuotes(String.valueOf(mdType)) + '\'');
+          }
+          conditions.add('OriginSourceMetadataType__c IN (' + String.join(escapedTypes, ',') + ')');
+        }
+      }
+
+      // Filter by tags - need to use a subquery
+      if (filters.containsKey('tags')) {
+        List<Object> tags = (List<Object>) filters.get('tags');
+        if (tags != null && !tags.isEmpty()) {
+          List<String> escapedTags = new List<String>();
+          for (Object tag : tags) {
+            escapedTags.add('\'' + String.escapeSingleQuotes(String.valueOf(tag)) + '\'');
+          }
+          conditions.add('Id IN (SELECT LogEntry__c FROM LogEntryTag__c WHERE Tag__r.UniqueId__c IN (' + String.join(escapedTags, ',') + '))');
+        }
+      }
+    } catch (Exception ex) {
+      // If JSON parsing fails, log and return empty where clause
+      System.debug(LoggingLevel.ERROR, 'Error parsing filters JSON: ' + ex.getMessage());
+      return '';
+    }
+
+    return conditions.isEmpty() ? '' : 'WHERE ' + String.join(conditions, ' AND ');
   }
 
   private static String getFieldsClause(List<FieldMetadata> fields) {

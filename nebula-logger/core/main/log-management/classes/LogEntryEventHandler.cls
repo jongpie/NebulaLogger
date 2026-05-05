@@ -377,6 +377,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         RestResponseStatusCode__c = logEntryEvent.RestResponseStatusCode__c,
         StackTrace__c = logEntryEvent.StackTrace__c,
         Timestamp__c = timestamp,
+        TimestampString__c = timestamp.formatGmt('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\''),
         TransactionEntryNumber__c = logEntryEvent.TransactionEntryNumber__c,
         TriggerIsExecuting__c = logEntryEvent.TriggerIsExecuting__c,
         TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,

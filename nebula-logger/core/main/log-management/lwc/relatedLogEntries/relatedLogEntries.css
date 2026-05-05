@@ -1,0 +1,31 @@
+/*************************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ ************************************************************************************************/
+
+.slds-card__body_inner {
+  padding: 1rem;
+  background-color: var(--lwc-colorBackgroundAlt, #fafaf9);
+}
+
+.slds-box {
+  background-color: var(--lwc-colorBackground, #ffffff);
+  border: 1px solid var(--lwc-colorBorder, #dddbda);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+lightning-dual-listbox {
+  max-height: 300px;
+}
+
+.slds-scoped-notification {
+  padding: 0.75rem 1rem;
+}
+
+.slds-text-heading_small {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--lwc-colorTextDefault, #181818);
+}

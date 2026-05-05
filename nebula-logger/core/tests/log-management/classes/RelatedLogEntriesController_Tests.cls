@@ -24,7 +24,12 @@ private class RelatedLogEntriesController_Tests {
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
-      LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'test ' + i);
+      LogEntry__c logEntry = new LogEntry__c(
+        Log__c = log.Id,
+        Message__c = 'test ' + i,
+        LoggingLevel__c = i < 5 ? 'ERROR' : 'INFO',
+        OriginSourceMetadataType__c = i < 3 ? 'ApexClass' : 'ApexTrigger'
+      );
       if (i <= TOTAL_RELATED_LOG_ENTRIES) {
         logEntry.RecordId__c = TARGET_RECORD_ID;
       }
@@ -33,6 +38,20 @@ private class RelatedLogEntriesController_Tests {
       logEntries.add(logEntry);
     }
     insert logEntries;
+
+    // Create some tags
+    List<LoggerTag__c> tags = new List<LoggerTag__c>{
+      new LoggerTag__c(UniqueId__c = 'TestTag1'),
+      new LoggerTag__c(UniqueId__c = 'TestTag2')
+    };
+    insert tags;
+
+    // Create junction records for the first 3 log entries
+    List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
+    for (Integer i = 0; i < 3; i++) {
+      logEntryTags.add(new LogEntryTag__c(LogEntry__c = logEntries[i].Id, Tag__c = tags[0].Id));
+    }
+    insert logEntryTags;
   }
 
   @IsTest
@@ -54,7 +73,8 @@ private class RelatedLogEntriesController_Tests {
       rowLimit,
       sortByFieldName,
       sortDirection,
-      searchTerm
+      searchTerm,
+      null
     );
 
     System.Assert.areEqual(fieldSetName, result.fieldSet.name);
@@ -83,12 +103,131 @@ private class RelatedLogEntriesController_Tests {
       rowLimit,
       sortByFieldName,
       sortDirection,
-      searchTerm
+      searchTerm,
+      null
     );
 
     System.Assert.areEqual(fieldSetName, result.fieldSet.name);
     System.Assert.areEqual(1, result.records.size());
     System.Assert.areEqual(logEntryWithSearchTerm.Id, result.records[0].Id);
+  }
+
+  @IsTest
+  static void it_should_return_filtered_logEntryQueryResult_when_logging_level_filter_provided() {
+    String fieldSetName = getFieldSetName();
+    Integer rowLimit = 10;
+    String sortByFieldName = 'Name';
+    String sortDirection = 'ASC';
+    String searchTerm = null;
+    Map<String, Object> filters = new Map<String, Object>{ 'loggingLevels' => new List<String>{ 'ERROR' } };
+    String filtersJson = JSON.serialize(filters);
+
+    List<LogEntry__c> matchingLogEntries = [SELECT Id FROM LogEntry__c WHERE RecordId__c = :TARGET_RECORD_ID AND LoggingLevel__c = 'ERROR'];
+
+    System.Test.setFixedSearchResults(new List<Id>(new Map<Id, SObject>(matchingLogEntries).keySet()));
+    RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
+      TARGET_RECORD_ID,
+      fieldSetName,
+      rowLimit,
+      sortByFieldName,
+      sortDirection,
+      searchTerm,
+      filtersJson
+    );
+
+    System.Assert.areEqual(fieldSetName, result.fieldSet.name);
+    System.Assert.areEqual(matchingLogEntries.size(), result.records.size());
+  }
+
+  @IsTest
+  static void it_should_return_filtered_logEntryQueryResult_when_origin_source_metadata_type_filter_provided() {
+    String fieldSetName = getFieldSetName();
+    Integer rowLimit = 10;
+    String sortByFieldName = 'Name';
+    String sortDirection = 'ASC';
+    String searchTerm = null;
+    Map<String, Object> filters = new Map<String, Object>{ 'originSourceMetadataTypes' => new List<String>{ 'ApexClass' } };
+    String filtersJson = JSON.serialize(filters);
+
+    List<LogEntry__c> matchingLogEntries = [
+      SELECT Id
+      FROM LogEntry__c
+      WHERE RecordId__c = :TARGET_RECORD_ID AND OriginSourceMetadataType__c = 'ApexClass'
+    ];
+
+    System.Test.setFixedSearchResults(new List<Id>(new Map<Id, SObject>(matchingLogEntries).keySet()));
+    RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
+      TARGET_RECORD_ID,
+      fieldSetName,
+      rowLimit,
+      sortByFieldName,
+      sortDirection,
+      searchTerm,
+      filtersJson
+    );
+
+    System.Assert.areEqual(fieldSetName, result.fieldSet.name);
+    System.Assert.areEqual(matchingLogEntries.size(), result.records.size());
+  }
+
+  @IsTest
+  static void it_should_return_filtered_logEntryQueryResult_when_timestamp_filter_provided() {
+    String fieldSetName = getFieldSetName();
+    Integer rowLimit = 10;
+    String sortByFieldName = 'Name';
+    String sortDirection = 'ASC';
+    String searchTerm = null;
+    Datetime yesterday = System.now().addDays(-1);
+    Datetime tomorrow = System.now().addDays(1);
+    Map<String, Object> filters = new Map<String, Object>{
+      'timestampStart' => yesterday.format('yyyy-MM-dd\'T\'HH:mm:ss\'Z\''),
+      'timestampEnd' => tomorrow.format('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'')
+    };
+    String filtersJson = JSON.serialize(filters);
+
+    List<LogEntry__c> matchingLogEntries = [
+      SELECT Id
+      FROM LogEntry__c
+      WHERE RecordId__c = :TARGET_RECORD_ID AND Timestamp__c >= :yesterday AND Timestamp__c <= :tomorrow
+    ];
+
+    System.Test.setFixedSearchResults(new List<Id>(new Map<Id, SObject>(matchingLogEntries).keySet()));
+    RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
+      TARGET_RECORD_ID,
+      fieldSetName,
+      rowLimit,
+      sortByFieldName,
+      sortDirection,
+      searchTerm,
+      filtersJson
+    );
+
+    System.Assert.areEqual(fieldSetName, result.fieldSet.name);
+    System.Assert.isTrue(result.records.size() > 0);
+  }
+
+  @IsTest
+  static void it_should_return_available_tags() {
+    List<String> availableTags = RelatedLogEntriesController.getAvailableTags(TARGET_RECORD_ID);
+
+    System.Assert.isTrue(availableTags.size() > 0, 'Expected at least one tag');
+    System.Assert.areEqual('TestTag1', availableTags[0]);
+  }
+
+  @IsTest
+  static void it_should_return_empty_list_when_no_tags_exist() {
+    Id nonRelatedRecordId = System.UserInfo.getOrganizationId();
+    List<String> availableTags = RelatedLogEntriesController.getAvailableTags(nonRelatedRecordId);
+
+    System.Assert.areEqual(0, availableTags.size(), 'Expected no tags for unrelated record');
+  }
+
+  @IsTest
+  static void it_should_return_current_username() {
+    String currentUsername = RelatedLogEntriesController.getCurrentUsername();
+
+    System.Assert.isNotNull(currentUsername, 'Expected current username to not be null');
+    System.Assert.areEqual(System.UserInfo.getUserName(), currentUsername);
   }
 
   static String getFieldSetName() {

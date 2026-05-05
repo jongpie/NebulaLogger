@@ -1,0 +1,2 @@
+SELECT AuthConfigId, AuthConfig.DeveloperName, AuthProviderId, AuthProvider.DeveloperName, CreatedById, CreatedDate, Id, IsDeleted, LastModifiedById, LastModifiedDate, SystemModstamp
+  FROM AuthConfigProviders

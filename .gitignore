@@ -17,3 +17,4 @@ yarn.lock
 **/lwc/jsconfig.json
 .config
 code-analyzer*.json
+core.code-workspace

@@ -23,8 +23,8 @@
     <redirectToCustomDomain>false</redirectToCustomDomain>
     <referrerPolicyOriginWhenCrossOrigin>true</referrerPolicyOriginWhenCrossOrigin>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
-    <siteAdmin>test-poxlhhmpqbuq@example.com</siteAdmin>
-    <siteGuestRecordDefaultOwner>test-poxlhhmpqbuq@example.com</siteGuestRecordDefaultOwner>
+    <siteAdmin>test-dzvrxqazkvaw@example.com</siteAdmin>
+    <siteGuestRecordDefaultOwner>test-dzvrxqazkvaw@example.com</siteGuestRecordDefaultOwner>
     <siteType>ChatterNetwork</siteType>
     <urlPathPrefix>loggeraura</urlPathPrefix>
 </CustomSite>

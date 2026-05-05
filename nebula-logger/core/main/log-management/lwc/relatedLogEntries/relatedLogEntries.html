@@ -4,9 +4,248 @@
  **********************************************************************************************-->
 
 <template>
+  <article class="slds-card slds-card_boundary">
+    <div
+      class="slds-page-header slds-page-header_joined slds-page-header_bleed slds-shrink-none test-headerRegion slds-is-relative slds-page-header--object-home slds-page-header_object-home"
+    >
+      <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+          <div class="slds-media">
+            <div class="slds-media__figure">
+              <span class="slds-icon_container slds-icon-standard-opportunity">
+                <!-- <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
+              </svg> -->
+              </span>
+            </div>
+            <div class="slds-media__body">
+              <div class="slds-page-header__name">
+                <div class="slds-page-header__name-title">
+                  <h1>
+                    <span>Opportunity</span>
+                    <span class="slds-page-header__title slds-truncate" title="Acme - 1,200 Widgets">Acme - 1,200 Widgets</span>
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__col-actions">
+          <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+              <button class="slds-button slds-button_neutral slds-button_stateful slds-not-selected" aria-live="assertive" aria-pressed="false">
+                <span class="slds-text-not-selected">
+                  <!-- <svg class="slds-button__icon slds-button__icon_small slds-button__icon_left" aria-hidden="true">
+                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#add"></use></svg
+                >Follow -->
+                </span>
+                <span class="slds-text-selected">
+                  <!-- <svg class="slds-button__icon slds-button__icon_small slds-button__icon_left" aria-hidden="true">
+                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check"></use></svg
+                > -->
+                  Following</span
+                >
+                <span class="slds-text-selected-focus">
+                  <!-- <svg class="slds-button__icon slds-button__icon_small slds-button__icon_left" aria-hidden="true">
+                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg
+                > -->
+                  Unfollow</span
+                >
+              </button>
+            </div>
+            <div class="slds-page-header__control">
+              <ul class="slds-button-group-list">
+                <li>
+                  <button class="slds-button slds-button_neutral">Edit</button>
+                </li>
+                <li>
+                  <button class="slds-button slds-button_neutral">Delete</button>
+                </li>
+                <li>
+                  <button class="slds-button slds-button_neutral">Clone</button>
+                </li>
+                <li>
+                  <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                    <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="More Actions">
+                      <!-- <svg class="slds-button__icon" aria-hidden="true">
+                      <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                    </svg>
+                    <span class="slds-assistive-text">More Actions</span> -->
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slds-card__body" if:true={queryResult}>
+      <lightning-datatable
+        key-field="id"
+        show-row-number-column="true"
+        data={queryResult.records}
+        columns={queryResult.fieldSet.fields}
+        onsort={handleSort}
+        sorted-by={sortBy}
+        sorted-direction={sortDirection}
+        default-sort-direction={sortDirection}
+      ></lightning-datatable>
+    </div>
+  </article>
+  <!-- <template if:true={queryResult}>
+    <c-logger-datatable
+      title="Log Entries"
+      icon-name="custom:custom83"
+      key-field="id"
+      data={queryResult.records}
+      columns={queryResult.fieldSet.fields}
+      show-refresh-button
+      show-new-button
+      status-suffix={lastUpdatedText}
+      is-loading={isLoading}
+      sorted-by={sortBy}
+      sorted-direction={sortDirection}
+      onsort={handleSort}
+      onrefresh={refresh}
+      onnew={handleNew}
+    ></c-logger-datatable>
+  </template> -->
+
+  <!-- <c-example-table></c-example-table> -->
+
+  <div>
+    <div class="slds-card">
+      <!-- Gray Header Section -->
+      <div class="slds-page-header slds-page-header_joined">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <lightning-icon icon-name="standard:contact" size="small"></lightning-icon>
+              </div>
+              <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                    <h1>
+                      <span class="slds-page-header__title slds-truncate" title="Contacts">Contacts (10)</span>
+                    </h1>
+                  </div>
+                </div>
+                <p class="slds-text-body--small">asdf</p>
+                <div lwc-bbqdsgjtbq="" class="slds-grid slds-wrap">
+                  <div lwc-bbqdsgjtbq="" class="slds-col slds-align-bottom">
+                    <p lwc-bbqdsgjtbq="" class="slds-text-body--small">
+                      <!-- <force-list-view-manager-status-info lwc-bbqdsgjtbq=""
+                        ><span
+                          ><span aria-live="polite" role="status" class="countSortedByFilteredBy" aria-label="Timesheet Employees">8 items • </span
+                          ><span>Updated 3 minutes ago</span></span
+                        ></force-list-view-manager-status-info
+                      > -->
+                    </p>
+                  </div>
+                  <div lwc-bbqdsgjtbq="" class="slds-col slds-no-flex slds-grid slds-align-bottom slds-shrink">
+                    <slot lwc-bbqdsgjtbq="" name="header-bottom-bar-center"
+                      ><slot lwc-k0tj92fdh9="" name="header-bottom-bar-center" slot="header-bottom-bar-center"></slot
+                    ></slot>
+                  </div>
+                  <div lwc-bbqdsgjtbq="" class="slds-col slds-no-flex slds-grid slds-align-bottom slds-shrink">
+                    <slot lwc-bbqdsgjtbq="" name="header-bottom-bar-right"
+                      ><slot lwc-k0tj92fdh9="" name="header-bottom-bar-right" slot="header-bottom-bar-right"></slot
+                    ></slot>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Actions Section -->
+          <div class="slds-page-header__col-actions">
+            <div class="slds-page-header__controls">
+              <div class="slds-page-header__control">
+                <ul class="slds-button-group-list">
+                  <li>
+                    <lightning-button label="New" onclick={handleNew}></lightning-button>
+                  </li>
+                  <li>
+                    <lightning-button-menu alternative-text="Show menu" menu-alignment="right">
+                      <lightning-menu-item value="Refresh" label="Refresh"></lightning-menu-item>
+                    </lightning-button-menu>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datatable Section -->
+      <div class="slds-card__body">
+        <lightning-datatable key-field="id" data={data} columns={columns} hide-checkbox-column> </lightning-datatable>
+      </div>
+    </div>
+  </div>
+
+  <article class="slds-card slds-card_boundary">
+    <div
+      class="slds-page-header slds-page-header_joined slds-page-header_bleed slds-shrink-none test-headerRegion slds-is-relative slds-page-header--object-home slds-page-header_object-home"
+    >
+      <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+          <div class="slds-media">
+            <div class="slds-media__figure">
+              <!-- <lightning-icon icon-name="standard:contact"></lightning-icon> -->
+              <lightning-icon icon-name="custom:custom83" size="small"></lightning-icon>
+            </div>
+
+            <div class="slds-media__body">
+              <!-- <h1 class="slds-card__header-title">Contacts (3)</h1> -->
+              <h1 class="slds-card__header-title">{title}</h1>
+              <p class="slds-text-body--small">asdfsdfsdfsd</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="slds-no-flex">
+              <div class="slds-grid">
+                <div class="slds-col">
+                  <lightning-input
+                    class="slds-m-right_xx-small"
+                    data-id="enter-search"
+                    placeholder="Search"
+                    type="search"
+                    value={search}
+                    onchange={handleSearchChange}
+                    style="display: inline-block"
+                    variant="label-hidden"
+                  ></lightning-input>
+                </div>
+                <div class="slds-col"><lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-card__body">
+      <lightning-spinner if:true={isLoading} size="small"></lightning-spinner>
+      <div class="slds-is-relative" if:true={queryResult}>
+        <lightning-datatable
+          key-field="id"
+          show-row-number-column="true"
+          data={queryResult.records}
+          columns={queryResult.fieldSet.fields}
+          onsort={handleSort}
+          sorted-by={sortBy}
+          sorted-direction={sortDirection}
+          default-sort-direction={sortDirection}
+        ></lightning-datatable>
+      </div>
+    </div>
+  </article>
+
   <template if:true={showComponent}>
     <article class="slds-card slds-card_boundary">
-      <div class="slds-card__header slds-grid">
+      <div class="slds-card__header slds-page-header slds-grid">
         <header class="slds-media slds-media_center slds-has-flexi-truncate">
           <div class="slds-media__figure">
             <lightning-icon icon-name="custom:custom83" size="small"></lightning-icon>
@@ -27,13 +266,146 @@
               style="display: inline-block"
               variant="label-hidden"
             ></lightning-input>
+            <lightning-button
+              class="slds-m-right_xx-small"
+              label={filterButtonLabel}
+              icon-name="utility:filter"
+              onclick={handleToggleFilters}
+              variant={filterButtonVariant}
+            ></lightning-button>
             <lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon>
           </div>
         </header>
       </div>
+
+      <!-- Filter Section -->
+      <div class="slds-card__body slds-card__body_inner" if:true={showFilters}>
+        <div class="slds-box slds-m-bottom_small">
+          <!-- Quick Filters Section -->
+          <div class="slds-m-bottom_medium">
+            <h3 class="slds-text-heading_small slds-m-bottom_x-small">Quick Filters</h3>
+            <lightning-input
+              type="checkbox"
+              label="Current User Only"
+              checked={filters.currentUserOnly}
+              onchange={handleCurrentUserOnlyChange}
+            ></lightning-input>
+          </div>
+
+          <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="12" class="slds-m-bottom_small">
+              <h3 class="slds-text-heading_small">Advanced Filters</h3>
+            </lightning-layout-item>
+          </lightning-layout>
+
+          <div class="slds-grid slds-wrap slds-gutters">
+            <!-- Logging Level Filter -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+              <lightning-dual-listbox
+                name="loggingLevels"
+                label="Logging Level"
+                source-label="Available"
+                selected-label="Selected"
+                options={loggingLevelOptions}
+                value={filters.loggingLevels}
+                onchange={handleLoggingLevelChange}
+              ></lightning-dual-listbox>
+            </div>
+
+            <!-- Timestamp Range Filter -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+              <lightning-input
+                type="datetime"
+                name="timestampStart"
+                label="Timestamp Start"
+                value={filters.timestampStart}
+                onchange={handleTimestampStartChange}
+              ></lightning-input>
+              <lightning-input
+                type="datetime"
+                name="timestampEnd"
+                label="Timestamp End"
+                value={filters.timestampEnd}
+                onchange={handleTimestampEndChange}
+              ></lightning-input>
+            </div>
+
+            <!-- Logged By Username Filter -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+              <lightning-input
+                type="text"
+                name="loggedByUsername"
+                label="Logged By Username"
+                value={filters.loggedByUsername}
+                onchange={handleLoggedByUsernameChange}
+                placeholder="Enter username"
+              ></lightning-input>
+            </div>
+
+            <!-- Origin Source Metadata Type Filter -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-4">
+              <lightning-dual-listbox
+                name="originSourceMetadataTypes"
+                label="Origin Source Metadata Type"
+                source-label="Available"
+                selected-label="Selected"
+                options={originSourceMetadataTypeOptions}
+                value={filters.originSourceMetadataTypes}
+                onchange={handleOriginSourceMetadataTypeChange}
+              ></lightning-dual-listbox>
+            </div>
+
+            <!-- Tags Filter -->
+            <div class="slds-col slds-size_1-of-1" if:true={tagOptions.length}>
+              <lightning-dual-listbox
+                name="tags"
+                label="Tags"
+                source-label="Available Tags"
+                selected-label="Selected Tags"
+                options={tagOptions}
+                value={filters.tags}
+                onchange={handleTagsChange}
+              ></lightning-dual-listbox>
+            </div>
+
+            <!-- Clear Filters Button -->
+            <div class="slds-col slds-size_1-of-1">
+              <lightning-button label="Clear All Filters" onclick={handleClearFilters} class="slds-m-top_small"></lightning-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="slds-card__body">
+        <!-- Active Filters Summary -->
+        <div class="slds-m-bottom_small" if:true={hasActiveFilters}>
+          <div class="slds-scoped-notification slds-media slds-media_center slds-theme_info" role="status">
+            <div class="slds-media__figure">
+              <lightning-icon icon-name="utility:info" alternative-text="Active Filters" size="small" variant="inverse"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+              <p>
+                <strong>{activeFilterCount} active filter{filterCountText}</strong> applied to the results.
+                <lightning-button label="Clear" onclick={handleClearFilters} variant="base" class="slds-m-left_small"></lightning-button>
+              </p>
+            </div>
+          </div>
+        </div>
+
         <lightning-spinner if:true={isLoading} size="small"></lightning-spinner>
-        <div class="slds-is-relative" if:true={queryResult}>
+
+        <!-- No Results Message -->
+        <div class="slds-illustration slds-illustration_small" if:true={showNoResultsMessage}>
+          <div class="slds-text-align_center slds-m-vertical_large">
+            <lightning-icon icon-name="utility:search" size="large"></lightning-icon>
+            <h3 class="slds-text-heading_medium slds-m-top_small">No log entries found</h3>
+            <p class="slds-text-body_regular slds-m-top_x-small">
+              Try adjusting your search or filter criteria to see more results.
+            </p>
+          </div>
+        </div>
+
+        <div class="slds-is-relative" if:true={hasRecords}>
           <lightning-datatable
             key-field="id"
             show-row-number-column="true"

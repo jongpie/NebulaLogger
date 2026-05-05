@@ -15,7 +15,11 @@ coverage:
         target: 85%
         flags:
           - LWC
-    patch: off
+    patch:
+      default:
+        target: 85%
+        threshold: 5%
+        if_ci_failed: success
 ignore:
   - 'config/experience-cloud/**/*'
   - 'nebula-logger/recipes/**/*'
