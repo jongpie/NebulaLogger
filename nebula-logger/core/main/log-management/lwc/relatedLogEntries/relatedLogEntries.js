@@ -19,6 +19,7 @@ export default class RelatedLogEntries extends LightningElement {
 
   @track wiredResult;
   @track isLoading = true;
+  @track shouldEnableStrictSearch = true;
 
   get title() {
     return this.queryResult ? this.queryResult.labelPlural + ' (' + this.queryResult.records.length + ')' : '';
@@ -42,12 +43,13 @@ export default class RelatedLogEntries extends LightningElement {
   }
 
   @wire(getQueryResult, {
-    recordId: '$recordId',
     fieldSetName: '$fieldSetName',
+    recordId: '$recordId',
     rowLimit: '$rowLimit',
+    search: '$search',
     sortByFieldName: '$sortBy',
     sortDirection: '$sortDirection',
-    search: '$search'
+    shouldEnableStrictSearch: '$shouldEnableStrictSearch'
   })
   wiredLogEntries(result) {
     this.isLoading = true;
