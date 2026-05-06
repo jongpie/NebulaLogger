@@ -20,9 +20,9 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_return_queried_exception_metadata_when_custom_permission_is_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
-    insert permissionSet;
+    insert as system permissionSet;
     SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
       ParentId = permissionSet.Id,
       SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME]
@@ -32,7 +32,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
       AssigneeId = minimumAccessUser.Id,
       PermissionSetId = permissionSet.Id
     );
-    insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
+    insert as system new List<SObject>{ setupEntityAccess, permissionSetAssignment };
     String sourceMetadata = 'Exception';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
     MOCK_SELECTOR.setMockApexClass(mockApexClass);
@@ -56,9 +56,9 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_return_queried_origin_metadata_when_custom_permission_is_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
-    insert permissionSet;
+    insert as system permissionSet;
     SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
       ParentId = permissionSet.Id,
       SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_VIEW_LOG_ENTRY_METADATA_PERMISSION_NAME]
@@ -68,7 +68,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
       AssigneeId = minimumAccessUser.Id,
       PermissionSetId = permissionSet.Id
     );
-    insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
+    insert as system new List<SObject>{ setupEntityAccess, permissionSetAssignment };
     String sourceMetadata = 'Origin';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
     MOCK_SELECTOR.setMockApexClass(mockApexClass);
@@ -92,7 +92,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_not_return_queried_exception_metadata_when_custom_permission_is_not_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     String sourceMetadata = 'Exception';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
     MOCK_SELECTOR.setMockApexClass(mockApexClass);
@@ -116,7 +116,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_not_return_queried_origin_metadata_when_custom_permission_is_not_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     String sourceMetadata = 'Origin';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
     MOCK_SELECTOR.setMockApexClass(mockApexClass);
@@ -140,7 +140,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_return_queried_metadata_when_loggerAdmin_permission_set_is_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     LoggerTestConfigurator.assignAdminPermissionSet(minimumAccessUser.Id);
     String sourceMetadata = 'Exception';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
@@ -165,7 +165,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_not_return_queried_origin_metadata_when_loggerLogViewer_permission_set_is_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     LoggerTestConfigurator.assignLogViewerPermissionSet(minimumAccessUser.Id);
     String sourceMetadata = 'Origin';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
@@ -190,7 +190,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_not_return_queried_origin_metadata_when_loggerEndUser_permission_set_is_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     LoggerTestConfigurator.assignEndUserPermissionSet(minimumAccessUser.Id);
     String sourceMetadata = 'Origin';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');
@@ -215,7 +215,7 @@ private class LogEntryMetadataViwrCtlr_Tests_Security {
   @IsTest
   static void it_should_not_return_queried_origin_metadata_when_loggerLogCreator_permission_set_is_assigned() {
     Schema.User minimumAccessUser = LoggerMockDataCreator.createUser(MINIMUM_ACCESS_PROFILE.Id);
-    insert minimumAccessUser;
+    insert as system minimumAccessUser;
     LoggerTestConfigurator.assignLogCreatorPermissionSet(minimumAccessUser.Id);
     String sourceMetadata = 'Origin';
     Schema.ApexClass mockApexClass = new Schema.ApexClass(Body = 'hello, world', Name = 'SomeApexClassName');

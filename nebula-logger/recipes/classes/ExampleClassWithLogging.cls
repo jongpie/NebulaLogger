@@ -16,7 +16,7 @@ public with sharing class ExampleClassWithLogging {
     Schema.Contact contact = new Schema.Contact();
     // TODO don't forget to populate the record's required fields
     // before deploying this code to prod!
-    insert contact;
+    insert as system contact;
     return contact;
   }
 }

@@ -14,17 +14,17 @@ private class LogEntryHandler_Tests_EmailMessage {
       'This test assumes that EmailMessage does not use Subject as the object\'s display-name field'
     );
     Case cas = (Case) LoggerMockDataCreator.createDataBuilder(Schema.Case.SObjectType).populateRequiredFields().getRecord();
-    insert cas;
+    insert as system cas;
     EmailMessage emailMessage = (EmailMessage) LoggerMockDataCreator.createDataBuilder(new EmailMessage(Subject = 'Some subject', ParentId = cas.Id))
       .populateRequiredFields()
       .getRecord();
-    insert emailMessage;
+    insert as system emailMessage;
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = emailMessage.Id);
 
-    insert logEntry;
+    insert as system logEntry;
 
     logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
     System.Assert.areEqual(emailMessage.Id, logEntry.RecordId__c);

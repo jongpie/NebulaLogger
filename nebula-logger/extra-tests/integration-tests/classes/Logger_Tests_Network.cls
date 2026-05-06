@@ -17,7 +17,7 @@ private class Logger_Tests_Network {
       return;
     }
 
-    List<Schema.Profile> matchingProfiles = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME];
+    List<Schema.Profile> matchingProfiles = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME WITH SYSTEM_MODE];
 
     if (matchingProfiles.isEmpty()) {
       return;
@@ -31,6 +31,7 @@ private class Logger_Tests_Network {
       SELECT Id
       FROM User
       WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
+      WITH SYSTEM_MODE
     ];
     if (guestUsers.isEmpty()) {
       return;
@@ -48,7 +49,7 @@ private class Logger_Tests_Network {
     }
 
     Log__c log = new Log__c(TransactionId__c = '1234');
-    insert log;
+    insert as system log;
 
     System.Test.startTest();
 
@@ -57,6 +58,7 @@ private class Logger_Tests_Network {
       SELECT Id
       FROM User
       WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
+      WITH SYSTEM_MODE
     ];
     if (guestUsers.isEmpty()) {
       return;
@@ -65,7 +67,7 @@ private class Logger_Tests_Network {
     Schema.User guestUser = guestUsers.get(0);
     try {
       log.OwnerId = guestUser.Id;
-      update log;
+      update as system log;
       System.Assert.fail('Expected exception, this exception should not occur');
     } catch (System.Exception ex) {
       String expectedExceptionMessage = 'FIELD_INTEGRITY_EXCEPTION, field integrity exception (Guest users cannot be record owners.)';
@@ -86,6 +88,7 @@ private class Logger_Tests_Network {
       SELECT Id, Profile.UserType
       FROM User
       WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
+      WITH SYSTEM_MODE
     ];
     if (guestUsers.isEmpty()) {
       return;
@@ -104,6 +107,7 @@ private class Logger_Tests_Network {
     LogEntry__c logEntry = [
       SELECT Id, Log__r.LoggedBy__c, Log__r.OwnerId, Log__r.UserLicenseDefinitionKey__c, Log__r.UserType__c, Message__c
       FROM LogEntry__c
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(guestUser.Id, logEntry.Log__r.LoggedBy__c, 'LoggedBy was set to the wrong user ID');
     System.Assert.areNotEqual(guestUser.Id, logEntry.Log__r.OwnerId, 'Log owner ID was incorrect');

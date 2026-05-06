@@ -24,15 +24,15 @@ private class LogRetentionRulesPlugin_Tests {
     };
     LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
     Log__c log = new Log__c(TransactionId__c = '1234');
-    insert log;
+    insert as system log;
     System.Test.setCreatedDate(log.Id, now.addDays(-1));
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
 
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
-    insert logEntry;
+    insert as system logEntry;
 
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c);
   }
 
@@ -53,14 +53,14 @@ private class LogRetentionRulesPlugin_Tests {
     LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
 
     Log__c log = new Log__c(TransactionId__c = '1234');
-    insert log;
+    insert as system log;
     System.Test.setCreatedDate(log.Id, now);
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
 
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
-    insert logEntry;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    insert as system logEntry;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c);
   }
 
@@ -81,13 +81,13 @@ private class LogRetentionRulesPlugin_Tests {
     LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
 
     Log__c log = new Log__c(Scenario__c = scenario, TransactionId__c = '1234');
-    insert log;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    insert as system log;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
 
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
-    insert logEntry;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    insert as system logEntry;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c);
   }
 
@@ -109,13 +109,13 @@ private class LogRetentionRulesPlugin_Tests {
     LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
 
     Log__c log = new Log__c(Scenario__c = scenario, TransactionId__c = '1234', UserLoggingLevelOrdinal__c = userLoggingLevelOrdinal);
-    insert log;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    insert as system log;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
-    insert logEntry;
+    insert as system logEntry;
 
-    log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, System.JSON.serializePretty(log));
   }
 
@@ -137,13 +137,13 @@ private class LogRetentionRulesPlugin_Tests {
     LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
 
     Log__c log = new Log__c(Scenario__c = scenario1, TransactionId__c = '1234');
-    insert log;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    insert as system log;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
-    insert logEntry;
+    insert as system logEntry;
 
-    log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, System.JSON.serializePretty(log));
   }
 
@@ -168,13 +168,13 @@ private class LogRetentionRulesPlugin_Tests {
     LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
 
     Log__c log = new Log__c(Scenario__c = scenario1, TransactionId__c = '1234', UserLoggingLevelOrdinal__c = userLoggingLevelOrdinal);
-    insert log;
-    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    insert as system log;
+    log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
-    insert logEntry;
+    insert as system logEntry;
 
-    log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c, System.JSON.serializePretty(log));
   }
 

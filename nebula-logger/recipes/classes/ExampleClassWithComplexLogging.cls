@@ -76,7 +76,7 @@ public with sharing class ExampleClassWithComplexLogging {
   public Schema.Account insertAccount(String accountName) {
     Schema.Account a = new Schema.Account();
     // TODO don't forget to populate account name before deploying this code to prod!
-    insert a;
+    insert as system a;
     return a;
   }
 

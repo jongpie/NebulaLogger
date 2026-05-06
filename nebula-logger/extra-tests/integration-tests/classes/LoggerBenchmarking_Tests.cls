@@ -46,7 +46,7 @@ private class LoggerBenchmarking_Tests {
     LoggerParameter.setMock(TRANSACTION_LIMIT_PARAM);
 
     ContactPointAddress record = new ContactPointAddress(Name = 'Benchmarking');
-    insert record;
+    insert as system record;
     for (Integer index = 0; index < numberOfEntries; index++) {
       Logger.info('Creating complex message using arguments').setRecord(record);
     }

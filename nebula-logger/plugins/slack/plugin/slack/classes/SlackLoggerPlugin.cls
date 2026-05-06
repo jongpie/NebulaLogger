@@ -112,7 +112,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
       sentLogs.add(log);
     }
     Logger.saveLog();
-    update sentLogs;
+    update as system sentLogs;
 
     // If any logs couldn't be sent due to governor limits, start a new instance of the job
     if (unsentLogs.size() > 0) {
@@ -180,7 +180,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
       '\nAND MaxLogEntryLoggingLevelOrdinal__c >= :loggingLevelOrdinal' +
       '\nAND SendSlackNotification__c = TRUE' +
       '\nAND SlackNotificationDate__c = NULL';
-    this.logs = (List<Log__c>) System.Database.query(query);
+    this.logs = (List<Log__c>) System.Database.query(query, System.AccessLevel.SYSTEM_MODE);
   }
 
   private System.HttpRequest createSlackHttpRequest() {
@@ -289,6 +289,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
       SELECT UniqueId__c
       FROM LoggerTag__c
       WHERE Id IN (SELECT Tag__c FROM LogEntryTag__c WHERE LogEntry__r.Log__c = :log.Id)
+      WITH SYSTEM_MODE
       ORDER BY UniqueId__c
     ];
     for (LoggerTag__c tag : tags) {
@@ -314,6 +315,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
       SELECT UniqueId__c
       FROM LoggerTag__c
       WHERE Id IN (SELECT Tag__c FROM LogEntryTag__c WHERE LogEntry__r.Log__c = :log.Id)
+      WITH SYSTEM_MODE
       ORDER BY UniqueId__c
     ];
 

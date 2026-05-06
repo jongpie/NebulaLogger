@@ -57,12 +57,12 @@ private class LogEntryEventHandler_Tests_FieldMappings {
       'Handler class should have executed one time for AFTER_INSERT'
     );
     // 2 scenarios should be created: 1 for TransactionScenario__c, and 1 for EntryScenario__c
-    List<LoggerScenario__c> loggerScenarios = [SELECT Id, SomeLoggerScenarioField__c FROM LoggerScenario__c];
+    List<LoggerScenario__c> loggerScenarios = [SELECT Id, SomeLoggerScenarioField__c FROM LoggerScenario__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, loggerScenarios.size());
     for (LoggerScenario__c loggerScenario : loggerScenarios) {
       System.Assert.areEqual(logEntryEvent.SomeLoggerScenarioField__c, loggerScenario.SomeLoggerScenarioField__c);
     }
-    Log__c log = [SELECT Id, SomeLogField__c, (SELECT SomeLogEntryField__c FROM LogEntries__r) FROM Log__c];
+    Log__c log = [SELECT Id, SomeLogField__c, (SELECT SomeLogEntryField__c FROM LogEntries__r) FROM Log__c WITH SYSTEM_MODE];
     LogEntry__c logEntry = log.LogEntries__r.get(0);
     System.Assert.areEqual(logEntryEvent.SomeLogField__c, log.SomeLogField__c);
     System.Assert.areEqual(logEntryEvent.SomeLogEntryField__c, logEntry.SomeLogEntryField__c);

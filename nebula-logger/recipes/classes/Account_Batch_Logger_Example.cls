@@ -42,7 +42,7 @@ public with sharing class Account_Batch_Logger_Example implements Database.Batch
     }
 
     Logger.debug('Saving account records', scope);
-    update scope;
+    update as system scope;
 
     Logger.saveLog();
   }

@@ -15,6 +15,7 @@ private class LogManagementDataSelector_Tests_Flow {
       SELECT ActiveVersionId, ApiName, Description, DurableId, Label, LastModifiedBy, LastModifiedDate, ManageableState, ProcessType, TriggerType
       FROM FlowDefinitionView
       WHERE ApiName IN :targetFlowApiNames AND IsActive = TRUE
+      WITH SYSTEM_MODE
     ];
 
     List<Schema.FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);

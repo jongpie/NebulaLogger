@@ -11,11 +11,11 @@ private class LogEntryHandler_Tests_Flow {
   @IsTest
   static void it_should_set_skip_setting_flow_details_when_origin_location_is_null() {
     Log__c log = new Log__c(TransactionId__c = '1234');
-    insert log;
+    insert as system log;
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceApiName__c = null, OriginSourceMetadataType__c = 'Flow');
 
-    insert logEntry;
+    insert as system logEntry;
 
     logEntry = getLogEntry();
     System.Assert.isNull(logEntry.OriginSourceApiName__c);
@@ -53,11 +53,11 @@ private class LogEntryHandler_Tests_Flow {
     Schema.FlowDefinitionView flowDefinitionView = getFlowDefinitionView();
     Schema.FlowVersionView flowVersion = getFlowVersion(flowDefinitionView.ActiveVersionId);
     Log__c log = new Log__c(TransactionId__c = '1234');
-    insert log;
+    insert as system log;
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceApiName__c = flowDefinitionView.ApiName, OriginSourceMetadataType__c = 'Flow');
 
-    insert logEntry;
+    insert as system logEntry;
 
     logEntry = getLogEntry();
     System.Assert.areEqual(EXAMPLE_FLOW_API_NAME, logEntry.OriginSourceApiName__c);
@@ -138,6 +138,7 @@ private class LogEntryHandler_Tests_Flow {
         OriginSourceSnippet__c,
         StackTrace__c
       FROM LogEntry__c
+      WITH SYSTEM_MODE
       ORDER BY CreatedDate
       LIMIT 1
     ];
@@ -161,10 +162,16 @@ private class LogEntryHandler_Tests_Flow {
         TriggerType
       FROM FlowDefinitionView
       WHERE ApiName = :EXAMPLE_FLOW_API_NAME AND IsActive = TRUE
+      WITH SYSTEM_MODE
     ];
   }
 
   private static Schema.FlowVersionView getFlowVersion(Id flowActiveVersionId) {
-    return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId = :flowActiveVersionId];
+    return [
+      SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber
+      FROM FlowVersionView
+      WHERE DurableId = :flowActiveVersionId
+      WITH SYSTEM_MODE
+    ];
   }
 }

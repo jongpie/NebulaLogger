@@ -20,7 +20,7 @@ private class LogBatchPurger_Tests_Flow {
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = false;
     settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
-    insert settings;
+    insert as system settings;
 
     Date scheduledDeletionDate = System.today().addDays(-7);
     Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate);

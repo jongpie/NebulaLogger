@@ -119,20 +119,20 @@ private class NebulaLogger_E2E_Tests {
 
   @IsTest
   static void it_saves_via_synchronous_dml() {
-    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE]);
     String message = 'Some random FINEST entry';
     Logger.finest(message);
 
     Logger.saveLog(Logger.SaveMethod.SYNCHRONOUS_DML);
 
-    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE]);
     LogEntry__c matchingLogEntry = findMatchingLogEntry(message);
     System.Assert.isNotNull(matchingLogEntry);
   }
 
   private static LogEntry__c findMatchingLogEntry(String message) {
     LogEntry__c matchingLogEntry;
-    for (LogEntry__c logEntry : [SELECT Id, Message__c FROM LogEntry__c LIMIT 100]) {
+    for (LogEntry__c logEntry : [SELECT Id, Message__c FROM LogEntry__c WITH SYSTEM_MODE LIMIT 100]) {
       if (logEntry.Message__c == message) {
         matchingLogEntry = logEntry;
         break;

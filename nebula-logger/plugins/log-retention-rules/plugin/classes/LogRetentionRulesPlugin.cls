@@ -54,7 +54,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
       Schema.LogEntry__c.Id.toString()
     };
     String logEntryQuery = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
-    return (List<LogEntry__c>) System.Database.query(logEntryQuery);
+    return (List<LogEntry__c>) System.Database.query(logEntryQuery, System.AccessLevel.SYSTEM_MODE);
   }
 
   private void setLogRetentionDate(List<LogEntry__c> logEntries) {
@@ -74,7 +74,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         logIdToLog.put(log.Id, log);
       }
     }
-    update logIdToLog.values();
+    update as system logIdToLog.values();
   }
 
   @SuppressWarnings('PMD.ApexCRUDViolation')
@@ -90,6 +90,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         (SELECT FieldPath__c, Operator__c, ValueType__c, Value__c FROM LogRetentionRuleConditions__r ORDER BY SortOrder__c NULLS LAST, DeveloperName)
       FROM LogRetentionRule__mdt
       WHERE IsEnabled__c = TRUE
+      WITH SYSTEM_MODE
       ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName
     ]) {
       queriedRulesByDeveloperName.put(rule.DeveloperName, rule);

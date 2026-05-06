@@ -217,7 +217,7 @@ private class SlackLoggerPlugin_Tests {
   private static List<Log__c> insertLogAndLogEntry(System.LoggingLevel logEntryLoggingLevel, Boolean sendSlackNotification) {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = sendSlackNotification, TransactionId__c = '1234');
-    insert log;
+    insert as system log;
     LogEntry__c logEntry = new LogEntry__c(
       ExceptionStackTrace__c = 'Some exception stack trace',
       Log__c = log.Id,
@@ -226,7 +226,7 @@ private class SlackLoggerPlugin_Tests {
       StackTrace__c = 'A stack trace',
       Timestamp__c = System.now()
     );
-    insert logEntry;
+    insert as system logEntry;
     return queryLogs(logEntryLoggingLevel);
   }
 
@@ -299,6 +299,6 @@ private class SlackLoggerPlugin_Tests {
     fieldNames.add(logEntryChildQuery);
 
     String query = 'SELECT ' + String.join(fieldNames, ', ') + ' FROM Log__c';
-    return (List<Log__c>) System.Database.query(query);
+    return (List<Log__c>) System.Database.query(query, System.AccessLevel.SYSTEM_MODE);
   }
 }
