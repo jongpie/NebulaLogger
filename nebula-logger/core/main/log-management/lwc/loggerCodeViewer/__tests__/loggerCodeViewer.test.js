@@ -44,7 +44,7 @@ describe('c-logger-code-viewer', () => {
     document.body.appendChild(element);
 
     await Promise.resolve('rerender after loading Prism script and style from static resource');
-    await Promise.resolve("rerender after generating the code element's innerHTML and running Prism.highlightAll()");
+    await Promise.resolve("rerender after generating the code element's textContent and running Prism.highlightAll()");
     const prismCodeViewer = element.shadowRoot.querySelector('div.prism-viewer');
     expect(prismCodeViewer.classList.contains('line-numbers')).toBeTruthy();
     const prismCodeViewerPre = element.shadowRoot.querySelector('div.prism-viewer pre');
@@ -55,6 +55,6 @@ describe('c-logger-code-viewer', () => {
     const prismCodeViewerCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
     expect(prismCodeViewerCode).toBeTruthy();
     expect(prismCodeViewerCode.classList.contains('language-' + element.language)).toBeTruthy();
-    expect(prismCodeViewerCode.innerHTML).toContain(mockCode);
+    expect(prismCodeViewerCode.textContent).toContain(mockCode);
   });
 });

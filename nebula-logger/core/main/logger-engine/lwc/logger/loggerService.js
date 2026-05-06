@@ -10,7 +10,7 @@ import LoggerServiceTaskQueue from './loggerServiceTaskQueue';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
-const CURRENT_VERSION_NUMBER = 'v4.17.5';
+const CURRENT_VERSION_NUMBER = 'v4.18.0';
 
 const CONSOLE_OUTPUT_CONFIG = {
   messagePrefix: `%c  Nebula Logger ${CURRENT_VERSION_NUMBER}  `,
@@ -188,7 +188,7 @@ export default class LoggerService {
 
         if (this.#settings.isConsoleLoggingEnabled) {
           // Use setTimeout() so any extra fields included in the log entry are added first before printing to the console
-          // eslint-disable-next-line @lwc/lwc/no-async-operation
+          // eslint-disable-next-line
           setTimeout(() => {
             this._logToConsole(logEntry.loggingLevel, logEntry.message, logEntry);
           }, 1000);
