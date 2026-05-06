@@ -51,14 +51,14 @@ private class LogEntryHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    logEntry = [SELECT Id, RecordId__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, RecordId__c FROM LogEntry__c WHERE Id = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.isNull(logEntry.RecordId__c);
   }
 
   @IsTest
   static void it_should_populate_related_record_fields_on_log_entry_with_related_user_record_id() {
-    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-    Schema.User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId()];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE LIMIT 1];
+    Schema.User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId() WITH SYSTEM_MODE];
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentUser.Id);
 
     LoggerDataStore.getDatabase().insertRecord(logEntry);
@@ -68,15 +68,15 @@ private class LogEntryHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(currentUser.Id, logEntry.RecordId__c);
     System.Assert.areEqual(currentUser.Username, logEntry.RecordName__c);
   }
 
   @IsTest
   static void it_should_populate_related_record_fields_on_log_entry_with_related_profile_record_id() {
-    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-    Schema.Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE LIMIT 1];
+    Schema.Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId() WITH SYSTEM_MODE];
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentProfile.Id);
 
     LoggerDataStore.getDatabase().insertRecord(logEntry);
@@ -86,14 +86,14 @@ private class LogEntryHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(currentProfile.Id, logEntry.RecordId__c);
     System.Assert.areEqual(currentProfile.Name, logEntry.RecordName__c);
   }
 
   @IsTest
   static void it_should_not_populate_related_record_fields_on_log_entry_with_related_template_standard_object_record_id() {
-    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE LIMIT 1];
     Id templateSObjectRecordId = LoggerMockDataCreator.createId(Schema.CaseComment.SObjectType);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = templateSObjectRecordId);
 
@@ -104,15 +104,15 @@ private class LogEntryHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(templateSObjectRecordId, logEntry.RecordId__c);
     System.Assert.isNull(logEntry.RecordName__c);
   }
 
   @IsTest
   static void it_should_not_populate_related_record_fields_on_log_entry_when_disabled_via_logger_parameter() {
-    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-    Schema.User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId()];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE LIMIT 1];
+    Schema.User currentUser = [SELECT Id, Username FROM User WHERE Id = :System.UserInfo.getUserId() WITH SYSTEM_MODE];
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentUser.Id);
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = String.valueOf(false)));
 
@@ -123,7 +123,7 @@ private class LogEntryHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(currentUser.Id, logEntry.RecordId__c);
     System.Assert.isNull(logEntry.RecordName__c);
   }
@@ -805,7 +805,7 @@ private class LogEntryHandler_Tests {
 
   @IsTest
   static void it_should_set_skip_setting_apex_class_details_when_origin_location_is_null() {
-    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE LIMIT 1];
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = null, OriginType__c = 'Apex');
     LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
@@ -830,6 +830,7 @@ private class LogEntryHandler_Tests {
         OriginType__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual('Apex', logEntry.OriginType__c);
     System.Assert.isNull(logEntry.OriginLocation__c);
@@ -891,6 +892,7 @@ private class LogEntryHandler_Tests {
         ExceptionSourceSnippet__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ExceptionSourceApiVersion__c);
     System.Assert.areEqual(apexClass.CreatedById, logEntry.ExceptionSourceCreatedById__c);
@@ -931,6 +933,7 @@ private class LogEntryHandler_Tests {
       SELECT Id, ApiVersion, Body, CreatedBy.Username, CreatedDate, LastModifiedBy.Username, LastModifiedDate
       FROM ApexClass
       WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :stackTrace.Source.ApiName
+      WITH SYSTEM_MODE
     ];
     Log__c log = [SELECT Id FROM Log__c LIMIT 1];
     LogEntry__c logEntry = new LogEntry__c(
@@ -975,6 +978,7 @@ private class LogEntryHandler_Tests {
         StackTrace__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     // Schema.ApexClass fields
     System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
@@ -1071,6 +1075,7 @@ private class LogEntryHandler_Tests {
         StackTrace__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     // Schema.ApexClass fields
     System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
@@ -1162,6 +1167,7 @@ private class LogEntryHandler_Tests {
         StackTrace__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual('v' + apexTrigger.ApiVersion, logEntry.OriginSourceApiVersion__c);
     System.Assert.areEqual(apexTrigger.CreatedById, logEntry.OriginSourceCreatedById__c);
@@ -1234,6 +1240,7 @@ private class LogEntryHandler_Tests {
         StackTrace__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(invalidOriginLocation, logEntry.OriginLocation__c);
     System.Assert.areEqual('Flow', logEntry.OriginType__c);
@@ -1286,7 +1293,7 @@ private class LogEntryHandler_Tests {
     MockLogManagementDataSelector mockSelector = new MockLogManagementDataSelector();
     mockSelector.setMockOmniProcess(mockOmniProcessProxy);
     LogManagementDataSelector.setMock(mockSelector);
-    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE LIMIT 1];
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceId__c = mockOmniProcessProxy.Id, OriginType__c = 'OmniStudio');
     LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
@@ -1315,6 +1322,7 @@ private class LogEntryHandler_Tests {
         OriginType__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual('OmniStudio', logEntry.OriginType__c);
     System.Assert.isNull(logEntry.OriginLocation__c);
@@ -1333,7 +1341,7 @@ private class LogEntryHandler_Tests {
 
   @IsTest
   static void it_should_set_skip_setting_origin_omni_process_details_when_origin_source_id_is_null() {
-    Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE LIMIT 1];
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginSourceId__c = null, OriginType__c = 'OmniStudio');
     LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
@@ -1362,6 +1370,7 @@ private class LogEntryHandler_Tests {
         OriginType__c
       FROM LogEntry__c
       WHERE Id = :logEntry.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual('OmniStudio', logEntry.OriginType__c);
     System.Assert.isNull(logEntry.OriginLocation__c);

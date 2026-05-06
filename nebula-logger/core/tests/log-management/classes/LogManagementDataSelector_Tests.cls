@@ -44,6 +44,7 @@ private class LogManagementDataSelector_Tests {
       SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
       FROM ApexClass
       WHERE Name IN :targetApexClassNames
+      WITH SYSTEM_MODE
       ORDER BY NamespacePrefix NULLS LAST
     ];
 
@@ -73,6 +74,7 @@ private class LogManagementDataSelector_Tests {
       SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
       FROM ApexTrigger
       WHERE Name IN :targetApexTriggerNames
+      WITH SYSTEM_MODE
       ORDER BY NamespacePrefix NULLS LAST
     ];
 
@@ -97,7 +99,12 @@ private class LogManagementDataSelector_Tests {
 
   @IsTest
   static void it_returns_cached_apex_email_notifications() {
-    List<Schema.ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
+    List<Schema.ApexEmailNotification> expectedResults = [
+      SELECT Email, UserId
+      FROM ApexEmailNotification
+      WHERE Email != NULL OR User.IsActive = TRUE
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual(1, System.Limits.getQueries());
 
     List<Schema.ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
@@ -128,7 +135,7 @@ private class LogManagementDataSelector_Tests {
       OrganizationReleaseVersion__c = 'expectedLog.OrganizationReleaseVersion__c',
       TransactionId__c = 'expectedLog.TransactionId__c'
     );
-    insert new List<Log__c>{ olderLog, expectedLog };
+    insert as system new List<Log__c>{ olderLog, expectedLog };
     System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
     System.Assert.areEqual(1, System.Limits.getQueries(), 'Expected 1 query to be used during test setup');
 
@@ -162,7 +169,7 @@ private class LogManagementDataSelector_Tests {
   static void it_returns_null_when_no_recent_log_with_api_release_details_is_found() {
     LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = System.JSON.serialize(true)));
     System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
-    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE]);
     System.Assert.areEqual(1, System.Limits.getQueries(), 'Expected 1 query to be used during test setup');
 
     for (Integer i = 0; i < 5; i++) {
@@ -187,7 +194,7 @@ private class LogManagementDataSelector_Tests {
       OrganizationReleaseVersion__c = 'logWithApiReleaseDetails.OrganizationReleaseVersion__c',
       TransactionId__c = '1234'
     );
-    insert logWithApiReleaseDetails;
+    insert as system logWithApiReleaseDetails;
     System.Assert.areEqual(1, System.Limits.getQueries(), 'Expected 1 query to be used during test setup');
 
     for (Integer i = 0; i < 3; i++) {
@@ -203,7 +210,7 @@ private class LogManagementDataSelector_Tests {
   static void it_returns_deleteable_user_record_access() {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c deleteableRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert deleteableRecord;
+    insert as system deleteableRecord;
     Schema.User undeleteableRecord = new Schema.User(Id = System.UserInfo.getUserId());
     List<Id> recordIds = new List<Id>{ deleteableRecord.Id, undeleteableRecord.Id };
 
@@ -256,7 +263,7 @@ private class LogManagementDataSelector_Tests {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     Log__c anotherLog = log.clone();
-    insert new List<Log__c>{ log, anotherLog };
+    insert as system new List<Log__c>{ log, anotherLog };
 
     Log__c returnedLog = LogManagementDataSelector.getInstance().getLogById(log.Id);
 
@@ -267,10 +274,10 @@ private class LogManagementDataSelector_Tests {
   static void it_returns_log_entry_for_specified_log_entry_id() {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
     LogEntry__c logEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id)).populateRequiredFields().getRecord();
     LogEntry__c anotherLogEntry = logEntry.clone();
-    insert new List<LogEntry__c>{ logEntry, anotherLogEntry };
+    insert as system new List<LogEntry__c>{ logEntry, anotherLogEntry };
 
     LogEntry__c returnedLogEntry = LogManagementDataSelector.getInstance().getLogEntryById(logEntry.Id);
 
@@ -282,7 +289,7 @@ private class LogManagementDataSelector_Tests {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     Log__c anotherLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert new List<Log__c>{ log, anotherLog };
+    insert as system new List<Log__c>{ log, anotherLog };
     List<LogEntry__c> expectedLogEntries = new List<LogEntry__c>();
     List<LogEntry__c> unrelatedlogEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < 5; i++) {
@@ -292,7 +299,7 @@ private class LogManagementDataSelector_Tests {
     List<LogEntry__c> allTestLogEntries = new List<LogEntry__c>();
     allTestLogEntries.addAll(expectedLogEntries);
     allTestLogEntries.addAll(unrelatedlogEntries);
-    insert allTestLogEntries;
+    insert as system allTestLogEntries;
 
     List<LogEntry__c> returnedLogEnties = LogManagementDataSelector.getInstance().getLogEntriesByLogId(log.Id);
 
@@ -313,7 +320,7 @@ private class LogManagementDataSelector_Tests {
       log.TransactionId__c = 'some_fake_transaction_id_' + i;
       logs.add(log);
     }
-    insert logs;
+    insert as system logs;
     List<Id> logIds = new List<Id>(new Map<Id, Log__c>(logs).keySet());
 
     List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsById(logIds);
@@ -326,7 +333,7 @@ private class LogManagementDataSelector_Tests {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c parentLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     parentLog.TransactionId__c = 'some unique value for this log';
-    insert parentLog;
+    insert as system parentLog;
     List<Log__c> logsToCreate = new List<Log__c>();
     List<Log__c> expectedLogs = new List<Log__c>();
     List<String> parentLogTransactionIds = new List<String>();
@@ -350,7 +357,7 @@ private class LogManagementDataSelector_Tests {
       logsToCreate.add(log);
     }
     System.Assert.areEqual(parentLogTransactionIds.size(), expectedLogs.size() + 1, 'Test has started under the wrong conditions');
-    insert logsToCreate;
+    insert as system logsToCreate;
 
     List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsWithoutParentLogByParentTransactionId(parentLogTransactionIds);
 
@@ -370,7 +377,7 @@ private class LogManagementDataSelector_Tests {
       logTransactionIds.add(log.TransactionId__c);
       logs.add(log);
     }
-    insert logs;
+    insert as system logs;
 
     List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsByTransactionId(logTransactionIds);
 
@@ -429,7 +436,7 @@ private class LogManagementDataSelector_Tests {
 
   @IsTest
   static void it_returns_profiles_for_specified_profile_ids() {
-    List<Schema.Profile> expectedResults = [SELECT Id, Name FROM Profile LIMIT 10];
+    List<Schema.Profile> expectedResults = [SELECT Id, Name FROM Profile WITH SYSTEM_MODE LIMIT 10];
     List<Id> targetProfileIds = new List<Id>(new Map<Id, Schema.Profile>(expectedResults).keySet());
 
     List<Schema.Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesById(targetProfileIds);
@@ -442,7 +449,7 @@ private class LogManagementDataSelector_Tests {
   @IsTest
   static void it_returns_profiles_for_specified_search_term() {
     String searchTerm = 'Admin';
-    List<Schema.Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
+    List<Schema.Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm WITH SYSTEM_MODE];
 
     List<Schema.Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm);
 
@@ -463,7 +470,7 @@ private class LogManagementDataSelector_Tests {
       queuesToInsert.add(matchingQueue);
     }
     insert queuesToInsert;
-    List<Schema.Group> expectedResults = [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :targetQueueNames];
+    List<Schema.Group> expectedResults = [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :targetQueueNames WITH SYSTEM_MODE];
 
     List<Schema.Group> returnedResults = LogManagementDataSelector.getInstance().getQueuesByDeveloperName(targetQueueNames);
 
@@ -477,9 +484,9 @@ private class LogManagementDataSelector_Tests {
     tags.add(matchingTag);
     LoggerTag__c nonMatchingTag = new LoggerTag__c(Name = 'another fake tag name');
     tags.add(nonMatchingTag);
-    insert tags;
+    insert as system tags;
     Set<String> targetTagNames = new Set<String>{ matchingTag.Name };
-    List<LoggerTag__c> expectedResults = [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :targetTagNames];
+    List<LoggerTag__c> expectedResults = [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :targetTagNames WITH SYSTEM_MODE];
     System.Assert.areEqual(1, expectedResults.size());
 
     List<LoggerTag__c> returnedResults = LogManagementDataSelector.getInstance().getTagsByName(targetTagNames);
@@ -494,9 +501,9 @@ private class LogManagementDataSelector_Tests {
     topics.add(matchingTopic);
     Schema.Topic nonMatchingTopic = new Schema.Topic(Name = 'another fake topic name');
     topics.add(nonMatchingTopic);
-    insert topics;
+    insert as system topics;
     Set<String> targetTopicNames = new Set<String>{ matchingTopic.Name };
-    List<Schema.Topic> expectedResults = [SELECT Id, Name FROM Topic WHERE Name IN :targetTopicNames];
+    List<Schema.Topic> expectedResults = [SELECT Id, Name FROM Topic WHERE Name IN :targetTopicNames WITH SYSTEM_MODE];
     System.Assert.areEqual(1, expectedResults.size());
 
     List<Schema.Topic> returnedResults = LogManagementDataSelector.getInstance().getTopicsByName(targetTopicNames);
@@ -506,7 +513,7 @@ private class LogManagementDataSelector_Tests {
 
   @IsTest
   static void it_returns_users_for_user_ids() {
-    List<Schema.User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
+    List<Schema.User> expectedResults = [SELECT Id, Username FROM User WITH SYSTEM_MODE LIMIT 3];
     List<Id> targetUserIds = new List<Id>(new Map<Id, Schema.User>(expectedResults).keySet());
 
     List<Schema.User> returnedResults = LogManagementDataSelector.getInstance().getUsersById(targetUserIds);
@@ -535,6 +542,7 @@ private class LogManagementDataSelector_Tests {
       SELECT Id, Name, Username, SmallPhotoUrl
       FROM User
       WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
+      WITH SYSTEM_MODE
     ];
 
     List<Schema.User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm);
@@ -547,7 +555,7 @@ private class LogManagementDataSelector_Tests {
 
   @IsTest
   static void it_returns_users_for_user_usernames() {
-    List<Schema.User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
+    List<Schema.User> expectedResults = [SELECT Id, Username FROM User WITH SYSTEM_MODE LIMIT 3];
     List<String> targetUserUsernames = new List<String>();
     for (Schema.User user : expectedResults) {
       targetUserUsernames.add(user.Username);

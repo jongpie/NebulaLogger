@@ -43,7 +43,7 @@ private class LogBatchPurgeScheduler_Tests {
     LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.LogRetentionDate__c = System.today().addDays(-1);
-    insert log;
+    insert as system log;
 
     System.Test.startTest();
     new LogBatchPurgeScheduler().execute(null);
@@ -58,7 +58,7 @@ private class LogBatchPurgeScheduler_Tests {
     LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(true)));
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.LogRetentionDate__c = System.today().addDays(-1);
-    insert log;
+    insert as system log;
 
     System.Test.startTest();
     new LogBatchPurgeScheduler().execute(null);
@@ -66,7 +66,7 @@ private class LogBatchPurgeScheduler_Tests {
 
     List<Log__c> logs = [SELECT Id FROM Log__c];
     System.Assert.areEqual(1, logs.size());
-    List<LogEntry__c> logEntries = [SELECT Id, Message__c FROM LogEntry__c];
+    List<LogEntry__c> logEntries = [SELECT Id, Message__c FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areNotEqual(0, logEntries.size());
     Boolean foundExpectedMessage = false;
     String expectedMessage = new LogMessage(LogBatchPurgeScheduler.SCHEDULER_SYSTEM_MESSAGE_TEMPLATE, (System.SchedulableContext) null).getMessage();

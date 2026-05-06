@@ -25,7 +25,7 @@ private class LogBatchPurger_Tests_Flow {
     Date scheduledDeletionDate = System.today().addDays(-7);
     Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate);
     LoggerMockDataCreator.createDataBuilder(log).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES_TO_CREATE; i++) {
@@ -33,10 +33,10 @@ private class LogBatchPurger_Tests_Flow {
       LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
       logEntries.add(logEntry);
     }
-    insert logEntries;
+    insert as system logEntries;
 
     LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
-    insert tag;
+    insert as system tag;
 
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
     for (LogEntry__c logEntry : logEntries) {
@@ -44,7 +44,7 @@ private class LogBatchPurger_Tests_Flow {
       LoggerMockDataCreator.createDataBuilder(logEntryTag).populateRequiredFields().getRecord();
       logEntryTags.add(logEntryTag);
     }
-    insert logEntryTags;
+    insert as system logEntryTags;
   }
 
   @IsTest

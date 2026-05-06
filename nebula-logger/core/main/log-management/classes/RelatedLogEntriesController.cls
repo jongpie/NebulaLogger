@@ -71,7 +71,7 @@ public with sharing class RelatedLogEntriesController {
     };
     String logEntrySearch = String.format('FIND {0} IN ALL FIELDS RETURNING {1} ({2} {3} ORDER BY {4} LIMIT {5})', searchTextReplacements);
 
-    List<LogEntry__c> matches = (List<LogEntry__c>) System.Search.query(logEntrySearch).get(0);
+    List<LogEntry__c> matches = (List<LogEntry__c>) System.Search.query(logEntrySearch, System.AccessLevel.SYSTEM_MODE).get(0);
 
     // Somewhat redundant security check for FLS (but extra security > less security)
     return System.Security.stripInaccessible(System.AccessType.READABLE, matches).getRecords();

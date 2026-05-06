@@ -753,6 +753,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         SELECT Id
         FROM Log__c
         WHERE Id IN :this.logIds AND ApiReleaseNumber__c = NULL
+        WITH SYSTEM_MODE
         LIMIT :System.Limits.getLimitDmlRows()
       ]) {
         log.OrganizationLocation__c = statusApiResponse.location;

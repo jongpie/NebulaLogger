@@ -1465,7 +1465,7 @@ private class Logger_Tests {
     }
 
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    LogEntry__c logEntry = [SELECT Id, Timestamp__c FROM LogEntry__c];
+    LogEntry__c logEntry = [SELECT Id, Timestamp__c FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(originalTimestamp, logEntry.Timestamp__c);
   }
 
@@ -1509,7 +1509,7 @@ private class Logger_Tests {
     Logger.ignoreOrigin(Logger_Tests.class);
 
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1533,7 +1533,7 @@ private class Logger_Tests {
 
     System.Test.stopTest();
 
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, countOfLogEntries);
   }
 
@@ -1545,7 +1545,7 @@ private class Logger_Tests {
     Logger.ignoreOrigin(Logger_Tests.class);
 
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1565,7 +1565,7 @@ private class Logger_Tests {
 
     System.Test.stopTest();
 
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, countOfLogEntries);
   }
 
@@ -1577,7 +1577,7 @@ private class Logger_Tests {
     Logger.ignoreOrigin(Logger_Tests.class);
 
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1600,7 +1600,7 @@ private class Logger_Tests {
 
     System.Test.stopTest();
 
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, countOfLogEntries);
   }
 
@@ -1612,7 +1612,7 @@ private class Logger_Tests {
     Logger.ignoreOrigin(Logger_Tests.class);
 
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
@@ -1638,7 +1638,7 @@ private class Logger_Tests {
 
     System.Test.stopTest();
 
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, countOfLogEntries);
   }
 
@@ -1650,7 +1650,7 @@ private class Logger_Tests {
     Logger.ignoreOrigin(Logger_Tests.class);
 
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1672,7 +1672,7 @@ private class Logger_Tests {
 
     System.Test.stopTest();
 
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, countOfLogEntries);
   }
 
@@ -1684,7 +1684,7 @@ private class Logger_Tests {
     Logger.ignoreOrigin(Logger_Tests.class);
 
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1709,7 +1709,7 @@ private class Logger_Tests {
 
     System.Test.stopTest();
 
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, countOfLogEntries);
   }
 
@@ -1718,7 +1718,7 @@ private class Logger_Tests {
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1748,7 +1748,7 @@ private class Logger_Tests {
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1774,7 +1774,7 @@ private class Logger_Tests {
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);
@@ -1803,7 +1803,7 @@ private class Logger_Tests {
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
     System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400));
 
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     setUserLoggingLevel(System.LoggingLevel.DEBUG);

@@ -20,7 +20,7 @@ private class RelatedLogEntriesController_Tests {
     LoggerSObjectHandler.shouldExecute(false);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
@@ -32,7 +32,7 @@ private class RelatedLogEntriesController_Tests {
 
       logEntries.add(logEntry);
     }
-    insert logEntries;
+    insert as system logEntries;
   }
 
   @IsTest
@@ -42,7 +42,7 @@ private class RelatedLogEntriesController_Tests {
     String sortByFieldName = 'Name';
     String sortDirection = 'ASC';
     String searchTerm = null;
-    List<LogEntry__c> matchingLogEntries = [SELECT Id FROM LogEntry__c WHERE RecordId__c = :TARGET_RECORD_ID];
+    List<LogEntry__c> matchingLogEntries = [SELECT Id FROM LogEntry__c WHERE RecordId__c = :TARGET_RECORD_ID WITH SYSTEM_MODE];
 
     // TODO revisit how SOSL is tested - having to use setFixedSearchResults() means we're not really truly testing
     // that the SOSL search query is working (other than confirming that the query string can be executed successfully),
@@ -72,7 +72,7 @@ private class RelatedLogEntriesController_Tests {
     String searchTerm = 'my searchTerm term';
     Log__c log = [SELECT Id FROM Log__c];
     LogEntry__c logEntryWithSearchTerm = new LogEntry__c(Log__c = log.Id, Message__c = searchTerm, RecordId__c = TARGET_RECORD_ID);
-    insert logEntryWithSearchTerm;
+    insert as system logEntryWithSearchTerm;
 
     // TODO revisit how SOSL is tested - having to use setFixedSearchResults() means we're not really truly testing
     // that the SOSL search query is working (other than confirming that the query string can be executed successfully),
@@ -100,9 +100,9 @@ private class RelatedLogEntriesController_Tests {
     String sortByFieldName = 'Name';
     String sortDirection = 'ASC';
     String searchTerm = 'my searchTerm term';
-    Log__c log = [SELECT Id FROM Log__c];
+    Log__c log = [SELECT Id FROM Log__c WITH SYSTEM_MODE];
     LogEntry__c logEntryWithSearchTerm = new LogEntry__c(Log__c = log.Id, Message__c = searchTerm, RecordId__c = TARGET_RECORD_ID);
-    insert logEntryWithSearchTerm;
+    insert as system logEntryWithSearchTerm;
 
     // TODO revisit how SOSL is tested - having to use setFixedSearchResults() means we're not really truly testing
     // that the SOSL search query is working (other than confirming that the query string can be executed successfully),

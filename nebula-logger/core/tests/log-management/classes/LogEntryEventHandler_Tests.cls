@@ -43,9 +43,9 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+    Integer countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogs);
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
 
     List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(new List<LogEntryEvent__e>());
@@ -57,9 +57,9 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    countOfLogs = [SELECT COUNT() FROM Log__c];
+    countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogs);
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
   }
 
@@ -69,8 +69,8 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE]);
     System.LoggingLevel targetEventLoggingLevel = System.LoggingLevel.DEBUG;
     System.LoggingLevel targetStorageLoggingLevel = System.LoggingLevel.INFO;
     System.Assert.isTrue(
@@ -101,8 +101,8 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
-    List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c FROM LogEntry__c];
+    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE]);
+    List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(1, logEntries.size(), System.JSON.serializePretty(logEntries));
     System.Assert.areEqual(matchingLogEntryEvent.LoggingLevel__c, logEntries.get(0).LoggingLevel__c);
     System.Assert.areEqual(matchingLogEntryEvent.Message__c, logEntries.get(0).Message__c);
@@ -114,8 +114,8 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE]);
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.LoggingLevel__c = System.LoggingLevel.WARN.name();
     settings.DefaultPlatformEventStorageLocation__c = 'CUSTOM_OBJECTS';
@@ -145,11 +145,12 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE]);
     LogEntry__c firstMatchingLogEntry = [
       SELECT Id, LoggingLevel__c, Message__c
       FROM LogEntry__c
       WHERE LoggingLevel__c = :firstMatchingLogEntryEvent.LoggingLevel__c
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(firstMatchingLogEntryEvent.LoggingLevel__c, firstMatchingLogEntry.LoggingLevel__c);
     System.Assert.areEqual(firstMatchingLogEntryEvent.Message__c, firstMatchingLogEntry.Message__c);
@@ -157,6 +158,7 @@ private class LogEntryEventHandler_Tests {
       SELECT Id, LoggingLevel__c, Message__c
       FROM LogEntry__c
       WHERE LoggingLevel__c = :secondMatchingLogEntryEvent.LoggingLevel__c
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(secondMatchingLogEntryEvent.LoggingLevel__c, secondMatchingLogEntry.LoggingLevel__c);
     System.Assert.areEqual(secondMatchingLogEntryEvent.Message__c, secondMatchingLogEntry.Message__c);
@@ -168,9 +170,9 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+    Integer countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogs);
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = true;
@@ -188,9 +190,9 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    countOfLogs = [SELECT COUNT() FROM Log__c];
+    countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogs);
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
   }
 
@@ -200,9 +202,9 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+    Integer countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogs);
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = true;
@@ -229,9 +231,9 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    countOfLogs = [SELECT COUNT() FROM Log__c];
+    countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogs);
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
   }
 
@@ -241,9 +243,9 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-    Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+    Integer countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogs);
-    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfLogEntries);
     LoggerSettings__c settings = Logger.getUserSettings();
     settings.IsEnabled__c = true;
@@ -273,11 +275,11 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    countOfLogs = [SELECT COUNT() FROM Log__c];
+    countOfLogs = [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(1, countOfLogs);
-    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+    countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(1, countOfLogEntries);
-    System.Assert.areEqual(logEntryEventWithOverride.Message__c, [SELECT Message__c FROM LogEntry__c].Message__c);
+    System.Assert.areEqual(logEntryEventWithOverride.Message__c, [SELECT Message__c FROM LogEntry__c WITH SYSTEM_MODE].Message__c);
   }
 
   @IsTest
@@ -336,7 +338,7 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c];
+    List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(2, logs.size(), System.JSON.serializePretty(logs));
     Set<String> uniqueTransactionIds = new Set<String>(transactionIds);
     for (Log__c log : logs) {
@@ -364,7 +366,7 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     Log__c log = getLog();
     System.Assert.isNotNull(log.TransactionScenario__c);
     System.Assert.areEqual(1, log.LogEntries__r.size());
@@ -395,7 +397,7 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerScenario__c]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     Log__c log = getLog();
     System.Assert.isNull(log.TransactionScenario__c);
     System.Assert.areEqual(logEntryEvent.TransactionScenario__c, log.TransactionScenarioName__c);
@@ -412,8 +414,8 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
     LoggerScenario__c existingLogScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
-    insert existingLogScenario;
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
+    insert as system existingLogScenario;
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
     for (Integer i = 0; i < 2; i++) {
       LogEntryEvent__e logEntryEvent = createLogEntryEvent();
@@ -436,7 +438,7 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     Log__c log = getLog();
     System.Assert.areEqual(existingLogScenario.Id, log.TransactionScenario__c);
     System.Assert.areEqual(logEntryEvents.size(), log.LogEntries__r.size());
@@ -456,9 +458,9 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
     LoggerScenario__c existingLoggerScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
-    insert existingLoggerScenario;
+    insert as system existingLoggerScenario;
     String newScenario = 'some new value';
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
     firstLogEntryEvent.TransactionEntryNumber__c = 1;
     firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
@@ -481,7 +483,7 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    System.Assert.areEqual(2, [SELECT COUNT() FROM LoggerScenario__c]);
+    System.Assert.areEqual(2, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     Log__c log = getLog();
     System.Assert.areEqual(logEntryEvents.size(), log.LogEntries__r.size());
     for (Integer i = 0; i < logEntryEvents.size(); i++) {
@@ -500,10 +502,10 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
     LoggerScenario__c existingLoggerScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
-    insert existingLoggerScenario;
+    insert as system existingLoggerScenario;
     String newTransactionScenario = 'some new value';
     String newEntryScenario = 'some OTHER new value';
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
     firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
     firstLogEntryEvent.TransactionEntryNumber__c = 1;
@@ -526,7 +528,7 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    System.Assert.areEqual(3, [SELECT COUNT() FROM LoggerScenario__c]);
+    System.Assert.areEqual(3, [SELECT COUNT() FROM LoggerScenario__c WITH SYSTEM_MODE]);
     Log__c log = getLog();
     System.Assert.areEqual(logEntryEvents.size(), log.LogEntries__r.size());
     for (Integer i = 0; i < logEntryEvents.size(); i++) {
@@ -558,7 +560,7 @@ private class LogEntryEventHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
       'Handler class should have executed one time for AFTER_INSERT'
     );
-    List<LogEntry__c> logEntries = [SELECT Id, EventUuid__c FROM LogEntry__c];
+    List<LogEntry__c> logEntries = [SELECT Id, EventUuid__c FROM LogEntry__c WITH SYSTEM_MODE];
     System.Assert.areEqual(1, logEntries.size());
     System.Assert.isNull(logEntries.get(0).EventUuid__c);
   }
@@ -575,7 +577,7 @@ private class LogEntryEventHandler_Tests {
 
     Database.SaveResult firstSaveResult = LoggerMockDataStore.getEventBus().publishRecord(originalLogEntryEvent);
     LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
-    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid];
+    List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid WITH SYSTEM_MODE];
     System.Assert.areEqual(1, logEntries.size());
     Database.SaveResult secondSaveResult = LoggerMockDataStore.getEventBus().publishRecord(duplicateLogEntryEvent);
     LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -585,9 +587,9 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(
       2,
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
-      'Handler class should have executed two times for AFTER_INSERT (once for each LogEntryEvent__e record'
+      'Handler class should have executed two times for AFTER_INSERT as system (once for each LogEntryEvent__e record'
     );
-    logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid];
+    logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid WITH SYSTEM_MODE];
     System.Assert.areEqual(1, logEntries.size());
   }
 
@@ -602,11 +604,12 @@ private class LogEntryEventHandler_Tests {
       SELECT Id, TimeZoneSidKey
       FROM User
       WHERE Username = :automatedProcessUsername AND Profile.Name = NULL
+      WITH SYSTEM_MODE
     ];
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.IsAnonymousModeEnabled__c = false;
-    insert currentUserSettings;
+    insert as system currentUserSettings;
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
     System.runAs(automatedProcessUser) {
@@ -633,7 +636,7 @@ private class LogEntryEventHandler_Tests {
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.IsAnonymousModeEnabled__c = true;
-    insert currentUserSettings;
+    insert as system currentUserSettings;
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
     System.runAs(automatedProcessUser) {
@@ -653,9 +656,9 @@ private class LogEntryEventHandler_Tests {
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
     LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
     Schema.User loggerScenarioOwner = LoggerMockDataCreator.createUser();
-    insert loggerScenarioOwner;
+    insert as system loggerScenarioOwner;
     LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
-    insert loggerScenario;
+    insert as system loggerScenario;
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();
     logEntryEvent.TransactionScenario__c = loggerScenario.UniqueId__c;
     LoggerScenarioRule.setMock(
@@ -931,7 +934,7 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
     validateLogFields(logEntryEvent, log);
     validateLogEntryFields(logEntryEvent, logEntry);
-    List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+    List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(tags.size(), logEntryTags.size());
     Set<String> tagsSet = new Set<String>(tags);
     for (LogEntryTag__c logEntryTag : logEntryTags) {
@@ -948,7 +951,7 @@ private class LogEntryEventHandler_Tests {
     System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
     String testTagName = 'Some tag!';
     LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
-    insert tag;
+    insert as system tag;
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();
     System.Assert.isNotNull(logEntryEvent.EventUuid);
     logEntryEvent.Tags__c = testTagName;
@@ -970,7 +973,7 @@ private class LogEntryEventHandler_Tests {
     validateLogEntryFields(logEntryEvent, logEntry);
     Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :testTagName];
     System.Assert.areEqual(1, countOfTagsWithTagName);
-    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(tag.Id, logEntryTag.Tag__c);
     System.Assert.areEqual(tag.Name, logEntryTag.Tag__r.Name);
   }
@@ -1010,7 +1013,7 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
     validateLogFields(logEntryEvent, log);
     validateLogEntryFields(logEntryEvent, logEntry);
-    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
+    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName WITH SYSTEM_MODE];
     System.Assert.areEqual(0, countOfTagsWithTagName);
   }
 
@@ -1049,9 +1052,9 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
     validateLogFields(logEntryEvent, log);
     validateLogEntryFields(logEntryEvent, logEntry);
-    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
+    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName WITH SYSTEM_MODE];
     System.Assert.areEqual(1, countOfTagsWithTagName);
-    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
   }
 
@@ -1089,9 +1092,9 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
     validateLogFields(logEntryEvent, log);
     validateLogEntryFields(logEntryEvent, logEntry);
-    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
+    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName WITH SYSTEM_MODE];
     System.Assert.areEqual(1, countOfTagsWithTagName);
-    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
   }
 
@@ -1131,9 +1134,9 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
     validateLogFields(logEntryEvent, log);
     validateLogEntryFields(logEntryEvent, logEntry);
-    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
+    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName WITH SYSTEM_MODE];
     System.Assert.areEqual(1, countOfTagsWithTagName);
-    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
   }
 
@@ -1172,9 +1175,9 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
     validateLogFields(logEntryEvent, log);
     validateLogEntryFields(logEntryEvent, logEntry);
-    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
+    Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName WITH SYSTEM_MODE];
     System.Assert.areEqual(1, countOfTagsWithTagName);
-    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+    LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
   }
 
@@ -1233,8 +1236,8 @@ private class LogEntryEventHandler_Tests {
       OrganizationReleaseVersion__c = 'LKJH',
       TransactionId__c = 'ABC-XYZ'
     );
-    insert recentLog;
-    insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
+    insert as system recentLog;
+    insert as system new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
     LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
     LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
     LogEntryEvent__e logEntryEvent = createLogEntryEvent();
@@ -1344,8 +1347,8 @@ private class LogEntryEventHandler_Tests {
 
   @IsTest
   static void it_should_save_data_when_saving_with_synchronous_dml() {
-    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c], 'Test has started under the wrong conditions');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c], 'Test has started under the wrong conditions');
+    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE], 'Test has started under the wrong conditions');
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntry__c WITH SYSTEM_MODE], 'Test has started under the wrong conditions');
     System.Assert.areEqual(0, [SELECT COUNT() FROM LogEntryTag__c], 'Test has started under the wrong conditions');
     System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerTag__c], 'Test has started under the wrong conditions');
     LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -1360,10 +1363,10 @@ private class LogEntryEventHandler_Tests {
     System.Assert.areEqual(0, Logger.getBufferSize());
     System.Test.stopTest();
 
-    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c], '1 matching Log__c record should have been generated');
+    System.Assert.areEqual(1, [SELECT COUNT() FROM Log__c WITH SYSTEM_MODE], '1 matching Log__c record should have been generated');
     System.Assert.areEqual(
       1,
-      [SELECT COUNT() FROM LogEntry__c WHERE LoggingLevel__c = :builder.getLogEntryEvent().LoggingLevel__c],
+      [SELECT COUNT() FROM LogEntry__c WHERE LoggingLevel__c = :builder.getLogEntryEvent().LoggingLevel__c WITH SYSTEM_MODE],
       '1 matching LogEntry__c record should have been generated'
     );
     System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerTag__c WHERE Name = :exampleTag], '1 matching LoggerTag__c record should have been generated');
@@ -1592,13 +1595,19 @@ private class LogEntryEventHandler_Tests {
           FROM LogEntries__r
         )
       FROM Log__c
+      WITH SYSTEM_MODE
       ORDER BY StartTime__c DESC
       LIMIT 1
     ];
   }
 
   private static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-    Schema.Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization LIMIT 1];
+    Schema.Organization org = [
+      SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate
+      FROM Organization
+      WITH SYSTEM_MODE
+      LIMIT 1
+    ];
     String orgEnvironmentType;
     if (org.IsSandbox && org.TrialExpirationDate != null) {
       orgEnvironmentType = 'Scratch Org';
@@ -1608,7 +1617,7 @@ private class LogEntryEventHandler_Tests {
       orgEnvironmentType = 'Production';
     }
 
-    Id logOwnerId = logEntryEvent.LoggedById__c == null ? System.UserInfo.getUserId() : logEntryEvent.LoggedById__c;
+    Id logOwnerId = logEntryEvent.LoggedById__c ?? System.UserInfo.getUserId();
 
     System.Assert.areEqual(logEntryEvent.ApiVersion__c, log.ApiVersion__c, 'log.ApiVersion__c was not properly set');
     System.Assert.areEqual(logEntryEvent.AsyncContextChildJobId__c, log.AsyncContextChildJobId__c, 'log.AsyncContextChildJobId__c was not properly set');

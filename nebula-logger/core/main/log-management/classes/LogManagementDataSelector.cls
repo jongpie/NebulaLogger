@@ -34,7 +34,7 @@ public without sharing virtual class LogManagementDataSelector {
    */
   public virtual List<SObject> getAll(Schema.SObjectType sobjectType, Set<String> fieldNames) {
     String query = String.format('SELECT {0} FROM {1}', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   /**
@@ -47,7 +47,7 @@ public without sharing virtual class LogManagementDataSelector {
    */
   public virtual List<SObject> getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds) {
     String query = String.format('SELECT {0} FROM {1} WHERE Id IN :recordIds', new List<Object>{ String.join(fieldNames, ', '), sobjectType });
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   /**
@@ -64,6 +64,7 @@ public without sharing virtual class LogManagementDataSelector {
       SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
       FROM ApexClass
       WHERE Name IN :apexClassNames
+      WITH SYSTEM_MODE
       ORDER BY NamespacePrefix NULLS LAST
     ];
   }
@@ -82,6 +83,7 @@ public without sharing virtual class LogManagementDataSelector {
       SELECT ApiVersion, Body, CreatedById, CreatedBy.Username, CreatedDate, Id, LastModifiedById, LastModifiedBy.Username, LastModifiedDate, Name
       FROM ApexTrigger
       WHERE Name IN :apexTriggerNames
+      WITH SYSTEM_MODE
       ORDER BY NamespacePrefix NULLS LAST
     ];
   }
@@ -100,6 +102,7 @@ public without sharing virtual class LogManagementDataSelector {
       SELECT Email, UserId
       FROM ApexEmailNotification
       WHERE Email != NULL OR User.IsActive = TRUE
+      WITH SYSTEM_MODE
     ];
     LoggerCache.getOrganizationCache().put(cacheKey, apexEmailNotifications);
     return apexEmailNotifications;
@@ -129,6 +132,7 @@ public without sharing virtual class LogManagementDataSelector {
       SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c, OrganizationReleaseNumber__c, OrganizationReleaseVersion__c
       FROM Log__c
       WHERE CreatedDate >= :fourHoursAgo AND CreatedDate = TODAY AND ApiReleaseNumber__c != NULL
+      WITH SYSTEM_MODE
       ORDER BY CreatedDate DESC
       LIMIT 1
     ];
@@ -156,6 +160,7 @@ public without sharing virtual class LogManagementDataSelector {
         AND ApexClass.Name = :apexClassLocalName
         AND MethodName = :apexMethodName
         AND Status IN :jobStatuses
+      WITH SYSTEM_MODE
     ];
   }
 
@@ -165,7 +170,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return          The `Integer` count of matching `LogEntry__c` records
    */
   public virtual Integer getCountOfRelatedRecordLogEntries(Id recordId) {
-    return [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
+    return [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId WITH SYSTEM_MODE];
   }
 
   /**
@@ -174,7 +179,12 @@ public without sharing virtual class LogManagementDataSelector {
    * @return           The matching `List<Schema.UserRecordAccess>` records
    */
   public virtual List<Schema.UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
-    return [SELECT RecordId FROM UserRecordAccess WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE];
+    return [
+      SELECT RecordId
+      FROM UserRecordAccess
+      WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE
+      WITH SYSTEM_MODE
+    ];
   }
 
   /**
@@ -205,6 +215,7 @@ public without sharing virtual class LogManagementDataSelector {
         VersionNumber
       FROM FlowDefinitionView
       WHERE ApiName IN :flowApiNames AND IsActive = TRUE
+      WITH SYSTEM_MODE
     ];
   }
 
@@ -214,7 +225,12 @@ public without sharing virtual class LogManagementDataSelector {
    * @return            `List<Schema.FlowDefinitionView>` containing any matching records
    */
   public virtual List<Schema.FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
-    return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId IN :durableIds];
+    return [
+      SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber
+      FROM FlowVersionView
+      WHERE DurableId IN :durableIds
+      WITH SYSTEM_MODE
+    ];
   }
 
   /**
@@ -230,7 +246,7 @@ public without sharing virtual class LogManagementDataSelector {
     List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), Schema.Log__c.SObjectType.toString() };
 
     String query = String.format(queryTemplate, textReplacements);
-    return (Log__c) System.Database.query(String.escapeSingleQuotes(query));
+    return (Log__c) System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   /**
@@ -245,7 +261,7 @@ public without sharing virtual class LogManagementDataSelector {
     List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ','), Schema.LogEntry__c.SObjectType.toString() };
 
     String query = String.format(queryTemplate, textReplacements);
-    return (LogEntry__c) System.Database.query(String.escapeSingleQuotes(query));
+    return (LogEntry__c) System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   /**
@@ -265,7 +281,7 @@ public without sharing virtual class LogManagementDataSelector {
     };
 
     String query = String.format(queryTemplate, textReplacements);
-    return (List<LogEntry__c>) System.Database.query(String.escapeSingleQuotes(query));
+    return (List<LogEntry__c>) System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE);
   }
 
   /**
@@ -274,7 +290,12 @@ public without sharing virtual class LogManagementDataSelector {
    * @return        The list of matching `Log__c` records
    */
   public virtual List<Log__c> getLogsById(List<Id> logIds) {
-    return [SELECT Id, Name, LoggedBy__c, LoggedBy__r.Name, StartTime__c, TotalLogEntries__c, TransactionId__c FROM Log__c WHERE Id IN :logIds];
+    return [
+      SELECT Id, Name, LoggedBy__c, LoggedBy__r.Name, StartTime__c, TotalLogEntries__c, TransactionId__c
+      FROM Log__c
+      WHERE Id IN :logIds
+      WITH SYSTEM_MODE
+    ];
   }
 
   /**
@@ -297,7 +318,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return                The list of matching `Log__c` records
    */
   public virtual List<Log__c> getLogsByTransactionId(List<String> transactionIds) {
-    return [SELECT Id, TransactionId__c FROM Log__c WHERE TransactionId__c IN :transactionIds];
+    return [SELECT Id, TransactionId__c FROM Log__c WHERE TransactionId__c IN :transactionIds WITH SYSTEM_MODE];
   }
 
   /**
@@ -306,7 +327,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return                The list of matching `LoggerScenario__c` records
    */
   public virtual List<LoggerScenario__c> getLoggerScenariosById(List<Id> logScenarioIds) {
-    return [SELECT Id, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :logScenarioIds];
+    return [SELECT Id, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :logScenarioIds WITH SYSTEM_MODE];
   }
 
   /**
@@ -325,7 +346,9 @@ public without sharing virtual class LogManagementDataSelector {
     String query =
       'SELECT CreatedBy.Username, CreatedById, CreatedDate, Id, IsIntegrationProcedure, LastModifiedBy.Username, LastModifiedById, LastModifiedDate, OmniProcessType, UniqueName' +
       ' FROM OmniProcess WHERE Id IN :omniProcessIds';
-    List<SObject> omniProcessRecords = IS_OMNISTUDIO_ENABLED ? System.Database.query(String.escapeSingleQuotes(query)) : new List<SObject>();
+    List<SObject> omniProcessRecords = IS_OMNISTUDIO_ENABLED
+      ? System.Database.query(String.escapeSingleQuotes(query), System.AccessLevel.SYSTEM_MODE)
+      : new List<SObject>();
 
     List<LoggerSObjectProxy.OmniProcess> omniProcessProxies = (List<LoggerSObjectProxy.OmniProcess>) System.JSON.deserialize(
       System.JSON.serialize(omniProcessRecords),
@@ -344,7 +367,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return            The list of matching `Schema.Profile` records
    */
   public virtual List<Schema.Profile> getProfilesById(List<Id> profileIds) {
-    return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds];
+    return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds WITH SYSTEM_MODE];
   }
 
   /**
@@ -353,7 +376,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return            The list of matching `Schema.Profile` records
    */
   public virtual List<Schema.Profile> getProfilesByNameSearch(String searchTerm) {
-    return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
+    return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm WITH SYSTEM_MODE];
   }
 
   /**
@@ -362,7 +385,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return                     The list of matching `Schema.Group` records
    */
   public virtual List<Schema.Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
-    return [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :queueDeveloperNames];
+    return [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :queueDeveloperNames WITH SYSTEM_MODE];
   }
 
   /**
@@ -371,7 +394,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return          The list of matching `LoggerTag__c` records
    */
   public virtual List<LoggerTag__c> getTagsByName(Set<String> tagNames) {
-    return [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :tagNames];
+    return [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :tagNames WITH SYSTEM_MODE];
   }
 
   /**
@@ -380,7 +403,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return            The list of matching `Schema.Topic` records
    */
   public virtual List<Schema.Topic> getTopicsByName(Set<String> topicNames) {
-    return [SELECT Id, Name FROM Topic WHERE Name IN :topicNames];
+    return [SELECT Id, Name FROM Topic WHERE Name IN :topicNames WITH SYSTEM_MODE];
   }
 
   /**
@@ -389,7 +412,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return         The list of matching `Schema.User` records
    */
   public virtual List<Schema.User> getUsersById(List<Id> userIds) {
-    return [SELECT Id, Username FROM User WHERE Id IN :userIds];
+    return [SELECT Id, Username FROM User WHERE Id IN :userIds WITH SYSTEM_MODE];
   }
 
   /**
@@ -402,7 +425,14 @@ public without sharing virtual class LogManagementDataSelector {
       return new List<Schema.User>();
     }
 
-    return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username LIMIT 20];
+    return [
+      SELECT Id, Name, Username, SmallPhotoUrl
+      FROM User
+      WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
+      WITH SYSTEM_MODE
+      ORDER BY Username
+      LIMIT 20
+    ];
   }
 
   /**
@@ -411,7 +441,7 @@ public without sharing virtual class LogManagementDataSelector {
    * @return           Tje list of matching `Schema.User` records
    */
   public virtual List<Schema.User> getUsersByUsername(List<String> usernames) {
-    return [SELECT Id, Username FROM User WHERE Username IN :userNames];
+    return [SELECT Id, Username FROM User WHERE Username IN :userNames WITH SYSTEM_MODE];
   }
 
   @TestVisible

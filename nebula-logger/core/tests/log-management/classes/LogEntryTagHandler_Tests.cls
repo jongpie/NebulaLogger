@@ -16,7 +16,7 @@ private class LogEntryTagHandler_Tests {
     LoggerSObjectHandler.shouldExecute(false);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    insert log;
+    insert as system log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < 3; i++) {
@@ -24,9 +24,9 @@ private class LogEntryTagHandler_Tests {
       LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
       logEntries.add(logEntry);
     }
-    insert logEntries;
+    insert as system logEntries;
 
-    insert LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
+    insert as system LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
   }
 
   @IsTest
@@ -77,7 +77,7 @@ private class LogEntryTagHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryTag__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
+    logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
   }
 
@@ -87,18 +87,18 @@ private class LogEntryTagHandler_Tests {
     LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
     LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
     LoggerDataStore.getDatabase().insertRecord(logEntryTag);
-    logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
+    logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
     logEntryTag.UniqueId__c = 'something else';
 
-    update logEntryTag;
+    update as system logEntryTag;
 
     System.Assert.areEqual(
       4,
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryTag__c.SObjectType).size(),
       'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
     );
-    logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
+    logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
   }
 
@@ -112,7 +112,7 @@ private class LogEntryTagHandler_Tests {
     System.Exception thrownException;
 
     try {
-      insert duplicateLogEntryTag;
+      insert as system duplicateLogEntryTag;
       System.Assert.fail('System.Exception expected on previous line');
     } catch (System.Exception ex) {
       thrownException = ex;

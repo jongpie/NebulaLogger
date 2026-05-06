@@ -21,7 +21,7 @@ private class LogMassDeleteExtension_Tests {
       LoggerMockDataCreator.createDataBuilder(log).populateRequiredFields().getRecord();
       logs.add(log);
     }
-    insert logs;
+    insert as system logs;
   }
 
   @IsTest
@@ -62,6 +62,7 @@ private class LogMassDeleteExtension_Tests {
       SELECT RecordId
       FROM UserRecordAccess
       WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :logIds AND HasDeleteAccess = TRUE
+      WITH SYSTEM_MODE
     ]) {
       expectedDeletableLogs.add(new Log__c(Id = recordAccess.RecordId));
     }
@@ -97,11 +98,11 @@ private class LogMassDeleteExtension_Tests {
     LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
     extension.deleteSelectedLogs();
 
-    logsToDelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToDelete ALL ROWS];
+    logsToDelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToDelete WITH SYSTEM_MODE ALL ROWS];
     for (Log__c log : logsToDelete) {
       System.Assert.isTrue(log.IsDeleted, System.JSON.serializePretty(log));
     }
-    logsToKeep = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToKeep ALL ROWS];
+    logsToKeep = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToKeep WITH SYSTEM_MODE ALL ROWS];
     for (Log__c log : logsToKeep) {
       System.Assert.isFalse(log.IsDeleted, System.JSON.serializePretty(log));
     }

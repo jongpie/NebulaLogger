@@ -53,7 +53,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isNull(log.Comments__c);
     System.Assert.isFalse(log.HasComments__c);
   }
@@ -71,7 +71,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(exampleComment, log.Comments__c);
     System.Assert.isTrue(log.HasComments__c);
   }
@@ -82,7 +82,7 @@ private class LogHandler_Tests {
     String exampleComment = 'some comment';
     Log__c log = new Log__c(Comments__c = exampleComment, TransactionId__c = '1234');
     LoggerDataStore.getDatabase().insertRecord(log);
-    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(exampleComment, log.Comments__c);
     System.Assert.isTrue(log.HasComments__c);
     log.Comments__c = null;
@@ -94,7 +94,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed four times - once for BEFORE_INSERT, AFTER_INSERT, BEFORE_UPDATE, and AFTER_UPDATE'
     );
-    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isNull(log.Comments__c);
     System.Assert.isFalse(log.HasComments__c);
   }
@@ -104,7 +104,7 @@ private class LogHandler_Tests {
     setupConfigurations();
     Log__c log = new Log__c(Comments__c = null, TransactionId__c = '1234');
     LoggerDataStore.getDatabase().insertRecord(log);
-    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isNull(log.Comments__c);
     System.Assert.isFalse(log.HasComments__c);
     String exampleComment = 'some comment';
@@ -117,7 +117,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed four times - once for BEFORE_INSERT, AFTER_INSERT, BEFORE_UPDATE, and AFTER_UPDATE'
     );
-    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Comments__c, HasComments__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(exampleComment, log.Comments__c);
     System.Assert.isTrue(log.HasComments__c);
   }
@@ -141,7 +141,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isNull(log.ClosedBy__c);
     System.Assert.isNull(log.ClosedDate__c);
     System.Assert.isFalse(log.IsClosed__c);
@@ -167,7 +167,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(System.UserInfo.getUserId(), log.ClosedBy__c);
     System.Assert.areEqual(System.today(), log.ClosedDate__c.date());
     System.Assert.isTrue(log.IsClosed__c);
@@ -186,7 +186,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isTrue(log.HasOrganizationLimits__c);
     Map<String, LogHandler.SerializableOrganizationLimit> limitNameToExpectedOrganizationLimits = new Map<String, LogHandler.SerializableOrganizationLimit>();
     List<String> sortedSystemOrgLimitNames = new List<String>(System.OrgLimits.getMap().keySet());
@@ -226,7 +226,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, HasOrganizationLimits__c, OrganizationLimits__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isFalse(log.HasOrganizationLimits__c);
     System.Assert.isNull(log.OrganizationLimits__c, 'Expected null, received value: ' + log.OrganizationLimits__c);
   }
@@ -236,7 +236,7 @@ private class LogHandler_Tests {
     setupConfigurations();
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     Schema.User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
-    insert expectedLogOwnerUser;
+    insert as system expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
     insert as system currentUserSettings;
@@ -249,7 +249,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogOwnerUser.Id, log.OwnerId, System.JSON.serializePretty(log));
   }
 
@@ -258,7 +258,7 @@ private class LogHandler_Tests {
     setupConfigurations();
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     Schema.User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
-    insert expectedLogOwnerUser;
+    insert as system expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;
     insert as system currentUserSettings;
@@ -271,7 +271,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogOwnerUser.Id, log.OwnerId, System.JSON.serializePretty(log));
   }
 
@@ -292,7 +292,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogOwnerQueue.Id, log.OwnerId, System.JSON.serializePretty(log));
   }
 
@@ -313,7 +313,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogOwnerQueue.Id, log.OwnerId, System.JSON.serializePretty(log));
   }
 
@@ -333,7 +333,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(System.UserInfo.getUserId(), log.OwnerId, System.JSON.serializePretty(log));
   }
 
@@ -342,9 +342,9 @@ private class LogHandler_Tests {
     String parentLogTransactionId = 'ABC-1234';
     Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
 
-    insert log;
+    insert as system log;
 
-    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
     System.Assert.isNull(log.ParentLog__c, System.JSON.serializePretty(log));
   }
@@ -353,12 +353,12 @@ private class LogHandler_Tests {
   static void it_should_set_parent_log_when_it_exists_in_the_database() {
     String parentLogTransactionId = 'ABC-1234';
     Log__c parentLog = new Log__c(TransactionId__c = parentLogTransactionId);
-    insert parentLog;
+    insert as system parentLog;
     Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
 
-    insert log;
+    insert as system log;
 
-    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
     System.Assert.areEqual(parentLog.Id, log.ParentLog__c, System.JSON.serializePretty(log));
   }
@@ -367,12 +367,12 @@ private class LogHandler_Tests {
   static void it_should_set_parent_log_when_it_is_created_after_child_log() {
     String parentLogTransactionId = 'ABC-1234';
     Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
-    insert log;
+    insert as system log;
     Log__c parentLog = new Log__c(TransactionId__c = parentLogTransactionId);
 
-    insert parentLog;
+    insert as system parentLog;
 
-    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
     System.Assert.areEqual(parentLog.Id, log.ParentLog__c, System.JSON.serializePretty(log));
   }
@@ -383,9 +383,9 @@ private class LogHandler_Tests {
     Log__c parentLog = new Log__c(TransactionId__c = parentLogTransactionId);
     Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
 
-    insert new List<Log__c>{ log, parentLog };
+    insert as system new List<Log__c>{ log, parentLog };
 
-    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(parentLogTransactionId, log.ParentLogTransactionId__c, System.JSON.serializePretty(log));
     System.Assert.areEqual(parentLog.Id, log.ParentLog__c, System.JSON.serializePretty(log));
   }
@@ -416,7 +416,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areNotEqual(defaultDaysToRetainLog, specifiedDaysToRetainLog);
     System.Assert.areNotEqual(defaultLogPurgeAction, specifiedLogPurgeAction);
     System.Assert.areEqual(specifiedLogPurgeAction, log.LogPurgeAction__c);
@@ -441,7 +441,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedLogPurgeAction, log.LogPurgeAction__c);
     System.Assert.areEqual(expectedRetentionDate, log.LogRetentionDate__c);
   }
@@ -476,7 +476,7 @@ private class LogHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    log = [SELECT Id, Scenario__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Scenario__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(expectedRetentionDate, log.LogRetentionDate__c);
   }
 
@@ -502,7 +502,7 @@ private class LogHandler_Tests {
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
     String defaultLogPurgeActionPicklistValue = getDefaultPicklistValue(Schema.Log__c.LogPurgeAction__c);
-    log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(defaultLogPurgeActionPicklistValue, log.LogPurgeAction__c);
     System.Assert.isNull(log.LogRetentionDate__c);
   }
@@ -513,10 +513,10 @@ private class LogHandler_Tests {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.Priority__c = LOW_PRIORITY;
     LoggerDataStore.getDatabase().insertRecord(log);
-    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(LOW_PRIORITY, log.Priority__c);
 
-    insert LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name()))
+    insert as system LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name()))
       .populateRequiredFields()
       .getRecord();
 
@@ -524,9 +524,9 @@ private class LogHandler_Tests {
       4,
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' +
-      ' and two more times for BEFORE_UPDATE/AFTER_UPDATE (triggered indirectly by the insert of a related LogEntry__c record)'
+      ' and two more times for BEFORE_UPDATE/AFTER_UPDATE (triggered indirectly by the insert as system of a related LogEntry__c record)'
     );
-    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(HIGH_PRIORITY, log.Priority__c);
   }
 
@@ -535,18 +535,18 @@ private class LogHandler_Tests {
     setupConfigurations();
     Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
     LoggerDataStore.getDatabase().insertRecord(log);
-    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(LOW_PRIORITY, log.Priority__c);
 
-    insert new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'WARN');
+    insert as system new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'WARN');
 
     System.Assert.areEqual(
       4,
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
       'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' +
-      ' and two more times for BEFORE_UPDATE/AFTER_UPDATE (triggered indirectly by the insert of a related LogEntry__c record)'
+      ' and two more times for BEFORE_UPDATE/AFTER_UPDATE (triggered indirectly by the insert as system of a related LogEntry__c record)'
     );
-    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(MEDIUM_PRIORITY, log.Priority__c);
   }
 

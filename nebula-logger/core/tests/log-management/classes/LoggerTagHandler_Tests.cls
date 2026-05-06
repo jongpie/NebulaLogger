@@ -38,7 +38,7 @@ private class LoggerTagHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id];
+    tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(tag.Name, tag.UniqueId__c);
   }
 
@@ -53,7 +53,7 @@ private class LoggerTagHandler_Tests {
       LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
       'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
     );
-    tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id];
+    tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(tag.Name, tag.UniqueId__c);
   }
 
@@ -66,7 +66,7 @@ private class LoggerTagHandler_Tests {
     System.Exception thrownException;
 
     try {
-      insert duplicateTag;
+      insert as system duplicateTag;
       System.Assert.fail('System.Exception expected on previous line');
     } catch (System.Exception ex) {
       thrownException = ex;

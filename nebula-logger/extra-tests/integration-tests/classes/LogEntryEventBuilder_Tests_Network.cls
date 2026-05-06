@@ -62,7 +62,7 @@ private class LogEntryEventBuilder_Tests_Network {
   }
 
   static SObject getExperienceCloudNetwork() {
-    return System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME');
+    return System.Database.query('SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = :EXPERIENCE_CLOUD_NETWORK_NAME', System.AccessLevel.SYSTEM_MODE);
   }
 
   static LoggerSettings__c getUserSettings() {
@@ -73,20 +73,20 @@ private class LogEntryEventBuilder_Tests_Network {
 
   static Schema.User setupExperienceSiteUser() {
     Schema.UserRole userRole = new Schema.UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
-    insert userRole;
+    insert as system userRole;
     Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
-    update currentUser;
+    update as system currentUser;
     Schema.User experienceSiteUser;
     System.runAs(currentUser) {
       Schema.Account account = new Schema.Account(Name = 'Test Account', OwnerId = currentUser.Id);
-      insert account;
+      insert as system account;
       Contact contact = new Contact(AccountId = account.Id, LastName = 'testcontact');
-      insert contact;
+      insert as system contact;
       Id experienceSiteUserProfileId = [SELECT Id FROM Profile WHERE Name = :EXPERIENCE_CLOUD_USER_PROFILE_NAME LIMIT 1].Id;
       experienceSiteUser = LoggerMockDataCreator.createUser(experienceSiteUserProfileId);
       experienceSiteUser.ContactId = contact.Id;
-      insert experienceSiteUser;
+      insert as system experienceSiteUser;
     }
-    return [SELECT Id, AccountId, ContactId FROM User WHERE Id = :experienceSiteUser.Id];
+    return [SELECT Id, AccountId, ContactId FROM User WHERE Id = :experienceSiteUser.Id WITH SYSTEM_MODE];
   }
 }

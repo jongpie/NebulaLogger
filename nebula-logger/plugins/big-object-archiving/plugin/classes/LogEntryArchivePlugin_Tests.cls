@@ -17,14 +17,14 @@ private class LogEntryArchivePlugin_Tests {
       TransactionId__c = '1234'
     );
     Log__c logToDelete = new Log__c(LogPurgeAction__c = 'Delete', LogRetentionDate__c = System.today().addDays(-1), TransactionId__c = '5678');
-    insert new List<Log__c>{ logToArchive, logToDelete };
+    insert as system new List<Log__c>{ logToArchive, logToDelete };
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < 10; i++) {
       logEntries.add(new LogEntry__c(Log__c = logToArchive.Id, Message__c = 'Some message to archive for ' + i, TransactionEntryNumber__c = i));
       logEntries.add(new LogEntry__c(Log__c = logToDelete.Id, Message__c = 'Some message to skip for ' + i, TransactionEntryNumber__c = i));
     }
-    insert logEntries;
+    insert as system logEntries;
   }
 
   @IsTest
@@ -33,14 +33,19 @@ private class LogEntryArchivePlugin_Tests {
     createParameterConfigurations();
     createPluginConfiguration();
     LogBatchPurger batchPurger = new LogBatchPurger();
-    Log__c log = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
+    Log__c log = [
+      SELECT Id, (SELECT Id FROM LogEntries__r)
+      FROM Log__c
+      WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION
+      WITH SYSTEM_MODE
+    ];
     System.Test.startTest();
 
     System.Database.executeBatch(batchPurger);
 
     System.Test.stopTest();
     System.Assert.areEqual(log.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
-    List<Log__c> existingLogs = [SELECT Id FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
+    List<Log__c> existingLogs = [SELECT Id FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION WITH SYSTEM_MODE];
     System.Assert.areEqual(0, existingLogs.size());
   }
 
@@ -54,13 +59,14 @@ private class LogEntryArchivePlugin_Tests {
       SELECT Id, (SELECT Id FROM LogEntries__r)
       FROM Log__c
       WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION
+      WITH SYSTEM_MODE
     ];
     System.Assert.areNotEqual(
       true,
       logToArchive.LogEntries__r.isEmpty(),
       'Test has started under the wrong condiations - log record should have some related log entries'
     );
-    Log__c logToSkip = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = 'Delete'];
+    Log__c logToSkip = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = 'Delete' WITH SYSTEM_MODE];
     System.Assert.areNotEqual(
       true,
       logToSkip.LogEntries__r.isEmpty(),
@@ -76,7 +82,7 @@ private class LogEntryArchivePlugin_Tests {
       LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(),
       'Only the log entries for logToArchive should have been archived'
     );
-    List<Log__c> existingLogs = [SELECT Id FROM Log__c];
+    List<Log__c> existingLogs = [SELECT Id FROM Log__c WITH SYSTEM_MODE];
     System.Assert.areEqual(0, existingLogs.size(), 'All logs should havve been deleted');
   }
 
@@ -90,14 +96,15 @@ private class LogEntryArchivePlugin_Tests {
       SELECT Id, (SELECT Id FROM LogEntries__r)
       FROM Log__c
       WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION
+      WITH SYSTEM_MODE
     ];
     LoggerTag__c tag = new LoggerTag__c(Name = 'Some tag');
-    insert tag;
+    insert as system tag;
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
     for (LogEntry__c logEntry : logToArchive.LogEntries__r) {
       logEntryTags.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id));
     }
-    insert logEntryTags;
+    insert as system logEntryTags;
     System.Test.startTest();
 
     System.Database.executeBatch(batchPurger);
@@ -143,7 +150,7 @@ private class LogEntryArchivePlugin_Tests {
     createPluginConfiguration();
     Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
     Logger.getUserSettings().DefaultPlatformEventStorageLocation__c = LogEntryArchivePlugin.BIG_OBJECT_STORAGE_LOCATION;
-    upsert Logger.getUserSettings();
+    upsert as system Logger.getUserSettings();
     System.Test.startTest();
     String transactionId = Logger.getTransactionId();
     Logger.info('Testing big object creation');
@@ -162,7 +169,11 @@ private class LogEntryArchivePlugin_Tests {
     System.Assert.isFalse(LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.isEmpty(), 'Should have been put into big object buffer');
     System.Assert.isNotNull(transactionId, 'Should have a value for transaction ID');
     System.Assert.areEqual(transactionId, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.get(0).TransactionId__c, 'Transaction ID should match');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WHERE TransactionId__c = :transactionId], 'No custom object data should have been created');
+    System.Assert.areEqual(
+      0,
+      [SELECT COUNT() FROM Log__c WHERE TransactionId__c = :transactionId WITH SYSTEM_MODE],
+      'No custom object data should have been created'
+    );
   }
 
   @IsTest

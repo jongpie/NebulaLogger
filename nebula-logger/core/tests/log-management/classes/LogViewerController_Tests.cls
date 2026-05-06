@@ -15,18 +15,18 @@ private class LogViewerController_Tests {
   static void setupData() {
     LoggerSObjectHandler.shouldExecute(false);
     Log__c log = new Log__c(TransactionId__c = '1234');
-    insert log;
+    insert as system log;
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < 5; i++) {
       logEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'some message, number ' + i));
     }
-    insert logEntries;
+    insert as system logEntries;
   }
 
   @IsTest
   static void it_should_return_log_when_id_provided() {
-    Log__c log = [SELECT Id, TransactionId__c FROM Log__c];
-    Map<Id, LogEntry__c> logEntryIdToLogEntry = new Map<Id, LogEntry__c>([SELECT Id FROM LogEntry__c]);
+    Log__c log = [SELECT Id, TransactionId__c FROM Log__c WITH SYSTEM_MODE];
+    Map<Id, LogEntry__c> logEntryIdToLogEntry = new Map<Id, LogEntry__c>([SELECT Id FROM LogEntry__c WITH SYSTEM_MODE]);
 
     LogViewerController.LogDTO returnedLogDto = LogViewerController.getLog(log.Id);
 

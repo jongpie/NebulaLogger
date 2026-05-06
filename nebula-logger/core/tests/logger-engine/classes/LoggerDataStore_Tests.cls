@@ -27,7 +27,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(2, System.Limits.getDmlStatements());
     System.Assert.areEqual(2, System.Limits.getDmlRows());
     System.Assert.isTrue(result.isSuccess());
-    Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
+    Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE ALL ROWS];
     System.Assert.isTrue(persistedLog.IsDeleted);
   }
 
@@ -96,7 +96,7 @@ private class LoggerDataStore_Tests {
     // Frustratingly, there's not a way to ensure that Database.emptyRecycleBin() was called and
     // the supposedly-hard-deleted records are still returned in SOQL, so at least verify that the
     // record has IsDeleted = true for now. This can probably be tested better with a @TestVisible property later.
-    Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
+    Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE ALL ROWS];
     System.Assert.isTrue(persistedLog.IsDeleted);
   }
 
@@ -140,7 +140,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(1, System.Limits.getDmlRows());
     System.Assert.isNotNull(log.Id);
     System.Assert.isTrue(result.isSuccess());
-    Log__c persistedLog = [SELECT Id, TransactionId__c FROM Log__c WHERE Id = :log.Id];
+    Log__c persistedLog = [SELECT Id, TransactionId__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(log.TransactionId__c, persistedLog.TransactionId__c);
   }
 
@@ -160,7 +160,7 @@ private class LoggerDataStore_Tests {
     for (Database.SaveResult result : results) {
       System.Assert.isTrue(result.isSuccess());
     }
-    List<Log__c> persistedLogs = [SELECT Id, TransactionId__c FROM Log__c WHERE Id IN :logsToInsert];
+    List<Log__c> persistedLogs = [SELECT Id, TransactionId__c FROM Log__c WHERE Id IN :logsToInsert WITH SYSTEM_MODE];
     System.Assert.areEqual(logsToInsert.size(), persistedLogs.size());
   }
 
@@ -181,7 +181,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(logsToInsert.size(), results.size());
     System.Assert.isTrue(results.get(0).isSuccess());
     System.Assert.isFalse(results.get(1).isSuccess());
-    List<Log__c> persistedLogs = [SELECT Id, TransactionId__c FROM Log__c WHERE Id IN :logsToInsert];
+    List<Log__c> persistedLogs = [SELECT Id, TransactionId__c FROM Log__c WHERE Id IN :logsToInsert WITH SYSTEM_MODE];
     System.Assert.areEqual(2, persistedLogs.size());
   }
 
@@ -204,7 +204,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(logsToInsert.size(), results.size());
     System.Assert.isTrue(results.get(0).isSuccess());
     System.Assert.isFalse(results.get(1).isSuccess());
-    List<Log__c> persistedLogs = [SELECT Id, TransactionId__c FROM Log__c WHERE Id IN :logsToInsert];
+    List<Log__c> persistedLogs = [SELECT Id, TransactionId__c FROM Log__c WHERE Id IN :logsToInsert WITH SYSTEM_MODE];
     System.Assert.areEqual(2, persistedLogs.size());
   }
 
@@ -213,7 +213,7 @@ private class LoggerDataStore_Tests {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     insert as system log;
     delete log;
-    log = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
+    log = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE ALL ROWS];
     System.Assert.isTrue(log.IsDeleted);
     System.Assert.areEqual(2, System.Limits.getDmlStatements());
     System.Assert.areEqual(2, System.Limits.getDmlRows());
@@ -223,7 +223,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(3, System.Limits.getDmlStatements());
     System.Assert.areEqual(3, System.Limits.getDmlRows());
     System.Assert.isTrue(result.isSuccess());
-    Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
+    Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE ALL ROWS];
     System.Assert.isFalse(persistedLog.IsDeleted);
   }
 
@@ -291,7 +291,7 @@ private class LoggerDataStore_Tests {
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
     logsToUpdate.add((Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(Scenario__c = originalScenario)).populateRequiredFields().getRecord());
     insert as system logsToUpdate;
-    logsToUpdate = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate];
+    logsToUpdate = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate WITH SYSTEM_MODE];
     for (Log__c logToUpdate : logsToUpdate) {
       System.Assert.areEqual(originalScenario, logToUpdate.Scenario__c);
       logToUpdate.Scenario__c = updatedScenario;
@@ -307,7 +307,7 @@ private class LoggerDataStore_Tests {
     for (Database.SaveResult result : results) {
       System.Assert.isTrue(result.isSuccess());
     }
-    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate ALL ROWS];
+    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate WITH SYSTEM_MODE ALL ROWS];
     System.Assert.areEqual(logsToUpdate.size(), persistedLogs.size());
     for (Log__c persistedLog : persistedLogs) {
       System.Assert.areEqual(updatedScenario, persistedLog.Scenario__c);
@@ -321,7 +321,7 @@ private class LoggerDataStore_Tests {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     log.Scenario__c = originalScenario;
     insert as system log;
-    log = [SELECT Id, Scenario__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Scenario__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalScenario, log.Scenario__c);
     log.Scenario__c = updatedScenario;
     System.Assert.areEqual(1, System.Limits.getDmlStatements());
@@ -332,7 +332,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(2, System.Limits.getDmlStatements());
     System.Assert.areEqual(2, System.Limits.getDmlRows());
     System.Assert.isTrue(result.isSuccess());
-    Log__c persistedLog = [SELECT Id, Scenario__c FROM Log__c WHERE Id = :log.Id];
+    Log__c persistedLog = [SELECT Id, Scenario__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(updatedScenario, persistedLog.Scenario__c);
   }
 
@@ -357,7 +357,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(logsToUpdate.size(), results.size());
     System.Assert.isTrue(results.get(0).isSuccess());
     System.Assert.isFalse(results.get(1).isSuccess());
-    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate];
+    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate WITH SYSTEM_MODE];
     System.Assert.areEqual(1, persistedLogs.size());
     System.Assert.areEqual(updatedScenario, persistedLogs.get(0).Scenario__c);
   }
@@ -385,7 +385,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(logsToUpdate.size(), results.size());
     System.Assert.isTrue(results.get(0).isSuccess());
     System.Assert.isFalse(results.get(1).isSuccess());
-    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate];
+    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpdate WITH SYSTEM_MODE];
     System.Assert.areEqual(1, persistedLogs.size());
     System.Assert.areEqual(updatedScenario, persistedLogs.get(0).Scenario__c);
   }
@@ -398,7 +398,7 @@ private class LoggerDataStore_Tests {
     log.Scenario__c = originalScenario;
     log.TransactionId__c = '1234';
     insert as system log;
-    log = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(originalScenario, log.Scenario__c);
     log.Scenario__c = updatedScenario;
     Id originalLogId = log.Id;
@@ -414,7 +414,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(2, System.Limits.getDmlRows());
     System.Assert.isFalse(result.isCreated());
     System.Assert.isTrue(result.isSuccess());
-    Log__c persistedLog = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE TransactionId__c = :log.TransactionId__c];
+    Log__c persistedLog = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE TransactionId__c = :log.TransactionId__c WITH SYSTEM_MODE];
     System.Assert.areEqual(originalLogId, persistedLog.Id);
     System.Assert.areEqual(updatedScenario, persistedLog.Scenario__c);
   }
@@ -435,7 +435,7 @@ private class LoggerDataStore_Tests {
         .getRecord()
     );
     insert as system logsToUpsert;
-    logsToUpsert = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id IN :logsToUpsert];
+    logsToUpsert = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id IN :logsToUpsert WITH SYSTEM_MODE];
     for (Log__c logToUpdate : logsToUpsert) {
       System.Assert.areEqual(originalScenario, logToUpdate.Scenario__c);
       logToUpdate.Scenario__c = updatedScenario;
@@ -451,7 +451,7 @@ private class LoggerDataStore_Tests {
     for (Database.UpsertResult result : results) {
       System.Assert.isTrue(result.isSuccess());
     }
-    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpsert];
+    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpsert WITH SYSTEM_MODE];
     System.Assert.areEqual(logsToUpsert.size(), persistedLogs.size());
     for (Log__c persistedLog : persistedLogs) {
       System.Assert.areEqual(updatedScenario, persistedLog.Scenario__c);
@@ -474,7 +474,7 @@ private class LoggerDataStore_Tests {
         .getRecord()
     );
     insert as system logsToUpsert;
-    logsToUpsert = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id IN :logsToUpsert];
+    logsToUpsert = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE Id IN :logsToUpsert WITH SYSTEM_MODE];
     for (Log__c logToUpdate : logsToUpsert) {
       System.Assert.areEqual(originalScenario, logToUpdate.Scenario__c);
       logToUpdate.Scenario__c = updatedScenario;
@@ -490,7 +490,7 @@ private class LoggerDataStore_Tests {
     System.Assert.areEqual(logsToUpsert.size(), results.size());
     System.Assert.isTrue(results.get(0).isSuccess());
     System.Assert.isFalse(results.get(1).isSuccess());
-    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpsert];
+    List<Log__c> persistedLogs = [SELECT Id, Scenario__c FROM Log__c WHERE Id IN :logsToUpsert WITH SYSTEM_MODE];
     System.Assert.areEqual(2, persistedLogs.size());
     System.Assert.areEqual(updatedScenario, persistedLogs.get(0).Scenario__c);
     System.Assert.areEqual(originalScenario, persistedLogs.get(1).Scenario__c);
