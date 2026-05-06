@@ -16,6 +16,17 @@
 public without sharing class LoggerStackTrace {
   private static final String NEW_LINE_DELIMITER = '\n';
 
+  private static Set<String> IGNORED_APEX_ORIGINS {
+    get {
+      if (IGNORED_APEX_ORIGINS == null) {
+        IGNORED_APEX_ORIGINS = new Set<String>{ LoggerStackTrace.class.getName() };
+        IGNORED_APEX_ORIGINS.addAll(LoggerParameter.IGNORED_APEX_ORIGINS);
+      }
+      return IGNORED_APEX_ORIGINS;
+    }
+    private set;
+  }
+
   private static final System.Pattern INVALID_NAMESPACED_STACK_TRACE_PATTERN {
     get {
       if (INVALID_NAMESPACED_STACK_TRACE_PATTERN == null) {
@@ -26,17 +37,6 @@ public without sharing class LoggerStackTrace {
     set;
   }
 
-  private static Set<String> IGNORED_APEX_ORIGINS {
-    get {
-      if (IGNORED_APEX_ORIGINS == null) {
-        Set<String> ignoredOrigins = new Set<String>{ LoggerStackTrace.class.getName() };
-        ignoredOrigins.addAll(LoggerParameter.IGNORED_APEX_ORIGINS);
-        IGNORED_APEX_ORIGINS = ignoredOrigins;
-      }
-      return IGNORED_APEX_ORIGINS;
-    }
-    private set;
-  }
   @SuppressWarnings('PMD.FieldNamingConventions')
   public enum SourceLanguage {
     Apex,

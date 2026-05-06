@@ -281,7 +281,6 @@ private class LoggerStackTrace_Tests {
       ', column 1' +
       '\nAnonymousBlock: line 1, column 1';
     String mockStackTrace = ignoredStackTraceLine + '\n' + relevantStackTraceLines;
-
     LoggerConfigurationSelector.useMocks();
     LoggerParameter__mdt ignoredOriginsParameter = new LoggerParameter__mdt(DeveloperName = 'IgnoredApexOrigins', Value__c = '["' + ignoredClassName + '"]');
     LoggerConfigurationSelector.mockLoggerParameters.put(ignoredOriginsParameter.DeveloperName, ignoredOriginsParameter);

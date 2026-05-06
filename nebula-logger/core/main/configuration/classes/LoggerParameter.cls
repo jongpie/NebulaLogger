@@ -856,11 +856,7 @@ public class LoggerParameter {
 
   private static Object castParameterValue(String parameterDeveloperName, System.Type dataType) {
     String parameterValue = loadParameterValue(parameterDeveloperName);
-    if (parameterValue == null) {
-      return null;
-    } else {
-      return System.JSON.deserialize(parameterValue, dataType);
-    }
+    return parameterValue == null ? null : System.JSON.deserialize(parameterValue, dataType);
   }
 
   private static String loadParameterValue(String parameterDeveloperName) {

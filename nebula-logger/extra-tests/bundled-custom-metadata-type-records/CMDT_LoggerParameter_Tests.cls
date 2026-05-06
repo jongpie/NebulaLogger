@@ -417,6 +417,7 @@ private class CMDT_LoggerParameter_Tests {
     System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
     System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
     System.Assert.areEqual('Ignored Apex Origins', bundledRecord.Label);
+    System.Assert.areEqual('[]', bundledRecord.Value__c);
   }
 
   /*
