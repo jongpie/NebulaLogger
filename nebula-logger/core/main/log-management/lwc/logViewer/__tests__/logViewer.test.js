@@ -62,7 +62,7 @@ jest.mock(
 // Mock setTimeout for testing the dataCopied reset
 jest.useFakeTimers();
 
-describe('Logger JSON Viewer lwc tests', () => {
+describe('Log Viewer LWC tests', () => {
   beforeEach(() => {
     // Reset mock link properties between tests
     mockLink.href = '';
