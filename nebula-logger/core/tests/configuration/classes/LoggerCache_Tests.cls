@@ -388,7 +388,7 @@ private class LoggerCache_Tests {
       return this.keyToValue.get(key);
     }
 
-    @SuppressWarnings('PMD.ExcessiveParameterList')
+    @SuppressWarnings('PMD.AvoidBooleanMethodParameters, PMD.ExcessiveParameterList')
     public override void put(String key, Object value, Integer cacheTtlSeconds, Cache.Visibility cacheVisiblity, Boolean isCacheImmutable) {
       this.putMethodCallCount++;
       this.keyToValue.put(key, value);

@@ -8,6 +8,7 @@ import { LightningElement, api, wire } from 'lwc';
 import returnSomeString from '@salesforce/apex/LoggerLWCDemoController.returnSomeString';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
 import { getLogger } from 'c/logger';
+import { logMessage } from 'c/loggerWrapper';
 
 export default class LoggerLWCGetLoggerImportDemo extends LightningElement {
   @api logger = getLogger();
@@ -130,7 +131,11 @@ export default class LoggerLWCGetLoggerImportDemo extends LightningElement {
   logInfoExample() {
     console.log('running logInfo for btn');
     console.log(this.logger);
-    this.logger.info(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' }).addTags(this.tagsString.split(','));
+    const customError = new Error('custom error');
+    console.log('>>> customError==', JSON.parse(JSON.stringify(customError)));
+    console.log('>>> customError.stack==', JSON.parse(JSON.stringify(customError.stack)));
+    // this.logger.info(this.message).setField({ SomeLogEntryField__c: 'some text from loggerLWCGetLoggerImportDemo' }).addTags(this.tagsString.split(','));
+    logMessage('teeeeest!');
   }
 
   logDebugExample() {

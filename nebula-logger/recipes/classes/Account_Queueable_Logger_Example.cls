@@ -7,7 +7,8 @@
  * @description An example queueable job that will run several chained instances
  * Each instance uses the parentLogTransactionId to relate its log back to the original instance's log
  */
-public with sharing class Account_Queueable_Logger_Example implements System.Queueable {
+@SuppressWarnings('PMD.ApexDoc')
+public with sharing class Account_Queueable_Logger_Example implements Database.AllowsCallouts, System.Queueable {
   private Integer numberOfJobsToChain;
   private String parentLogTransactionId;
 
@@ -17,6 +18,10 @@ public with sharing class Account_Queueable_Logger_Example implements System.Que
    * @description Constructor.
    * @param numberOfJobsToChain An integer determining the number of jobs to chain.
    */
+  public Account_Queueable_Logger_Example() {
+    this(1, null);
+  }
+
   public Account_Queueable_Logger_Example(Integer numberOfJobsToChain) {
     this(numberOfJobsToChain, null);
   }
@@ -28,7 +33,7 @@ public with sharing class Account_Queueable_Logger_Example implements System.Que
    */
   public Account_Queueable_Logger_Example(Integer numberOfJobsToChain, String parentLogTransactionId) {
     this.numberOfJobsToChain = numberOfJobsToChain;
-    this.parentLogTransactionId = parentLogTransactionId;
+    this.parentLogTransactionId = parentLogTransactionId ?? Logger.getTransactionId();
   }
 
   /**
@@ -43,6 +48,8 @@ public with sharing class Account_Queueable_Logger_Example implements System.Que
     Logger.info('this.numberOfJobsToChain==' + this.numberOfJobsToChain);
     Logger.info('this.parentLogTransactionId==' + this.parentLogTransactionId);
 
+    this.callSomeEndpoint();
+
     Logger.saveLog();
 
     --this.numberOfJobsToChain;
@@ -50,5 +57,19 @@ public with sharing class Account_Queueable_Logger_Example implements System.Que
       String parentLogTransactionId = this.parentLogTransactionId != null ? this.parentLogTransactionId : Logger.getTransactionId();
       System.enqueueJob(new Account_Queueable_Logger_Example(this.numberOfJobsToChain, parentLogTransactionId));
     }
+  }
+
+  private void callSomeEndpoint() {
+    System.HttpRequest httpRequest = new System.HttpRequest();
+    httpRequest.setEndpoint('https://jsonplaceholder.typicode.com/todos/1');
+    httpRequest.setHeader('some-header', 'some value');
+    httpRequest.setHeader('another-header', 'another value');
+    httpRequest.setMethod('GET');
+
+    System.HttpResponse httpResponse = new System.Http().send(httpRequest);
+
+    Logger.info('Example of logging an HTTP request & response')
+      .setHttpRequestDetails(httpRequest, new List<String>{ 'some-header' })
+      .setHttpResponseDetails(httpResponse);
   }
 }

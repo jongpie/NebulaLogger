@@ -17,7 +17,11 @@ private class LoggerSettingsController_Tests_Security {
     insert permissionSet;
     SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
       ParentId = permissionSet.Id,
-      SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME]
+      SetupEntityId = [
+        SELECT Id
+        FROM CustomPermission
+        WHERE DeveloperName = :CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME AND NamespacePrefix = :Logger.getNamespacePrefix()
+      ]
       .Id
     );
     Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(

@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-  'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+  'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.ExcessivePublicCount, PMD.NcssCount, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
   public static final String ENTRY_SAVE_REASON_LOGGING_LEVEL_MET = 'Logging Level Met';
@@ -123,7 +123,7 @@ global with sharing class LogEntryEventBuilder {
    * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
    * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
    */
-  @SuppressWarnings('PMD.NcssConstructorCount')
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters, PMD.NcssConstructorCount')
   public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave) {
     this.shouldSave = shouldSave;
     if (this.shouldSave()) {
@@ -460,7 +460,15 @@ global with sharing class LogEntryEventBuilder {
       this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
       this.logEntryEvent.RecordSObjectType__c = 'Unknown';
     } else {
-      this.logEntryEvent.RecordId__c = record.Id;
+      try {
+        this.logEntryEvent.RecordId__c = record.Id;
+      } catch (System.SObjectException sobjectException) {
+        // Some SObject Types (such as Platform Events) do not have the ID field;
+        // that's OK, just skip setting it.
+        if (sobjectException.getMessage().contains('Invalid field Id') == false) {
+          throw sobjectException;
+        }
+      }
       this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
       this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().toString();
       this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
@@ -983,6 +991,7 @@ global with sharing class LogEntryEventBuilder {
     );
   }
 
+  @SuppressWarnings('PMD.NcssCount')
   private static LogEntryEvent__e getLogEntryEventTemplate(System.LoggingLevel entryLoggingLevel) {
     LogEntryEvent__e logEntryEventTemplate = new LogEntryEvent__e(
       LoggingLevel__c = entryLoggingLevel.name(),
@@ -1224,7 +1233,7 @@ global with sharing class LogEntryEventBuilder {
     String sobjectClassification;
 
     // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
-    if (sobjectType.getDescribe().isCustomSetting()) {
+    if (SObjectType.getDescribe().isCustomSetting()) {
       sobjectClassification = 'Custom Setting Object';
     }
 
@@ -1236,7 +1245,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // Finally, if we still don't have a classification, assume it's a standard object
-    if (String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+    if (String.isBlank(sobjectClassification) && SObjectType.getDescribe().isCustom() == false) {
       sobjectClassification = 'Standard Object';
     }
 
@@ -1273,7 +1282,7 @@ global with sharing class LogEntryEventBuilder {
 
   private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
     String sobjectFullName = sobjectType.toString();
-    String sobjectLocalName = sobjectType.getDescribe().getLocalName();
+    String sobjectLocalName = SObjectType.getDescribe().getLocalName();
 
     // Remove the trailing '__' if present
     String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');

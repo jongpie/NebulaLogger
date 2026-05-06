@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "63.0",
+  "sourceApiVersion": "65.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.16.5.NEXT",
-      "versionName": "Capture Apex Cursor Transaction Limits",
-      "versionDescription": "Added auto-capturing of transaction limits for Apex cursor rows & fetch calls, stored in new fields on LogEntryEvent__e & LogEntry__c",
+      "versionNumber": "4.18.0.NEXT",
+      "versionName": "Winter '26 Release",
+      "versionDescription": "Updated all metadata to API v65.0, added minimal CRUD access to LoggerEndUser permission set, upgraded to code-analyzer & resolved several scan violations logEntryPageSection LWC to LogEntry__c page, improved testing in Apex & LWC",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
@@ -221,6 +221,13 @@
     "Nebula Logger - Core@4.16.3-configurable-batch-size-for-logbatchpurger": "04tKe0000011Mr1IAE",
     "Nebula Logger - Core@4.16.4-bugfix:-logger-lwc-initialization-message": "04tKe0000011MyWIAU",
     "Nebula Logger - Core@4.16.5-capture-apex-cursor-transaction-limits": "04tKe0000011N4KIAU",
+    "Nebula Logger - Core@4.17.0-summer-'25-release": "04tg70000000rNhAAI",
+    "Nebula Logger - Core@4.17.1-bugfix:-allowing-to-log-sobject-without-id-field": "04tg7000000157JAAQ",
+    "Nebula Logger - Core@4.17.2-bugfix:-modal-close-buttons-not-rendered-correctly": "04tg700000015gnAAA",
+    "Nebula Logger - Core@4.17.3-relatedlogentries-lwc-improvements": "04tg70000001IMHAA2",
+    "Nebula Logger - Core@4.17.4-loggeremailsender_tests-fix-for-new-platform-requirement-of-verified-email-domains": "04tg70000004jmXAAQ",
+    "Nebula Logger - Core@4.17.5-adds-new-flag-to-relatedlogentries-lwc-for-strict-search-based-on-recordid": "04tg70000007XnFAAU",
+    "Nebula Logger - Core@4.18.0-winter-'26-release": "04tg700000086Y5AAI",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

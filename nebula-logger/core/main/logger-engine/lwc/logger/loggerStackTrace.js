@@ -44,6 +44,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+/* eslint-disable */
 const CHROME_IE_STACK_REGEXP = /^\s*at .*(\S+:\d+|\(native\))/m;
 const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/;
 
@@ -180,7 +182,7 @@ export default class LoggerStackTrace {
 
   _cleanStackTraceParticle(stackTraceParticle) {
     const lwcModulesFileNamePrefix = 'modules/';
-    if (stackTraceParticle.fileName?.startsWith(lwcModulesFileNamePrefix)) {
+    if (stackTraceParticle.fileName?.includes(lwcModulesFileNamePrefix)) {
       stackTraceParticle.metadataType = 'LightningComponentBundle';
 
       stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
@@ -188,7 +190,7 @@ export default class LoggerStackTrace {
       );
     }
     const auraComponentsContent = '/components/';
-    if (stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
+    if (!stackTraceParticle.metadataType && stackTraceParticle.fileName?.indexOf(auraComponentsContent) > -1) {
       stackTraceParticle.metadataType = 'AuraDefinitionBundle';
 
       stackTraceParticle.fileName = stackTraceParticle.fileName.substring(
