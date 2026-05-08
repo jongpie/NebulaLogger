@@ -34,6 +34,10 @@ Indicates if Nebula Logger will append its own log entries about the logging sys
 
 Indicates if Nebula Logger&apos;s tagging system is enabled. Controlled by the custom metadata record `LoggerParameter.EnableTagging`, or `true` as the default
 
+#### `IGNORED_APEX_ORIGINS` → `List<String>`
+
+A list of Apex class names that should be ignored when parsing stack traces. Any stack trace lines containing these class names will be removed from the parsed stack trace. This is useful for filtering out utility or framework classes from stack traces. Controlled by the custom metadata record `LoggerParameter.IgnoredApexOrigins`, or an empty list as the default
+
 #### `LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE` → `Integer`
 
 Controls the default batch size used by the batchable class `LogBatchPurger` when purging old logging data. Controlled by the custom metadata record `LoggerParameter.LogBatchPurgerDefaultBatchSize`, or `500` as the default
