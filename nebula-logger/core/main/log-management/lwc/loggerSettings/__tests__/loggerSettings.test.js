@@ -126,6 +126,7 @@ async function initializeElement(enableModifyAccess) {
   const loggerSettingsElement = createElement('c-logger-settings', { is: LoggerSettings });
   document.body.appendChild(loggerSettingsElement);
 
+  /* eslint-disable-next-line */
   await new Promise(resolve => setTimeout(resolve, 0));
 
   return loggerSettingsElement;
@@ -218,11 +219,8 @@ describe('Logger Settings lwc tests', () => {
     expectedFieldNames.forEach(fieldName => {
       const inputField = loggerSettingsElement.shadowRoot.querySelector('[data-id="' + fieldName + '"]');
       expect(inputField).toBeTruthy();
-      if (inputField.checked !== undefined) {
-        expect(inputField.checked).toBe(mockNewRecord[fieldName]);
-      } else {
-        expect(inputField.value).toBe(mockNewRecord[fieldName]);
-      }
+      const valueToCheck = inputField.checked !== undefined ? inputField.checked : inputField.value;
+      expect(valueToCheck).toBe(mockNewRecord[fieldName]);
     });
   });
 
@@ -651,7 +649,7 @@ describe('Logger Settings lwc tests', () => {
     expect(loggerSettingsElement.shadowRoot.querySelector('[data-id="SetupOwnerSearchResults"')).toBeTruthy();
 
     // Trigger blur event
-    setupOwnerRecordSearchField.dispatchEvent(new Event('blur'));
+    setupOwnerRecordSearchField.dispatchEvent(new CustomEvent('blur'));
     await Promise.resolve();
 
     // Dropdown should be hidden

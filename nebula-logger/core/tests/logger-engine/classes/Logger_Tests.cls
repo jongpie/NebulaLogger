@@ -3,7 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
+@SuppressWarnings(
+  'PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssCount, PMD.NcssMethodCount, PMD.NcssTypeCount'
+)
 @IsTest(IsParallel=true)
 private class Logger_Tests {
   static {
@@ -11449,7 +11451,7 @@ private class Logger_Tests {
     Logger.saveLog();
     System.Assert.areEqual(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-    System.Assert.areEqual('Callout to api.status.salesforce.com failed', logEntryEvent.Message__c);
+    System.Assert.areEqual('Nebula Logger - Callout to api.status.salesforce.com failed', logEntryEvent.Message__c);
     System.Assert.areEqual('System.CalloutException', logEntryEvent.ExceptionType__c);
     Schema.Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
     String expectedExceptionMessage =

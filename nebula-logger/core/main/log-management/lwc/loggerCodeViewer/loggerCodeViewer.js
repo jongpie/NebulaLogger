@@ -27,7 +27,7 @@ export default class LoggerCodeViewer extends LightningElement {
     // but the core Prism code uses data-start for line numbers,
     // and the line-highlight plugin uses data-line-offset for highlighting a line number
     // (╯°□°）╯︵ ┻━┻
-    // eslint-disable-next-line @lwc/lwc/no-inner-html
+    // eslint-disable-next-line
     container.innerHTML =
       `<pre data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
       `<code class="language-${this.language}">${this.code}</code>` +
@@ -78,10 +78,10 @@ export default class LoggerCodeViewer extends LightningElement {
     // ........................................and a whole bunch of ridiculous comments about it ^_^
     //
 
-    // eslint-disable-next-line no-undef
+    // eslint-disable-next-line
     Prism.highlightAll();
     // o_O
-    // eslint-disable-next-line no-undef
+    // eslint-disable-next-line
     Prism.highlightAll();
   }
 }

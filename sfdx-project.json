@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "64.0",
+  "sourceApiVersion": "65.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.17.5.NEXT",
-      "versionName": "Adds new flag to relatedLogEntries LWC for strict search based on recordId",
-      "versionDescription": "Adds new flag to relatedLogEntries LWC component allowing flexipages and on the component itself filtering of log entries down to only entries associated with the record in question",
+      "versionNumber": "4.18.1.NEXT",
+      "versionName": "New Declarative Configuration for Ignoring Apex Classes in Stack Traces",
+      "versionDescription": "Added a new LoggerParameter__mdt record, IgnoredApexOrigins, to provide a declarative approach for admins to configure Apex classes to ignore globally in Apex stack traces, without requiring any code changes.",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
@@ -227,6 +227,8 @@
     "Nebula Logger - Core@4.17.3-relatedlogentries-lwc-improvements": "04tg70000001IMHAA2",
     "Nebula Logger - Core@4.17.4-loggeremailsender_tests-fix-for-new-platform-requirement-of-verified-email-domains": "04tg70000004jmXAAQ",
     "Nebula Logger - Core@4.17.5-adds-new-flag-to-relatedlogentries-lwc-for-strict-search-based-on-recordid": "04tg70000007XnFAAU",
+    "Nebula Logger - Core@4.18.0-winter-'26-release": "04tg700000086Y5AAI",
+    "Nebula Logger - Core@4.18.1-new-declarative-configuration-for-ignoring-apex-classes-in-stack-traces": "04tg70000008GVpAAM",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

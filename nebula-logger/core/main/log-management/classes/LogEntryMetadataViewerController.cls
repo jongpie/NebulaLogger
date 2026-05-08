@@ -85,10 +85,11 @@ public without sharing class LogEntryMetadataViewerController {
   }
 
   // TODO consider combining with LogEntryHandler.SourceMetadataSnippet (which could become a top-level class)
-  @SuppressWarnings('PMD.ApexDoc, PMD.PropertyNamingConventions')
+  @SuppressWarnings('PMD.ApexDoc, PMD.AvoidBooleanMethodParameters, PMD.PropertyNamingConventions')
   public class LogEntryMetadata {
     @AuraEnabled
     public String Code { get; set; }
+
     @AuraEnabled
     public Boolean HasCodeBeenModified { get; set; }
   }
