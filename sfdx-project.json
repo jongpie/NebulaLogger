@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.18.1.NEXT",
-      "versionName": "New Declarative Configuration for Ignoring Apex Classes in Stack Traces",
-      "versionDescription": "Added a new LoggerParameter__mdt record, IgnoredApexOrigins, to provide a declarative approach for admins to configure Apex classes to ignore globally in Apex stack traces, without requiring any code changes.",
+      "versionNumber": "4.18.2.NEXT",
+      "versionName": "New Field LogEntry__c.WasLoggedByCurrentUser__c",
+      "versionDescription": "Added a new field LogEntry__c.WasLoggedByCurrentUser__c & LogEntry__c list view MyGeneratedLogEntries, similar to the existing field Log__c.WasLoggedByCurrentUser__c record & Log__c list view",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
