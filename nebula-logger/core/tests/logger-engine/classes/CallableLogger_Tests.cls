@@ -3,7 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.AvoidHardcodingId, PMD.MethodNamingConventions')
+@SuppressWarnings(
+  'PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.AvoidHardcodingId, PMD.CyclomaticComplexity, PMD.MethodNamingConventions, PMD.NcssTypeCount'
+)
 @IsTest(IsParallel=true)
 private class CallableLogger_Tests {
   // Not all orgs have OmniStudio, so not all orgs will have the OmniProcess SObject.
@@ -552,6 +554,540 @@ private class CallableLogger_Tests {
     System.Assert.areEqual(System.JSON.serializePretty(recordMap), logEntryEvent.RecordJson__c);
     System.Assert.areEqual(
       CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_record_map_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_delete_result_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.DeleteResult result = LoggerMockDataCreator.createDatabaseDeleteResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result, 'resultType' => Database.DeleteResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_delete_result_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_delete_result_and_null_type_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.DeleteResult result = LoggerMockDataCreator.createDatabaseDeleteResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result });
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.isNull(logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_delete_result_and_null_type_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_delete_result_list_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.DeleteResult> resultList = LoggerMockDataCreator.createDatabaseDeleteResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'resultList' => resultList, 'resultType' => Database.DeleteResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_delete_result_list_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_delete_result_list_and_null_type_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.DeleteResult> resultList = LoggerMockDataCreator.createDatabaseDeleteResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'resultList' => resultList });
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.isNull(logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_delete_result_list_and_null_type_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_empty_recycle_bin_result_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.EmptyRecycleBinResult result = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{
+          'loggingLevel' => loggingLevel,
+          'message' => message,
+          'result' => result,
+          'resultType' => Database.EmptyRecycleBinResult.class
+        }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.EmptyRecycleBinResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_empty_recycle_bin_result_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_empty_recycle_bin_result_list_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.EmptyRecycleBinResult> resultList = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{
+          'loggingLevel' => loggingLevel,
+          'message' => message,
+          'resultList' => resultList,
+          'resultType' => Database.EmptyRecycleBinResult.class
+        }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.EmptyRecycleBinResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_empty_recycle_bin_result_list_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_lead_convert_result_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.LeadConvertResult result = LoggerMockDataCreator.createDatabaseLeadConvertResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result, 'resultType' => Database.LeadConvertResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.LeadConvertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_lead_convert_result_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_lead_convert_result_list_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.LeadConvertResult> resultList = LoggerMockDataCreator.createDatabaseLeadConvertResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{
+          'loggingLevel' => loggingLevel,
+          'message' => message,
+          'resultList' => resultList,
+          'resultType' => Database.LeadConvertResult.class
+        }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.LeadConvertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_lead_convert_result_list_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_merge_result_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.MergeResult result = LoggerMockDataCreator.createDatabaseMergeResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result, 'resultType' => Database.MergeResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.MergeResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_merge_result_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_merge_result_list_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.MergeResult> resultList = LoggerMockDataCreator.createDatabaseMergeResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'resultList' => resultList, 'resultType' => Database.MergeResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.MergeResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_merge_result_list_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_save_result_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.SaveResult result = LoggerMockDataCreator.createDatabaseSaveResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result, 'resultType' => Database.SaveResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_save_result_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_save_result_list_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.SaveResult> resultList = LoggerMockDataCreator.createDatabaseSaveResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'resultList' => resultList, 'resultType' => Database.SaveResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_save_result_list_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_undelete_result_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.UndeleteResult result = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result, 'resultType' => Database.UndeleteResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_undelete_result_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_undelete_result_list_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.UndeleteResult> resultList = LoggerMockDataCreator.createDatabaseUndeleteResultList(15, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{
+          'loggingLevel' => loggingLevel,
+          'message' => message,
+          'resultList' => resultList,
+          'resultType' => Database.UndeleteResult.class
+        }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_undelete_result_list_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_upsert_result_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    Database.UpsertResult result = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'result' => result, 'resultType' => Database.UpsertResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(System.JSON.serializePretty(result), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_upsert_result_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_upsert_result_list_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
+    String message = 'some log entry message';
+    List<Database.UpsertResult> resultList = LoggerMockDataCreator.createDatabaseUpsertResultList(15, true, true);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => loggingLevel, 'message' => message, 'resultList' => resultList, 'resultType' => Database.UpsertResult.class }
+      );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(Logger.getTransactionId(), returnedOutput.get('transactionId'));
+    System.Assert.areEqual(Logger.getParentLogTransactionId(), returnedOutput.get('parentLogTransactionId'));
+    System.Assert.areEqual(Logger.getRequestId(), returnedOutput.get('requestId'));
+
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.isNull(logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(resultList), logEntryEvent.DatabaseResultJson__c);
+    System.Assert.areEqual(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.isNull(logEntryEvent.Tags__c);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_adds_new_entry_with_upsert_result_list_when_using_standard_approach',
       logEntryEvent.OriginLocation__c
     );
     System.Assert.areEqual('Apex', logEntryEvent.OriginType__c);
