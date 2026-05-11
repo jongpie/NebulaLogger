@@ -539,6 +539,7 @@
         <members>LogEntry__c.TriggerSObjectType__c</members>
         <members>LogEntry__c.Trigger__c</members>
         <members>LogEntry__c.UniqueId__c</members>
+        <members>LogEntry__c.WasLoggedByCurrentUser__c</members>
         <members>LogStatus__mdt.IsActive__c</members>
         <members>LogStatus__mdt.IsClosed__c</members>
         <members>LogStatus__mdt.IsResolved__c</members>
@@ -882,6 +883,7 @@
         <members>LogEntry__c.AllOmniStudioLogEntries</members>
         <members>LogEntry__c.AllRestRequestLogEntries</members>
         <members>LogEntry__c.AllRestResponseLogEntries</members>
+        <members>LogEntry__c.MyGeneratedLogEntries</members>
         <members>LogStatus__mdt.All</members>
         <members>Log__c.AllAsynchronousLogs</members>
         <members>Log__c.AllBatchLogs</members>
