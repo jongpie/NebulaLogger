@@ -3,7 +3,7 @@ const path = require('path');
 const esbuild = require('esbuild');
 
 // ─── Configure Prism build here ───────────────────────────────────────────────
-const OUTPUT_DIR = './nebula-logger/core/main/log-management/staticresources/LoggerResources/';
+const OUTPUT_DIR = './nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/';
 
 const THEME = 'prism-tomorrow';
 
@@ -19,6 +19,7 @@ const PRISM_ROOT = path.dirname(require.resolve('prismjs'));
 const version = require('prismjs/package.json').version;
 
 fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+fs.mkdirSync(`${OUTPUT_DIR}themes/`, { recursive: true });
 
 function readFile(filePath) {
   if (!fs.existsSync(filePath)) {
@@ -62,8 +63,8 @@ async function run() {
     })
   ];
 
-  const cssOutput = path.join(OUTPUT_DIR, 'prism.css');
-  const cssMinOutput = path.join(OUTPUT_DIR, 'prism.min.css');
+  const cssOutput = path.join(`${OUTPUT_DIR}themes/`, `${THEME}.css`);
+  const cssMinOutput = path.join(`${OUTPUT_DIR}themes/`, `${THEME}.min.css`);
 
   const bundledCSS = cssParts.join('\n');
   fs.writeFileSync(cssOutput, bundledCSS);

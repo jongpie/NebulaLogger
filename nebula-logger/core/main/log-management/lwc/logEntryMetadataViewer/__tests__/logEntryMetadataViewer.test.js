@@ -10,7 +10,7 @@ jest.mock(
     return {
       loadScript() {
         return new Promise(resolve => {
-          global.Prism = require('../../../staticresources/LoggerResources/prism.min.js');
+          global.Prism = require('../../../staticresources/LoggerResources/Prism/prism.min.js');
           resolve();
         });
       },
@@ -99,12 +99,7 @@ describe('LogEntryMetadataViewer LWC Tests', () => {
 
     document.body.appendChild(element);
     getRecord.emit(mockLogEntryRecord);
-    // Drain microtasks across getRecord, c-logger-code-viewer creation,
-    // and the Promise.all(map(async)) chain inside _loadPrismResources.
-    for (let i = 0; i < 8; i++) {
-      /* eslint-disable-next-line no-await-in-loop */
-      await Promise.resolve();
-    }
+    await flushPromises();
 
     const sectionTitle = element.shadowRoot.querySelector('c-logger-page-section span[slot="title"]');
     expect(sectionTitle).toBeTruthy();
@@ -153,12 +148,7 @@ describe('LogEntryMetadataViewer LWC Tests', () => {
 
     document.body.appendChild(element);
     getRecord.emit(mockLogEntryRecord);
-    // Drain microtasks across getRecord, c-logger-code-viewer creation,
-    // and the Promise.all(map(async)) chain inside _loadPrismResources.
-    for (let i = 0; i < 8; i++) {
-      /* eslint-disable-next-line no-await-in-loop */
-      await Promise.resolve();
-    }
+    await flushPromises();
 
     const sectionTitle = element.shadowRoot.querySelector('c-logger-page-section span[slot="title"]');
     expect(sectionTitle).toBeTruthy();
@@ -187,7 +177,7 @@ describe('LogEntryMetadataViewer LWC Tests', () => {
     element.recordId = 'test-log-entry-id';
 
     document.body.appendChild(element);
-    await Promise.resolve();
+    await flushPromises();
 
     expect(element.shadowRoot.querySelector('lightning-spinner')).toBeTruthy();
     expect(element.shadowRoot.querySelector('c-logger-page-section')).toBeNull();

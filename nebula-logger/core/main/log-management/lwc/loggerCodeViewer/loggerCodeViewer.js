@@ -47,7 +47,7 @@ export default class LoggerCodeViewer extends LightningElement {
 
   async _loadPrismResources() {
     const prismScriptUrl = loggerStaticResources + '/Prism/prism.min.js';
-    const prismBaseStyleUrl = loggerStaticResources + '/Prism/prism.min.css';
+    const prismBaseStyleUrl = loggerStaticResources + '/Prism/themes/prism-tomorrow.min.css';
     const prismCustomStyleUrl = loggerStaticResources + '/Prism/prism.nebula-logger.css';
 
     const resourceLoads = [
