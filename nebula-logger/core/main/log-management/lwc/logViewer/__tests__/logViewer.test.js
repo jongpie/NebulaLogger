@@ -36,7 +36,7 @@ jest.mock(
     return {
       loadScript() {
         return new Promise((resolve, _) => {
-          global.Prism = require('../../../staticresources/LoggerResources/prism.js');
+          global.Prism = require('../../../staticresources/LoggerResources/prism.min.js');
           resolve();
         });
       },

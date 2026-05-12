@@ -13,27 +13,66 @@ export default class LoggerCodeViewer extends LightningElement {
   @api startingLineNumber;
   @api targetLineNumber;
 
+  hasLoadError = false;
   isLoaded = false;
 
   async renderedCallback() {
-    if (this.isLoaded) {
+    if (this.isLoaded || this.hasLoadError) {
       return;
     }
 
-    await Promise.all([loadStyle(this, loggerStaticResources + '/prism.css'), loadScript(this, loggerStaticResources + '/prism.js')]);
+    try {
+      await this._loadPrismResources();
 
-    const container = this.template.querySelector('.prism-viewer');
-    // data-line and data-line-offset are effectively the same thing within Prism...
-    // but the core Prism code uses data-start for line numbers,
-    // and the line-highlight plugin uses data-line-offset for highlighting a line number
-    // (╯°□°）╯︵ ┻━┻
-    // eslint-disable-next-line
-    container.innerHTML =
-      `<pre data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
-      `<code class="language-${this.language}">${this.code}</code>` +
-      `</pre>`;
-    this._highlightCode();
-    this.isLoaded = true;
+      const container = this.template.querySelector('.prism-viewer');
+      // data-line and data-line-offset are effectively the same thing within Prism...
+      // but the core Prism code uses data-start for line numbers,
+      // and the line-highlight plugin uses data-line-offset for highlighting a line number
+      // (╯°□°）╯︵ ┻━┻
+      // eslint-disable-next-line
+      container.innerHTML =
+        `<pre data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
+        `<code class="language-${this.language}">${this.code}</code>` +
+        `</pre>`;
+      this._highlightCode();
+      this.isLoaded = true;
+    } catch (error) {
+      this.hasLoadError = true;
+      this.isLoaded = true;
+      this._renderFallbackCode();
+      /* eslint-disable-next-line no-console */
+      console.error(error.message, error);
+    }
+  }
+
+  async _loadPrismResources() {
+    const prismScriptUrl = loggerStaticResources + '/Prism/prism.min.js';
+    const prismBaseStyleUrl = loggerStaticResources + '/Prism/prism.min.css';
+    const prismCustomStyleUrl = loggerStaticResources + '/Prism/prism.nebula-logger.css';
+
+    const resourceLoads = [
+      { resourceType: 'script', resourceUrl: prismScriptUrl, promise: loadScript(this, prismScriptUrl) },
+      { resourceType: 'style', resourceUrl: prismBaseStyleUrl, promise: loadStyle(this, prismBaseStyleUrl) },
+      { resourceType: 'style', resourceUrl: prismCustomStyleUrl, promise: loadStyle(this, prismCustomStyleUrl) }
+    ];
+
+    const resourceLoadResults = await Promise.all(
+      resourceLoads.map(async ({ resourceType, resourceUrl, promise }) => {
+        try {
+          await promise;
+          return { status: 'fulfilled', resourceType, resourceUrl };
+        } catch (reason) {
+          return { status: 'rejected', resourceType, resourceUrl, reason };
+        }
+      })
+    );
+
+    const failedResourceLoads = resourceLoadResults.filter(result => result.status === 'rejected');
+    if (failedResourceLoads.length > 0) {
+      const serializedLoadFailures = failedResourceLoads.map(this._serializeLoadFailure);
+
+      throw new Error(`Failed to load Prism resources from LoggerResources static resource\n\n${JSON.stringify(serializedLoadFailures, null, 2)}`);
+    }
   }
 
   _highlightCode() {
@@ -83,5 +122,42 @@ export default class LoggerCodeViewer extends LightningElement {
     // o_O
     // eslint-disable-next-line
     Prism.highlightAll();
+  }
+
+  _serializeLoadFailure(failure) {
+    const serializedFailure = {
+      status: failure.status,
+      resourceType: failure.resourceType,
+      resourceUrl: failure.resourceUrl
+    };
+
+    if (failure.reason instanceof Error) {
+      serializedFailure.reason = {
+        name: failure.reason.name,
+        message: failure.reason.message,
+        stack: failure.reason.stack
+      };
+    } else {
+      serializedFailure.reason = failure.reason;
+      serializedFailure.reasonAsString = String(failure.reason);
+    }
+
+    return serializedFailure;
+  }
+
+  _renderFallbackCode() {
+    const container = this.template.querySelector('.prism-viewer');
+    if (!container) {
+      return;
+    }
+
+    const codeToRender = this.code ?? '';
+    container.textContent = '';
+    const pre = document.createElement('pre');
+    pre.className = 'slds-p-horizontal_medium';
+    const code = document.createElement('code');
+    code.textContent = codeToRender;
+    pre.appendChild(code);
+    container.appendChild(pre);
   }
 }
