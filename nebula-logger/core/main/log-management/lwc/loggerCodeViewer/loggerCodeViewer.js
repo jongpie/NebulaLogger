@@ -23,25 +23,15 @@ export default class LoggerCodeViewer extends LightningElement {
 
     try {
       await this._loadPrismResources();
-
-      const container = this.template.querySelector('.prism-viewer');
-      // data-line and data-line-offset are effectively the same thing within Prism...
-      // but the core Prism code uses data-start for line numbers,
-      // and the line-highlight plugin uses data-line-offset for highlighting a line number
-      // (╯°□°）╯︵ ┻━┻
-      // eslint-disable-next-line
-      container.innerHTML =
-        `<pre data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
-        `<code class="language-${this.language}">${this.code}</code>` +
-        `</pre>`;
-      this._highlightCode();
-      this.isLoaded = true;
+      this._renderPrismHtml();
+      Prism.highlightAll();
     } catch (error) {
-      this.hasLoadError = true;
-      this.isLoaded = true;
-      this._renderFallbackCode();
+      this._renderPrismHtml();
       /* eslint-disable-next-line no-console */
       console.error(error.message, error);
+      this.hasLoadError = true;
+    } finally {
+      this.isLoaded = true;
     }
   }
 
@@ -75,53 +65,27 @@ export default class LoggerCodeViewer extends LightningElement {
     }
   }
 
-  _highlightCode() {
-    // For some reason, calling Prism.highlightAll() twice is necessary (see below) to get the line highlighting to work.
-    // When it's called only once, the line highlighting is not applied (when there is only one instance of the code viewer LWC on the page).
-    //
-    //
-    //
-    // Why? I don't know. (╯‵□′)╯︵┻━┻
-    //
-    //
-    //
-    // Is this a bug in Prism?
-    // Is this a bug in LWC?
-    // Is this a bug in Salesforce?
-    // Is this a bug in the universe?
-    //
-    //
-    //
-    // I don't know.
-    //
-    // I just simply don't know ¯\_(ツ)_/¯
-    //
-    //
-    //
-    // Perhaps there are some things in life that we'll never understand.
-    //
-    //
-    // Things that are simply beyond our comprehension.
-    //
-    //
-    // But I DO know is that (👉ﾟヮﾟ)👉 calling highlightAll() twice in a row 👈(ﾟヮﾟ👈) seems to circumvent the issue.
-    //
-    //
-    // So here we are, calling it twice...
-    //
-    // ...with just 1 extra line of code.....
-    // ........................................
-    // ......................
-    // ...............................
-    // ..............
-    // ........................................and a whole bunch of ridiculous comments about it ^_^
-    //
+  _renderPrismHtml() {
+    /*
+      A few notes on using Prism:
+        1. The `line-numbers` class must be on the <pre> itself (not just on an
+          ancestor) before highlightAll runs. Otherwise line-highlight's
+          'complete' hook takes its non-deferred branch, runs before line-numbers
+          has built the gutter, and ends up appending an unpositioned overlay.
 
+        2. The properties data-line and data-line-offset are effectively the same thing within Prism...
+          but the core Prism code uses data-start for line numbers,
+          and the line-highlight plugin uses data-line-offset for highlighting a line number
+
+          (╯°□°）╯︵ ┻━┻
+     */
+
+    const container = this.template.querySelector('.prism-viewer');
     // eslint-disable-next-line
-    Prism.highlightAll();
-    // o_O
-    // eslint-disable-next-line
-    Prism.highlightAll();
+    container.innerHTML =
+      `<pre class="line-numbers" data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
+      `<code class="language-${this.language}">${this.code ?? ''}</code>` +
+      `</pre>`;
   }
 
   _serializeLoadFailure(failure) {
@@ -143,21 +107,5 @@ export default class LoggerCodeViewer extends LightningElement {
     }
 
     return serializedFailure;
-  }
-
-  _renderFallbackCode() {
-    const container = this.template.querySelector('.prism-viewer');
-    if (!container) {
-      return;
-    }
-
-    const codeToRender = this.code ?? '';
-    container.textContent = '';
-    const pre = document.createElement('pre');
-    pre.className = 'slds-p-horizontal_medium';
-    const code = document.createElement('code');
-    code.textContent = codeToRender;
-    pre.appendChild(code);
-    container.appendChild(pre);
   }
 }

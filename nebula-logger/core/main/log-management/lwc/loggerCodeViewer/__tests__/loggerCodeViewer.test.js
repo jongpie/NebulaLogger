@@ -16,7 +16,8 @@ jest.mock(
 );
 
 // _loadPrismResources awaits Promise.all over async wrappers, then renderedCallback's
-// catch block runs, then LWC re-renders. A handful of microtask flushes covers it.
+// catch block runs, then LWC re-renders. With rAF stubbed to fire synchronously
+// in beforeEach, microtask flushes are sufficient.
 const flushPromises = async () => {
   for (let i = 0; i < 8; i++) {
     /* eslint-disable-next-line no-await-in-loop  */
@@ -48,7 +49,7 @@ describe('c-logger-code-viewer', () => {
 
   it('displays Prism code viewer with provided attributes', async () => {
     const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
-    element.language = 'cobol';
+    element.language = 'apex';
     element.startingLineNumber = '10';
     element.targetLineNumber = '18';
     let mockCode = '';
@@ -60,45 +61,42 @@ describe('c-logger-code-viewer', () => {
     document.body.appendChild(element);
     await flushPromises();
 
-    const prismCodeViewer = element.shadowRoot.querySelector('div.prism-viewer');
-    expect(prismCodeViewer.classList.contains('line-numbers')).toBeTruthy();
+    const prismCodeViewerPre = element.shadowRoot.querySelector('div.prism-viewer pre');
+    expect(prismCodeViewerPre).toBeTruthy();
+    expect(prismCodeViewerPre.classList.contains('line-numbers')).toBeTruthy();
+    expect(prismCodeViewerPre.dataset.start).toBe(element.startingLineNumber);
+    expect(prismCodeViewerPre.dataset.line).toBe(element.targetLineNumber);
+    expect(prismCodeViewerPre.dataset.lineOffset).toBe(element.targetLineNumber);
+    const prismCodeViewerPreCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
+    expect(prismCodeViewerPreCode).toBeTruthy();
+    expect(prismCodeViewerPreCode.classList.contains('language-' + element.language)).toBeTruthy();
+    expect(prismCodeViewerPreCode.textContent).toContain(mockCode);
+    expect(global.Prism.highlightAll).toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it('renders code and logs an aggregated error when loadScript rejects', async () => {
+    mockLoadScriptImpl = jest.fn(() => Promise.reject(new Error('script-load-failed')));
+    const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
+    element.code = 'plain text line\nsecond line';
+    element.language = 'apex';
+    element.startingLineNumber = '10';
+    element.targetLineNumber = '18';
+
+    document.body.appendChild(element);
+    await flushPromises();
+
+    expect(element.shadowRoot.querySelector('lightning-spinner')).toBeNull();
     const prismCodeViewerPre = element.shadowRoot.querySelector('div.prism-viewer pre');
     expect(prismCodeViewerPre).toBeTruthy();
     expect(prismCodeViewerPre.dataset.start).toBe(element.startingLineNumber);
     expect(prismCodeViewerPre.dataset.line).toBe(element.targetLineNumber);
     expect(prismCodeViewerPre.dataset.lineOffset).toBe(element.targetLineNumber);
-    const prismCodeViewerCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
-    expect(prismCodeViewerCode).toBeTruthy();
-    expect(prismCodeViewerCode.classList.contains('language-' + element.language)).toBeTruthy();
-    expect(prismCodeViewerCode.textContent).toContain(mockCode);
-    expect(global.Prism.highlightAll).toHaveBeenCalled();
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
-  });
-
-  it('renders fallback code and logs an aggregated error when loadScript rejects', async () => {
-    mockLoadScriptImpl = jest.fn(() => Promise.reject(new Error('script-load-failed')));
-
-    const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
-    element.code = 'plain text line\nsecond line';
-    element.language = 'apex';
-    document.body.appendChild(element);
-    await flushPromises();
-
-    // Spinner is gated on isLoaded; failure path still flips it to true.
-    expect(element.shadowRoot.querySelector('lightning-spinner')).toBeNull();
-
-    // Fallback DOM: a single <pre class="slds-p-horizontal_medium"><code> with raw text.
-    const fallbackPre = element.shadowRoot.querySelector('div.prism-viewer pre');
-    expect(fallbackPre).toBeTruthy();
-    expect(fallbackPre.classList.contains('slds-p-horizontal_medium')).toBe(true);
-    expect(fallbackPre.hasAttribute('data-start')).toBe(false);
-    expect(fallbackPre.hasAttribute('data-line')).toBe(false);
-    const fallbackCode = fallbackPre.querySelector('code');
-    expect(fallbackCode).toBeTruthy();
-    expect(fallbackCode.classList.length).toBe(0);
-    expect(fallbackCode.textContent).toBe('plain text line\nsecond line');
+    const prismCodeViewerPreCode = prismCodeViewerPre.querySelector('code');
+    expect(prismCodeViewerPreCode).toBeTruthy();
+    expect(prismCodeViewerPreCode.classList.contains('language-' + element.language)).toBeTruthy();
+    expect(prismCodeViewerPreCode.textContent).toBe('plain text line\nsecond line');
     expect(global.Prism.highlightAll).not.toHaveBeenCalled();
-
     expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     const [loggedMessage, loggedError] = consoleErrorSpy.mock.calls[0];
     expect(loggedMessage).toContain('Failed to load Prism resources');
@@ -111,26 +109,25 @@ describe('c-logger-code-viewer', () => {
 
   it('renders fallback code and logs an aggregated error when loadStyle rejects', async () => {
     mockLoadStyleImpl = jest.fn((_owner, resourceUrl) => {
-      // Fail only on the base Prism stylesheet to also exercise the partial-failure branch.
-      if (resourceUrl && resourceUrl.endsWith('/Prism/prism.min.css')) {
+      // Fail only on the base Prism theme stylesheet to also exercise the partial-failure branch.
+      if (resourceUrl && resourceUrl.endsWith('/Prism/themes/prism-tomorrow.min.css')) {
         return Promise.reject(new Error('style-load-failed'));
       }
       return Promise.resolve();
     });
-
     const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
     element.code = 'css-failure-code';
+
     document.body.appendChild(element);
     await flushPromises();
 
-    const fallbackCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
-    expect(fallbackCode).toBeTruthy();
-    expect(fallbackCode.textContent).toBe('css-failure-code');
-
+    const prismCodeViewerPreCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
+    expect(prismCodeViewerPreCode).toBeTruthy();
+    expect(prismCodeViewerPreCode.textContent).toBe('css-failure-code');
     expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     const [, loggedError] = consoleErrorSpy.mock.calls[0];
     expect(loggedError.message).toContain('"resourceType": "style"');
-    expect(loggedError.message).toContain('/Prism/prism.min.css');
+    expect(loggedError.message).toContain('/Prism/themes/prism-tomorrow.min.css');
     expect(loggedError.message).toContain('style-load-failed');
     // The custom stylesheet still resolved, so it should not appear in the failure list.
     expect(loggedError.message).not.toContain('prism.nebula-logger.css');
@@ -150,7 +147,7 @@ describe('c-logger-code-viewer', () => {
     expect(loggedError.message).toContain('script-fail');
     expect(loggedError.message).toContain('style-fail');
     expect(loggedError.message).toContain('/Prism/prism.min.js');
-    expect(loggedError.message).toContain('/Prism/prism.min.css');
+    expect(loggedError.message).toContain('/Prism/themes/prism-tomorrow.min.css');
     expect(loggedError.message).toContain('/Prism/prism.nebula-logger.css');
   });
 
@@ -180,7 +177,8 @@ describe('c-logger-code-viewer', () => {
 
     const fallbackCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
     expect(fallbackCode).toBeTruthy();
-    expect(fallbackCode.textContent).toBe('');
+    // eslint-disable-next-line
+    expect(fallbackCode.innerHTML).toBe('');
   });
 
   it('does not retry resource loading on later renders after a failure', async () => {
@@ -211,13 +209,13 @@ describe('c-logger-code-viewer', () => {
     await flushPromises();
 
     expect(mockLoadScriptImpl).toHaveBeenCalledTimes(1);
-    expect(global.Prism.highlightAll).toHaveBeenCalledTimes(2); // intentional double-call
+    expect(global.Prism.highlightAll).toHaveBeenCalledTimes(1);
 
     element.code = 'second';
     await flushPromises();
 
     expect(mockLoadScriptImpl).toHaveBeenCalledTimes(1);
     // Prism.highlightAll is gated by the same isLoaded short-circuit, so it should not run again.
-    expect(global.Prism.highlightAll).toHaveBeenCalledTimes(2);
+    expect(global.Prism.highlightAll).toHaveBeenCalledTimes(1);
   });
 });
