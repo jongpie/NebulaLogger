@@ -1,6 +1,6 @@
 {
   "name": "nebula-logger",
-  "version": "4.18.2",
+  "version": "4.18.3",
   "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
   "author": "Jonathan Gillespie",
   "license": "MIT",
@@ -54,6 +54,8 @@
     "plugin:version:create:big-object": "sf package version create --json --package \"Nebula Logger - Core Plugin - Big Object Archiving\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:log-retention-rules": "sf package version create --json --package \"Nebula Logger - Core Plugin - Log Retention Rules\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
     "plugin:version:create:slack": "sf package version create --json --package \"Nebula Logger - Core Plugin - Slack\" --skip-ancestor-check --code-coverage --installation-key-bypass --wait 30",
+    "postinstall": "npm run prism:build",
+    "prism:build": "node scripts/build/build-prism-static-resources.js",
     "prepare": "chmod +x ./.husky/pre-commit",
     "prettier:fix": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}\"",
     "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}\"",
@@ -74,6 +76,9 @@
     "test:lwc:nocoverage": "sfdx-lwc-jest",
     "test:nocoverage": "npm run test:lwc:nocoverage && npm run test:apex:nocoverage"
   },
+  "dependencies": {
+    "prismjs": "1.30.0"
+  },
   "devDependencies": {
     "@cparra/apexdocs": "1.13.7",
     "@jongpie/sfdx-bummer-plugin": "0.0.20",
@@ -82,6 +87,7 @@
     "@salesforce/eslint-config-lwc": "4.1.2",
     "@salesforce/sfdx-lwc-jest": "7.5.0",
     "@types/jest-when": "3.5.5",
+    "esbuild": "^0.28.0",
     "husky": "9.1.7",
     "jest-when": "3.7.0",
     "jsdoc-to-markdown": "9.1.3",
