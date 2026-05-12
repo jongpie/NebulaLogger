@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.18.2.NEXT",
-      "versionName": "New Field LogEntry__c.WasLoggedByCurrentUser__c",
-      "versionDescription": "Added a new field LogEntry__c.WasLoggedByCurrentUser__c & LogEntry__c list view MyGeneratedLogEntries, similar to the existing field Log__c.WasLoggedByCurrentUser__c record & Log__c list view",
+      "versionNumber": "4.18.3.NEXT",
+      "versionName": "PrismJS Loading Improvements & Error Handling",
+      "versionDescription": "Fixed some issues with loading PrismJS from LoggerStaticResoures by switching to minified versions + added error handling with fallback display when PrismJS cannot be properly loaded",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
