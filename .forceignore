@@ -25,6 +25,6 @@ nebula-logger/managed-package/**/*.testSuite-meta.xml
 
 # PrismJS - only the minified files are deployed, the unminified versions are
 # only kept in source control to make it easier to see what's changed when upgrading PrismJS.
-nebula-logger/core/main/log-management/staticresources/LoggerResources/prism.js
-nebula-logger/core/main/log-management/staticresources/LoggerResources/themes/prism-tomorrow.css
-nebula-logger/core/main/log-management/staticresources/LoggerResources/README.md
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/prism.js
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/themes/prism-tomorrow.css
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/README.md

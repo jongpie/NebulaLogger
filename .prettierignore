@@ -22,6 +22,6 @@ yarn.lock
 
 # PrismJS - these files are automatically updated & minified,
 # so no need for prettier to format them.
-nebula-logger/core/main/log-management/staticresources/LoggerResources/prism.js
-nebula-logger/core/main/log-management/staticresources/LoggerResources/prism.min.js
-nebula-logger/core/main/log-management/staticresources/LoggerResources/themes/*.*
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/prism.js
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/prism.min.js
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/themes/*.*
