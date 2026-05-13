@@ -129,7 +129,7 @@ describe('c-logger-code-viewer', () => {
 
     it('renders fallback code and logs an aggregated error when loadStyle rejects', async () => {
       mockLoadStyleImpl = jest.fn((_owner, resourceUrl) => {
-        if (resourceUrl && resourceUrl.endsWith('/Prism/themes/prism-tomorrow.min.css')) {
+        if (resourceUrl && resourceUrl.endsWith('/Prism/prism.nebula-logger.css')) {
           return Promise.reject(new Error('style-load-failed'));
         }
         return Promise.resolve();
@@ -146,9 +146,8 @@ describe('c-logger-code-viewer', () => {
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       const [, loggedError] = consoleErrorSpy.mock.calls[0];
       expect(loggedError.message).toContain('"resourceType": "style"');
-      expect(loggedError.message).toContain('/Prism/themes/prism-tomorrow.min.css');
+      expect(loggedError.message).toContain('/Prism/prism.nebula-logger.css');
       expect(loggedError.message).toContain('style-load-failed');
-      expect(loggedError.message).not.toContain('prism.nebula-logger.css');
     });
 
     it('aggregates multiple resource failures into a single error message', async () => {
@@ -165,7 +164,6 @@ describe('c-logger-code-viewer', () => {
       expect(loggedError.message).toContain('script-fail');
       expect(loggedError.message).toContain('style-fail');
       expect(loggedError.message).toContain('/Prism/prism.min.js');
-      expect(loggedError.message).toContain('/Prism/themes/prism-tomorrow.min.css');
       expect(loggedError.message).toContain('/Prism/prism.nebula-logger.css');
     });
 
@@ -384,22 +382,62 @@ describe('c-logger-code-viewer', () => {
   });
 
   describe('theme picker interaction', () => {
-    it('persists theme selection and re-renders Prism with the new theme stylesheet', async () => {
+    const queryThemeLink = element => element.shadowRoot.querySelector('link[data-id="theme-stylesheet"]');
+
+    it('renders exactly one theme stylesheet link and updates its href on theme change', async () => {
       const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
       element.code = 'x';
       element.config = { showThemePicker: true };
       document.body.appendChild(element);
       await flushPromises();
 
-      mockLoadStyleImpl.mockClear();
+      let themeLink = queryThemeLink(element);
+      expect(themeLink).toBeTruthy();
+      expect(themeLink.getAttribute('rel')).toBe('stylesheet');
+      expect(themeLink.getAttribute('href')).toContain('prism-tomorrow.min.css');
 
       const picker = element.shadowRoot.querySelector('[data-id="theme-picker"]');
       picker.dispatchEvent(new CustomEvent('change', { detail: { value: 'prism-okaidia' } }));
       await flushPromises();
 
+      // Still exactly one link, with the new theme href — no accumulation.
+      const allLinks = element.shadowRoot.querySelectorAll('link[data-id="theme-stylesheet"]');
+      expect(allLinks.length).toBe(1);
+      themeLink = allLinks[0];
+      expect(themeLink.getAttribute('href')).toContain('prism-okaidia.min.css');
+      expect(themeLink.getAttribute('href')).not.toContain('prism-tomorrow.min.css');
       expect(storage['nebula-logger:theme']).toBe('prism-okaidia');
-      const newStyleCalls = mockLoadStyleImpl.mock.calls.map(call => call[1]);
-      expect(newStyleCalls.some(url => url.includes('prism-okaidia.min.css'))).toBe(true);
+    });
+
+    it('does not call loadStyle for theme stylesheets (theme is managed via a single link element)', async () => {
+      const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
+      element.code = 'x';
+      element.config = { showThemePicker: true };
+      document.body.appendChild(element);
+      await flushPromises();
+
+      const themeStyleLoads = mockLoadStyleImpl.mock.calls.filter(call => call[1] && call[1].includes('/Prism/themes/'));
+      expect(themeStyleLoads.length).toBe(0);
+    });
+
+    it('keeps exactly one stylesheet link after switching themes back and forth multiple times', async () => {
+      const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
+      element.code = 'x';
+      element.config = { showThemePicker: true };
+      document.body.appendChild(element);
+      await flushPromises();
+
+      const picker = element.shadowRoot.querySelector('[data-id="theme-picker"]');
+      const themeRotation = ['prism-okaidia', 'prism-tomorrow', 'prism-twilight', 'prism-coy', 'prism-okaidia'];
+      for (const theme of themeRotation) {
+        picker.dispatchEvent(new CustomEvent('change', { detail: { value: theme } }));
+        /* eslint-disable-next-line no-await-in-loop */
+        await flushPromises();
+      }
+
+      const allLinks = element.shadowRoot.querySelectorAll('link[data-id="theme-stylesheet"]');
+      expect(allLinks.length).toBe(1);
+      expect(allLinks[0].getAttribute('href')).toContain('prism-okaidia.min.css');
     });
 
     it('updates other instances when the theme changes (cross-instance broadcast)', async () => {
@@ -414,19 +452,14 @@ describe('c-logger-code-viewer', () => {
       document.body.appendChild(elementB);
 
       await flushPromises();
-      mockLoadStyleImpl.mockClear();
 
       const picker = elementA.shadowRoot.querySelector('[data-id="theme-picker"]');
       picker.dispatchEvent(new CustomEvent('change', { detail: { value: 'prism-twilight' } }));
       await flushPromises();
 
-      // Each subscribed instance loads the new theme stylesheet via loadStyle. Two live instances
-      // means we expect at least two loadStyle calls for the new theme URL — one per subscriber.
-      const twilightLoads = mockLoadStyleImpl.mock.calls.filter(call => call[1] && call[1].includes('prism-twilight.min.css'));
-      expect(twilightLoads.length).toBeGreaterThanOrEqual(2);
-      // Verify each call had a distinct owner (the two component instances).
-      const distinctOwners = new Set(twilightLoads.map(call => call[0]));
-      expect(distinctOwners.size).toBeGreaterThanOrEqual(2);
+      // Both instances should now reference the new theme via their own single link element.
+      expect(queryThemeLink(elementA).getAttribute('href')).toContain('prism-twilight.min.css');
+      expect(queryThemeLink(elementB).getAttribute('href')).toContain('prism-twilight.min.css');
     });
   });
 
@@ -448,33 +481,34 @@ describe('c-logger-code-viewer', () => {
 
   describe('teardown', () => {
     it('unsubscribes from theme changes when the component is removed', async () => {
-      const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
-      element.code = 'x';
-      element.config = { showThemePicker: true };
-      document.body.appendChild(element);
+      const detachedElement = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
+      detachedElement.code = 'x';
+      detachedElement.config = { showThemePicker: true };
+      document.body.appendChild(detachedElement);
       await flushPromises();
 
-      element.remove();
+      // Capture the detached element's shadow root *before* removal so we can inspect it after.
+      const detachedShadow = detachedElement.shadowRoot;
+      const initialHref = detachedShadow.querySelector('link[data-id="theme-stylesheet"]').getAttribute('href');
+
+      detachedElement.remove();
       await flushPromises();
 
-      // After removal, changing theme on another instance should not invoke loadStyle on behalf of
-      // the disconnected viewer. We assert by counting how many times loadStyle is called for the
-      // detached owner element.
-      mockLoadStyleImpl.mockClear();
       const liveElement = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
       liveElement.code = 'y';
       liveElement.config = { showThemePicker: true };
       document.body.appendChild(liveElement);
       await flushPromises();
-      mockLoadStyleImpl.mockClear();
 
       const picker = liveElement.shadowRoot.querySelector('[data-id="theme-picker"]');
       picker.dispatchEvent(new CustomEvent('change', { detail: { value: 'prism-coy' } }));
       await flushPromises();
 
-      const ownersCalled = mockLoadStyleImpl.mock.calls.map(call => call[0]);
-      // The disconnected element should never appear as the owner of a loadStyle call.
-      expect(ownersCalled.includes(element)).toBe(false);
+      // The detached element's stylesheet link should NOT have been mutated by the theme change.
+      const detachedHrefAfter = detachedShadow.querySelector('link[data-id="theme-stylesheet"]')?.getAttribute('href');
+      expect(detachedHrefAfter).toBe(initialHref);
+      // And the live element's link reflects the new theme.
+      expect(liveElement.shadowRoot.querySelector('link[data-id="theme-stylesheet"]').getAttribute('href')).toContain('prism-coy.min.css');
     });
   });
 });

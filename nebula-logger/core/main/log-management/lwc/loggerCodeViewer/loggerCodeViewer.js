@@ -23,17 +23,17 @@ const AUTO_LANGUAGE_VALUE = 'auto';
 
 const DEFAULT_LANGUAGE_OPTIONS = [
   { label: 'Auto', value: AUTO_LANGUAGE_VALUE },
-  { label: 'Plain text', value: 'plaintext' },
-  { label: 'JSON', value: 'json' },
-  { label: 'XML', value: 'xml' },
+  { label: 'Apex', value: 'apex' },
+  { label: 'CSS', value: 'css' },
   { label: 'HTML', value: 'html' },
   { label: 'HTTP', value: 'http' },
-  { label: 'Apex', value: 'apex' },
   { label: 'JavaScript', value: 'javascript' },
-  { label: 'TypeScript', value: 'typescript' },
-  { label: 'SQL', value: 'sql' },
+  { label: 'JSON', value: 'json' },
   { label: 'Markdown', value: 'markdown' },
-  { label: 'CSS', value: 'css' }
+  { label: 'Plain text', value: 'plaintext' },
+  { label: 'SQL', value: 'sql' },
+  { label: 'TypeScript', value: 'typescript' },
+  { label: 'XML', value: 'xml' }
 ];
 
 export default class LoggerCodeViewer extends LightningElement {
@@ -56,7 +56,6 @@ export default class LoggerCodeViewer extends LightningElement {
   isLoaded = false;
   _activeLanguage;
   _activeTheme;
-  _activeThemeUrl;
   _themeSubscriber;
 
   connectedCallback() {
@@ -116,6 +115,11 @@ export default class LoggerCodeViewer extends LightningElement {
   }
 
   async renderedCallback() {
+    // The theme stylesheet is managed as a single <link> element whose href we mutate on theme change.
+    // This avoids the additive-style problem of loadStyle, which appends a new <style> per call without
+    // removing the previous one — switching themes back and forth would otherwise stack stylesheets.
+    this._ensureThemeStylesheetLink();
+
     if (this.isLoaded || this.hasLoadError) {
       return;
     }
@@ -135,13 +139,12 @@ export default class LoggerCodeViewer extends LightningElement {
   }
 
   async _loadPrismResources() {
+    // Theme CSS is intentionally NOT loaded via loadStyle here — see _ensureThemeStylesheetLink for why.
     const prismScriptUrl = loggerStaticResources + '/Prism/prism.min.js';
-    const prismBaseStyleUrl = this._buildThemeUrl(this._activeTheme || DEFAULT_THEME);
     const prismCustomStyleUrl = loggerStaticResources + '/Prism/prism.nebula-logger.css';
 
     const resourceLoads = [
       { resourceType: 'script', resourceUrl: prismScriptUrl, promise: loadScript(this, prismScriptUrl) },
-      { resourceType: 'style', resourceUrl: prismBaseStyleUrl, promise: loadStyle(this, prismBaseStyleUrl) },
       { resourceType: 'style', resourceUrl: prismCustomStyleUrl, promise: loadStyle(this, prismCustomStyleUrl) }
     ];
 
@@ -161,8 +164,24 @@ export default class LoggerCodeViewer extends LightningElement {
       const serializedLoadFailures = failedResourceLoads.map(this._serializeLoadFailure);
       throw new Error(`Failed to load Prism resources from LoggerResources static resource\n\n${JSON.stringify(serializedLoadFailures, null, 2)}`);
     }
+  }
 
-    this._activeThemeUrl = prismBaseStyleUrl;
+  _ensureThemeStylesheetLink() {
+    const host = this.template.querySelector('.theme-stylesheet-host');
+    if (!host) {
+      return;
+    }
+    const expectedHref = this._buildThemeUrl(this._activeTheme || DEFAULT_THEME);
+    let link = host.querySelector('link[data-id="theme-stylesheet"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'stylesheet');
+      link.setAttribute('data-id', 'theme-stylesheet');
+      host.appendChild(link);
+    }
+    if (link.getAttribute('href') !== expectedHref) {
+      link.setAttribute('href', expectedHref);
+    }
   }
 
   _buildThemeUrl(theme) {
@@ -256,19 +275,12 @@ export default class LoggerCodeViewer extends LightningElement {
     setRememberPreference(!!event.detail?.checked);
   }
 
-  async _onThemeChanged(newTheme) {
+  _onThemeChanged(newTheme) {
     if (!newTheme || newTheme === this._activeTheme) {
       return;
     }
     this._activeTheme = newTheme;
-    const newUrl = this._buildThemeUrl(newTheme);
-    try {
-      await loadStyle(this, newUrl);
-      this._activeThemeUrl = newUrl;
-    } catch (error) {
-      /* eslint-disable-next-line no-console */
-      console.error(`Failed to load Prism theme: ${newUrl}`, error);
-    }
+    this._ensureThemeStylesheetLink();
   }
 
   _serializeLoadFailure(failure) {

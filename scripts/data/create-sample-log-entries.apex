@@ -54,7 +54,7 @@ httpResponse.setStatusCode(201);
 System.RestRequest restRequest = new System.RestRequest();
 restRequest.httpMethod = 'GET';
 restRequest.remoteAddress = '1.1.1.1';
-restRequest.requestBody = Blob.valueOf('{hello:"world"}');
+restRequest.requestBody = Blob.valueOf('{\n\t"hello":"world"\n}');
 restRequest.requestURI = 'some-uri-value';
 restRequest.resourcePath = '/some/resource/path';
 restRequest.addHeader('some-header', 'some value');
@@ -65,7 +65,7 @@ restRequest.addParameter('some-parameter', 'some value');
 System.RestResponse restResponse = new System.RestResponse();
 restResponse.addHeader('some-header', 'some value');
 restResponse.addHeader('Content-Type', 'application/json');
-restResponse.responseBody = Blob.valueOf('{hello:"world"}');
+restResponse.responseBody = Blob.valueOf('{\n\t"hello":"world"\n}');
 restResponse.statusCode = 200;
 // Logger.info('logging a REST response').setRestResponseDetails(restResponse);
 
