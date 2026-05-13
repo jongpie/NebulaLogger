@@ -1,0 +1,27 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+  <c-logger-page-section>
+    <span slot="title">Exception Details</span>
+    <div slot="content" class="slds-grid slds-wrap slds-gutters_x-small">
+      <lightning-record-view-form record-id={recordId} object-api-name="LogEntry__c">
+        <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
+          <lightning-output-field field-name="ExceptionType__c"></lightning-output-field>
+        </div>
+      </lightning-record-view-form>
+      <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
+        <c-log-entry-field-viewer record-id={recordId} field-api-name="ExceptionMessage__c" config={exceptionMessageConfig}>
+          <span slot="title">Exception Message</span>
+        </c-log-entry-field-viewer>
+      </div>
+      <div class="slds-col slds-size_1-of-1">
+        <c-log-entry-field-viewer record-id={recordId} field-api-name="ExceptionStackTrace__c" config={exceptionStackTraceConfig}>
+          <span slot="title">Exception Stack Trace</span>
+        </c-log-entry-field-viewer>
+      </div>
+    </div>
+  </c-logger-page-section>
+</template>

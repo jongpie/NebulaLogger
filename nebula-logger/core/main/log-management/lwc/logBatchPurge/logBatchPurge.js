@@ -14,22 +14,16 @@ import getPurgeActionOptions from '@salesforce/apex/LogBatchPurgeController.getP
 import runBatchPurge from '@salesforce/apex/LogBatchPurgeController.runBatchPurge';
 import getBatchPurgeJobRecords from '@salesforce/apex/LogBatchPurgeController.getBatchPurgeJobRecords';
 
+const POLLING_FREQUENCY_MS = 10000;
+const TRACKED_OBJECTS = ['Log__c', 'LogEntry__c', 'LogEntryTag__c'];
+
 export default class LogBatchPurge extends LightningElement {
-  // UI
   showLoadingSpinner = false;
   title = 'Log Batch Purge';
 
-  // log  metrics
-  logObjectSchema;
-  logEntryObjectSchema;
-  logEntryTagObjectSchema;
-
-  metricsResult;
-  metricsColumns = [];
   metricsRecords = [];
-  purgeActionOptions;
+  purgeActionOptions = [];
 
-  // Date filter options
   selectedDateFilterOption = 'TODAY';
   dateFilterOptions = [
     { label: 'Today', value: 'TODAY' },
@@ -37,94 +31,137 @@ export default class LogBatchPurge extends LightningElement {
     { label: 'This Month', value: 'THIS_MONTH' }
   ];
 
-  // Purge Batch
   purgeBatchColumns = [];
   purgeBatchJobRecords = [];
-  disableRunPurgeButton;
+  // Default to disabled until canUserRunLogBatchPurger() resolves — a destructive
+  // button must never be enabled before its permission check completes.
+  disableRunPurgeButton = true;
 
-  #pollingFrequency = 10000; // milliseconds
+  #objectSchemasByApiName = {};
 
   connectedCallback() {
-    this.selectedDateFilterOption = 'TODAY';
-
-    this.loadMetricRecords();
-    this.loadPurgeBatchColumns();
-    this.loadPurgeBatchJobRecords();
-
-    this.pollPurgeBatchJobRecords();
+    this.purgeBatchColumns = this._buildPurgeBatchColumns();
+    this._initialize();
   }
 
-  loadMetricRecords() {
+  async _initialize() {
     this.showLoadingSpinner = true;
+    try {
+      const [purgeActionOptions, ...schemas] = await Promise.all([
+        getPurgeActionOptions(),
+        ...TRACKED_OBJECTS.map(sobjectApiName => getSchemaForName({ sobjectApiName }))
+      ]);
+      this.purgeActionOptions = purgeActionOptions;
+      TRACKED_OBJECTS.forEach((apiName, index) => {
+        this.#objectSchemasByApiName[apiName] = schemas[index];
+      });
 
-    Promise.all([
-      getMetrics({ dateFilterOption: this.selectedDateFilterOption }),
-      getPurgeActionOptions(),
-      getSchemaForName({ sobjectApiName: 'Log__c' }),
-      getSchemaForName({ sobjectApiName: 'LogEntry__c' }),
-      getSchemaForName({ sobjectApiName: 'LogEntryTag__c' })
-    ])
-      .then(([metricsResult, purgeActionOptionsResult, logObjectSchema, logEntryObjectSchema, logEntryTagObjectSchema]) => {
-        this.metricsResult = metricsResult;
-        this.purgeActionOptions = purgeActionOptionsResult;
-        this.logObjectSchema = logObjectSchema;
-        this.logEntryObjectSchema = logEntryObjectSchema;
-        this.logEntryTagObjectSchema = logEntryTagObjectSchema;
-
-        const METRIC_TEMPLATE = [
-          {
-            sObjectName: this.logObjectSchema.label,
-            sObjectApiName: 'Log__c',
-            rowSpan: this.purgeActionOptions.length + 1,
-            summary: []
-          },
-          {
-            sObjectName: this.logEntryObjectSchema.label,
-            sObjectApiName: 'LogEntry__c',
-            rowSpan: this.purgeActionOptions.length + 1,
-            summary: []
-          },
-          {
-            sObjectName: this.logEntryTagObjectSchema.label,
-            sObjectApiName: 'LogEntryTag__c',
-            rowSpan: this.purgeActionOptions.length + 1,
-            summary: []
-          }
-        ];
-
-        let records = [...METRIC_TEMPLATE];
-
-        records.forEach(record => {
-          const aMetricRecord = metricsResult[record.sObjectApiName];
-          record.summary = this.purgeActionOptions.map(option => {
-            const summary = aMetricRecord.filter(item => item.LogPurgeAction__c === option.value);
-            return {
-              key: record.sObjectApiName + '-' + option.value,
-              purgeAction: option.value,
-              count: summary.length > 0 ? summary[0].expr0 : 0
-            };
-          });
-        });
-        this.metricsRecords = records;
-        this.showLoadingSpinner = false;
-      })
-      .catch(this._handleError);
+      await Promise.all([this._loadMetricRecords(), this._loadPurgeBatchJobRecords()]);
+    } catch (error) {
+      this._handleError(error);
+    } finally {
+      this.showLoadingSpinner = false;
+      this._scheduleNextPoll();
+    }
   }
 
-  loadPurgeBatchColumns() {
-    let columns = [
+  async _loadMetricRecords() {
+    const metricsResult = await getMetrics({ dateFilterOption: this.selectedDateFilterOption });
+
+    this.metricsRecords = TRACKED_OBJECTS.map(sObjectApiName => {
+      const summaryByPurgeAction = metricsResult[sObjectApiName] || [];
+      return {
+        sObjectName: this.#objectSchemasByApiName[sObjectApiName].label,
+        sObjectApiName,
+        rowSpan: this.purgeActionOptions.length + 1,
+        summary: this.purgeActionOptions.map(option => {
+          const match = summaryByPurgeAction.find(item => item.LogPurgeAction__c === option.value);
+          return {
+            key: `${sObjectApiName}-${option.value}`,
+            purgeAction: option.value,
+            count: match ? match.recordCount : 0
+          };
+        })
+      };
+    });
+  }
+
+  async _loadPurgeBatchJobRecords() {
+    const [purgeBatchResult, canUserRun] = await Promise.all([getBatchPurgeJobRecords(), canUserRunLogBatchPurger()]);
+    this.disableRunPurgeButton = !canUserRun;
+    this.purgeBatchJobRecords = purgeBatchResult.map(record => ({
+      ...record,
+      CreatedByName: record.CreatedBy.Name
+    }));
+  }
+
+  async runBatchPurge() {
+    const confirmationResult = await LightningConfirm.open({
+      label: 'Confirm Job Execution',
+      message: 'Are you sure that you want to run LogBatchPurger? This will delete data!',
+      theme: 'warning'
+    });
+
+    if (!confirmationResult) {
+      return;
+    }
+
+    try {
+      const jobId = await runBatchPurge();
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: `Purge Job ${jobId} submitted`,
+          variant: 'success'
+        })
+      );
+      await this._loadPurgeBatchJobRecords();
+    } catch (error) {
+      this._handleError(error);
+    }
+  }
+
+  async refreshPurgeBatchRecords() {
+    this.showLoadingSpinner = true;
+    try {
+      await this._loadPurgeBatchJobRecords();
+    } catch (error) {
+      this._handleError(error);
+    } finally {
+      this.showLoadingSpinner = false;
+    }
+  }
+
+  async onChangeDateFilter(event) {
+    this.selectedDateFilterOption = event.detail.value;
+    this.showLoadingSpinner = true;
+    try {
+      await this._loadMetricRecords();
+    } catch (error) {
+      this._handleError(error);
+    } finally {
+      this.showLoadingSpinner = false;
+    }
+  }
+
+  _scheduleNextPoll() {
+    /* eslint-disable-next-line @lwc/lwc/no-async-operation */
+    setTimeout(async () => {
+      try {
+        await Promise.all([this._loadMetricRecords(), this._loadPurgeBatchJobRecords()]);
+      } catch (error) {
+        this._handleError(error);
+      } finally {
+        this._scheduleNextPoll();
+      }
+    }, POLLING_FREQUENCY_MS);
+  }
+
+  _buildPurgeBatchColumns() {
+    return [
       { label: 'Job ID', fieldName: 'Id', initialWidth: 180 },
       { label: 'Job Type', fieldName: 'JobType', initialWidth: 170 },
-      {
-        label: 'Job Items Processed',
-        fieldName: 'JobItemsProcessed',
-        initialWidth: 180
-      },
-      {
-        label: 'Number of Errors',
-        fieldName: 'NumberOfErrors',
-        initialWidth: 170
-      },
+      { label: 'Job Items Processed', fieldName: 'JobItemsProcessed', initialWidth: 180 },
+      { label: 'Number of Errors', fieldName: 'NumberOfErrors', initialWidth: 170 },
       {
         label: 'Submitted On',
         fieldName: 'CreatedDate',
@@ -140,78 +177,14 @@ export default class LogBatchPurge extends LightningElement {
           hour12: true
         }
       },
-      {
-        label: 'Submitted By',
-        fieldName: 'CreatedByName',
-        type: 'text',
-        initialWidth: 150
-      },
+      { label: 'Submitted By', fieldName: 'CreatedByName', type: 'text', initialWidth: 150 },
       { label: 'Status', fieldName: 'Status', type: 'text' }
     ];
-
-    this.purgeBatchColumns = columns;
-  }
-
-  loadPurgeBatchJobRecords() {
-    this.showLoadingSpinner = true;
-    Promise.all([getBatchPurgeJobRecords(), canUserRunLogBatchPurger()])
-      .then(([purgeBatchResult, canUserRunLogBatchPurgerAdHocResult]) => {
-        this.disableRunPurgeButton = !canUserRunLogBatchPurgerAdHocResult;
-        const formattedBatchJobRecords = purgeBatchResult.map(record => {
-          record.CreatedByName = record.CreatedBy.Name;
-          return record;
-        });
-        this.purgeBatchJobRecords = formattedBatchJobRecords;
-        this.showLoadingSpinner = false;
-      })
-      .catch(this._handleError);
-  }
-
-  async runBatchPurge() {
-    const confirmationResult = await LightningConfirm.open({
-      label: 'Confirm Job Execution',
-      message: 'Are you sure that you want to run LogBatchPurger? This will delete data!',
-      theme: 'warning'
-    });
-
-    if (!confirmationResult) {
-      return;
-    }
-
-    runBatchPurge()
-      .then(result => {
-        this.dispatchEvent(
-          new ShowToastEvent({
-            title: `Purge Job ${result} submitted`,
-            variant: 'success'
-          })
-        );
-        this.loadPurgeBatchJobRecords();
-      })
-      .catch(this._handleError);
-  }
-
-  refreshPurgeBatchRecords() {
-    this.loadPurgeBatchJobRecords();
-  }
-
-  onChangeDateFilter(event) {
-    this.selectedDateFilterOption = event.detail.value;
-    this.loadMetricRecords();
-  }
-
-  pollPurgeBatchJobRecords() {
-    // eslint-disable-next-line
-    setTimeout(() => {
-      this.loadPurgeBatchJobRecords();
-      this.loadMetricRecords();
-      this.pollPurgeBatchJobRecords();
-    }, this.#pollingFrequency);
   }
 
   _handleError = error => {
     const errorMessage = error.body ? error.body.message : error.message;
-    // eslint-disable-next-line
+    /* eslint-disable-next-line no-console */
     console.error(errorMessage, error);
     this.dispatchEvent(
       new ShowToastEvent({

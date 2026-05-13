@@ -1,0 +1,60 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+  <c-logger-page-section>
+    <span slot="title">Apex REST Service Details</span>
+    <div slot="content" class="slds-grid slds-wrap slds-gutters_x-small">
+      <lightning-record-view-form record-id={recordId} object-api-name="LogEntry__c">
+        <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-gutters_x-small slds-p-bottom_x-small">
+          <div class="slds-col slds-size_1-of-1 slds-text-heading_small slds-p-bottom_xx-small">Request</div>
+          <div class="slds-col slds-size_1-of-1">
+            <lightning-output-field field-name="RestRequestResourcePath__c"></lightning-output-field>
+          </div>
+          <div class="slds-col slds-size_1-of-1">
+            <lightning-output-field field-name="RestRequestUri__c"></lightning-output-field>
+          </div>
+          <div class="slds-col slds-size_1-of-2">
+            <lightning-output-field field-name="RestRequestMethod__c"></lightning-output-field>
+          </div>
+          <div class="slds-col slds-size_1-of-2">
+            <lightning-output-field field-name="RestRequestRemoteAddress__c"></lightning-output-field>
+          </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-grid slds-wrap slds-gutters_x-small slds-p-bottom_x-small">
+          <div class="slds-col slds-size_1-of-1 slds-text-heading_small slds-p-bottom_xx-small">Response</div>
+          <div class="slds-col slds-size_1-of-1">
+            <lightning-output-field field-name="RestResponseStatusCode__c"></lightning-output-field>
+          </div>
+        </div>
+      </lightning-record-view-form>
+      <div class="slds-col slds-size_1-of-2 slds-p-bottom_x-small">
+        <c-log-entry-field-viewer record-id={recordId} field-api-name="RestRequestHeaders__c" config={requestHeadersConfig}>
+          <span slot="title">Request Headers</span>
+        </c-log-entry-field-viewer>
+      </div>
+      <div class="slds-col slds-size_1-of-2 slds-p-bottom_x-small">
+        <c-log-entry-field-viewer record-id={recordId} field-api-name="RestResponseHeaders__c" config={responseHeadersConfig}>
+          <span slot="title">Response Headers</span>
+        </c-log-entry-field-viewer>
+      </div>
+      <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
+        <c-log-entry-field-viewer record-id={recordId} field-api-name="RestRequestParameters__c" config={requestParametersConfig}>
+          <span slot="title">Request Parameters</span>
+        </c-log-entry-field-viewer>
+      </div>
+      <div class="slds-col slds-size_1-of-2">
+        <c-log-entry-field-viewer record-id={recordId} field-api-name="RestRequestBody__c" config={requestBodyConfig}>
+          <span slot="title">Request Body</span>
+        </c-log-entry-field-viewer>
+      </div>
+      <div class="slds-col slds-size_1-of-2">
+        <c-log-entry-field-viewer record-id={recordId} field-api-name="RestResponseBody__c" config={responseBodyConfig}>
+          <span slot="title">Response Body</span>
+        </c-log-entry-field-viewer>
+      </div>
+    </div>
+  </c-logger-page-section>
+</template>

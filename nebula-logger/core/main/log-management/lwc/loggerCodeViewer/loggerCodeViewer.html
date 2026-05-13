@@ -11,6 +11,48 @@
     <div class="slds-m-horizontal_medium slds-m-top_medium" slot="actions">
       <slot name="actions"></slot>
     </div>
+    <template if:true={hasToolbar}>
+      <div class="slds-grid slds-grid_align-end slds-gutters_x-small slds-p-horizontal_medium slds-p-bottom_x-small">
+        <template if:true={showLanguagePicker}>
+          <div class="slds-col slds-grow-none">
+            <lightning-combobox
+              data-id="language-picker"
+              label="Render as"
+              variant="label-hidden"
+              options={languageOptions}
+              value={currentLanguageSelection}
+              onchange={handleLanguageChange}
+            ></lightning-combobox>
+          </div>
+        </template>
+        <template if:true={showThemePicker}>
+          <div class="slds-col slds-grow-none">
+            <lightning-combobox
+              data-id="theme-picker"
+              label="Theme"
+              variant="label-hidden"
+              options={themeOptions}
+              value={currentTheme}
+              onchange={handleThemeChange}
+            ></lightning-combobox>
+          </div>
+        </template>
+        <template if:true={showRememberPreference}>
+          <div class="slds-col slds-grow-none slds-align-middle">
+            <lightning-input
+              data-id="remember-toggle"
+              type="toggle"
+              label="Remember"
+              variant="label-hidden"
+              checked={rememberChecked}
+              message-toggle-active="Remembered"
+              message-toggle-inactive="Not remembered"
+              onchange={handleRememberChange}
+            ></lightning-input>
+          </div>
+        </template>
+      </div>
+    </template>
     <template if:false={isLoaded}>
       <div class="slds-is-relative" style="min-height: 6em">
         <lightning-spinner variant="inverse"></lightning-spinner>

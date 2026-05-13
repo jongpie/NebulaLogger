@@ -8,7 +8,7 @@
  * @description Controller class for lwc `logBatchPurge`, used to provide metrics of `Log__c`, `LogEntry__c`,
  *              `LogEntryTag__c` records to purge and allow user to manually run `LogBatchPurger` from the UI.
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessivePublicCount')
 public with sharing class LogBatchPurgeController {
   @TestVisible
   private static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';
@@ -16,10 +16,16 @@ public with sharing class LogBatchPurgeController {
   private static final String CUSTOM_LOG_PURGE_ACTION_PREFIX = 'CustomLogPurgeAction';
   @TestVisible
   private static final String DELETE_LOG_PURGE_ACTION = 'Delete';
+  @TestVisible
+  private static final String LOG_PURGE_ACTION_ALIAS = 'LogPurgeAction__c';
+  @TestVisible
+  private static final String RECORD_COUNT_ALIAS = 'recordCount';
+  private static final Set<String> SUPPORTED_DATE_FILTER_OPTIONS = new Set<String>{ 'TODAY', 'THIS_WEEK', 'THIS_MONTH' };
 
   /**
-   * @description Returns true if the current user has delete permission on the Log__c object or
-   * @return true if the current user has delete permission on the Log__c object.
+   * @description Returns true if the current user has delete permission on the `Log__c` object,
+   *              or if the user is assigned the `CanExecuteLogBatchPurger` custom permission.
+   * @return true if the current user is permitted to run `LogBatchPurger`.
    */
   @AuraEnabled
   public static Boolean canUserRunLogBatchPurger() {
@@ -27,24 +33,28 @@ public with sharing class LogBatchPurgeController {
   }
 
   /**
-   * @description return a `Map<String,Object>` contains metrics for number of `Log__c`, `LogEntry__c`, `LogEntryTag__c` records to purge,
-   *              for the given timeframe TODAY/ THIS_WEEK/ THIS_MONTH. The metrics is grouped by `Log__c.LogPurgeAction__c`.
-   * @param dateFilterOption a Date Literal used to filter log records. Possible values are TODAY, THIS_WEEK, THIS_MONTH
-   * @return The instance of `Map<String,Object>`,contains keys as `Log__c`, `LogEntry__c`, `LogEntryTag__c` and value as metrics for the corresponding object records to purge
-   *         for the given timeframe TODAY/ THIS_WEEK/ THIS_MONTH. The metrics is grouped by `Log__c.LogPurgeAction__c`.
+   * @description Returns counts of `Log__c`, `LogEntry__c`, and `LogEntryTag__c` records eligible for purge,
+   *              grouped by `Log__c.LogPurgeAction__c`, for records whose `LogRetentionDate__c` falls within
+   *              the given timeframe.
+   * @param dateFilterOption A date literal used to filter on `LogRetentionDate__c`. Must be one of: `TODAY`, `THIS_WEEK`, `THIS_MONTH`.
+   * @return A map keyed by object API name (`Log__c`, `LogEntry__c`, `LogEntryTag__c`), where each value is a
+   *         `List<AggregateResult>` containing `LogPurgeAction__c` and `recordCount` per purge action.
    */
   @AuraEnabled
   public static Map<String, Object> getMetrics(String dateFilterOption) {
-    Map<String, Object> result = new Map<String, Object>();
-    result.put(Schema.Log__c.SObjectType.getDescribe().getLocalName(), getLogObjectSummary(dateFilterOption));
-    result.put(Schema.LogEntry__c.SObjectType.getDescribe().getLocalName(), getLogEntryObjectSummary(dateFilterOption));
-    result.put(Schema.LogEntryTag__c.SObjectType.getDescribe().getLocalName(), getLogEntryTagObjectSummary(dateFilterOption));
-    return result;
+    String validatedDateFilterOption = validateDateFilterOption(dateFilterOption);
+    return new Map<String, Object>{
+      Schema.Log__c.SObjectType.getDescribe().getLocalName() => getLogObjectSummary(validatedDateFilterOption),
+      Schema.LogEntry__c.SObjectType.getDescribe().getLocalName() => getLogEntryObjectSummary(validatedDateFilterOption),
+      Schema.LogEntryTag__c.SObjectType.getDescribe().getLocalName() => getLogEntryTagObjectSummary(validatedDateFilterOption)
+    };
   }
 
   /**
-   * @description Returns all of the PurgeAction options to display the log metrics in UI
-   * @return   The instance of `List<PicklistOption>`, containing all picklist options for purge Action.
+   * @description Returns the list of purge action picklist options shown in the UI: the built-in `Delete`
+   *              action plus any custom actions defined via `LoggerParameter__mdt` records prefixed with
+   *              `CustomLogPurgeAction`.
+   * @return A sorted list of `PicklistOption` records.
    */
   @AuraEnabled(cacheable=true)
   public static List<PicklistOption> getPurgeActionOptions() {
@@ -65,15 +75,15 @@ public with sharing class LogBatchPurgeController {
   }
 
   /**
-   * @description Returns `List<Schema.AsyncApexJob>` to display logBatchPurger jobs details in a Datatable.
-   * @return   The instance of `List<Schema.AsyncApexJob>`, containing list of logBatchPurge jobs.
+   * @description Returns recent `Schema.AsyncApexJob` records for `LogBatchPurger`, used to display batch
+   *              job history in the UI.
+   * @return The 50 most recent `LogBatchPurger` async apex jobs.
    */
   @AuraEnabled
   public static List<Schema.AsyncApexJob> getBatchPurgeJobRecords() {
-    List<String> qualifiedClassNamePieces = LogBatchPurger.class.getName().split('\\.');
-    // If there are 2 pieces, then it
-    String apexClassNamespacePrefix = qualifiedClassNamePieces.size() == 2 ? qualifiedClassNamePieces.get(0) : null;
-    String apexClassName = qualifiedClassNamePieces.size() == 2 ? qualifiedClassNamePieces.get(1) : qualifiedClassNamePieces.get(0);
+    String qualifiedClassName = LogBatchPurger.class.getName();
+    String apexClassNamespacePrefix = qualifiedClassName.contains('.') ? qualifiedClassName.substringBefore('.') : null;
+    String apexClassName = qualifiedClassName.contains('.') ? qualifiedClassName.substringAfter('.') : qualifiedClassName;
     // TODO move to a selector class
     return [
       SELECT Id, JobType, JobItemsProcessed, MethodName, NumberOfErrors, Status, CreatedDate, CreatedBy.Name
@@ -88,8 +98,8 @@ public with sharing class LogBatchPurgeController {
   }
 
   /**
-   * @description Executes the LogBatchPurger batch job with the default batch size
-   * @return Returns the ID of the Schema.AsyncApexJob object associated with the LogBatchPurger job as a string
+   * @description Executes `LogBatchPurger` with the configured default batch size.
+   * @return The ID of the queued `Schema.AsyncApexJob`.
    */
   @AuraEnabled
   public static String runBatchPurge() {
@@ -98,26 +108,38 @@ public with sharing class LogBatchPurgeController {
 
   @TestVisible
   private static List<AggregateResult> getLogObjectSummary(String dateFilterOption) {
-    String query = 'select LogPurgeAction__c LogPurgeAction__c, count(id) from Log__c where CreatedDate=' + dateFilterOption + ' group by LogPurgeAction__c';
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(
+      'SELECT LogPurgeAction__c LogPurgeAction__c, COUNT(Id) recordCount FROM Log__c WHERE LogRetentionDate__c = ' +
+        validateDateFilterOption(dateFilterOption) +
+        ' GROUP BY LogPurgeAction__c'
+    );
   }
 
   @TestVisible
   private static List<AggregateResult> getLogEntryObjectSummary(String dateFilterOption) {
-    String query =
-      'select Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntry__c where CreatedDate=' +
-      dateFilterOption +
-      ' group by Log__r.LogPurgeAction__c';
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(
+      'SELECT Log__r.LogPurgeAction__c LogPurgeAction__c, COUNT(Id) recordCount FROM LogEntry__c WHERE Log__r.LogRetentionDate__c = ' +
+        validateDateFilterOption(dateFilterOption) +
+        ' GROUP BY Log__r.LogPurgeAction__c'
+    );
   }
 
   @TestVisible
   private static List<AggregateResult> getLogEntryTagObjectSummary(String dateFilterOption) {
-    String query =
-      'select LogEntry__r.Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntryTag__c where CreatedDate=' +
-      dateFilterOption +
-      ' group by LogEntry__r.Log__r.LogPurgeAction__c';
-    return System.Database.query(String.escapeSingleQuotes(query));
+    return System.Database.query(
+      'SELECT LogEntry__r.Log__r.LogPurgeAction__c LogPurgeAction__c, COUNT(Id) recordCount FROM LogEntryTag__c WHERE LogEntry__r.Log__r.LogRetentionDate__c = ' +
+        validateDateFilterOption(dateFilterOption) +
+        ' GROUP BY LogEntry__r.Log__r.LogPurgeAction__c'
+    );
+  }
+
+  // The dateFilterOption is concatenated directly into a SOQL date literal,
+  // so it must be validated against an allowlist to prevent SOQL injection.
+  private static String validateDateFilterOption(String dateFilterOption) {
+    if (SUPPORTED_DATE_FILTER_OPTIONS.contains(dateFilterOption) == false) {
+      throw new System.IllegalArgumentException('Unsupported dateFilterOption: ' + dateFilterOption);
+    }
+    return dateFilterOption;
   }
 
   /**

@@ -1,14 +1,14 @@
 {
   "Log__c": [
-    { "LogPurgeAction__c": "Delete", "expr0": 12 },
-    { "LogPurgeAction__c": "Custom", "expr0": 14 }
+    { "LogPurgeAction__c": "Delete", "recordCount": 7 },
+    { "LogPurgeAction__c": "Custom", "recordCount": 11 }
   ],
   "LogEntry__c": [
-    { "LogPurgeAction__c": "Delete", "expr0": 14 },
-    { "LogPurgeAction__c": "Custom", "expr0": 18 }
+    { "LogPurgeAction__c": "Delete", "recordCount": 9 },
+    { "LogPurgeAction__c": "Custom", "recordCount": 13 }
   ],
   "LogEntryTag__c": [
-    { "LogPurgeAction__c": "Delete", "expr0": 110 },
-    { "LogPurgeAction__c": "Custom", "expr0": 120 }
+    { "LogPurgeAction__c": "Delete", "recordCount": 50 },
+    { "LogPurgeAction__c": "Custom", "recordCount": 70 }
   ]
 }

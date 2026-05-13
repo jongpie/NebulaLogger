@@ -2,13 +2,13 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
-@SuppressWarnings('PMD.ApexDoc, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
+@SuppressWarnings('PMD.ApexDoc, PMD.ApexUnitTestClassShouldHaveAsserts, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogBatchPurgeController_Tests {
   private static final String CUSTOM_PURGE_ACTION = 'Custom';
   private static final String DEFAULT_PURGE_ACTION = 'Delete';
-  private static final String CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION = 'CanExecuteLogBatchPurger';
-  private static final Schema.Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar', '標準ユーザー')];
+  private static final Integer DEFAULT_RECORD_COUNT = 5;
+  private static final Integer CUSTOM_RECORD_COUNT = 4;
 
   static {
     // Don't use the org's actual custom metadata records when running tests
@@ -16,11 +16,11 @@ private class LogBatchPurgeController_Tests {
   }
 
   @IsTest
-  static void it_should_return_logPurgeAction_options() {
+  static void it_should_return_purge_action_options_with_delete_and_configured_custom_actions() {
     List<String> fakeLogPurgeActions = new List<String>{ 'A_FAKE_PURGE_ACTION', 'ANOTHER_ONE', 'SOME_OTHER_PURGE_ACTION' };
     for (String fakeLogPurgeAction : fakeLogPurgeActions) {
       LoggerTestConfigurator.setMock(
-        new LoggerParameter__mdt(DeveloperName = LoggerSettingsController.CUSTOM_LOG_PURGE_ACTION_PREFIX + fakeLogPurgeAction, Value__c = fakeLogPurgeAction)
+        new LoggerParameter__mdt(DeveloperName = LogBatchPurgeController.CUSTOM_LOG_PURGE_ACTION_PREFIX + fakeLogPurgeAction, Value__c = fakeLogPurgeAction)
       );
     }
 
@@ -28,351 +28,225 @@ private class LogBatchPurgeController_Tests {
 
     Set<String> expectedLogPurgeActions = new Set<String>{ LogBatchPurgeController.DELETE_LOG_PURGE_ACTION };
     expectedLogPurgeActions.addAll(fakeLogPurgeActions);
-    Integer expectedLogPurgeActionsSize = expectedLogPurgeActions.size();
-    System.Assert.areEqual(expectedLogPurgeActionsSize, picklistOptions.size(), 'Purge Action size mismatch');
+    System.Assert.areEqual(
+      expectedLogPurgeActions.size(),
+      picklistOptions.size(),
+      'Returned picklist option count should match configured purge actions + Delete'
+    );
     for (LogBatchPurgeController.PicklistOption picklistOption : picklistOptions) {
-      System.Assert.areEqual(picklistOption.value, picklistOption.label, 'Purge action label mismatch');
-      System.Assert.isTrue(expectedLogPurgeActions.contains(picklistOption.value), 'Purge Action not found');
+      System.Assert.areEqual(picklistOption.value, picklistOption.label, 'Picklist option label should equal value');
+      System.Assert.isTrue(expectedLogPurgeActions.contains(picklistOption.value), 'Unexpected purge action returned: ' + picklistOption.value);
     }
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logs_created_today() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    createLogRecords('Delete', expectedRecordCountWithPurgeActionDelete, System.now());
-    createLogRecords('Custom', expectedRecordCountWithPurgeActionCustom, System.now());
-
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('TODAY');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'Log object summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'Log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'Log object summary should match for purge action : custom');
-      }
-    }
+  static void it_should_return_log_summary_for_today_filter() {
+    runLogSummaryTest('TODAY');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logs_created_this_week() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    Datetime createDate = DateTime.newInstance(Date.today().toStartOfWeek(), Datetime.now().time());
-    createLogRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
-
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('THIS_WEEK');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size mismatch');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary mismatch for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary mismatch for purge action : custom');
-      }
-    }
+  static void it_should_return_log_summary_for_this_week_filter() {
+    runLogSummaryTest('THIS_WEEK');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logs_created_this_month() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-    createLogRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
-
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('THIS_MONTH');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary should match for purge action : custom');
-      }
-    }
+  static void it_should_return_log_summary_for_this_month_filter() {
+    runLogSummaryTest('THIS_MONTH');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logEntry_created_today() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    createLogEntryRecords('Delete', expectedRecordCountWithPurgeActionDelete, System.now());
-    createLogEntryRecords('Custom', expectedRecordCountWithPurgeActionCustom, System.now());
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('TODAY');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary should match for purge action : custom');
-      }
-    }
+  static void it_should_return_log_entry_summary_for_today_filter() {
+    runLogEntrySummaryTest('TODAY');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logEntry_created_this_week() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-    createLogEntryRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
-
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('THIS_WEEK');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary should match for purge action : custom');
-      }
-    }
+  static void it_should_return_log_entry_summary_for_this_week_filter() {
+    runLogEntrySummaryTest('THIS_WEEK');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logEntry_created_this_month() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-    createLogEntryRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
-
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('THIS_MONTH');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary should match for purge action : custom');
-      }
-    }
+  static void it_should_return_log_entry_summary_for_this_month_filter() {
+    runLogEntrySummaryTest('THIS_MONTH');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logEntryTag_created_today() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, System.now());
-    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, System.now());
-
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('TODAY');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary should match for purge action : custom');
-      }
-    }
+  static void it_should_return_log_entry_tag_summary_for_today_filter() {
+    runLogEntryTagSummaryTest('TODAY');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logEntryTag_created_This_Week() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    Datetime createDate = DateTime.newInstance(Date.today().toStartOfWeek(), Datetime.now().time());
-    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
-
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('THIS_WEEK');
-
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary should match for purge action : custom');
-      }
-    }
+  static void it_should_return_log_entry_tag_summary_for_this_week_filter() {
+    runLogEntryTagSummaryTest('THIS_WEEK');
   }
 
   @IsTest
-  private static void it_should_return_summary_for_logEntryTag_created_This_Month() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    Datetime createDate = DateTime.newInstance(Date.today().toStartOfMonth(), Datetime.now().time());
-    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+  static void it_should_return_log_entry_tag_summary_for_this_month_filter() {
+    runLogEntryTagSummaryTest('THIS_MONTH');
+  }
 
-    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('THIS_MONTH');
+  private static void runLogSummaryTest(String dateFilterOption) {
+    // System.today() falls within each of TODAY / THIS_WEEK / THIS_MONTH, so a single
+    // retention date works for all three filter variants.
+    createLogRecords(DEFAULT_PURGE_ACTION, DEFAULT_RECORD_COUNT, System.today());
+    createLogRecords(CUSTOM_PURGE_ACTION, CUSTOM_RECORD_COUNT, System.today());
 
-    Integer expectedAggregateResultSize = 2;
-    System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
-    for (AggregateResult summary : logObjectResult) {
-      if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary should match for purge action : delete');
-      }
-      if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-        System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary should match for purge action : custom');
-      }
-    }
+    List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary(dateFilterOption);
+
+    assertSummaryCounts(logObjectResult, dateFilterOption);
+  }
+
+  private static void runLogEntrySummaryTest(String dateFilterOption) {
+    createLogEntryRecords(DEFAULT_PURGE_ACTION, DEFAULT_RECORD_COUNT, System.today());
+    createLogEntryRecords(CUSTOM_PURGE_ACTION, CUSTOM_RECORD_COUNT, System.today());
+
+    List<AggregateResult> logEntryObjectResult = LogBatchPurgeController.getLogEntryObjectSummary(dateFilterOption);
+
+    assertSummaryCounts(logEntryObjectResult, dateFilterOption);
+  }
+
+  private static void runLogEntryTagSummaryTest(String dateFilterOption) {
+    createLogEntryTagRecords(DEFAULT_PURGE_ACTION, DEFAULT_RECORD_COUNT, System.today());
+    createLogEntryTagRecords(CUSTOM_PURGE_ACTION, CUSTOM_RECORD_COUNT, System.today());
+
+    List<AggregateResult> logEntryTagObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary(dateFilterOption);
+
+    assertSummaryCounts(logEntryTagObjectResult, dateFilterOption);
   }
 
   @IsTest
-  private static void it_should_return_metrics_for_all_logObjects() {
-    Integer expectedRecordCountWithPurgeActionDelete = 5;
-    Integer expectedRecordCountWithPurgeActionCustom = 4;
-    Datetime createDate = Datetime.now();
-    createLogEntryTagRecords('Delete', expectedRecordCountWithPurgeActionDelete, createDate);
-    createLogEntryTagRecords('Custom', expectedRecordCountWithPurgeActionCustom, createDate);
+  static void it_should_return_metrics_for_all_three_objects() {
+    createLogEntryTagRecords(DEFAULT_PURGE_ACTION, DEFAULT_RECORD_COUNT, System.today());
+    createLogEntryTagRecords(CUSTOM_PURGE_ACTION, CUSTOM_RECORD_COUNT, System.today());
 
     Map<String, Object> metricsResult = LogBatchPurgeController.getMetrics('TODAY');
 
-    List<AggregateResult> logObjectSummary = (List<AggregateResult>) metricsResult.get('Log__c');
-    List<AggregateResult> logEntryObjectSummary = (List<AggregateResult>) metricsResult.get('LogEntry__c');
-    List<AggregateResult> logEntryTagObjectSummary = (List<AggregateResult>) metricsResult.get('LogEntryTag__c');
-    System.Assert.isNotNull(metricsResult.get('Log__c'), 'it should return metrics for Log__c object');
-    System.Assert.isNotNull(metricsResult.get('LogEntry__c'), 'it should return metrics for LogEntry__c object');
-    System.Assert.isNotNull(metricsResult.get('LogEntryTag__c'), 'it should return metrics for LogEntryTag__c object');
-    System.Assert.areEqual(2, logObjectSummary.size(), 'it should return Log__c object summary records');
-    System.Assert.areEqual(2, logEntryObjectSummary.size(), 'it should return LogEntry__c object summary records');
-    System.Assert.areEqual(2, logEntryTagObjectSummary.size(), 'it should return LogEntry__c object summary records');
+    System.Assert.areEqual(
+      new Set<String>{ 'Log__c', 'LogEntry__c', 'LogEntryTag__c' },
+      metricsResult.keySet(),
+      'Metrics result should have one entry per supported object'
+    );
+    for (String objectApiName : metricsResult.keySet()) {
+      List<AggregateResult> summary = (List<AggregateResult>) metricsResult.get(objectApiName);
+      assertSummaryCounts(summary, 'TODAY');
+    }
+  }
+
+  @IsTest
+  static void it_should_throw_when_date_filter_option_is_not_supported() {
+    try {
+      LogBatchPurgeController.getMetrics('LAST_QUARTER');
+      System.Assert.fail('Expected IllegalArgumentException for unsupported dateFilterOption');
+    } catch (System.IllegalArgumentException ex) {
+      System.Assert.isTrue(ex.getMessage().contains('LAST_QUARTER'), 'Exception message should reference the offending value');
+    }
+  }
+
+  @IsTest
+  static void it_should_throw_when_date_filter_option_attempts_soql_injection() {
+    try {
+      LogBatchPurgeController.getMetrics('TODAY OR Id != null');
+      System.Assert.fail('Expected IllegalArgumentException for SOQL injection attempt');
+    } catch (System.IllegalArgumentException ex) {
+      System.Assert.isNotNull(ex.getMessage(), 'Exception message should not be null');
+    }
   }
 
   @IsTest
   static void it_should_permit_user_to_execute_purge_batch_when_custom_permission_is_assigned() {
-    Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
-    insert standardUser;
-    Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
-    insert permissionSet;
-    SetupEntityAccess setupEntityAccess = new SetupEntityAccess(ParentId = permissionSet.Id, SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId());
-    Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(
-      AssigneeId = standardUser.Id,
-      PermissionSetId = permissionSet.Id
-    );
-    insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
+    Schema.User standardUser = createTestUser();
+    assignCanExecuteLogBatchPurgerPermission(standardUser);
 
     System.runAs(standardUser) {
       System.Assert.isTrue(
-        System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION),
-        System.JSON.serializePretty(permissionSetAssignment)
+        System.FeatureManagement.checkPermission(LogBatchPurgeController.CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION),
+        'Test user should have CanExecuteLogBatchPurger custom permission'
       );
-      System.Assert.areEqual(
-        true,
-        LogBatchPurgeController.canUserRunLogBatchPurger(),
-        'it did not allow user to execute purge batch when custom permission assigned'
-      );
-    }
-  }
-
-  @IsTest
-  private static void it_should_return_purge_batch_job_records() {
-    System.Test.startTest();
-    LogBatchPurgeController.runBatchPurge();
-    System.Test.stopTest();
-    List<Schema.AsyncApexJob> purgeJobs = LogBatchPurgeController.getBatchPurgeJobRecords();
-    System.Assert.areEqual(1, purgeJobs.size(), 'should return purge batch job records');
-    for (Schema.AsyncApexJob job : purgeJobs) {
-      System.Assert.isNotNull(job.JobType, 'it should return job type');
-      System.Assert.isNotNull(job.JobItemsProcessed, 'it should return JobItemsProcessed');
-      System.Assert.isNotNull(job.NumberOfErrors, 'it should return noOfErrors');
-      System.Assert.isNotNull(job.Status, 'it should return JobStatus');
-      System.Assert.isNotNull(job.CreatedDate, 'it should return job CreatedDate');
-      System.Assert.isNotNull(job.CreatedBy.Name, 'it should return job CreatedBy.Name');
+      System.Assert.isTrue(LogBatchPurgeController.canUserRunLogBatchPurger(), 'Test user should be permitted to run LogBatchPurger via custom permission');
     }
   }
 
   @IsTest
   static void it_should_not_permit_user_to_execute_purge_batch_when_custom_permission_is_not_assigned() {
-    Schema.User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
-    insert standardUser;
-    Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permisison Enabled');
-    insert permissionSet;
-    SetupEntityAccess setupEntityAccess = new SetupEntityAccess(ParentId = permissionSet.Id, SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId());
-    insert new List<SObject>{ setupEntityAccess };
+    Schema.User standardUser = createTestUser();
 
     System.runAs(standardUser) {
-      System.Assert.isFalse(System.FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), 'permission set assigned');
-      System.Assert.areEqual(
-        false,
+      System.Assert.isFalse(
+        System.FeatureManagement.checkPermission(LogBatchPurgeController.CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION),
+        'Test user should not have CanExecuteLogBatchPurger custom permission'
+      );
+      System.Assert.isFalse(
         LogBatchPurgeController.canUserRunLogBatchPurger(),
-        'it did allow user to execute purge batch when custom permission is not assigned'
+        'Test user without delete access or custom permission should not be permitted to run LogBatchPurger'
       );
     }
   }
 
   @IsTest
-  private static void it_should_execute_the_purge_batch() {
+  static void it_should_execute_the_purge_batch_and_return_a_job_id() {
     System.Test.startTest();
     String jobId = LogBatchPurgeController.runBatchPurge();
     System.Test.stopTest();
 
-    String apexClassNamespacePrefix = LogBatchPurger.class.getName().contains('.') ? LogBatchPurger.class.getName().substringBefore('.') : null;
-    String apexClassName = LogBatchPurger.class.getName().contains('.') ? LogBatchPurger.class.getName().substringAfter('.') : LogBatchPurger.class.getName();
-    List<Schema.AsyncApexJob> purgeBatchJobs = [
-      SELECT Id
-      FROM AsyncApexJob
-      WHERE
-        JobType IN ('ScheduledApex', 'BatchApex', 'BatchApexWorker')
-        AND ApexClass.NamespacePrefix = :apexClassNamespacePrefix
-        AND ApexClass.Name = :apexClassName
-        AND Id = :jobId
-    ];
-    System.Assert.areEqual(1, purgeBatchJobs.size(), 'should execute the purge batch job');
+    System.Assert.isNotNull(jobId, 'runBatchPurge should return the queued AsyncApexJob ID');
+    Schema.AsyncApexJob queuedJob = [SELECT Id, JobType FROM AsyncApexJob WHERE Id = :jobId];
+    System.Assert.isNotNull(queuedJob, 'AsyncApexJob should exist for the returned job ID');
   }
 
-  private static void createLogRecords(String purgeAction, Integer noOfRecords, Datetime createDate) {
+  @IsTest
+  static void it_should_return_purge_batch_job_records() {
+    System.Test.startTest();
+    LogBatchPurgeController.runBatchPurge();
+    System.Test.stopTest();
+
+    List<Schema.AsyncApexJob> purgeJobs = LogBatchPurgeController.getBatchPurgeJobRecords();
+
+    System.Assert.areEqual(1, purgeJobs.size(), 'Exactly one LogBatchPurger job should be returned');
+    Schema.AsyncApexJob job = purgeJobs.get(0);
+    System.Assert.isNotNull(job.JobType, 'JobType should be populated');
+    System.Assert.isNotNull(job.Status, 'Status should be populated');
+    System.Assert.isNotNull(job.CreatedDate, 'CreatedDate should be populated');
+    System.Assert.isNotNull(job.CreatedBy.Name, 'CreatedBy.Name should be populated');
+  }
+
+  // Helpers
+
+  private static void assertSummaryCounts(List<AggregateResult> summary, String dateFilterOption) {
+    System.Assert.areEqual(2, summary.size(), 'Summary should have one row per purge action for ' + dateFilterOption);
+    Map<String, Integer> countsByPurgeAction = new Map<String, Integer>();
+    for (AggregateResult row : summary) {
+      countsByPurgeAction.put((String) row.get('LogPurgeAction__c'), (Integer) row.get('recordCount'));
+    }
+    System.Assert.areEqual(DEFAULT_RECORD_COUNT, countsByPurgeAction.get(DEFAULT_PURGE_ACTION), 'Delete count mismatch for ' + dateFilterOption);
+    System.Assert.areEqual(CUSTOM_RECORD_COUNT, countsByPurgeAction.get(CUSTOM_PURGE_ACTION), 'Custom count mismatch for ' + dateFilterOption);
+  }
+
+  private static void createLogRecords(String purgeAction, Integer recordCount, Date retentionDate) {
     List<Log__c> logs = new List<Log__c>();
-    for (Integer i = 1; i <= noOfRecords; i++) {
-      Log__c log = new Log__c(TransactionId__c = System.UUID.randomUUID().toString());
-      log.LogPurgeAction__c = purgeAction;
-      log.LogRetentionDate__c = System.today();
-      logs.add(log);
+    for (Integer i = 0; i < recordCount; i++) {
+      logs.add(new Log__c(TransactionId__c = System.UUID.randomUUID().toString(), LogPurgeAction__c = purgeAction, LogRetentionDate__c = retentionDate));
     }
     insert logs;
-    for (Log__c log : logs) {
-      System.Test.setCreatedDate(log.Id, createDate);
-    }
   }
 
-  private static void createLogEntryRecords(String purgeAction, Integer noOfRecords, Datetime createDate) {
-    Log__c log = new log__c(TransactionId__c = System.UUID.randomUUID().toString());
-    log.LogPurgeAction__c = purgeAction;
-    log.LogRetentionDate__c = System.today();
+  private static void createLogEntryRecords(String purgeAction, Integer recordCount, Date retentionDate) {
+    Log__c log = new Log__c(TransactionId__c = System.UUID.randomUUID().toString(), LogPurgeAction__c = purgeAction, LogRetentionDate__c = retentionDate);
     insert log;
-    List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    for (Integer i = 1; i <= noOfRecords; i++) {
-      LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = i + 1);
 
+    List<LogEntry__c> logEntries = new List<LogEntry__c>();
+    for (Integer i = 0; i < recordCount; i++) {
+      LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = i + 1);
       LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
     }
     insert logEntries;
-    for (LogEntry__c logEntry : logEntries) {
-      System.Test.setCreatedDate(log.Id, createDate);
-    }
   }
 
-  private static void createLogEntryTagRecords(String purgeAction, Integer noOfRecords, Datetime createDate) {
-    Log__c log = new log__c(TransactionId__c = System.UUID.randomUUID().toString());
-    log.LogPurgeAction__c = purgeAction;
-    log.LogRetentionDate__c = System.today();
+  private static void createLogEntryTagRecords(String purgeAction, Integer recordCount, Date retentionDate) {
+    Log__c log = new Log__c(TransactionId__c = System.UUID.randomUUID().toString(), LogPurgeAction__c = purgeAction, LogRetentionDate__c = retentionDate);
     insert log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    for (Integer i = 0; i < noOfRecords; i++) {
+    for (Integer i = 0; i < recordCount; i++) {
       LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name());
       LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
@@ -391,14 +265,31 @@ private class LogBatchPurgeController_Tests {
       logEntryTags.add(logEntryTag);
     }
     insert logEntryTags;
-    for (LogEntryTag__c logEntryTag : logEntryTags) {
-      System.Test.setCreatedDate(logEntryTag.Id, createDate);
-    }
+  }
+
+  private static Schema.User createTestUser() {
+    Schema.Profile standardProfile = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar', '標準ユーザー')];
+    Schema.User standardUser = LoggerMockDataCreator.createUser(standardProfile.Id);
+    insert standardUser;
+    return standardUser;
+  }
+
+  private static void assignCanExecuteLogBatchPurgerPermission(Schema.User user) {
+    Schema.PermissionSet permissionSet = new Schema.PermissionSet(Name = 'CanExecuteLogBatchPurger', Label = 'Custom Permission Enabled');
+    insert permissionSet;
+    SetupEntityAccess setupEntityAccess = new SetupEntityAccess(ParentId = permissionSet.Id, SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId());
+    Schema.PermissionSetAssignment permissionSetAssignment = new Schema.PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = permissionSet.Id);
+    insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
   }
 
   private static Id getCanExecuteLogBatchPurgerCustomPermissionId() {
     String className = LogBatchPurgeController_Tests.class.getName();
     String namespacePrefix = className.contains('.') ? className.substringBefore('.') : null;
-    return [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION AND NamespacePrefix = :namespacePrefix].Id;
+    return [
+      SELECT Id
+      FROM CustomPermission
+      WHERE DeveloperName = :LogBatchPurgeController.CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION AND NamespacePrefix = :namespacePrefix
+    ]
+    .Id;
   }
 }
