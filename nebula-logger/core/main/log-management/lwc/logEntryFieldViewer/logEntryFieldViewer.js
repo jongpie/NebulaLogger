@@ -19,32 +19,43 @@ export default class LogEntryFieldViewer extends LightningElement {
   @api recordId;
   // Unprefixed field API name (e.g. 'HttpRequestBody__c'). Resolved against LogEntry__c at runtime,
   // which means this same component works in both unlocked (no namespace) and managed (Nebula__) deployments.
-  @api fieldApiName;
-  // Single config object, mirroring loggerCodeViewer's shape. Recognized keys (all optional):
-  //   contentTypeHeadersFieldApiName: string  — sibling field whose value contains a 'Content-Type: ...' line
-  //   showThemePicker:                boolean — passthrough to inner viewer
-  //   showLanguagePicker:             boolean — passthrough
-  //   showRememberPreference:         boolean — passthrough
-  //   availableLanguages:             [{label,value}] — passthrough; overrides default language list
-  //   defaultLanguage:                string  — passthrough; final fallback when nothing else resolves
-  @api config;
-
-  _record;
-
-  get _effectiveConfig() {
-    return this.config || {};
+  @api
+  get fieldApiName() {
+    return this._fieldApiName;
+  }
+  set fieldApiName(value) {
+    this._fieldApiName = value;
+    this._recomputeFieldsToFetch();
   }
 
-  get _fieldsToFetch() {
+  @api
+  get config() {
+    return this._config;
+  }
+  set config(value) {
+    this._config = value;
+    this._recomputeFieldsToFetch();
+  }
+
+  _fieldApiName;
+  _config;
+  _record;
+  _fieldsToFetch = [];
+
+  get _effectiveConfig() {
+    return this._config || {};
+  }
+
+  _recomputeFieldsToFetch() {
     const fields = [];
-    if (this.fieldApiName) {
-      fields.push(`LogEntry__c.${this.fieldApiName}`);
+    if (this._fieldApiName) {
+      fields.push(`LogEntry__c.${this._fieldApiName}`);
     }
     const headersField = this._effectiveConfig.contentTypeHeadersFieldApiName;
     if (headersField) {
       fields.push(`LogEntry__c.${headersField}`);
     }
-    return fields;
+    this._fieldsToFetch = fields;
   }
 
   @wire(getRecord, { recordId: '$recordId', fields: '$_fieldsToFetch' })
@@ -55,13 +66,13 @@ export default class LogEntryFieldViewer extends LightningElement {
   }
 
   get code() {
-    return this._readField(this.fieldApiName) ?? '';
+    return this._readField(this._fieldApiName) ?? '';
   }
 
   get viewerConfig() {
     const cfg = this._effectiveConfig;
     const merged = {
-      fieldName: this.fieldApiName,
+      fieldName: this._fieldApiName,
       showThemePicker: cfg.showThemePicker,
       showLanguagePicker: cfg.showLanguagePicker,
       showRememberPreference: cfg.showRememberPreference,
@@ -79,10 +90,15 @@ export default class LogEntryFieldViewer extends LightningElement {
     if (!fieldApiName || !this._record?.fields) {
       return null;
     }
-    // Field keys in the getRecord response are *always* the local field name (without any namespace),
-    // even on namespaced packages. So a single lookup works in both deployment modes.
-    const entry = this._record.fields[fieldApiName];
-    return entry ? entry.value : null;
+    // In unlocked and most contexts, getRecord returns field keys with the local (unprefixed) name.
+    // In some namespaced managed package contexts, the keys arrive prefixed (e.g., Nebula__Foo__c).
+    // Try the local key first, then fall back to any key that ends with '__<fieldApiName>'.
+    const fields = this._record.fields;
+    if (fields[fieldApiName]) {
+      return fields[fieldApiName].value ?? null;
+    }
+    const namespacedKey = Object.keys(fields).find(key => key === fieldApiName || key.endsWith(`__${fieldApiName}`));
+    return namespacedKey ? (fields[namespacedKey].value ?? null) : null;
   }
 
   _detectAutoLanguage() {

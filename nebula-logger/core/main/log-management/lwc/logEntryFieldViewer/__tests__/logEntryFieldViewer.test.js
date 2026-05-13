@@ -171,6 +171,56 @@ describe('c-log-entry-field-viewer', () => {
     });
   });
 
+  describe('namespaced managed package compatibility', () => {
+    it('reads the field value when the record is returned with a namespace-prefixed key', async () => {
+      const element = createViewer({ fieldApiName: 'HttpRequestBody__c' });
+
+      getRecord.emit({
+        fields: {
+          Nebula__HttpRequestBody__c: { value: 'namespaced-body' }
+        }
+      });
+      await flushPromises();
+
+      const viewer = element.shadowRoot.querySelector('c-logger-code-viewer');
+      expect(viewer.code).toBe('namespaced-body');
+    });
+
+    it('detects Content-Type from a namespace-prefixed headers field key', async () => {
+      const element = createViewer({
+        fieldApiName: 'HttpResponseBody__c',
+        config: { contentTypeHeadersFieldApiName: 'HttpResponseHeaders__c' }
+      });
+
+      getRecord.emit({
+        fields: {
+          Nebula__HttpResponseBody__c: { value: '{}' },
+          Nebula__HttpResponseHeaders__c: { value: 'Content-Type: application/json' }
+        }
+      });
+      await flushPromises();
+
+      const viewer = element.shadowRoot.querySelector('c-logger-code-viewer');
+      expect(viewer.code).toBe('{}');
+      expect(viewer.config.autoLanguage).toBe('json');
+    });
+
+    it('prefers the unprefixed field key when both unprefixed and prefixed are present', async () => {
+      const element = createViewer({ fieldApiName: 'HttpRequestBody__c' });
+
+      getRecord.emit({
+        fields: {
+          HttpRequestBody__c: { value: 'unprefixed-wins' },
+          Nebula__HttpRequestBody__c: { value: 'should-not-be-used' }
+        }
+      });
+      await flushPromises();
+
+      const viewer = element.shadowRoot.querySelector('c-logger-code-viewer');
+      expect(viewer.code).toBe('unprefixed-wins');
+    });
+  });
+
   describe('passthrough of additional config keys', () => {
     it('passes config.defaultLanguage to the inner viewer config', async () => {
       const element = createViewer({
