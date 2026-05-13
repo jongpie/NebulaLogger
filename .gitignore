@@ -4,6 +4,7 @@
 .sf/
 .sfdx/
 .vscode/
+.claude/
 docs/apex/Miscellaneous/
 temp/
 test-coverage/
