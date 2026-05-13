@@ -1,0 +1,34 @@
+{
+  "orgName": "nebula-logger-core",
+  "edition": "Enterprise",
+  "features": ["Communities", "ContactsToMultipleAccounts", "PersonAccounts", "StateAndCountryPicklist"],
+  "settings": {
+    "communitiesSettings": {
+      "enableNetworksEnabled": true
+    },
+    "enhancedNotesSettings": {
+      "enableEnhancedNotes": true
+    },
+    "emailAdministrationSettings": {
+      "enableEnhancedEmailEnabled": true
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
+    },
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "nameSettings": {
+      "enableMiddleName": true,
+      "enableNameSuffix": true
+    },
+    "securitySettings": {
+      "enableAuditFieldsInactiveOwner": "true",
+      "sessionSettings": {
+        "lockSessionsToDomain": "false",
+        "lockSessionsToIp": "false",
+        "sessionTimeout": "TwelveHours"
+      }
+    }
+  }
+}

@@ -2,9 +2,17 @@
   "orgName": "Nebula Logger - Advanced Scratch Org",
   "edition": "Enterprise",
   "hasSampleData": true,
-  "country": "US",
-  "language": "en_US",
-  "features": ["Communities", "EinsteinGPTPlatform", "EventLogFile", "OmniStudioDesigner", "OmniStudioRuntime", "PlatformCache"],
+  "features": [
+    "Communities",
+    "ContactsToMultipleAccounts",
+    "EinsteinGPTPlatform",
+    "EventLogFile",
+    "OmniStudioDesigner",
+    "OmniStudioRuntime",
+    "PersonAccounts",
+    "PlatformCache",
+    "StateAndCountryPicklist"
+  ],
   "settings": {
     "apexSettings": {
       "enableAuraApexCtrlAuthUserAccessCheckPref": true,
@@ -17,6 +25,9 @@
     },
     "communitiesSettings": {
       "enableNetworksEnabled": true
+    },
+    "enhancedNotesSettings": {
+      "enableEnhancedNotes": true
     },
     "emailAdministrationSettings": {
       "enableEnhancedEmailEnabled": true
@@ -37,11 +48,23 @@
       "enableOmniStudioMetadata": true,
       "enableStandardOmniStudioRuntime": true
     },
+    "nameSettings": {
+      "enableMiddleName": true,
+      "enableNameSuffix": true
+    },
     "pathAssistantSettings": {
       "pathAssistantEnabled": true
     },
     "platformEventSettings": {
       "enableEnhancedUsageMetrics": true
+    },
+    "securitySettings": {
+      "enableAuditFieldsInactiveOwner": "true",
+      "sessionSettings": {
+        "lockSessionsToDomain": "false",
+        "lockSessionsToIp": "false",
+        "sessionTimeout": "TwelveHours"
+      }
     }
   }
 }

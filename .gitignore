@@ -8,6 +8,7 @@
 docs/apex/Miscellaneous/
 temp/
 test-coverage/
+.claude/
 
 # NPM
 node_modules/
