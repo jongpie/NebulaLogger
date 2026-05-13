@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <executionUser>test-dzvrxqazkvaw@example.com</executionUser>
+    <friendlyName>ExampleGoogleAuth</friendlyName>
+    <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
+    <isPkceEnabled>true</isPkceEnabled>
+    <providerType>Google</providerType>
+    <registrationHandler>ExampleRegistrationHandler</registrationHandler>
+    <requireMfa>false</requireMfa>
+    <sendAccessTokenInHeader>false</sendAccessTokenInHeader>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <sendSecretInApis>true</sendSecretInApis>
+</AuthProvider>
