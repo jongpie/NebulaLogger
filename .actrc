@@ -1,0 +1,3 @@
+-P ubuntu-22.04=catthehacker/ubuntu:act-22.04
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+--container-architecture linux/amd64

@@ -20,6 +20,60 @@ Once you're ready to start working on an issue, you can develop your changes in 
   2. Automatically verify coding standards - for example, all Apex files will be automatically scanned for PMD rule violations, based on the repository's configured PMD rules.
 - Run all unit tests for LWC and Apex, and verify everything is passing prior to submitting a pull request
 
+# Running the Build Pipeline Locally
+
+The GitHub Actions workflow at `.github/workflows/build.yml` can be run locally with [nektos/act](https://github.com/nektos/act) and Docker. This is useful for catching pipeline failures before pushing.
+
+## Prerequisites
+
+- [Docker](https://www.docker.com/) (Docker Desktop on Windows/macOS, or the Docker engine on Linux)
+- [`act`](https://github.com/nektos/act#installation) — install with `brew install act`, `winget install nektos.act`, or `choco install act-cli`
+
+The repository's `.actrc` already pins the `ubuntu-22.04` runner image to `catthehacker/ubuntu:act-22.04`, which mirrors what GitHub Actions uses.
+
+## Jobs that run locally without secrets
+
+These two jobs work straight away — no Salesforce or Codecov credentials needed:
+
+```bash
+act -j code-quality-tests
+act -j lwc-jest-tests
+```
+
+## Jobs that need real credentials
+
+Every scratch-org job and the package-creation jobs hit a real Dev Hub. To run them locally:
+
+1. Copy `.env.example` to `.env` (gitignored):
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Fill in the values. `DEV_HUB_JWT_SERVER_KEY` is multi-line PEM content — `act` reads `.env` in dotenv format, so put the entire key on one line with literal `\n` separators between lines.
+
+3. Pass the file to `act` for both env vars and secrets, then run a matrix entry:
+
+   ```bash
+   # Run all 6 scratch-org matrix entries (slow; creates 6 real scratch orgs)
+   act -j scratch-org-tests --env-file .env --secret-file .env
+
+   # Or run just one matrix entry
+   act -j scratch-org-tests --env-file .env --secret-file .env --matrix config:base
+   ```
+
+   Tip: once you've created `.env`, you can drop `--secret-file .env` and `--env-file .env` into `.actrc` to have them applied automatically on every `act` invocation.
+
+The Dev Hub allows a maximum of 3 active scratch orgs at a time, which the workflow enforces with `max-parallel: 3`.
+
+## Triggering specific events
+
+By default `act` runs the workflow's `push` event. To simulate a pull request:
+
+```bash
+act pull_request
+```
+
 # Pull Requests
 
 - All pull requests should use the `main` branch as the base branch

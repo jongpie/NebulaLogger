@@ -1,0 +1,31 @@
+name: 'Authorize Dev Hub'
+description: 'Authorizes the Salesforce Dev Hub via JWT and sets it as the default Dev Hub for the rest of the job'
+
+inputs:
+  dev-hub-auth-url:
+    description: 'Login URL for the Dev Hub (e.g. https://login.salesforce.com)'
+    required: true
+  dev-hub-bot-username:
+    description: 'Username of the Dev Hub bot user'
+    required: true
+  dev-hub-consumer-key:
+    description: 'Connected app consumer key for the Dev Hub bot user'
+    required: true
+  dev-hub-jwt-server-key:
+    description: 'Private key contents (PEM) for the Dev Hub JWT server flow'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Authorize Dev Hub'
+      shell: bash
+      env:
+        DEV_HUB_AUTH_URL: ${{ inputs.dev-hub-auth-url }}
+        DEV_HUB_BOT_USERNAME: ${{ inputs.dev-hub-bot-username }}
+        DEV_HUB_CONSUMER_KEY: ${{ inputs.dev-hub-consumer-key }}
+        DEV_HUB_JWT_SERVER_KEY: ${{ inputs.dev-hub-jwt-server-key }}
+      run: |
+        npx sf version
+        echo "$DEV_HUB_JWT_SERVER_KEY" > ./jwt-server.key
+        npx sf org login jwt --instance-url "$DEV_HUB_AUTH_URL" --client-id "$DEV_HUB_CONSUMER_KEY" --username "$DEV_HUB_BOT_USERNAME" --jwt-key-file ./jwt-server.key --set-default-dev-hub

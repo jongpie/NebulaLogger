@@ -1,0 +1,76 @@
+name: 'Run Scratch Org Tests'
+description: 'Creates a scratch org, deploys Nebula Logger, runs the Apex test suite (async + sync), then deletes the scratch org'
+
+inputs:
+  scratch-def-file:
+    description: 'Path to the scratch-org definition JSON file'
+    required: true
+  install-omnistudio-package:
+    description: "Set to 'true' to install the OmniStudio managed package after the scratch org is created"
+    required: false
+    default: 'false'
+  extra-deploy-source-dir:
+    description: 'Optional additional source directory to deploy after the main Nebula Logger metadata (e.g. ./config/scratch-orgs/experience-cloud/)'
+    required: false
+    default: ''
+  run-core-test-suite:
+    description: "Set to 'true' to run the LoggerCore Apex test suite at the end (used for the Codecov upload in the base scratch org)"
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Create Scratch Org'
+      shell: bash
+      run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file ${{ inputs.scratch-def-file }} --wait 20 --set-default --json
+
+    # https://help.salesforce.com/s/articleView?id=000394906&type=1
+    - name: "Install OmniStudio managed package v258.6 (Winter '26 release)"
+      if: inputs.install-omnistudio-package == 'true'
+      shell: bash
+      run: npx sf package install --package 04tKb000000tAtyIAE --security-type AdminsOnly --wait 30 --no-prompt
+
+    # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
+    # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
+    - name: 'Validate Core Source in Scratch Org'
+      shell: bash
+      run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+
+    # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
+    - name: 'Deploy All Source to Scratch Org'
+      shell: bash
+      run: npx sf project deploy start --source-dir ./nebula-logger/
+
+    - name: 'Deploy Extra Source to Scratch Org'
+      if: inputs.extra-deploy-source-dir != ''
+      shell: bash
+      run: npx sf project deploy start --source-dir ${{ inputs.extra-deploy-source-dir }}
+
+    - name: 'Assign Logger Admin Permission Set'
+      shell: bash
+      run: npm run permset:assign:admin
+
+    # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+    # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+    # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+    # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
+    # integration testing to ensure that everything works with or without an active session.
+    - name: 'Run Apex Tests Asynchronously'
+      shell: bash
+      run: npm run test:apex:nocoverage
+
+    - name: 'Run Apex Tests Synchronously'
+      shell: bash
+      run: npm run test:apex:nocoverage -- --synchronous
+
+    # See the Codecov upload step in the calling job (only the base scratch org uploads coverage).
+    - name: 'Get Core Test Suite Code Coverage'
+      if: inputs.run-core-test-suite == 'true'
+      shell: bash
+      run: npm run test:apex:suite:core
+
+    - name: 'Delete Scratch Org'
+      if: always()
+      shell: bash
+      run: npx sf org delete scratch --no-prompt

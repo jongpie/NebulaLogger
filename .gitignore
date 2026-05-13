@@ -8,6 +8,7 @@
 docs/apex/Miscellaneous/
 temp/
 test-coverage/
+.claude/
 
 # NPM
 node_modules/
@@ -17,4 +18,6 @@ yarn.lock
 *.log
 **/lwc/jsconfig.json
 .config
+.env
 code-analyzer*.json
+jwt-server.key
