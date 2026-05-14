@@ -90,16 +90,9 @@ global with sharing class Logger {
   private static final String USER_SESSION_ID {
     get {
       if (USER_SESSION_ID == null) {
-        // TODO Spring '24 release - simplify this (and other lazy-loaded values)
-        // by switching to the fancy, new ?? null coalescing operator
-        try {
-          USER_SESSION_ID = System.UserInfo.getSessionId();
-        } catch (Exception ex) {
-          USER_SESSION_ID = '';
-        }
-        // If System.UserInfo.getSessionId() returns null, set to an empty string to
-        // avoid calling System.UserInfo.getSessionId() again
-        USER_SESSION_ID = USER_SESSION_ID ?? '';
+        // If loadSessionId() returns null, set to an empty string to
+        // avoid calling loadSessionId() again
+        USER_SESSION_ID = loadSessionId() ?? '';
       }
       return USER_SESSION_ID;
     }
@@ -3940,6 +3933,22 @@ global with sharing class Logger {
     if (String.isNotBlank(USER_SESSION_ID)) {
       return System.Request.getCurrent().getQuiddity();
     } else {
+      return null;
+    }
+  }
+
+  private static String loadSessionId() {
+    LoggerSObjectProxy.AuthSession authSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+
+    if (authSessionProxy != null && authSessionProxy.IsAssociatedWithJwtAccessToken) {
+      // If the user is authenticated via a JWT access token, 
+      // calling `getSessionId()` will throw an uncatchable exception
+      return null;
+    }
+
+    try {
+      return System.UserInfo.getSessionId();
+    } catch (Exception ex) {
       return null;
     }
   }
