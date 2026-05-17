@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Data Mask Regex: Overlap Size</label>
+    <protected>false</protected>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">When data masking is applied to a very long string, the value is processed in overlapping chunks to avoid the Apex &apos;System.LimitException: Regex too complicated&apos; error. This integer controls how many characters adjacent chunks overlap, which guarantees that a sensitive value sitting on a chunk boundary is still fully contained within at least one chunk. This value MUST be greater than or equal to the longest value that any enabled LogEntryDataMaskRule__mdt regex can match. The default (20) covers the built-in rules (SSN ~11 chars, credit card ~19 chars with separators); increase it if you add custom rules that match longer values. When no record is configured, Nebula Logger falls back to its built-in default of 20.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">20</value>
+    </values>
+</CustomMetadata>

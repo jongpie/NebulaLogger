@@ -2588,7 +2588,7 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
-  static void it_should_apply_data_mask_rule_to_digit_dense_string_without_limit_exception() {
+  static void it_should_mask_serialized_record_json_without_limit_exception() {
     LoggerSettings__c userSettings = getUserSettings();
     userSettings.IsDataMaskingEnabled__c = true;
     // Register all 4 bundled data mask rules — in production all enabled rules run sequentially
@@ -2613,8 +2613,8 @@ private class LogEntryEventBuilder_Tests {
 
     String result = builder.getLogEntryEvent().Message__c;
     System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
-    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'Real SSN in digit-dense string should be masked');
-    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN in digit-dense string should not appear');
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'Real SSN in serialized record JSON should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN in serialized record JSON should not appear');
   }
 
   @IsTest
@@ -2729,6 +2729,38 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
     System.Assert.isTrue(result.contains('****-****-****-1111'), 'Visa CC straddling chunk boundary should be masked');
     System.Assert.isFalse(result.contains('4111-1111-1111-1111'), 'Original Visa CC should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_long_value_straddling_chunk_boundary_when_overlap_is_overridden() {
+    // A custom rule whose match is 40 chars long — longer than the default
+    // DATA_MASK_REGEX_OVERLAP_SIZE (20). Positioned so it straddles the chunk-0 boundary
+    // and begins before the default chunk-1 start (4000 - 20 = 3980): with the default
+    // overlap neither chunk contains it whole, so it could not be masked. Raising the
+    // overlap via the LoggerParameter__mdt override widens chunk 1 enough to capture it.
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'DataMaskRegexOverlapSize', Value__c = '60'));
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'LongCustomSecret',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = 'SECRET\\d{34}',
+      ReplacementRegEx__c = 'REDACTED'
+    );
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Secret occupies [3970, 4010): truncated in chunk 0 and in the default-overlap
+    // chunk 1 (starts 3980), but fully inside chunk 1 once overlap is raised to 60
+    // (chunk 1 then starts at 3940).
+    String secret = 'SECRET' + '0'.repeat(34);
+    String message = 'B'.repeat(3970) + secret + 'C'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('REDACTED'), 'Long value should be masked once overlap override widens the chunk');
+    System.Assert.isFalse(result.contains(secret), 'Original long secret should not appear');
   }
 
   @IsTest

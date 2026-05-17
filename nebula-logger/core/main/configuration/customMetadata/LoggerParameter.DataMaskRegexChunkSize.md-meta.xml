@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Data Mask Regex: Chunk Size</label>
+    <protected>false</protected>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">When data masking is applied to a very long string, the value is processed in chunks of this many characters to avoid the Apex &apos;System.LimitException: Regex too complicated&apos; error (which Salesforce raises when a single regex evaluation is too expensive). Tradeoffs: a LARGER chunk size means fewer chunks and slightly less overlap re-scanning, but each regex evaluation runs against more text and is therefore more likely to hit the LimitException; a SMALLER chunk size is safer against the limit but increases chunk count and overlap re-scan overhead. The chunk size must also be larger than DataMaskRegexOverlapSize plus the longest value any enabled rule can match, or boundary values can be missed. The default (4000) is a deliberately conservative value, roughly 27x below even the worst-case measured failure point. With all four shipped rules applied single-pass (no chunking), the limit was hit between ~110K characters (realistic log-shaped text) and ~220K characters (dense structured input) — diluting matches with ordinary text makes it fail sooner, not later, because the limit is a regex-engine step budget rather than a character count. Note: that LimitException is uncatchable, so without chunking a single oversized log message fails the whole logging call. Benchmarking found chunk size to be a safety knob rather than a performance lever: processing CPU was effectively flat across chunk sizes from 1K to 64K, so raising this value yields no measurable speedup while moving closer to the failure point. Lower this if a custom rule still throws &apos;Regex too complicated&apos; at the default; only raise it after testing your specific rule regexes against representative data. When no record is configured, Nebula Logger falls back to its built-in default of 4000.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">4000</value>
+    </values>
+</CustomMetadata>

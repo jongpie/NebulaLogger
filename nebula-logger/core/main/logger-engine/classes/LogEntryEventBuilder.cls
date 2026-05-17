@@ -20,10 +20,58 @@ global with sharing class LogEntryEventBuilder {
   private static final String HTTP_HEADER_FORMAT = '{0}: {1}';
   private static final String NEW_LINE_DELIMITER = '\n';
 
+  // Data-masking regex is applied in overlapping chunks to avoid Apex's
+  // `System.LimitException: Regex too complicated`, which Salesforce throws when a single
+  // regex evaluation exceeds an internal step budget. See issue #639. Salesforce does not
+  // document the threshold; it depends on the input length and the specific rule's
+  // pattern. Each enabled rule is an independent `replaceAll` with its own step budget,
+  // so the single most expensive rule sets the cliff — running more rules does not lower
+  // it (rule count only adds cumulative CPU, a separate limit). Of the four shipped rules
+  // the Mastercard pattern (long alternation + `\3` backreference) is by far the worst;
+  // measured single-pass it alone throws at the same size as all four together.
+  // Critically, this LimitException is UNCATCHABLE — a try/catch around `replaceAll`
+  // does not trap it — so without chunking a single large log message makes the entire
+  // logging call fail unrecoverably.
+  //
+  // DATA_MASK_REGEX_CHUNK_SIZE: the max number of characters fed to a single
+  // `replaceAll`/`Matcher` evaluation. 4000 is a deliberately conservative fixed value,
+  // trading a higher chunk count for a wide safety margin below the measured failure point.
+  //
+  // Measured (Nebula Logger v4.17.3, current Apex regex engine, all four shipped rules
+  // applied single-pass to the whole blob — i.e. the pre-chunking `applyDataMaskRules`
+  // path; reproduced identically on a scratch org and a sandbox). The un-chunked cliff
+  // depends on content shape, not just length, because the limit is a regex-engine STEP
+  // budget (CPU at the cliff was a steady ~25-45 ms across every shape tested):
+  //   - dense, structured near-miss tokens (best case): throws at ~220K chars
+  //   - tokens diluted with inert text (realistic log shape, worst case): throws at ~110K
+  // i.e. diluting matches with ordinary text makes it fail SOONER (more engine steps per
+  // character), not later. The original #639 report at ~35K was an older, lower-threshold
+  // engine. The default chunk size of 4000 is ~27x below even the worst-case cliff.
+  //
+  // Chunk size is a SAFETY knob, not a performance lever: with chunking enabled, CPU was
+  // flat (<6 ms variance) across chunk sizes 1K-64K and roughly linear in input length
+  // (200K chars masked in single-digit ms). Raising the chunk size yields no measurable
+  // speedup and only moves toward the cliff; lowering it adds margin at negligible cost.
+  // Lower it (via the override below) if custom rules push the failure point down.
+  // Overridable at runtime via the optional `LoggerParameter__mdt.DataMaskRegexChunkSize`
+  // record (no deploy required); the constant below is only the default.
+  //
+  // DATA_MASK_REGEX_OVERLAP_SIZE: adjacent chunks overlap by this many characters so a
+  // sensitive value that straddles a chunk boundary is still fully contained within at
+  // least one chunk. This value MUST be >= the longest sensitive value any data-mask rule
+  // can match; 20 covers the built-in rules (SSN ~11 chars, credit card ~19 chars with
+  // separators). It cannot be derived from the rule regexes (a pattern's max match length
+  // is not generally computable), so for orgs whose custom rules match longer values it is
+  // overridable at runtime via the optional `LoggerParameter__mdt.DataMaskRegexOverlapSize`
+  // record (no deploy required); the constant below is only the default.
   @TestVisible
   private static final Integer DATA_MASK_REGEX_CHUNK_SIZE = 4000;
   @TestVisible
   private static final Integer DATA_MASK_REGEX_OVERLAP_SIZE = 20;
+  // Matches a `$N` capture-group reference (N = one or more digits) inside a replacement
+  // template. Used by expandReplacement(); safe to regex directly since replacement
+  // templates are short config values, never the long log payload.
+  private static final System.Pattern DATA_MASK_REPLACEMENT_TOKEN_PATTERN = System.Pattern.compile('\\$([0-9]+)');
 
   private static String cachedOrganizationEnvironmentType;
 
@@ -1161,43 +1209,96 @@ global with sharing class LogEntryEventBuilder {
     return dataInput;
   }
 
+  // Chunk size defaults to DATA_MASK_REGEX_CHUNK_SIZE but can be tuned without a deploy via
+  // the optional LoggerParameter__mdt.DataMaskRegexChunkSize record. Lower it if a custom
+  // rule's regex still throws `Regex too complicated` at the default; raise it (carefully)
+  // to reduce chunk count. Resolved once per masking pass and threaded through so a single
+  // consistent value is used for every boundary calculation in that pass.
+  private static Integer getDataMaskRegexChunkSize() {
+    return LoggerParameter.getInteger('DataMaskRegexChunkSize', DATA_MASK_REGEX_CHUNK_SIZE);
+  }
+
   private static String applyDataMaskRuleToChunkedText(String text, String sensitiveDataRegEx, String replacementRegEx) {
-    if (text == null || text.length() <= DATA_MASK_REGEX_CHUNK_SIZE) {
-      return text == null ? text : text.replaceAll(sensitiveDataRegEx, replacementRegEx);
+    if (text == null) {
+      return text;
+    }
+
+    Integer chunkSize = getDataMaskRegexChunkSize();
+
+    // Short enough to mask in a single pass — no chunking needed.
+    if (text.length() <= chunkSize) {
+      return text.replaceAll(sensitiveDataRegEx, replacementRegEx);
     }
 
     List<String> lines = text.split('\n', -1);
     if (lines.size() > 1) {
       List<String> processedLines = new List<String>();
       for (String line : lines) {
-        if (line.length() <= DATA_MASK_REGEX_CHUNK_SIZE) {
+        if (line.length() <= chunkSize) {
           processedLines.add(line.replaceAll(sensitiveDataRegEx, replacementRegEx));
         } else {
-          processedLines.add(applyDataMaskRuleToLongLine(line, sensitiveDataRegEx, replacementRegEx));
+          processedLines.add(applyDataMaskRuleToLongLine(line, sensitiveDataRegEx, replacementRegEx, chunkSize));
         }
       }
       return String.join(processedLines, '\n');
     }
 
-    return applyDataMaskRuleToLongLine(text, sensitiveDataRegEx, replacementRegEx);
+    return applyDataMaskRuleToLongLine(text, sensitiveDataRegEx, replacementRegEx, chunkSize);
   }
 
-  private static String applyDataMaskRuleToLongLine(String line, String sensitiveDataRegEx, String replacementRegEx) {
+  /**
+   * Applies a single data-mask rule to one line that is too long to regex in a single pass.
+   *
+   * `String.replaceAll` cannot be called on the whole line (it would throw the
+   * `Regex too complicated` LimitException), so the line is scanned in overlapping
+   * windows of `chunkSize` characters (the caller-resolved value of
+   * DATA_MASK_REGEX_CHUNK_SIZE / its LoggerParameter override), advancing by `step`
+   * (= chunk size - overlap) each iteration. The overlap guarantees that any sensitive
+   * value sitting on a chunk boundary is fully visible in at least one window.
+   *
+   * Because windows overlap, the same match can be discovered more than once, and
+   * `Matcher` indexes are window-relative — so matches are collected with absolute
+   * positions, deduplicated, sorted, then applied left-to-right in a second pass.
+   *
+   * Worked example (chunk size 10, overlap 4, step 6) masking the SSN `123-45-6789`
+   * with replacement `***`:
+   *
+   *   line  = "name 123-45-6789 end"   (length 20)
+   *   chunk0 = line[0..10)  = "name 123-4"      -> no full SSN match
+   *   chunk1 = line[6..16)  = "23-45-6789"      -> matches at window 0  => absStart 6
+   *   chunk2 = line[12..20) = "6789 end"        -> no match
+   *   collected: { start 6 -> end 16 }
+   *   result = line[0..6) + "***" + line[16..20) = "name *** end"
+   *
+   * Keeping the *longest* match for a given start (rather than the first one found)
+   * matters because an earlier window may truncate the value at its right edge,
+   * yielding a shorter, less accurate match than a later window with more context.
+   */
+  private static String applyDataMaskRuleToLongLine(String line, String sensitiveDataRegEx, String replacementRegEx, Integer chunkSize) {
     System.Pattern regex = System.Pattern.compile(sensitiveDataRegEx);
-    Integer step = DATA_MASK_REGEX_CHUNK_SIZE - DATA_MASK_REGEX_OVERLAP_SIZE;
+    // Overlap defaults to DATA_MASK_REGEX_OVERLAP_SIZE but can be raised without a deploy
+    // via the optional LoggerParameter__mdt.DataMaskRegexOverlapSize record, for orgs whose
+    // custom data-mask rules match values longer than the built-in rules.
+    Integer overlapSize = LoggerParameter.getInteger('DataMaskRegexOverlapSize', DATA_MASK_REGEX_OVERLAP_SIZE);
+    Integer step = chunkSize - overlapSize;
 
-    // Pass 1: Find all matches using overlapping chunks, deduplicating by start position.
-    // When the same start position is found by multiple chunks, keep the longest match
-    // (the chunk with more trailing context produces the most accurate match).
+    // Pass 1: scan overlapping windows and record every match by its ABSOLUTE start
+    // position. endByStart maps an absolute start index -> absolute end index; groupsByStart
+    // keeps that match's capture groups (group 0 = full match) so the replacement template
+    // can be expanded later without re-running the regex.
     Map<Integer, Integer> endByStart = new Map<Integer, Integer>();
     Map<Integer, List<String>> groupsByStart = new Map<Integer, List<String>>();
 
     for (Integer i = 0; i < line.length(); i += step) {
-      Integer chunkEnd = Math.min(i + DATA_MASK_REGEX_CHUNK_SIZE, line.length());
+      Integer chunkEnd = Math.min(i + chunkSize, line.length());
       System.Matcher m = regex.matcher(line.substring(i, chunkEnd));
       while (m.find()) {
+        // Matcher indexes are window-relative; add the window offset `i` to get
+        // absolute positions within the full line.
         Integer absStart = i + m.start();
         Integer absEnd = i + m.end();
+        // First time we see this start, OR a later (overlapping) window found a longer
+        // match starting at the same place — keep the longer one, it has more context.
         if (!endByStart.containsKey(absStart) || absEnd > endByStart.get(absStart)) {
           endByStart.put(absStart, absEnd);
           List<String> groups = new List<String>();
@@ -1213,16 +1314,21 @@ global with sharing class LogEntryEventBuilder {
       return line;
     }
 
-    // Sort match positions to guarantee left-to-right processing
+    // Apex Map.keySet() has no guaranteed iteration order, so explicitly sort the start
+    // positions to process matches strictly left-to-right in Pass 2.
     List<Integer> sortedStarts = new List<Integer>(endByStart.keySet());
     sortedStarts.sort();
 
-    // Pass 2: Build result — copy gaps, expand replacements
+    // Pass 2: walk the matches left-to-right, copying the untouched text between matches
+    // ("gaps") verbatim and substituting each match with its expanded replacement.
+    // `pos` tracks how far into the original line has been consumed.
     String result = '';
     Integer pos = 0;
     for (Integer start : sortedStarts) {
+      // This match starts inside a region already replaced by an earlier (longer)
+      // match — skip it to avoid double-masking overlapping hits.
       if (start < pos) {
-        continue; // Skip match fully consumed by a previous replacement
+        continue;
       }
       result += line.substring(pos, start);
       result += expandReplacement(replacementRegEx, groupsByStart.get(start));
@@ -1232,28 +1338,38 @@ global with sharing class LogEntryEventBuilder {
     return result;
   }
 
+  /**
+   * Expands `$N` capture-group references in a replacement template, equivalent to
+   * Java's `Matcher.appendReplacement`.
+   *
+   * Only `$N` tokens that appear in the original `replacement` template are expanded;
+   * a `$N` sequence that happens to occur *inside a captured group's value* is copied
+   * through verbatim (this is why the result is built from the template, not produced by
+   * `String.replace` on the group values). An unresolvable token (`$0`, an out-of-range
+   * group, or a null group) is left as the literal text `$N`.
+   *
+   * Example: replacement `"[$1]-$2"`, groups [full, "A", "B"] -> `"[A]-B"`.
+   * Example: replacement `"$1"`, group 1 = `"price=$3"` -> `"price=$3"` (the `$3` in the
+   * captured value is NOT re-expanded).
+   */
   private static String expandReplacement(String replacement, List<String> groups) {
+    System.Matcher tokenMatcher = DATA_MASK_REPLACEMENT_TOKEN_PATTERN.matcher(replacement);
     String result = '';
-    for (Integer i = 0; i < replacement.length(); i++) {
-      if (replacement.substring(i, i + 1) == '$' && i + 1 < replacement.length()) {
-        // Parse the group number following '$'
-        Integer j = i + 1;
-        while (j < replacement.length() && replacement.substring(j, j + 1) >= '0' && replacement.substring(j, j + 1) <= '9') {
-          j++;
-        }
-        if (j > i + 1) {
-          Integer groupNum = Integer.valueOf(replacement.substring(i + 1, j));
-          if (groupNum >= 1 && groupNum < groups.size() && groups[groupNum] != null) {
-            result += groups[groupNum];
-          } else {
-            result += replacement.substring(i, j);
-          }
-          i = j - 1; // -1 because the for loop increments
-          continue;
-        }
+    Integer pos = 0;
+    while (tokenMatcher.find()) {
+      // Copy the literal template text preceding this `$N` token.
+      result += replacement.substring(pos, tokenMatcher.start());
+      Integer groupNum = Integer.valueOf(tokenMatcher.group(1));
+      if (groupNum >= 1 && groupNum < groups.size() && groups[groupNum] != null) {
+        result += groups[groupNum];
+      } else {
+        // Not a resolvable group reference — preserve the token text literally.
+        result += tokenMatcher.group();
       }
-      result += replacement.substring(i, i + 1);
+      pos = tokenMatcher.end();
     }
+    // Copy any literal template text after the last token.
+    result += replacement.substring(pos);
     return result;
   }
 
