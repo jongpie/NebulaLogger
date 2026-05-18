@@ -2519,6 +2519,445 @@ private class LogEntryEventBuilder_Tests {
     );
   }
 
+  @IsTest
+  static void it_should_apply_data_mask_rule_to_large_multiline_message() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Build a large multi-line string that exceeds the chunk threshold, with SSNs at start, middle, and end
+    String paddingLine = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE);
+    String message = 'SSN at start: 400 11 9999\n' + paddingLine + '\nSSN in middle: 123 45 6789\n' + paddingLine + '\nSSN at end: 987 65 4321';
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN at start should be masked');
+    System.Assert.isTrue(result.contains('XXX-XX-6789'), 'SSN in middle should be masked');
+    System.Assert.isTrue(result.contains('XXX-XX-4321'), 'SSN at end should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN at start should not appear');
+    System.Assert.isFalse(result.contains('123 45 6789'), 'Original SSN in middle should not appear');
+    System.Assert.isFalse(result.contains('987 65 4321'), 'Original SSN at end should not appear');
+  }
+
+  @IsTest
+  static void it_should_apply_data_mask_rule_to_large_single_line_message() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Build a large single-line string (no newlines) that exceeds the chunk threshold
+    String padding = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE);
+    String message = 'SSN here: 400 11 9999 ' + padding + ' another SSN: 123 45 6789';
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'First SSN should be masked');
+    System.Assert.isTrue(result.contains('XXX-XX-6789'), 'Second SSN should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original first SSN should not appear');
+    System.Assert.isFalse(result.contains('123 45 6789'), 'Original second SSN should not appear');
+  }
+
+  @IsTest
+  static void it_should_apply_data_mask_rule_when_ssn_is_near_chunk_boundary() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Place a space-separated SSN so it straddles a chunk boundary.
+    // The overlapping-chunk Matcher approach ensures the full pattern is found
+    // even when it spans two adjacent chunks.
+    Integer ssnPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - 5;
+    String message = 'B'.repeat(ssnPosition) + ' 400 11 9999 ' + 'C'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN near chunk boundary should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN near chunk boundary should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_serialized_record_json_without_limit_exception() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    // Register all 4 bundled data mask rules — in production all enabled rules run sequentially
+    LogEntryEventBuilder.setMockDataMaskRule(getSocialSecurityNumberDataMaskRule());
+    LogEntryEventBuilder.setMockDataMaskRule(getVisaCreditCardNumberDataMaskRule());
+    LogEntryEventBuilder.setMockDataMaskRule(getMastercardCreditCardNumberDataMaskRule());
+    LogEntryEventBuilder.setMockDataMaskRule(getAmericanExpressCreditCardNumberDataMaskRule());
+    // Simulate serialized SObject JSON — the scenario from issue #639 where a 35K+ string
+    // of serialized Asset records triggered System.LimitException: Regex too complicated.
+    // Each fake record mimics a real Asset with multiple fields, Salesforce IDs, dates, and numbers.
+    String fakeAssetRecord = '{"attributes":{"type":"Asset","url":"/services/data/v64.0/sobjects/Asset/02iDm00000ABCdEFG"},'
+      + '"Id":"02iDm00000ABCdEFG","AccountId":"001Dm00000XYZ1234","ContactId":"003Dm00000LMN5678",'
+      + '"Name":"Asset-2024-09-001","Status":"Installed","Quantity":250.00,"Price":14999.95,'
+      + '"PurchaseDate":"2024-09-15","InstallDate":"2024-09-20","UsageEndDate":"2025-09-15",'
+      + '"SerialNumber":"SN-8842719305","Description":"Enterprise license  unit 42 of 250"}';
+    Integer fieldMaxLength = LogEntryEvent__e.Message__c.getDescribe().getLength();
+    Integer repetitions = fieldMaxLength / fakeAssetRecord.length();
+    String message = fakeAssetRecord.repeat(repetitions) + ' 400 11 9999';
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'Real SSN in serialized record JSON should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN in serialized record JSON should not appear');
+  }
+
+  @IsTest
+  static void it_should_not_double_mask_when_match_is_inside_overlap_zone() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Place compact SSN "400119999" (9 chars) starting at position 3985
+    // — fully inside overlap zone [3980, 4000), found by both chunk 0 and chunk 1.
+    // The seenStarts dedup must prevent it from being masked twice.
+    Integer ssnPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE + 5;
+    String message = 'B'.repeat(ssnPosition) + ' 400119999 ' + 'C'.repeat(100);
+    Integer originalLength = message.length();
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN inside overlap zone should be masked');
+    System.Assert.isFalse(result.contains('400119999'), 'Original SSN inside overlap zone should not appear');
+    // If the SSN were double-masked, the result length would differ from a single replacement
+    Integer expectedLengthDelta = 'XXX-XX-9999'.length() - '400119999'.length();
+    System.Assert.areEqual(originalLength + expectedLengthDelta, result.length(), 'Result length should reflect exactly one replacement (no double-masking)');
+  }
+
+  @IsTest
+  static void it_should_mask_multiple_ssns_near_same_chunk_boundary() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Place first SSN ending just before the overlap zone, second SSN starting inside the overlap zone.
+    // Both are near the chunk boundary — verifies multiple matches in the boundary region are all masked.
+    Integer firstSsnPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE - 12;
+    String message = 'B'.repeat(firstSsnPosition) + ' 400119999 ' + ' 123456789 ' + 'C'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'First SSN near chunk boundary should be masked');
+    System.Assert.isTrue(result.contains('XXX-XX-6789'), 'Second SSN near chunk boundary should be masked');
+    System.Assert.isFalse(result.contains('400119999'), 'Original first SSN should not appear');
+    System.Assert.isFalse(result.contains('123456789'), 'Original second SSN should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_ssn_at_end_of_long_string() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Build string just over chunk size, SSN at the very end with no trailing chars.
+    // The final chunk will be shorter than DATA_MASK_REGEX_CHUNK_SIZE — verifies the tail chunk processes correctly.
+    String message = 'B'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE + 100) + ' 400119999';
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN at end of long string should be masked');
+    System.Assert.isFalse(result.contains('400119999'), 'Original SSN at end should not appear');
+    System.Assert.isTrue(result.endsWith('XXX-XX-9999'), 'Masked SSN should be at the very end of the result');
+  }
+
+  @IsTest
+  static void it_should_mask_ssn_starting_exactly_at_chunk_step_position() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Place SSN starting exactly at position step (3980) — the exact start of chunk 1
+    // and the exact start of the overlap zone for chunk 0.
+    // Tests the boundary arithmetic at the most sensitive position.
+    Integer step = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE;
+    String message = 'B'.repeat(step) + ' 400119999 ' + 'C'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN at exact chunk step position should be masked');
+    System.Assert.isFalse(result.contains('400119999'), 'Original SSN at chunk step position should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_credit_card_straddling_chunk_boundary() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getVisaCreditCardNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Place a Visa CC " 4111-1111-1111-1111" (20 chars with leading space) starting at position 3981,
+    // so it ends at 4001 — beyond chunk 0's boundary. Chunk 0 can't match it (only 19 chars visible).
+    // Chunk 1 finds it correctly.
+    Integer ccPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE + 1;
+    String message = 'B'.repeat(ccPosition) + ' 4111-1111-1111-1111 ' + 'C'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('****-****-****-1111'), 'Visa CC straddling chunk boundary should be masked');
+    System.Assert.isFalse(result.contains('4111-1111-1111-1111'), 'Original Visa CC should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_long_value_straddling_chunk_boundary_when_overlap_is_overridden() {
+    // A custom rule whose match is 40 chars long — longer than the default
+    // DATA_MASK_REGEX_OVERLAP_SIZE (20). Positioned so it straddles the chunk-0 boundary
+    // and begins before the default chunk-1 start (4000 - 20 = 3980): with the default
+    // overlap neither chunk contains it whole, so it could not be masked. Raising the
+    // overlap via the LoggerParameter__mdt override widens chunk 1 enough to capture it.
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'DataMaskRegexOverlapSize', Value__c = '60'));
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'LongCustomSecret',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = 'SECRET\\d{34}',
+      ReplacementRegEx__c = 'REDACTED'
+    );
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Secret occupies [3970, 4010): truncated in chunk 0 and in the default-overlap
+    // chunk 1 (starts 3980), but fully inside chunk 1 once overlap is raised to 60
+    // (chunk 1 then starts at 3940).
+    String secret = 'SECRET' + '0'.repeat(34);
+    String message = 'B'.repeat(3970) + secret + 'C'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('REDACTED'), 'Long value should be masked once overlap override widens the chunk');
+    System.Assert.isFalse(result.contains(secret), 'Original long secret should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_ssn_in_string_of_exactly_chunk_size() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // 4000-char string with SSN — verifies the <= guard routes to replaceAll directly (no chunking)
+    String ssn = ' 400 11 9999 ';
+    String message = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - ssn.length()) + ssn;
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN in exactly chunk-size string should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_ssn_in_string_of_chunk_size_plus_one() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // 4001-char string with SSN — verifies the chunking path activates at the minimum qualifying length
+    String ssn = ' 400 11 9999 ';
+    String message = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE + 1 - ssn.length()) + ssn;
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN in chunk-size+1 string should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_ssn_in_multiline_where_one_line_is_exactly_chunk_size() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Multi-line input where one line is exactly 4000 chars with an SSN.
+    // Verifies the per-line <= check works at the boundary.
+    String ssn = ' 400 11 9999 ';
+    String exactLine = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - ssn.length()) + ssn;
+    String message = 'First line\n' + exactLine + '\nLast line';
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN in exactly chunk-size line should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN should not appear');
+  }
+
+  @IsTest
+  static void it_should_mask_ssn_at_start_of_long_string() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+    rule.IsEnabled__c = true;
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // SSN at the very start of a string that exceeds chunk size.
+    // Tests the first-chunk handling when pos=0 and the first match starts at a small offset.
+    String message = '400 11 9999 ' + 'B'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('XXX-XX-9999'), 'SSN at start of long string should be masked');
+    System.Assert.isFalse(result.contains('400 11 9999'), 'Original SSN at start should not appear');
+    System.Assert.isTrue(result.startsWith('XXX-XX-9999'), 'Masked SSN should be at the very start of the result');
+  }
+
+  @IsTest
+  static void it_should_keep_longer_match_when_same_start_found_by_two_chunks() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'SyntheticLongerMatch',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = '(X+)',
+      ReplacementRegEx__c = '[MASKED]'
+    );
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // 30 X's starting at position 3985 straddle the chunk boundary (chunk size = 4000).
+    // Chunk 0 [0,4000) sees 15 X's → match (3985,4000).
+    // Chunk 1 [3980,...) sees all 30 → match (3985,4015).
+    // The longer-match branch (absEnd > endByStart.get(absStart)) keeps the 30-char match.
+    String message = 'A'.repeat(3985) + 'X'.repeat(30) + 'B'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isFalse(result.contains('X'), 'All X chars should be masked — longer match must win');
+    System.Assert.areEqual(3985 + '[MASKED]'.length() + 100, result.length(), 'Result length should reflect single replacement');
+  }
+
+  @IsTest
+  static void it_should_apply_matches_from_multiple_chunks_in_left_to_right_order() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'SyntheticSortOrder',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = '(X{5})',
+      ReplacementRegEx__c = '[M]'
+    );
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Match A at position 100 (chunk 0 only), match B at position 4080 (chunk 1 only).
+    // Map.keySet() has no guaranteed order in Apex — the sort ensures left-to-right processing.
+    String message = 'A'.repeat(100) + 'XXXXX' + 'A'.repeat(3975) + 'XXXXX' + 'B'.repeat(100);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isFalse(result.contains('XXXXX'), 'Both XXXXX runs should be replaced');
+    // Original: 100 + 5 + 3975 + 5 + 100 = 4185. Two replacements: 5→3 each, saving 4 total.
+    System.Assert.areEqual(4181, result.length(), 'Result length should reflect two replacements');
+    System.Assert.isTrue(result.startsWith('A'.repeat(100) + '[M]'), 'First match should be at position 100');
+    System.Assert.isTrue(result.endsWith('[M]' + 'B'.repeat(100)), 'Second match should be near the end');
+  }
+
+  @IsTest
+  static void it_should_skip_overlapping_match_consumed_by_previous_replacement() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'SyntheticOverlapSkip',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = '(X{10,})',
+      ReplacementRegEx__c = '[MASKED]'
+    );
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // 30 X's starting at position 3970. Chunk 0 matches (3970,4000)=30 X's.
+    // Chunk 1 matches (3980,4000)=20 X's — a subset. After processing the first match
+    // (pos=4000), the second match's start (3980) < pos, triggering the `continue` skip.
+    String message = 'A'.repeat(3970) + 'X'.repeat(30) + 'B'.repeat(200);
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isFalse(result.contains('X'), 'All X chars should be masked');
+    Integer maskedCount = result.split('\\[MASKED\\]', -1).size() - 1;
+    System.Assert.areEqual(1, maskedCount, 'Exactly one [MASKED] token should appear');
+    System.Assert.areEqual(3970 + '[MASKED]'.length() + 200, result.length(), 'Result length should reflect single replacement');
+  }
+
+  @IsTest
+  static void it_should_not_reinterpret_dollar_signs_in_captured_group_values() {
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsDataMaskingEnabled__c = true;
+    LogEntryDataMaskRule__mdt rule = new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'SyntheticDollarSign',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = '(\\w+:\\$\\d+)(DONE)( ?)',
+      ReplacementRegEx__c = '[$1/$2]'
+    );
+    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    // Group 1 = 'PRICE:$3', group 2 = 'DONE', group 3 = ' '.
+    // The old iterative String.replace() would process $3 inside group 1's value,
+    // replacing it with group 3 (space) → '[PRICE: /DONE]'. The new single-pass
+    // expandReplacement processes $N only in the template, preserving the literal $3.
+    String fakeAssetRecord = '{"attributes":{"type":"Asset","url":"/services/data/v64.0/sobjects/Asset/02iDm00000ABCdEFG"},'
+      + '"Id":"02iDm00000ABCdEFG","AccountId":"001Dm00000XYZ1234","ContactId":"003Dm00000LMN5678",'
+      + '"Name":"Asset-2024-09-001","Status":"Installed","Quantity":250.00,"Price":14999.95,'
+      + '"PurchaseDate":"2024-09-15","InstallDate":"2024-09-20","UsageEndDate":"2025-09-15",'
+      + '"SerialNumber":"SN-8842719305","Description":"Enterprise license  unit 42 of 250"}';
+    Integer repetitions = (LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE / fakeAssetRecord.length()) + 1;
+    String message = fakeAssetRecord.repeat(repetitions) + ' PRICE:$3DONE ';
+
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
+    builder.setMessage(message);
+
+    String result = builder.getLogEntryEvent().Message__c;
+    System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
+    System.Assert.isTrue(result.contains('[PRICE:$3/DONE]'), 'Literal $3 in captured value should be preserved');
+    System.Assert.isFalse(result.contains('[PRICE: /DONE]'), '$3 in captured value must not be reinterpreted as group 3');
+  }
+
   static String getMessage() {
     return 'Hello, world';
   }
@@ -2540,6 +2979,33 @@ private class LogEntryEventBuilder_Tests {
       IsEnabled__c = true,
       SensitiveDataRegEx__c = '(?<!\\d)(\\d{3})[- ]?(\\d{2})[- ]?(\\d{4})(?!\\d)',
       ReplacementRegEx__c = 'XXX-XX-$3'
+    );
+  }
+
+  static LogEntryDataMaskRule__mdt getVisaCreditCardNumberDataMaskRule() {
+    return new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'VisaCreditCardNumber',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = '(^|[^0-9])(4\\d{3})([- ]?)\\d{4}\\3\\d{4}\\3(\\d{4})(?!\\d)',
+      ReplacementRegEx__c = '$1****-****-****-$4'
+    );
+  }
+
+  static LogEntryDataMaskRule__mdt getMastercardCreditCardNumberDataMaskRule() {
+    return new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'MastercardCreditCardNumber',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = '(^|[^0-9])(5[1-5]\\d{2}|222[1-9]|22[3-9]\\d|2[3-6]\\d{2}|27[01]\\d|2720)([- ]?)\\d{4}\\3\\d{4}\\3(\\d{4})(?!\\d)',
+      ReplacementRegEx__c = '$1****-****-****-$4'
+    );
+  }
+
+  static LogEntryDataMaskRule__mdt getAmericanExpressCreditCardNumberDataMaskRule() {
+    return new LogEntryDataMaskRule__mdt(
+      DeveloperName = 'AmericanExpressCreditCardNumber',
+      IsEnabled__c = true,
+      SensitiveDataRegEx__c = '(^|[^0-9A-Za-z])(3[47]\\d{2})([- ]?)\\d{6}\\3(\\d{5})(?=[^0-9A-Za-z]|$)',
+      ReplacementRegEx__c = '$1****-******-$4'
     );
   }
 
