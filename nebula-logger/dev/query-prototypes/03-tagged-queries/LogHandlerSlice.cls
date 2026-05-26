@@ -1,7 +1,11 @@
 //------------------------------------------------------------------------------------------------//
-// Prototype 2 — production-side slice. Identical shape to Prototype 1's LogHandlerSlice; the
-// difference is that getLogRepository() etc. now return interface types (ILogRepository) rather
-// than concrete classes. The call sites read the same way.
+// Prototype 3 — production-side slice. The structure mirrors Prototypes 1 and 2 EXCEPT each
+// query that the test suite needs to stub carries an explicit `.tag('...')` call. Untagged
+// queries always run real SOQL — only tagged queries are mockable.
+//
+// The tag values used here become part of the codebase's "test API": tests reference them by
+// string, so renaming or removing one will silently break tests rather than producing a
+// compile error.
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc')
@@ -30,8 +34,15 @@ public without sharing class LogHandlerSlice {
       return;
     }
 
+    List<Log__c> parentLogs = (List<Log__c>) LoggerQuery.of(Schema.Log__c.SObjectType)
+      .tag('LogHandler.parentLookup')
+      .selectFields(new List<Schema.SObjectField>{ Schema.Log__c.Id, Schema.Log__c.TransactionId__c })
+      .whereField(Schema.Log__c.TransactionId__c)
+      .inCollection(parentLogTransactionIds)
+      .toList();
+
     Map<String, Id> txIdToParentRecordId = new Map<String, Id>();
-    for (Log__c parentLog : LoggerRepositoryFactory.getInstance().getLogRepository().getLogsByTransactionId(parentLogTransactionIds)) {
+    for (Log__c parentLog : parentLogs) {
       txIdToParentRecordId.put(parentLog.TransactionId__c, parentLog.Id);
     }
     for (Log__c log : this.logs) {
@@ -53,11 +64,27 @@ public without sharing class LogHandlerSlice {
       return;
     }
 
+    List<Schema.Group> queues = (List<Schema.Group>) LoggerQuery.of(Schema.Group.SObjectType)
+      .tag('LogHandler.queueLookup')
+      .selectFields(new List<Schema.SObjectField>{ Schema.Group.Id, Schema.Group.DeveloperName })
+      .whereField(Schema.Group.Type)
+      .equals('Queue')
+      .whereField(Schema.Group.DeveloperName)
+      .inCollection(possibleOwnerNames)
+      .toList();
+
+    List<Schema.User> users = (List<Schema.User>) LoggerQuery.of(Schema.User.SObjectType)
+      .tag('LogHandler.userLookup')
+      .selectFields(new List<Schema.SObjectField>{ Schema.User.Id, Schema.User.Username })
+      .whereField(Schema.User.Username)
+      .inCollection(possibleOwnerNames)
+      .toList();
+
     Map<String, Id> ownerIdByName = new Map<String, Id>();
-    for (Schema.Group queue : LoggerRepositoryFactory.getInstance().getGroupRepository().getQueuesByDeveloperName(possibleOwnerNames)) {
+    for (Schema.Group queue : queues) {
       ownerIdByName.put(queue.DeveloperName, queue.Id);
     }
-    for (Schema.User user : LoggerRepositoryFactory.getInstance().getUserRepository().getUsersByUsername(possibleOwnerNames)) {
+    for (Schema.User user : users) {
       ownerIdByName.put(user.Username, user.Id);
     }
 
