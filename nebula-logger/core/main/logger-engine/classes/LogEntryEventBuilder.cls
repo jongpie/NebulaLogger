@@ -34,7 +34,8 @@ global with sharing class LogEntryEventBuilder {
   private String debugMessage = '';
 
   @TestVisible
-  private static Boolean isApexSystemDebugSupportedOverride;
+  private static Boolean isApexSystemDebugSupportedOverride = true; // default to true for backwards compatibility with existing tests
+
   private Boolean detailsAreSet = false;
   private Boolean shouldSave;
   private Set<String> tags = new Set<String>();
@@ -777,8 +778,8 @@ global with sharing class LogEntryEventBuilder {
       try {
         this.logEntryEvent.put(field, value);
       } catch (System.Exception ex) {
-        LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
         if (isApexSystemDebugSupported()) {
+          LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
           System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
         }
       }
@@ -1144,13 +1145,6 @@ global with sharing class LogEntryEventBuilder {
   }
 
   // Private static helper methods
-  private static Boolean isApexSystemDebugSupported() {
-    if (System.Test.isRunningTest() && isApexSystemDebugSupportedOverride != null) {
-      return isApexSystemDebugSupportedOverride;
-    }
-    return String.isBlank(NAMESPACE_PREFIX);
-  }
-
   @TestVisible
   private static void setMockDataMaskRule(LogEntryDataMaskRule__mdt dataMaskRule) {
     CACHED_DATA_MASK_RULES.put(dataMaskRule.DeveloperName, dataMaskRule);
@@ -1350,6 +1344,17 @@ global with sharing class LogEntryEventBuilder {
 
     System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(System.AccessType.READABLE, records, false);
     return securityDecision.getRecords();
+  }
+
+  /**
+   * @description Returns whether Apex System.debug() is supported, supports an override for testing purposes.
+   * @return   `Boolean`   true if Apex System.debug() is supported, false otherwise
+   */
+  private static Boolean isApexSystemDebugSupported() {
+    if (System.Test.isRunningTest()) {
+      return isApexSystemDebugSupportedOverride;
+    }
+    return String.isBlank(NAMESPACE_PREFIX);
   }
 
   @SuppressWarnings('PMD.ApexDoc')
