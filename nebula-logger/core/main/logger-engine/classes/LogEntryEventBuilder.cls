@@ -32,6 +32,9 @@ global with sharing class LogEntryEventBuilder {
 
   @TestVisible
   private String debugMessage = '';
+
+  @TestVisible
+  private static Boolean isApexSystemDebugSupportedOverride;
   private Boolean detailsAreSet = false;
   private Boolean shouldSave;
   private Set<String> tags = new Set<String>();
@@ -775,7 +778,9 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.put(field, value);
       } catch (System.Exception ex) {
         LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
-        System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
+        if (isApexSystemDebugSupported()) {
+          System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
+        }
       }
     }
 
@@ -922,7 +927,7 @@ global with sharing class LogEntryEventBuilder {
 
   @SuppressWarnings('PMD.AvoidDebugStatements')
   private void logToApexDebug(String message) {
-    if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false) {
+    if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false || isApexSystemDebugSupported() == false) {
       return;
     }
 
@@ -1139,6 +1144,13 @@ global with sharing class LogEntryEventBuilder {
   }
 
   // Private static helper methods
+  private static Boolean isApexSystemDebugSupported() {
+    if (System.Test.isRunningTest() && isApexSystemDebugSupportedOverride != null) {
+      return isApexSystemDebugSupportedOverride;
+    }
+    return String.isBlank(NAMESPACE_PREFIX);
+  }
+
   @TestVisible
   private static void setMockDataMaskRule(LogEntryDataMaskRule__mdt dataMaskRule) {
     CACHED_DATA_MASK_RULES.put(dataMaskRule.DeveloperName, dataMaskRule);
