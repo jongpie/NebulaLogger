@@ -215,7 +215,7 @@ public without sharing abstract class LoggerSObjectHandler {
       }
     } catch (TypeException ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution', configuration, ex);
+        Logger.warn('Nebula Logger - Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution', configuration, ex);
       }
     }
   }

@@ -12,6 +12,7 @@ import { log as lightningLog } from 'lightning/logger';
 const MOCK_GET_SETTINGS = require('./data/getLoggerSettings.json');
 
 const flushPromises = async () => {
+  // eslint-disable-next-line
   await new Promise(process.nextTick);
 };
 

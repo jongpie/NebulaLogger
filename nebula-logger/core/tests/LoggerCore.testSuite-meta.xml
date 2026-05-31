@@ -15,6 +15,7 @@
     <testClassName>LogEntryHandler_Tests</testClassName>
     <testClassName>LogEntryMetadataViewerController_Tests</testClassName>
     <testClassName>LogEntryTagHandler_Tests</testClassName>
+    <testClassName>Logger_Tests</testClassName>
     <testClassName>LoggerBatchableContext_Tests</testClassName>
     <testClassName>LoggerCache_Tests</testClassName>
     <testClassName>LoggerConfigurationSelector_Tests</testClassName>
@@ -34,7 +35,6 @@
     <testClassName>LoggerStackTrace_Tests</testClassName>
     <testClassName>LoggerTagHandler_Tests</testClassName>
     <testClassName>LoggerTriggerableContext_Tests</testClassName>
-    <testClassName>Logger_Tests</testClassName>
     <testClassName>LogHandler_Tests</testClassName>
     <testClassName>LogManagementDataSelector_Tests</testClassName>
     <testClassName>LogMassDeleteExtension_Tests</testClassName>

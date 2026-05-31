@@ -2,7 +2,7 @@
 <UserManagementSettings xmlns="http://soap.sforce.com/2006/04/metadata">
     <enableCanAnswerContainUsername>true</enableCanAnswerContainUsername>
     <enableConcealPersonalInfo>true</enableConcealPersonalInfo>
-    <enableEnhancedConcealPersonalInfo>false</enableEnhancedConcealPersonalInfo>
+    <enableEnhancedConcealPersonalInfo>true</enableEnhancedConcealPersonalInfo>
     <enableEnhancedPermsetMgmt>true</enableEnhancedPermsetMgmt>
     <enableEnhancedProfileMgmt>true</enableEnhancedProfileMgmt>
     <enableEnhcUiUserAccessPolicies>true</enableEnhcUiUserAccessPolicies>

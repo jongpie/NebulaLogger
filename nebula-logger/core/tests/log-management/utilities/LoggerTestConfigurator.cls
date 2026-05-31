@@ -125,6 +125,7 @@ public without sharing class LoggerTestConfigurator {
    *              with `IsEnabled__c` set  based on the provided boolean on each `LoggerSObjectHandler__mdt` record
    * @param  isEnabled The Boolean value to control if all mock `LoggerSObjectHandler__mdt` records should be enabled (`true`) or disabled (`false`)
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public static void setupMockSObjectHandlerConfigurations(Boolean isEnabled) {
     Map<Schema.SObjectType, System.Type> sobjectTypeToDefaultHandlerApexClass = new Map<Schema.SObjectType, System.Type>{
       Schema.Log__c.SObjectType => LogHandler.class,

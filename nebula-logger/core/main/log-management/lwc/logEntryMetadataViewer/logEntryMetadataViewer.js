@@ -33,7 +33,7 @@ export default class LogEntryMetadataViewer extends LightningElement {
   @api sourceMetadata;
 
   objectApiName = LOG_ENTRY_OBJECT;
-  hasLoaded = false;
+  isLoaded = false;
   sourceSnippet;
 
   showFullSourceMetadataModal = false;
@@ -59,7 +59,7 @@ export default class LogEntryMetadataViewer extends LightningElement {
 
   get fullSourceModalNotificationClasses() {
     const classNames = ['slds-notify', 'slds-notify_alert'];
-    classNames.push(this._logEntryMetadata?.HasCodeBeenModified ? 'slds-alert_warning' : 'slds-alert_offline');
+    classNames.push(this._logEntryMetadata?.HasCodeBeenModified ? 'slds-theme_warning' : 'slds-theme_success');
     return classNames.join(' ');
   }
 
@@ -85,6 +85,7 @@ export default class LogEntryMetadataViewer extends LightningElement {
       const sourceSnippetJson = getFieldValue(this._logEntry, sourceSnippetField);
 
       if (!sourceSnippetJson) {
+        this.isLoaded = true;
         return;
       }
 
@@ -94,13 +95,13 @@ export default class LogEntryMetadataViewer extends LightningElement {
       const sourceApiName = getFieldValue(this._logEntry, sourceApiNameField);
       const sourceApiVersion = getFieldValue(this._logEntry, sourceApiVersionField);
       const sourceName = `${sourceApiName}.${sourceExtension} - ${sourceApiVersion}`;
-      this.sourceSnippet = { ...JSON.parse(sourceSnippetJson), ...{ Title: sourceName } };
 
-      this.hasLoaded = true;
+      this.sourceSnippet = { ...JSON.parse(sourceSnippetJson), ...{ Title: sourceName } };
       this._logEntryMetadata = await getMetadata({
         recordId: this.recordId,
         sourceMetadata: this.sourceMetadata
       });
+      this.isLoaded = true;
     }
   }
 

@@ -263,7 +263,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
   }
 
-  @SuppressWarnings('PMD.OperationWithLimitsInLoop')
+  @SuppressWarnings('PMD.NcssCount, PMD.OperationWithLimitsInLoop')
   private void setRecordNames() {
     if (LoggerParameter.QUERY_RELATED_RECORD_DATA == false) {
       return;

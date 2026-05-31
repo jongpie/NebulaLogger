@@ -4,6 +4,7 @@
 .sf/
 .sfdx/
 .vscode/
+.claude/
 docs/apex/Miscellaneous/
 temp/
 test-coverage/
@@ -16,3 +17,4 @@ yarn.lock
 *.log
 **/lwc/jsconfig.json
 .config
+code-analyzer*.json

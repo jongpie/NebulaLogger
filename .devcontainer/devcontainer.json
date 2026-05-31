@@ -20,6 +20,8 @@
         "explorer.fileNesting.expand": false,
         "explorer.fileNesting.patterns": {
           "*.cls": "${capture}.cls-meta.xml",
+          "*.css": "${capture}.min.css",
+          "*.js": "${capture}.min.js",
           "*.page": "${capture}.page-meta.xml",
           "*.trigger": "${capture}.trigger-meta.xml",
           "*.view": "${capture}.view-meta.xml",

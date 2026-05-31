@@ -58,6 +58,7 @@ jest.mock(
   { virtual: true }
 );
 
+// eslint-disable-next-line
 const flushPromises = () => new Promise(process.nextTick);
 
 async function createStreamElement(namespace) {
@@ -152,7 +153,7 @@ describe('LogEntryEventStream tests', () => {
 
     const warningElement = element.shadowRoot.querySelector('.disabled-warning-message');
     expect(warningElement).toBeTruthy();
-    expect(warningElement.querySelector('.slds-text-heading_medium').innerHTML).toEqual(
+    expect(warningElement.querySelector('.slds-text-heading_medium').textContent).toEqual(
       'The log entry event stream has been disabled by an admin, using the record LoggerParameter__mdt.EnableLogEntryEventStream.'
     );
     const buttonElements = element.shadowRoot.querySelectorAll('lightning-button, lightning-button-menu, lightning-button-stateful');
@@ -619,7 +620,7 @@ describe('LogEntryEventStream tests', () => {
     expect(consoleBlock.className).not.toContain('expanded');
   });
 
-  it('shows log entries in console when user selects console view ', async () => {
+  it('shows log entries in console when user selects console view', async () => {
     await Promise.all(
       namespaces.map(async namespace => {
         const element = await createStreamElement(namespace);
@@ -639,7 +640,7 @@ describe('LogEntryEventStream tests', () => {
     );
   });
 
-  it('shows log entries in datatable when user select tabular view ', async () => {
+  it('shows log entries in datatable when user select tabular view', async () => {
     await Promise.all(
       namespaces.map(async namespace => {
         const element = await createStreamElement(namespace);

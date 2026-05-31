@@ -75,6 +75,22 @@ public class LoggerParameter {
   }
 
   /**
+   * @description A list of Apex class names that should be ignored when parsing stack traces.
+   *              Any stack trace lines containing these class names will be removed from the parsed stack trace.
+   *              This is useful for filtering out utility or framework classes from stack traces.
+   *              Controlled by the custom metadata record `LoggerParameter.IgnoredApexOrigins`, or an empty list as the default
+   */
+  public static final List<String> IGNORED_APEX_ORIGINS {
+    get {
+      if (IGNORED_APEX_ORIGINS == null) {
+        IGNORED_APEX_ORIGINS = getStringList('IgnoredApexOrigins', new List<String>());
+      }
+      return IGNORED_APEX_ORIGINS;
+    }
+    private set;
+  }
+
+  /**
    * @description Indicates if Nebula Logger will append its own log entries about the logging system.
    *              Controlled by the custom metadata record `LoggerParameter.EnableLoggerSystemMessages`, or `false` as the default
    */
@@ -574,6 +590,7 @@ public class LoggerParameter {
    * @return                        The `Boolean` value configured in the matching instance of `LoggerParameter__mdt`
    *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public static Boolean getBoolean(String parameterDeveloperName, Boolean defaultValue) {
     Boolean parameterValue = (Boolean) castParameterValue(parameterDeveloperName, Boolean.class);
     return parameterValue ?? defaultValue;
@@ -839,11 +856,7 @@ public class LoggerParameter {
 
   private static Object castParameterValue(String parameterDeveloperName, System.Type dataType) {
     String parameterValue = loadParameterValue(parameterDeveloperName);
-    if (parameterValue == null) {
-      return null;
-    } else {
-      return System.JSON.deserialize(parameterValue, dataType);
-    }
+    return parameterValue == null ? null : System.JSON.deserialize(parameterValue, dataType);
   }
 
   private static String loadParameterValue(String parameterDeveloperName) {

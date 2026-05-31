@@ -9,6 +9,7 @@
     <label>Parent Log</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>

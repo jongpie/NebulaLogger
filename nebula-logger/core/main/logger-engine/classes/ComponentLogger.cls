@@ -212,6 +212,7 @@ public inherited sharing class ComponentLogger {
   /**
    * @description A DTO object used for passing `LoggerSettings__c` details to lightning components
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public class ComponentLoggerSettings {
     /**
      * @description Indicates the save method that will be used by default if no other save method is specified, based on `LoggerSettings__c.DefaultSaveMethod__c`

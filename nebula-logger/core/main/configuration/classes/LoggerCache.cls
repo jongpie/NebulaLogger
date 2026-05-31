@@ -169,7 +169,7 @@ public without sharing class LoggerCache {
       return this.platformCachePartition != null && this.platformCachePartition.isAvailable();
     }
 
-    @SuppressWarnings('PMD.ExcessiveParameterList')
+    @SuppressWarnings('PMD.AvoidBooleanMethodParameters, PMD.ExcessiveParameterList')
     public virtual void put(String key, Object value, Integer cacheTtlSeconds, Cache.Visibility cacheVisiblity, Boolean isCacheImmutable) {
       this.platformCachePartition?.put(key, value, cacheTtlSeconds, cacheVisiblity, isCacheImmutable);
     }
