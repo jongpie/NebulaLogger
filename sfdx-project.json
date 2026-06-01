@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.18.3.NEXT",
-      "versionName": "PrismJS Loading Improvements & Error Handling",
-      "versionDescription": "Fixed some issues with loading PrismJS from LoggerStaticResoures by switching to minified versions + added error handling with fallback display when PrismJS cannot be properly loaded",
+      "versionNumber": "4.18.4.NEXT",
+      "versionName": "Bugfix: Removed most of the usage of UserInfo.getSessionId()",
+      "versionDescription": "Fixed some issues related to trying to use UserInfo.getSessionId() by just.... not using it (for the most part)",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
