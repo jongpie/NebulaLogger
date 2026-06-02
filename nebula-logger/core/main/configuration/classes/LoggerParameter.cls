@@ -133,6 +133,25 @@ public class LoggerParameter {
   }
 
   /**
+   * @description Controls the row limit applied to the `Database.QueryLocator` returned by `LogBatchPurger.start()`.
+   *              Controlled by the custom metadata record `LoggerParameter.LogBatchPurgerQueryRowLimit`, or `50000000` (the
+   *              `Database.QueryLocator` maximum row count) as the default.
+   */
+  public static final Integer LOG_BATCH_PURGER_QUERY_ROW_LIMIT {
+    get {
+      if (LOG_BATCH_PURGER_QUERY_ROW_LIMIT == null) {
+        // Batch Apex has a limit of 50 million rows returned for a query in Database.QueryLocator
+        // Currently, there's not a Limits method (or any other method) that returns this limit
+        // so the value is hardcoded here as the fallback value
+        // Source: https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_apexgov.htm
+        LOG_BATCH_PURGER_QUERY_ROW_LIMIT = getInteger('LogBatchPurgerQueryRowLimit', 50000000);
+      }
+      return LOG_BATCH_PURGER_QUERY_ROW_LIMIT;
+    }
+    private set;
+  }
+
+  /**
    * @description Indicates if Nebula Logger will store scenarios in the custom object `LoggerScenario__c`,
    *              or in the fields `Log__c.TransactionScenarioName__c` & `LogEntry__c.EntryScenario__c`.
    *              Controlled by the custom metadata record `LoggerParameter.NormalizeScenarioData`, or `true` as the default

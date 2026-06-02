@@ -117,6 +117,17 @@ private class LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_should_return_constant_value_for_log_batch_purger_query_row_limit() {
+    Integer mockValue = 4321;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'LogBatchPurgerQueryRowLimit', Value__c = System.JSON.serialize(mockValue));
+    LoggerParameter.setMock(mockParameter);
+
+    Integer returnedValue = LoggerParameter.LOG_BATCH_PURGER_QUERY_ROW_LIMIT;
+
+    System.Assert.areEqual(mockValue, returnedValue);
+  }
+
+  @IsTest
   static void it_should_return_constant_value_for_normalize_scenario_data() {
     Boolean mockValue = false;
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'NormalizeScenarioData', Value__c = System.JSON.serialize(mockValue));

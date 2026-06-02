@@ -91,6 +91,17 @@ private class CMDT_LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_has_correct_record_for_log_batch_purger_query_row_limit() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('LogBatchPurgerQueryRowLimit');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Log Batch Purger: Query Row Limit', bundledRecord.Label);
+    System.Assert.areEqual('50000000', bundledRecord.Value__c);
+  }
+
+  @IsTest
   static void it_has_correct_record_for_normalize_scenario_data() {
     LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('NormalizeScenarioData');
 

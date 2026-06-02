@@ -68,6 +68,18 @@ private class LogBatchPurger_Tests {
   }
 
   @IsTest
+  static void it_should_apply_query_row_limit_to_query_locator() {
+    LoggerSObjectHandler.shouldExecute(false);
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
+
+    Database.QueryLocator queryLocator = new LogBatchPurger().start(mockBatchableContext);
+
+    String generatedQuery = queryLocator.getQuery().toLowerCase();
+    System.Assert.isTrue(generatedQuery.contains('limit '), 'Generated query should contain a LIMIT clause. Generated query: ' + generatedQuery);
+  }
+
+  @IsTest
   static void it_should_throw_an_exception_when_data_cannot_be_purged() {
     LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
     LogBatchPurger batchJobInstance = new LogBatchPurger();
