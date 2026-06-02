@@ -280,9 +280,12 @@ private class Logger_Tests {
     LoggerSettings__c configuredSettings = LoggerSettings__c.getOrgDefaults();
     configuredSettings.IsEnabled__c = true;
     insert configuredSettings;
-    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'OrgAllowlist', Value__c = System.JSON.serialize(new List<String>()));
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+      DeveloperName = 'OrganizationAllowlist',
+      Value__c = System.JSON.serialize(new List<String>())
+    );
     LoggerParameter.setMock(mockParameter);
-    System.Assert.isFalse(LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getUserId()));
+    System.Assert.isTrue(LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getOrganizationId()));
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -292,16 +295,39 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_enable_logging_in_user_settings_when_current_org_is_in_allowlist() {
+  static void it_should_enable_logging_in_user_settings_when_current_org_18_character_id_is_in_allowlist() {
     LoggerSettings__c configuredSettings = LoggerSettings__c.getOrgDefaults();
     configuredSettings.IsEnabled__c = true;
     insert configuredSettings;
+    String organizationId = System.UserInfo.getOrganizationId();
+    System.Assert.areEqual(18, organizationId.length());
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
-      DeveloperName = 'OrgAllowlist',
-      Value__c = System.JSON.serialize(new List<String>{ System.UserInfo.getOrganizationId() })
+      DeveloperName = 'OrganizationAllowlist',
+      Value__c = System.JSON.serialize(new List<String>{ organizationId })
     );
     LoggerParameter.setMock(mockParameter);
-    System.Assert.isFalse(LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getUserId()));
+    System.Assert.isTrue(LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getOrganizationId()));
+
+    LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+    configuredSettings = [SELECT Id, IsEnabled__c FROM LoggerSettings__c];
+    System.Assert.areEqual(true, configuredSettings.IsEnabled__c);
+    System.Assert.areEqual(true, returnedSettings.IsEnabled__c);
+  }
+
+  @IsTest
+  static void it_should_enable_logging_in_user_settings_when_current_org_15_character_id_is_in_allowlist() {
+    LoggerSettings__c configuredSettings = LoggerSettings__c.getOrgDefaults();
+    configuredSettings.IsEnabled__c = true;
+    insert configuredSettings;
+    String shortenedOrganizationId = System.UserInfo.getOrganizationId().left(15);
+    System.Assert.areEqual(15, shortenedOrganizationId.length());
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+      DeveloperName = 'OrganizationAllowlist',
+      Value__c = System.JSON.serialize(new List<String>{ shortenedOrganizationId })
+    );
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isFalse(LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getOrganizationId()));
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -316,11 +342,11 @@ private class Logger_Tests {
     configuredSettings.IsEnabled__c = true;
     insert configuredSettings;
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
-      DeveloperName = 'OrgAllowlist',
+      DeveloperName = 'OrganizationAllowlist',
       Value__c = System.JSON.serialize(new List<String>{ 'some-org-id-that-is-not-the-current-org-id' })
     );
     LoggerParameter.setMock(mockParameter);
-    System.Assert.isFalse(LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getUserId()));
+    System.Assert.isFalse(LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getOrganizationId()));
 
     LoggerSettings__c returnedSettings = Logger.getUserSettings();
 

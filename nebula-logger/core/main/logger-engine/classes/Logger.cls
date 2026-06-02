@@ -452,7 +452,13 @@ global with sharing class Logger {
       loggingUserSettings.SetupOwnerId = loggingUser.Id;
     }
 
-    if (LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getOrganizationId()) == false) {
+    // Since we're dealing with strings stored in CMDT, we check for both the 15 & 18 character
+    // versions of the organization ID.
+    String fullOrganizationId = System.UserInfo.getOrganizationId();
+    if (
+      LoggerParameter.ORGANIZATION_ALLOWLIST.contains(fullOrganizationId) == false &&
+      LoggerParameter.ORGANIZATION_ALLOWLIST.contains(fullOrganizationId.left(15)) == false
+    ) {
       loggingUserSettings.IsEnabled__c = false;
     }
 
