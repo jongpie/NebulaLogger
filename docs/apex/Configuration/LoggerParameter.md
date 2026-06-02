@@ -52,7 +52,7 @@ Indicates if Nebula Logger will store tags in the custom objects `LoggerTag__c` 
 
 #### `ORGANIZATION_ALLOWLIST` → `Set<String>`
 
-An optional way to only enable logging in specified orgs/environments - this is useful for disabling logging by default in new sandboxes refreshed from a produciton org. When blank, logging will run normally - when org IDs are specified, logging will only run if the current org&apos;s ID is in the configured list.
+An optional way to enable logging in only specified orgs/environments - this is useful for disabling logging by default in new sandboxes refreshed from a produciton org. When blank/empty, logging will run normally - when org IDs are specified, logging will only run if the current org&apos;s ID is in the configured list.
 
 #### `PLATFORM_CACHE_PARTITION_NAME` → `String`
 

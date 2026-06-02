@@ -163,8 +163,8 @@ public class LoggerParameter {
   }
 
   /**
-   * @description An optional way to only enable logging in specified orgs/environments - this is useful for disabling logging by default in new sandboxes refreshed from a produciton org.
-   *              When blank, logging will run normally - when org IDs are specified, logging will only run if the current org's ID is in the configured list.
+   * @description An optional way to enable logging in only specified orgs/environments - this is useful for disabling logging by default in new sandboxes refreshed from a produciton org.
+   *              When blank/empty, logging will run normally - when org IDs are specified, logging will only run if the current org's ID is in the configured list.
    */
   public static final Set<String> ORGANIZATION_ALLOWLIST {
     get {
