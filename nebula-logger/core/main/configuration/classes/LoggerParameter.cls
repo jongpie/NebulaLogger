@@ -163,6 +163,23 @@ public class LoggerParameter {
   }
 
   /**
+   * @description An optional way to only enable logging in specified orgs/environments - this is useful for disabling logging by default in new sandboxes refreshed from a produciton org.
+   *              When blank, logging will run normally - when org IDs are specified, logging will only run if the current org's ID is in the configured list.
+   */
+  public static final Set<String> ORGANIZATION_ALLOWLIST {
+    get {
+      if (ORGANIZATION_ALLOWLIST == null) {
+        ORGANIZATION_ALLOWLIST = new Set<String>(getStringList('OrganizationAllowlist', new List<String>()));
+        if (ORGANIZATION_ALLOWLIST.size() == 0) {
+          ORGANIZATION_ALLOWLIST.add(System.UserInfo.getOrganizationId());
+        }
+      }
+      return ORGANIZATION_ALLOWLIST;
+    }
+    private set;
+  }
+
+  /**
    * @description The name of the Platform Cache partition to use for caching (when platform cache is enabled).
    *              Controlled by the custom metadata record `LoggerParameter.PlatformCachePartitionName`, or `LoggerCache` as the default
    */

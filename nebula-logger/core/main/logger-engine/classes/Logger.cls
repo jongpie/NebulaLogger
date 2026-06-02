@@ -452,6 +452,10 @@ global with sharing class Logger {
       loggingUserSettings.SetupOwnerId = loggingUser.Id;
     }
 
+    if (LoggerParameter.ORGANIZATION_ALLOWLIST.contains(System.UserInfo.getOrganizationId()) == false) {
+      loggingUserSettings.IsEnabled__c = false;
+    }
+
     return loggingUserSettings;
   }
 

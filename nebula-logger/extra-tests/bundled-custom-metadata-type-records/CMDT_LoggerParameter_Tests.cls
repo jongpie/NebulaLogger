@@ -113,6 +113,17 @@ private class CMDT_LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_has_correct_record_for_organization_allowlist() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('OrganizationAllowlist');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Organization Allowlist', bundledRecord.Label);
+    System.Assert.areEqual('[]', bundledRecord.Value__c);
+  }
+
+  @IsTest
   static void it_has_correct_record_for_platform_cache_partition_name() {
     LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('PlatformCachePartitionName');
 
