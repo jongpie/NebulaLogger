@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.18.3.NEXT",
-      "versionName": "PrismJS Loading Improvements & Error Handling",
-      "versionDescription": "Fixed some issues with loading PrismJS from LoggerStaticResoures by switching to minified versions + added error handling with fallback display when PrismJS cannot be properly loaded",
+      "versionNumber": "4.18.4.NEXT",
+      "versionName": "New Logger Parameter Record OrganizationAllowlist",
+      "versionDescription": "Added a new LoggerParameter__mdt record, OrganizationAllowlist, to provide an optional way to control via CMDT if logging should be enabled in the current org",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
