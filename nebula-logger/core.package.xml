@@ -741,6 +741,7 @@
         <members>LoggerParameter.LogEntryEventStreamDisplayFields</members>
         <members>LoggerParameter.NormalizeScenarioData</members>
         <members>LoggerParameter.NormalizeTagData</members>
+        <members>LoggerParameter.OrganizationAllowlist</members>
         <members>LoggerParameter.PlatformCachePartitionName</members>
         <members>LoggerParameter.QueryApexClassData</members>
         <members>LoggerParameter.QueryApexTriggerData</members>

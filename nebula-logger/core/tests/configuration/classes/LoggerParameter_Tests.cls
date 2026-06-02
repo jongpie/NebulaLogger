@@ -139,6 +139,17 @@ private class LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_should_return_constant_value_for_organization_allowlist() {
+    List<String> mockValue = new List<String>{ 'SomeValue', 'AnotherValue' };
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'OrganizationAllowlist', Value__c = System.JSON.serialize(mockValue));
+    LoggerParameter.setMock(mockParameter);
+
+    Set<String> returnedValue = LoggerParameter.ORGANIZATION_ALLOWLIST;
+
+    System.Assert.areEqual(new Set<String>(mockValue), returnedValue);
+  }
+
+  @IsTest
   static void it_should_return_constant_value_for_platform_cache_partition_name() {
     String mockValue = 'SomeValue';
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'PlatformCachePartitionName', Value__c = mockValue);

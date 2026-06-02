@@ -50,6 +50,10 @@ Indicates if Nebula Logger will store scenarios in the custom object `LoggerScen
 
 Indicates if Nebula Logger will store tags in the custom objects `LoggerTag__c` &amp; `LogEntryTag__c`, or in the field `LogEntry__c.Tags__c`. Controlled by the custom metadata record `LoggerParameter.NormalizeTagData`, or `true` as the default
 
+#### `ORGANIZATION_ALLOWLIST` → `Set<String>`
+
+An optional way to enable logging in only specified orgs/environments - this is useful for disabling logging by default in new sandboxes refreshed from a produciton org. When blank/empty, logging will run normally - when org IDs are specified, logging will only run if the current org&apos;s ID is in the configured list.
+
 #### `PLATFORM_CACHE_PARTITION_NAME` → `String`
 
 The name of the Platform Cache partition to use for caching (when platform cache is enabled). Controlled by the custom metadata record `LoggerParameter.PlatformCachePartitionName`, or `LoggerCache` as the default

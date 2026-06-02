@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.18.3';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.18.4';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -450,6 +450,16 @@ global with sharing class Logger {
     if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
       loggingUserSettings.Id = null;
       loggingUserSettings.SetupOwnerId = loggingUser.Id;
+    }
+
+    // Since we're dealing with strings stored in CMDT, we check for both the 15 & 18 character
+    // versions of the organization ID.
+    String fullOrganizationId = System.UserInfo.getOrganizationId();
+    if (
+      LoggerParameter.ORGANIZATION_ALLOWLIST.contains(fullOrganizationId) == false &&
+      LoggerParameter.ORGANIZATION_ALLOWLIST.contains(fullOrganizationId.left(15)) == false
+    ) {
+      loggingUserSettings.IsEnabled__c = false;
     }
 
     return loggingUserSettings;

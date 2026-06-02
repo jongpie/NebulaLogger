@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Organization Allowlist</label>
+    <protected>false</protected>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">An optional way to only enable logging in specified orgs/environments - this is useful for disabling logging by default in new sandboxes refreshed from a produciton org. When blank, logging will run normally - when org IDs are specified, logging will only run if the current org's ID is in the configured list.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">[]</value>
+    </values>
+</CustomMetadata>
