@@ -347,7 +347,7 @@ jobs:
   experience-cloud-scratch-org-tests:
     environment: 'Experience Cloud Scratch Org'
     name: 'Run Experience Cloud Scratch Org Tests'
-    needs: [code-quality-tests, advanced-scratch-org-tests]
+    needs: [code-quality-tests]
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
@@ -415,7 +415,7 @@ jobs:
   omnistudio-scratch-org-tests:
     environment: 'OmniStudio Scratch Org'
     name: 'Run OmniStudio Scratch Org Tests'
-    needs: [code-quality-tests, base-scratch-org-tests]
+    needs: [code-quality-tests]
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
@@ -487,7 +487,7 @@ jobs:
   platform-cache-scratch-org-tests:
     environment: 'Platform Cache Scratch Org'
     name: 'Run Platform Cache Scratch Org Tests'
-    needs: [code-quality-tests, event-monitoring-scratch-org-tests]
+    needs: [code-quality-tests]
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
