@@ -20,6 +20,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    # The key file must remain on disk for the rest of the job. The SF CLI records the
+    # key's path (not its contents) in ~/.sfdx/ and re-reads it whenever it has to refresh
+    # the JWT - including the implicit re-auth that `sf org create scratch` performs when
+    # authenticating into the new scratch org. Deleting the file mid-job causes ENOENT on
+    # the next refresh. Cleanup is unnecessary anyway: GitHub-hosted runners are single-use
+    # ephemeral VMs that get wiped after the job ends.
     - name: 'Authorize Dev Hub'
       shell: bash
       env:
@@ -31,8 +37,3 @@ runs:
         npx sf version
         echo "$DEV_HUB_JWT_SERVER_KEY" > ./jwt-server.key
         npx sf org login jwt --instance-url "$DEV_HUB_AUTH_URL" --client-id "$DEV_HUB_CONSUMER_KEY" --username "$DEV_HUB_BOT_USERNAME" --jwt-key-file ./jwt-server.key --set-default-dev-hub
-
-    - name: 'Delete JWT key file'
-      if: ${{ always() }}
-      shell: bash
-      run: rm -f ./jwt-server.key
