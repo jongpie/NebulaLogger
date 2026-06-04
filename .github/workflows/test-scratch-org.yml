@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Setup npm'
         uses: ./.github/actions/setup-npm
@@ -124,7 +124,7 @@ jobs:
 
       - name: 'Upload Apex test code coverage to Codecov.io'
         if: ${{ inputs.upload-apex-coverage }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: true
           flags: Apex

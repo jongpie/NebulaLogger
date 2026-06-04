@@ -31,10 +31,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Check for changes in core directory'
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         id: changes
         with:
           filters: |
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Setup npm'
         uses: ./.github/actions/setup-npm
@@ -85,7 +85,7 @@ jobs:
         run: npm run test:lwc
 
       - name: 'Upload LWC code coverage to Codecov.io'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: true
           flags: LWC
@@ -160,7 +160,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
@@ -187,7 +187,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
@@ -306,7 +306,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Setup npm'
         uses: ./.github/actions/setup-npm
