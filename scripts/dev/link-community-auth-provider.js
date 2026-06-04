@@ -12,9 +12,7 @@ const { values } = parseArgs({
 });
 
 if (!values.network || !values['auth-provider']) {
-  console.error(
-    'Usage: node ./scripts/dev/link-community-auth-provider.js --network <name> --auth-provider <developer-name> [--target-org <alias>]'
-  );
+  console.error('Usage: node ./scripts/dev/link-community-auth-provider.js --network <name> --auth-provider <developer-name> [--target-org <alias>]');
   process.exit(1);
 }
 
@@ -65,17 +63,13 @@ function querySingle(soql) {
   return response.result.records?.[0];
 }
 
-const network = querySingle(
-  `SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = '${escapeSoql(networkName)}' LIMIT 1`
-);
+const network = querySingle(`SELECT Id, Name, UrlPathPrefix FROM Network WHERE Name = '${escapeSoql(networkName)}' LIMIT 1`);
 if (!network || !network.UrlPathPrefix) {
   console.error(`Could not find Network '${networkName}' or its UrlPathPrefix.`);
   process.exit(1);
 }
 
-const authProvider = querySingle(
-  `SELECT Id, DeveloperName FROM AuthProvider WHERE DeveloperName = '${escapeSoql(authProviderDeveloperName)}' LIMIT 1`
-);
+const authProvider = querySingle(`SELECT Id, DeveloperName FROM AuthProvider WHERE DeveloperName = '${escapeSoql(authProviderDeveloperName)}' LIMIT 1`);
 if (!authProvider) {
   console.error(`Could not find AuthProvider with DeveloperName '${authProviderDeveloperName}'.`);
   process.exit(1);
@@ -100,15 +94,7 @@ const existingLink = querySingle(
 if (existingLink) {
   console.info(`Auth provider is already linked (AuthConfigProviders.Id=${existingLink.Id}).`);
 } else {
-  runSf([
-    'data',
-    'create',
-    'record',
-    '--sobject',
-    'AuthConfigProviders',
-    '--values',
-    `AuthConfigId=${authConfig.Id} AuthProviderId=${authProvider.Id}`
-  ]);
+  runSf(['data', 'create', 'record', '--sobject', 'AuthConfigProviders', '--values', `AuthConfigId=${authConfig.Id} AuthProviderId=${authProvider.Id}`]);
   console.info('Linked auth provider to community login configuration.');
 }
 

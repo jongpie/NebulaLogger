@@ -47,19 +47,7 @@ private class ExampleRegistrationHandlerTest {
 
   private static Auth.UserData makeUserData(String identifier, String firstName, String lastName, String email) {
     Map<String, String> attributeMap = new Map<String, String>();
-    return new Auth.UserData(
-      identifier,
-      firstName,
-      lastName,
-      firstName + ' ' + lastName,
-      email,
-      null,
-      email,
-      'en_US',
-      'Google',
-      null,
-      attributeMap
-    );
+    return new Auth.UserData(identifier, firstName, lastName, firstName + ' ' + lastName, email, null, email, 'en_US', 'Google', null, attributeMap);
   }
 
   private static Schema.User createInternalUser(String email, String federationIdentifier) {
