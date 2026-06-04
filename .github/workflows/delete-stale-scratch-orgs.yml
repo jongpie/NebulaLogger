@@ -1,0 +1,143 @@
+# Scheduled cleanup for orphaned pipeline scratch orgs.
+#
+# The build pipeline creates scratch orgs tagged with description
+# "Nebula Logger pipeline run <run ID> attempt <attempt>" and tries to delete them
+# in an `if: always()` step at the end of the test job. That cleanup is best-effort
+# and cannot run when:
+#   1. The runner VM dies (infra incidents, network partitions, hitting the 6h timeout).
+#   2. A pull-request push auto-cancels a run, and the cancellation grace period expires
+#      while a slow step is still running, so the runner is killed before `if: always()`
+#      can fire.
+#   3. The `sf org delete scratch` call itself errors transiently (rate-limit, API blip).
+#
+# This workflow is the safety net. It runs hourly, queries the Dev Hub for
+# `ActiveScratchOrg` records tagged with the pipeline description marker that are
+# older than 2 hours, parses the GitHub run ID out of each description, and asks the
+# GitHub REST API for the run's status. Orgs whose owning run is still queued or
+# in-progress are skipped so a slow but healthy build never has its scratch org
+# yanked out from under it. Everything else is deleted directly via the Tooling API.
+name: Delete Stale Scratch Orgs
+
+on:
+  schedule:
+    # Hourly. The 2h age filter + per-org in-progress check is what prevents this from
+    # killing healthy in-flight runs, not the cron interval.
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+env:
+  SF_DISABLE_AUTOUPDATE: true
+  SF_LOG_LEVEL: debug
+  SF_SKIP_NEW_VERSION_CHECK: true
+
+# Don't run more than one cleanup at a time. If a manual dispatch overlaps with the
+# hourly cron, the second invocation queues until the first finishes.
+concurrency:
+  group: delete-stale-scratch-orgs
+  cancel-in-progress: false
+
+# Need read access to other workflow runs so we can ask "is run <ID> still in-progress".
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  delete-orphaned-scratch-orgs:
+    name: 'Delete Orphaned Pipeline Scratch Orgs'
+    environment: 'Base Scratch Org'
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
+
+      - name: 'Setup npm'
+        uses: ./.github/actions/setup-npm
+
+      - name: 'Authorize Dev Hub'
+        uses: ./.github/actions/authorize-dev-hub
+        with:
+          auth-url: ${{ secrets.DEV_HUB_AUTH_URL }}
+          bot-username: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          consumer-key: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          jwt-server-key: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+
+      - name: 'Delete orphaned pipeline scratch orgs'
+        env:
+          DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # ActiveScratchOrg holds the live scratch org records on the Dev Hub. Deleting an
+          # ActiveScratchOrg row releases the scratch org - same mechanism used by
+          # `sf org delete scratch`, but it doesn't require re-authenticating into the
+          # scratch org from this runner (we may not have the auth state any more).
+          QUERY="SELECT Id, SignupUsername, Description, CreatedDate FROM ActiveScratchOrg WHERE Description LIKE 'Nebula Logger pipeline run%' AND CreatedDate < LAST_N_HOURS:2"
+
+          echo "Querying Dev Hub for pipeline scratch orgs older than 2h..."
+          query_result=$(npx sf data query --query "$QUERY" --target-org "$DEV_HUB_BOT_USERNAME" --json)
+
+          total=$(echo "$query_result" | jq -r '.result.totalSize')
+          echo "Found $total candidate scratch org(s)."
+
+          if [ "$total" = "0" ]; then
+            echo "Nothing to clean up."
+            exit 0
+          fi
+
+          echo "$query_result" | jq -r '.result.records[] | "\(.Id)\t\(.SignupUsername)\t\(.CreatedDate)\t\(.Description)"'
+
+          deleted_count=0
+          skipped_count=0
+          failed_count=0
+
+          # Iterate as TSV so spaces in Description don't break the loop.
+          while IFS=$'\t' read -r record_id description; do
+            # Description format: "Nebula Logger pipeline run <run_id> attempt <attempt>"
+            run_id=$(echo "$description" | sed -nE 's/^Nebula Logger pipeline run ([0-9]+) attempt [0-9]+.*$/\1/p')
+
+            if [ -z "$run_id" ]; then
+              echo ""
+              echo "ActiveScratchOrg $record_id has unparseable description: '$description'. Treating as orphaned."
+              run_status="unknown"
+            else
+              echo ""
+              echo "ActiveScratchOrg $record_id - checking GitHub run $run_id..."
+              # Pull just the status. If the run ID no longer exists (deleted, or wrong repo),
+              # gh exits non-zero and we treat that as "safe to delete".
+              if run_status=$(gh run view "$run_id" --repo "$GH_REPO" --json status --jq '.status' 2>/dev/null); then
+                echo "  GitHub run $run_id status: $run_status"
+              else
+                echo "  GitHub run $run_id not found (or inaccessible). Treating as orphaned."
+                run_status="not_found"
+              fi
+            fi
+
+            # Statuses where the run is still alive: queued, in_progress, requested, waiting, pending.
+            # `completed` (with any conclusion) means the run is done and any leftover org is orphaned.
+            case "$run_status" in
+              queued|in_progress|requested|waiting|pending)
+                echo "  Skipping ActiveScratchOrg $record_id - owning run is still active."
+                skipped_count=$((skipped_count + 1))
+                ;;
+              *)
+                echo "  Deleting ActiveScratchOrg $record_id..."
+                if npx sf data delete record --sobject ActiveScratchOrg --record-id "$record_id" --target-org "$DEV_HUB_BOT_USERNAME"; then
+                  deleted_count=$((deleted_count + 1))
+                else
+                  echo "  Failed to delete ActiveScratchOrg $record_id. Continuing with the rest."
+                  failed_count=$((failed_count + 1))
+                fi
+                ;;
+            esac
+          done < <(echo "$query_result" | jq -r '.result.records[] | "\(.Id)\t\(.Description)"')
+
+          echo ""
+          echo "Cleanup summary: deleted=$deleted_count, skipped=$skipped_count, failed=$failed_count, total=$total"
+
+          if [ "$failed_count" -gt 0 ]; then
+            echo "::warning::$failed_count orphaned scratch org(s) could not be deleted - investigate Dev Hub state."
+            exit 1
+          fi

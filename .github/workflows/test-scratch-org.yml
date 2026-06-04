@@ -73,8 +73,8 @@ jobs:
       # Pipeline scratch orgs are tagged with the alias `pipeline-scratch-org` and a description
       # that includes the GitHub run ID. The alias makes the delete step targeted (so it cannot
       # accidentally delete a different default org), and the description marker is what the
-      # scheduled janitor workflow (.github/workflows/scratch-org-janitor.yml) uses to identify
-      # orphaned scratch orgs that escaped the in-job cleanup.
+      # scheduled cleanup workflow (.github/workflows/delete-stale-scratch-orgs.yml) uses to
+      # identify orphaned scratch orgs that escaped the in-job cleanup.
       - name: 'Create Scratch Org'
         env:
           DEFINITION_FILE: ${{ inputs.definition-file }}
@@ -132,9 +132,9 @@ jobs:
 
       # `if: always()` runs this on success, failure, and most cancellations. It cannot run if
       # the runner VM dies or if the cancellation grace period expires mid-step - the scheduled
-      # janitor workflow is the safety net for those cases.
+      # cleanup workflow (delete-stale-scratch-orgs.yml) is the safety net for those cases.
       # `continue-on-error: true` means a transient delete failure (rate-limit, API blip) does
-      # not mask a real test failure earlier in the job. The janitor will mop up if it happens.
+      # not mask a real test failure earlier in the job. The cleanup workflow will mop up if it happens.
       - name: 'Delete Scratch Org'
         if: ${{ always() }}
         continue-on-error: true
