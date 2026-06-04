@@ -1,0 +1,38 @@
+# Composite action that authorizes the Salesforce Dev Hub via JWT and sets
+# it as the default. All inputs are required.
+name: 'Authorize Dev Hub'
+description: 'Authorize the Salesforce Dev Hub via JWT and set it as the default'
+
+inputs:
+  auth-url:
+    description: 'Dev Hub login URL'
+    required: true
+  bot-username:
+    description: 'Dev Hub bot username'
+    required: true
+  consumer-key:
+    description: 'Dev Hub connected app consumer key'
+    required: true
+  jwt-server-key:
+    description: 'Dev Hub JWT private key (PEM)'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Authorize Dev Hub'
+      shell: bash
+      env:
+        DEV_HUB_AUTH_URL: ${{ inputs.auth-url }}
+        DEV_HUB_BOT_USERNAME: ${{ inputs.bot-username }}
+        DEV_HUB_CONSUMER_KEY: ${{ inputs.consumer-key }}
+        DEV_HUB_JWT_SERVER_KEY: ${{ inputs.jwt-server-key }}
+      run: |
+        npx sf version
+        echo "$DEV_HUB_JWT_SERVER_KEY" > ./jwt-server.key
+        npx sf org login jwt --instance-url "$DEV_HUB_AUTH_URL" --client-id "$DEV_HUB_CONSUMER_KEY" --username "$DEV_HUB_BOT_USERNAME" --jwt-key-file ./jwt-server.key --set-default-dev-hub
+
+    - name: 'Delete JWT key file'
+      if: ${{ always() }}
+      shell: bash
+      run: rm -f ./jwt-server.key
