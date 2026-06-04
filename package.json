@@ -40,6 +40,7 @@
     "docs:verify": "pwsh ./scripts/build/verify-docs-up-to-date.ps1",
     "husky:pre-commit": "lint-staged",
     "lwc:preview:recipes": "sf lightning dev app --device-type desktop --name \"Logger Recipes\"",
+    "env:set:email-service-run-as-user": "node ./scripts/dev/set-email-service-run-as-user.js",
     "scratch:assign:current-user-role": "node ./scripts/dev/assign-role-to-current-user.js",
     "scratch:link:community:authprovider": "node ./scripts/dev/link-community-auth-provider.js --network \"Logger Test Aura Site\" --auth-provider ExampleGoogleAuth",
     "package:manifest:generate:core": "sf project generate manifest --source-dir ./nebula-logger/core/ --output-dir ./nebula-logger/ --name core.package",
@@ -67,6 +68,7 @@
     "scan:lwc:local": "npx sf code-analyzer run --rule-selector \"eslint:(1,2,3)\" --workspace ./nebula-logger/core/**/lwc/** --output-file ./code-analyzer-lwc-eslint-violations.json",
     "scan:lwc:slds:fix": "npx @salesforce-ux/slds-linter@latest lint ./nebula-logger/core/**/lwc/** --fix",
     "sf:plugins:link:bummer": "npx sf plugins link ./node_modules/@jongpie/sfdx-bummer-plugin",
+    "sf:plugins:link:dotenv": "npx sf plugins link ./node_modules/@jongpie/sf-dotenv-cli-plugin",
     "test": "npm run test:lwc && npm run test:apex",
     "test:apex": "npm run test:apex:nocoverage -- --code-coverage --detailed-coverage",
     "test:apex:nocoverage": "npx sf apex run test --concise --test-level RunLocalTests --wait 30 --result-format human --output-dir ./test-coverage/apex",
@@ -83,6 +85,7 @@
   },
   "devDependencies": {
     "@cparra/apexdocs": "1.13.7",
+    "@jongpie/sf-dotenv-cli-plugin": "^1.0.0",
     "@jongpie/sfdx-bummer-plugin": "0.0.20",
     "@salesforce-ux/slds-linter": "1.2.0",
     "@salesforce/cli": "2.134.1",
@@ -94,8 +97,8 @@
     "jest-when": "3.7.0",
     "jsdoc-to-markdown": "9.1.3",
     "lint-staged": "16.2.7",
-    "prettier-plugin-apex": "2.2.6",
     "prettier": "3.8.1",
+    "prettier-plugin-apex": "2.2.6",
     "pwsh": "0.3.0"
   }
 }

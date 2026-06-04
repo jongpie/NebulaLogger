@@ -81,6 +81,11 @@ jobs:
           SCRATCH_ORG_DESCRIPTION: 'Nebula Logger pipeline run ${{ github.run_id }} attempt ${{ github.run_attempt }}'
         run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file "$DEFINITION_FILE" --description "$SCRATCH_ORG_DESCRIPTION" --alias pipeline-scratch-org --wait 20 --set-default --json
 
+      # The replacements block in sfdx-project.json swaps {{EMAIL_SERVICE_RUN_AS_USER}} in
+      # ExampleInboundEmailService.xml-meta.xml with the value of this env var at deploy time.
+      - name: 'Set EMAIL_SERVICE_RUN_AS_USER for the scratch org'
+        run: npm run env:set:email-service-run-as-user
+
       # https://help.salesforce.com/s/articleView?id=000394906&type=1
       - name: "Install OmniStudio managed package v258.6 (Winter '26 release)"
         if: ${{ inputs.install-omnistudio }}

@@ -84,6 +84,13 @@
       "default": false
     }
   ],
+  "replacements": [
+    {
+      "filename": "nebula-logger/extra-tests/integration-tests/emailservices/ExampleInboundEmailService.xml-meta.xml",
+      "stringToReplace": "{{EMAIL_SERVICE_RUN_AS_USER}}",
+      "replaceWithEnv": "EMAIL_SERVICE_RUN_AS_USER"
+    }
+  ],
   "packageAliases": {
     "Nebula Logger - Core": "0Ho5Y000000TNKASA4",
     "Nebula Logger - Core@4.4.1-unlocked-package-release": "04t5Y0000027FGFQA2",

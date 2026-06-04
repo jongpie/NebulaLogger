@@ -15,6 +15,7 @@ node_modules/
 yarn.lock
 
 # Files to exclude
+*.env
 *.log
 **/lwc/jsconfig.json
 .config

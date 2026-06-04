@@ -205,6 +205,9 @@ jobs:
       - name: 'Create Scratch Org'
         run: npx sf org create scratch --no-namespace --no-track-source --alias base_package_subscriber_scratch_org --duration-days 1 --definition-file ./config/scratch-orgs/base-scratch-def.json --wait 20 --set-default --json
 
+      - name: 'Set EMAIL_SERVICE_RUN_AS_USER for the scratch org'
+        run: npm run env:set:email-service-run-as-user
+
       - name: 'Create & Install Package Version'
         run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md  -targetusername base_package_subscriber_scratch_org
 
@@ -278,8 +281,6 @@ jobs:
       - name: 'Commit new package version'
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          # npm run sf:plugins:link:bummer
-          echo y | npx sf plugins install @jongpie/sfdx-bummer-plugin --force
           npx sf bummer:package:aliases:sort
           npx prettier --write ./sfdx-project.json
           git add ./sfdx-project.json

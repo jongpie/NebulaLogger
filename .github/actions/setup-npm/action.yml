@@ -20,3 +20,9 @@ runs:
       if: steps.cache-npm.outputs.cache-hit != 'true'
       shell: bash
       run: npm ci
+
+    - name: 'Link sf CLI plugins from node_modules'
+      shell: bash
+      run: |
+        npm run sf:plugins:link:bummer
+        npm run sf:plugins:link:dotenv

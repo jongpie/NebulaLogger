@@ -9,7 +9,7 @@
         <developerName>ExampleEmailAddress</developerName>
         <isActive>true</isActive>
         <localPart>exampleinboundemailservice</localPart>
-        <runAsUser>test-a9tdmyxmog79@example.com</runAsUser>
+        <runAsUser>{{EMAIL_SERVICE_RUN_AS_USER}}</runAsUser>
     </emailServicesAddresses>
     <functionInactiveAction>Discard</functionInactiveAction>
     <functionName>ExampleInboundEmailService</functionName>
