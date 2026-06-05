@@ -138,9 +138,6 @@ jobs:
             environment: 'Platform Cache Scratch Org'
             definition-file: ./config/scratch-orgs/platform-cache-scratch-def.json
 
-          - label: 'State & Country Picklists'
-            environment: 'State & Country Picklists Scratch Org'
-            definition-file: ./config/scratch-orgs/state-and-country-picklists-scratch-def.json
     uses: ./.github/workflows/test-scratch-org.yml
     with:
       environment: ${{ matrix.environment }}
