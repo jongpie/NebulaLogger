@@ -72,7 +72,6 @@ jobs:
 
   lwc-jest-tests:
     name: 'Run LWC Jest Tests'
-    needs: [code-quality-tests]
     runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout source code'
@@ -102,7 +101,6 @@ jobs:
   # lower coverage, so the base scratch org acts as the most conservative baseline.
   scratch-org-tests:
     name: 'Run ${{ matrix.label }} Scratch Org Tests'
-    needs: [code-quality-tests]
     strategy:
       fail-fast: false
       matrix:
