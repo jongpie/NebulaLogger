@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "65.0",
+  "sourceApiVersion": "66.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
