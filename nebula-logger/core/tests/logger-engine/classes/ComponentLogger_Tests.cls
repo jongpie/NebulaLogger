@@ -179,6 +179,7 @@ private class ComponentLogger_Tests {
   }
 
   @IsTest
+  @SuppressWarnings('PMD.NcssCount')
   static void it_should_save_component_log_entry_with_queueable_job() {
     LoggerStackTrace.ignoreOrigin(ComponentLogger_Tests.class);
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());

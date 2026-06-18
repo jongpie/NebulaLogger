@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
-@IsTest(IsParallel=true)
+@IsTest(IsParallel=false)
 private class LoggerEmailSender_Tests {
   private static final Boolean IS_EMAIL_DELIVERABILITY_ENABLED {
     get {
@@ -24,6 +24,12 @@ private class LoggerEmailSender_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests
     LoggerConfigurationSelector.useMocks();
+
+    // Salesforce now sends email only from verified domains, with a few exceptions for domains like gmail.com & hotmail.com
+    // To avoid the error "INSUFFICIENT_ACCESS_OR_READONLY, We can't send your email because your email address domain isn't verified.",
+    // a fake gmail.com address is used on the current user.
+    // Docs: https://help.salesforce.com/s/articleView?id=xcloud.security_user_email_verification_substitute_domain.htm&type=5
+    update new Schema.User(Id = System.UserInfo.getUserId(), Email = 'nebula.logger.testing.fake@gmail.com');
   }
 
   @IsTest

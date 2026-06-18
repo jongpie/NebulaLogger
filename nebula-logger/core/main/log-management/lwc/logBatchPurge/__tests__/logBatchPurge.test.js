@@ -170,20 +170,20 @@ describe('logBatchPurge lwc tests', () => {
     const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
     expect(metricsTable).toBeTruthy();
     const logObjectTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log"]');
-    expect(logObjectTextElement.innerHTML).toEqual('Log');
+    expect(logObjectTextElement.textContent).toEqual('Log');
     const logObjectEntryTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry"]');
-    expect(logObjectEntryTextElement.innerHTML).toEqual('Log Entry');
+    expect(logObjectEntryTextElement.textContent).toEqual('Log Entry');
 
     const logObjectEntryTagTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry Tag"]');
-    expect(logObjectEntryTagTextElement.innerHTML).toEqual('Log Entry Tag');
+    expect(logObjectEntryTagTextElement.textContent).toEqual('Log Entry Tag');
     for (var key in mockGetLogMetricsForToday) {
       const summary = mockGetLogMetricsForToday[key];
       for (let i = 0; i < summary.length; i++) {
         const dataId = key + '-' + summary[i].LogPurgeAction__c;
         const labelElement = logBatchPurgeElement.shadowRoot.querySelector('[data-label="' + dataId + '"]');
-        expect(labelElement.innerHTML).toEqual(summary[i].LogPurgeAction__c);
+        expect(labelElement.textContent).toEqual(summary[i].LogPurgeAction__c);
         const dataElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="' + dataId + '"]');
-        expect(dataElement.innerHTML).toEqual(summary[i].expr0 + '');
+        expect(dataElement.textContent).toEqual(summary[i].expr0 + '');
       }
     }
   });
@@ -207,21 +207,21 @@ describe('logBatchPurge lwc tests', () => {
 
     expect(metricsTable).toBeTruthy();
     const logObjectTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log"]');
-    expect(logObjectTextElement.innerHTML).toEqual('Log');
+    expect(logObjectTextElement.textContent).toEqual('Log');
     const logObjectEntryTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry"]');
-    expect(logObjectEntryTextElement.innerHTML).toEqual('Log Entry');
+    expect(logObjectEntryTextElement.textContent).toEqual('Log Entry');
 
     const logObjectEntryTagTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry Tag"]');
-    expect(logObjectEntryTagTextElement.innerHTML).toEqual('Log Entry Tag');
+    expect(logObjectEntryTagTextElement.textContent).toEqual('Log Entry Tag');
 
     for (var key in mockGetLogMetricsForThisWeek) {
       const summary = mockGetLogMetricsForThisWeek[key];
       for (let i = 0; i < summary.length; i++) {
         const dataId = key + '-' + summary[i].LogPurgeAction__c;
         const labelElement = logBatchPurgeElement.shadowRoot.querySelector('[data-label="' + dataId + '"]');
-        expect(labelElement.innerHTML).toEqual(summary[i].LogPurgeAction__c);
+        expect(labelElement.textContent).toEqual(summary[i].LogPurgeAction__c);
         const dataElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="' + dataId + '"]');
-        expect(dataElement.innerHTML).toEqual(summary[i].expr0 + '');
+        expect(dataElement.textContent).toEqual(summary[i].expr0 + '');
       }
     }
   });
@@ -246,21 +246,21 @@ describe('logBatchPurge lwc tests', () => {
 
     expect(metricsTable).toBeTruthy();
     const logObjectTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log"]');
-    expect(logObjectTextElement.innerHTML).toEqual('Log');
+    expect(logObjectTextElement.textContent).toEqual('Log');
     const logObjectEntryTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry"]');
-    expect(logObjectEntryTextElement.innerHTML).toEqual('Log Entry');
+    expect(logObjectEntryTextElement.textContent).toEqual('Log Entry');
 
     const logObjectEntryTagTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry Tag"]');
-    expect(logObjectEntryTagTextElement.innerHTML).toEqual('Log Entry Tag');
+    expect(logObjectEntryTagTextElement.textContent).toEqual('Log Entry Tag');
 
     for (var key in mockGetLogMetricsForThisMonth) {
       const summary = mockGetLogMetricsForThisMonth[key];
       for (let i = 0; i < summary.length; i++) {
         const dataId = key + '-' + summary[i].LogPurgeAction__c;
         const labelElement = logBatchPurgeElement.shadowRoot.querySelector('[data-label="' + dataId + '"]');
-        expect(labelElement.innerHTML).toEqual(summary[i].LogPurgeAction__c);
+        expect(labelElement.textContent).toEqual(summary[i].LogPurgeAction__c);
         const dataElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="' + dataId + '"]');
-        expect(dataElement.innerHTML).toEqual(summary[i].expr0 + '');
+        expect(dataElement.textContent).toEqual(summary[i].expr0 + '');
       }
     }
   });
@@ -294,25 +294,25 @@ describe('logBatchPurge lwc tests', () => {
 
     expect(metricsTable).toBeTruthy();
     const logObjectTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log"]');
-    expect(logObjectTextElement.innerHTML).toEqual('Log');
+    expect(logObjectTextElement.textContent).toEqual('Log');
     const logObjectEntryTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry"]');
-    expect(logObjectEntryTextElement.innerHTML).toEqual('Log Entry');
+    expect(logObjectEntryTextElement.textContent).toEqual('Log Entry');
 
     const logObjectEntryTagTextElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="Log Entry Tag"]');
-    expect(logObjectEntryTagTextElement.innerHTML).toEqual('Log Entry Tag');
+    expect(logObjectEntryTagTextElement.textContent).toEqual('Log Entry Tag');
     const logObjects = ['Log__c', 'LogEntry__c', 'LogEntryTag__c'];
     for (const objectAPIName of logObjects) {
       for (const action of mockGetPurgeActionOptions) {
         const key = objectAPIName + '-' + action.value;
         const purgeActionLabelElement = logBatchPurgeElement.shadowRoot.querySelector('[data-label="' + key + '"]');
-        expect(purgeActionLabelElement.innerHTML).toEqual(action.value);
+        expect(purgeActionLabelElement.textContent).toEqual(action.value);
         const purgeActionDataElement = logBatchPurgeElement.shadowRoot.querySelector('[data-id="' + key + '"]');
-        expect(purgeActionDataElement.innerHTML).toEqual('0');
+        expect(purgeActionDataElement.textContent).toEqual('0');
       }
     }
   });
 
-  it("disable the run purge button when user doesn't have delete permission on log object ", async () => {
+  it("disable the run purge button when user doesn't have delete permission on log object", async () => {
     const logBatchPurgeElement = await initializeElement(false);
     const metricsTable = logBatchPurgeElement.shadowRoot.querySelector('[data-id="metrics-table"]');
 
@@ -321,7 +321,7 @@ describe('logBatchPurge lwc tests', () => {
     expect(runBatchPurge.disabled).toEqual(true);
   });
 
-  it('enable the run purge button when user has delete permission on log object ', async () => {
+  it('enable the run purge button when user has delete permission on log object', async () => {
     const logBatchPurgeElement = await initializeElement(true);
 
     const runBatchPurgeBtn = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
@@ -337,7 +337,7 @@ describe('logBatchPurge lwc tests', () => {
     expect(purgeBatchJobsDatatable.data).toEqual(mockgetBatchPurgeJobRecords);
   });
 
-  it('it show success toast when user confirms running the batch job', async () => {
+  it('shows success toast when user confirms running the batch job', async () => {
     LightningConfirm.open = jest.fn().mockResolvedValue(true);
     const logBatchPurgeElement = await initializeElement(true);
     logBatchPurgeElement.addEventListener(SHOW_TOAST_EVENT_NAME, SHOW_TOAST_EVENT_HANDLER);
@@ -349,12 +349,12 @@ describe('logBatchPurge lwc tests', () => {
     await Promise.resolve('Call Apex controller method runBatchPurge()');
     await Promise.resolve('Dispatch Toast event');
     await Promise.resolve('Call Apex controller method loadPurgeBatchJobRecords()');
-    expect(SHOW_TOAST_EVENT_HANDLER).toBeCalledTimes(1);
+    expect(SHOW_TOAST_EVENT_HANDLER).toHaveBeenCalledTimes(1);
   });
 
-  it('it refresh the purge batch records when user clicks on the refresh button', async () => {
+  it('refreshes the purge batch records when user clicks on the refresh button', async () => {
     const logBatchPurgeElement = await initializeElement(true);
-    const refreshButton = document.querySelector('c-log-batch-purge').shadowRoot.querySelector('lightning-button-icon');
+    const refreshButton = logBatchPurgeElement.shadowRoot.querySelector('lightning-button-icon');
     refreshButton.click();
     await Promise.resolve('resolves connectedCallback()');
     await Promise.resolve('resolves getPurgeActionOptions()');
@@ -368,9 +368,8 @@ describe('logBatchPurge lwc tests', () => {
     expect(purgeBatchJobsDatatable.data).toEqual(mockgetBatchPurgeJobRecords);
   });
 
-  it('it refresh the purge batch records for every 10 sec', async () => {
+  it('refreshes the purge batch records for every 10 seconds', async () => {
     const logBatchPurgeElement = await initializeElement(true);
-    const callBack = jest.fn();
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
     jest.runOnlyPendingTimers();

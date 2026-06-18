@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Log_Organization_Record</name>
         <label>Log Organization Record</label>
-        <locationX>176</locationX>
-        <locationY>276</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>FlowRecordLogEntry</actionName>
         <actionType>apex</actionType>
         <dataTypeMappings>
@@ -50,9 +50,9 @@
         </inputParameters>
         <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>64.0</apiVersion>
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <description>A scheduled Flow used in tests to verify that LogEntryHandler automatically logs details about the Flow (metadata data)</description>
     <interviewLabel>LogEntryHandler_Tests_Scheduled_Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LogEntryHandler_Tests_Scheduled_Flow</label>
@@ -76,7 +76,7 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Log_Organization_Record</targetReference>

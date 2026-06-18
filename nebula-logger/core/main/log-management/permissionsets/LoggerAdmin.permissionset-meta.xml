@@ -5,6 +5,10 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>CallableLogger</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ComponentLogger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -14,10 +18,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>FlowLogEntry</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>FlowLogger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

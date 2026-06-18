@@ -51,10 +51,10 @@ describe('c-logger-home-header', () => {
     await Promise.resolve('Resolve getEnvironmentDetails()');
     const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
     expect(headerTitleElement).toBeTruthy();
-    expect(headerTitleElement.innerHTML).toBe(`Nebula Logger ${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber}`);
+    expect(headerTitleElement.textContent).toBe(`Nebula Logger ${MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber}`);
     const pluginsSummaryElement = element.shadowRoot.querySelector('[data-id="enabled-plugins-summary"]');
     expect(pluginsSummaryElement).toBeTruthy();
-    expect(pluginsSummaryElement.innerHTML).toBe(MOCK_ENVIRONMENT_DETAILS.loggerEnabledPluginsCount + ' Enabled Plugins');
+    expect(pluginsSummaryElement.textContent).toBe(MOCK_ENVIRONMENT_DETAILS.loggerEnabledPluginsCount + ' Enabled Plugins');
     const environmentDetailsButton = element.shadowRoot.querySelector('lightning-button[data-id="environment-details-button"]');
     expect(environmentDetailsButton.label).toBe('View Environment Details');
     const releaseNotesButton = element.shadowRoot.querySelector('lightning-button[data-id="release-notes-button"]');
@@ -74,7 +74,7 @@ describe('c-logger-home-header', () => {
     await Promise.resolve('Render modal');
 
     const modalTitleElement = element.shadowRoot.querySelector('[data-id="environment-details-modal-title"]');
-    expect(modalTitleElement.innerHTML).toBe('Environment Details');
+    expect(modalTitleElement.textContent).toBe('Environment Details');
     const dataIdToEnvironmentProperty = {
       'environment-loggerEnabledPlugins': MOCK_ENVIRONMENT_DETAILS.loggerEnabledPlugins,
       'environment-loggerVersionNumber': MOCK_ENVIRONMENT_DETAILS.loggerVersionNumber,
@@ -165,7 +165,7 @@ describe('c-logger-home-header', () => {
     await Promise.resolve('Resolve getEnvironmentDetails()');
 
     const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
-    expect(headerTitleElement.innerHTML).toBe('Nebula Logger');
+    expect(headerTitleElement.textContent).toBe('Nebula Logger');
   });
 
   it('handles enabledPluginsSummary when loggerEnabledPlugins is undefined', async () => {
@@ -324,7 +324,7 @@ describe('c-logger-home-header', () => {
 
     // Component should handle undefined data gracefully
     const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
-    expect(headerTitleElement.innerHTML).toBe('Nebula Logger');
+    expect(headerTitleElement.textContent).toBe('Nebula Logger');
   });
 
   it('handles wire service with empty data gracefully', async () => {
@@ -339,6 +339,6 @@ describe('c-logger-home-header', () => {
 
     // Component should handle empty data gracefully
     const headerTitleElement = element.shadowRoot.querySelector('[data-id="header-title"]');
-    expect(headerTitleElement.innerHTML).toBe('Nebula Logger');
+    expect(headerTitleElement.textContent).toBe('Nebula Logger');
   });
 });

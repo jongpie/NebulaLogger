@@ -20,8 +20,8 @@ yarn.lock
 *.log
 *.xml
 
-# Prism JS
-# The CSS for Prism has specifically been modified for Nebula Logger (a bit), so it's NOT ignored.
-# nebula-logger/core/main/log-management/staticresources/LoggerResources/prism.css
-# The minified JS is taken as-is, so no need for prettier to format it.
-nebula-logger/core/main/log-management/staticresources/LoggerResources/prism.js
+# PrismJS - these files are automatically updated & minified,
+# so no need for prettier to format them.
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/prism.js
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/prism.min.js
+nebula-logger/core/main/log-management/staticresources/LoggerResources/Prism/themes/*.*

@@ -97,6 +97,7 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  @SuppressWarnings('PMD.NcssCount')
   static void it_should_auto_save_entry_with_save_method_when_saveMethodName_specified() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
@@ -144,6 +145,7 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  @SuppressWarnings('PMD.NcssCount')
   static void it_should_throw_exception_with_fault_error_message_when_shouldThrowFaultMessageException_is_set_to_true() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
@@ -195,6 +197,7 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  @SuppressWarnings('PMD.NcssCount')
   static void it_should_throw_exception_with_generic_message_when_shouldThrowFaultMessageException_is_set_to_true_and_faultMessage_is_null() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
