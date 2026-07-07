@@ -119,9 +119,9 @@ global class ExampleRegistrationHandler implements Auth.RegistrationHandler {
   }
 
   private static Schema.Profile getCommunityProfile() {
-    Id siteId = Site.getSiteId();
+    Id siteId = System.Site.getSiteId();
     if (siteId != null) {
-      Site currentSite = [SELECT GuestUserId FROM Site WHERE Id = :siteId LIMIT 1];
+      Schema.Site currentSite = [SELECT GuestUserId FROM Site WHERE Id = :siteId LIMIT 1];
       if (currentSite.GuestUserId != null) {
         Schema.User guestUser = [
           SELECT Profile.Name
