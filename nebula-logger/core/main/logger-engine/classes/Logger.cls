@@ -15,12 +15,12 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.18.3';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.18.4';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
   private static final String ORGANIZATION_DOMAIN_URL = System.URL.getOrgDomainUrl()?.toExternalForm();
-  private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
+  private static final String REQUEST_ID = System.Request.getCurrent()?.getRequestId();
   private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
   private static final Map<Schema.SObjectField, Object> TRANSACTION_FIELD_TO_VALUE = new Map<Schema.SObjectField, Object>();
   private static final String TRANSACTION_ID = System.UUID.randomUUID().toString();
@@ -36,7 +36,7 @@ global with sharing class Logger {
   private static Integer saveLogCallCount = 0;
   private static Boolean suspendSaving = false;
   @TestVisible
-  private static System.Quiddity transactionQuiddity = loadTransactionQuiddity();
+  private static System.Quiddity transactionQuiddity = System.Request.getCurrent()?.getQuiddity() ?? System.Quiddity.UNDEFINED;
   private static String transactionScenario;
 
   private static final List<String> CLASSES_TO_IGNORE {
@@ -82,26 +82,6 @@ global with sharing class Logger {
         ORGANIZATION_API_VERSION = userJson.substringAfter('/data/').substringBefore('/sobjects/User');
       }
       return ORGANIZATION_API_VERSION;
-    }
-    set;
-  }
-
-  @SuppressWarnings('PMD.AvoidUnauthorizedGetSessionIdInApex')
-  private static final String USER_SESSION_ID {
-    get {
-      if (USER_SESSION_ID == null) {
-        // TODO Spring '24 release - simplify this (and other lazy-loaded values)
-        // by switching to the fancy, new ?? null coalescing operator
-        try {
-          USER_SESSION_ID = System.UserInfo.getSessionId();
-        } catch (Exception ex) {
-          USER_SESSION_ID = '';
-        }
-        // If System.UserInfo.getSessionId() returns null, set to an empty string to
-        // avoid calling System.UserInfo.getSessionId() again
-        USER_SESSION_ID = USER_SESSION_ID ?? '';
-      }
-      return USER_SESSION_ID;
     }
     set;
   }
@@ -3755,13 +3735,7 @@ global with sharing class Logger {
         LoggerDataStore.getJobQueue().enqueueJob(new QueueableSaver(logEntryEvents));
       }
       when REST {
-        // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
-        // To avoid that, use the EventBus instead (even though REST was specified)
-        if (String.isBlank(USER_SESSION_ID)) {
-          saveLog(Logger.SaveMethod.EVENT_BUS);
-        } else {
-          new RestApiSaver().insertRecords(logEntryEvents);
-        }
+        new RestApiSaver(System.UserInfo.getSessionId()).insertRecords(logEntryEvents);
       }
       when SYNCHRONOUS_DML {
         LoggerTriggerableContext logEntryEventsAfterContext = new LoggerTriggerableContext(
@@ -3932,18 +3906,6 @@ global with sharing class Logger {
     return isStartTimeValid && isEndTimeValid;
   }
 
-  private static System.Quiddity loadTransactionQuiddity() {
-    // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
-    // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
-    // skip calling System.Request.getCurrent() if there is no user session.
-    // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
-    if (String.isNotBlank(USER_SESSION_ID)) {
-      return System.Request.getCurrent().getQuiddity();
-    } else {
-      return null;
-    }
-  }
-
   private static void setAsyncContext(AsyncContext asyncContext) {
     // Only set the async context the first time that a non-null value is provided
     // Previous versions of Nebula Logger would always set it, but that wasn't the
@@ -3978,12 +3940,7 @@ global with sharing class Logger {
     String messageTemplate = 'Nebula Logger - Saving {0} log entries via {1}, save method is {2}. Logger.saveLog() has been called {3} in the current transaction.';
     LogMessage savingLogMessage = new LogMessage(
       messageTemplate,
-      new List<Object>{
-        LOG_ENTRIES_BUFFER.size(),
-        (getCurrentQuiddity() ?? System.Quiddity.UNDEFINED).name(),
-        saveMethodName,
-        saveLogCallCount + (saveLogCallCount == 1 ? ' time' : ' times')
-      }
+      new List<Object>{ LOG_ENTRIES_BUFFER.size(), getCurrentQuiddity(), saveMethodName, saveLogCallCount + (saveLogCallCount == 1 ? ' time' : ' times') }
     );
 
     return savingLogMessage.getMessage();
@@ -4090,6 +4047,11 @@ global with sharing class Logger {
   private class RestApiSaver {
     private final String baseURL = ORGANIZATION_DOMAIN_URL + '/services/data/' + getOrganizationApiVersion();
     private final String compositeEndpoint = '/composite/sobjects';
+    private final String sessionId;
+
+    public RestApiSaver(String sessionId) {
+      this.sessionId = sessionId;
+    }
 
     @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
     /**
@@ -4099,7 +4061,7 @@ global with sharing class Logger {
     public void insertRecords(List<SObject> records) {
       System.HttpRequest request = new System.HttpRequest();
       request.setEndpoint(baseURL + compositeEndpoint);
-      request.setHeader('Authorization', 'Bearer ' + USER_SESSION_ID);
+      request.setHeader('Authorization', 'Bearer ' + this.sessionId);
       request.setHeader('Content-Type', 'application/json; charset=utf-8');
       request.setMethod('POST');
 

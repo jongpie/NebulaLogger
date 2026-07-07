@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.18.3.NEXT",
-      "versionName": "PrismJS Loading Improvements & Error Handling",
-      "versionDescription": "Fixed some issues with loading PrismJS from LoggerStaticResoures by switching to minified versions + added error handling with fallback display when PrismJS cannot be properly loaded",
+      "versionNumber": "4.18.4.NEXT",
+      "versionName": "Bugfix: Removed most of the usage of UserInfo.getSessionId()",
+      "versionDescription": "Fixed some issues related to trying to use UserInfo.getSessionId() by just.... not using it (for the most part)",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
@@ -82,6 +82,13 @@
     {
       "path": "./nebula-logger/recipes",
       "default": false
+    }
+  ],
+  "replacements": [
+    {
+      "filename": "nebula-logger/extra-tests/integration-tests/emailservices/ExampleInboundEmailService.xml-meta.xml",
+      "stringToReplace": "{{EMAIL_SERVICE_RUN_AS_USER}}",
+      "replaceWithEnv": "EMAIL_SERVICE_RUN_AS_USER"
     }
   ],
   "packageAliases": {
@@ -231,6 +238,7 @@
     "Nebula Logger - Core@4.18.1-new-declarative-configuration-for-ignoring-apex-classes-in-stack-traces": "04tg70000008GVpAAM",
     "Nebula Logger - Core@4.18.2-new-field-logentry__c.wasloggedbycurrentuser__c": "04tg70000008YZBAA2",
     "Nebula Logger - Core@4.18.3-prismjs-loading-improvements-&-error-handling": "04tg70000009GaDAAU",
+    "Nebula Logger - Core@4.18.4-bugfix:-removed-most-of-the-usage-of-userinfo.getsessionid()": "04tg7000000Bb13AAC",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
