@@ -19,10 +19,10 @@
 name: Delete Stale Scratch Orgs
 
 on:
-  schedule:
-    # Hourly. The 2h age filter + per-org in-progress check is what prevents this from
-    # killing healthy in-flight runs, not the cron interval.
-    - cron: '0 * * * *'
+  # schedule:
+  #   # Hourly. The 2h age filter + per-org in-progress check is what prevents this from
+  #   # killing healthy in-flight runs, not the cron interval.
+  #   - cron: '0 * * * *'
   workflow_dispatch:
 
 env:
