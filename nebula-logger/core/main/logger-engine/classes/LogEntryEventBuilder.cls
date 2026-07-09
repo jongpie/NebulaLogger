@@ -1245,7 +1245,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // Finally, if we still don't have a classification, assume it's a standard object
-    if (String.isBlank(sobjectClassification) && SObjectType.getDescribe().isCustom() == false) {
+    if (String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
       sobjectClassification = 'Standard Object';
     }
 
@@ -1282,7 +1282,7 @@ global with sharing class LogEntryEventBuilder {
 
   private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
     String sobjectFullName = sobjectType.toString();
-    String sobjectLocalName = SObjectType.getDescribe().getLocalName();
+    String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
     // Remove the trailing '__' if present
     String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');

@@ -51,7 +51,7 @@
         <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>65.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <interviewLabel>Account_Record_Launched_Flow_Example {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Account: Record Launched Flow Example</label>

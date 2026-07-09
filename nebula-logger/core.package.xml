@@ -966,5 +966,5 @@
         <members>Log__c.MassDelete</members>
         <name>WebLink</name>
     </types>
-    <version>65.0</version>
+    <version>66.0</version>
 </Package>

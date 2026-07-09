@@ -49,10 +49,10 @@ public with sharing class SiteRegisterController {
     String accountId = PORTAL_ACCOUNT_ID;
 
     // lastName is a required field on user, but if it isn't specified, we'll default it to the username
-    String userId = Site.createPortalUser(u, accountId, password);
+    String userId = System.Site.createPortalUser(u, accountId, password);
     if (userId != null) {
       if (password != null && password.length() > 1) {
-        return Site.login(username, password, null);
+        return System.Site.login(username, password, null);
       } else {
         PageReference page = System.Page.SiteRegisterConfirm;
         page.setRedirect(true);
