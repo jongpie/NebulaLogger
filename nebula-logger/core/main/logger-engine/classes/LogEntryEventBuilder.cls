@@ -256,6 +256,16 @@ global with sharing class LogEntryEventBuilder {
 
   /**
    * @description Sets the log entry event's database operation result fields
+   * @param  databaseResult The instance of `Object` (generic Database Result) to log
+   * @param  type           The instance of `System.Type` that indicates the type of Database Result class to log
+   * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(Object databaseResult, System.Type type) {
+    return this.setDatabaseDetails(new List<Object>{ databaseResult }, type, null);
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
    * @param  deleteResult The instance of `Database.DeleteResult` to log
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
@@ -324,6 +334,16 @@ global with sharing class LogEntryEventBuilder {
    */
   global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
     return this.setDatabaseDetails(new List<Database.UndeleteResult>{ undeleteResult }, Database.UndeleteResult.class, undeleteResult?.getId());
+  }
+
+  /**
+   * @description Sets the log entry event's database operation result fields
+   * @param  databaseResults The list of `Object` (generic Database Result) instances to log
+   * @param  type            The type of Database Result instances to log
+   * @return                 The same instance of `LogEntryEventBuilder`, useful for chaining methods
+   */
+  global LogEntryEventBuilder setDatabaseResult(List<Object> databaseResults, System.Type type) {
+    return this.setDatabaseDetails(databaseResults, type, null);
   }
 
   /**
@@ -973,7 +993,7 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? 'Single' : 'List';
     String serializedResult = System.JSON.serializePretty(this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults);
     this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
-    this.logEntryEvent.DatabaseResultType__c = resultType.getName();
+    this.logEntryEvent.DatabaseResultType__c = resultType?.getName();
 
     return this.setRecordId(possibleRecordId);
   }
