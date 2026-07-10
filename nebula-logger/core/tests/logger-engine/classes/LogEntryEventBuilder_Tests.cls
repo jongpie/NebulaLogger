@@ -2497,6 +2497,44 @@ private class LogEntryEventBuilder_Tests {
   }
 
   @IsTest
+  static void it_should_skip_apex_system_debug_when_not_supported() {
+    Test.startTest();
+    LogEntryEventBuilder.isApexSystemDebugSupportedOverride = false;
+    DebugStringExample example = new DebugStringExample();
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsApexSystemDebugLoggingEnabled__c = true;
+    LogEntryEventBuilder builder = example.myMethod(userSettings);
+    Test.stopTest();
+
+    System.Assert.areEqual(
+      '',
+      builder.debugMessage,
+      'Debug message should be empty when Apex System.debug() is not supported, ie: executed in Managed Package context'
+    );
+    System.Assert.areEqual(example.loggingString, builder.getLogEntryEvent().Message__c, 'Message should be set on the log entry event');
+  }
+
+  @IsTest
+  static void it_should_use_apex_system_debug_when_supported() {
+    Test.startTest();
+    LoggerParameter.setMock(
+      new LoggerParameter__mdt(DeveloperName = 'SystemDebugMessageFormat', Value__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}')
+    );
+
+    DebugStringExample example = new DebugStringExample();
+    LoggerSettings__c userSettings = getUserSettings();
+    userSettings.IsApexSystemDebugLoggingEnabled__c = true;
+    LogEntryEventBuilder builder = example.myMethod(userSettings);
+    Test.stopTest();
+
+    System.Assert.areEqual(
+      DebugStringExample.class.getName() + '.myMethod' + '\n' + example.loggingString + ': ' + System.LoggingLevel.DEBUG.name(),
+      builder.debugMessage,
+      'Debug message should be set when Apex System.debug() is supported, ie: executed in Unmanaged Package context and IsApexSystemDebugLoggingEnabled__c is true'
+    );
+  }
+
+  @IsTest
   static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
     // Don't bother testing stack trace logic when using a namespace prefix - there are
     // some platform limitations that prevent these tests from behaving as expected

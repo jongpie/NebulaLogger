@@ -32,6 +32,10 @@ global with sharing class LogEntryEventBuilder {
 
   @TestVisible
   private String debugMessage = '';
+
+  @TestVisible
+  private static Boolean isApexSystemDebugSupportedOverride = true; // default to true for backwards compatibility with existing tests
+
   private Boolean detailsAreSet = false;
   private Boolean shouldSave;
   private Set<String> tags = new Set<String>();
@@ -774,8 +778,10 @@ global with sharing class LogEntryEventBuilder {
       try {
         this.logEntryEvent.put(field, value);
       } catch (System.Exception ex) {
-        LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
-        System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
+        if (isApexSystemDebugSupported()) {
+          LogMessage logMessage = new LogMessage('Could not set field {0} with value {1}', field, value);
+          System.debug(System.LoggingLevel.WARN, logMessage.getMessage());
+        }
       }
     }
 
@@ -922,7 +928,7 @@ global with sharing class LogEntryEventBuilder {
 
   @SuppressWarnings('PMD.AvoidDebugStatements')
   private void logToApexDebug(String message) {
-    if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false) {
+    if (this.userSettings.IsApexSystemDebugLoggingEnabled__c == false || isApexSystemDebugSupported() == false) {
       return;
     }
 
@@ -1338,6 +1344,17 @@ global with sharing class LogEntryEventBuilder {
 
     System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(System.AccessType.READABLE, records, false);
     return securityDecision.getRecords();
+  }
+
+  /**
+   * @description Returns whether Apex System.debug() is supported, supports an override for testing purposes.
+   * @return   `Boolean`   true if Apex System.debug() is supported, false otherwise
+   */
+  private static Boolean isApexSystemDebugSupported() {
+    if (System.Test.isRunningTest()) {
+      return isApexSystemDebugSupportedOverride;
+    }
+    return String.isBlank(NAMESPACE_PREFIX);
   }
 
   @SuppressWarnings('PMD.ApexDoc')
