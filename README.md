@@ -25,6 +25,16 @@ The most robust observability solution for Salesforce experts. Built 100% native
 
 ---
 
+## AI Agent Skills
+
+Nebula Logger includes [Agent Skills](https://www.skills.sh/docs) that help AI coding agents (Claude Code, GitHub Copilot, Cursor, and others) install, configure, and use Nebula Logger with the recommended patterns.
+
+```bash
+npx skills add jongpie/NebulaLogger
+```
+
+---
+
 ## Features
 
 1. A unified logging tool that supports easily adding log entries across the Salesforce platform, using:
