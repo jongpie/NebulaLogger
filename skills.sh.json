@@ -1,0 +1,21 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Setup",
+      "description": "Installation and configuration of Nebula Logger in a Salesforce org.",
+      "skills": ["nebula-logger-install"]
+    },
+    {
+      "title": "Usage",
+      "description": "Writing logging code across Apex, LWC, Aura, Flow, and OmniStudio.",
+      "skills": ["nebula-logger-apex-logging"]
+    },
+    {
+      "title": "Governance",
+      "description": "Best practices, logging levels, and governor limit considerations.",
+      "skills": ["nebula-logger-best-practices"]
+    }
+  ]
+}
