@@ -39,7 +39,7 @@ Use exception overloads to capture the full exception context.
 try {
   update accountsToUpdate;
 } catch (DmlException ex) {
-  Logger.error('Failed to update accounts', ex);
+  Logger.exception('Failed to update accounts', ex);
   Logger.saveLog();
   throw ex;
 }
