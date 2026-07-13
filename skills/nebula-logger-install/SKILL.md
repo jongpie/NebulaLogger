@@ -36,8 +36,6 @@ Always confirm the latest version on:
 
 - https://github.com/jongpie/NebulaLogger/releases
 
-At the time of writing, the project README lists these install links and package IDs. These links might be outdated in the future, so always check the README for the latest.
-
 ### Browser install links
 
 - Unlocked sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg70000009GaDAAU`
