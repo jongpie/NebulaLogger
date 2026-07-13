@@ -11,7 +11,7 @@ Use these defaults when reviewing pull requests or designing logging conventions
 
 1. Always call `Logger.saveLog()`.
 2. Place `Logger.saveLog()` in `finally` blocks for transactional code paths.
-3. Use the lowest effective logging level (`ERROR` for failures, `INFO` for business milestones, fine-grained levels for diagnostics).
+3. Use logging levels strategically. Fine-grained levels such as `FINE`, `FINER`, and `FINEST` can be combined with Logger Settings to avoid unnecessary logging overhead in performance-sensitive code paths and enable deeper diagnostics only when needed. Reserve higher-level logging (`ERROR`, `WARN`, and `INFO`) for information that is operationally significant.
 4. Tune `LoggerSettings__c.LoggingLevel__c` by environment.
 5. Use `Logger.setScenario()` for business-process grouping.
 6. Associate records with `.setRecord(...)` instead of embedding IDs in message strings.
