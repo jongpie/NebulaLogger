@@ -17,14 +17,14 @@
  *                  "path": "/optional/suffix/appended/to/named/credential/endpoint"
  *                }
  */
-public without sharing class GenericWebhookLoggerNotifier implements LoggerNotifier {
+public without sharing class GenericWebhookLoggerNotifier extends LoggerNotifier {
   private static final String DEFAULT_METHOD = 'POST';
 
   /**
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }

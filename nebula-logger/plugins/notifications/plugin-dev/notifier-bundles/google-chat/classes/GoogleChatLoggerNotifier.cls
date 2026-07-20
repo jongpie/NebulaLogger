@@ -9,12 +9,12 @@
  *              Incoming Webhook (or a Named Credential fronting one). Uses the Card v2 payload
  *              format under the `cardsV2` field.
  */
-public without sharing class GoogleChatLoggerNotifier implements LoggerNotifier {
+public without sharing class GoogleChatLoggerNotifier extends LoggerNotifier {
   /**
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }

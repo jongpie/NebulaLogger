@@ -9,7 +9,7 @@
  *              Incoming Webhook (or a Named Credential fronting one). The payload is a Teams
  *              Adaptive Card 1.4 wrapped in the `attachments` envelope Teams expects.
  */
-public without sharing class MicrosoftTeamsLoggerNotifier implements LoggerNotifier {
+public without sharing class MicrosoftTeamsLoggerNotifier extends LoggerNotifier {
   @TestVisible
   private static final String COLOR_ATTENTION = 'attention';
   @TestVisible
@@ -23,7 +23,7 @@ public without sharing class MicrosoftTeamsLoggerNotifier implements LoggerNotif
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
