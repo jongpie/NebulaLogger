@@ -417,6 +417,43 @@ private class SlackLoggerNotifier_Tests {
   }
 
   @IsTest
+  static void it_should_still_hydrate_valid_fields_when_a_configured_field_does_not_exist_on_the_source_object() {
+    // Reproduction for the reported bug: when a single configured source field is misspelled or missing,
+    // the hydration SOQL used to throw QueryException, which fell back to un-hydrated records and made
+    // every OTHER configured field render as the null placeholder. Filtering unresolvable paths out of
+    // the SELECT lets the good ones still hydrate. This test uses a real inserted record (unlike the
+    // sibling test above, which uses in-memory records with no Ids and short-circuits before SOQL).
+    Log__c log = new Log__c(TransactionId__c = 'txn-bad-path-' + System.now().getTime());
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now(), Message__c = 'Something broke');
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      ConfigurationJson__c = '{"sourceFields":["ThisFieldDoesNotExist__c","Log__r.Name","LoggingLevel__c","Message__c"],"includeNullValues":true}'
+    );
+    LoggerNotifiableContext context = new LoggerNotifiableContext(
+      buildRule(),
+      recipient,
+      buildService('https://example.com/hook', null),
+      new List<SObject>{ logEntry }
+    );
+
+    String payload = sendAndCapture(context);
+
+    // The good fields should render with their actual values, not the null placeholder.
+    System.Assert.isTrue(
+      payload.contains('`ERROR`'),
+      'LoggingLevel__c should still render its real value even though another configured field is invalid: ' + payload
+    );
+    System.Assert.isTrue(
+      payload.contains('```Something broke```'),
+      'Message__c should still render its real value even though another configured field is invalid: ' + payload
+    );
+    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
+    System.Assert.isTrue(payload.contains(log.Name), 'Log__r.Name should still hydrate and render even though another configured field is invalid: ' + payload);
+  }
+
+  @IsTest
   static void it_should_suppress_null_valued_fields_by_default() {
     // StackTrace__c is left null on the record; the default field set includes it, so it should be dropped
     // from the rendered payload when the recipient has no config.
