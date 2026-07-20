@@ -140,6 +140,12 @@ describe('LogEntryEventStream tests', () => {
 
   const namespaces = ['', 'SomeNamespace'];
 
+  it('sets the document title on connectedCallback', async () => {
+    await createStreamElement('');
+
+    expect(document.title).toEqual('Log Entry Event Stream | Salesforce');
+  });
+
   it('shows warning when component is disabled', async () => {
     isEnabled.mockResolvedValue(false);
     getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);

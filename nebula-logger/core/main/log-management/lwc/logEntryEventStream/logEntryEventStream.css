@@ -10,12 +10,11 @@
 }
 
 .event-stream {
-  background-color: #22272e;
-  color: white;
+  background-color: var(--slds-g-color-neutral-base-10, #22272e);
+  color: var(--slds-g-color-on-accent-1, white);
   font-family: 'Lucida Console', 'Courier New', monospace;
   text-indent: -32px;
   padding-left: var(--slds-g-spacing-6, 32px);
-  height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
 
@@ -29,24 +28,24 @@
 }
 
 .timestamp {
-  color: darkgrey;
+  color: var(--slds-g-color-neutral-base-70, darkgrey);
   margin-right: var(--slds-g-spacing-2, 8px);
 }
 
 .logged-by {
-  color: #45c65a;
+  color: var(--slds-g-color-palette-green-60, #45c65a);
   font-weight: var(--slds-g-font-weight-bold, bold);
   margin-right: var(--slds-g-spacing-2, 8px);
 }
 
 .origin {
-  color: cornflowerblue;
+  color: var(--slds-g-color-brand-base-60, cornflowerblue);
   margin-right: var(--slds-g-spacing-2, 8px);
 }
 
 .logging-level {
-  background-color: dimgray;
-  color: white;
+  background-color: var(--slds-g-color-neutral-base-50, dimgray);
+  color: var(--slds-g-color-on-accent-1, white);
   margin-right: var(--slds-g-spacing-2, 8px);
   padding: var(--slds-g-spacing-1, 4px);
 }

@@ -7,103 +7,122 @@ import { LightningElement } from 'lwc';
 import LightningConfirm from 'lightning/confirm';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
-import getMetrics from '@salesforce/apex/LogBatchPurgeController.getMetrics';
 import canUserRunLogBatchPurger from '@salesforce/apex/LogBatchPurgeController.canUserRunLogBatchPurger';
-import getPurgeActionOptions from '@salesforce/apex/LogBatchPurgeController.getPurgeActionOptions';
-import runBatchPurge from '@salesforce/apex/LogBatchPurgeController.runBatchPurge';
 import getBatchPurgeJobRecords from '@salesforce/apex/LogBatchPurgeController.getBatchPurgeJobRecords';
+import getMetrics from '@salesforce/apex/LogBatchPurgeController.getMetrics';
+import getPurgeActionOptions from '@salesforce/apex/LogBatchPurgeController.getPurgeActionOptions';
+import getRegisteredPurgeableSObjectTypes from '@salesforce/apex/LogBatchPurgeController.getRegisteredPurgeableSObjectTypes';
+import runBatchPurge from '@salesforce/apex/LogBatchPurgeController.runBatchPurge';
+
+const TITLE = 'Log Batch Purge';
+const AUTO_REFRESH_STORAGE_KEY = 'nebula-logger.logBatchPurge.autoRefresh';
+const AUTO_REFRESH_INTERVAL_STORAGE_KEY = 'nebula-logger.logBatchPurge.autoRefreshIntervalMs';
+const DEFAULT_AUTO_REFRESH_INTERVAL_MS = 10000;
 
 export default class LogBatchPurge extends LightningElement {
-  // UI
+  title = TITLE;
   showLoadingSpinner = false;
-  title = 'Log Batch Purge';
-
-  // log  metrics
-  logObjectSchema;
-  logEntryObjectSchema;
-  logEntryTagObjectSchema;
 
   metricsResult;
-  metricsColumns = [];
   metricsRecords = [];
-  purgeActionOptions;
+  purgeActionOptions = [];
+  registeredPurgeableSObjectTypes = [];
 
-  // Date filter options
   selectedDateFilterOption = 'TODAY';
   dateFilterOptions = [
-    { label: 'Today', value: 'TODAY' },
-    { label: 'This Week', value: 'THIS_WEEK' },
-    { label: 'This Month', value: 'THIS_MONTH' }
+    { label: 'Purge Date: Today', value: 'TODAY' },
+    { label: 'Purge Date: This Week', value: 'THIS_WEEK' },
+    { label: 'Purge Date: This Month', value: 'THIS_MONTH' },
+    { label: 'Purge Date: All Time', value: 'ALL_TIME' }
   ];
 
-  // Purge Batch
   purgeBatchColumns = [];
   purgeBatchJobRecords = [];
   disableRunPurgeButton;
 
-  #pollingFrequency = 10000; // milliseconds
+  autoRefreshEnabled = false;
+  autoRefreshIntervalMs = DEFAULT_AUTO_REFRESH_INTERVAL_MS;
+  autoRefreshIntervalOptions = [
+    { label: 'Every 5 seconds', value: '5000' },
+    { label: 'Every 10 seconds', value: '10000' },
+    { label: 'Every 30 seconds', value: '30000' },
+    { label: 'Every 60 seconds', value: '60000' }
+  ];
+
+  #autoRefreshTimerId;
 
   connectedCallback() {
-    this.selectedDateFilterOption = 'TODAY';
+    document.title = `${TITLE} | Salesforce`;
+    this._restoreAutoRefreshPreferences();
 
-    this.loadMetricRecords();
-    this.loadPurgeBatchColumns();
-    this.loadPurgeBatchJobRecords();
+    this._loadAll();
 
-    this.pollPurgeBatchJobRecords();
+    if (this.autoRefreshEnabled) {
+      this._startAutoRefresh();
+    }
   }
 
-  loadMetricRecords() {
+  disconnectedCallback() {
+    this._stopAutoRefresh();
+  }
+
+  get autoRefreshIntervalValue() {
+    return String(this.autoRefreshIntervalMs);
+  }
+
+  get autoRefreshDisabled() {
+    return !this.autoRefreshEnabled;
+  }
+
+  get retentionSubtitle() {
+    const option = this.dateFilterOptions.find(candidate => candidate.value === this.selectedDateFilterOption);
+    const label = option ? option.label : this.selectedDateFilterOption;
+    return `Showing records whose retention date matches ${label}. Records with a blank retention date are treated as "keep forever" and are excluded.`;
+  }
+
+  _loadAll() {
+    this._loadMetricRecords();
+    this._loadPurgeBatchColumns();
+    this._loadPurgeBatchJobRecords();
+  }
+
+  _loadMetricRecords() {
     this.showLoadingSpinner = true;
 
-    Promise.all([
-      getMetrics({ dateFilterOption: this.selectedDateFilterOption }),
-      getPurgeActionOptions(),
-      getSchemaForName({ sobjectApiName: 'Log__c' }),
-      getSchemaForName({ sobjectApiName: 'LogEntry__c' }),
-      getSchemaForName({ sobjectApiName: 'LogEntryTag__c' })
-    ])
-      .then(([metricsResult, purgeActionOptionsResult, logObjectSchema, logEntryObjectSchema, logEntryTagObjectSchema]) => {
+    Promise.all([getMetrics({ dateFilterOption: this.selectedDateFilterOption }), getPurgeActionOptions(), getRegisteredPurgeableSObjectTypes()])
+      .then(([metricsResult, purgeActionOptionsResult, registeredTypes]) => {
         this.metricsResult = metricsResult;
         this.purgeActionOptions = purgeActionOptionsResult;
-        this.logObjectSchema = logObjectSchema;
-        this.logEntryObjectSchema = logEntryObjectSchema;
-        this.logEntryTagObjectSchema = logEntryTagObjectSchema;
+        this.registeredPurgeableSObjectTypes = registeredTypes;
 
-        const METRIC_TEMPLATE = [
-          {
-            sObjectName: this.logObjectSchema.label,
-            sObjectApiName: 'Log__c',
-            rowSpan: this.purgeActionOptions.length + 1,
-            summary: []
-          },
-          {
-            sObjectName: this.logEntryObjectSchema.label,
-            sObjectApiName: 'LogEntry__c',
-            rowSpan: this.purgeActionOptions.length + 1,
-            summary: []
-          },
-          {
-            sObjectName: this.logEntryTagObjectSchema.label,
-            sObjectApiName: 'LogEntryTag__c',
-            rowSpan: this.purgeActionOptions.length + 1,
-            summary: []
-          }
+        const coreRows = [
+          { sobjectApiName: 'Log__c', pluginCaption: null },
+          { sobjectApiName: 'LogEntry__c', pluginCaption: null },
+          { sobjectApiName: 'LogEntryTag__c', pluginCaption: null }
         ];
+        const registeredRows = registeredTypes.map(registered => ({
+          sobjectApiName: registered.apiName,
+          pluginCaption: registered.registeringPluginDeveloperName
+            ? `Registered by plugin ${registered.registeringPluginDeveloperName}`
+            : 'Registered by a plugin'
+        }));
 
-        let records = [...METRIC_TEMPLATE];
-
-        records.forEach(record => {
-          const aMetricRecord = metricsResult[record.sObjectApiName];
-          record.summary = this.purgeActionOptions.map(option => {
-            const summary = aMetricRecord.filter(item => item.LogPurgeAction__c === option.value);
+        const records = [...coreRows, ...registeredRows].map(row => {
+          const aggregateResults = metricsResult[row.sobjectApiName] ?? [];
+          const summary = this.purgeActionOptions.map(option => {
+            const matches = aggregateResults.filter(item => item.LogPurgeAction__c === option.value);
+            const key = `${row.sobjectApiName}-${option.value}`;
             return {
-              key: record.sObjectApiName + '-' + option.value,
+              key,
               purgeAction: option.value,
-              count: summary.length > 0 ? summary[0].expr0 : 0
+              count: matches.length > 0 ? matches[0].expr0 : 0
             };
           });
+          return {
+            ...row,
+            rowSpan: this.purgeActionOptions.length + 1,
+            summary
+          };
         });
         this.metricsRecords = records;
         this.showLoadingSpinner = false;
@@ -111,20 +130,12 @@ export default class LogBatchPurge extends LightningElement {
       .catch(this._handleError);
   }
 
-  loadPurgeBatchColumns() {
-    let columns = [
+  _loadPurgeBatchColumns() {
+    this.purgeBatchColumns = [
       { label: 'Job ID', fieldName: 'Id', initialWidth: 180 },
       { label: 'Job Type', fieldName: 'JobType', initialWidth: 170 },
-      {
-        label: 'Job Items Processed',
-        fieldName: 'JobItemsProcessed',
-        initialWidth: 180
-      },
-      {
-        label: 'Number of Errors',
-        fieldName: 'NumberOfErrors',
-        initialWidth: 170
-      },
+      { label: 'Job Items Processed', fieldName: 'JobItemsProcessed', initialWidth: 180 },
+      { label: 'Number of Errors', fieldName: 'NumberOfErrors', initialWidth: 170 },
       {
         label: 'Submitted On',
         fieldName: 'CreatedDate',
@@ -140,37 +151,32 @@ export default class LogBatchPurge extends LightningElement {
           hour12: true
         }
       },
-      {
-        label: 'Submitted By',
-        fieldName: 'CreatedByName',
-        type: 'text',
-        initialWidth: 150
-      },
+      { label: 'Submitted By', fieldName: 'CreatedByName', type: 'text', initialWidth: 150 },
       { label: 'Status', fieldName: 'Status', type: 'text' }
     ];
-
-    this.purgeBatchColumns = columns;
   }
 
-  loadPurgeBatchJobRecords() {
+  _loadPurgeBatchJobRecords() {
     this.showLoadingSpinner = true;
     Promise.all([getBatchPurgeJobRecords(), canUserRunLogBatchPurger()])
       .then(([purgeBatchResult, canUserRunLogBatchPurgerAdHocResult]) => {
         this.disableRunPurgeButton = !canUserRunLogBatchPurgerAdHocResult;
-        const formattedBatchJobRecords = purgeBatchResult.map(record => {
-          record.CreatedByName = record.CreatedBy.Name;
-          return record;
-        });
-        this.purgeBatchJobRecords = formattedBatchJobRecords;
+        this.purgeBatchJobRecords = purgeBatchResult.map(record => ({
+          ...record,
+          CreatedByName: record.CreatedBy.Name
+        }));
         this.showLoadingSpinner = false;
       })
       .catch(this._handleError);
   }
 
   async runBatchPurge() {
+    const totalRowCount = this._totalRowsToPurge();
+    const totalMessage =
+      totalRowCount > 0 ? `This will delete approximately ${totalRowCount} record(s):\n${this._perSobjectBreakdownForConfirm()}` : 'This will delete data!';
     const confirmationResult = await LightningConfirm.open({
       label: 'Confirm Job Execution',
-      message: 'Are you sure that you want to run LogBatchPurger? This will delete data!',
+      message: `Are you sure that you want to run LogBatchPurger?\n\n${totalMessage}`,
       theme: 'warning'
     });
 
@@ -186,27 +192,92 @@ export default class LogBatchPurge extends LightningElement {
             variant: 'success'
           })
         );
-        this.loadPurgeBatchJobRecords();
+        this._loadPurgeBatchJobRecords();
       })
       .catch(this._handleError);
   }
 
   refreshPurgeBatchRecords() {
-    this.loadPurgeBatchJobRecords();
+    this._loadPurgeBatchJobRecords();
   }
 
   onChangeDateFilter(event) {
     this.selectedDateFilterOption = event.detail.value;
-    this.loadMetricRecords();
+    this._loadMetricRecords();
   }
 
-  pollPurgeBatchJobRecords() {
+  onToggleAutoRefresh(event) {
+    this.autoRefreshEnabled = event.detail.checked;
+    this._persistAutoRefreshPreferences();
+    if (this.autoRefreshEnabled) {
+      this._startAutoRefresh();
+    } else {
+      this._stopAutoRefresh();
+    }
+  }
+
+  onChangeAutoRefreshInterval(event) {
+    this.autoRefreshIntervalMs = Number(event.detail.value);
+    this._persistAutoRefreshPreferences();
+    if (this.autoRefreshEnabled) {
+      this._startAutoRefresh();
+    }
+  }
+
+  _totalRowsToPurge() {
+    return this.metricsRecords.reduce((runningTotal, row) => runningTotal + row.summary.reduce((rowTotal, item) => rowTotal + Number(item.count ?? 0), 0), 0);
+  }
+
+  _perSobjectBreakdownForConfirm() {
+    return this.metricsRecords
+      .map(row => {
+        const rowTotal = row.summary.reduce((total, item) => total + Number(item.count ?? 0), 0);
+        return `  - ${row.sobjectApiName}: ${rowTotal}`;
+      })
+      .join('\n');
+  }
+
+  _startAutoRefresh() {
+    this._stopAutoRefresh();
     // eslint-disable-next-line
-    setTimeout(() => {
-      this.loadPurgeBatchJobRecords();
-      this.loadMetricRecords();
-      this.pollPurgeBatchJobRecords();
-    }, this.#pollingFrequency);
+    this.#autoRefreshTimerId = setInterval(() => {
+      this._loadMetricRecords();
+      this._loadPurgeBatchJobRecords();
+    }, this.autoRefreshIntervalMs);
+  }
+
+  _stopAutoRefresh() {
+    if (this.#autoRefreshTimerId) {
+      clearInterval(this.#autoRefreshTimerId);
+      this.#autoRefreshTimerId = undefined;
+    }
+  }
+
+  _restoreAutoRefreshPreferences() {
+    try {
+      const storedEnabled = window.localStorage.getItem(AUTO_REFRESH_STORAGE_KEY);
+      if (storedEnabled !== null) {
+        this.autoRefreshEnabled = storedEnabled === 'true';
+      }
+      const storedInterval = window.localStorage.getItem(AUTO_REFRESH_INTERVAL_STORAGE_KEY);
+      if (storedInterval !== null) {
+        const parsed = Number(storedInterval);
+        if (this.autoRefreshIntervalOptions.some(option => option.value === storedInterval)) {
+          this.autoRefreshIntervalMs = parsed;
+        }
+      }
+    } catch (error) {
+      // localStorage can throw in embedded contexts / private-browsing modes. Fall back to defaults.
+    }
+  }
+
+  _persistAutoRefreshPreferences() {
+    try {
+      window.localStorage.setItem(AUTO_REFRESH_STORAGE_KEY, String(this.autoRefreshEnabled));
+      window.localStorage.setItem(AUTO_REFRESH_INTERVAL_STORAGE_KEY, String(this.autoRefreshIntervalMs));
+    } catch (error) {
+      // Ignore; a persistence failure shouldn't break the runtime behavior.
+    }
   }
 
   _handleError = error => {

@@ -60,6 +60,7 @@ export default class LogEntryEventStream extends LightningElement {
   _totalEventsDelivered = 0;
 
   async connectedCallback() {
+    document.title = 'Log Entry Event Stream | Salesforce';
     Promise.all([isEnabled(), getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDatatableDisplayFields()])
       .then(([isEnabledResult, getSchemaForNameResult, getTableViewFieldsResult]) => {
         this.isEnabled = isEnabledResult;
