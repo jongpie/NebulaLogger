@@ -1,13 +1,13 @@
 import { createElement } from 'lwc';
 import LoggerNotificationRuleGuidedForm from 'c/loggerNotificationRuleGuidedForm';
 import LoggerNotificationServiceModal from 'c/loggerNotificationServiceModal';
-import getFieldsForSObject from '@salesforce/apex/LoggerNotifierGuidedFormController.getFieldsForSObject';
-import getNotifierTypes from '@salesforce/apex/LoggerNotifierGuidedFormController.getNotifierTypes';
-import getAvailableServices from '@salesforce/apex/LoggerNotifierGuidedFormController.getAvailableServices';
-import saveRuleWithRecipients from '@salesforce/apex/LoggerNotifierGuidedFormController.saveRuleWithRecipients';
-import updateRuleWithRecipients from '@salesforce/apex/LoggerNotifierGuidedFormController.updateRuleWithRecipients';
-import getRuleWithRecipients from '@salesforce/apex/LoggerNotifierGuidedFormController.getRuleWithRecipients';
-import validateSourceSObjectFilter from '@salesforce/apex/LoggerNotifierGuidedFormController.validateSourceSObjectFilter';
+import getFieldsForSObject from '@salesforce/apex/LoggerNotificationFormController.getFieldsForSObject';
+import getNotifierTypes from '@salesforce/apex/LoggerNotificationFormController.getNotifierTypes';
+import getAvailableServices from '@salesforce/apex/LoggerNotificationFormController.getAvailableServices';
+import saveRuleWithRecipients from '@salesforce/apex/LoggerNotificationFormController.saveRuleWithRecipients';
+import updateRuleWithRecipients from '@salesforce/apex/LoggerNotificationFormController.updateRuleWithRecipients';
+import getRuleWithRecipients from '@salesforce/apex/LoggerNotificationFormController.getRuleWithRecipients';
+import validateSourceSObjectFilter from '@salesforce/apex/LoggerNotificationFormController.validateSourceSObjectFilter';
 import LightningConfirm from 'lightning/confirm';
 
 // `LoggerNotificationServiceModal` inherits its static `.open()` from `lightning/modal`'s base class,
@@ -16,7 +16,7 @@ import LightningConfirm from 'lightning/confirm';
 // saved service (recordId) or a cancel (null).
 
 jest.mock(
-  '@salesforce/apex/LoggerNotifierGuidedFormController.getNotifierTypes',
+  '@salesforce/apex/LoggerNotificationFormController.getNotifierTypes',
   () => {
     const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
     return { default: createApexTestWireAdapter(jest.fn()) };
@@ -24,22 +24,22 @@ jest.mock(
   { virtual: true }
 );
 jest.mock(
-  '@salesforce/apex/LoggerNotifierGuidedFormController.getAvailableServices',
+  '@salesforce/apex/LoggerNotificationFormController.getAvailableServices',
   () => {
     const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
     return { default: createApexTestWireAdapter(jest.fn()) };
   },
   { virtual: true }
 );
-jest.mock('@salesforce/apex/LoggerNotifierGuidedFormController.saveRuleWithRecipients', () => ({ default: jest.fn() }), { virtual: true });
-jest.mock('@salesforce/apex/LoggerNotifierGuidedFormController.updateRuleWithRecipients', () => ({ default: jest.fn() }), { virtual: true });
-jest.mock('@salesforce/apex/LoggerNotifierGuidedFormController.getRuleWithRecipients', () => ({ default: jest.fn() }), { virtual: true });
-jest.mock('@salesforce/apex/LoggerNotifierGuidedFormController.validateSourceSObjectFilter', () => ({ default: jest.fn().mockResolvedValue(null) }), {
+jest.mock('@salesforce/apex/LoggerNotificationFormController.saveRuleWithRecipients', () => ({ default: jest.fn() }), { virtual: true });
+jest.mock('@salesforce/apex/LoggerNotificationFormController.updateRuleWithRecipients', () => ({ default: jest.fn() }), { virtual: true });
+jest.mock('@salesforce/apex/LoggerNotificationFormController.getRuleWithRecipients', () => ({ default: jest.fn() }), { virtual: true });
+jest.mock('@salesforce/apex/LoggerNotificationFormController.validateSourceSObjectFilter', () => ({ default: jest.fn().mockResolvedValue(null) }), {
   virtual: true
 });
 
 jest.mock(
-  '@salesforce/apex/LoggerNotifierGuidedFormController.getFieldsForSObject',
+  '@salesforce/apex/LoggerNotificationFormController.getFieldsForSObject',
   () => {
     const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
     return { default: createApexTestWireAdapter(jest.fn()) };
@@ -73,7 +73,7 @@ beforeEach(() => {
 
 // The Email notifier requires User__c OR EmailAddress__c on each recipient. This drives every
 // recipient at-least-one test in this file - the exact CMDT shape mirrors what the runtime SOQL
-// returns from LoggerNotifierGuidedFormController.getNotifierTypes.
+// returns from LoggerNotificationFormController.getNotifierTypes.
 const MOCK_EMAIL_NOTIFIER_TYPE = {
   AtLeastOneRequiredRecipientFields__c: 'User__c\nEmailAddress__c',
   AtLeastOneRequiredServiceFields__c: null,

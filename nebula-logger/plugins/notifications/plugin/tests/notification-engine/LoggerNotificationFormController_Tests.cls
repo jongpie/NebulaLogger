@@ -5,7 +5,7 @@
 
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
-private class LoggerNotifierGuidedFormController_Tests {
+private class LoggerNotificationFormController_Tests {
   static {
     // Don't use the org's actual custom metadata records when running tests
     LoggerConfigurationSelector.useMocks();
@@ -13,7 +13,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
   @IsTest
   static void it_should_return_notifier_types_ordered_by_display_label() {
-    List<LoggerNotifierType__mdt> notifierTypes = LoggerNotifierGuidedFormController.getNotifierTypes();
+    List<LoggerNotifierType__mdt> notifierTypes = LoggerNotificationFormController.getNotifierTypes();
 
     System.Assert.isTrue(notifierTypes.size() > 0, 'Expected at least one seeded LoggerNotifierType__mdt record');
     for (Integer i = 1; i < notifierTypes.size(); i++) {
@@ -28,13 +28,13 @@ private class LoggerNotifierGuidedFormController_Tests {
 
   @IsTest
   static void it_should_return_null_for_blank_notifier_class_name() {
-    System.Assert.isNull(LoggerNotifierGuidedFormController.getNotifierTypeForClass(null), 'Null input should return null');
-    System.Assert.isNull(LoggerNotifierGuidedFormController.getNotifierTypeForClass(''), 'Empty string input should return null');
+    System.Assert.isNull(LoggerNotificationFormController.getNotifierTypeForClass(null), 'Null input should return null');
+    System.Assert.isNull(LoggerNotificationFormController.getNotifierTypeForClass(''), 'Empty string input should return null');
   }
 
   @IsTest
   static void it_should_return_notifier_type_matching_notifier_apex_class_name() {
-    LoggerNotifierType__mdt notifierType = LoggerNotifierGuidedFormController.getNotifierTypeForClass('SlackLoggerNotifier');
+    LoggerNotifierType__mdt notifierType = LoggerNotificationFormController.getNotifierTypeForClass('SlackLoggerNotifier');
 
     System.Assert.isNotNull(notifierType, 'Expected a matching LoggerNotifierType__mdt record for SlackLoggerNotifier');
     System.Assert.areEqual('SlackLoggerNotifier', notifierType.NotifierApexClassName__c);
@@ -42,7 +42,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
   @IsTest
   static void it_should_return_null_for_unknown_notifier_class_name() {
-    System.Assert.isNull(LoggerNotifierGuidedFormController.getNotifierTypeForClass('NoSuchClassXYZ'));
+    System.Assert.isNull(LoggerNotificationFormController.getNotifierTypeForClass('NoSuchClassXYZ'));
   }
 
   @IsTest
@@ -55,7 +55,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     disabledService.IsEnabled__c = false;
     LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationService__c>{ enabledService, disabledService });
 
-    List<LoggerNotificationService__c> availableServices = LoggerNotifierGuidedFormController.getAvailableServices();
+    List<LoggerNotificationService__c> availableServices = LoggerNotificationFormController.getAvailableServices();
 
     Set<Id> returnedIds = new Set<Id>();
     for (LoggerNotificationService__c service : availableServices) {
@@ -71,7 +71,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     LoggerNotificationRule__c rule = buildValidRule();
     rule.Name = 'Rule With Null Recipients';
 
-    Id ruleId = LoggerNotifierGuidedFormController.saveRuleWithRecipients(rule, null);
+    Id ruleId = LoggerNotificationFormController.saveRuleWithRecipients(rule, null);
 
     System.Assert.isNotNull(ruleId, 'Rule Id should have been returned');
     System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationRule__c WHERE Id = :ruleId]);
@@ -83,7 +83,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     LoggerNotificationRule__c rule = buildValidRule();
     rule.Name = 'Rule With Empty Recipients';
 
-    Id ruleId = LoggerNotifierGuidedFormController.saveRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>());
+    Id ruleId = LoggerNotificationFormController.saveRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>());
 
     System.Assert.isNotNull(ruleId, 'Rule Id should have been returned');
     System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationRule__c WHERE Id = :ruleId]);
@@ -99,7 +99,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     rule.Name = 'Rule With Recipient';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(LoggerNotificationService__c = service.Id, IsEnabled__c = true);
 
-    Id ruleId = LoggerNotifierGuidedFormController.saveRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ recipient });
+    Id ruleId = LoggerNotificationFormController.saveRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ recipient });
 
     System.Assert.areEqual(rule.Id, ruleId, 'Returned Id should match the newly-inserted rule');
     LoggerNotificationRecipient__c requeriedRecipient = [
@@ -115,7 +115,7 @@ private class LoggerNotifierGuidedFormController_Tests {
   static void it_should_throw_aura_handled_exception_when_rule_is_null() {
     System.AuraHandledException thrown;
     try {
-      LoggerNotifierGuidedFormController.saveRuleWithRecipients(null, null);
+      LoggerNotificationFormController.saveRuleWithRecipients(null, null);
     } catch (System.AuraHandledException ex) {
       thrown = ex;
     }
@@ -132,7 +132,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
     System.AuraHandledException thrown;
     try {
-      LoggerNotifierGuidedFormController.saveRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ badRecipient });
+      LoggerNotificationFormController.saveRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ badRecipient });
     } catch (System.AuraHandledException ex) {
       thrown = ex;
     }
@@ -147,42 +147,42 @@ private class LoggerNotifierGuidedFormController_Tests {
 
   @IsTest
   static void it_should_return_blank_sobject_type_error_when_sobject_type_name_is_null() {
-    String result = LoggerNotifierGuidedFormController.validateSourceSObjectFilter(null, 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
+    String result = LoggerNotificationFormController.validateSourceSObjectFilter(null, 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
 
     System.Assert.areEqual('Pick a Source SObject Type before validating the filter.', result);
   }
 
   @IsTest
   static void it_should_return_blank_sobject_type_error_when_sobject_type_name_is_empty() {
-    String result = LoggerNotifierGuidedFormController.validateSourceSObjectFilter('', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
+    String result = LoggerNotificationFormController.validateSourceSObjectFilter('', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
 
     System.Assert.areEqual('Pick a Source SObject Type before validating the filter.', result);
   }
 
   @IsTest
   static void it_should_return_blank_filter_error_when_filter_is_empty() {
-    String result = LoggerNotifierGuidedFormController.validateSourceSObjectFilter('LogEntry__c', '');
+    String result = LoggerNotificationFormController.validateSourceSObjectFilter('LogEntry__c', '');
 
     System.Assert.areEqual('Filter cannot be blank.', result);
   }
 
   @IsTest
   static void it_should_return_unknown_sobject_error_when_sobject_type_name_is_unresolvable() {
-    String result = LoggerNotifierGuidedFormController.validateSourceSObjectFilter('NoSuchObject__c', 'IsDeleted = FALSE');
+    String result = LoggerNotificationFormController.validateSourceSObjectFilter('NoSuchObject__c', 'IsDeleted = FALSE');
 
     System.Assert.isTrue(result != null && result.contains('Unknown SObject type'), 'Expected unknown-SObject error but got: ' + result);
   }
 
   @IsTest
   static void it_should_return_null_when_filter_is_valid_against_source_sobject_type() {
-    String result = LoggerNotifierGuidedFormController.validateSourceSObjectFilter('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
+    String result = LoggerNotificationFormController.validateSourceSObjectFilter('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
 
     System.Assert.isNull(result, 'Expected null (valid) but got: ' + result);
   }
 
   @IsTest
   static void it_should_return_compile_error_when_filter_references_a_missing_field() {
-    String result = LoggerNotifierGuidedFormController.validateSourceSObjectFilter('LogEntry__c', 'NoSuchField__c = TRUE');
+    String result = LoggerNotificationFormController.validateSourceSObjectFilter('LogEntry__c', 'NoSuchField__c = TRUE');
 
     System.Assert.isNotNull(result, 'Expected a compile-error message for a missing field');
     System.Assert.isTrue(result.contains('Filter did not compile'), 'Expected the compile-error prefix but got: ' + result);
@@ -190,7 +190,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
   @IsTest
   static void it_should_return_null_when_getRuleWithRecipients_is_called_with_a_null_id() {
-    LoggerNotifierGuidedFormController.RuleWithRecipients result = LoggerNotifierGuidedFormController.getRuleWithRecipients(null);
+    LoggerNotificationFormController.RuleWithRecipients result = LoggerNotificationFormController.getRuleWithRecipients(null);
 
     System.Assert.isNull(result, 'A null Id input should return null (not throw)');
   }
@@ -201,7 +201,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     rule.Name = 'Rule Without Recipients';
     LoggerDataStore.getDatabase().insertRecord(rule);
 
-    LoggerNotifierGuidedFormController.RuleWithRecipients result = LoggerNotifierGuidedFormController.getRuleWithRecipients(rule.Id);
+    LoggerNotificationFormController.RuleWithRecipients result = LoggerNotificationFormController.getRuleWithRecipients(rule.Id);
 
     System.Assert.isNotNull(result, 'Expected a non-null result for an existing rule Id');
     System.Assert.areEqual(rule.Id, result.rule.Id);
@@ -231,7 +231,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     );
     LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRecipient__c>{ firstRecipient, secondRecipient });
 
-    LoggerNotifierGuidedFormController.RuleWithRecipients result = LoggerNotifierGuidedFormController.getRuleWithRecipients(rule.Id);
+    LoggerNotificationFormController.RuleWithRecipients result = LoggerNotificationFormController.getRuleWithRecipients(rule.Id);
 
     System.Assert.areEqual(2, result.recipients.size());
     System.Assert.areEqual(firstRecipient.Id, result.recipients.get(0).Id, 'Recipients are returned in insertion order');
@@ -244,7 +244,7 @@ private class LoggerNotifierGuidedFormController_Tests {
   static void it_should_throw_when_updateRuleWithRecipients_is_called_with_a_null_rule() {
     System.AuraHandledException thrown;
     try {
-      LoggerNotifierGuidedFormController.updateRuleWithRecipients(null, null, null, null);
+      LoggerNotificationFormController.updateRuleWithRecipients(null, null, null, null);
     } catch (System.AuraHandledException ex) {
       thrown = ex;
     }
@@ -258,7 +258,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
     System.AuraHandledException thrown;
     try {
-      LoggerNotifierGuidedFormController.updateRuleWithRecipients(ruleWithoutId, null, null, null);
+      LoggerNotificationFormController.updateRuleWithRecipients(ruleWithoutId, null, null, null);
     } catch (System.AuraHandledException ex) {
       thrown = ex;
     }
@@ -274,7 +274,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
     rule.Name = 'Rule Renamed';
     rule.Comments__c = 'New comment';
-    Id returnedId = LoggerNotifierGuidedFormController.updateRuleWithRecipients(rule, null, null, null);
+    Id returnedId = LoggerNotificationFormController.updateRuleWithRecipients(rule, null, null, null);
 
     System.Assert.areEqual(rule.Id, returnedId);
     LoggerNotificationRule__c requeriedRule = [SELECT Name, Comments__c FROM LoggerNotificationRule__c WHERE Id = :rule.Id];
@@ -296,7 +296,7 @@ private class LoggerNotifierGuidedFormController_Tests {
       ChannelIdentifier__c = '#new-channel',
       IsEnabled__c = true
     );
-    LoggerNotifierGuidedFormController.updateRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ newRecipient }, null, null);
+    LoggerNotificationFormController.updateRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ newRecipient }, null, null);
 
     List<LoggerNotificationRecipient__c> recipients = [
       SELECT Id, ChannelIdentifier__c
@@ -325,7 +325,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
     recipient.ChannelIdentifier__c = '#renamed';
     recipient.IsEnabled__c = false;
-    LoggerNotifierGuidedFormController.updateRuleWithRecipients(rule, null, new List<LoggerNotificationRecipient__c>{ recipient }, null);
+    LoggerNotificationFormController.updateRuleWithRecipients(rule, null, new List<LoggerNotificationRecipient__c>{ recipient }, null);
 
     LoggerNotificationRecipient__c requeried = [SELECT ChannelIdentifier__c, IsEnabled__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id];
     System.Assert.areEqual('#renamed', requeried.ChannelIdentifier__c);
@@ -354,7 +354,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     );
     LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRecipient__c>{ toKeep, toDelete });
 
-    LoggerNotifierGuidedFormController.updateRuleWithRecipients(rule, null, null, new List<Id>{ toDelete.Id });
+    LoggerNotificationFormController.updateRuleWithRecipients(rule, null, null, new List<Id>{ toDelete.Id });
 
     List<LoggerNotificationRecipient__c> remaining = [SELECT Id FROM LoggerNotificationRecipient__c WHERE LoggerNotificationRule__c = :rule.Id];
     System.Assert.areEqual(1, remaining.size(), 'Only the kept recipient should remain');
@@ -391,7 +391,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     );
     rule.Name = 'Mixed Diff Rule Renamed';
 
-    LoggerNotifierGuidedFormController.updateRuleWithRecipients(
+    LoggerNotificationFormController.updateRuleWithRecipients(
       rule,
       new List<LoggerNotificationRecipient__c>{ newRecipient },
       new List<LoggerNotificationRecipient__c>{ existingToUpdate },
@@ -429,7 +429,7 @@ private class LoggerNotifierGuidedFormController_Tests {
 
     System.AuraHandledException thrown;
     try {
-      LoggerNotifierGuidedFormController.updateRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ badRecipient }, null, null);
+      LoggerNotificationFormController.updateRuleWithRecipients(rule, new List<LoggerNotificationRecipient__c>{ badRecipient }, null, null);
     } catch (System.AuraHandledException ex) {
       thrown = ex;
     }

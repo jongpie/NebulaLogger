@@ -45,7 +45,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerNotifierGuidedFormController</apexClass>
+        <apexClass>LoggerNotificationFormController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

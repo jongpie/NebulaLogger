@@ -14,7 +14,7 @@
  *              arbitrary CMDT SOQL. DML is left to `lightning-record-edit-form` inside the LWC so
  *              this controller stays read-only.
  */
-public with sharing class LoggerNotifierGuidedFormController {
+public with sharing class LoggerNotificationFormController {
   /**
    * @description Returns every `LoggerNotifierType__mdt` record ordered by display label - the
    *              guided Service form uses this to populate the notifier picker.

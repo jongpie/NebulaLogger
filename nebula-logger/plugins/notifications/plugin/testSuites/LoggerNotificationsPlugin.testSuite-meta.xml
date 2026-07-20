@@ -3,13 +3,13 @@
     <testClassName>CustomNotificationLoggerNotifier_Tests</testClassName>
     <testClassName>EmailLoggerNotifier_Tests</testClassName>
     <testClassName>LoggerNotificationAsyncDispatcher_Tests</testClassName>
+    <testClassName>LoggerNotificationFormController_Tests</testClassName>
     <testClassName>LoggerNotificationProcessor_Tests</testClassName>
     <testClassName>LoggerNotificationRecipientHandler_Tests</testClassName>
     <testClassName>LoggerNotificationRuleHandler_Tests</testClassName>
     <testClassName>LoggerNotificationServiceHandler_Tests</testClassName>
     <testClassName>LoggerNotificationsPlugin_Tests</testClassName>
     <testClassName>LoggerNotifierConfiguration_Tests</testClassName>
-    <testClassName>LoggerNotifierGuidedFormController_Tests</testClassName>
     <testClassName>LoggerNotifierRequest_Tests</testClassName>
     <testClassName>LoggerNotifierResult_Tests</testClassName>
     <testClassName>SlackLoggerNotifier_Tests</testClassName>

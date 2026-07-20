@@ -1,6 +1,6 @@
 import { createElement } from 'lwc';
 import LoggerNotificationServiceGuidedForm from 'c/loggerNotificationServiceGuidedForm';
-import getNotifierTypes from '@salesforce/apex/LoggerNotifierGuidedFormController.getNotifierTypes';
+import getNotifierTypes from '@salesforce/apex/LoggerNotificationFormController.getNotifierTypes';
 // getRecord is the wire adapter behind the LWC's edit-mode Name/NotifierApexClassName prefetch.
 // `emit()` in tests feeds a fake record shape into the adapter so the wire callback fires with
 // the given field values.
@@ -30,7 +30,7 @@ const MOCK_NOTIFIER_TYPES = [
 ];
 
 jest.mock(
-  '@salesforce/apex/LoggerNotifierGuidedFormController.getNotifierTypes',
+  '@salesforce/apex/LoggerNotificationFormController.getNotifierTypes',
   () => {
     const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
     return { default: createApexTestWireAdapter(jest.fn()) };

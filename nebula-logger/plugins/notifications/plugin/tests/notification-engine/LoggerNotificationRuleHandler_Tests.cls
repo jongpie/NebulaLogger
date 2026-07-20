@@ -205,7 +205,8 @@ private class LoggerNotificationRuleHandler_Tests {
     LoggerDataStore.getDatabase().insertRecord(notificationRule);
     // Simulate a record that was cloned in from another org - overwrite the field post-insert via DML that bypasses the trigger
     LoggerSObjectHandler.shouldExecute(false);
-    notificationRule.OriginOrganizationId__c = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
+    Id foreignOrgId = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
+    notificationRule.OriginOrganizationId__c = foreignOrgId;
     LoggerDataStore.getDatabase().updateRecord(notificationRule);
     LoggerSObjectHandler.shouldExecute(true);
 
@@ -217,11 +218,7 @@ private class LoggerNotificationRuleHandler_Tests {
       FROM LoggerNotificationRule__c
       WHERE Id = :notificationRule.Id
     ];
-    System.Assert.areEqual(
-      LoggerMockDataCreator.createId(Schema.Organization.SObjectType),
-      afterUpdate.OriginOrganizationId__c,
-      'Update should not have re-stamped the origin org id'
-    );
+    System.Assert.areEqual(foreignOrgId, afterUpdate.OriginOrganizationId__c, 'Update should not have re-stamped the origin org id');
     System.Assert.isFalse(afterUpdate.IsOriginOrganizationIdValid__c, 'Formula should still evaluate to false against the foreign org id');
   }
 

@@ -6,13 +6,13 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import LightningConfirm from 'lightning/confirm';
 import LoggerNotificationServiceModal from 'c/loggerNotificationServiceModal';
 import { getObjectInfo, getPicklistValues } from 'lightning/uiObjectInfoApi';
-import getNotifierTypes from '@salesforce/apex/LoggerNotifierGuidedFormController.getNotifierTypes';
-import getAvailableServices from '@salesforce/apex/LoggerNotifierGuidedFormController.getAvailableServices';
-import getFieldsForSObject from '@salesforce/apex/LoggerNotifierGuidedFormController.getFieldsForSObject';
-import saveRuleWithRecipients from '@salesforce/apex/LoggerNotifierGuidedFormController.saveRuleWithRecipients';
-import updateRuleWithRecipients from '@salesforce/apex/LoggerNotifierGuidedFormController.updateRuleWithRecipients';
-import getRuleWithRecipients from '@salesforce/apex/LoggerNotifierGuidedFormController.getRuleWithRecipients';
-import validateSourceSObjectFilter from '@salesforce/apex/LoggerNotifierGuidedFormController.validateSourceSObjectFilter';
+import getNotifierTypes from '@salesforce/apex/LoggerNotificationFormController.getNotifierTypes';
+import getAvailableServices from '@salesforce/apex/LoggerNotificationFormController.getAvailableServices';
+import getFieldsForSObject from '@salesforce/apex/LoggerNotificationFormController.getFieldsForSObject';
+import saveRuleWithRecipients from '@salesforce/apex/LoggerNotificationFormController.saveRuleWithRecipients';
+import updateRuleWithRecipients from '@salesforce/apex/LoggerNotificationFormController.updateRuleWithRecipients';
+import getRuleWithRecipients from '@salesforce/apex/LoggerNotificationFormController.getRuleWithRecipients';
+import validateSourceSObjectFilter from '@salesforce/apex/LoggerNotificationFormController.validateSourceSObjectFilter';
 import LOGGER_NOTIFICATION_OBJECT from '@salesforce/schema/LoggerNotificationRule__c';
 import SOURCE_SOBJECT_TYPE_FIELD from '@salesforce/schema/LoggerNotificationRule__c.SourceSObjectType__c';
 import THRESHOLD_TIME_PERIOD_UNIT_FIELD from '@salesforce/schema/LoggerNotificationRule__c.MatchThresholdTimePeriodUnit__c';
@@ -948,7 +948,9 @@ export default class LoggerNotificationRuleGuidedForm extends NavigationMixin(Li
       if (field === 'LoggerNotificationService__c') {
         const service = rawValue ? this.services.find(candidate => candidate.Id === rawValue) : null;
         const notifierType = service ? this.notifierTypes.find(notifier => notifier.NotifierApexClassName__c === service.NotifierApexClassName__c) : null;
-        updated.ConfigurationJson__c = notifierType ? resolveSuggestedConfigJson(notifierType.SuggestedConfigurationJson__c, this.rule.SourceSObjectType__c) : '';
+        updated.ConfigurationJson__c = notifierType
+          ? resolveSuggestedConfigJson(notifierType.SuggestedConfigurationJson__c, this.rule.SourceSObjectType__c)
+          : '';
         updated.formPairs = undefined;
       }
       // A direct JSON textarea edit invalidates the row's cached formPairs - the next Form-view
