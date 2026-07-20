@@ -5,12 +5,12 @@
 
 /**
  * @group Plugins
- * @description DTO returned by a `LoggerNotifiable` implementation describing the outcome of a delivery attempt.
- *              The `LoggerNotifier` runtime uses this to populate the corresponding `LoggerNotificationDelivery__c`
+ * @description DTO returned by a `LoggerNotifier` implementation describing the outcome of a delivery attempt.
+ *              The `LoggerNotificationProcessor` runtime uses this to populate the corresponding `LoggerNotificationDelivery__c`
  *              row - status, HTTP details, external reference, error message, etc. All fields are optional; a
- *              notifier that returns a bare `new LoggerNotifiableResult()` (or `null`) is treated as a plain success.
+ *              notifier that returns a bare `new LoggerNotifierResult()` (or `null`) is treated as a plain success.
  */
-public class LoggerNotifiableResult {
+public class LoggerNotifierResult {
   /**
    * @description Sentinel values the runtime writes for `Status__c`. The picklist is unrestricted so admins can
    *              add their own values without a package upgrade breaking existing rows.
@@ -75,7 +75,7 @@ public class LoggerNotifiableResult {
   /**
    * @description URL the notifier called out to. Captured for troubleshooting so admins can see the
    *              resolved endpoint (e.g. `callout:SlackWebApi/chat.postMessage` for Named Credential
-   *              mode, or the raw webhook URL). Populated by notifiers via `fromHttpRequestAndResponse`.
+   *              mode, or the raw webhook URL). Populated by notifiers via the `HttpRequest` constructor.
    */
   public String requestUrl;
 
@@ -93,7 +93,7 @@ public class LoggerNotifiableResult {
   /**
    * @description Request headers the notifier sent, serialized as one `Key: value` per line. Because
    *              Apex `HttpRequest` has no `getHeaderKeys()`, the notifier passes every header name
-   *              it set to `fromHttpRequestAndResponse` and the runtime reads each value back. See
+   *              it set to the `HttpRequest` constructor and the runtime reads each value back. See
    *              the plugin backlog for the admin-facing allowlist that would restrict this.
    */
   public String requestHeaders;
@@ -109,7 +109,7 @@ public class LoggerNotifiableResult {
   /**
    * @description Default constructor - all fields left blank, treated as a plain success by the runtime.
    */
-  public LoggerNotifiableResult() {
+  public LoggerNotifierResult() {
   }
 
   /**
@@ -117,39 +117,36 @@ public class LoggerNotifiableResult {
    * @param status The status to record (typically `STATUS_DELIVERED` or `STATUS_FAILED`).
    * @param httpStatusCode The HTTP status code returned by the callout.
    */
-  public LoggerNotifiableResult(String status, Integer httpStatusCode) {
+  public LoggerNotifierResult(String status, Integer httpStatusCode) {
     this.status = status;
     this.httpStatusCode = httpStatusCode;
   }
 
   /**
-   * @description Convenience factory that builds a result from an `HttpResponse`. Sets status based on
+   * @description Convenience constructor that builds a result from an `HttpResponse`. Sets status based on
    *              the response's 2xx/non-2xx classification and always captures the HTTP status code,
    *              reason, body, and serialized headers so admins can inspect what came back regardless
    *              of whether the delivery succeeded or failed.
    * @param response The HTTP response returned by the callout.
-   * @return A populated `LoggerNotifiableResult` ready to hand back to the runtime.
    */
-  public static LoggerNotifiableResult fromHttpResponse(System.HttpResponse response) {
-    LoggerNotifiableResult result = new LoggerNotifiableResult();
+  public LoggerNotifierResult(System.HttpResponse response) {
     if (response == null) {
-      return result;
+      return;
     }
     Integer statusCode = response.getStatusCode();
-    result.httpStatusCode = statusCode;
-    result.httpStatusReason = response.getStatus();
+    this.httpStatusCode = statusCode;
+    this.httpStatusReason = response.getStatus();
     Boolean isSuccess = statusCode != null && statusCode >= 200 && statusCode < 300;
-    result.status = isSuccess ? STATUS_DELIVERED : STATUS_FAILED;
-    result.responseBody = response.getBody();
-    result.responseHeaders = serializeResponseHeaders(response);
-    return result;
+    this.status = isSuccess ? STATUS_DELIVERED : STATUS_FAILED;
+    this.responseBody = response.getBody();
+    this.responseHeaders = serializeResponseHeaders(response);
   }
 
   /**
-   * @description Factory that captures both request and response context. Notifiers should prefer this
-   *              over `fromHttpResponse` so `LoggerNotificationDelivery__c` rows retain the URL, method,
-   *              body, and every header the notifier set alongside the response side. Both request and
-   *              response bodies are captured on every delivery so admins can inspect exactly what was
+   * @description Constructor that captures both request and response context. Notifiers should prefer this
+   *              over the response-only constructor so `LoggerNotificationDelivery__c` rows retain the URL,
+   *              method, body, and every header the notifier set alongside the response side. Both request
+   *              and response bodies are captured on every delivery so admins can inspect exactly what was
    *              sent and received on both successful and failed deliveries.
    *
    *              Apex `HttpRequest` exposes no `getHeaderKeys()`, so the runtime cannot enumerate the
@@ -162,17 +159,15 @@ public class LoggerNotifiableResult {
    * @param response The HTTP response returned by the callout.
    * @param knownRequestHeaders Every header name the notifier set on the request, so the runtime can
    *                            read its value back. Blank/null skips request-header capture.
-   * @return A populated `LoggerNotifiableResult` ready to hand back to the runtime.
    */
-  public static LoggerNotifiableResult fromHttpRequestAndResponse(System.HttpRequest request, System.HttpResponse response, List<String> knownRequestHeaders) {
-    LoggerNotifiableResult result = fromHttpResponse(response);
+  public LoggerNotifierResult(System.HttpRequest request, System.HttpResponse response, List<String> knownRequestHeaders) {
+    this(response);
     if (request != null) {
-      result.requestUrl = request.getEndpoint();
-      result.requestMethod = request.getMethod();
-      result.requestBody = request.getBody();
-      result.requestHeaders = serializeRequestHeaders(request, knownRequestHeaders);
+      this.requestUrl = request.getEndpoint();
+      this.requestMethod = request.getMethod();
+      this.requestBody = request.getBody();
+      this.requestHeaders = serializeRequestHeaders(request, knownRequestHeaders);
     }
-    return result;
   }
 
   private static String serializeResponseHeaders(System.HttpResponse response) {

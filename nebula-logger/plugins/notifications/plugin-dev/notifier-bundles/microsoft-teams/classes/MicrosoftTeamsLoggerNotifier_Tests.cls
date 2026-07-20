@@ -14,7 +14,7 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
 
     notifier.sendNotification(null);
     notifier.sendNotification(
-      new LoggerNotifiableContext(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
+      new LoggerNotifierRequest(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
     );
 
     System.Assert.isNull(calloutMock.request);
@@ -26,7 +26,7 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext(null, null));
+    notifier.sendNotification(buildRequest(null, null));
 
     System.Assert.isNull(calloutMock.request);
   }
@@ -37,7 +37,7 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext('https://outlook.office.com/webhook/xyz', null));
+    notifier.sendNotification(buildRequest('https://outlook.office.com/webhook/xyz', null));
 
     System.Assert.areEqual('https://outlook.office.com/webhook/xyz', calloutMock.request.getEndpoint());
     System.Assert.areEqual('POST', calloutMock.request.getMethod());
@@ -50,7 +50,7 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext(null, 'TeamsWebhook'));
+    notifier.sendNotification(buildRequest(null, 'TeamsWebhook'));
 
     System.Assert.areEqual('callout:TeamsWebhook', calloutMock.request.getEndpoint());
   }
@@ -59,7 +59,7 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
   static void it_should_build_an_adaptive_card_envelope() {
     MicrosoftTeamsLoggerNotifier notifier = new MicrosoftTeamsLoggerNotifier();
 
-    String payload = notifier.buildPayload(buildContext('https://outlook.office.com/webhook/xyz', null));
+    String payload = notifier.buildPayload(buildRequest('https://outlook.office.com/webhook/xyz', null));
 
     System.Assert.isTrue(payload.contains('application/vnd.microsoft.card.adaptive'), 'Payload should declare adaptive card content type');
     System.Assert.isTrue(payload.contains('AdaptiveCard'), 'Payload should include AdaptiveCard type');
@@ -93,7 +93,7 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
     System.Assert.areEqual(MicrosoftTeamsLoggerNotifier.COLOR_ATTENTION, color);
   }
 
-  private static LoggerNotifiableContext buildContext(String webhookUrl, String namedCredentialDeveloperName) {
+  private static LoggerNotifierRequest buildRequest(String webhookUrl, String namedCredentialDeveloperName) {
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
     LoggerNotificationService__c service = new LoggerNotificationService__c(
       Name = 'Teams',
@@ -103,6 +103,6 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
-    return new LoggerNotifiableContext(rule, new LoggerNotificationRecipient__c(), service, matchingRecords);
+    return new LoggerNotifierRequest(rule, new LoggerNotificationRecipient__c(), service, matchingRecords);
   }
 }

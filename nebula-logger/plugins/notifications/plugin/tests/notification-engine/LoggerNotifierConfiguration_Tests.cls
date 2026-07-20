@@ -5,10 +5,10 @@
 
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
-private class LoggerNotifiableConfiguration_Tests {
+private class LoggerNotifierConfiguration_Tests {
   @IsTest
   static void it_should_return_empty_config_when_recipient_is_null() {
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(null);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(null);
 
     System.Assert.isNotNull(config);
     System.Assert.isNull(config.getSourceFields(), 'A null recipient should yield null source fields (meaning: use the notifier default)');
@@ -16,7 +16,7 @@ private class LoggerNotifiableConfiguration_Tests {
 
   @IsTest
   static void it_should_return_empty_config_when_json_is_blank() {
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(new LoggerNotificationRecipient__c());
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(new LoggerNotificationRecipient__c());
 
     System.Assert.isNull(config.getSourceFields());
   }
@@ -25,7 +25,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_empty_config_when_json_is_malformed() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = 'not json');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getSourceFields(), 'Malformed JSON should be swallowed and treated as no config');
   }
@@ -34,7 +34,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_empty_config_when_json_is_not_an_object() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '["just", "a", "list"]');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getSourceFields(), 'A JSON array (not an object) should be treated as no config');
   }
@@ -43,7 +43,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_null_source_fields_when_key_is_absent() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"someOtherKey": true}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getSourceFields(), 'A config without sourceFields should return null so notifiers know to use their default');
   }
@@ -54,7 +54,7 @@ private class LoggerNotifiableConfiguration_Tests {
       ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","Message__c","StackTrace__c"]}'
     );
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     List<String> fields = config.getSourceFields();
     System.Assert.areEqual(3, fields.size());
@@ -67,7 +67,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_empty_list_when_source_fields_key_is_present_but_empty() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":[]}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     List<String> fields = config.getSourceFields();
     System.Assert.isNotNull(fields, 'An explicit empty list is different from an absent key');
@@ -80,7 +80,7 @@ private class LoggerNotifiableConfiguration_Tests {
       ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","","Message__c",null,"   "]}'
     );
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     List<String> fields = config.getSourceFields();
     System.Assert.areEqual(2, fields.size(), 'Blanks and nulls should be dropped: ' + fields);
@@ -92,7 +92,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_null_when_source_fields_value_is_not_a_list() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":"LoggingLevel__c"}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getSourceFields(), 'A non-array sourceFields value should be treated as no config');
   }
@@ -101,7 +101,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_source_field_specs_for_bare_string_entries() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","Message__c"]}');
 
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs = LoggerNotifiableConfiguration.fromRecipient(recipient).getSourceFieldSpecs();
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = new LoggerNotifierConfiguration(recipient).getSourceFieldSpecs();
 
     System.Assert.areEqual(2, specs.size());
     System.Assert.areEqual('LoggingLevel__c', specs.get(0).field);
@@ -115,7 +115,7 @@ private class LoggerNotifiableConfiguration_Tests {
     String json = '{"sourceFields":[{"field":"Log__r.LoggedBy__c","displayField":"Log__r.LoggedBy__r.Username","displayLabel":"Logged By"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs = LoggerNotifiableConfiguration.fromRecipient(recipient).getSourceFieldSpecs();
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = new LoggerNotifierConfiguration(recipient).getSourceFieldSpecs();
 
     System.Assert.areEqual(1, specs.size());
     System.Assert.areEqual('Log__r.LoggedBy__c', specs.get(0).field);
@@ -128,7 +128,7 @@ private class LoggerNotifiableConfiguration_Tests {
     String json = '{"sourceFields":["LoggingLevel__c",{"field":"Message__c","displayLabel":"Body"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs = LoggerNotifiableConfiguration.fromRecipient(recipient).getSourceFieldSpecs();
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = new LoggerNotifierConfiguration(recipient).getSourceFieldSpecs();
 
     System.Assert.areEqual(2, specs.size());
     System.Assert.areEqual('LoggingLevel__c', specs.get(0).field);
@@ -142,7 +142,7 @@ private class LoggerNotifiableConfiguration_Tests {
     String json = '{"sourceFields":[{"displayField":"Log__r.Name"},{"field":"LoggingLevel__c"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs = LoggerNotifiableConfiguration.fromRecipient(recipient).getSourceFieldSpecs();
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = new LoggerNotifierConfiguration(recipient).getSourceFieldSpecs();
 
     System.Assert.areEqual(1, specs.size(), 'Entries without a `field` key should be silently dropped');
     System.Assert.areEqual('LoggingLevel__c', specs.get(0).field);
@@ -155,7 +155,7 @@ private class LoggerNotifiableConfiguration_Tests {
     String json = '{"sourceFields":[{"field":"LoggingLevel__c","displayField":"","displayLabel":"   "}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs = LoggerNotifiableConfiguration.fromRecipient(recipient).getSourceFieldSpecs();
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = new LoggerNotifierConfiguration(recipient).getSourceFieldSpecs();
 
     System.Assert.areEqual(1, specs.size());
     System.Assert.isNull(specs.get(0).displayField, 'Blank displayField should be treated as absent');
@@ -166,7 +166,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_null_from_get_string_when_key_is_absent() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"someOtherKey":"value"}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getString('missingKey'));
   }
@@ -177,7 +177,7 @@ private class LoggerNotifiableConfiguration_Tests {
       ConfigurationJson__c = '{"notificationTypeDeveloperName":"LoggerCustomNotification"}'
     );
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.areEqual('LoggerCustomNotification', config.getString('notificationTypeDeveloperName'));
   }
@@ -186,7 +186,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_null_from_get_string_when_value_is_blank_or_wrong_type() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"blank":"   ","number":42,"list":["value"]}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getString('blank'), 'Blank strings should be treated as absent');
     System.Assert.isNull(config.getString('number'), 'Non-string values should be treated as absent');
@@ -197,7 +197,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_null_from_get_string_list_when_key_is_absent() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"someOtherKey":"value"}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getStringList('missingKey'));
   }
@@ -206,7 +206,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_null_from_get_string_list_when_value_is_not_a_list() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"scalar":"value"}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isNull(config.getStringList('scalar'), 'A non-array value should be treated as absent');
   }
@@ -217,7 +217,7 @@ private class LoggerNotifiableConfiguration_Tests {
       ConfigurationJson__c = '{"recipientUserIds":["005000000000000001","",null,"005000000000000002","   "]}'
     );
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     List<String> values = config.getStringList('recipientUserIds');
     System.Assert.areEqual(2, values.size(), 'Blanks and nulls should be dropped: ' + values);
@@ -229,7 +229,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_an_empty_list_when_get_string_list_key_is_explicitly_empty() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"recipientUserIds":[]}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     List<String> values = config.getStringList('recipientUserIds');
     System.Assert.isNotNull(values, 'An explicit empty list is different from an absent key');
@@ -240,7 +240,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_return_the_default_value_from_get_boolean_when_key_is_absent() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"someOtherKey":"value"}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isTrue(config.getBoolean('missingKey', true));
     System.Assert.isFalse(config.getBoolean('missingKey', false));
@@ -252,7 +252,7 @@ private class LoggerNotifiableConfiguration_Tests {
       ConfigurationJson__c = '{"includeNullValues":true,"suppressAttachments":false}'
     );
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isTrue(config.getBoolean('includeNullValues', false), 'Explicit true should override the default');
     System.Assert.isFalse(config.getBoolean('suppressAttachments', true), 'Explicit false should override the default');
@@ -262,7 +262,7 @@ private class LoggerNotifiableConfiguration_Tests {
   static void it_should_fall_back_to_default_from_get_boolean_when_value_is_not_a_boolean() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"includeNullValues":"yes"}');
 
-    LoggerNotifiableConfiguration config = LoggerNotifiableConfiguration.fromRecipient(recipient);
+    LoggerNotifierConfiguration config = new LoggerNotifierConfiguration(recipient);
 
     System.Assert.isFalse(config.getBoolean('includeNullValues', false), 'A non-Boolean value should be treated as absent');
     System.Assert.isTrue(config.getBoolean('includeNullValues', true), 'A non-Boolean value should be treated as absent');
@@ -275,7 +275,7 @@ private class LoggerNotifiableConfiguration_Tests {
     String json = '{"sourceFields":["LoggingLevel__c",{"field":"Message__c","displayLabel":"Body"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
-    List<String> flat = LoggerNotifiableConfiguration.fromRecipient(recipient).getSourceFields();
+    List<String> flat = new LoggerNotifierConfiguration(recipient).getSourceFields();
 
     System.Assert.areEqual(new List<String>{ 'LoggingLevel__c', 'Message__c' }, flat);
   }

@@ -130,7 +130,7 @@
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>Join record inserted by the LoggerNotifier runtime each time a record matches a LoggerNotificationRule__c rule. The matched record's ID + SObject type are always stored in the generic MatchedRecordId__c / MatchedSObjectType__c fields, and additionally in a typed Lookup (LogEntry__c, Log__c, LoggerScenario__c, LogEntryTag__c) when the source SObject type has one. Powers the Total Matches rollup on the rule and the threshold-over-time count queries.</description>
+    <description>Join record inserted by the LoggerNotificationProcessor runtime each time a record matches a LoggerNotificationRule__c rule. The matched record's ID + SObject type are always stored in the generic MatchedRecordId__c / MatchedSObjectType__c fields, and additionally in a typed Lookup (LogEntry__c, Log__c, LoggerScenario__c, LogEntryTag__c) when the source SObject type has one. Powers the Total Matches rollup on the rule and the threshold-over-time count queries.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>

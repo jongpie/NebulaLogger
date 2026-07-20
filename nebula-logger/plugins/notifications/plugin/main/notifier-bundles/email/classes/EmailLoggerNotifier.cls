@@ -5,7 +5,7 @@
 
 /**
  * @group Plugins
- * @description Delivers a `LoggerNotifiableContext` to a Salesforce user or email address using
+ * @description Delivers a `LoggerNotifierRequest` to a Salesforce user or email address using
  *              `Messaging.SingleEmailMessage`. The recipient's `User__c` and/or
  *              `EmailAddress__c` fields determine the target.
  *
@@ -25,47 +25,47 @@
  *              Unknown tokens resolve to an empty string. A blank / all-blank template falls back
  *              to the default subject.
  */
-public without sharing class EmailLoggerNotifier implements LoggerNotifiable {
+public without sharing class EmailLoggerNotifier implements LoggerNotifier {
   private static final List<String> DEFAULT_SOURCE_FIELDS = new List<String>{ 'LoggingLevel__c', 'Origin__c', 'Message__c', 'StackTrace__c' };
   private static final String NULL_VALUE_PLACEHOLDER = '(empty)';
   private static final System.Pattern MERGE_TOKEN_PATTERN = System.Pattern.compile('\\{!([^{}]+)\\}');
 
   /**
-   * @description Called by `LoggerNotifierAsyncDispatcher`.
-   * @param context The rule + recipient + service + matching records to deliver.
+   * @description Called by `LoggerNotificationAsyncDispatcher`.
+   * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
-    if (context == null || context.recipient == null || context.matchingRecords == null || context.matchingRecords.isEmpty()) {
+  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs = context.config.getSourceFieldSpecs();
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
     if (specs == null) {
       specs = buildDefaultSpecs();
     }
-    Boolean includeNullValues = context.config.getBoolean('includeNullValues', false);
-    String subjectTemplate = context.config.getString('subjectTemplate');
+    Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
+    String subjectTemplate = request.configuration.getString('subjectTemplate');
 
-    Schema.SObjectType sourceType = context.matchingRecords.get(0).getSObjectType();
+    Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     List<String> hydrationPaths = collectHydrationPaths(specs, subjectTemplate, sourceType);
-    List<SObject> hydratedRecords = hydrateRecordsWithFieldPaths(context.matchingRecords, hydrationPaths);
+    List<SObject> hydratedRecords = hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
 
-    Messaging.SingleEmailMessage email = this.buildEmail(context, hydratedRecords, specs, includeNullValues, subjectTemplate);
+    Messaging.SingleEmailMessage email = this.buildEmail(request, hydratedRecords, specs, includeNullValues, subjectTemplate);
     if (email == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('EmailLoggerNotifier - recipient has neither User__c nor EmailAddress__c; skipping delivery');
       }
-      LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-      skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+      LoggerNotifierResult skipped = new LoggerNotifierResult();
+      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
       skipped.errorMessage = 'Recipient has neither User__c nor EmailAddress__c configured';
       return skipped;
     }
     List<Messaging.SendEmailResult> results = Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ email }, false);
-    LoggerNotifiableResult outcome = new LoggerNotifiableResult();
-    outcome.status = LoggerNotifiableResult.STATUS_DELIVERED;
+    LoggerNotifierResult outcome = new LoggerNotifierResult();
+    outcome.status = LoggerNotifierResult.STATUS_DELIVERED;
     List<String> errors = new List<String>();
     for (Messaging.SendEmailResult result : results) {
       if (result.isSuccess() == false) {
-        outcome.status = LoggerNotifiableResult.STATUS_FAILED;
+        outcome.status = LoggerNotifierResult.STATUS_FAILED;
         for (Messaging.SendEmailError err : result.getErrors()) {
           errors.add(err.getMessage());
         }
@@ -84,43 +84,43 @@ public without sharing class EmailLoggerNotifier implements LoggerNotifiable {
 
   @TestVisible
   private Messaging.SingleEmailMessage buildEmail(
-    LoggerNotifiableContext context,
+    LoggerNotifierRequest request,
     List<SObject> hydratedRecords,
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs,
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs,
     Boolean includeNullValues,
     String subjectTemplate
   ) {
     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
     Boolean targeted = false;
-    if (context.recipient.User__c != null) {
-      email.setTargetObjectId(context.recipient.User__c);
+    if (request.recipient.User__c != null) {
+      email.setTargetObjectId(request.recipient.User__c);
       email.setSaveAsActivity(false);
       targeted = true;
-    } else if (String.isNotBlank(context.recipient.EmailAddress__c)) {
-      email.setToAddresses(new List<String>{ context.recipient.EmailAddress__c });
+    } else if (String.isNotBlank(request.recipient.EmailAddress__c)) {
+      email.setToAddresses(new List<String>{ request.recipient.EmailAddress__c });
       targeted = true;
     }
     if (targeted == false) {
       return null;
     }
-    email.setSubject(this.buildSubject(context, hydratedRecords, subjectTemplate));
-    email.setPlainTextBody(this.buildBody(context, hydratedRecords, specs, includeNullValues));
+    email.setSubject(this.buildSubject(request, hydratedRecords, subjectTemplate));
+    email.setPlainTextBody(this.buildBody(request, hydratedRecords, specs, includeNullValues));
     return email;
   }
 
-  private String buildSubject(LoggerNotifiableContext context, List<SObject> hydratedRecords, String subjectTemplate) {
+  private String buildSubject(LoggerNotifierRequest request, List<SObject> hydratedRecords, String subjectTemplate) {
     if (String.isNotBlank(subjectTemplate)) {
-      String rendered = renderSubjectTemplate(subjectTemplate, context, hydratedRecords);
+      String rendered = renderSubjectTemplate(subjectTemplate, request, hydratedRecords);
       if (String.isNotBlank(rendered)) {
         return rendered;
       }
     }
-    Integer matchCount = context.matchingRecords.size();
+    Integer matchCount = request.matchingRecords.size();
     String recordLabel = matchCount == 1 ? 'log record' : 'log records';
-    return 'Nebula Logger: ' + matchCount + ' ' + recordLabel + ' matched ' + context.notificationRule.Name;
+    return 'Nebula Logger: ' + matchCount + ' ' + recordLabel + ' matched ' + request.notificationRule.Name;
   }
 
-  private static String renderSubjectTemplate(String template, LoggerNotifiableContext context, List<SObject> hydratedRecords) {
+  private static String renderSubjectTemplate(String template, LoggerNotifierRequest request, List<SObject> hydratedRecords) {
     SObject firstRecord = hydratedRecords.isEmpty() ? null : hydratedRecords.get(0);
     System.Matcher matcher = MERGE_TOKEN_PATTERN.matcher(template);
     List<String> segments = new List<String>();
@@ -128,22 +128,22 @@ public without sharing class EmailLoggerNotifier implements LoggerNotifiable {
     while (matcher.find()) {
       segments.add(template.substring(cursor, matcher.start()));
       String tokenName = matcher.group(1).trim();
-      segments.add(resolveSubjectToken(tokenName, context, firstRecord));
+      segments.add(resolveSubjectToken(tokenName, request, firstRecord));
       cursor = matcher.end();
     }
     segments.add(template.substring(cursor));
     return String.join(segments, '');
   }
 
-  private static String resolveSubjectToken(String tokenName, LoggerNotifiableContext context, SObject firstRecord) {
+  private static String resolveSubjectToken(String tokenName, LoggerNotifierRequest request, SObject firstRecord) {
     if (String.isBlank(tokenName)) {
       return '';
     }
     if (tokenName.equalsIgnoreCase('ruleName')) {
-      return context.notificationRule == null || context.notificationRule.Name == null ? '' : context.notificationRule.Name;
+      return request.notificationRule == null || request.notificationRule.Name == null ? '' : request.notificationRule.Name;
     }
     if (tokenName.equalsIgnoreCase('matchCount')) {
-      return String.valueOf(context.matchingRecords.size());
+      return String.valueOf(request.matchingRecords.size());
     }
     if (firstRecord == null) {
       return '';
@@ -153,23 +153,23 @@ public without sharing class EmailLoggerNotifier implements LoggerNotifiable {
   }
 
   private String buildBody(
-    LoggerNotifiableContext context,
+    LoggerNotifierRequest request,
     List<SObject> hydratedRecords,
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs,
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs,
     Boolean includeNullValues
   ) {
     List<String> lines = new List<String>();
-    lines.add('Rule: ' + context.notificationRule.Name);
-    if (String.isNotBlank(context.notificationRule.SourceSObjectFilter__c)) {
-      lines.add('Filter: ' + context.notificationRule.SourceSObjectFilter__c);
+    lines.add('Rule: ' + request.notificationRule.Name);
+    if (String.isNotBlank(request.notificationRule.SourceSObjectFilter__c)) {
+      lines.add('Filter: ' + request.notificationRule.SourceSObjectFilter__c);
     }
-    lines.add('Matching records: ' + context.matchingRecords.size());
+    lines.add('Matching records: ' + request.matchingRecords.size());
     lines.add('');
     Schema.SObjectType sourceType = hydratedRecords.get(0).getSObjectType();
     Integer index = 1;
     for (SObject record : hydratedRecords) {
       lines.add('--- Record ' + index + ' ---');
-      for (LoggerNotifiableConfiguration.SourceFieldSpec spec : specs) {
+      for (LoggerNotifierConfiguration.SourceFieldSpec spec : specs) {
         String rendered = renderField(record, sourceType, spec, includeNullValues);
         if (rendered != null) {
           lines.add(rendered);
@@ -188,7 +188,7 @@ public without sharing class EmailLoggerNotifier implements LoggerNotifiable {
   private static String renderField(
     SObject record,
     Schema.SObjectType sourceType,
-    LoggerNotifiableConfiguration.SourceFieldSpec spec,
+    LoggerNotifierConfiguration.SourceFieldSpec spec,
     Boolean includeNullValues
   ) {
     Schema.DescribeFieldResult primaryDescribe = getDescribeByPath(sourceType, spec.field);
@@ -207,21 +207,21 @@ public without sharing class EmailLoggerNotifier implements LoggerNotifiable {
     return label + ': ' + String.valueOf(rawValue);
   }
 
-  private static List<LoggerNotifiableConfiguration.SourceFieldSpec> buildDefaultSpecs() {
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> defaults = new List<LoggerNotifiableConfiguration.SourceFieldSpec>();
+  private static List<LoggerNotifierConfiguration.SourceFieldSpec> buildDefaultSpecs() {
+    List<LoggerNotifierConfiguration.SourceFieldSpec> defaults = new List<LoggerNotifierConfiguration.SourceFieldSpec>();
     for (String fieldName : DEFAULT_SOURCE_FIELDS) {
-      defaults.add(new LoggerNotifiableConfiguration.SourceFieldSpec(fieldName, null, null));
+      defaults.add(new LoggerNotifierConfiguration.SourceFieldSpec(fieldName, null, null));
     }
     return defaults;
   }
 
   private static List<String> collectHydrationPaths(
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs,
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs,
     String subjectTemplate,
     Schema.SObjectType sourceType
   ) {
     Set<String> pathSet = new Set<String>();
-    for (LoggerNotifiableConfiguration.SourceFieldSpec spec : specs) {
+    for (LoggerNotifierConfiguration.SourceFieldSpec spec : specs) {
       if (String.isNotBlank(spec.field)) {
         pathSet.add(spec.field);
       }

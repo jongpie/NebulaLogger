@@ -5,7 +5,7 @@
 
 /**
  * @group Plugins
- * @description Delivers a `LoggerNotifiableContext` to any HTTP endpoint as a canonical JSON envelope.
+ * @description Delivers a `LoggerNotifierRequest` to any HTTP endpoint as a canonical JSON envelope.
  *              Useful for wiring log notifications to Zapier / Make / n8n / Discord / any internal
  *              service without writing a service-specific notifier.
  *
@@ -17,46 +17,46 @@
  *                  "path": "/optional/suffix/appended/to/named/credential/endpoint"
  *                }
  */
-public without sharing class GenericWebhookLoggerNotifier implements LoggerNotifiable {
+public without sharing class GenericWebhookLoggerNotifier implements LoggerNotifier {
   private static final String DEFAULT_METHOD = 'POST';
 
   /**
-   * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
-   * @param context The rule + recipient + service + matching records to deliver.
+   * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
+   * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
-    if (context == null || context.recipient == null || context.matchingRecords == null || context.matchingRecords.isEmpty()) {
+  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
-    System.HttpRequest request = this.buildRequest(context);
-    if (request == null) {
+    System.HttpRequest httpRequest = this.buildRequest(request);
+    if (httpRequest == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('GenericWebhookLoggerNotifier - service has neither Webhook URL nor Named Credential; skipping');
       }
-      LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-      skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+      LoggerNotifierResult skipped = new LoggerNotifierResult();
+      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
       skipped.errorMessage = 'Service has neither Webhook URL nor Named Credential configured';
       return skipped;
     }
-    request.setBody(this.buildPayload(context));
+    httpRequest.setBody(this.buildPayload(request));
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.finest('GenericWebhookLoggerNotifier - sending payload').setHttpRequestDetails(request);
+      Logger.finest('GenericWebhookLoggerNotifier - sending payload').setHttpRequestDetails(httpRequest);
     }
-    System.HttpResponse response = new System.Http().send(request);
+    System.HttpResponse response = new System.Http().send(httpRequest);
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('GenericWebhookLoggerNotifier - response received').setHttpResponseDetails(response);
     }
     // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
     // Logger.saveLog();
-    return LoggerNotifiableResult.fromHttpRequestAndResponse(request, response, this.collectHeaderNames(context));
+    return new LoggerNotifierResult(httpRequest, response, this.collectHeaderNames(request));
   }
 
-  private List<String> collectHeaderNames(LoggerNotifiableContext context) {
+  private List<String> collectHeaderNames(LoggerNotifierRequest request) {
     // Apex HttpRequest offers no getHeaderKeys(), so the notifier has to hand every header name it set
     // to the runtime for capture. Start with the notifier's own Content-Type + any admin-configured
     // header names read from the same JSON blob that buildRequest already parsed.
     List<String> names = new List<String>{ 'Content-Type' };
-    Map<String, Object> config = this.parseConfiguration(context.recipient.ConfigurationJson__c);
+    Map<String, Object> config = this.parseConfiguration(request.recipient.ConfigurationJson__c);
     Object headersRaw = config.get('headers');
     if (headersRaw instanceof Map<String, Object>) {
       names.addAll(((Map<String, Object>) headersRaw).keySet());
@@ -65,24 +65,23 @@ public without sharing class GenericWebhookLoggerNotifier implements LoggerNotif
   }
 
   @TestVisible
-  private System.HttpRequest buildRequest(LoggerNotifiableContext context) {
-    Map<String, Object> config = this.parseConfiguration(context.recipient.ConfigurationJson__c);
-    String endpoint = this.resolveEndpoint(context.service, config);
+  private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
+    Map<String, Object> config = this.parseConfiguration(request.recipient.ConfigurationJson__c);
+    String endpoint = this.resolveEndpoint(request.service, config);
     if (String.isBlank(endpoint)) {
       return null;
     }
-    System.HttpRequest request = new System.HttpRequest();
-    request.setEndpoint(endpoint);
-    request.setMethod(this.resolveMethod(config));
-    request.setHeader('Content-Type', 'application/json');
+    System.HttpRequest httpRequest = new System.HttpRequest();
+    httpRequest.setEndpoint(endpoint);
+    httpRequest.setMethod(this.resolveMethod(config));
+    httpRequest.setHeader('Content-Type', 'application/json');
     Object headersRaw = config.get('headers');
     if (headersRaw instanceof Map<String, Object>) {
       for (String headerName : ((Map<String, Object>) headersRaw).keySet()) {
-        request.setHeader(headerName, String.valueOf(((Map<String, Object>) headersRaw).get(headerName)));
+        httpRequest.setHeader(headerName, String.valueOf(((Map<String, Object>) headersRaw).get(headerName)));
       }
     }
-    return request;
-  }
+    return httpRequest;  }
 
   private String resolveEndpoint(LoggerNotificationService__c service, Map<String, Object> config) {
     if (String.isNotBlank(service.NamedCredentialDeveloperName__c)) {
@@ -108,17 +107,17 @@ public without sharing class GenericWebhookLoggerNotifier implements LoggerNotif
   }
 
   @TestVisible
-  private String buildPayload(LoggerNotifiableContext context) {
+  private String buildPayload(LoggerNotifierRequest request) {
     Map<String, Object> envelope = new Map<String, Object>();
     envelope.put('organizationId', System.UserInfo.getOrganizationId());
-    envelope.put('ruleName', context.notificationRule.Name);
-    envelope.put('ruleId', context.notificationRule.Id);
-    envelope.put('ruleFilter', context.notificationRule.SourceSObjectFilter__c);
-    envelope.put('serviceName', context.service?.Name);
-    envelope.put('channelIdentifier', context.recipient.ChannelIdentifier__c);
-    envelope.put('matchCount', context.matchingRecords.size());
+    envelope.put('ruleName', request.notificationRule.Name);
+    envelope.put('ruleId', request.notificationRule.Id);
+    envelope.put('ruleFilter', request.notificationRule.SourceSObjectFilter__c);
+    envelope.put('serviceName', request.service?.Name);
+    envelope.put('channelIdentifier', request.recipient.ChannelIdentifier__c);
+    envelope.put('matchCount', request.matchingRecords.size());
     List<Map<String, Object>> records = new List<Map<String, Object>>();
-    for (SObject record : context.matchingRecords) {
+    for (SObject record : request.matchingRecords) {
       records.add(record.getPopulatedFieldsAsMap());
     }
     envelope.put('matchingRecords', records);

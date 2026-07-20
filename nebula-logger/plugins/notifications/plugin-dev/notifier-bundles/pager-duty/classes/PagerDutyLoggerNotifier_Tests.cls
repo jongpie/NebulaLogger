@@ -14,7 +14,7 @@ private class PagerDutyLoggerNotifier_Tests {
 
     notifier.sendNotification(null);
     notifier.sendNotification(
-      new LoggerNotifiableContext(
+      new LoggerNotifierRequest(
         new LoggerNotificationRule__c(),
         new LoggerNotificationRecipient__c(),
         new LoggerNotificationService__c(),
@@ -30,9 +30,9 @@ private class PagerDutyLoggerNotifier_Tests {
     PagerDutyLoggerNotifier notifier = new PagerDutyLoggerNotifier();
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(202);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(null, null, new LoggerNotificationRecipient__c());
+    LoggerNotifierRequest request = buildRequest(null, null, new LoggerNotificationRecipient__c());
 
-    notifier.sendNotification(context);
+    notifier.sendNotification(request);
 
     System.Assert.isNull(calloutMock.request, 'No callout should be made without a routing key');
   }
@@ -42,9 +42,9 @@ private class PagerDutyLoggerNotifier_Tests {
     PagerDutyLoggerNotifier notifier = new PagerDutyLoggerNotifier();
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(202);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(null, null, new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"routingKey": "abc123"}'));
+    LoggerNotifierRequest request = buildRequest(null, null, new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"routingKey": "abc123"}'));
 
-    notifier.sendNotification(context);
+    notifier.sendNotification(request);
 
     System.Assert.areEqual(PagerDutyLoggerNotifier.DEFAULT_ENDPOINT, calloutMock.request.getEndpoint());
     System.Assert.areEqual('POST', calloutMock.request.getMethod());
@@ -60,13 +60,13 @@ private class PagerDutyLoggerNotifier_Tests {
     PagerDutyLoggerNotifier notifier = new PagerDutyLoggerNotifier();
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(202);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(
+    LoggerNotifierRequest request = buildRequest(
       'https://proxy.example.com/pd',
       null,
       new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"routingKey": "abc"}')
     );
 
-    notifier.sendNotification(context);
+    notifier.sendNotification(request);
 
     System.Assert.areEqual('https://proxy.example.com/pd', calloutMock.request.getEndpoint());
   }
@@ -76,9 +76,9 @@ private class PagerDutyLoggerNotifier_Tests {
     PagerDutyLoggerNotifier notifier = new PagerDutyLoggerNotifier();
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(202);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(null, 'PagerDutyEvents', new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"routingKey": "abc"}'));
+    LoggerNotifierRequest request = buildRequest(null, 'PagerDutyEvents', new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"routingKey": "abc"}'));
 
-    notifier.sendNotification(context);
+    notifier.sendNotification(request);
 
     System.Assert.areEqual('callout:PagerDutyEvents/v2/enqueue', calloutMock.request.getEndpoint());
   }
@@ -105,14 +105,14 @@ private class PagerDutyLoggerNotifier_Tests {
     Id entryId = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType);
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Id = ruleId, Name = 'r');
     List<SObject> records = new List<SObject>{ new LogEntry__c(Id = entryId, LoggingLevel__c = 'ERROR') };
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       rule,
       new LoggerNotificationRecipient__c(),
       new LoggerNotificationService__c(Name = 'pd'),
       records
     );
 
-    String key = notifier.buildDedupKey(context);
+    String key = notifier.buildDedupKey(request);
 
     System.Assert.isTrue(key.startsWith('nebula-logger:'));
     System.Assert.isTrue(key.contains(String.valueOf(ruleId)));
@@ -124,13 +124,13 @@ private class PagerDutyLoggerNotifier_Tests {
     PagerDutyLoggerNotifier notifier = new PagerDutyLoggerNotifier();
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(202);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(
+    LoggerNotifierRequest request = buildRequest(
       null,
       null,
       new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"routingKey": "abc", "eventAction": "resolve"}')
     );
 
-    notifier.sendNotification(context);
+    notifier.sendNotification(request);
 
     System.Assert.isTrue(calloutMock.request.getBody().contains('"resolve"'), 'Body should include the custom event_action');
   }
@@ -138,9 +138,9 @@ private class PagerDutyLoggerNotifier_Tests {
   @IsTest
   static void it_should_include_summary_severity_source_and_customDetails_in_payload() {
     PagerDutyLoggerNotifier notifier = new PagerDutyLoggerNotifier();
-    LoggerNotifiableContext context = buildContext(null, null, new LoggerNotificationRecipient__c());
+    LoggerNotifierRequest request = buildRequest(null, null, new LoggerNotificationRecipient__c());
 
-    String payload = notifier.buildPayload(context, 'abc', null);
+    String payload = notifier.buildPayload(request, 'abc', null);
 
     System.Assert.isTrue(payload.contains('"summary"'));
     System.Assert.isTrue(payload.contains('"severity"'));
@@ -151,7 +151,7 @@ private class PagerDutyLoggerNotifier_Tests {
     System.Assert.isTrue(payload.contains('Nebula Logger'));
   }
 
-  private static LoggerNotifiableContext buildContext(String webhookUrl, String namedCredentialDeveloperName, LoggerNotificationRecipient__c recipient) {
+  private static LoggerNotifierRequest buildRequest(String webhookUrl, String namedCredentialDeveloperName, LoggerNotificationRecipient__c recipient) {
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
       Name = 'Prod ERROR alerts',
       SourceSObjectType__c = 'LogEntry__c',
@@ -165,6 +165,6 @@ private class PagerDutyLoggerNotifier_Tests {
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
-    return new LoggerNotifiableContext(rule, recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(rule, recipient, service, matchingRecords);
   }
 }

@@ -5,7 +5,7 @@
 
 /**
  * @group Plugins
- * @description Delivers a `LoggerNotifiableContext` to PagerDuty via the Events API v2.
+ * @description Delivers a `LoggerNotifierRequest` to PagerDuty via the Events API v2.
  *              Endpoint defaults to `https://events.pagerduty.com/v2/enqueue`, or the recipient's
  *              `WebhookUrl__c`, or `callout:<NamedCredentialDeveloperName__c>/v2/enqueue` if set.
  *
@@ -15,99 +15,98 @@
  *                  "eventAction": "trigger" | "acknowledge" | "resolve"  // default "trigger"
  *                }
  */
-public without sharing class PagerDutyLoggerNotifier implements LoggerNotifiable {
+public without sharing class PagerDutyLoggerNotifier implements LoggerNotifier {
   @TestVisible
   private static final String DEFAULT_ENDPOINT = 'https://events.pagerduty.com/v2/enqueue';
   private static final String DEFAULT_EVENT_ACTION = 'trigger';
 
   /**
-   * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
-   * @param context The rule + recipient + service + matching records to deliver.
+   * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
+   * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
-    if (context == null || context.recipient == null || context.matchingRecords == null || context.matchingRecords.isEmpty()) {
+  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
-    Map<String, Object> config = this.parseConfiguration(context.recipient.ConfigurationJson__c);
+    Map<String, Object> config = this.parseConfiguration(request.recipient.ConfigurationJson__c);
     String routingKey = this.tryGetConfigString(config, 'routingKey');
     if (String.isBlank(routingKey)) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('PagerDutyLoggerNotifier - ConfigurationJson__c must set routingKey; skipping');
       }
-      LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-      skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+      LoggerNotifierResult skipped = new LoggerNotifierResult();
+      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
       skipped.errorMessage = 'routingKey missing from ConfigurationJson__c';
       return skipped;
     }
-    System.HttpRequest request = this.buildRequest(context);
-    request.setBody(this.buildPayload(context, routingKey, this.tryGetConfigString(config, 'eventAction')));
+    System.HttpRequest httpRequest = this.buildRequest(request);
+    httpRequest.setBody(this.buildPayload(request, routingKey, this.tryGetConfigString(config, 'eventAction')));
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.finest('PagerDutyLoggerNotifier - sending Events API v2 payload').setHttpRequestDetails(request);
+      Logger.finest('PagerDutyLoggerNotifier - sending Events API v2 payload').setHttpRequestDetails(httpRequest);
     }
-    System.HttpResponse response = new System.Http().send(request);
+    System.HttpResponse response = new System.Http().send(httpRequest);
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('PagerDutyLoggerNotifier - response received').setHttpResponseDetails(response);
     }
     // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
     // Logger.saveLog();
-    return LoggerNotifiableResult.fromHttpRequestAndResponse(request, response, new List<String>{ 'Content-Type', 'Accept' });
+    return new LoggerNotifierResult(httpRequest, response, new List<String>{ 'Content-Type', 'Accept' });
   }
 
   @TestVisible
-  private System.HttpRequest buildRequest(LoggerNotifiableContext context) {
+  private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(context.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + context.service.NamedCredentialDeveloperName__c + '/v2/enqueue';
-    } else if (String.isNotBlank(context.service.WebhookUrl__c)) {
-      endpoint = context.service.WebhookUrl__c;
+    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c + '/v2/enqueue';
+    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
+      endpoint = request.service.WebhookUrl__c;
     } else {
       endpoint = DEFAULT_ENDPOINT;
     }
-    System.HttpRequest request = new System.HttpRequest();
-    request.setEndpoint(endpoint);
-    request.setMethod('POST');
-    request.setHeader('Content-Type', 'application/json');
-    request.setHeader('Accept', 'application/json');
-    return request;
-  }
+    System.HttpRequest httpRequest = new System.HttpRequest();
+    httpRequest.setEndpoint(endpoint);
+    httpRequest.setMethod('POST');
+    httpRequest.setHeader('Content-Type', 'application/json');
+    httpRequest.setHeader('Accept', 'application/json');
+    return httpRequest;  }
 
   @TestVisible
-  private String buildPayload(LoggerNotifiableContext context, String routingKey, String eventAction) {
+  private String buildPayload(LoggerNotifierRequest request, String routingKey, String eventAction) {
     Map<String, Object> envelope = new Map<String, Object>();
     envelope.put('routing_key', routingKey);
     envelope.put('event_action', String.isNotBlank(eventAction) ? eventAction : DEFAULT_EVENT_ACTION);
-    envelope.put('dedup_key', this.buildDedupKey(context));
-    envelope.put('payload', this.buildEventPayload(context));
-    envelope.put('links', this.buildLinks(context));
+    envelope.put('dedup_key', this.buildDedupKey(request));
+    envelope.put('payload', this.buildEventPayload(request));
+    envelope.put('links', this.buildLinks(request));
     return System.JSON.serialize(envelope, true);
   }
 
   @TestVisible
-  private String buildDedupKey(LoggerNotifiableContext context) {
-    Id firstMatchId = this.firstRecordIdOrNull(context.matchingRecords);
-    String rulePart = context.notificationRule.Id != null ? String.valueOf(context.notificationRule.Id) : context.notificationRule.Name;
-    String recordPart = firstMatchId != null ? String.valueOf(firstMatchId) : String.valueOf(context.matchingRecords.size());
+  private String buildDedupKey(LoggerNotifierRequest request) {
+    Id firstMatchId = this.firstRecordIdOrNull(request.matchingRecords);
+    String rulePart = request.notificationRule.Id != null ? String.valueOf(request.notificationRule.Id) : request.notificationRule.Name;
+    String recordPart = firstMatchId != null ? String.valueOf(firstMatchId) : String.valueOf(request.matchingRecords.size());
     return 'nebula-logger:' + rulePart + ':' + recordPart;
   }
 
-  private Map<String, Object> buildEventPayload(LoggerNotifiableContext context) {
+  private Map<String, Object> buildEventPayload(LoggerNotifierRequest request) {
     Map<String, Object> payload = new Map<String, Object>();
-    payload.put('summary', this.buildSummary(context));
-    payload.put('severity', this.severityFor(context.matchingRecords));
+    payload.put('summary', this.buildSummary(request));
+    payload.put('severity', this.severityFor(request.matchingRecords));
     payload.put('source', this.buildSource());
     payload.put('component', 'nebula-logger');
-    payload.put('group', context.notificationRule.Name);
-    payload.put('class', context.service?.Name);
-    payload.put('custom_details', this.buildCustomDetails(context));
+    payload.put('group', request.notificationRule.Name);
+    payload.put('class', request.service?.Name);
+    payload.put('custom_details', this.buildCustomDetails(request));
     return payload;
   }
 
   @TestVisible
-  private String buildSummary(LoggerNotifiableContext context) {
-    Integer matchCount = context.matchingRecords.size();
+  private String buildSummary(LoggerNotifierRequest request) {
+    Integer matchCount = request.matchingRecords.size();
     String noun = matchCount == 1 ? 'record' : 'records';
-    String base = 'Nebula Logger: ' + context.notificationRule.Name + ' - ' + matchCount + ' ' + noun + ' matched';
-    SObject first = context.matchingRecords.get(0);
+    String base = 'Nebula Logger: ' + request.notificationRule.Name + ' - ' + matchCount + ' ' + noun + ' matched';
+    SObject first = request.matchingRecords.get(0);
     String firstMessage = this.tryGetString(first, 'Message__c');
     if (String.isNotBlank(firstMessage)) {
       return this.truncate(base + ' - ' + firstMessage, 1024);
@@ -140,14 +139,14 @@ public without sharing class PagerDutyLoggerNotifier implements LoggerNotifiable
     return 'salesforce:' + System.UserInfo.getOrganizationId();
   }
 
-  private Map<String, Object> buildCustomDetails(LoggerNotifiableContext context) {
+  private Map<String, Object> buildCustomDetails(LoggerNotifierRequest request) {
     Map<String, Object> details = new Map<String, Object>();
-    details.put('rule', context.notificationRule.Name);
-    details.put('ruleId', context.notificationRule.Id);
-    details.put('filter', context.notificationRule.SourceSObjectFilter__c);
-    details.put('matchCount', context.matchingRecords.size());
+    details.put('rule', request.notificationRule.Name);
+    details.put('ruleId', request.notificationRule.Id);
+    details.put('filter', request.notificationRule.SourceSObjectFilter__c);
+    details.put('matchCount', request.matchingRecords.size());
     List<Map<String, Object>> recordSummaries = new List<Map<String, Object>>();
-    for (SObject record : context.matchingRecords) {
+    for (SObject record : request.matchingRecords) {
       Map<String, Object> summary = new Map<String, Object>();
       Id recordId = (Id) record.get('Id');
       if (recordId != null) {
@@ -167,9 +166,9 @@ public without sharing class PagerDutyLoggerNotifier implements LoggerNotifiable
     return details;
   }
 
-  private List<Map<String, Object>> buildLinks(LoggerNotifiableContext context) {
+  private List<Map<String, Object>> buildLinks(LoggerNotifierRequest request) {
     List<Map<String, Object>> links = new List<Map<String, Object>>();
-    for (SObject record : context.matchingRecords) {
+    for (SObject record : request.matchingRecords) {
       Id recordId = (Id) record.get('Id');
       if (recordId == null) {
         continue;

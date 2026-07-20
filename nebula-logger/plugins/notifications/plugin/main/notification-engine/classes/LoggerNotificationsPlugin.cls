@@ -9,7 +9,7 @@
  *              `LoggerPlugin.LoggerNotifications` CMDT. Fires on AFTER_INSERT for LogEntry__c,
  *              Log__c, LoggerScenario__c, LogEntryTag__c, and LoggerTag__c; each rule opts into
  *              one source SObject type via its SourceSObjectType__c value. Delegates the actual
- *              evaluation and dispatch work to `LoggerNotifier`.
+ *              evaluation and dispatch work to `LoggerNotificationProcessor`.
  *
  *              Also implements `LoggerPlugin.Purgeable` so `LogBatchPurger` picks up
  *              `LoggerNotificationMatch__c` and `LoggerNotificationDelivery__c` and cleans up rows
@@ -28,12 +28,12 @@ public without sharing class LoggerNotificationsPlugin implements LoggerPlugin.T
   };
 
   @TestVisible
-  private static LoggerNotifier notifierOverride;
+  private static LoggerNotificationProcessor notifierOverride;
 
   /**
    * @description Handles the plugin trigger callback from `LoggerSObjectHandler`.
    * @param configuration The `LoggerPlugin__mdt` record that registered this plugin. Unused today but required by the interface.
-   * @param input The trigger context provided by the core framework.
+   * @param input The trigger request provided by the core framework.
    */
   public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
     if (input == null || input.triggerNew == null || input.triggerNew.isEmpty()) {
@@ -47,7 +47,7 @@ public without sharing class LoggerNotificationsPlugin implements LoggerPlugin.T
     if (SUPPORTED_SOURCE_TYPES.contains(input.sobjectType) == false) {
       return;
     }
-    LoggerNotifier notifier = notifierOverride != null ? notifierOverride : new LoggerNotifier();
+    LoggerNotificationProcessor notifier = notifierOverride != null ? notifierOverride : new LoggerNotificationProcessor();
     notifier.sendNotifications(input.sobjectType, input.triggerNew);
   }
 

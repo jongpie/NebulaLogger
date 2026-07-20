@@ -5,7 +5,7 @@
 
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
-private class LoggerNotifiableContext_Tests {
+private class LoggerNotifierRequest_Tests {
   @IsTest
   static void it_should_expose_all_constructor_arguments_as_readonly_properties() {
     LoggerNotificationService__c service = new LoggerNotificationService__c(
@@ -17,38 +17,38 @@ private class LoggerNotifiableContext_Tests {
     LoggerNotificationRule__c notificationRule = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c() };
 
-    LoggerNotifiableContext context = new LoggerNotifiableContext(notificationRule, recipient, service, matchingRecords);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(notificationRule, recipient, service, matchingRecords);
 
-    System.Assert.areEqual(notificationRule, context.notificationRule);
-    System.Assert.areEqual(recipient, context.recipient);
-    System.Assert.areEqual(service, context.service);
-    System.Assert.areEqual(matchingRecords, context.matchingRecords);
-    System.Assert.areEqual(1, context.matchingRecords.size());
+    System.Assert.areEqual(notificationRule, request.notificationRule);
+    System.Assert.areEqual(recipient, request.recipient);
+    System.Assert.areEqual(service, request.service);
+    System.Assert.areEqual(matchingRecords, request.matchingRecords);
+    System.Assert.areEqual(1, request.matchingRecords.size());
   }
 
   @IsTest
-  static void it_should_support_being_consumed_by_a_LoggerNotifiable_implementation() {
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+  static void it_should_support_being_consumed_by_a_LoggerNotifier_implementation() {
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       new LoggerNotificationRule__c(),
       new LoggerNotificationRecipient__c(),
       new LoggerNotificationService__c(),
       new List<SObject>()
     );
-    LocalMockNotifiable mockNotifier = new LocalMockNotifiable();
+    LocalMockNotifier mockNotifier = new LocalMockNotifier();
 
-    mockNotifier.sendNotification(context);
+    mockNotifier.sendNotification(request);
 
     System.Assert.areEqual(1, mockNotifier.invocationCount);
-    System.Assert.areEqual(context, mockNotifier.lastContext);
+    System.Assert.areEqual(request, mockNotifier.lastRequest);
   }
 
-  private class LocalMockNotifiable implements LoggerNotifiable {
+  private class LocalMockNotifier implements LoggerNotifier {
     public Integer invocationCount = 0;
-    public LoggerNotifiableContext lastContext;
+    public LoggerNotifierRequest lastRequest;
 
-    public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
+    public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
       this.invocationCount++;
-      this.lastContext = context;
+      this.lastRequest = request;
       return null;
     }
   }

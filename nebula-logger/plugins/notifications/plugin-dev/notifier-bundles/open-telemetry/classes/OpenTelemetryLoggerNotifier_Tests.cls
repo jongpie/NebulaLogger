@@ -14,7 +14,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
 
     notifier.sendNotification(null);
     notifier.sendNotification(
-      new LoggerNotifiableContext(
+      new LoggerNotifierRequest(
         new LoggerNotificationRule__c(),
         new LoggerNotificationRecipient__c(),
         new LoggerNotificationService__c(),
@@ -31,7 +31,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext(null, null, new LoggerNotificationRecipient__c()));
+    notifier.sendNotification(buildRequest(null, null, new LoggerNotificationRecipient__c()));
 
     System.Assert.isNull(calloutMock.request);
   }
@@ -42,7 +42,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext(null, 'DatadogOtel', new LoggerNotificationRecipient__c()));
+    notifier.sendNotification(buildRequest(null, 'DatadogOtel', new LoggerNotificationRecipient__c()));
 
     System.Assert.areEqual('callout:DatadogOtel/v1/logs', calloutMock.request.getEndpoint());
     System.Assert.areEqual('POST', calloutMock.request.getMethod());
@@ -55,7 +55,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext('https://otel.example.com/v1/logs', null, new LoggerNotificationRecipient__c()));
+    notifier.sendNotification(buildRequest('https://otel.example.com/v1/logs', null, new LoggerNotificationRecipient__c()));
 
     System.Assert.areEqual(
       'https://otel.example.com/v1/logs',
@@ -71,7 +71,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"headers": {"DD-API-KEY": "abc123"}}');
 
-    notifier.sendNotification(buildContext(null, 'DatadogOtel', recipient));
+    notifier.sendNotification(buildRequest(null, 'DatadogOtel', recipient));
 
     System.Assert.areEqual('abc123', calloutMock.request.getHeader('DD-API-KEY'));
   }
@@ -84,7 +84,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
     );
 
     String payload = notifier.buildPayload(
-      buildContext(null, 'DatadogOtel', recipient),
+      buildRequest(null, 'DatadogOtel', recipient),
       new Map<String, Object>{ 'resourceAttributes' => new Map<String, Object>{ 'service.name' => 'my-service', 'deployment.environment' => 'prod' } }
     );
 
@@ -111,7 +111,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
     OpenTelemetryLoggerNotifier notifier = new OpenTelemetryLoggerNotifier();
 
     String payload = notifier.buildPayload(
-      buildContext('https://otel.example.com/v1/logs', null, new LoggerNotificationRecipient__c()),
+      buildRequest('https://otel.example.com/v1/logs', null, new LoggerNotificationRecipient__c()),
       new Map<String, Object>()
     );
 
@@ -123,7 +123,7 @@ private class OpenTelemetryLoggerNotifier_Tests {
     System.Assert.isTrue(payload.contains('"nebula-logger"'), 'Payload should include the scope name');
   }
 
-  private static LoggerNotifiableContext buildContext(String webhookUrl, String namedCredentialDeveloperName, LoggerNotificationRecipient__c recipient) {
+  private static LoggerNotifierRequest buildRequest(String webhookUrl, String namedCredentialDeveloperName, LoggerNotificationRecipient__c recipient) {
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
       Name = 'Test rule',
       SourceSObjectType__c = 'LogEntry__c',
@@ -137,6 +137,6 @@ private class OpenTelemetryLoggerNotifier_Tests {
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
-    return new LoggerNotifiableContext(rule, recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(rule, recipient, service, matchingRecords);
   }
 }
