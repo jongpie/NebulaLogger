@@ -192,6 +192,30 @@ private class SlackLoggerPlugin_Tests {
     System.Assert.areEqual(SlackLoggerPlugin.NOTIFICATION_COLOR_GREEN, slackNotification.attachments.get(0).color);
   }
 
+  @IsTest
+  static void it_should_not_enqueue_a_duplicate_job_when_the_log_already_has_a_slack_notification_date() {
+    // Regression test for issue #999: a Log__c that has already been notified (SlackNotificationDate__c populated)
+    // should not enqueue another Queueable when the trigger fires again (e.g. from a subsequent AFTER_UPDATE).
+    System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.ERROR;
+    LoggerPlugin__mdt pluginConfiguration = mockConfigurations(logEntryLoggingLevel);
+    List<Log__c> logs = insertLogAndLogEntry(logEntryLoggingLevel, true);
+    LoggerSObjectHandler.shouldExecute(false);
+    logs.get(0).SlackNotificationDate__c = System.now();
+    update logs;
+    LoggerSObjectHandler.shouldExecute(true);
+    LoggerTriggerableContext context = mockContext(System.TriggerOperation.AFTER_UPDATE, logs);
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    System.Test.startTest();
+    SlackLoggerPlugin plugin = new SlackLoggerPlugin();
+    plugin.execute(pluginConfiguration, context);
+    System.Assert.areEqual(0, System.Limits.getAsyncCalls(), 'No queueable should have been enqueued for an already-notified log');
+    System.Test.stopTest();
+
+    System.Assert.isNull(calloutMock.request, 'No Slack callout should have been made for an already-notified log');
+  }
+
   private static LoggerPlugin__mdt mockConfigurations(System.LoggingLevel notificationLoggingLevel) {
     String mockEndpoint = 'https://fake.slack.com/';
     LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SlackEndpoint', Value__c = mockEndpoint));
