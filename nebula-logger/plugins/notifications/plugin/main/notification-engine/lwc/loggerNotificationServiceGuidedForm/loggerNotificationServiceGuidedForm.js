@@ -4,7 +4,7 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import LightningConfirm from 'lightning/confirm';
-import getNotifierTypes from '@salesforce/apex/LoggerNotifierGuidedFormController.getNotifierTypes';
+import getNotifierTypes from '@salesforce/apex/LoggerNotificationFormController.getNotifierTypes';
 import NOTIFIER_APEX_CLASS_NAME_FIELD from '@salesforce/schema/LoggerNotificationService__c.NotifierApexClassName__c';
 import NAME_FIELD from '@salesforce/schema/LoggerNotificationService__c.Name';
 
