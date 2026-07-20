@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RetentionDate__c</fullName>
+    <description>Date the LoggerTestPurgeable__c row is eligible for deletion. Used only in LogBatchPurger_Tests_Registrar to exercise the LoggerPlugin.Purgeable registration flow with a non-core custom SObject.</description>
+    <externalId>false</externalId>
+    <label>Retention Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

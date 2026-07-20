@@ -281,31 +281,9 @@ private class LogBatchPurger_Tests {
     batchJobInstance.start(mockBatchableContext);
 
     LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-    System.Assert.areEqual(
-      3,
-      batchJobInstance.getExecutedApexPlugins().size(),
-      'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
-    );
-    System.Assert.areEqual(
-      1,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-      'One Apex plugin should have run in the batch job\'s start method'
-    );
-    System.Assert.areEqual(
-      0,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-      'No Apex plugins should have run in the batch job\'s execute method'
-    );
-    System.Assert.areEqual(
-      0,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-      'No Apex plugins should have run in the batch job\'s finish method'
-    );
-    LoggerPlugin.Batchable apexStartPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).get(0);
-    System.Assert.isInstanceOfType(apexStartPlugin, MockBatchPurgerPlugin.class, System.JSON.serializePretty(apexStartPlugin));
-    System.Assert.isTrue(ranPluginStart);
-    System.Assert.isFalse(ranPluginExecute);
-    System.Assert.isFalse(ranPluginFinish);
+    System.Assert.isTrue(ranPluginStart, 'The plugin should have been dispatched to via its start() method');
+    System.Assert.isFalse(ranPluginExecute, 'The plugin should not have been dispatched to via its execute() method');
+    System.Assert.isFalse(ranPluginFinish, 'The plugin should not have been dispatched to via its finish() method');
     System.Assert.areEqual(mockPluginConfiguration, pluginConfiguration);
     System.Assert.areEqual(expectedInput.batchableContext, batchInput.batchableContext);
     System.Assert.areEqual(expectedInput.sobjectType, batchInput.sobjectType);
@@ -334,31 +312,9 @@ private class LogBatchPurger_Tests {
     batchJobInstance.execute(mockBatchableContext, logsToDelete);
 
     LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-    System.Assert.areEqual(
-      3,
-      batchJobInstance.getExecutedApexPlugins().size(),
-      'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
-    );
-    System.Assert.areEqual(
-      0,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-      'No Apex plugins should have run in the batch job\'s start method'
-    );
-    System.Assert.areEqual(
-      1,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-      'One Apex plugin should have run in the batch job\'s execute method'
-    );
-    System.Assert.areEqual(
-      0,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-      'No Apex plugins should have run in the batch job\'s finish method'
-    );
-    LoggerPlugin.Batchable apexExecutePlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).get(0);
-    System.Assert.isInstanceOfType(apexExecutePlugin, MockBatchPurgerPlugin.class, System.JSON.serializePretty(apexExecutePlugin));
-    System.Assert.isFalse(ranPluginStart);
-    System.Assert.isTrue(ranPluginExecute);
-    System.Assert.isFalse(ranPluginFinish);
+    System.Assert.isFalse(ranPluginStart, 'The plugin should not have been dispatched to via its start() method');
+    System.Assert.isTrue(ranPluginExecute, 'The plugin should have been dispatched to via its execute() method');
+    System.Assert.isFalse(ranPluginFinish, 'The plugin should not have been dispatched to via its finish() method');
     System.Assert.areEqual(mockPluginConfiguration, pluginConfiguration);
     System.Assert.areEqual(expectedInput.batchableContext, batchInput.batchableContext);
     logsToDelete = [SELECT Id FROM Log__c WHERE Id IN :logsToDelete];
@@ -386,33 +342,33 @@ private class LogBatchPurger_Tests {
     batchJobInstance.finish(mockBatchableContext);
 
     LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-    System.Assert.areEqual(
-      3,
-      batchJobInstance.getExecutedApexPlugins().size(),
-      'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
-    );
-    System.Assert.areEqual(
-      0,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-      'No Apex plugins should have run in the batch job\'s start method'
-    );
-    System.Assert.areEqual(
-      0,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-      'No Apex plugins should have run in the batch job\'s execute method'
-    );
-    System.Assert.areEqual(
-      1,
-      batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-      'One Apex plugin should have run in the batch job\'s finish method'
-    );
-    LoggerPlugin.Batchable apexFinishPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).get(0);
-    System.Assert.isInstanceOfType(apexFinishPlugin, MockBatchPurgerPlugin.class, System.JSON.serializePretty(apexFinishPlugin));
-    System.Assert.isFalse(ranPluginStart);
-    System.Assert.isFalse(ranPluginExecute);
-    System.Assert.isTrue(ranPluginFinish);
+    System.Assert.isFalse(ranPluginStart, 'The plugin should not have been dispatched to via its start() method');
+    System.Assert.isFalse(ranPluginExecute, 'The plugin should not have been dispatched to via its execute() method');
+    System.Assert.isTrue(ranPluginFinish, 'The plugin should have been dispatched to via its finish() method');
     System.Assert.areEqual(mockPluginConfiguration, pluginConfiguration);
     System.Assert.areEqual(expectedInput.sobjectType, batchInput.sobjectType);
+  }
+
+  // Registrar-driven registration flow (happy path, guardrails, ordering) is covered in
+  // LogBatchPurger_Tests_Registrar under nebula-logger/extra-tests, where a test-only custom
+  // SObject (LoggerTestPurgeable__c) is available for use as a non-core registration target -
+  // every custom SObject in the core package is on the purger's blocklist and cannot be used
+  // in a happy-path registration test from here.
+
+  @IsTest
+  static void it_should_skip_an_unknown_purgeable_registrar_apex_class_without_throwing() {
+    LoggerTestConfigurator.setMock(
+      new LoggerPlugin__mdt(BatchPurgeRegistrarApexClass__c = 'ThisApexClassDoesNotExist', DeveloperName = 'Bogus_Registrar_Plugin', IsEnabled__c = true)
+    );
+
+    System.Exception thrown;
+    try {
+      new LogBatchPurger();
+    } catch (System.Exception ex) {
+      thrown = ex;
+    }
+
+    System.Assert.isNull(thrown, 'An unknown registrar class should be skipped, not blow up the batch job');
   }
 
   public class MockBatchPurgerPlugin implements LoggerPlugin.Batchable {

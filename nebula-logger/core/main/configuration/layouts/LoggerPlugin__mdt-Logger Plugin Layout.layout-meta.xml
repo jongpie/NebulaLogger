@@ -67,6 +67,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>BatchPurgeRegistrarApexClass__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>BatchPurgerApexClass__c</field>
             </layoutItems>
             <layoutItems>
