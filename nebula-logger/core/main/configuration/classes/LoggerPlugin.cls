@@ -22,6 +22,22 @@ public without sharing class LoggerPlugin {
   }
 
   /**
+   * @description Interface used to register additional SObject types with `LogBatchPurger` so plugin-owned
+   *              objects can be purged by the same batch job that manages core Log data. Implementations
+   *              return a list of `LoggerPurgeRegistration` values that specify the
+   *              SObject type + the field that carries its retention date; the purger builds the SOQL
+   *              query internally so plugins do not write query strings themselves. Plugins wire this in
+   *              via the `BatchPurgeRegistrarApexClass__c` field on `LoggerPlugin__mdt`; the purger
+   *              instantiates the class and calls `getPurgeRegistrations()` at the start of
+   *              every batch run. List order is preserved by the purger so a plugin with parent + child
+   *              SObjects can order the child before the parent.
+   */
+  @SuppressWarnings('PMD.ApexDoc')
+  public interface Purgeable {
+    List<LoggerPurgeRegistration> getPurgeRegistrations();
+  }
+
+  /**
    * @description Interface used to create plugins that can be used within Logger's trigger handler framework `LoggerSObjectHandler`
    */
   @SuppressWarnings('PMD.ApexDoc')
@@ -96,6 +112,21 @@ public without sharing class LoggerPlugin {
       pluginInstance = null;
     }
     return (Triggerable) pluginInstance;
+  }
+
+  /**
+   * @description Creates an instance of the class `LoggerPlugin.Purgeable` based on the provided Apex class name.
+   * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Purgeable`
+   * @return                     The dynamically created instance of `LoggerPlugin.Purgeable`,
+   *                             or null if the class does not exist or does not implement `Purgeable`.
+   */
+  public static Purgeable newPurgeableInstance(String apexClassTypeName) {
+    Object pluginInstance = newPluginInstance(apexClassTypeName);
+    Boolean isValidInstance = pluginInstance instanceof Purgeable;
+    if (isValidInstance == false) {
+      pluginInstance = null;
+    }
+    return (Purgeable) pluginInstance;
   }
 
   /*

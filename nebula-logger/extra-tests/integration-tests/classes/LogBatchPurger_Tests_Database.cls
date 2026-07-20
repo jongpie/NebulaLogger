@@ -52,7 +52,7 @@ private class LogBatchPurger_Tests_Database {
         System.Database.executeBatch(new LogBatchPurger());
         System.Test.stopTest();
       } catch (NoAccessException ex) {
-        System.Assert.areEqual(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
+        System.Assert.areEqual('User does not have access to delete logs', ex.getMessage());
       }
     }
     Integer updatedCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
