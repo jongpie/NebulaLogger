@@ -151,9 +151,10 @@ private class SlackLoggerNotifier_Tests {
 
     String payload = capturePayload(buildService('https://example.com/hook', null), recipient);
 
-    // Message__c is a Long Text Area so it should render wide and inside a code block.
-    // LoggingLevel__c is a Picklist (scalar) so it should render half-width without one.
-    System.Assert.isTrue(payload.contains('```'), 'Long text fields should be wrapped in a Markdown code block: ' + payload);
+    // Message__c is a Long Text Area so it should render wide and inside a triple-backtick code block.
+    // LoggingLevel__c is a Picklist (scalar) so it should render half-width wrapped in single backticks.
+    System.Assert.isTrue(payload.contains('```Something went wrong```'), 'Long text fields should be wrapped in a triple-backtick code block: ' + payload);
+    System.Assert.isTrue(payload.contains('`ERROR`'), 'Scalar fields should be wrapped in single backticks for inline code rendering: ' + payload);
   }
 
   @IsTest
@@ -228,7 +229,10 @@ private class SlackLoggerNotifier_Tests {
 
     String payload = sendAndCapture(context);
 
-    System.Assert.isTrue(payload.contains('/' + logEntry.Id + '|' + logEntry.Name + '>'), 'Source Name should render linked to the source record: ' + payload);
+    System.Assert.isTrue(
+      payload.contains('/' + logEntry.Id + '|`' + logEntry.Name + '`>'),
+      'Source Name should render linked to the source record and wrapped in inline-code backticks: ' + payload
+    );
   }
 
   @IsTest
@@ -251,7 +255,10 @@ private class SlackLoggerNotifier_Tests {
     String payload = sendAndCapture(context);
 
     System.Assert.isTrue(payload.contains(log.Name), 'REFERENCE field should render the parent Name: ' + payload);
-    System.Assert.isTrue(payload.contains('/' + log.Id + '|' + log.Name + '>'), 'REFERENCE field value should be linked to the parent record: ' + payload);
+    System.Assert.isTrue(
+      payload.contains('/' + log.Id + '|`' + log.Name + '`>'),
+      'REFERENCE field value should be linked to the parent record and wrapped in inline-code backticks: ' + payload
+    );
   }
 
   @IsTest
@@ -441,7 +448,7 @@ private class SlackLoggerNotifier_Tests {
     String payload = sendAndCapture(context);
 
     System.Assert.isTrue(payload.contains('"Stack Trace"'), 'Null Stack Trace should still render its label when includeNullValues is true: ' + payload);
-    System.Assert.isTrue(payload.contains('`(null/no value)`'), 'Null values should render as the placeholder: ' + payload);
+    System.Assert.isTrue(payload.contains('(null/no value)'), 'Null values should render as the placeholder: ' + payload);
   }
 
   // Test helpers
