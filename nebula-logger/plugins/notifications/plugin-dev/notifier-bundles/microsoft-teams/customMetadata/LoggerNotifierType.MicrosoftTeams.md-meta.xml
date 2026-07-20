@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Microsoft Teams</label>
+    <protected>false</protected>
+    <values>
+        <field>AtLeastOneRequiredRecipientFields__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AtLeastOneRequiredServiceFields__c</field>
+        <value xsi:type="xsd:string">WebhookUrl__c
+NamedCredentialDeveloperName__c</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Posts messages to a Microsoft Teams channel via a Power Automate workflow that receives the payload and forwards to Teams. Teams doesn't ship a first-party incoming webhook anymore (Office 365 Connectors are deprecated as of 2025), so the setup routes through a Workflow that admins build once per channel.</value>
+    </values>
+    <values>
+        <field>DisplayLabel__c</field>
+        <value xsi:type="xsd:string">Microsoft Teams</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsChannelIdentifierRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEmailAddressRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsUserRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NotifierApexClassName__c</field>
+        <value xsi:type="xsd:string">MicrosoftTeamsLoggerNotifier</value>
+    </values>
+    <values>
+        <field>SetupGuidanceMarkdown__c</field>
+        <value xsi:type="xsd:string">## Microsoft Teams setup
+
+Microsoft deprecated Office 365 Connectors in 2025. New Teams integrations go through **Power Automate Workflows**. The workflow gives you a POST-able URL that this notifier calls with the notification payload.
+
+### One-time setup per channel
+
+1. In Teams, open the target channel -&gt; channel name dropdown -&gt; **Workflows**
+2. Search for the template **"Post to a channel when a webhook request is received"**
+3. Follow the template wizard - pick the team, pick the channel, sign in as needed
+4. Copy the **HTTP POST URL** the wizard hands you at the end. This is the webhook.
+
+### Salesforce setup
+
+- **Webhook mode**: paste the workflow's HTTP POST URL into this service's `Webhook URL` field
+- **Named Credential mode**: create a Named Credential with the base URL of the workflow endpoint and reference it here. Rarely needed for Teams - the workflow URL already carries a signed token.
+
+### Payload format
+
+The notifier sends a JSON payload matching the "Post to a channel when a webhook request is received" template's expected shape. If you customized the workflow beyond the template default, the payload may not render correctly - restore the template defaults or update the workflow to parse the custom fields the notifier sends.</value>
+    </values>
+    <values>
+        <field>SuggestedConfigurationJson__c</field>
+        <value xsi:type="xsd:string">{
+  "sourceFields": [
+    "LoggingLevel__c",
+    "Message__c",
+    "StackTrace__c",
+    "ExceptionType__c"
+  ]
+}</value>
+    </values>
+    <values>
+        <field>SupportsChannelIdentifier__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsEmailAddress__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsNamedCredential__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsUser__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsWebhookUrl__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

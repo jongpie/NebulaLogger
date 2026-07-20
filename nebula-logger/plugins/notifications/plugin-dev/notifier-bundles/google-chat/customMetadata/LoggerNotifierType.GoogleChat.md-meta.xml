@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Google Chat</label>
+    <protected>false</protected>
+    <values>
+        <field>AtLeastOneRequiredRecipientFields__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AtLeastOneRequiredServiceFields__c</field>
+        <value xsi:type="xsd:string">WebhookUrl__c
+NamedCredentialDeveloperName__c</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Posts messages to a Google Chat space via an Incoming Webhook. Google Chat webhooks are the simplest of the three chat-platform integrations - one URL, one space, no auth setup beyond generating the webhook in the space settings.</value>
+    </values>
+    <values>
+        <field>DisplayLabel__c</field>
+        <value xsi:type="xsd:string">Google Chat</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsChannelIdentifierRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEmailAddressRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsUserRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NotifierApexClassName__c</field>
+        <value xsi:type="xsd:string">GoogleChatLoggerNotifier</value>
+    </values>
+    <values>
+        <field>SetupGuidanceMarkdown__c</field>
+        <value xsi:type="xsd:string">## Google Chat setup
+
+### One-time setup per space
+
+1. In Google Chat, open the target space -&gt; space name dropdown -&gt; **Apps &amp; integrations**
+2. **Add webhooks** -&gt; **Add another webhook**
+3. Name the webhook (any label) and optionally add an avatar image URL
+4. Copy the webhook URL Google shows you (starts with `https://chat.googleapis.com/v1/spaces/...`)
+
+### Salesforce setup
+
+- Paste the webhook URL into this service's `Webhook URL` field
+- Named Credential mode is technically supported but rarely useful - Google Chat webhooks include a signed key in the URL itself, so there's no additional auth to wrap.
+
+### Message format
+
+The notifier sends Google Chat's `text` and `cardsV2` payload shape. Rich formatting (bold, links, code blocks) uses Google Chat's own Markdown-like syntax, which differs from Slack's.</value>
+    </values>
+    <values>
+        <field>SuggestedConfigurationJson__c</field>
+        <value xsi:type="xsd:string">{
+  "sourceFields": [
+    "LoggingLevel__c",
+    "Message__c",
+    "StackTrace__c",
+    "ExceptionType__c"
+  ]
+}</value>
+    </values>
+    <values>
+        <field>SupportsChannelIdentifier__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsEmailAddress__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsNamedCredential__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsUser__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsWebhookUrl__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>PagerDuty</label>
+    <protected>false</protected>
+    <values>
+        <field>AtLeastOneRequiredRecipientFields__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AtLeastOneRequiredServiceFields__c</field>
+        <value xsi:type="xsd:string">WebhookUrl__c
+NamedCredentialDeveloperName__c</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Creates PagerDuty incidents via the Events API v2. Each notification triggers an incident routed to the service's Integration Key (routing key). Supports incident deduplication via `dedup_key` and severity levels mapped from logging level.</value>
+    </values>
+    <values>
+        <field>DisplayLabel__c</field>
+        <value xsi:type="xsd:string">PagerDuty</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsChannelIdentifierRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEmailAddressRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsUserRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NotifierApexClassName__c</field>
+        <value xsi:type="xsd:string">PagerDutyLoggerNotifier</value>
+    </values>
+    <values>
+        <field>SetupGuidanceMarkdown__c</field>
+        <value xsi:type="xsd:string">## PagerDuty setup
+
+### One-time setup per PagerDuty service
+
+1. In PagerDuty, go to **Services** -&gt; pick the target service (or create a new one)
+2. Under **Integrations**, add the **Events API v2** integration
+3. Copy the **Integration Key** (a 32-character hex string) - this is the routing key
+4. The Events API endpoint is `https://events.pagerduty.com/v2/enqueue`
+
+### Salesforce setup
+
+- **Webhook mode**: paste `https://events.pagerduty.com/v2/enqueue` into this service's `Webhook URL` field. Add the routing key to each recipient's config JSON.
+- **Named Credential mode**: create a Named Credential with URL `https://events.pagerduty.com`, no auth (the routing key is the auth - it goes in the payload, not the header). Reference the Named Credential here. The notifier appends `/v2/enqueue` automatically.
+
+### Recipient config JSON
+
+Each recipient's config supplies the routing key and optional per-recipient overrides:
+
+```json
+{
+  "routingKey": "your-32-char-integration-key",
+  "severityByLoggingLevel": {
+    "ERROR": "critical",
+    "WARN": "warning",
+    "INFO": "info"
+  }
+}
+```
+
+If `severityByLoggingLevel` is omitted the notifier uses sensible defaults. Deduplication is automatic - PagerDuty groups incidents with the same `dedup_key`, which the notifier sets from the matched record's Id.</value>
+    </values>
+    <values>
+        <field>SuggestedConfigurationJson__c</field>
+        <value xsi:type="xsd:string">{
+  "routingKey": "REPLACE_WITH_PAGERDUTY_INTEGRATION_KEY",
+  "severityByLoggingLevel": {
+    "ERROR": "critical",
+    "WARN": "warning",
+    "INFO": "info"
+  }
+}</value>
+    </values>
+    <values>
+        <field>SupportsChannelIdentifier__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsEmailAddress__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsNamedCredential__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsUser__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsWebhookUrl__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

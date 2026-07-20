@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Development-only access for the Logger Notifications plugin - grants the NebulaLoggerSlackNotificationTest external-credential principal used by the automated Slack tests. Assign to the Automated Process user, not to real admins.</description>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>NebulaLoggerSlackNotificationTest-LoggerBot</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Nebula Logger: Notifications Plugin Dev</label>
+</PermissionSet>
