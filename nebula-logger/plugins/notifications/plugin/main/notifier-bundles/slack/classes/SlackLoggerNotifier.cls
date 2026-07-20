@@ -40,7 +40,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     'ExceptionType__c'
   };
 
-  private static final String NULL_VALUE_PLACEHOLDER = '(null/no value)';
+  private static final String NULL_VALUE_PLACEHOLDER = '`(null/no value)`';
 
   /**
    * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
@@ -528,7 +528,9 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
   }
 
   private String getColorForRecord(SObject record) {
+    // TODO BAD! stop assuming everything is probably LogEntry__c
     String loggingLevel = this.tryGetString(record, 'LoggingLevel__c');
+    // TODO BAD! Stop hardcoding LoggingLevel enum values
     if (loggingLevel == 'ERROR') {
       return NOTIFICATION_COLOR_RED;
     }

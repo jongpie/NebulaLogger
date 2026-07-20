@@ -485,7 +485,7 @@ private class SlackLoggerNotifier_Tests {
     String payload = sendAndCapture(context);
 
     System.Assert.isTrue(payload.contains('"Stack Trace"'), 'Null Stack Trace should still render its label when includeNullValues is true: ' + payload);
-    System.Assert.isTrue(payload.contains('(null/no value)'), 'Null values should render as the placeholder: ' + payload);
+    System.Assert.isTrue(payload.contains('`(null/no value)`'), 'Null values should render as the backtick-wrapped placeholder: ' + payload);
   }
 
   // Test helpers
