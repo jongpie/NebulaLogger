@@ -135,7 +135,10 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
   private void sendAsyncSlackNotifications() {
     List<Log__c> logsToSend = new List<Log__c>();
     for (Log__c log : this.logs) {
-      if (log.SendSlackNotification__c) {
+      // Also require SlackNotificationDate__c to be null - otherwise every subsequent update to an
+      // already-notified log would enqueue a fresh Queueable that does no work but still burns
+      // one of the transaction's queueable slots (see issue #999).
+      if (log.SendSlackNotification__c && log.SlackNotificationDate__c == null) {
         logsToSend.add(log);
       }
     }
