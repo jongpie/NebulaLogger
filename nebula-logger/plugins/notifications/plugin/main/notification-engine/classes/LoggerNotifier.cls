@@ -374,23 +374,24 @@ public virtual without sharing class LoggerNotifier {
   }
 
   private Integer countPriorMatchesInWindow(LoggerNotificationRule__c rule) {
-    if (rule.MatchThresholdTimePeriodIncrement__c == null || rule.MatchThresholdTimePeriodIncrement__c <= 0) {
+    if (
+      rule.MatchThresholdTimePeriodIncrement__c == null ||
+      rule.MatchThresholdTimePeriodIncrement__c <= 0 ||
+      String.isBlank(rule.MatchThresholdTimePeriodUnit__c)
+    ) {
       return 0;
     }
-    if (String.isBlank(rule.MatchThresholdTimePeriodUnit__c)) {
-      return 0;
-    }
+
     Datetime cutoff = computeCutoff(System.now(), (Integer) rule.MatchThresholdTimePeriodIncrement__c, rule.MatchThresholdTimePeriodUnit__c);
     if (cutoff == null) {
       return 0;
     }
-    Id ruleId = rule.Id;
-    List<AggregateResult> results = [
-      SELECT COUNT(Id) recentMatchCount
+
+    return [
+      SELECT COUNT()
       FROM LoggerNotificationMatch__c
-      WHERE LoggerNotificationRule__c = :ruleId AND CreatedDate >= :cutoff
+      WHERE LoggerNotificationRule__c = :rule.Id AND CreatedDate >= :cutoff
     ];
-    return results.isEmpty() ? 0 : (Integer) results.get(0).get('recentMatchCount');
   }
 
   @TestVisible
