@@ -106,8 +106,8 @@ private class LoggerNotificationAsyncDispatcher_Tests {
     return new LoggerNotificationAsyncDispatcher.PendingDispatch(rule, recipient, service, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
   }
 
-  public class MockNotifier implements LoggerNotifier {
-    public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public class MockNotifier extends LoggerNotifier {
+    public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
       mockNotifierInvocationCount++;
       if (mockNotifierShouldThrowNext) {
         mockNotifierShouldThrowNext = false;

@@ -93,9 +93,9 @@ private class LoggerNotificationServiceHandler_Tests {
   }
 
   @IsTest
-  static void it_should_reject_a_service_whose_notifier_class_does_not_implement_the_interface() {
+  static void it_should_reject_a_service_whose_notifier_class_does_not_extend_the_base_class() {
     LoggerNotificationService__c service = buildValidService();
-    // Any concrete class that does not implement LoggerNotifier - Logger itself is a safe pick.
+    // Any concrete class that does not extend LoggerNotifier - Logger itself is a safe pick.
     service.NotifierApexClassName__c = 'Logger';
 
     System.DmlException thrown;
@@ -107,8 +107,8 @@ private class LoggerNotificationServiceHandler_Tests {
 
     System.Assert.isNotNull(thrown, 'A non-LoggerNotifier class should have blocked the insert');
     System.Assert.isTrue(
-      thrown.getMessage().contains('does not implement LoggerNotifier'),
-      'Error message should identify the interface failure: ' + thrown.getMessage()
+      thrown.getMessage().contains('does not extend LoggerNotifier'),
+      'Error message should identify the base-class failure: ' + thrown.getMessage()
     );
   }
 
