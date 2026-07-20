@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#CB6301</headerColor>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <description>Configure and monitor Nebula Logger notification rules, services, and recipients.</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <label>Nebula Logger Notifications</label>
+    <navType>Standard</navType>
+    <tabs>LoggerNotificationRule__c</tabs>
+    <tabs>LoggerNotificationService__c</tabs>
+    <tabs>LoggerNotificationMatch__c</tabs>
+    <tabs>LoggerNotificationDelivery__c</tabs>
+    <tabs>LogBatchPurge</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

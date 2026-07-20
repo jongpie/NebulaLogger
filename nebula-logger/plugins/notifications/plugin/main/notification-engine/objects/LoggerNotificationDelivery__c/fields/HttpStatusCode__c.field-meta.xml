@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HttpStatusCode__c</fullName>
+    <inlineHelpText>HTTP status code returned by the notifier callout (e.g. 200, 404, 500). Only populated for HTTP-based notifiers.</inlineHelpText>
+    <label>HTTP Status Code</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

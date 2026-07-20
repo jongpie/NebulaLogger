@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SourceSObjectType__c</fullName>
+    <inlineHelpText>The SObject type that this rule evaluates against. Rules run after the source records are persisted (AFTER_INSERT), so match records always have IDs to reference.</inlineHelpText>
+    <label>Source SObject Type</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>LogEntry__c</fullName>
+                <default>false</default>
+                <label>LogEntry__c</label>
+            </value>
+            <value>
+                <fullName>Log__c</fullName>
+                <default>false</default>
+                <label>Log__c</label>
+            </value>
+            <value>
+                <fullName>LoggerScenario__c</fullName>
+                <default>false</default>
+                <label>LoggerScenario__c</label>
+            </value>
+            <value>
+                <fullName>LogEntryTag__c</fullName>
+                <default>false</default>
+                <label>LogEntryTag__c</label>
+            </value>
+            <value>
+                <fullName>LoggerTag__c</fullName>
+                <default>false</default>
+                <label>LoggerTag__c</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

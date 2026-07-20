@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Declarative metadata about each concrete LoggerNotifiable implementation. Read by the guided setup LWCs to render notifier-specific UX: which service fields to show (webhook vs named credential), which recipient fields the notifier honors (channel identifier / recipient address / recipient user), setup guidance content, and a suggested starting-point JSON for ConfigurationJson__c. Not read by the runtime - the runtime still looks up notifier classes via LoggerNotificationService__c.NotifierApexClassName__c.</description>
+    <label>Logger Notifier Type</label>
+    <pluralLabel>Logger Notifier Types</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

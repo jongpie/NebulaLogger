@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SupportsEmailAddress__c</fullName>
+    <defaultValue>false</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Whether recipients of services using this notifier can populate LoggerNotificationRecipient__c.EmailAddress__c. The guided Recipient form hides the field when this is false.</inlineHelpText>
+    <label>Supports Email Address</label>
+    <type>Checkbox</type>
+</CustomField>

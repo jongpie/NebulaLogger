@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ResponseBody__c</fullName>
+    <inlineHelpText>Response body captured from the notifier callout. Populated by notifiers that opt in (typically on failure); trimmed by the runtime if excessively long.</inlineHelpText>
+    <label>Response Body</label>
+    <length>32768</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

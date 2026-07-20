@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ResponseHeaders__c</fullName>
+    <inlineHelpText>Response headers captured from the notifier callout. Populated by notifiers that opt in (typically on failure) for troubleshooting - e.g. Slack's X-OAuth-Scopes, PagerDuty's rate-limit headers.</inlineHelpText>
+    <label>Response Headers</label>
+    <length>16384</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

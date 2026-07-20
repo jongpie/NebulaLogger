@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GuidedNew</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>✨Guided New✨</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <url>/lightning/cmp/c__loggerNotificationRuleGuidedForm</url>
+</WebLink>

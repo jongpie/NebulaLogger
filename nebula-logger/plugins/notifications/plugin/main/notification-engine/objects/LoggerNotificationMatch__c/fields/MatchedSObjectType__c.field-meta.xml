@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MatchedSObjectType__c</fullName>
+    <inlineHelpText>SObject API name of the matched record (e.g., LogEntry__c, Log__c, etc.)</inlineHelpText>
+    <label>Matched SObject Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>LoggerScenario__c</fullName>
+                <default>false</default>
+                <label>LoggerScenario__c</label>
+            </value>
+            <value>
+                <fullName>Log__c</fullName>
+                <default>false</default>
+                <label>Log__c</label>
+            </value>
+            <value>
+                <fullName>LogEntry__c</fullName>
+                <default>false</default>
+                <label>LogEntry__c</label>
+            </value>
+            <value>
+                <fullName>LogEntryTag__c</fullName>
+                <default>false</default>
+                <label>LogEntryTag__c</label>
+            </value>
+            <value>
+                <fullName>LoggerTag__c</fullName>
+                <default>false</default>
+                <label>LoggerTag__c</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <description>Guided stepper for creating / editing a LoggerNotificationRule__c rule. Renders inside lightning-quick-action-panel so it works uniformly whether opened from a Quick Action or navigated to as a URL-addressable page.</description>
+    <masterLabel>Nebula Logger: Guided Rule Form</masterLabel>
+    <targets>
+        <target>lightning__RecordAction</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__UrlAddressable</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordAction">
+            <actionType>ScreenAction</actionType>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

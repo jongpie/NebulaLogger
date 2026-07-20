@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsUserRequired__c</fullName>
+    <defaultValue>false</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>When true, the guided Recipient form marks User as required. Only meaningful when SupportsUser__c is also true.</inlineHelpText>
+    <label>Is User Required</label>
+    <type>Checkbox</type>
+</CustomField>

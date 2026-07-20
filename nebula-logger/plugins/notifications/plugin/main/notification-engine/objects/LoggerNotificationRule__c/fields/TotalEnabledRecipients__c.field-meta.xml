@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TotalEnabledRecipients__c</fullName>
+    <inlineHelpText>Rolled-up count of LoggerNotificationRecipient__c child records with IsEnabled__c = TRUE. When this reaches zero, the runtime skips the rule entirely (no records evaluated, no match rows, no delivery rows) even if IsEnabled__c on the rule itself is true.</inlineHelpText>
+    <label>Total Enabled Recipients</label>
+    <summaryFilterItems>
+        <field>LoggerNotificationRecipient__c.IsEnabled__c</field>
+        <operation>equals</operation>
+        <value>True</value>
+    </summaryFilterItems>
+    <summaryForeignKey>LoggerNotificationRecipient__c.LoggerNotificationRule__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

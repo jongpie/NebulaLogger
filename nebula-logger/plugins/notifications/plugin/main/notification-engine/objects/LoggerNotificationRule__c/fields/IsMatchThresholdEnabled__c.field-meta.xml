@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsMatchThresholdEnabled__c</fullName>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>When enabled, notifications are only sent after the configured number of matches has occurred within the configured time window. Useful for suppressing noise from single-record spikes.</inlineHelpText>
+    <label>Is Match Threshold Enabled</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
