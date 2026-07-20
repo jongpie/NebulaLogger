@@ -17,10 +17,10 @@ private class SlackLoggerNotifier_Tests {
 
     notifier.sendNotification(null);
     notifier.sendNotification(
-      new LoggerNotifiableContext(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
+      new LoggerNotifierRequest(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
     );
     notifier.sendNotification(
-      new LoggerNotifiableContext(
+      new LoggerNotifierRequest(
         new LoggerNotificationRule__c(),
         new LoggerNotificationRecipient__c(),
         new LoggerNotificationService__c(),
@@ -34,9 +34,9 @@ private class SlackLoggerNotifier_Tests {
   @IsTest
   static void it_should_skip_delivery_when_service_has_no_endpoint_configured() {
     LoggerMockDataCreator.MockHttpCallout calloutMock = installCalloutMock();
-    LoggerNotifiableContext context = buildContext(buildService(null, null), new LoggerNotificationRecipient__c());
+    LoggerNotifierRequest request = buildRequest(buildService(null, null), new LoggerNotificationRecipient__c());
 
-    new SlackLoggerNotifier().sendNotification(context);
+    new SlackLoggerNotifier().sendNotification(request);
 
     System.Assert.isNull(calloutMock.request, 'No callout should have been made when neither WebhookUrl__c nor NamedCredentialDeveloperName__c is set');
   }
@@ -44,9 +44,9 @@ private class SlackLoggerNotifier_Tests {
   @IsTest
   static void it_should_send_a_callout_to_the_webhook_url() {
     LoggerMockDataCreator.MockHttpCallout calloutMock = installCalloutMock();
-    LoggerNotifiableContext context = buildContext(buildService('https://example.com/webhook/xyz', null), new LoggerNotificationRecipient__c());
+    LoggerNotifierRequest request = buildRequest(buildService('https://example.com/webhook/xyz', null), new LoggerNotificationRecipient__c());
 
-    new SlackLoggerNotifier().sendNotification(context);
+    new SlackLoggerNotifier().sendNotification(request);
 
     System.Assert.isNotNull(calloutMock.request);
     System.Assert.areEqual('https://example.com/webhook/xyz', calloutMock.request.getEndpoint());
@@ -57,9 +57,9 @@ private class SlackLoggerNotifier_Tests {
   @IsTest
   static void it_should_route_through_the_named_credential_when_configured() {
     LoggerMockDataCreator.MockHttpCallout calloutMock = installCalloutMock();
-    LoggerNotifiableContext context = buildContext(buildService(null, 'SlackWebApi'), new LoggerNotificationRecipient__c(ChannelIdentifier__c = '#alerts'));
+    LoggerNotifierRequest request = buildRequest(buildService(null, 'SlackWebApi'), new LoggerNotificationRecipient__c(ChannelIdentifier__c = '#alerts'));
 
-    new SlackLoggerNotifier().sendNotification(context);
+    new SlackLoggerNotifier().sendNotification(request);
 
     System.Assert.isNotNull(calloutMock.request);
     System.Assert.areEqual('callout:SlackWebApi/chat.postMessage', calloutMock.request.getEndpoint());
@@ -159,27 +159,27 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_render_the_rule_name_as_a_slack_markdown_link_in_the_top_level_text() {
-    LoggerNotifiableContext context = buildContext(buildService('https://example.com/hook', null), new LoggerNotificationRecipient__c());
+    LoggerNotifierRequest request = buildRequest(buildService('https://example.com/hook', null), new LoggerNotificationRecipient__c());
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     // The top-level text field uses <url|text> mrkdwn syntax natively (no mrkdwn_in opt-in needed at that level).
-    String expectedLinkSuffix = '|' + context.notificationRule.Name + '>';
+    String expectedLinkSuffix = '|' + request.notificationRule.Name + '>';
     System.Assert.isTrue(payload.contains(expectedLinkSuffix), 'The rule should render as a Slack mrkdwn link ending with |<rule name>>: ' + payload);
-    System.Assert.isTrue(payload.contains(context.notificationRule.Id), 'The link should point at the notification record Id: ' + payload);
+    System.Assert.isTrue(payload.contains(request.notificationRule.Id), 'The link should point at the notification record Id: ' + payload);
     System.Assert.isFalse(payload.contains('"Rule"'), 'The rule should no longer appear as an attachment field: ' + payload);
   }
 
   @IsTest
   static void it_should_render_the_rule_name_as_plain_text_when_the_rule_has_no_id() {
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       new LoggerNotificationRule__c(Name = 'In-memory rule'),
       new LoggerNotificationRecipient__c(),
       buildService('https://example.com/hook', null),
       new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isTrue(payload.contains('In-memory rule'), 'A rule without an Id should still render its name in the top-level text: ' + payload);
     System.Assert.isFalse(payload.contains('<In-memory rule|'), 'A rule without an Id should not be wrapped in a mrkdwn link: ' + payload);
@@ -195,14 +195,14 @@ private class SlackLoggerNotifier_Tests {
     log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","Log__r.Name"]}');
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       recipient,
       buildService('https://example.com/hook', null),
       new List<SObject>{ logEntry }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isTrue(payload.contains('Logging Level'), 'The flat field should still render: ' + payload);
     // Log__c uses an auto-number Name, so we assert the actual parent name appears in the payload rather than the field label alone.
@@ -220,14 +220,14 @@ private class SlackLoggerNotifier_Tests {
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Name"]}');
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       recipient,
       buildService('https://example.com/hook', null),
       new List<SObject>{ logEntry }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isTrue(
       payload.contains('/' + logEntry.Id + '|`' + logEntry.Name + '`>'),
@@ -245,14 +245,14 @@ private class SlackLoggerNotifier_Tests {
 
     // Configure the raw lookup (Log__c) with no displayField - the runtime should auto-fall-back to Log__r.Name.
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Log__c"]}');
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       recipient,
       buildService('https://example.com/hook', null),
       new List<SObject>{ logEntry }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isTrue(payload.contains(log.Name), 'REFERENCE field should render the parent Name: ' + payload);
     System.Assert.isTrue(
@@ -270,14 +270,14 @@ private class SlackLoggerNotifier_Tests {
 
     String json = '{"sourceFields":[{"field":"Log__c","displayField":"Log__r.LoggedByUsername__c"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       recipient,
       buildService('https://example.com/hook', null),
       new List<SObject>{ logEntry }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isTrue(payload.contains('run-anon@example.com'), 'displayField value should replace the underlying REFERENCE value: ' + payload);
     // The primary field is still a REFERENCE so we still linkify to the parent record.
@@ -293,14 +293,14 @@ private class SlackLoggerNotifier_Tests {
 
     String json = '{"sourceFields":[{"field":"LoggingLevel__c","displayLabel":"Severity"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       recipient,
       buildService('https://example.com/hook', null),
       new List<SObject>{ logEntry }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isTrue(payload.contains('"Severity"'), 'displayLabel should override the describe-provided label: ' + payload);
     System.Assert.isFalse(payload.contains('"Logging Level"'), 'The describe-provided label should not appear when overridden: ' + payload);
@@ -314,14 +314,14 @@ private class SlackLoggerNotifier_Tests {
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       new LoggerNotificationRecipient__c(),
       buildService('https://example.com/hook', null),
       new List<SObject>{ logEntry }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     String objectLabel = Schema.LogEntry__c.SObjectType.getDescribe().getLabel();
     System.Assert.isTrue(
@@ -332,11 +332,11 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_fall_back_to_just_the_object_label_when_the_source_record_has_no_name() {
-    LoggerNotifiableContext context = buildContext(buildService('https://example.com/hook', null), new LoggerNotificationRecipient__c());
+    LoggerNotifierRequest request = buildRequest(buildService('https://example.com/hook', null), new LoggerNotificationRecipient__c());
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
-    // buildContext uses in-memory LogEntry records with no Id or Name, so the title should collapse to
+    // buildRequest uses in-memory LogEntry records with no Id or Name, so the title should collapse to
     // just the object's describe label.
     String objectLabel = Schema.LogEntry__c.SObjectType.getDescribe().getLabel();
     System.Assert.isTrue(payload.contains('"title":"' + objectLabel + '"'), 'Nameless records should render just the object label: ' + payload);
@@ -350,14 +350,14 @@ private class SlackLoggerNotifier_Tests {
       .setStatusCode(200)
       .setResponseBody('{"ok":true,"channel":"C0BGA9N781G","ts":"1720000000.000100","message":{}}');
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(buildService(null, 'SlackWebApi'), new LoggerNotificationRecipient__c(ChannelIdentifier__c = 'C0BGA9N781G'));
+    LoggerNotifierRequest request = buildRequest(buildService(null, 'SlackWebApi'), new LoggerNotificationRecipient__c(ChannelIdentifier__c = 'C0BGA9N781G'));
 
-    LoggerNotifiableResult result;
+    LoggerNotifierResult result;
     System.Test.startTest();
-    result = new SlackLoggerNotifier().sendNotification(context);
+    result = new SlackLoggerNotifier().sendNotification(request);
     System.Test.stopTest();
 
-    System.Assert.areEqual(LoggerNotifiableResult.STATUS_DELIVERED, result.status, 'ok:true response should stay Delivered');
+    System.Assert.areEqual(LoggerNotifierResult.STATUS_DELIVERED, result.status, 'ok:true response should stay Delivered');
     System.Assert.areEqual('1720000000.000100', result.externalReferenceId, 'ts should be captured on externalReferenceId');
     System.Assert.areEqual(
       'https://slack.com/app_redirect?channel=C0BGA9N781G&message_ts=1720000000.000100',
@@ -374,14 +374,14 @@ private class SlackLoggerNotifier_Tests {
       .setStatusCode(200)
       .setResponseBody('{"ok":false,"error":"channel_not_found"}');
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(buildService(null, 'SlackWebApi'), new LoggerNotificationRecipient__c(ChannelIdentifier__c = 'C_INVALID'));
+    LoggerNotifierRequest request = buildRequest(buildService(null, 'SlackWebApi'), new LoggerNotificationRecipient__c(ChannelIdentifier__c = 'C_INVALID'));
 
-    LoggerNotifiableResult result;
+    LoggerNotifierResult result;
     System.Test.startTest();
-    result = new SlackLoggerNotifier().sendNotification(context);
+    result = new SlackLoggerNotifier().sendNotification(request);
     System.Test.stopTest();
 
-    System.Assert.areEqual(LoggerNotifiableResult.STATUS_FAILED, result.status, 'ok:false response should be Failed even though HTTP status was 200');
+    System.Assert.areEqual(LoggerNotifierResult.STATUS_FAILED, result.status, 'ok:false response should be Failed even though HTTP status was 200');
     System.Assert.areEqual('Slack error: channel_not_found', result.errorMessage, 'Slack error code should surface on the error message');
     System.Assert.isNull(result.externalReferenceId, 'No ts to capture on failed responses');
   }
@@ -392,14 +392,14 @@ private class SlackLoggerNotifier_Tests {
     // to capture; the delivery just stays Delivered without external reference details.
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody('ok');
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
-    LoggerNotifiableContext context = buildContext(buildService('https://example.com/hook', null), new LoggerNotificationRecipient__c());
+    LoggerNotifierRequest request = buildRequest(buildService('https://example.com/hook', null), new LoggerNotificationRecipient__c());
 
-    LoggerNotifiableResult result;
+    LoggerNotifierResult result;
     System.Test.startTest();
-    result = new SlackLoggerNotifier().sendNotification(context);
+    result = new SlackLoggerNotifier().sendNotification(request);
     System.Test.stopTest();
 
-    System.Assert.areEqual(LoggerNotifiableResult.STATUS_DELIVERED, result.status);
+    System.Assert.areEqual(LoggerNotifierResult.STATUS_DELIVERED, result.status);
     System.Assert.isNull(result.externalReferenceId, 'Webhook-mode response has no ts to capture');
     System.Assert.isNull(result.externalReferenceUrl, 'Webhook-mode response has no channel to build a permalink from');
   }
@@ -431,14 +431,14 @@ private class SlackLoggerNotifier_Tests {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
       ConfigurationJson__c = '{"sourceFields":["ThisFieldDoesNotExist__c","Log__r.Name","LoggingLevel__c","Message__c"],"includeNullValues":true}'
     );
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       recipient,
       buildService('https://example.com/hook', null),
       new List<SObject>{ logEntry }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     // The good fields should render with their actual values, not the null placeholder.
     System.Assert.isTrue(
@@ -457,14 +457,14 @@ private class SlackLoggerNotifier_Tests {
   static void it_should_suppress_null_valued_fields_by_default() {
     // StackTrace__c is left null on the record; the default field set includes it, so it should be dropped
     // from the rendered payload when the recipient has no config.
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       new LoggerNotificationRecipient__c(),
       buildService('https://example.com/hook', null),
       new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Only a message') }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isFalse(payload.contains('"Stack Trace"'), 'Null Stack Trace should be suppressed by default: ' + payload);
     System.Assert.isFalse(payload.contains('(null/no value)'), 'Default rendering should not emit the null placeholder: ' + payload);
@@ -475,14 +475,14 @@ private class SlackLoggerNotifier_Tests {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
       ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","StackTrace__c"],"includeNullValues":true}'
     );
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       recipient,
       buildService('https://example.com/hook', null),
       new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') }
     );
 
-    String payload = sendAndCapture(context);
+    String payload = sendAndCapture(request);
 
     System.Assert.isTrue(payload.contains('"Stack Trace"'), 'Null Stack Trace should still render its label when includeNullValues is true: ' + payload);
     System.Assert.isTrue(payload.contains('`(null/no value)`'), 'Null values should render as the backtick-wrapped placeholder: ' + payload);
@@ -497,25 +497,25 @@ private class SlackLoggerNotifier_Tests {
   }
 
   private static String capturePayload(LoggerNotificationService__c service, LoggerNotificationRecipient__c recipient) {
-    return sendAndCapture(buildContext(service, recipient));
+    return sendAndCapture(buildRequest(service, recipient));
   }
 
   private static String capturePayloadForLoggingLevel(String loggingLevel) {
-    LoggerNotifiableContext context = new LoggerNotifiableContext(
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
       buildRule(),
       new LoggerNotificationRecipient__c(),
       buildService('https://example.com/hook', null),
       new List<SObject>{ new LogEntry__c(LoggingLevel__c = loggingLevel) }
     );
-    return sendAndCapture(context);
+    return sendAndCapture(request);
   }
 
-  private static String sendAndCapture(LoggerNotifiableContext context) {
+  private static String sendAndCapture(LoggerNotifierRequest request) {
     LoggerMockDataCreator.MockHttpCallout calloutMock = installCalloutMock();
     // Callouts can't follow uncommitted DML in the same context; the callout runs inside Test.startTest so
     // any real inserts test setup performed are committed before the notifier makes its HTTP call.
     System.Test.startTest();
-    new SlackLoggerNotifier().sendNotification(context);
+    new SlackLoggerNotifier().sendNotification(request);
     System.Test.stopTest();
     System.Assert.isNotNull(calloutMock.request, 'Notifier should have made an HTTP callout to capture the payload from');
     return calloutMock.request.getBody();
@@ -539,11 +539,11 @@ private class SlackLoggerNotifier_Tests {
     );
   }
 
-  private static LoggerNotifiableContext buildContext(LoggerNotificationService__c service, LoggerNotificationRecipient__c recipient) {
+  private static LoggerNotifierRequest buildRequest(LoggerNotificationService__c service, LoggerNotificationRecipient__c recipient) {
     List<SObject> matchingRecords = new List<SObject>{
       new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong', StackTrace__c = 'Line 1\nLine 2'),
       new LogEntry__c(LoggingLevel__c = 'WARN', Message__c = 'Heads up')
     };
-    return new LoggerNotifiableContext(buildRule(), recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(buildRule(), recipient, service, matchingRecords);
   }
 }

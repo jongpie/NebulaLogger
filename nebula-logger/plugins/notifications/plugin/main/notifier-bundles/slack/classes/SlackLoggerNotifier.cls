@@ -5,7 +5,7 @@
 
 /**
  * @group Plugins
- * @description Delivers a `LoggerNotifiableContext` to Slack. The `LoggerNotificationRecipient__c` referenced
+ * @description Delivers a `LoggerNotifierRequest` to Slack. The `LoggerNotificationRecipient__c` referenced
  *              by the rule provides either a `WebhookUrl__c` (Incoming Webhooks) or a
 
  *              `NamedCredentialDeveloperName__c` plus optional `ChannelIdentifier__c` (Web API via
@@ -23,7 +23,7 @@
  *              recipient's `ConfigurationJson__c` renders them as the mrkdwn placeholder
  *              `` `(null/no value)` `` so admins can still see which fields were empty at match time.
  */
-public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
+public without sharing class SlackLoggerNotifier implements LoggerNotifier {
   private static final String NOTIFICATION_COLOR_RED = '#FF7373';
   private static final String NOTIFICATION_COLOR_ORANGE = '#FFC873';
   private static final String NOTIFICATION_COLOR_GREEN = '#7CD197';
@@ -43,30 +43,30 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
   private static final String NULL_VALUE_PLACEHOLDER = '`(null/no value)`';
 
   /**
-   * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
-   * @param context The rule + recipient + service + matching records to deliver.
+   * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
+   * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
-    if (context == null || context.recipient == null || context.matchingRecords == null || context.matchingRecords.isEmpty()) {
+  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
-    System.HttpRequest request = this.buildRequest(context);
-    if (request == null) {
+    System.HttpRequest httpRequest = this.buildRequest(request);
+    if (httpRequest == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('SlackLoggerNotifier - service has neither Webhook URL nor Named Credential; skipping delivery');
       }
-      LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-      skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+      LoggerNotifierResult skipped = new LoggerNotifierResult();
+      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
       skipped.errorMessage = 'Service has neither Webhook URL nor Named Credential configured';
       return skipped;
     }
-    request.setBody(this.buildPayload(context));
+    httpRequest.setBody(this.buildPayload(request));
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.finest('SlackLoggerNotifier - sending payload').setHttpRequestDetails(request);
+      Logger.finest('SlackLoggerNotifier - sending payload').setHttpRequestDetails(httpRequest);
     }
     System.HttpResponse response;
     try {
-      response = new System.Http().send(request);
+      response = new System.Http().send(httpRequest);
     } catch (System.CalloutException ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.error('SlackLoggerNotifier - callout failed', ex);
@@ -76,13 +76,13 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
       // Commented out for now; see Backlog.md for the discussion on removing all Logger.* calls from
       // notifier bundles.
       // Logger.saveLog();
-      LoggerNotifiableResult failed = new LoggerNotifiableResult();
-      failed.status = LoggerNotifiableResult.STATUS_FAILED;
+      LoggerNotifierResult failed = new LoggerNotifierResult();
+      failed.status = LoggerNotifierResult.STATUS_FAILED;
       failed.errorMessage = ex.getMessage();
       failed.errorStackTrace = ex.getStackTraceString();
-      failed.requestUrl = request.getEndpoint();
-      failed.requestMethod = request.getMethod();
-      failed.requestBody = request.getBody();
+      failed.requestUrl = httpRequest.getEndpoint();
+      failed.requestMethod = httpRequest.getMethod();
+      failed.requestBody = httpRequest.getBody();
       // Named-credential-access errors surface a specific message so admins can jump straight to the
       // right fix (permset assignment on the async-execution user) rather than chasing the notifier.
       if (ex.getMessage() != null && ex.getMessage().contains('external credential')) {
@@ -97,7 +97,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     }
     // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
     // Logger.saveLog();
-    LoggerNotifiableResult result = LoggerNotifiableResult.fromHttpRequestAndResponse(request, response, KNOWN_REQUEST_HEADERS);
+    LoggerNotifierResult result = new LoggerNotifierResult(httpRequest, response, KNOWN_REQUEST_HEADERS);
     interpretSlackResponse(response, result);
     return result;
   }
@@ -111,7 +111,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
    *              `ts` as the external reference id and build a Slack app-redirect deep link. Webhook-mode
    *              responses (just the plaintext string `ok`) are skipped because they carry no useful data.
    */
-  private static void interpretSlackResponse(System.HttpResponse response, LoggerNotifiableResult result) {
+  private static void interpretSlackResponse(System.HttpResponse response, LoggerNotifierResult result) {
     if (response == null || result == null) {
       return;
     }
@@ -129,7 +129,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
       return;
     }
     if (parsed.ok == false) {
-      result.status = LoggerNotifiableResult.STATUS_FAILED;
+      result.status = LoggerNotifierResult.STATUS_FAILED;
       if (String.isNotBlank(parsed.error)) {
         result.errorMessage = 'Slack error: ' + parsed.error;
       }
@@ -143,42 +143,42 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     }
   }
 
-  private System.HttpRequest buildRequest(LoggerNotifiableContext context) {
+  private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(context.service.NamedCredentialDeveloperName__c)) {
+    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
       // Web API mode: callout: named credential + chat.postMessage path
-      endpoint = 'callout:' + context.service.NamedCredentialDeveloperName__c + '/chat.postMessage';
-    } else if (String.isNotBlank(context.service.WebhookUrl__c)) {
-      endpoint = context.service.WebhookUrl__c;
+      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c + '/chat.postMessage';
+    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
+      endpoint = request.service.WebhookUrl__c;
     } else {
       return null;
     }
-    System.HttpRequest request = new System.HttpRequest();
-    request.setEndpoint(endpoint);
-    request.setMethod('POST');
-    request.setHeader('Content-Type', 'application/json');
-    return request;
+    System.HttpRequest httpRequest = new System.HttpRequest();
+    httpRequest.setEndpoint(endpoint);
+    httpRequest.setMethod('POST');
+    httpRequest.setHeader('Content-Type', 'application/json');
+    return httpRequest;
   }
 
-  private String buildPayload(LoggerNotifiableContext context) {
+  private String buildPayload(LoggerNotifierRequest request) {
     NotificationDto notification = new NotificationDto();
     // Top-level text is Slack's summary line above the attachments. It uses <url|text> mrkdwn syntax
     // automatically (no opt-in flag needed at this level), so linkifying the rule name here Just Works.
-    notification.text = 'Nebula Logger notification for ' + this.buildRuleLink(context.notificationRule);
-    if (String.isNotBlank(context.recipient.ChannelIdentifier__c) && String.isNotBlank(context.service.NamedCredentialDeveloperName__c)) {
+    notification.text = 'Nebula Logger notification for ' + this.buildRuleLink(request.notificationRule);
+    if (String.isNotBlank(request.recipient.ChannelIdentifier__c) && String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
       // Only the Web API mode uses the channel field on the payload; webhooks are pre-scoped to a channel
-      notification.channel = context.recipient.ChannelIdentifier__c;
+      notification.channel = request.recipient.ChannelIdentifier__c;
     }
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> specs = context.config.getSourceFieldSpecs();
+    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
     if (specs == null) {
       specs = buildDefaultSpecs();
     }
-    Boolean includeNullValues = context.config.getBoolean('includeNullValues', false);
-    Schema.SObjectType sourceType = context.matchingRecords.get(0).getSObjectType();
+    Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
+    Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     // Compute every schema path we'll need to resolve values against - the primary field, any overridden
     // display field, and (for REFERENCE-typed primaries with no display override) the parent record's Name.
     List<String> hydrationPaths = collectHydrationPaths(specs, sourceType);
-    List<SObject> hydratedRecords = hydrateRecordsWithFieldPaths(context.matchingRecords, hydrationPaths);
+    List<SObject> hydratedRecords = hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
     notification.attachments = new List<AttachmentDto>();
     for (SObject record : hydratedRecords) {
       notification.attachments.add(this.buildAttachment(record, specs, includeNullValues));
@@ -187,15 +187,15 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     return System.JSON.serialize(notification, true).replace('"isShort"', '"short"');
   }
 
-  private static List<LoggerNotifiableConfiguration.SourceFieldSpec> buildDefaultSpecs() {
-    List<LoggerNotifiableConfiguration.SourceFieldSpec> defaults = new List<LoggerNotifiableConfiguration.SourceFieldSpec>();
+  private static List<LoggerNotifierConfiguration.SourceFieldSpec> buildDefaultSpecs() {
+    List<LoggerNotifierConfiguration.SourceFieldSpec> defaults = new List<LoggerNotifierConfiguration.SourceFieldSpec>();
     for (String fieldName : DEFAULT_SOURCE_FIELDS) {
-      defaults.add(new LoggerNotifiableConfiguration.SourceFieldSpec(fieldName, null, null));
+      defaults.add(new LoggerNotifierConfiguration.SourceFieldSpec(fieldName, null, null));
     }
     return defaults;
   }
 
-  private AttachmentDto buildAttachment(SObject record, List<LoggerNotifiableConfiguration.SourceFieldSpec> specs, Boolean includeNullValues) {
+  private AttachmentDto buildAttachment(SObject record, List<LoggerNotifierConfiguration.SourceFieldSpec> specs, Boolean includeNullValues) {
     AttachmentDto attachment = new AttachmentDto();
     attachment.color = this.getColorForRecord(record);
     attachment.title = this.getRecordTitle(record);
@@ -204,7 +204,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     attachment.mrkdwn_in = new List<String>{ 'fields' };
     attachment.fields = new List<FieldDto>();
 
-    for (LoggerNotifiableConfiguration.SourceFieldSpec spec : specs) {
+    for (LoggerNotifierConfiguration.SourceFieldSpec spec : specs) {
       FieldDto rendered = this.renderField(record, spec, includeNullValues);
       if (rendered != null) {
         attachment.fields.add(rendered);
@@ -221,7 +221,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     return '<' + ruleLink + '|' + rule.Name + '>';
   }
 
-  private FieldDto renderField(SObject record, LoggerNotifiableConfiguration.SourceFieldSpec spec, Boolean includeNullValues) {
+  private FieldDto renderField(SObject record, LoggerNotifierConfiguration.SourceFieldSpec spec, Boolean includeNullValues) {
     Schema.DescribeFieldResult primaryDescribe = getDescribeByPath(record.getSObjectType(), spec.field);
     if (primaryDescribe == null) {
       return null;
@@ -335,9 +335,9 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     return String.join(parts, '.');
   }
 
-  private static List<String> collectHydrationPaths(List<LoggerNotifiableConfiguration.SourceFieldSpec> specs, Schema.SObjectType sourceType) {
+  private static List<String> collectHydrationPaths(List<LoggerNotifierConfiguration.SourceFieldSpec> specs, Schema.SObjectType sourceType) {
     Set<String> pathSet = new Set<String>();
-    for (LoggerNotifiableConfiguration.SourceFieldSpec spec : specs) {
+    for (LoggerNotifierConfiguration.SourceFieldSpec spec : specs) {
       if (String.isNotBlank(spec.field)) {
         pathSet.add(spec.field);
       }

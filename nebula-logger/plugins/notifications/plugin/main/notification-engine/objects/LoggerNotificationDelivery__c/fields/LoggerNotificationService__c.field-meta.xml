@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LoggerNotificationService__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description>Denormalized lookup to the LoggerNotificationService__c behind this delivery's recipient. Copied from the recipient at write time by the LoggerNotifier runtime. Enables the service record page to show a Deliveries related list without a formula-field workaround.</description>
+    <description>Denormalized lookup to the LoggerNotificationService__c behind this delivery's recipient. Copied from the recipient at write time by the LoggerNotificationProcessor runtime. Enables the service record page to show a Deliveries related list without a formula-field workaround.</description>
     <label>Logger Notification Service</label>
     <referenceTo>LoggerNotificationService__c</referenceTo>
     <relationshipLabel>Logger Notification Deliveries</relationshipLabel>

@@ -13,19 +13,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerNotifiable</apexClass>
+        <apexClass>LoggerNotificationAsyncDispatcher</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerNotifiableConfiguration</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerNotifiableContext</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerNotifiableResult</apexClass>
+        <apexClass>LoggerNotificationProcessor</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -49,11 +41,19 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerNotifierAsyncDispatcher</apexClass>
+        <apexClass>LoggerNotifierConfiguration</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>LoggerNotifierGuidedFormController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LoggerNotifierRequest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LoggerNotifierResult</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

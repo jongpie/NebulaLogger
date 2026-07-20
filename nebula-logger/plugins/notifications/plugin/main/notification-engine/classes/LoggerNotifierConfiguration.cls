@@ -20,36 +20,33 @@
  *                ]
  *              }
  */
-public class LoggerNotifiableConfiguration {
-  private static final LoggerNotifiableConfiguration EMPTY = new LoggerNotifiableConfiguration(new Map<String, Object>());
-
+public class LoggerNotifierConfiguration {
   private final Map<String, Object> rawConfig;
-
-  private LoggerNotifiableConfiguration(Map<String, Object> rawConfig) {
-    this.rawConfig = rawConfig;
-  }
 
   /**
    * @description Parses the JSON on a recipient's `ConfigurationJson__c` field. A blank field or
-   *              malformed JSON both return an empty config that notifiers can safely fall back on.
+   *              malformed JSON both yield an empty configuration that notifiers can safely fall back on.
    * @param recipient The recipient whose configuration should be parsed. May be null.
-   * @return A `LoggerNotifiableConfiguration` - never null.
    */
-  public static LoggerNotifiableConfiguration fromRecipient(LoggerNotificationRecipient__c recipient) {
+  public LoggerNotifierConfiguration(LoggerNotificationRecipient__c recipient) {
+    this.rawConfig = parseRawConfig(recipient);
+  }
+
+  private static Map<String, Object> parseRawConfig(LoggerNotificationRecipient__c recipient) {
     if (recipient == null || String.isBlank(recipient.ConfigurationJson__c)) {
-      return EMPTY;
+      return new Map<String, Object>();
     }
     try {
       Object parsed = System.JSON.deserializeUntyped(recipient.ConfigurationJson__c);
       if (parsed instanceof Map<String, Object>) {
-        return new LoggerNotifiableConfiguration((Map<String, Object>) parsed);
+        return (Map<String, Object>) parsed;
       }
-      return EMPTY;
+      return new Map<String, Object>();
     } catch (System.JSONException ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('LoggerNotifiableConfiguration - could not parse ConfigurationJson__c on recipient ' + recipient.Id, ex);
+        Logger.warn('LoggerNotifierConfiguration - could not parse ConfigurationJson__c on recipient ' + recipient.Id, ex);
       }
-      return EMPTY;
+      return new Map<String, Object>();
     }
   }
 

@@ -1,5 +1,5 @@
 // Directly invokes CustomNotificationLoggerNotifier.sendNotification with a
-// hand-built LoggerNotifiableContext. Use this to verify custom-notification
+// hand-built LoggerNotifierRequest. Use this to verify custom-notification
 // delivery end-to-end without waiting for a LogEntryEvent__e trigger to fire the
 // full notifications pipeline. The Custom Notification is sent synchronously
 // from anonymous Apex - the bell should light up for the target user as soon as
@@ -43,7 +43,7 @@ if (recentEntries.isEmpty()) {
 SObject matchingRecord = recentEntries.get(0);
 System.debug('Testing against LogEntry__c ' + matchingRecord.Id + ' - ' + recentEntries.get(0).Message__c);
 
-// ---- Build the context -------------------------------------------------------
+// ---- Build the request -------------------------------------------------------
 Map<String, Object> configPayload = new Map<String, Object>{ 'notificationTypeDeveloperName' => notificationTypeDeveloperName };
 if (String.isNotBlank(titleTemplate)) {
   configPayload.put('titleTemplate', titleTemplate);
@@ -62,14 +62,14 @@ LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
   User__c = recipientUserId,
   ConfigurationJson__c = System.JSON.serialize(configPayload)
 );
-LoggerNotifiableContext context = new LoggerNotifiableContext(rule, recipient, service, new List<SObject>{ matchingRecord });
+LoggerNotifierRequest request = new LoggerNotifierRequest(rule, recipient, service, new List<SObject>{ matchingRecord });
 
 System.debug('Recipient user: ' + recipientUserId);
 System.debug('Config payload: ' + System.JSON.serialize(configPayload));
 
 // ---- Invoke ------------------------------------------------------------------
 CustomNotificationLoggerNotifier notifier = new CustomNotificationLoggerNotifier();
-LoggerNotifiableResult result = notifier.sendNotification(context);
+LoggerNotifierResult result = notifier.sendNotification(request);
 
 // ---- Report ------------------------------------------------------------------
 System.debug('----- CustomNotificationLoggerNotifier result -----');

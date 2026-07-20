@@ -9,7 +9,7 @@
  *              `OriginOrganizationId__c` on insert so that services cloned into a refreshed sandbox from
  *              another org are flagged as invalid until an admin re-saves them in the current org.
  *              Also validates `NotifierApexClassName__c` at save time - the referenced class must exist
- *              and must implement `LoggerNotifiable` - so admins cannot save a service whose notifier
+ *              and must implement `LoggerNotifier` - so admins cannot save a service whose notifier
  *              class would fail at runtime. Rejects services that configure both a Named Credential and
  *              a Webhook URL at once (Slack + similar notifiers only consume one endpoint - accepting
  *              both is ambiguous). When an admin changes `OriginOrganizationId__c` on an existing
@@ -104,7 +104,7 @@ public without sharing class LoggerNotificationServiceHandler extends LoggerSObj
   private static String validateNotifierClass(String apexClassName) {
     System.Type resolved = resolveApexType(apexClassName);
     if (resolved == null) {
-      return 'Apex class ' + apexClassName + ' was not found. Enter the developer name of an Apex class that implements LoggerNotifiable.';
+      return 'Apex class ' + apexClassName + ' was not found. Enter the developer name of an Apex class that implements LoggerNotifier.';
     }
     Object instance;
     try {
@@ -112,8 +112,8 @@ public without sharing class LoggerNotificationServiceHandler extends LoggerSObj
     } catch (System.Exception ex) {
       return 'Apex class ' + apexClassName + ' could not be instantiated: ' + ex.getMessage();
     }
-    if ((instance instanceof LoggerNotifiable) == false) {
-      return 'Apex class ' + apexClassName + ' does not implement LoggerNotifiable.';
+    if ((instance instanceof LoggerNotifier) == false) {
+      return 'Apex class ' + apexClassName + ' does not implement LoggerNotifier.';
     }
     return null;
   }

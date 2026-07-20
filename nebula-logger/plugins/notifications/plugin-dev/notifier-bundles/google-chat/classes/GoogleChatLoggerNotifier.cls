@@ -5,75 +5,74 @@
 
 /**
  * @group Plugins
- * @description Delivers a `LoggerNotifiableContext` to a Google Chat space using an
+ * @description Delivers a `LoggerNotifierRequest` to a Google Chat space using an
  *              Incoming Webhook (or a Named Credential fronting one). Uses the Card v2 payload
  *              format under the `cardsV2` field.
  */
-public without sharing class GoogleChatLoggerNotifier implements LoggerNotifiable {
+public without sharing class GoogleChatLoggerNotifier implements LoggerNotifier {
   /**
-   * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
-   * @param context The rule + recipient + service + matching records to deliver.
+   * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
+   * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
-    if (context == null || context.recipient == null || context.matchingRecords == null || context.matchingRecords.isEmpty()) {
+  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
-    System.HttpRequest request = this.buildRequest(context);
-    if (request == null) {
+    System.HttpRequest httpRequest = this.buildRequest(request);
+    if (httpRequest == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('GoogleChatLoggerNotifier - service has neither Webhook URL nor Named Credential; skipping');
       }
-      LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-      skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+      LoggerNotifierResult skipped = new LoggerNotifierResult();
+      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
       skipped.errorMessage = 'Service has neither Webhook URL nor Named Credential configured';
       return skipped;
     }
-    request.setBody(this.buildPayload(context));
+    httpRequest.setBody(this.buildPayload(request));
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.finest('GoogleChatLoggerNotifier - sending payload').setHttpRequestDetails(request);
+      Logger.finest('GoogleChatLoggerNotifier - sending payload').setHttpRequestDetails(httpRequest);
     }
-    System.HttpResponse response = new System.Http().send(request);
+    System.HttpResponse response = new System.Http().send(httpRequest);
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('GoogleChatLoggerNotifier - response received').setHttpResponseDetails(response);
     }
     // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
     // Logger.saveLog();
-    return LoggerNotifiableResult.fromHttpRequestAndResponse(request, response, new List<String>{ 'Content-Type' });
+    return new LoggerNotifierResult(httpRequest, response, new List<String>{ 'Content-Type' });
   }
 
-  private System.HttpRequest buildRequest(LoggerNotifiableContext context) {
+  private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(context.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + context.service.NamedCredentialDeveloperName__c;
-    } else if (String.isNotBlank(context.service.WebhookUrl__c)) {
-      endpoint = context.service.WebhookUrl__c;
+    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c;
+    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
+      endpoint = request.service.WebhookUrl__c;
     } else {
       return null;
     }
-    System.HttpRequest request = new System.HttpRequest();
-    request.setEndpoint(endpoint);
-    request.setMethod('POST');
-    request.setHeader('Content-Type', 'application/json; charset=UTF-8');
-    return request;
-  }
+    System.HttpRequest httpRequest = new System.HttpRequest();
+    httpRequest.setEndpoint(endpoint);
+    httpRequest.setMethod('POST');
+    httpRequest.setHeader('Content-Type', 'application/json; charset=UTF-8');
+    return httpRequest;  }
 
   @TestVisible
-  private String buildPayload(LoggerNotifiableContext context) {
+  private String buildPayload(LoggerNotifierRequest request) {
     Map<String, Object> envelope = new Map<String, Object>();
-    envelope.put('text', 'Nebula Logger: ' + context.notificationRule.Name + ' - ' + context.matchingRecords.size() + ' record(s) matched');
-    envelope.put('cardsV2', new List<Map<String, Object>>{ this.buildCard(context) });
+    envelope.put('text', 'Nebula Logger: ' + request.notificationRule.Name + ' - ' + request.matchingRecords.size() + ' record(s) matched');
+    envelope.put('cardsV2', new List<Map<String, Object>>{ this.buildCard(request) });
     return System.JSON.serialize(envelope, true);
   }
 
-  private Map<String, Object> buildCard(LoggerNotifiableContext context) {
+  private Map<String, Object> buildCard(LoggerNotifierRequest request) {
     List<Map<String, Object>> sections = new List<Map<String, Object>>();
-    for (SObject record : context.matchingRecords) {
+    for (SObject record : request.matchingRecords) {
       sections.add(this.buildSection(record));
     }
     return new Map<String, Object>{
       'cardId' => 'nebula-logger-notification',
       'card' => new Map<String, Object>{
-        'header' => new Map<String, Object>{ 'title' => context.notificationRule.Name, 'subtitle' => context.matchingRecords.size() + ' record(s) matched' },
+        'header' => new Map<String, Object>{ 'title' => request.notificationRule.Name, 'subtitle' => request.matchingRecords.size() + ' record(s) matched' },
         'sections' => sections
       }
     };

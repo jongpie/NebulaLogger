@@ -1,5 +1,5 @@
 // Directly invokes EmailLoggerNotifier.sendNotification with a hand-built
-// LoggerNotifiableContext. Use this to verify email delivery end-to-end without
+// LoggerNotifierRequest. Use this to verify email delivery end-to-end without
 // waiting for a LogEntryEvent__e trigger to fire the full notifications
 // pipeline.
 //
@@ -49,7 +49,7 @@ if (recipientUserId == null && String.isBlank(recipientEmailAddress)) {
   throw new System.IllegalArgumentException('Set either recipientUserId or recipientEmailAddress in the CONFIG block');
 }
 
-// ---- Build the context -------------------------------------------------------
+// ---- Build the request -------------------------------------------------------
 LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
   Name = ruleName,
   SourceSObjectType__c = String.valueOf(matchingRecord.getSObjectType()),
@@ -66,13 +66,13 @@ LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
   User__c = String.isBlank(recipientEmailAddress) ? recipientUserId : null,
   EmailAddress__c = String.isBlank(recipientEmailAddress) ? null : recipientEmailAddress
 );
-LoggerNotifiableContext context = new LoggerNotifiableContext(rule, recipient, service, new List<SObject>{ matchingRecord });
+LoggerNotifierRequest request = new LoggerNotifierRequest(rule, recipient, service, new List<SObject>{ matchingRecord });
 
 System.debug('Email target: ' + (String.isNotBlank(recipientEmailAddress) ? 'external address ' + recipientEmailAddress : 'user ' + recipientUserId));
 
 // ---- Invoke ------------------------------------------------------------------
 EmailLoggerNotifier notifier = new EmailLoggerNotifier();
-LoggerNotifiableResult result = notifier.sendNotification(context);
+LoggerNotifierResult result = notifier.sendNotification(request);
 
 // ---- Report ------------------------------------------------------------------
 System.debug('----- EmailLoggerNotifier result -----');

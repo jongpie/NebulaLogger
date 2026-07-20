@@ -189,7 +189,7 @@ private class LoggerNotificationsPlugin_Tests {
     return recorder;
   }
 
-  private class RecordingNotifier extends LoggerNotifier {
+  private class RecordingNotifier extends LoggerNotificationProcessor {
     public Integer invocationCount = 0;
     public Schema.SObjectType lastSObjectType;
     public List<SObject> lastRecords;
