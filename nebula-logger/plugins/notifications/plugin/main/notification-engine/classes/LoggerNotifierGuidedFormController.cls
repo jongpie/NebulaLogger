@@ -98,7 +98,7 @@ public with sharing class LoggerNotifierGuidedFormController {
    *              Used by the guided Rule form's Deduplication Source Field dropdown so admins pick from real
    *              fields on the picked Source SObject Type instead of typing a field name manually. Only
    *              direct fields (not dotted parent-relationship paths) are returned, matching what
-   *              `LoggerNotifier.deduplicateMatchingRecords` supports at runtime.
+   *              `LoggerNotificationProcessor.deduplicateMatchingRecords` supports at runtime.
    * @param  sobjectTypeName Local name of the SObject (e.g. `LogEntry__c`). Namespace-prefixed input is
    *                         accepted too.
    * @return                 Field API names, or an empty list if the type can't be resolved.

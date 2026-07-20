@@ -14,10 +14,10 @@ private class GenericWebhookLoggerNotifier_Tests {
 
     notifier.sendNotification(null);
     notifier.sendNotification(
-      new LoggerNotifiableContext(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
+      new LoggerNotifierRequest(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
     );
     notifier.sendNotification(
-      new LoggerNotifiableContext(
+      new LoggerNotifierRequest(
         new LoggerNotificationRule__c(),
         new LoggerNotificationRecipient__c(),
         new LoggerNotificationService__c(),
@@ -34,7 +34,7 @@ private class GenericWebhookLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext(null, null, new LoggerNotificationRecipient__c()));
+    notifier.sendNotification(buildRequest(null, null, new LoggerNotificationRecipient__c()));
 
     System.Assert.isNull(calloutMock.request);
   }
@@ -45,7 +45,7 @@ private class GenericWebhookLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext('https://example.com/hook/abc', null, new LoggerNotificationRecipient__c()));
+    notifier.sendNotification(buildRequest('https://example.com/hook/abc', null, new LoggerNotificationRecipient__c()));
 
     System.Assert.areEqual('https://example.com/hook/abc', calloutMock.request.getEndpoint());
     System.Assert.areEqual('POST', calloutMock.request.getMethod());
@@ -58,7 +58,7 @@ private class GenericWebhookLoggerNotifier_Tests {
     LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
-    notifier.sendNotification(buildContext(null, 'MyServiceApi', new LoggerNotificationRecipient__c()));
+    notifier.sendNotification(buildRequest(null, 'MyServiceApi', new LoggerNotificationRecipient__c()));
 
     System.Assert.areEqual('callout:MyServiceApi', calloutMock.request.getEndpoint());
   }
@@ -70,7 +70,7 @@ private class GenericWebhookLoggerNotifier_Tests {
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"path": "/v1/events"}');
 
-    notifier.sendNotification(buildContext(null, 'MyServiceApi', recipient));
+    notifier.sendNotification(buildRequest(null, 'MyServiceApi', recipient));
 
     System.Assert.areEqual('callout:MyServiceApi/v1/events', calloutMock.request.getEndpoint());
   }
@@ -82,7 +82,7 @@ private class GenericWebhookLoggerNotifier_Tests {
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"method": "put"}');
 
-    notifier.sendNotification(buildContext('https://example.com/hook', null, recipient));
+    notifier.sendNotification(buildRequest('https://example.com/hook', null, recipient));
 
     System.Assert.areEqual('PUT', calloutMock.request.getMethod());
   }
@@ -96,7 +96,7 @@ private class GenericWebhookLoggerNotifier_Tests {
       ConfigurationJson__c = '{"headers": {"X-Api-Token": "secret", "X-Environment": "prod"}}'
     );
 
-    notifier.sendNotification(buildContext('https://example.com/hook', null, recipient));
+    notifier.sendNotification(buildRequest('https://example.com/hook', null, recipient));
 
     System.Assert.areEqual('secret', calloutMock.request.getHeader('X-Api-Token'));
     System.Assert.areEqual('prod', calloutMock.request.getHeader('X-Environment'));
@@ -109,7 +109,7 @@ private class GenericWebhookLoggerNotifier_Tests {
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"not valid json');
 
-    notifier.sendNotification(buildContext('https://example.com/hook', null, recipient));
+    notifier.sendNotification(buildRequest('https://example.com/hook', null, recipient));
 
     System.Assert.isNotNull(calloutMock.request, 'A malformed config should not prevent delivery');
     System.Assert.areEqual('POST', calloutMock.request.getMethod());
@@ -119,7 +119,7 @@ private class GenericWebhookLoggerNotifier_Tests {
   static void it_should_include_the_canonical_envelope_fields_in_the_payload() {
     GenericWebhookLoggerNotifier notifier = new GenericWebhookLoggerNotifier();
 
-    String payload = notifier.buildPayload(buildContext('https://example.com/hook', null, new LoggerNotificationRecipient__c()));
+    String payload = notifier.buildPayload(buildRequest('https://example.com/hook', null, new LoggerNotificationRecipient__c()));
 
     System.Assert.isTrue(payload.contains('"ruleName"'), 'Payload should include ruleName: ' + payload);
     System.Assert.isTrue(payload.contains('"matchCount" : 2') || payload.contains('"matchCount":2'), 'Payload should include matchCount: ' + payload);
@@ -127,7 +127,7 @@ private class GenericWebhookLoggerNotifier_Tests {
     System.Assert.isTrue(payload.contains('"organizationId"'), 'Payload should include organizationId: ' + payload);
   }
 
-  private static LoggerNotifiableContext buildContext(String webhookUrl, String namedCredentialDeveloperName, LoggerNotificationRecipient__c recipient) {
+  private static LoggerNotifierRequest buildRequest(String webhookUrl, String namedCredentialDeveloperName, LoggerNotificationRecipient__c recipient) {
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
       Name = 'Test rule',
       SourceSObjectType__c = 'LogEntry__c',
@@ -144,6 +144,6 @@ private class GenericWebhookLoggerNotifier_Tests {
       new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'first'),
       new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'second')
     };
-    return new LoggerNotifiableContext(rule, recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(rule, recipient, service, matchingRecords);
   }
 }

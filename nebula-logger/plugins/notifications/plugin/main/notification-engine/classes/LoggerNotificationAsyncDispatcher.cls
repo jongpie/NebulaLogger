@@ -5,11 +5,11 @@
 
 /**
  * @group Plugins
- * @description Async harness for every `LoggerNotifiable` implementation. `LoggerNotifier`
+ * @description Async harness for every `LoggerNotifier` implementation. `LoggerNotificationProcessor`
  *              batches all recipients across all matched rules into a single instance of this
  *              Queueable and enqueues it once per transaction. The Queueable rehydrates each
- *              context, instantiates the notifier class, invokes `sendNotification` in an async
- *              context where callouts are legal, and updates the pre-inserted
+ *              request, instantiates the notifier class, invokes `sendNotification` in an async
+ *              request where callouts are legal, and updates the pre-inserted
  *              `LoggerNotificationDelivery__c` rows with the outcome.
  *
  *              Even non-callout notifiers (Email, CustomNotification) run here rather than in
@@ -20,7 +20,7 @@
  *              If the callout limit is reached partway through, the remaining dispatches are
  *              re-enqueued into a fresh instance so no work is dropped.
  */
-public without sharing class LoggerNotifierAsyncDispatcher implements System.Queueable, Database.AllowsCallouts {
+public without sharing class LoggerNotificationAsyncDispatcher implements System.Queueable, Database.AllowsCallouts {
   @TestVisible
   private final List<PendingDispatch> pendingDispatches;
 
@@ -28,7 +28,7 @@ public without sharing class LoggerNotifierAsyncDispatcher implements System.Que
    * @description Constructs a dispatcher with a batch of pending dispatches.
    * @param pendingDispatches The list of rule+recipient+service+records tuples to deliver.
    */
-  public LoggerNotifierAsyncDispatcher(List<PendingDispatch> pendingDispatches) {
+  public LoggerNotificationAsyncDispatcher(List<PendingDispatch> pendingDispatches) {
     this.pendingDispatches = pendingDispatches != null ? pendingDispatches : new List<PendingDispatch>();
   }
 
@@ -53,49 +53,49 @@ public without sharing class LoggerNotifierAsyncDispatcher implements System.Que
     }
     LoggerDataStore.getDatabase().updateRecords(deliveriesToUpdate);
     if (remaining.isEmpty() == false && System.Limits.getQueueableJobs() < System.Limits.getLimitQueueableJobs()) {
-      LoggerDataStore.getJobQueue().enqueueJob(new LoggerNotifierAsyncDispatcher(remaining));
+      LoggerDataStore.getJobQueue().enqueueJob(new LoggerNotificationAsyncDispatcher(remaining));
     }
   }
 
   private void invokeNotifier(PendingDispatch dispatch, Id jobId, List<LoggerNotificationDelivery__c> deliveriesToUpdate) {
-    LoggerNotifiable notifier = newNotifierInstance(dispatch.service?.NotifierApexClassName__c);
+    LoggerNotifier notifier = newNotifierInstance(dispatch.service?.NotifierApexClassName__c);
     List<LoggerNotificationDelivery__c> deliveryRows = this.rehydrateDeliveryRows(dispatch);
     if (notifier == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('Nebula Logger Notifications - async dispatcher could not instantiate notifier class ' + dispatch.service?.NotifierApexClassName__c);
       }
       if (deliveryRows != null) {
-        LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-        skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+        LoggerNotifierResult skipped = new LoggerNotifierResult();
+        skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
         skipped.errorMessage = 'Could not instantiate notifier class ' + dispatch.service?.NotifierApexClassName__c;
         skipped.jobId = jobId;
         Datetime now = System.now();
-        LoggerNotifier.applyResultToDeliveries(deliveryRows, skipped, now, now);
+        LoggerNotificationProcessor.applyResultToDeliveries(deliveryRows, skipped, now, now);
         deliveriesToUpdate.addAll(deliveryRows);
       }
       return;
     }
-    LoggerNotifiableContext context = new LoggerNotifiableContext(dispatch.notificationRule, dispatch.recipient, dispatch.service, dispatch.matchingRecords);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(dispatch.notificationRule, dispatch.recipient, dispatch.service, dispatch.matchingRecords);
     Datetime dispatchStart = System.now();
-    LoggerNotifiableResult result;
+    LoggerNotifierResult result;
     try {
-      result = notifier.sendNotification(context);
+      result = notifier.sendNotification(request);
     } catch (System.Exception ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.error('Nebula Logger Notifications - async notifier ' + dispatch.service?.NotifierApexClassName__c + ' threw an exception', ex);
       }
-      result = new LoggerNotifiableResult();
-      result.status = LoggerNotifiableResult.STATUS_FAILED;
+      result = new LoggerNotifierResult();
+      result.status = LoggerNotifierResult.STATUS_FAILED;
       result.errorMessage = ex.getMessage();
       result.errorStackTrace = ex.getStackTraceString();
     }
     Datetime dispatchEnd = System.now();
     if (deliveryRows != null) {
       if (result == null) {
-        result = new LoggerNotifiableResult(LoggerNotifiableResult.STATUS_DELIVERED, null);
+        result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
       }
       result.jobId = jobId;
-      LoggerNotifier.applyResultToDeliveries(deliveryRows, result, dispatchStart, dispatchEnd);
+      LoggerNotificationProcessor.applyResultToDeliveries(deliveryRows, result, dispatchStart, dispatchEnd);
       deliveriesToUpdate.addAll(deliveryRows);
     }
   }
@@ -116,7 +116,7 @@ public without sharing class LoggerNotifierAsyncDispatcher implements System.Que
     return System.Limits.getCallouts() >= (System.Limits.getLimitCallouts() - 1);
   }
 
-  private static LoggerNotifiable newNotifierInstance(String apexClassName) {
+  private static LoggerNotifier newNotifierInstance(String apexClassName) {
     if (String.isBlank(apexClassName)) {
       return null;
     }
@@ -125,12 +125,12 @@ public without sharing class LoggerNotifierAsyncDispatcher implements System.Que
       return null;
     }
     Object instance = notifierType.newInstance();
-    return instance instanceof LoggerNotifiable ? (LoggerNotifiable) instance : null;
+    return instance instanceof LoggerNotifier ? (LoggerNotifier) instance : null;
   }
 
   /**
    * @description DTO representing one pending dispatch - a single (rule, recipient, service, records)
-   *              tuple that will be delivered by a `LoggerNotifiable` implementation. Optionally carries
+   *              tuple that will be delivered by a `LoggerNotifier` implementation. Optionally carries
    *              the Ids of pre-inserted `LoggerNotificationDelivery__c` rows so the async dispatcher
    *              can update them with the delivery outcome.
    */

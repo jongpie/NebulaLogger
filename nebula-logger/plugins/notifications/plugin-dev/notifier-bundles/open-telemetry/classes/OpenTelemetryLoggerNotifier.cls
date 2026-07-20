@@ -5,7 +5,7 @@
 
 /**
  * @group Plugins
- * @description Delivers a `LoggerNotifiableContext` to any OpenTelemetry-compatible backend using
+ * @description Delivers a `LoggerNotifierRequest` to any OpenTelemetry-compatible backend using
  *              OTLP-HTTP with a JSON body targeting the `/v1/logs` endpoint. One recipient +
  *              service configuration covers Datadog, Splunk (o11y cloud), Honeycomb, Grafana
  *              Cloud, New Relic, and any other vendor that speaks OTLP.
@@ -24,7 +24,7 @@
  *                  }
  *                }
  */
-public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifiable {
+public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifier {
   private static final String LOGS_PATH = '/v1/logs';
   @TestVisible
   private static final Integer SEVERITY_NUMBER_ERROR = 17;
@@ -36,29 +36,29 @@ public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifi
   private static final Integer SEVERITY_NUMBER_DEBUG = 5;
 
   /**
-   * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
-   * @param context The rule + recipient + service + matching records to deliver.
+   * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
+   * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
-    if (context == null || context.recipient == null || context.matchingRecords == null || context.matchingRecords.isEmpty()) {
+  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
-    Map<String, Object> config = this.parseConfiguration(context.recipient.ConfigurationJson__c);
-    System.HttpRequest request = this.buildRequest(context, config);
-    if (request == null) {
+    Map<String, Object> config = this.parseConfiguration(request.recipient.ConfigurationJson__c);
+    System.HttpRequest httpRequest = this.buildRequest(request, config);
+    if (httpRequest == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('OpenTelemetryLoggerNotifier - service has neither Webhook URL nor Named Credential; skipping');
       }
-      LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-      skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+      LoggerNotifierResult skipped = new LoggerNotifierResult();
+      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
       skipped.errorMessage = 'Service has neither Webhook URL nor Named Credential configured';
       return skipped;
     }
-    request.setBody(this.buildPayload(context, config));
+    httpRequest.setBody(this.buildPayload(request, config));
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.finest('OpenTelemetryLoggerNotifier - sending OTLP-HTTP payload').setHttpRequestDetails(request);
+      Logger.finest('OpenTelemetryLoggerNotifier - sending OTLP-HTTP payload').setHttpRequestDetails(httpRequest);
     }
-    System.HttpResponse response = new System.Http().send(request);
+    System.HttpResponse response = new System.Http().send(httpRequest);
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('OpenTelemetryLoggerNotifier - response received').setHttpResponseDetails(response);
     }
@@ -71,36 +71,35 @@ public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifi
     if (headersRaw instanceof Map<String, Object>) {
       knownHeaderNames.addAll(((Map<String, Object>) headersRaw).keySet());
     }
-    return LoggerNotifiableResult.fromHttpRequestAndResponse(request, response, knownHeaderNames);
+    return new LoggerNotifierResult(httpRequest, response, knownHeaderNames);
   }
 
-  private System.HttpRequest buildRequest(LoggerNotifiableContext context, Map<String, Object> config) {
+  private System.HttpRequest buildRequest(LoggerNotifierRequest request, Map<String, Object> config) {
     String endpoint;
-    if (String.isNotBlank(context.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + context.service.NamedCredentialDeveloperName__c + LOGS_PATH;
-    } else if (String.isNotBlank(context.service.WebhookUrl__c)) {
-      endpoint = context.service.WebhookUrl__c;
+    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c + LOGS_PATH;
+    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
+      endpoint = request.service.WebhookUrl__c;
     } else {
       return null;
     }
-    System.HttpRequest request = new System.HttpRequest();
-    request.setEndpoint(endpoint);
-    request.setMethod('POST');
-    request.setHeader('Content-Type', 'application/json');
+    System.HttpRequest httpRequest = new System.HttpRequest();
+    httpRequest.setEndpoint(endpoint);
+    httpRequest.setMethod('POST');
+    httpRequest.setHeader('Content-Type', 'application/json');
     Object headersRaw = config.get('headers');
     if (headersRaw instanceof Map<String, Object>) {
       for (String headerName : ((Map<String, Object>) headersRaw).keySet()) {
-        request.setHeader(headerName, String.valueOf(((Map<String, Object>) headersRaw).get(headerName)));
+        httpRequest.setHeader(headerName, String.valueOf(((Map<String, Object>) headersRaw).get(headerName)));
       }
     }
-    return request;
-  }
+    return httpRequest;  }
 
   @TestVisible
-  private String buildPayload(LoggerNotifiableContext context, Map<String, Object> config) {
+  private String buildPayload(LoggerNotifierRequest request, Map<String, Object> config) {
     List<Map<String, Object>> logRecords = new List<Map<String, Object>>();
-    for (SObject record : context.matchingRecords) {
-      logRecords.add(this.buildLogRecord(context, record));
+    for (SObject record : request.matchingRecords) {
+      logRecords.add(this.buildLogRecord(request, record));
     }
     Map<String, Object> scopeLogs = new Map<String, Object>{
       'scope' => new Map<String, Object>{ 'name' => 'nebula-logger', 'version' => '1.0.0' },
@@ -113,7 +112,7 @@ public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifi
     return System.JSON.serialize(new Map<String, Object>{ 'resourceLogs' => new List<Map<String, Object>>{ resourceLogs } }, true);
   }
 
-  private Map<String, Object> buildLogRecord(LoggerNotifiableContext context, SObject record) {
+  private Map<String, Object> buildLogRecord(LoggerNotifierRequest request, SObject record) {
     Long nowNanos = System.now().getTime() * 1000000L;
     String severityText = this.tryGetString(record, 'LoggingLevel__c');
     Integer severityNumber = this.severityNumberFor(severityText);
@@ -124,16 +123,16 @@ public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifi
       'severityNumber' => severityNumber,
       'severityText' => severityText,
       'body' => new Map<String, Object>{ 'stringValue' => message ?? '' },
-      'attributes' => this.buildLogAttributes(context, record)
+      'attributes' => this.buildLogAttributes(request, record)
     };
     return logRecord;
   }
 
-  private List<Map<String, Object>> buildLogAttributes(LoggerNotifiableContext context, SObject record) {
+  private List<Map<String, Object>> buildLogAttributes(LoggerNotifierRequest request, SObject record) {
     List<Map<String, Object>> attributes = new List<Map<String, Object>>();
-    this.addAttributeIfPresent(attributes, 'nebula.rule.name', context.notificationRule.Name);
-    this.addAttributeIfPresent(attributes, 'nebula.rule.id', String.valueOf(context.notificationRule.Id));
-    this.addAttributeIfPresent(attributes, 'nebula.service.name', context.service?.Name);
+    this.addAttributeIfPresent(attributes, 'nebula.rule.name', request.notificationRule.Name);
+    this.addAttributeIfPresent(attributes, 'nebula.rule.id', String.valueOf(request.notificationRule.Id));
+    this.addAttributeIfPresent(attributes, 'nebula.service.name', request.service?.Name);
     this.addAttributeIfPresent(attributes, 'log.record.type', String.valueOf(record.getSObjectType()));
     Id recordId = (Id) record.get('Id');
     if (recordId != null) {

@@ -455,7 +455,7 @@ private class LoggerNotifierGuidedFormController_Tests {
     );
   }
 
-  // Builds a service whose NotifierApexClassName__c resolves to a real LoggerNotifiable class so
+  // Builds a service whose NotifierApexClassName__c resolves to a real LoggerNotifier class so
   // the LoggerNotificationServiceHandler validation passes.
   private static LoggerNotificationService__c buildValidService() {
     return new LoggerNotificationService__c(Name = 'Test Service', NotifierApexClassName__c = 'SlackLoggerNotifier', IsEnabled__c = true);

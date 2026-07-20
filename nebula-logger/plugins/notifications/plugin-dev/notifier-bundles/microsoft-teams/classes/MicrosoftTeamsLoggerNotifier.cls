@@ -5,11 +5,11 @@
 
 /**
  * @group Plugins
- * @description Delivers a `LoggerNotifiableContext` to a Microsoft Teams channel using an
+ * @description Delivers a `LoggerNotifierRequest` to a Microsoft Teams channel using an
  *              Incoming Webhook (or a Named Credential fronting one). The payload is a Teams
  *              Adaptive Card 1.4 wrapped in the `attachments` envelope Teams expects.
  */
-public without sharing class MicrosoftTeamsLoggerNotifier implements LoggerNotifiable {
+public without sharing class MicrosoftTeamsLoggerNotifier implements LoggerNotifier {
   @TestVisible
   private static final String COLOR_ATTENTION = 'attention';
   @TestVisible
@@ -20,77 +20,76 @@ public without sharing class MicrosoftTeamsLoggerNotifier implements LoggerNotif
   private static final String COLOR_DEFAULT = 'default';
 
   /**
-   * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
-   * @param context The rule + recipient + service + matching records to deliver.
+   * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
+   * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifiableResult sendNotification(LoggerNotifiableContext context) {
-    if (context == null || context.recipient == null || context.matchingRecords == null || context.matchingRecords.isEmpty()) {
+  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
-    System.HttpRequest request = this.buildRequest(context);
-    if (request == null) {
+    System.HttpRequest httpRequest = this.buildRequest(request);
+    if (httpRequest == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('MicrosoftTeamsLoggerNotifier - service has neither Webhook URL nor Named Credential; skipping');
       }
-      LoggerNotifiableResult skipped = new LoggerNotifiableResult();
-      skipped.status = LoggerNotifiableResult.STATUS_SKIPPED;
+      LoggerNotifierResult skipped = new LoggerNotifierResult();
+      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
       skipped.errorMessage = 'Service has neither Webhook URL nor Named Credential configured';
       return skipped;
     }
-    request.setBody(this.buildPayload(context));
+    httpRequest.setBody(this.buildPayload(request));
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.finest('MicrosoftTeamsLoggerNotifier - sending payload').setHttpRequestDetails(request);
+      Logger.finest('MicrosoftTeamsLoggerNotifier - sending payload').setHttpRequestDetails(httpRequest);
     }
-    System.HttpResponse response = new System.Http().send(request);
+    System.HttpResponse response = new System.Http().send(httpRequest);
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('MicrosoftTeamsLoggerNotifier - response received').setHttpResponseDetails(response);
     }
     // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
     // Logger.saveLog();
-    return LoggerNotifiableResult.fromHttpRequestAndResponse(request, response, new List<String>{ 'Content-Type' });
+    return new LoggerNotifierResult(httpRequest, response, new List<String>{ 'Content-Type' });
   }
 
-  private System.HttpRequest buildRequest(LoggerNotifiableContext context) {
+  private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(context.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + context.service.NamedCredentialDeveloperName__c;
-    } else if (String.isNotBlank(context.service.WebhookUrl__c)) {
-      endpoint = context.service.WebhookUrl__c;
+    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c;
+    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
+      endpoint = request.service.WebhookUrl__c;
     } else {
       return null;
     }
-    System.HttpRequest request = new System.HttpRequest();
-    request.setEndpoint(endpoint);
-    request.setMethod('POST');
-    request.setHeader('Content-Type', 'application/json');
-    return request;
-  }
+    System.HttpRequest httpRequest = new System.HttpRequest();
+    httpRequest.setEndpoint(endpoint);
+    httpRequest.setMethod('POST');
+    httpRequest.setHeader('Content-Type', 'application/json');
+    return httpRequest;  }
 
   @TestVisible
-  private String buildPayload(LoggerNotifiableContext context) {
+  private String buildPayload(LoggerNotifierRequest request) {
     List<Map<String, Object>> attachments = new List<Map<String, Object>>();
     attachments.add(
-      new Map<String, Object>{ 'contentType' => 'application/vnd.microsoft.card.adaptive', 'contentUrl' => null, 'content' => this.buildAdaptiveCard(context) }
+      new Map<String, Object>{ 'contentType' => 'application/vnd.microsoft.card.adaptive', 'contentUrl' => null, 'content' => this.buildAdaptiveCard(request) }
     );
     Map<String, Object> envelope = new Map<String, Object>{ 'type' => 'message', 'attachments' => attachments };
     return System.JSON.serialize(envelope, true);
   }
 
-  private Map<String, Object> buildAdaptiveCard(LoggerNotifiableContext context) {
+  private Map<String, Object> buildAdaptiveCard(LoggerNotifierRequest request) {
     List<Map<String, Object>> body = new List<Map<String, Object>>();
     body.add(
       new Map<String, Object>{
         'type' => 'TextBlock',
         'size' => 'Large',
         'weight' => 'Bolder',
-        'color' => this.overallColor(context.matchingRecords),
-        'text' => 'Nebula Logger: ' + context.notificationRule.Name
+        'color' => this.overallColor(request.matchingRecords),
+        'text' => 'Nebula Logger: ' + request.notificationRule.Name
       }
     );
     body.add(
-      new Map<String, Object>{ 'type' => 'TextBlock', 'spacing' => 'None', 'isSubtle' => true, 'text' => context.matchingRecords.size() + ' record(s) matched' }
+      new Map<String, Object>{ 'type' => 'TextBlock', 'spacing' => 'None', 'isSubtle' => true, 'text' => request.matchingRecords.size() + ' record(s) matched' }
     );
-    for (SObject record : context.matchingRecords) {
+    for (SObject record : request.matchingRecords) {
       body.add(this.buildRecordFactSet(record));
     }
     return new Map<String, Object>{

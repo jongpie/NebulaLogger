@@ -1,5 +1,5 @@
 // Directly invokes SlackLoggerNotifier.sendNotification with a hand-built
-// LoggerNotifiableContext. Use this to verify Slack delivery end-to-end without
+// LoggerNotifierRequest. Use this to verify Slack delivery end-to-end without
 // waiting for a LogEntryEvent__e trigger to fire the full notifications
 // pipeline. Slack accepts HTTP callouts synchronously, so the message posts as
 // soon as the script finishes.
@@ -60,7 +60,7 @@ if (String.isNotBlank(namedCredentialDeveloperName) && String.isNotBlank(webhook
   throw new System.IllegalArgumentException('Set exactly ONE of namedCredentialDeveloperName or webhookUrl, not both');
 }
 
-// ---- Build the context -------------------------------------------------------
+// ---- Build the request -------------------------------------------------------
 Map<String, Object> configPayload = new Map<String, Object>();
 if (sourceFieldsConfig != null) {
   configPayload.put('sourceFields', sourceFieldsConfig);
@@ -78,7 +78,7 @@ LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
   ChannelIdentifier__c = channelIdentifier,
   ConfigurationJson__c = configPayload.isEmpty() ? null : System.JSON.serialize(configPayload)
 );
-LoggerNotifiableContext context = new LoggerNotifiableContext(rule, recipient, service, new List<SObject>{ matchingRecord });
+LoggerNotifierRequest request = new LoggerNotifierRequest(rule, recipient, service, new List<SObject>{ matchingRecord });
 
 System.debug('Slack mode: ' + (String.isNotBlank(namedCredentialDeveloperName) ? 'Named Credential ' + namedCredentialDeveloperName : 'Webhook'));
 System.debug('Channel: ' + channelIdentifier);
@@ -88,7 +88,7 @@ if (configPayload.isEmpty() == false) {
 
 // ---- Invoke ------------------------------------------------------------------
 SlackLoggerNotifier notifier = new SlackLoggerNotifier();
-LoggerNotifiableResult result = notifier.sendNotification(context);
+LoggerNotifierResult result = notifier.sendNotification(request);
 
 // ---- Report ------------------------------------------------------------------
 System.debug('----- SlackLoggerNotifier result -----');
