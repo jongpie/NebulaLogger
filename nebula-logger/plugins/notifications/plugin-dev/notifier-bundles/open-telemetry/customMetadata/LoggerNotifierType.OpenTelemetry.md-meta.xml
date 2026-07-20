@@ -72,11 +72,13 @@ Customize headers and OTEL resource attributes per recipient:
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  &quot;headers&quot;: {
-  },
-  &quot;resourceAttributes&quot;: {
-    &quot;service.name&quot;: &quot;salesforce-nebula-logger&quot;,
-    &quot;deployment.environment&quot;: &quot;production&quot;
+  &quot;*&quot;: {
+    &quot;headers&quot;: {
+    },
+    &quot;resourceAttributes&quot;: {
+      &quot;service.name&quot;: &quot;salesforce-nebula-logger&quot;,
+      &quot;deployment.environment&quot;: &quot;production&quot;
+    }
   }
 }</value>
     </values>

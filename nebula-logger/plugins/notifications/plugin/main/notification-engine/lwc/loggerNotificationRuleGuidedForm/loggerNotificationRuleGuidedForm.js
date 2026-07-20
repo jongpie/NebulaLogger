@@ -109,6 +109,38 @@ function serializePairsToJson(pairs) {
   return JSON.stringify(output, null, 2);
 }
 
+// SuggestedConfigurationJson__c is authored as a map of SObject API name -> suggested config object.
+// A `"*"` key acts as the fallback bucket for any SObject the notifier author didn't spell out. This
+// resolver picks the matching bucket and returns it pretty-printed, so notifiers that support multiple
+// source SObject types can suggest an SObject-appropriate shape (LogEntry__c-focused fields for a
+// LogEntry rule vs Log__c-focused fields for a Log rule) rather than one flat list that only fits one
+// SObject well. Returns `''` when no bucket matches AND no `"*"` fallback exists - the caller treats
+// that the same as a notifier that ships no suggested configuration at all.
+function resolveSuggestedConfigJson(rawJson, sourceSObjectType) {
+  if (!hasValue(rawJson)) {
+    return '';
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(rawJson);
+  } catch (err) {
+    return '';
+  }
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return '';
+  }
+  let bucket = null;
+  if (sourceSObjectType && Object.prototype.hasOwnProperty.call(parsed, sourceSObjectType)) {
+    bucket = parsed[sourceSObjectType];
+  } else if (Object.prototype.hasOwnProperty.call(parsed, '*')) {
+    bucket = parsed['*'];
+  }
+  if (bucket === null || bucket === undefined) {
+    return '';
+  }
+  return JSON.stringify(bucket, null, 2);
+}
+
 function buildAtLeastOneRequiredLabel(fieldNames) {
   if (fieldNames.length === 0) {
     return '';
@@ -761,7 +793,11 @@ export default class LoggerNotificationRuleGuidedForm extends NavigationMixin(Li
         channelIdentifierRequired: notifierType ? notifierType.IsChannelIdentifierRequired__c === true : false,
         emailAddressRequired: notifierType ? notifierType.IsEmailAddressRequired__c === true : false,
         userRequired: notifierType ? notifierType.IsUserRequired__c === true : false,
-        suggestedConfigurationJson: notifierType ? notifierType.SuggestedConfigurationJson__c : null,
+        // Resolved against the rule's Source SObject Type at getter time so the "Load Suggested
+        // Configuration" button only appears when the notifier ships a bucket that applies to the
+        // currently-picked SObject (or a `"*"` fallback). If neither hits, the button is hidden -
+        // there's nothing meaningful to load.
+        suggestedConfigurationJson: notifierType ? resolveSuggestedConfigJson(notifierType.SuggestedConfigurationJson__c, this.rule.SourceSObjectType__c) : '',
         atLeastOneRequiredFields: atLeastOneRequired,
         atLeastOneRequiredLabel: buildAtLeastOneRequiredLabel(atLeastOneRequired),
         atLeastOneRequiredSatisfied: atLeastOneSatisfied,
@@ -912,7 +948,7 @@ export default class LoggerNotificationRuleGuidedForm extends NavigationMixin(Li
       if (field === 'LoggerNotificationService__c') {
         const service = rawValue ? this.services.find(candidate => candidate.Id === rawValue) : null;
         const notifierType = service ? this.notifierTypes.find(notifier => notifier.NotifierApexClassName__c === service.NotifierApexClassName__c) : null;
-        updated.ConfigurationJson__c = notifierType && notifierType.SuggestedConfigurationJson__c ? notifierType.SuggestedConfigurationJson__c : '';
+        updated.ConfigurationJson__c = notifierType ? resolveSuggestedConfigJson(notifierType.SuggestedConfigurationJson__c, this.rule.SourceSObjectType__c) : '';
         updated.formPairs = undefined;
       }
       // A direct JSON textarea edit invalidates the row's cached formPairs - the next Form-view
@@ -985,13 +1021,17 @@ export default class LoggerNotificationRuleGuidedForm extends NavigationMixin(Li
       return;
     }
     const notifierType = this.notifierTypes.find(notifier => notifier.NotifierApexClassName__c === service.NotifierApexClassName__c);
-    if (!notifierType || !notifierType.SuggestedConfigurationJson__c) {
+    if (!notifierType) {
+      return;
+    }
+    const resolvedJson = resolveSuggestedConfigJson(notifierType.SuggestedConfigurationJson__c, this.rule.SourceSObjectType__c);
+    if (!resolvedJson) {
       return;
     }
     // `formPairs` is cleared so the next Form-view render re-materializes from the reset JSON -
     // otherwise the admin would still see whatever pairs they had before hitting Load Suggested Configuration.
     this.pendingRecipients = this.pendingRecipients.map(recipient =>
-      recipient.localId === localId ? { ...recipient, ConfigurationJson__c: notifierType.SuggestedConfigurationJson__c, formPairs: undefined } : recipient
+      recipient.localId === localId ? { ...recipient, ConfigurationJson__c: resolvedJson, formPairs: undefined } : recipient
     );
   }
 
@@ -1315,6 +1355,9 @@ export default class LoggerNotificationRuleGuidedForm extends NavigationMixin(Li
     //
     // `setTimeout(0)` defers the dispatch one macro task so it doesn't fire from inside a resolved-
     // Promise continuation (which the Quick Action container's async-state tracker no-ops).
+    // eslint-disable-next-line @lwc/lwc/no-async-operation -- macro-task defer is intentional; see
+    // above. The Quick Action container silently ignores CloseActionScreenEvent when it's dispatched
+    // from a microtask continuation, so a Promise.resolve().then(...) alternative doesn't work here.
     setTimeout(() => this.dispatchEvent(new CloseActionScreenEvent()), 0);
   }
 
