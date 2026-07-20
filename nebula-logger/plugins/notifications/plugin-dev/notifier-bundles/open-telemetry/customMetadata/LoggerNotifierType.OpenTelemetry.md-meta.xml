@@ -20,16 +20,16 @@ NamedCredentialDeveloperName__c</value>
         <value xsi:type="xsd:string">OpenTelemetry (OTLP HTTP)</value>
     </values>
     <values>
-        <field>IsEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
-    </values>
-    <values>
         <field>IsChannelIdentifierRequired__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>IsEmailAddressRequired__c</field>
         <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsUserRequired__c</field>
@@ -43,12 +43,12 @@ NamedCredentialDeveloperName__c</value>
         <field>SetupGuidanceMarkdown__c</field>
         <value xsi:type="xsd:string">## OpenTelemetry (OTLP HTTP) setup
 
-The notifier speaks the OTLP-HTTP JSON protocol against your OpenTelemetry collector's `/v1/logs` endpoint. Any OTEL-compatible backend (Grafana Cloud, Datadog, Honeycomb, New Relic, Splunk Observability, self-hosted collectors) works.
+The notifier speaks the OTLP-HTTP JSON protocol against your OpenTelemetry collector&apos;s `/v1/logs` endpoint. Any OTEL-compatible backend (Grafana Cloud, Datadog, Honeycomb, New Relic, Splunk Observability, self-hosted collectors) works.
 
 ### Salesforce setup
 
 - **Webhook mode**: paste the full OTLP-HTTP logs endpoint URL into `Webhook URL` (e.g. `https://otlp-gateway.example.com/v1/logs`). The notifier does NOT append `/v1/logs` in this mode - include it in the URL.
-- **Named Credential mode**: create a Named Credential with the base URL of your collector. The notifier appends `/v1/logs` automatically. Most managed collectors (Grafana Cloud, Datadog) authenticate via an Authorization header - configure that on the Named Credential's External Credential.
+- **Named Credential mode**: create a Named Credential with the base URL of your collector. The notifier appends `/v1/logs` automatically. Most managed collectors (Grafana Cloud, Datadog) authenticate via an Authorization header - configure that on the Named Credential&apos;s External Credential.
 
 ### Recipient config JSON
 
@@ -56,12 +56,12 @@ Customize headers and OTEL resource attributes per recipient:
 
 ```json
 {
-  "headers": {
-    "X-Scope-OrgID": "your-tenant-id"
+  &quot;headers&quot;: {
+    &quot;X-Scope-OrgID&quot;: &quot;your-tenant-id&quot;
   },
-  "resourceAttributes": {
-    "service.name": "salesforce-nebula-logger",
-    "deployment.environment": "prod"
+  &quot;resourceAttributes&quot;: {
+    &quot;service.name&quot;: &quot;salesforce-nebula-logger&quot;,
+    &quot;deployment.environment&quot;: &quot;prod&quot;
   }
 }
 ```
@@ -72,11 +72,11 @@ Customize headers and OTEL resource attributes per recipient:
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  "headers": {
+  &quot;headers&quot;: {
   },
-  "resourceAttributes": {
-    "service.name": "salesforce-nebula-logger",
-    "deployment.environment": "production"
+  &quot;resourceAttributes&quot;: {
+    &quot;service.name&quot;: &quot;salesforce-nebula-logger&quot;,
+    &quot;deployment.environment&quot;: &quot;production&quot;
   }
 }</value>
     </values>
