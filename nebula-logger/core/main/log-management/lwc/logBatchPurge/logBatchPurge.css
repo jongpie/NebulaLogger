@@ -4,10 +4,14 @@
   justify-content: flex-end;
 }
 
-.datatable-header {
+/* .datatable-header {
   height: var(--slds-g-sizing-9, 32px);
-}
+} */
 
-.datatable-container {
+/* .datatable-container {
   height: 300px;
+} */
+
+.auto-refresh-interval {
+  min-width: 12rem;
 }
