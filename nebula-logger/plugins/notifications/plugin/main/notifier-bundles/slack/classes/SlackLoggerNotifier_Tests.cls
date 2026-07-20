@@ -187,11 +187,11 @@ private class SlackLoggerNotifier_Tests {
   @IsTest
   static void it_should_render_parent_relationship_fields_when_the_configured_path_is_dotted() {
     // Set up a real Log__c + LogEntry__c so the hydration SOQL can requery the entry with Log__r.Name populated.
-    Log__c parentLog = new Log__c(TransactionId__c = 'txn-' + System.now().getTime());
-    LoggerDataStore.getDatabase().insertRecord(parentLog);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = parentLog.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now(), Message__c = 'Something broke');
+    Log__c log = new Log__c(TransactionId__c = 'txn-' + System.now().getTime());
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now(), Message__c = 'Something broke');
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    parentLog = [SELECT Id, Name FROM Log__c WHERE Id = :parentLog.Id];
+    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","Log__r.Name"]}');
     LoggerNotifiableContext context = new LoggerNotifiableContext(
@@ -205,16 +205,16 @@ private class SlackLoggerNotifier_Tests {
 
     System.Assert.isTrue(payload.contains('Logging Level'), 'The flat field should still render: ' + payload);
     // Log__c uses an auto-number Name, so we assert the actual parent name appears in the payload rather than the field label alone.
-    System.Assert.isTrue(payload.contains(parentLog.Name), 'The parent Log Name value should appear in the payload: ' + payload);
+    System.Assert.isTrue(payload.contains(log.Name), 'The parent Log Name value should appear in the payload: ' + payload);
     // Parent-Name paths should also be rendered as a link to the parent record.
-    System.Assert.isTrue(payload.contains('/' + parentLog.Id + '|'), 'Parent-Name field should be linked to the parent record: ' + payload);
+    System.Assert.isTrue(payload.contains('/' + log.Id + '|'), 'Parent-Name field should be linked to the parent record: ' + payload);
   }
 
   @IsTest
   static void it_should_render_the_source_records_own_name_as_a_field_and_link_to_the_source_record() {
-    Log__c parentLog = new Log__c(TransactionId__c = 'txn-source-name-' + System.now().getTime());
-    LoggerDataStore.getDatabase().insertRecord(parentLog);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = parentLog.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    Log__c log = new Log__c(TransactionId__c = 'txn-source-name-' + System.now().getTime());
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
@@ -233,11 +233,11 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_render_a_reference_field_as_the_parents_name_when_no_display_field_is_specified() {
-    Log__c parentLog = new Log__c(TransactionId__c = 'txn-ref-fallback-' + System.now().getTime());
-    LoggerDataStore.getDatabase().insertRecord(parentLog);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = parentLog.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    Log__c log = new Log__c(TransactionId__c = 'txn-ref-fallback-' + System.now().getTime());
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    parentLog = [SELECT Id, Name FROM Log__c WHERE Id = :parentLog.Id];
+    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
 
     // Configure the raw lookup (Log__c) with no displayField - the runtime should auto-fall-back to Log__r.Name.
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Log__c"]}');
@@ -250,18 +250,15 @@ private class SlackLoggerNotifier_Tests {
 
     String payload = sendAndCapture(context);
 
-    System.Assert.isTrue(payload.contains(parentLog.Name), 'REFERENCE field should render the parent Name: ' + payload);
-    System.Assert.isTrue(
-      payload.contains('/' + parentLog.Id + '|' + parentLog.Name + '>'),
-      'REFERENCE field value should be linked to the parent record: ' + payload
-    );
+    System.Assert.isTrue(payload.contains(log.Name), 'REFERENCE field should render the parent Name: ' + payload);
+    System.Assert.isTrue(payload.contains('/' + log.Id + '|' + log.Name + '>'), 'REFERENCE field value should be linked to the parent record: ' + payload);
   }
 
   @IsTest
   static void it_should_use_the_display_field_value_when_provided() {
-    Log__c parentLog = new Log__c(TransactionId__c = 'txn-displayfield-' + System.now().getTime(), LoggedByUsername__c = 'run-anon@example.com');
-    LoggerDataStore.getDatabase().insertRecord(parentLog);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = parentLog.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    Log__c log = new Log__c(TransactionId__c = 'txn-displayfield-' + System.now().getTime(), LoggedByUsername__c = 'run-anon@example.com');
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     String json = '{"sourceFields":[{"field":"Log__c","displayField":"Log__r.LoggedByUsername__c"}]}';
@@ -277,14 +274,14 @@ private class SlackLoggerNotifier_Tests {
 
     System.Assert.isTrue(payload.contains('run-anon@example.com'), 'displayField value should replace the underlying REFERENCE value: ' + payload);
     // The primary field is still a REFERENCE so we still linkify to the parent record.
-    System.Assert.isTrue(payload.contains('/' + parentLog.Id + '|'), 'Linkification still points at the primary REFERENCE target: ' + payload);
+    System.Assert.isTrue(payload.contains('/' + log.Id + '|'), 'Linkification still points at the primary REFERENCE target: ' + payload);
   }
 
   @IsTest
   static void it_should_use_the_display_label_when_provided() {
-    Log__c parentLog = new Log__c(TransactionId__c = 'txn-displaylabel-' + System.now().getTime());
-    LoggerDataStore.getDatabase().insertRecord(parentLog);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = parentLog.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    Log__c log = new Log__c(TransactionId__c = 'txn-displaylabel-' + System.now().getTime());
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     String json = '{"sourceFields":[{"field":"LoggingLevel__c","displayLabel":"Severity"}]}';
@@ -304,9 +301,9 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_prefix_the_attachment_title_with_the_source_objects_label() {
-    Log__c parentLog = new Log__c(TransactionId__c = 'txn-title-' + System.now().getTime());
-    LoggerDataStore.getDatabase().insertRecord(parentLog);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = parentLog.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    Log__c log = new Log__c(TransactionId__c = 'txn-title-' + System.now().getTime());
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
