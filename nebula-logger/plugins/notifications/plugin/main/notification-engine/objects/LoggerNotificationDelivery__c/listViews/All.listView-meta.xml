@@ -3,8 +3,6 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>LoggerNotificationMatch__c</columns>
-    <columns>MatchedSObjectType__c</columns>
-    <columns>MatchedRecordLink__c</columns>
     <columns>LoggerNotificationService__c</columns>
     <columns>Status__c</columns>
     <columns>AttemptCount__c</columns>
