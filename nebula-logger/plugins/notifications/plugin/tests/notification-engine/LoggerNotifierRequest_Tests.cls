@@ -42,11 +42,11 @@ private class LoggerNotifierRequest_Tests {
     System.Assert.areEqual(request, mockNotifier.lastRequest);
   }
 
-  private class LocalMockNotifier implements LoggerNotifier {
+  private class LocalMockNotifier extends LoggerNotifier {
     public Integer invocationCount = 0;
     public LoggerNotifierRequest lastRequest;
 
-    public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+    public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
       this.invocationCount++;
       this.lastRequest = request;
       return null;

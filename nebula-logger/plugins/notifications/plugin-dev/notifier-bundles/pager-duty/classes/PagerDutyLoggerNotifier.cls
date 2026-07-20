@@ -15,7 +15,7 @@
  *                  "eventAction": "trigger" | "acknowledge" | "resolve"  // default "trigger"
  *                }
  */
-public without sharing class PagerDutyLoggerNotifier implements LoggerNotifier {
+public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
   @TestVisible
   private static final String DEFAULT_ENDPOINT = 'https://events.pagerduty.com/v2/enqueue';
   private static final String DEFAULT_EVENT_ACTION = 'trigger';
@@ -24,7 +24,7 @@ public without sharing class PagerDutyLoggerNotifier implements LoggerNotifier {
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }

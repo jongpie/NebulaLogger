@@ -25,7 +25,7 @@
  *              Unknown tokens resolve to an empty string. A blank / all-blank template falls back
  *              to the default subject.
  */
-public without sharing class EmailLoggerNotifier implements LoggerNotifier {
+public without sharing class EmailLoggerNotifier extends LoggerNotifier {
   private static final List<String> DEFAULT_SOURCE_FIELDS = new List<String>{ 'LoggingLevel__c', 'Origin__c', 'Message__c', 'StackTrace__c' };
   private static final String NULL_VALUE_PLACEHOLDER = '(empty)';
   private static final System.Pattern MERGE_TOKEN_PATTERN = System.Pattern.compile('\\{!([^{}]+)\\}');
@@ -34,7 +34,7 @@ public without sharing class EmailLoggerNotifier implements LoggerNotifier {
    * @description Called by `LoggerNotificationAsyncDispatcher`.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }

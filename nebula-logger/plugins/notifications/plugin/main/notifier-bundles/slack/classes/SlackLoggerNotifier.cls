@@ -23,7 +23,7 @@
  *              recipient's `ConfigurationJson__c` renders them as the mrkdwn placeholder
  *              `` `(null/no value)` `` so admins can still see which fields were empty at match time.
  */
-public without sharing class SlackLoggerNotifier implements LoggerNotifier {
+public without sharing class SlackLoggerNotifier extends LoggerNotifier {
   private static final String NOTIFICATION_COLOR_RED = '#FF7373';
   private static final String NOTIFICATION_COLOR_ORANGE = '#FFC873';
   private static final String NOTIFICATION_COLOR_GREEN = '#7CD197';
@@ -46,7 +46,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifier {
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }

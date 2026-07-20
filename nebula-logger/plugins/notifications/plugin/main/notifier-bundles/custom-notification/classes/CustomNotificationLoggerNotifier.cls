@@ -25,7 +25,7 @@
  *
  *              At least one recipient (either `User__c` or an entry in the config JSON) must resolve.
  */
-public without sharing class CustomNotificationLoggerNotifier implements LoggerNotifier {
+public without sharing class CustomNotificationLoggerNotifier extends LoggerNotifier {
   private static final Integer MAX_TITLE_LENGTH = 80;
   private static final Integer MAX_BODY_LENGTH = 750;
 
@@ -45,7 +45,7 @@ public without sharing class CustomNotificationLoggerNotifier implements LoggerN
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async context.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }

@@ -24,7 +24,7 @@
  *                  }
  *                }
  */
-public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifier {
+public without sharing class OpenTelemetryLoggerNotifier extends LoggerNotifier {
   private static final String LOGS_PATH = '/v1/logs';
   @TestVisible
   private static final Integer SEVERITY_NUMBER_ERROR = 17;
@@ -39,7 +39,7 @@ public without sharing class OpenTelemetryLoggerNotifier implements LoggerNotifi
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
    * @param request The rule + recipient + service + matching records to deliver.
    */
-  public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }

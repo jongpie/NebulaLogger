@@ -1196,8 +1196,8 @@ private class LoggerNotificationProcessor_Tests {
     );
   }
 
-  public class MockNotifier implements LoggerNotifier {
-    public LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+  public class MockNotifier extends LoggerNotifier {
+    public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
       mockNotifierInvocationCount++;
       mockNotifierLastRequest = request;
       if (mockNotifierShouldThrowNext) {
