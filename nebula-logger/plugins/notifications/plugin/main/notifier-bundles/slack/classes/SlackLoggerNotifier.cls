@@ -500,7 +500,16 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     if (fieldMap.containsKey('logginglevel__c')) {
       selectFieldSet.add('LoggingLevel__c');
     }
-    selectFieldSet.addAll(fieldPaths);
+    // Filter out configured paths that don't resolve against the source type's describe. A single bad
+    // path used to poison the whole SELECT via QueryException, which fell back to un-hydrated records
+    // and made every OTHER configured field render as its null placeholder. Dropping unresolvable paths
+    // here lets the good ones still hydrate; `renderField` already silently drops unresolvable paths at
+    // render time, so the two layers stay consistent.
+    for (String path : fieldPaths) {
+      if (getDescribeByPath(type, path) != null) {
+        selectFieldSet.add(path);
+      }
+    }
     String query = 'SELECT ' + String.join(new List<String>(selectFieldSet), ', ') + ' FROM ' + type.getDescribe().getName() + ' WHERE Id IN :ids';
     try {
       return System.Database.queryWithBinds(query, new Map<String, Object>{ 'ids' => ids }, System.AccessLevel.SYSTEM_MODE);
