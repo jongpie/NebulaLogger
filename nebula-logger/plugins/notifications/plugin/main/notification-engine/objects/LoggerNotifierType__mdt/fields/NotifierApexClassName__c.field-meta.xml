@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NotifierApexClassName__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Runtime lookup key. Matches the value admins put on LoggerNotificationService__c.NotifierApexClassName__c. The guided LWCs use this to find the right CMDT record for a service. Include the namespace prefix when the notifier ships from a managed package.</inlineHelpText>
+    <label>Notifier Apex Class Name</label>
+    <length>255</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

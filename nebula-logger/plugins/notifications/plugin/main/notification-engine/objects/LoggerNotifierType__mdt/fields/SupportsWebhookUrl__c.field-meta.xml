@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SupportsWebhookUrl__c</fullName>
+    <defaultValue>false</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Whether services using this notifier can be configured with a Webhook URL. The guided Service form hides LoggerNotificationService__c.WebhookUrl__c when this is false.</inlineHelpText>
+    <label>Supports Webhook URL</label>
+    <type>Checkbox</type>
+</CustomField>

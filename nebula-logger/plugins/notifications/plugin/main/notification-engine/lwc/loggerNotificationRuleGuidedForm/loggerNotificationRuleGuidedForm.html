@@ -1,0 +1,542 @@
+<template>
+  <!--
+    `lightning-quick-action-panel` provides the sticky header + slotted footer that Screen Action
+    Quick Actions expect. It also works fine on the URL-addressable page and inside a
+    LightningModal body (the nested "Create a new Service" flow from the Recipients step uses
+    that path), so the form has ONE rendering path regardless of how it was reached.
+  -->
+  <lightning-quick-action-panel header={cardTitle}>
+    <div class="slds-is-relative slds-scrollable_y slds-p-horizontal_x-small wizard-body">
+      <template lwc:if={isValidatingFilter}>
+        <lightning-spinner alternative-text="Validating filter" size="medium" variant="brand"></lightning-spinner>
+      </template>
+      <ul class="slds-path__nav slds-m-bottom_medium">
+        <template for:each={steps} for:item="step">
+          <li key={step.number} class={step.cssClass}>
+            <a class="slds-path__link" onclick={handleStepClick} data-step={step.number}>
+              <span class="slds-path__stage">
+                <template lwc:if={step.isComplete}>
+                  <lightning-icon icon-name="utility:check" size="x-small" variant="inverse"></lightning-icon>
+                </template>
+              </span>
+              <span class="slds-path__title">{step.label}</span>
+            </a>
+          </li>
+        </template>
+      </ul>
+
+      <template lwc:if={errorMessage}>
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_small" role="alert">{errorMessage}</div>
+      </template>
+
+      <template lwc:if={isStep1}>
+        <h2 class="slds-text-heading_small slds-m-bottom_small">Step 1 - Basics</h2>
+        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+          Name the rule, pick which kind of Nebula Logger record it watches, and write the filter expression that decides which records fire it. Filter uses
+          Salesforce formula syntax - picklist fields must use <code>ISPICKVAL()</code>, not <code>=</code>.
+        </p>
+
+        <lightning-input label="Name" data-field="Name" value={rule.Name} onchange={handleRuleFieldChange} required></lightning-input>
+        <lightning-input
+          type="checkbox"
+          label="Is Enabled"
+          data-field="IsEnabled__c"
+          checked={rule.IsEnabled__c}
+          onchange={handleRuleFieldChange}
+        ></lightning-input>
+        <lightning-combobox
+          label="Source SObject Type"
+          data-field="SourceSObjectType__c"
+          value={rule.SourceSObjectType__c}
+          options={sourceSObjectTypeOptions}
+          onchange={handleRuleFieldChange}
+          required
+        ></lightning-combobox>
+
+        <template lwc:if={hasSourceSObjectTypePicked}>
+          <template lwc:if={hasFilterSuggestions}>
+            <div class="slds-m-top_small slds-m-bottom_small">
+              <p class="slds-text-body_small slds-m-bottom_x-small"><strong>Suggested filters</strong> for {rule.SourceSObjectType__c}:</p>
+              <template for:each={filterSuggestions} for:item="suggestion">
+                <lightning-button
+                  key={suggestion.label}
+                  label={suggestion.label}
+                  variant="neutral"
+                  data-formula={suggestion.formula}
+                  onclick={handleApplyFilterSuggestion}
+                  class="slds-m-right_x-small slds-m-bottom_x-small"
+                ></lightning-button>
+              </template>
+            </div>
+          </template>
+
+          <c-logger-notification-formula-editor
+            label="Source SObject Filter"
+            data-field="SourceSObjectFilter__c"
+            value={rule.SourceSObjectFilter__c}
+            onchange={handleRuleFieldChange}
+            required
+          ></c-logger-notification-formula-editor>
+          <lightning-combobox
+            label="Deduplication Source Field"
+            data-field="DeduplicationSourceField__c"
+            value={rule.DeduplicationSourceField__c}
+            options={deduplicationFieldOptions}
+            onchange={handleRuleFieldChange}
+            placeholder="(none - one match per source record)"
+          ></lightning-combobox>
+          <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+            Optional deduplication field: when set, matching records are collapsed to one match per unique value of the field. For LogEntry__c rules, set to
+            <code>Log__c</code> to alert once per Log instead of once per entry. Only direct fields on the Source SObject Type are supported (parent-relationship
+            paths like <code>Log__r.Name</code> aren't).
+          </p>
+        </template>
+
+        <lightning-textarea
+          label="Comments"
+          data-field="Comments__c"
+          value={rule.Comments__c}
+          onchange={handleRuleFieldChange}
+          class="slds-m-top_small"
+        ></lightning-textarea>
+      </template>
+
+      <template lwc:if={isStep2}>
+        <h2 class="slds-text-heading_small slds-m-bottom_small">Step 2 - Storage &amp; Threshold</h2>
+
+        <div class="slds-box slds-theme_info slds-m-bottom_medium">
+          <p class="slds-text-body_small slds-m-bottom_x-small"><strong>What these flags do &amp; how they affect data volume</strong></p>
+          <ul class="slds-list_dotted slds-text-body_small">
+            <li>
+              <strong>Match History</strong> stores a <code>LoggerNotificationMatch__c</code> row every time an incoming record satisfies this rule's filter.
+              One match row per matched source record. Turn this OFF to fire notifications without leaving an audit trail - useful for high-volume rules where
+              you only care about the outbound message.
+            </li>
+            <li>
+              <strong>Delivery History</strong> stores a <code>LoggerNotificationDelivery__c</code> row for every (match, recipient) pair - one row per
+              recipient per match. Requires Match History because delivery rows are master-detail children of match rows.
+            </li>
+            <li>
+              <strong>Match Threshold</strong> counts recent match rows in a rolling window; the rule only fires once the count crosses the threshold. Requires
+              Match History because it counts stored match rows over time.
+            </li>
+          </ul>
+          <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
+            <strong>Data-volume tip:</strong> a single noisy rule can generate thousands of match + delivery rows per day. Consider using the
+            <code>Deduplication Source Field</code> on Step 1 to collapse matches - e.g. deduplicate by <code>Log__c</code> so a Log with 50 error entries only
+            produces one match, not 50.
+          </p>
+        </div>
+
+        <lightning-input
+          type="checkbox"
+          label="Is Match History Enabled"
+          data-field="IsMatchHistoryEnabled__c"
+          checked={rule.IsMatchHistoryEnabled__c}
+          onchange={handleMatchHistoryChange}
+        ></lightning-input>
+
+        <template lwc:if={showThresholdDependentFields}>
+          <lightning-input
+            type="number"
+            label="Days to Retain Matches"
+            field-level-help="Number of days that this rule's match rows are retained before LogBatchPurger deletes them. Defaults to 14. Leave blank to keep match rows forever."
+            data-field="NumberOfDaysToRetainMatches__c"
+            value={rule.NumberOfDaysToRetainMatches__c}
+            min="1"
+            onchange={handleRuleFieldChange}
+            class="slds-m-top_small"
+          ></lightning-input>
+          <lightning-input
+            type="checkbox"
+            label="Is Delivery History Enabled"
+            data-field="IsDeliveryHistoryEnabled__c"
+            checked={rule.IsDeliveryHistoryEnabled__c}
+            onchange={handleRuleFieldChange}
+            class="slds-m-top_small"
+          ></lightning-input>
+          <template lwc:if={showDeliveryRetentionDaysInput}>
+            <lightning-input
+              type="number"
+              label="Days to Retain Deliveries"
+              field-level-help="Number of days that this rule's delivery rows are retained before LogBatchPurger deletes them. Must be less than or equal to Days to Retain Matches - deliveries are master-detail children of matches, so a deleted match cascades its deliveries with it. Defaults to 7 (typically shorter than Days to Retain Matches so callout payloads clear out sooner). Leave blank to keep delivery rows forever."
+              data-field="NumberOfDaysToRetainDeliveries__c"
+              value={rule.NumberOfDaysToRetainDeliveries__c}
+              min="1"
+              max={rule.NumberOfDaysToRetainMatches__c}
+              onchange={handleRuleFieldChange}
+              class="slds-m-top_small"
+            ></lightning-input>
+          </template>
+          <lightning-input
+            type="checkbox"
+            label="Is Match Threshold Enabled"
+            data-field="IsMatchThresholdEnabled__c"
+            checked={rule.IsMatchThresholdEnabled__c}
+            onchange={handleThresholdEnabledChange}
+            class="slds-m-top_small"
+          ></lightning-input>
+
+          <template lwc:if={showMatchingThresholdDetails}>
+            <div class="slds-box slds-box_x-small slds-m-top_small">
+              <p class="slds-text-body_small slds-m-bottom_small">
+                Set how many matches within the rolling window must occur before the rule fires. Below the threshold, matches are still recorded but no
+                notifications go out.
+              </p>
+              <lightning-input
+                type="number"
+                label="Match Count Threshold"
+                data-field="MatchCountThreshold__c"
+                value={rule.MatchCountThreshold__c}
+                onchange={handleRuleFieldChange}
+                required
+              ></lightning-input>
+              <lightning-input
+                type="number"
+                label="Time Period Increment"
+                data-field="MatchThresholdTimePeriodIncrement__c"
+                value={rule.MatchThresholdTimePeriodIncrement__c}
+                onchange={handleRuleFieldChange}
+                required
+              ></lightning-input>
+              <lightning-combobox
+                label="Time Period Unit"
+                data-field="MatchThresholdTimePeriodUnit__c"
+                value={rule.MatchThresholdTimePeriodUnit__c}
+                options={thresholdTimePeriodUnitOptions}
+                onchange={handleRuleFieldChange}
+                required
+              ></lightning-combobox>
+
+              <template lwc:if={thresholdPlainEnglishSummary}>
+                <p class="slds-text-body_small slds-text-color_success slds-m-top_small" role="note">
+                  <lightning-icon icon-name="utility:info" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                  {thresholdPlainEnglishSummary}
+                </p>
+              </template>
+            </div>
+          </template>
+        </template>
+
+        <template lwc:if={showMatchHistoryOffMessage}>
+          <p class="slds-text-body_small slds-text-color_weak slds-m-top_small">
+            With Match History off, notifications still fire but no <code>LoggerNotificationMatch__c</code> or <code>LoggerNotificationDelivery__c</code> rows
+            are stored, and match thresholds are unavailable (they need stored match rows to count against).
+          </p>
+        </template>
+      </template>
+
+      <template lwc:if={isStep3}>
+        <h2 class="slds-text-heading_small slds-m-bottom_small">Step 3 - Recipients</h2>
+        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+          Add one or more recipients now, or add them later on the rule's record page. A rule with zero enabled recipients will not fire, so you probably want
+          at least one before saving.
+        </p>
+
+        <template lwc:if={showNoServicesEmptyState}>
+          <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info slds-m-bottom_small slds-text-body_small" role="alert">
+            <p class="slds-m-bottom_x-small">
+              <strong>No notification services exist yet.</strong> Every recipient points at a service (Slack, Email, PagerDuty, etc.), so you'll need to create
+              at least one before you can add recipients.
+            </p>
+            <lightning-button
+              variant="brand"
+              label="Create a new Service"
+              icon-name="utility:add"
+              onclick={handleCreateServiceFromEmptyState}
+            ></lightning-button>
+          </div>
+        </template>
+
+        <template lwc:if={hasRecipients}>
+          <template for:each={recipientRows} for:item="recipient">
+            <div key={recipient.localId} class="slds-box slds-box_x-small slds-m-bottom_small">
+              <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
+                <h3 class="slds-text-heading_small">Recipient - {recipient.serviceName}</h3>
+                <lightning-button-icon
+                  icon-name="utility:delete"
+                  variant="bare"
+                  alternative-text="Remove"
+                  data-local-id={recipient.localId}
+                  onclick={handleRemoveRecipient}
+                ></lightning-button-icon>
+              </div>
+
+              <lightning-combobox
+                name="service"
+                label="Notification Service"
+                value={recipient.serviceId}
+                placeholder="Select a service..."
+                options={serviceOptions}
+                data-local-id={recipient.localId}
+                data-field="LoggerNotificationService__c"
+                onchange={handleRecipientFieldChange}
+                required
+              ></lightning-combobox>
+              <template lwc:if={recipient.showCreateServiceButton}>
+                <lightning-button
+                  label="Create a new Service"
+                  variant="base"
+                  icon-name="utility:add"
+                  data-local-id={recipient.localId}
+                  onclick={handleCreateServiceFromRecipientRow}
+                  class="slds-m-top_x-small"
+                ></lightning-button>
+              </template>
+
+              <template lwc:if={recipient.supportsChannelIdentifier}>
+                <lightning-input
+                  label="Channel Identifier"
+                  value={recipient.ChannelIdentifier__c}
+                  data-local-id={recipient.localId}
+                  data-field="ChannelIdentifier__c"
+                  onchange={handleRecipientFieldChange}
+                  required={recipient.channelIdentifierRequired}
+                ></lightning-input>
+              </template>
+              <template lwc:if={recipient.supportsEmailAddress}>
+                <lightning-input
+                  label="Email Address"
+                  value={recipient.EmailAddress__c}
+                  data-local-id={recipient.localId}
+                  data-field="EmailAddress__c"
+                  onchange={handleRecipientFieldChange}
+                  required={recipient.emailAddressRequired}
+                ></lightning-input>
+              </template>
+              <template lwc:if={recipient.supportsUser}>
+                <lightning-record-picker
+                  label="User"
+                  placeholder="Search users..."
+                  object-api-name="User"
+                  value={recipient.User__c}
+                  data-local-id={recipient.localId}
+                  data-field="User__c"
+                  onchange={handleUserChange}
+                  required={recipient.userRequired}
+                ></lightning-record-picker>
+              </template>
+
+              <template lwc:if={recipient.showAtLeastOneRequiredWarning}>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-top_x-small slds-text-body_small" role="alert">
+                  Populate at least one of: {recipient.atLeastOneRequiredLabel}.
+                </div>
+              </template>
+
+              <template lwc:if={recipient.showConfigurationSection}>
+                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-top_small slds-m-bottom_x-small">
+                  <label class="slds-form-element__label slds-m-bottom_none">Configuration</label>
+                  <div class="slds-grid slds-grid_align-end">
+                    <template lwc:if={recipient.suggestedConfigurationJson}>
+                      <lightning-button
+                        label="Load Suggested Configuration"
+                        variant="neutral"
+                        data-local-id={recipient.localId}
+                        onclick={handleLoadSuggestedConfig}
+                        class="slds-m-right_x-small"
+                      ></lightning-button>
+                    </template>
+                    <!--
+                      Two-button group for the JSON/Form view toggle. The active mode's button
+                      gets `variant="brand"` (blue-filled); the inactive mode's stays `neutral`
+                      (gray outline). Both are always visible so admins see the alternative view
+                      is one click away and can visually confirm which view they're currently in.
+                    -->
+                    <lightning-button-group>
+                      <lightning-button
+                        label="Form"
+                        variant={recipient.configFormButtonVariant}
+                        data-local-id={recipient.localId}
+                        data-target-mode="form"
+                        onclick={handleConfigEditorToggle}
+                      ></lightning-button>
+                      <lightning-button
+                        label="JSON"
+                        variant={recipient.configJsonButtonVariant}
+                        data-local-id={recipient.localId}
+                        data-target-mode="json"
+                        onclick={handleConfigEditorToggle}
+                      ></lightning-button>
+                    </lightning-button-group>
+                  </div>
+                </div>
+
+                <template lwc:if={recipient.configEditorToggleError}>
+                  <div
+                    class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-bottom_x-small slds-text-body_small"
+                    role="alert"
+                  >
+                    {recipient.configEditorToggleError}
+                  </div>
+                </template>
+
+                <template lwc:if={recipient.showRowJsonInvalidHint}>
+                  <div
+                    class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-bottom_x-small slds-text-body_small"
+                    role="alert"
+                  >
+                    Row stuck in JSON view - the current JSON is malformed or not a top-level object. Fix the JSON below (or clear it) to enable Form view
+                    again.
+                  </div>
+                </template>
+
+                <template lwc:if={recipient.showJsonEditor}>
+                  <!--
+                    Native `<textarea>` (not `<lightning-textarea>`) so `field-sizing: content` can
+                    reach the element from our stylesheet - same reasoning as the Form-view pair
+                    value textarea below. Text-content binding on native `<textarea>` works for
+                    initial render + on any `recipient` re-derive; `onchange` reads `.value` off
+                    the element imperatively, so two-way binding is not needed.
+                  -->
+                  <textarea
+                    class="slds-textarea config-json-editor"
+                    aria-label="Configuration JSON"
+                    data-local-id={recipient.localId}
+                    data-field="ConfigurationJson__c"
+                    onchange={handleRecipientFieldChange}
+                  >
+{recipient.ConfigurationJson__c}</textarea
+                  >
+                </template>
+
+                <template lwc:if={recipient.showFormEditor}>
+                  <template for:each={recipient.pairs} for:item="pair" for:index="pairIndex">
+                    <div key={pair.localPairId} class="slds-grid slds-grid_vertical-align-start slds-m-bottom_x-small config-pair-row">
+                      <lightning-input
+                        class="slds-shrink-none slds-p-right_x-small config-pair-key"
+                        label="Key"
+                        variant="label-hidden"
+                        placeholder="Key"
+                        value={pair.key}
+                        data-local-id={recipient.localId}
+                        data-pair-index={pairIndex}
+                        onchange={handleConfigPairKeyChange}
+                      ></lightning-input>
+                      <!--
+                        Plain HTML `<textarea>` rather than `<lightning-textarea>`. The wrapper
+                        renders its own `<textarea>` inside its shadow root, which our stylesheet
+                        can't pierce - and `field-sizing: content` is a non-inheritable property
+                        that has to live directly on the element it sizes. Using a native
+                        `<textarea>` puts the element in our LWC's own shadow root where our CSS
+                        applies directly. LWC binds native `<textarea>` values via the element's
+                        text content (an LWC template idiom), so the reactive binding still works.
+                      -->
+                      <textarea
+                        class="slds-textarea slds-grow config-pair-value"
+                        aria-label="Value"
+                        placeholder="Value (JSON scalar or nested object)"
+                        data-local-id={recipient.localId}
+                        data-pair-index={pairIndex}
+                        onchange={handleConfigPairValueChange}
+                      >
+{pair.valueText}</textarea
+                      >
+                      <lightning-button-icon
+                        icon-name="utility:delete"
+                        variant="bare"
+                        alternative-text="Delete configuration entry"
+                        data-local-id={recipient.localId}
+                        data-pair-index={pairIndex}
+                        onclick={handleDeleteConfigPair}
+                      ></lightning-button-icon>
+                    </div>
+                  </template>
+                  <lightning-button
+                    label="Add entry"
+                    variant="base"
+                    icon-name="utility:add"
+                    data-local-id={recipient.localId}
+                    onclick={handleAddConfigPair}
+                    class="slds-m-top_x-small"
+                  ></lightning-button>
+                </template>
+              </template>
+
+              <lightning-input
+                type="checkbox"
+                label="Is Enabled"
+                checked={recipient.IsEnabled__c}
+                data-local-id={recipient.localId}
+                data-field="IsEnabled__c"
+                onchange={handleRecipientFieldChange}
+                class="slds-m-top_medium"
+              ></lightning-input>
+            </div>
+          </template>
+        </template>
+        <template lwc:else>
+          <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">No recipients added yet.</p>
+        </template>
+
+        <lightning-button label="Add recipient" variant="brand" icon-name="utility:add" onclick={handleAddRecipient}></lightning-button>
+      </template>
+
+      <template lwc:if={isStep4}>
+        <h2 class="slds-text-heading_small slds-m-bottom_small">Step 4 - Review &amp; save</h2>
+
+        <div class="slds-box slds-m-bottom_small">
+          <h3 class="slds-text-heading_small slds-m-bottom_x-small">Rule</h3>
+          <dl class="slds-list_horizontal slds-wrap slds-text-body_small">
+            <dt class="slds-item_label slds-truncate slds-size_1-of-3"><strong>Name:</strong></dt>
+            <dd class="slds-item_detail slds-size_2-of-3">{rule.Name}</dd>
+            <dt class="slds-item_label slds-truncate slds-size_1-of-3"><strong>Status:</strong></dt>
+            <dd class="slds-item_detail slds-size_2-of-3">{summaryRuleStatus}</dd>
+            <dt class="slds-item_label slds-truncate slds-size_1-of-3"><strong>Source SObject:</strong></dt>
+            <dd class="slds-item_detail slds-size_2-of-3">{rule.SourceSObjectType__c}</dd>
+          </dl>
+        </div>
+
+        <div class="slds-box slds-m-bottom_small">
+          <h3 class="slds-text-heading_small slds-m-bottom_x-small">Filter</h3>
+          <pre class="slds-text-body_small guidance-pre">{rule.SourceSObjectFilter__c}</pre>
+          <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">{summaryDeduplicationDescription}</p>
+        </div>
+
+        <div class="slds-box slds-m-bottom_small">
+          <h3 class="slds-text-heading_small slds-m-bottom_x-small">Storage &amp; Threshold</h3>
+          <p class="slds-text-body_small">{summaryThresholdDescription}</p>
+          <p class="slds-text-body_small slds-m-top_x-small">{summaryHistoryDescription}</p>
+        </div>
+
+        <div class="slds-box slds-m-bottom_small">
+          <h3 class="slds-text-heading_small slds-m-bottom_x-small">Recipients ({pendingRecipients.length})</h3>
+          <template lwc:if={hasRecipients}>
+            <ul class="slds-list_dotted slds-text-body_small">
+              <template for:each={summaryRecipients} for:item="entry">
+                <li key={entry.localId}><strong>{entry.serviceName}</strong> - {entry.target} ({entry.isEnabled})</li>
+              </template>
+            </ul>
+          </template>
+          <template lwc:else>
+            <div class="slds-notify slds-notify_alert slds-theme_warning slds-text-body_small" role="alert">
+              <strong>No recipients configured.</strong> A rule with zero enabled recipients will not fire. Go back to Step 3 and add at least one, or save now
+              and add them later from the rule's record page.
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+
+    <!--
+      Footer slot is anchored by lightning-quick-action-panel to the bottom of its host - sticky
+      by construction, in both the Quick Action container and the LightningModal body path. No
+      custom `sticky-*` CSS needed.
+    -->
+    <div slot="footer" class="slds-clearfix">
+      <template lwc:if={showPreviousButton}>
+        <lightning-button label="Previous" onclick={handlePreviousStep} class="slds-float_left"></lightning-button>
+      </template>
+      <div class="slds-float_right">
+        <template lwc:if={showCancelButton}>
+          <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_x-small"></lightning-button>
+        </template>
+        <template lwc:if={showNextButton}>
+          <lightning-button variant="brand" label={nextButtonLabel} onclick={handleNextStep} disabled={isValidatingFilter}></lightning-button>
+        </template>
+        <template lwc:if={showSaveButton}>
+          <lightning-button variant="brand" label={saveButtonLabel} onclick={handleSave} disabled={isSaving}></lightning-button>
+        </template>
+      </div>
+    </div>
+  </lightning-quick-action-panel>
+</template>

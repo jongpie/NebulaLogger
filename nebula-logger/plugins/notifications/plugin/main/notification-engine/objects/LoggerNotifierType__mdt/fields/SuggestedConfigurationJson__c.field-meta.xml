@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SuggestedConfigurationJson__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Starter JSON for ConfigurationJson__c that admins can load into a recipient with one click, then customize. Should be a valid JSON object literal that demonstrates the shape of the notifier's per-recipient configuration.</inlineHelpText>
+    <label>Suggested Configuration JSON</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

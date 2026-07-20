@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsOriginOrganizationIdValid__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASESAFEID(OriginOrganizationId__c) = CASESAFEID($Organization.Id)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>TRUE when the record's Origin Organization ID matches the current org. FALSE when a record was cloned into this org from another org (e.g. a refreshed sandbox); such rules are ignored at runtime until an admin re-saves them in the current org.</inlineHelpText>
+    <label>Is Origin Organization ID Valid</label>
+    <type>Checkbox</type>
+</CustomField>

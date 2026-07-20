@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Invalid</fullName>
+    <columns>NAME</columns>
+    <columns>IsEnabled__c</columns>
+    <columns>SourceSObjectType__c</columns>
+    <columns>CurrentOrganizationId__c</columns>
+    <columns>OriginOrganizationId__c</columns>
+    <columns>IsOriginOrganizationIdValid__c</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>IsOriginOrganizationIdValid__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <label>Invalid For Current Org</label>
+</ListView>

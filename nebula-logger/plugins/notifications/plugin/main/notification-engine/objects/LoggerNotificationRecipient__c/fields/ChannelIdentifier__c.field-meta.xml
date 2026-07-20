@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ChannelIdentifier__c</fullName>
+    <inlineHelpText>Service-specific channel identifier - e.g. a Slack channel name like #alerts, a Microsoft Teams channel ID, etc. Interpretation is up to the service's Notifier Apex class.</inlineHelpText>
+    <label>Channel Identifier</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

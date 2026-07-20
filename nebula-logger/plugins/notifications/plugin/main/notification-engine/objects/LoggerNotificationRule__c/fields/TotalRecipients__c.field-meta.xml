@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TotalRecipients__c</fullName>
+    <inlineHelpText>Rolled-up count of LoggerNotificationRecipient__c child records - the total number of recipients configured on this rule, regardless of whether their service is currently enabled.</inlineHelpText>
+    <label>Total Recipients</label>
+    <summaryForeignKey>LoggerNotificationRecipient__c.LoggerNotificationRule__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

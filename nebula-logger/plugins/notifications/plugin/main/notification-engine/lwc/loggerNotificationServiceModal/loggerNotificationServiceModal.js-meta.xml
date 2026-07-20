@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>LightningModal wrapper around loggerNotificationServiceGuidedForm. Rendered by the guided rule form so admins can create a notification service from within the Recipients step without leaving the rule.</description>
+    <masterLabel>Nebula Logger: Service Modal</masterLabel>
+</LightningComponentBundle>

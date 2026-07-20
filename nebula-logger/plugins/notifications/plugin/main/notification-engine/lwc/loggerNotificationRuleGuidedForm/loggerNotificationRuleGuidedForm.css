@@ -1,0 +1,48 @@
+.guidance-pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  font-family: 'Salesforce Sans', Arial, sans-serif;
+  margin: 0;
+}
+
+/*
+ * `slds-scrollable_y` needs an explicit height/max-height to actually scroll - without it the
+ * container just grows to fit content and pushes the sticky footer off-screen. `60vh` keeps the
+ * wizard body inside a scrollable region that respects the viewport, so admins never lose sight
+ * of the sticky Next / Previous / Save / Cancel footer on tall content (Recipients step with
+ * many rows, notifier setup guidance expanded, etc.).
+ */
+.wizard-body {
+  max-height: 60vh;
+}
+
+/*
+ * Config-pair value textarea. Uses a native `<textarea>` (not `lightning-textarea`) so our
+ * stylesheet reaches the element directly - inside our own shadow root, per-selector rules apply.
+ *
+ * `field-sizing: content` (Baseline 2026) auto-grows the textarea to fit its content, so a
+ * single-line value stays compact and a pretty-printed nested object expands to show every line
+ * without a scrollbar. `resize: none` disables the manual drag handle so the browser's content
+ * measurement is the sole authority on height - otherwise `.slds-textarea`'s default resize
+ * behavior competes with `field-sizing` and produces an inconsistent grip. Selector uses the
+ * `textarea.config-pair-value` compound to win specificity against `.slds-textarea` (also a
+ * single-class selector) so SLDS's defaults don't reintroduce the resize handle.
+ *
+ * `white-space: pre` + `overflow-wrap: normal` + `overflow-x: auto` preserve indentation on
+ * pretty-printed nested JSON values and let admins scroll horizontally when a line runs long.
+ */
+textarea.config-pair-value,
+textarea.config-json-editor {
+  field-sizing: content;
+  resize: none;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  font-family: 'Salesforce Mono', 'Consolas', monospace;
+}
+
+.config-pair-key {
+  width: 12rem;
+}

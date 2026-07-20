@@ -1,0 +1,111 @@
+<template>
+  <!--
+    `lightning-quick-action-panel` provides the sticky header + slotted footer that Screen Action
+    Quick Actions expect. Renders the same way whether opened via Quick Action, the URL-addressable
+    /lightning/cmp/ path, or embedded inside LightningModal for the rule form's mid-flow "Create a
+    new Service" escape hatch.
+  -->
+  <lightning-quick-action-panel header={cardTitle}>
+    <div class="slds-scrollable_y form-body">
+      <template lwc:if={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+      </template>
+      <template lwc:else>
+        <template lwc:if={errorMessage}>
+          <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_small" role="alert">{errorMessage}</div>
+        </template>
+
+        <template lwc:if={showNotifierPicker}>
+          <lightning-combobox
+            name="notifierType"
+            label="Notifier Type"
+            value={selectedNotifierApexClassName}
+            placeholder="Select a notifier..."
+            options={notifierTypeOptions}
+            onchange={handleNotifierTypeChange}
+            required
+            class="slds-m-bottom_small"
+          ></lightning-combobox>
+          <template lwc:if={selectedNotifierDescription}>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">{selectedNotifierDescription}</p>
+          </template>
+        </template>
+
+        <template lwc:if={hasNotifierType}>
+          <template lwc:if={selectedNotifierSetupGuidance}>
+            <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+              <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                <h3 class="slds-text-heading_small">Setup guidance for {selectedNotifierDisplayLabel}</h3>
+                <lightning-button-icon
+                  icon-name={guidanceToggleIcon}
+                  variant="bare"
+                  alternative-text={guidanceToggleAltText}
+                  onclick={handleToggleGuidance}
+                ></lightning-button-icon>
+              </div>
+              <template lwc:if={isGuidanceExpanded}>
+                <pre class="slds-text-body_small guidance-pre slds-m-top_small">{selectedNotifierSetupGuidance}</pre>
+              </template>
+            </div>
+          </template>
+
+          <div class="slds-is-relative slds-m-top_small" onchange={handleFormChange}>
+            <template lwc:if={isFormLoading}>
+              <lightning-spinner alternative-text="Loading form" size="small"></lightning-spinner>
+            </template>
+            <lightning-record-edit-form
+              object-api-name="LoggerNotificationService__c"
+              record-id={recordId}
+              onload={handleFormLoad}
+              onsubmit={handleSubmit}
+              onsuccess={handleSaveSuccess}
+              onerror={handleSaveError}
+            >
+              <lightning-messages></lightning-messages>
+
+              <template lwc:if={serviceRequiredFieldsHint}>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-bottom_small slds-text-body_small" role="alert">
+                  {serviceRequiredFieldsHint}
+                </div>
+              </template>
+
+              <!-- Pre-populate Name with the picked notifier's display label so admins have a working
+              default they can accept or edit. Only applied on New; Edit keeps whatever was saved. -->
+              <lightning-input-field field-name="Name" value={defaultServiceName} required></lightning-input-field>
+              <lightning-input-field field-name="NotifierApexClassName__c" value={selectedNotifierApexClassName} required></lightning-input-field>
+              <lightning-input-field field-name="Description__c"></lightning-input-field>
+              <lightning-input-field field-name="IsEnabled__c"></lightning-input-field>
+
+              <!-- Named Credential is offered first because it's the more secure option - the credential secret
+              is stored encrypted, whereas a webhook URL is stored as plaintext on the service record. -->
+              <template lwc:if={selectedNotifierSupportsNamedCredential}>
+                <lightning-input-field field-name="NamedCredentialDeveloperName__c"></lightning-input-field>
+              </template>
+              <template lwc:if={selectedNotifierSupportsWebhookUrl}>
+                <lightning-input-field field-name="WebhookUrl__c"></lightning-input-field>
+              </template>
+
+              <!-- Hidden submit trigger. The visible Save button lives in the quick-action-panel's
+              footer slot to keep it sticky at the bottom of the modal / panel; clicking it calls
+              `handleSaveClick`, which finds this hidden button via `template.querySelector` and
+              synthetically clicks it to trigger the record-edit-form's onsubmit lifecycle. Placing
+              a visible submit button here duplicates the Save affordance, so keep this one hidden. -->
+              <button type="submit" class="hidden-submit-trigger" data-hidden-submit></button>
+            </lightning-record-edit-form>
+          </div>
+        </template>
+      </template>
+    </div>
+
+    <div slot="footer" class="slds-clearfix">
+      <div class="slds-float_right">
+        <template lwc:if={showCancelButton}>
+          <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_x-small"></lightning-button>
+        </template>
+        <template lwc:if={hasNotifierType}>
+          <lightning-button variant="brand" label={saveButtonLabel} onclick={handleSaveClick}></lightning-button>
+        </template>
+      </div>
+    </div>
+  </lightning-quick-action-panel>
+</template>
