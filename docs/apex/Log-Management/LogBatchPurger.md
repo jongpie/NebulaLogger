@@ -4,7 +4,7 @@ layout: default
 
 ## LogBatchPurger class
 
-Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c &lt;= :System.today()`
+Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c &lt;= :System.today()` Plugins can register additional SObject types by implementing `LoggerPlugin.Purgeable` and returning a list of `LogBatchPurger.PurgeableSObjectRegistration` values that specify the SObject type + the field that carries its retention date. Registered types are purged BEFORE the core log objects on each run so plugin data with parent-child references to `Log__c` / `LogEntry__c` gets cleaned up first and the core delete cascade is not blocked by dangling plugin rows.
 
 ### Related
 
@@ -111,5 +111,39 @@ an instance of the Database.QueryLocator class
 | Exception           | Description                            |
 | ------------------- | -------------------------------------- |
 | `NoAccessException` | when there is no delete access to Logs |
+
+---
+
+### Inner Classes
+
+#### LogBatchPurger.PurgeableSObjectRegistration class
+
+Declarative registration payload returned by a `LoggerPlugin.Purgeable` plugin. Carries the SObject type the plugin wants included in the purge chain and the field token whose Date value the purger compares against `System.today()`. The purger builds the SOQL query internally from this declaration - plugins do NOT write query strings themselves - so the retention semantics (`&lt;= today` + `!= NULL`, ordering, and the `LOG_RETENTION_END_DATE` bind) stay consistent across every purgeable SObject. Design intent: keep this DTO append-only so we can add optional properties later (`additionalWhereClause`, custom `sortByField`, `batchSize`, etc.) without ever breaking the `LoggerPlugin.Purgeable` interface signature.
+
+---
+
+##### Constructors
+
+###### `PurgeableSObjectRegistration(Schema.SObjectType sobjectType, Schema.SObjectField retentionDateField)`
+
+Builds a registration for a purgeable SObject.
+####### Parameters
+
+| Param                | Description                                                              |
+| -------------------- | ------------------------------------------------------------------------ |
+| `sobjectType`        | The custom SObject type to include in the purge chain. Its API name must |
+| `retentionDateField` | Date field on `sobjectType` whose value the purger reads to decide       |
+
+---
+
+##### Properties
+
+###### `retentionDateField` → `Schema.SObjectField`
+
+Date field on `sobjectType` whose value drives purge eligibility.
+
+###### `sobjectType` → `Schema.SObjectType`
+
+SObject type to include in the purge chain.
 
 ---

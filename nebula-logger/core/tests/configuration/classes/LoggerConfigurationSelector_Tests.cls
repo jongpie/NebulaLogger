@@ -169,12 +169,30 @@ private class LoggerConfigurationSelector_Tests {
     List<LoggerSObjectHandler__mdt> expectedValues = [
       SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
       FROM LoggerSObjectHandler__mdt
-      WHERE IsEnabled__c = TRUE
     ];
 
     List<LoggerSObjectHandler__mdt> returnedValues = LoggerConfigurationSelector.getInstance().getLoggerSObjectHandlers();
 
     System.Assert.areEqual(expectedValues, returnedValues);
+  }
+
+  @IsTest
+  static void it_returns_disabled_logger_sobject_handlers_from_database_so_the_runtime_can_respect_isEnabled_at_execution_time() {
+    // The runtime gate in LoggerSObjectHandler.execute() reads IsEnabled__c per handler at trigger time,
+    // so the selector deliberately does NOT filter WHERE IsEnabled__c = TRUE - filtering there would
+    // hide disabled records and let the trigger's default-implementation fallback run them anyway.
+    // Prove that at least one disabled record survives the query when one exists in the org.
+    LoggerSObjectHandler__mdt disabledRecord = new LoggerSObjectHandler__mdt(
+      DeveloperName = 'MockDisabled',
+      IsEnabled__c = false,
+      SObjectHandlerApexClass__c = 'SomeHandler'
+    );
+    LoggerConfigurationSelector.mockLoggerSObjectHandlers = new List<LoggerSObjectHandler__mdt>{ disabledRecord };
+
+    List<LoggerSObjectHandler__mdt> returnedValues = LoggerConfigurationSelector.getInstance().getLoggerSObjectHandlers();
+
+    System.Assert.areEqual(1, returnedValues.size(), 'Selector should not filter out disabled records');
+    System.Assert.areEqual(false, returnedValues.get(0).IsEnabled__c);
   }
 
   @IsTest

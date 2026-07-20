@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BatchPurgeRegistrarApexClass__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Apex class implementing LoggerPlugin.Purgeable. LogBatchPurger instantiates it at the start of every batch run and calls getPurgeRegistrations() so plugin-owned SObjects can be included in the core purge job.</inlineHelpText>
+    <label>Batch Purge Registrar Apex Class</label>
+    <length>255</length>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

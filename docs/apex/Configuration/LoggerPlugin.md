@@ -75,6 +75,26 @@ Batchable
 
 The dynamically created instance of `LoggerPlugin.Batchable`,
 
+#### `newPurgeableInstance(String apexClassTypeName)` → `Purgeable`
+
+Creates an instance of the class `LoggerPlugin.Purgeable` based on the provided Apex class name.
+
+##### Parameters
+
+| Param               | Description                                                         |
+| ------------------- | ------------------------------------------------------------------- |
+| `apexClassTypeName` | The name of the Apex class that implements `LoggerPlugin.Purgeable` |
+
+##### Return
+
+**Type**
+
+Purgeable
+
+**Description**
+
+The dynamically created instance of `LoggerPlugin.Purgeable`,
+
 #### `newTriggerableInstance(String apexClassTypeName)` → `Triggerable`
 
 Creates an instance of the class `LoggerPlugin.Triggerable` based on the provided `LoggerPlugin_t` configuration
@@ -114,6 +134,18 @@ Interface used to create plugins that can be used within Logger&apos;s batch job
 ###### `finish(LoggerPlugin_t configuration, LoggerBatchableContext input)` → `void`
 
 ###### `start(LoggerPlugin_t configuration, LoggerBatchableContext input)` → `void`
+
+---
+
+#### LoggerPlugin.Purgeable interface
+
+Interface used to register additional SObject types with `LogBatchPurger` so plugin-owned objects can be purged by the same batch job that manages core Log data. Implementations return a list of `LogBatchPurger.PurgeableSObjectRegistration` values that specify the SObject type + the field that carries its retention date; the purger builds the SOQL query internally so plugins do not write query strings themselves. Plugins wire this in via the `BatchPurgeRegistrarApexClass__c` field on `LoggerPlugin_t`; the purger instantiates the class and calls `getPurgeableSObjectRegistrations()` at the start of every batch run. List order is preserved by the purger so a plugin with parent + child SObjects can order the child before the parent.
+
+---
+
+##### Methods
+
+###### `getPurgeableSObjectRegistrations()` → `List<LogBatchPurger.PurgeableSObjectRegistration>`
 
 ---
 

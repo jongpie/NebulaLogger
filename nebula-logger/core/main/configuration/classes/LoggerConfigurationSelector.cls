@@ -186,11 +186,13 @@ public without sharing class LoggerConfigurationSelector {
     // TODO eventually update this method to handle mapping relationship fields to lookup fields,
     // Example: handler.SObjectType__c = handler.SObjectType__r.QualifiedApiName;
     // Right now, this is handled in LoggerSObjectHandler
+    // Disabled records are still returned - LoggerSObjectHandler.execute() gates on IsEnabled__c per
+    // handler at runtime, so filtering the query on IsEnabled__c = TRUE would hide disabled records
+    // from the runtime and let the trigger's default-implementation fallback run them anyway.
     return mockLoggerSObjectHandlers ??
       [
         SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
         FROM LoggerSObjectHandler__mdt
-        WHERE IsEnabled__c = TRUE
       ];
   }
 
