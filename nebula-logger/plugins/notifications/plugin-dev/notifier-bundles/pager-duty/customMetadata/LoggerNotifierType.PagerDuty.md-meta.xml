@@ -75,11 +75,13 @@ If `severityByLoggingLevel` is omitted the notifier uses sensible defaults. Dedu
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  &quot;routingKey&quot;: &quot;REPLACE_WITH_PAGERDUTY_INTEGRATION_KEY&quot;,
-  &quot;severityByLoggingLevel&quot;: {
-    &quot;ERROR&quot;: &quot;critical&quot;,
-    &quot;WARN&quot;: &quot;warning&quot;,
-    &quot;INFO&quot;: &quot;info&quot;
+  &quot;*&quot;: {
+    &quot;routingKey&quot;: &quot;REPLACE_WITH_PAGERDUTY_INTEGRATION_KEY&quot;,
+    &quot;severityByLoggingLevel&quot;: {
+      &quot;ERROR&quot;: &quot;critical&quot;,
+      &quot;WARN&quot;: &quot;warning&quot;,
+      &quot;INFO&quot;: &quot;info&quot;
+    }
   }
 }</value>
     </values>

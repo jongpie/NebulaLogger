@@ -62,12 +62,25 @@ The notifier sends Google Chat&apos;s `text` and `cardsV2` payload shape. Rich f
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  &quot;sourceFields&quot;: [
-    &quot;LoggingLevel__c&quot;,
-    &quot;Message__c&quot;,
-    &quot;StackTrace__c&quot;,
-    &quot;ExceptionType__c&quot;
-  ]
+  &quot;LogEntry__c&quot;: {
+    &quot;sourceFields&quot;: [
+      &quot;LoggingLevel__c&quot;,
+      &quot;Message__c&quot;,
+      &quot;StackTrace__c&quot;,
+      &quot;ExceptionType__c&quot;
+    ]
+  },
+  &quot;Log__c&quot;: {
+    &quot;sourceFields&quot;: [
+      &quot;Name&quot;,
+      &quot;TransactionId__c&quot;,
+      &quot;TotalERRORLogEntries__c&quot;,
+      &quot;TotalWARNLogEntries__c&quot;
+    ]
+  },
+  &quot;*&quot;: {
+    &quot;sourceFields&quot;: [&quot;Name&quot;]
+  }
 }</value>
     </values>
     <values>

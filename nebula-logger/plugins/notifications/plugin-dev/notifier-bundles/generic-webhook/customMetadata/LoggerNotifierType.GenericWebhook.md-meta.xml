@@ -84,8 +84,10 @@ Every request has the same top-level shape:
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  &quot;method&quot;: &quot;POST&quot;,
-  &quot;headers&quot;: {
+  &quot;*&quot;: {
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;headers&quot;: {
+    }
   }
 }</value>
     </values>

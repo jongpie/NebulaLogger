@@ -78,9 +78,21 @@ Custom Notifications are Salesforce&apos;s in-app notification framework. Users 
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  &quot;notificationTypeDeveloperName&quot;: &quot;LoggerCustomNotification&quot;,
-  &quot;titleTemplate&quot;: &quot;Nebula Logger: {RuleName}&quot;,
-  &quot;bodyTemplate&quot;: &quot;[{LoggingLevel__c}] {Message__c}&quot;
+  &quot;LogEntry__c&quot;: {
+    &quot;notificationTypeDeveloperName&quot;: &quot;LoggerCustomNotification&quot;,
+    &quot;titleTemplate&quot;: &quot;Nebula Logger: {RuleName}&quot;,
+    &quot;bodyTemplate&quot;: &quot;[{LoggingLevel__c}] {Message__c}&quot;
+  },
+  &quot;Log__c&quot;: {
+    &quot;notificationTypeDeveloperName&quot;: &quot;LoggerCustomNotification&quot;,
+    &quot;titleTemplate&quot;: &quot;Nebula Logger: {RuleName}&quot;,
+    &quot;bodyTemplate&quot;: &quot;{Name}: {TotalERRORLogEntries__c} ERROR, {TotalWARNLogEntries__c} WARN&quot;
+  },
+  &quot;*&quot;: {
+    &quot;notificationTypeDeveloperName&quot;: &quot;LoggerCustomNotification&quot;,
+    &quot;titleTemplate&quot;: &quot;Nebula Logger: {RuleName}&quot;,
+    &quot;bodyTemplate&quot;: &quot;{Name}&quot;
+  }
 }</value>
     </values>
     <values>
