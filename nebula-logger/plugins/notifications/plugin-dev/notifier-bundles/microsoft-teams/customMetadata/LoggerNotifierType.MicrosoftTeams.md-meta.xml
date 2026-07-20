@@ -13,15 +13,11 @@ NamedCredentialDeveloperName__c</value>
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Posts messages to a Microsoft Teams channel via a Power Automate workflow that receives the payload and forwards to Teams. Teams doesn't ship a first-party incoming webhook anymore (Office 365 Connectors are deprecated as of 2025), so the setup routes through a Workflow that admins build once per channel.</value>
+        <value xsi:type="xsd:string">Posts messages to a Microsoft Teams channel via a Power Automate workflow that receives the payload and forwards to Teams. Teams doesn&apos;t ship a first-party incoming webhook anymore (Office 365 Connectors are deprecated as of 2025), so the setup routes through a Workflow that admins build once per channel.</value>
     </values>
     <values>
         <field>DisplayLabel__c</field>
         <value xsi:type="xsd:string">Microsoft Teams</value>
-    </values>
-    <values>
-        <field>IsEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsChannelIdentifierRequired__c</field>
@@ -30,6 +26,10 @@ NamedCredentialDeveloperName__c</value>
     <values>
         <field>IsEmailAddressRequired__c</field>
         <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsUserRequired__c</field>
@@ -48,27 +48,27 @@ Microsoft deprecated Office 365 Connectors in 2025. New Teams integrations go th
 ### One-time setup per channel
 
 1. In Teams, open the target channel -&gt; channel name dropdown -&gt; **Workflows**
-2. Search for the template **"Post to a channel when a webhook request is received"**
+2. Search for the template **&quot;Post to a channel when a webhook request is received&quot;**
 3. Follow the template wizard - pick the team, pick the channel, sign in as needed
 4. Copy the **HTTP POST URL** the wizard hands you at the end. This is the webhook.
 
 ### Salesforce setup
 
-- **Webhook mode**: paste the workflow's HTTP POST URL into this service's `Webhook URL` field
+- **Webhook mode**: paste the workflow&apos;s HTTP POST URL into this service&apos;s `Webhook URL` field
 - **Named Credential mode**: create a Named Credential with the base URL of the workflow endpoint and reference it here. Rarely needed for Teams - the workflow URL already carries a signed token.
 
 ### Payload format
 
-The notifier sends a JSON payload matching the "Post to a channel when a webhook request is received" template's expected shape. If you customized the workflow beyond the template default, the payload may not render correctly - restore the template defaults or update the workflow to parse the custom fields the notifier sends.</value>
+The notifier sends a JSON payload matching the &quot;Post to a channel when a webhook request is received&quot; template&apos;s expected shape. If you customized the workflow beyond the template default, the payload may not render correctly - restore the template defaults or update the workflow to parse the custom fields the notifier sends.</value>
     </values>
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  "sourceFields": [
-    "LoggingLevel__c",
-    "Message__c",
-    "StackTrace__c",
-    "ExceptionType__c"
+  &quot;sourceFields&quot;: [
+    &quot;LoggingLevel__c&quot;,
+    &quot;Message__c&quot;,
+    &quot;StackTrace__c&quot;,
+    &quot;ExceptionType__c&quot;
   ]
 }</value>
     </values>

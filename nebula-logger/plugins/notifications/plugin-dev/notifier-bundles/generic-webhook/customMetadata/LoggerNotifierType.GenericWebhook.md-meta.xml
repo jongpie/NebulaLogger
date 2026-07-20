@@ -13,15 +13,11 @@ NamedCredentialDeveloperName__c</value>
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">POSTs a Nebula-Logger-shaped JSON envelope to any HTTP endpoint. Use for integrations that don't fit one of the purpose-built notifiers - internal systems, third-party observability tools, ad-hoc webhooks. Fully customizable HTTP method, path, and headers per recipient.</value>
+        <value xsi:type="xsd:string">POSTs a Nebula-Logger-shaped JSON envelope to any HTTP endpoint. Use for integrations that don&apos;t fit one of the purpose-built notifiers - internal systems, third-party observability tools, ad-hoc webhooks. Fully customizable HTTP method, path, and headers per recipient.</value>
     </values>
     <values>
         <field>DisplayLabel__c</field>
         <value xsi:type="xsd:string">Generic Webhook</value>
-    </values>
-    <values>
-        <field>IsEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsChannelIdentifierRequired__c</field>
@@ -30,6 +26,10 @@ NamedCredentialDeveloperName__c</value>
     <values>
         <field>IsEmailAddressRequired__c</field>
         <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsUserRequired__c</field>
@@ -43,23 +43,23 @@ NamedCredentialDeveloperName__c</value>
         <field>SetupGuidanceMarkdown__c</field>
         <value xsi:type="xsd:string">## Generic Webhook setup
 
-Use this notifier for HTTP endpoints that don't fit one of the purpose-built integrations. The payload is a Nebula-Logger-shaped envelope you can parse on your receiving side.
+Use this notifier for HTTP endpoints that don&apos;t fit one of the purpose-built integrations. The payload is a Nebula-Logger-shaped envelope you can parse on your receiving side.
 
 ### Salesforce setup
 
-- **Webhook mode**: paste the endpoint URL into this service's `Webhook URL` field. All recipients hit the same URL (customize path per recipient via config JSON if needed).
-- **Named Credential mode**: create a Named Credential referencing your endpoint's base URL with whatever auth protocol the endpoint requires (OAuth, Custom header, mutual TLS, etc.). Reference the Named Credential here.
+- **Webhook mode**: paste the endpoint URL into this service&apos;s `Webhook URL` field. All recipients hit the same URL (customize path per recipient via config JSON if needed).
+- **Named Credential mode**: create a Named Credential referencing your endpoint&apos;s base URL with whatever auth protocol the endpoint requires (OAuth, Custom header, mutual TLS, etc.). Reference the Named Credential here.
 
 ### Recipient config JSON
 
-The recipient's config controls HTTP method, path suffix, and any custom headers on top of the built-in `Content-Type: application/json`:
+The recipient&apos;s config controls HTTP method, path suffix, and any custom headers on top of the built-in `Content-Type: application/json`:
 
 ```json
 {
-  "method": "POST",
-  "path": "/webhook/nebula",
-  "headers": {
-    "X-Custom-Header": "custom-value"
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path&quot;: &quot;/webhook/nebula&quot;,
+  &quot;headers&quot;: {
+    &quot;X-Custom-Header&quot;: &quot;custom-value&quot;
   }
 }
 ```
@@ -74,18 +74,18 @@ Every request has the same top-level shape:
 
 ```json
 {
-  "notificationName": "&lt;rule name&gt;",
-  "sourceSObjectType": "LogEntry__c",
-  "channelIdentifier": "&lt;recipient's ChannelIdentifier__c value if any&gt;",
-  "matchingRecords": [ /* array of the matched source records */ ]
+  &quot;notificationName&quot;: &quot;&lt;rule name&gt;&quot;,
+  &quot;sourceSObjectType&quot;: &quot;LogEntry__c&quot;,
+  &quot;channelIdentifier&quot;: &quot;&lt;recipient&apos;s ChannelIdentifier__c value if any&gt;&quot;,
+  &quot;matchingRecords&quot;: [ /* array of the matched source records */ ]
 }
 ```</value>
     </values>
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  "method": "POST",
-  "headers": {
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;headers&quot;: {
   }
 }</value>
     </values>

@@ -20,16 +20,16 @@ NamedCredentialDeveloperName__c</value>
         <value xsi:type="xsd:string">Google Chat</value>
     </values>
     <values>
-        <field>IsEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
-    </values>
-    <values>
         <field>IsChannelIdentifierRequired__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>IsEmailAddressRequired__c</field>
         <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsUserRequired__c</field>
@@ -52,21 +52,21 @@ NamedCredentialDeveloperName__c</value>
 
 ### Salesforce setup
 
-- Paste the webhook URL into this service's `Webhook URL` field
-- Named Credential mode is technically supported but rarely useful - Google Chat webhooks include a signed key in the URL itself, so there's no additional auth to wrap.
+- Paste the webhook URL into this service&apos;s `Webhook URL` field
+- Named Credential mode is technically supported but rarely useful - Google Chat webhooks include a signed key in the URL itself, so there&apos;s no additional auth to wrap.
 
 ### Message format
 
-The notifier sends Google Chat's `text` and `cardsV2` payload shape. Rich formatting (bold, links, code blocks) uses Google Chat's own Markdown-like syntax, which differs from Slack's.</value>
+The notifier sends Google Chat&apos;s `text` and `cardsV2` payload shape. Rich formatting (bold, links, code blocks) uses Google Chat&apos;s own Markdown-like syntax, which differs from Slack&apos;s.</value>
     </values>
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  "sourceFields": [
-    "LoggingLevel__c",
-    "Message__c",
-    "StackTrace__c",
-    "ExceptionType__c"
+  &quot;sourceFields&quot;: [
+    &quot;LoggingLevel__c&quot;,
+    &quot;Message__c&quot;,
+    &quot;StackTrace__c&quot;,
+    &quot;ExceptionType__c&quot;
   ]
 }</value>
     </values>
