@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EmailAddress__c</fullName>
+    <inlineHelpText>Email address used by the Email notifier when User__c is blank. Currently consumed only by EmailLoggerNotifier - other notifier types don't read this field.</inlineHelpText>
+    <label>Email Address</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

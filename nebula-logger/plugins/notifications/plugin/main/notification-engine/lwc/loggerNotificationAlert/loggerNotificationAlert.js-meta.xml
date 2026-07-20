@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <description>Renders an SLDS-styled alert (base, warning, error, or offline). Message content supports rich text HTML.</description>
+    <masterLabel>Nebula Logger: Notification Alert</masterLabel>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="title" type="String" label="Title" description="Optional short heading rendered before the message." />
+            <property name="message" type="String" label="Message" description="Alert body. Supports HTML markup (bold, links, lists, etc.)." required="true" />
+            <property name="variant" type="String" label="Variant" description="Visual style of the alert." default="warning" datasource="base,warning,error,offline" />
+            <property name="iconName" type="String" label="Icon Name" description="Optional utility icon override (e.g. utility:info). Defaults to a sensible icon per variant." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

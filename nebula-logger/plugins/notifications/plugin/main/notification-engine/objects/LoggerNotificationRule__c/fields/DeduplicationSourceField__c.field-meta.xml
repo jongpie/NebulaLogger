@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DeduplicationSourceField__c</fullName>
+    <inlineHelpText>Optional. When set, the runtime deduplicates matching source records by this field before recording matches - one match (and one notification) per unique value of the field. For example, on a LogEntry__c rule, setting this to Log__c collapses many entries from the same log to a single match / dispatch. Blank means every matching record gets its own match and its own delivery. Must be an API name of a field on the rule's Source SObject Type; validated at save time.</inlineHelpText>
+    <label>Deduplication Source Field</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

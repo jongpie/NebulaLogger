@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsDeliveryHistoryEnabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>When TRUE, LoggerNotificationDelivery__c records are persisted for every (match, recipient) tuple - one row per delivery target. Requires Match History Enabled to also be TRUE, since a delivery has a required master-detail parent to a match row.</description>
+    <inlineHelpText>Store a LoggerNotificationDelivery__c row for each (match, recipient) tuple. Requires Match History Enabled = TRUE.</inlineHelpText>
+    <label>Is Delivery History Enabled</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

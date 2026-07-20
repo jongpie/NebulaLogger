@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsMatchHistoryEnabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>When TRUE, LoggerNotificationMatch__c records are persisted for every matched source record. When FALSE, the runtime still evaluates the rule and dispatches to recipients, but does not store match history. Required by the threshold-over-time feature.</description>
+    <inlineHelpText>Store a LoggerNotificationMatch__c row for each matched source record. Required by the threshold-over-time feature and by delivery history.</inlineHelpText>
+    <label>Is Match History Enabled</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

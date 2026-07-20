@@ -1,0 +1,16 @@
+.guidance-pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  font-family: 'Salesforce Sans', Arial, sans-serif;
+  margin: 0;
+}
+
+/*
+ * `slds-scrollable_y` needs an explicit height/max-height for the browser to render a scrollbar.
+ * See loggerNotificationRuleGuidedForm.css for the same pattern.
+ */
+.form-body {
+  max-height: 60vh;
+}

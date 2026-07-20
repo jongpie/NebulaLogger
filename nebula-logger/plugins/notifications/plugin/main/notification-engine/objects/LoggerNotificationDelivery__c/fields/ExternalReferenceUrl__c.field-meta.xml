@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ExternalReferenceUrl__c</fullName>
+    <inlineHelpText>Deep link to view this delivery in the target system's UI (e.g. Slack thread URL, PagerDuty incident page). Rendered as a clickable link on the delivery record page.</inlineHelpText>
+    <label>External Reference URL</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SupportsUser__c</fullName>
+    <defaultValue>false</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Whether recipients of services using this notifier can populate LoggerNotificationRecipient__c.User__c. The guided Recipient form hides the field when this is false.</inlineHelpText>
+    <label>Supports User</label>
+    <type>Checkbox</type>
+</CustomField>

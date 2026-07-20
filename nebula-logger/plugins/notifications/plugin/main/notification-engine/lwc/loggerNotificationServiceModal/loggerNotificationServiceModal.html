@@ -1,0 +1,10 @@
+<template>
+  <lightning-modal-body>
+    <c-logger-notification-service-guided-form
+      embedded
+      record-id={recordId}
+      oncreate={handleServiceCreated}
+      onclose={handleServiceFormClose}
+    ></c-logger-notification-service-guided-form>
+  </lightning-modal-body>
+</template>

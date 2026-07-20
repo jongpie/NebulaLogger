@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequestHeaders__c</fullName>
+    <inlineHelpText>Request headers the notifier sent, serialized as one Key: value per line. Apex HttpRequest has no getHeaderKeys(), so the runtime relies on the notifier to enumerate what it set - every header the notifier hands forward ends up here, including auth headers like Authorization or X-Api-Key. If you need to restrict which headers get captured, set up an admin-facing allowlist on LoggerNotificationService__c (see the plugin backlog for the design).</inlineHelpText>
+    <label>Request Headers</label>
+    <length>32768</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

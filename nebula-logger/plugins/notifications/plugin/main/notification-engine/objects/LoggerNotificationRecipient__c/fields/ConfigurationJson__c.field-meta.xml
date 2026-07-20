@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ConfigurationJson__c</fullName>
+    <inlineHelpText>Optional service-specific configuration in JSON format. Used as an escape hatch when the standard connection fields do not cover a service's needs. Interpretation is up to the service's Notifier Apex class.</inlineHelpText>
+    <label>Configuration (JSON)</label>
+    <length>32768</length>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

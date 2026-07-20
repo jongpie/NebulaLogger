@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SourceSObjectFilter__c</fullName>
+    <inlineHelpText>A Salesforce formula expression evaluated against each incoming record from Source SObject Type. Only records that evaluate to TRUE trigger the notification. Uses standard formula syntax. Picklist fields must be compared via ISPICKVAL(), not =. Example: ISPICKVAL(LoggingLevel__c, 'ERROR') AND CONTAINS(Message__c, 'callout'). The rule is validated at save time and will reject invalid filters.</inlineHelpText>
+    <label>Source SObject Filter</label>
+    <length>32768</length>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

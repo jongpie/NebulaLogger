@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Comments__c</fullName>
+    <inlineHelpText>Optional free-text notes about this rule (owner, ticket link, rollout context, etc).</inlineHelpText>
+    <label>Comments</label>
+    <length>4000</length>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsEnabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <inlineHelpText>When disabled, this recipient is skipped at runtime - the notification rule does not send to this address, channel, or user. The parent rule's Total Enabled Recipients rollup ignores disabled recipients; when a rule ends up with zero enabled recipients the runtime skips the rule entirely.</inlineHelpText>
+    <label>Is Enabled</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

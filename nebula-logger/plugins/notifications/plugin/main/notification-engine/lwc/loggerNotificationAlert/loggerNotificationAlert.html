@@ -1,0 +1,19 @@
+<template>
+  <div class={containerClass} role="alert">
+    <span class="slds-assistive-text">{assistiveText}</span>
+    <lightning-icon
+      icon-name={resolvedIconName}
+      size="x-small"
+      variant={iconVariant}
+      alternative-text={assistiveText}
+      class="slds-m-right_x-small"
+    ></lightning-icon>
+    <h2>
+      <template lwc:if={title}>
+        <strong class="slds-m-right_x-small">{title}</strong>
+      </template>
+      <!-- `message` is admin-supplied via App Builder; lightning-formatted-rich-text enforces the standard SLDS allowlist for the rendered HTML. -->
+      <lightning-formatted-rich-text value={message}></lightning-formatted-rich-text>
+    </h2>
+  </div>
+</template>

@@ -1,0 +1,44 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+  <div class="slds-form-element" data-error-state={errorStateClass}>
+    <template lwc:if={label}>
+      <label class="slds-form-element__label" for="formula-editor">
+        <template lwc:if={required}>
+          <abbr class="slds-required" title="required">*</abbr>
+        </template>
+        {label}
+      </label>
+    </template>
+    <div class="slds-form-element__control">
+      <div class="formula-editor-container">
+        <!-- Prism-highlighted view. Sits BEHIND the textarea; the textarea's transparent color
+             lets the highlighted tokens show through while the textarea still owns caret,
+             selection, and keyboard handling. `aria-hidden` because assistive tech reads the
+             textarea's value directly. lwc:dom="manual" so we can imperatively rewrite innerHTML
+             on every keystroke without LWC diffing fighting us. -->
+        <pre class="formula-editor-highlight" aria-hidden="true"><code lwc:dom="manual" class="language-salesforce-formula"></code></pre>
+        <textarea
+          id="formula-editor"
+          class="formula-editor-textarea"
+          value={value}
+          placeholder={placeholder}
+          required={required}
+          spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          rows={rows}
+          oninput={handleInput}
+          onchange={handleChange}
+          onscroll={handleScroll}
+        ></textarea>
+      </div>
+    </div>
+    <template lwc:if={helpText}>
+      <div class="slds-form-element__help">{helpText}</div>
+    </template>
+  </div>
+</template>

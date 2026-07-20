@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequestUrl__c</fullName>
+    <inlineHelpText>URL the notifier called out to. For Named Credential mode this is the callout: URL as constructed by the notifier before Salesforce substitutes it. Useful for confirming the notifier resolved the right endpoint.</inlineHelpText>
+    <label>Request URL</label>
+    <length>1300</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

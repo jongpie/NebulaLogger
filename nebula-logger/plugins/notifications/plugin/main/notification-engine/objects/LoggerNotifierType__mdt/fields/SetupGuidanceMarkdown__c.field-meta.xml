@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SetupGuidanceMarkdown__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Notifier-specific setup instructions rendered by the guided Service form (Markdown - lists, links, code blocks). For services that need a Named Credential this is where step-by-step credential setup lives. For webhook-only services this may be minimal or blank.</inlineHelpText>
+    <label>Setup Guidance (Markdown)</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

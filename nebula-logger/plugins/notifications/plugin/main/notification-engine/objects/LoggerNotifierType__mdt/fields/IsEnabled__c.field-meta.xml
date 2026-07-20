@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsEnabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>When false, this notifier type is hidden from the guided Service form's picker and the guided Rule form's recipient service dropdown treats services referencing it as unavailable. Existing services already pointing at this notifier keep running at the runtime layer - this flag only controls admin-facing discovery.</inlineHelpText>
+    <label>Is Enabled</label>
+    <type>Checkbox</type>
+</CustomField>

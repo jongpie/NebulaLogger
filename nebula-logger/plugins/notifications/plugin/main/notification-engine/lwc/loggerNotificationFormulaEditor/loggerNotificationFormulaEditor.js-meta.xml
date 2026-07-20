@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Syntax-highlighted formula editor. Overlays a transparent textarea on a Prism-highlighted pre element so admins get real editing plus per-token coloring. Prism loads from core LoggerResources; the salesforce-formula grammar registers inline on mount.</description>
+    <masterLabel>Nebula Logger Notifications: Formula Editor</masterLabel>
+</LightningComponentBundle>

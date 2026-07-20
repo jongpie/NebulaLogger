@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <description>Outcome of the delivery attempt. Not restricted so 2GP push upgrades can add new statuses without breaking existing rows. The runtime writes Pending, Delivered, Failed, Skipped, or Suppressed by Threshold; if an admin has set a custom value out-of-band, the runtime leaves it alone on subsequent updates.</description>
+    <inlineHelpText>Delivery outcome. Runtime values: Pending, Delivered, Failed, Skipped, Suppressed by Threshold.</inlineHelpText>
+    <label>Status</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pending</fullName>
+                <default>true</default>
+                <label>Pending</label>
+            </value>
+            <value>
+                <fullName>Delivered</fullName>
+                <default>false</default>
+                <label>Delivered</label>
+            </value>
+            <value>
+                <fullName>Failed</fullName>
+                <default>false</default>
+                <label>Failed</label>
+            </value>
+            <value>
+                <fullName>Skipped</fullName>
+                <default>false</default>
+                <label>Skipped</label>
+            </value>
+            <value>
+                <fullName>Suppressed by Threshold</fullName>
+                <default>false</default>
+                <label>Suppressed by Threshold</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
