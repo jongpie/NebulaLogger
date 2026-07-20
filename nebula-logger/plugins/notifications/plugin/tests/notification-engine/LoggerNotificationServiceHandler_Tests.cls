@@ -56,7 +56,8 @@ private class LoggerNotificationServiceHandler_Tests {
     LoggerNotificationService__c service = buildValidService();
     LoggerDataStore.getDatabase().insertRecord(service);
     LoggerSObjectHandler.shouldExecute(false);
-    service.OriginOrganizationId__c = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
+    Id foreignOrgId = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
+    service.OriginOrganizationId__c = foreignOrgId;
     LoggerDataStore.getDatabase().updateRecord(service);
     LoggerSObjectHandler.shouldExecute(true);
 
@@ -68,11 +69,7 @@ private class LoggerNotificationServiceHandler_Tests {
       FROM LoggerNotificationService__c
       WHERE Id = :service.Id
     ];
-    System.Assert.areEqual(
-      LoggerMockDataCreator.createId(Schema.Organization.SObjectType),
-      afterUpdate.OriginOrganizationId__c,
-      'Update should not have re-stamped the origin org id'
-    );
+    System.Assert.areEqual(foreignOrgId, afterUpdate.OriginOrganizationId__c, 'Update should not have re-stamped the origin org id');
     System.Assert.isFalse(afterUpdate.IsOriginOrganizationIdValid__c, 'Formula should still evaluate to false against the foreign org id');
   }
 
@@ -176,7 +173,8 @@ private class LoggerNotificationServiceHandler_Tests {
     service.NamedCredentialDeveloperName__c = 'SlackWebApi';
     LoggerDataStore.getDatabase().insertRecord(service);
 
-    service.OriginOrganizationId__c = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
+    Id foreignOrgId = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
+    service.OriginOrganizationId__c = foreignOrgId;
     LoggerDataStore.getDatabase().updateRecord(service);
 
     LoggerNotificationService__c requeried = [
@@ -186,11 +184,7 @@ private class LoggerNotificationServiceHandler_Tests {
     ];
     System.Assert.isNull(requeried.NamedCredentialDeveloperName__c, 'Named credential should have been wiped when OriginOrganizationId__c changed');
     System.Assert.isNull(requeried.WebhookUrl__c, 'Webhook URL should have been wiped when OriginOrganizationId__c changed');
-    System.Assert.areEqual(
-      LoggerMockDataCreator.createId(Schema.Organization.SObjectType),
-      requeried.OriginOrganizationId__c,
-      'The admin-supplied org id should have been persisted'
-    );
+    System.Assert.areEqual(foreignOrgId, requeried.OriginOrganizationId__c, 'The admin-supplied org id should have been persisted');
   }
 
   @IsTest
