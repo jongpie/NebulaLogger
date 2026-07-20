@@ -20,16 +20,16 @@ NamedCredentialDeveloperName__c</value>
         <value xsi:type="xsd:string">Slack</value>
     </values>
     <values>
-        <field>IsEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
-    </values>
-    <values>
         <field>IsChannelIdentifierRequired__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsEmailAddressRequired__c</field>
         <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsUserRequired__c</field>
@@ -51,7 +51,7 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
 2. Under **Incoming Webhooks**, activate them and click **Add New Webhook to Workspace**
 3. Pick the target channel, authorize
 4. Copy the webhook URL (starts with `https://hooks.slack.com/services/...`)
-5. Paste it into this service's `Webhook URL` field
+5. Paste it into this service&apos;s `Webhook URL` field
 6. On the recipient, leave `Channel Identifier` blank - the webhook is already channel-scoped
 
 ### Web API mode via Named Credential
@@ -64,24 +64,28 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
 6. Add a **Principal** (any name), enable it
 7. Setup -&gt; **Named Credentials** -&gt; New with URL `https://slack.com/api`, referencing the External Credential, `Generate Authorization Header` checked
 8. Assign the `LoggerNotificationsPluginAdmin` permission set to the **Automated Process user** (required for async notifier dispatch)
-9. Paste the Named Credential's developer name into this service's `Named Credential Developer Name` field
+9. Paste the Named Credential&apos;s developer name into this service&apos;s `Named Credential Developer Name` field
 10. On each recipient, populate `Channel Identifier` with the Slack channel ID (e.g. `C0123ABCD456`)</value>
     </values>
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  "sourceFields": [
-    "LoggingLevel__c",
-    "Message__c",
-    "StackTrace__c",
-    "ExceptionType__c",
-    "Origin__c",
+  &quot;includeNullValues&quot;: false,
+  &quot;sourceFields&quot;: [
     {
-      "field": "Log__c",
-      "displayLabel": "Parent Log"
-    }
-  ],
-  "includeNullValues": false
+      &quot;field&quot;: &quot;Log__r.LoggedBy__r.Username&quot;,
+      &quot;displayLabel&quot;: &quot;Logged By&quot;
+    },
+    &quot;Log__c&quot;,
+    &quot;LoggingLevel__c&quot;,
+    &quot;Message__c&quot;,
+    &quot;Origin__c&quot;,
+    &quot;StackTrace__c&quot;,
+    &quot;ExceptionType__c&quot;,
+    &quot;ExceptionStackTrace__c&quot;,
+    &quot;Log__r.OrganizationId__c&quot;,
+    &quot;Log__r.OrganizationType__c&quot;
+  ]
 }</value>
     </values>
     <values>
