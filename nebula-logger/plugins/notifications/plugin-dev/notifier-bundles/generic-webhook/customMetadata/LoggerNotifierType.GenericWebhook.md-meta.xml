@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Generic Webhook</label>
+    <protected>false</protected>
+    <values>
+        <field>AtLeastOneRequiredRecipientFields__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>AtLeastOneRequiredServiceFields__c</field>
+        <value xsi:type="xsd:string">WebhookUrl__c
+NamedCredentialDeveloperName__c</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">POSTs a Nebula-Logger-shaped JSON envelope to any HTTP endpoint. Use for integrations that don't fit one of the purpose-built notifiers - internal systems, third-party observability tools, ad-hoc webhooks. Fully customizable HTTP method, path, and headers per recipient.</value>
+    </values>
+    <values>
+        <field>DisplayLabel__c</field>
+        <value xsi:type="xsd:string">Generic Webhook</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsChannelIdentifierRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEmailAddressRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsUserRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NotifierApexClassName__c</field>
+        <value xsi:type="xsd:string">GenericWebhookLoggerNotifier</value>
+    </values>
+    <values>
+        <field>SetupGuidanceMarkdown__c</field>
+        <value xsi:type="xsd:string">## Generic Webhook setup
+
+Use this notifier for HTTP endpoints that don't fit one of the purpose-built integrations. The payload is a Nebula-Logger-shaped envelope you can parse on your receiving side.
+
+### Salesforce setup
+
+- **Webhook mode**: paste the endpoint URL into this service's `Webhook URL` field. All recipients hit the same URL (customize path per recipient via config JSON if needed).
+- **Named Credential mode**: create a Named Credential referencing your endpoint's base URL with whatever auth protocol the endpoint requires (OAuth, Custom header, mutual TLS, etc.). Reference the Named Credential here.
+
+### Recipient config JSON
+
+The recipient's config controls HTTP method, path suffix, and any custom headers on top of the built-in `Content-Type: application/json`:
+
+```json
+{
+  "method": "POST",
+  "path": "/webhook/nebula",
+  "headers": {
+    "X-Custom-Header": "custom-value"
+  }
+}
+```
+
+- `method` (optional, defaults to POST)
+- `path` (optional, appended to the Named Credential URL - ignored in webhook mode)
+- `headers` (optional, arbitrary map of header name to value)
+
+### Payload envelope
+
+Every request has the same top-level shape:
+
+```json
+{
+  "notificationName": "&lt;rule name&gt;",
+  "sourceSObjectType": "LogEntry__c",
+  "channelIdentifier": "&lt;recipient's ChannelIdentifier__c value if any&gt;",
+  "matchingRecords": [ /* array of the matched source records */ ]
+}
+```</value>
+    </values>
+    <values>
+        <field>SuggestedConfigurationJson__c</field>
+        <value xsi:type="xsd:string">{
+  "method": "POST",
+  "headers": {
+  }
+}</value>
+    </values>
+    <values>
+        <field>SupportsChannelIdentifier__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsEmailAddress__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsNamedCredential__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsUser__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsWebhookUrl__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

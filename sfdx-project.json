@@ -72,6 +72,10 @@
       "default": false
     },
     {
+      "path": "./nebula-logger/plugins/notifications/plugin-dev",
+      "default": false
+    },
+    {
       "package": "Nebula Logger - Core Plugin - Slack",
       "path": "./nebula-logger/plugins/slack/plugin",
       "dependencies": [

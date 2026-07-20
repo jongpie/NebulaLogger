@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>LoggerNotificationRule__c.IsEnabled__c</field>
+    </columns>
+    <columns>
+        <field>LoggerNotificationRule__c.OriginOrganizationId__c</field>
+    </columns>
+    <columns>
+        <field>LoggerNotificationRule__c.IsOriginOrganizationIdValid__c</field>
+    </columns>
+    <columns>
+        <field>LoggerNotificationRule__c.SourceSObjectType__c</field>
+    </columns>
+    <description>Lists LoggerNotificationRule__c rules whose OriginOrganizationId__c does not match the current org. These rules are ignored by the runtime until re-saved in this org - useful after a sandbox refresh.</description>
+    <filter>
+        <criteriaItems>
+            <column>LoggerNotificationRule__c.IsOriginOrganizationIdValid__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>Rules With Invalid Origin Org</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$LoggerNotificationRule__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>
