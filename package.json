@@ -98,21 +98,20 @@
     "prismjs": "1.30.0"
   },
   "devDependencies": {
-    "@cparra/apexdocs": "1.13.7",
-    "@jongpie/sf-dotenv-cli-plugin": "^1.0.0",
+    "@cparra/apexdocs": "3.24.1",
+    "@jongpie/sf-dotenv-cli-plugin": "1.0.0",
     "@jongpie/sfdx-bummer-plugin": "0.0.20",
-    "@salesforce-ux/slds-linter": "1.2.0",
-    "@salesforce/cli": "2.134.1",
+    "@playwright/test": "1.61.1",
+    "@salesforce-ux/slds-linter": "1.2.1",
+    "@salesforce/cli": "2.143.6",
     "@salesforce/eslint-config-lwc": "4.1.2",
-    "@salesforce/sfdx-lwc-jest": "7.5.0",
-    "@types/jest-when": "3.5.5",
-    "esbuild": "^0.28.0",
+    "@salesforce/sfdx-lwc-jest": "7.9.0",
+    "esbuild": "0.28.1",
     "husky": "9.1.7",
-    "jest-when": "3.7.0",
     "jsdoc-to-markdown": "9.1.3",
-    "lint-staged": "16.2.7",
-    "prettier": "3.8.1",
-    "prettier-plugin-apex": "2.2.6",
+    "lint-staged": "17.0.8",
+    "prettier": "3.9.5",
+    "prettier-plugin-apex": "2.3.0",
     "pwsh": "0.3.0"
   }
 }
