@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Salesforce Custom Notification</label>
+    <protected>false</protected>
+    <values>
+        <field>AtLeastOneRequiredRecipientFields__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Delivers as an in-app Custom Notification to specific Salesforce users - appears in the bell icon in the Lightning header and (if the user has the mobile app) as a push notification. No external service, no HTTP callout. Requires a Custom Notification Type record in the org that this notifier references.</value>
+    </values>
+    <values>
+        <field>DisplayLabel__c</field>
+        <value xsi:type="xsd:string">Salesforce Custom Notification</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsChannelIdentifierRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEmailAddressRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsUserRequired__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>NotifierApexClassName__c</field>
+        <value xsi:type="xsd:string">CustomNotificationLoggerNotifier</value>
+    </values>
+    <values>
+        <field>SetupGuidanceMarkdown__c</field>
+        <value xsi:type="xsd:string">## Salesforce Custom Notification setup
+
+Custom Notifications are Salesforce's in-app notification framework. Users see them in the bell icon in the Lightning header, and on mobile via push notification if they have the Salesforce mobile app.
+
+### One-time org setup
+
+1. Setup -&gt; **Custom Notifications** -&gt; **New Custom Notification Type**
+2. Name it something meaningful (e.g. `Nebula Logger Alert`)
+3. Choose supported channels: **Desktop** and/or **Mobile**
+4. Save. Note the **Developer Name** (used in the recipient's config JSON)
+
+### Recipient setup
+
+- Each recipient targets a specific **User** via `User` (lookup)
+- The recipient's config JSON must include the Custom Notification Type's developer name:
+  ```json
+  { "notificationTypeDeveloperName": "LoggerCustomNotification" }
+  ```
+- Recipients without `User` set are skipped (this notifier requires a target user)
+
+### Customizing the title and body
+
+- Optional `titleTemplate` and `bodyTemplate` string keys on the recipient's config JSON control the notification's title and body. Merge tokens use single braces:
+  - `{RuleName}` - the notification rule's Name
+  - `{FieldName__c}` - any field on the matching record (e.g. `{LoggingLevel__c}`, `{Message__c}`)
+- If `titleTemplate` is omitted, the default is `Nebula Logger: {RuleName}`.
+- If `bodyTemplate` is omitted, the body falls back to the matching record's Name (or its Id when the SObject has no Name field).
+- Tokens that don't resolve to a value on the current record render as an empty string.
+
+### Limitations
+
+- One notification per matching record. Use the rule's Deduplication Source Field to collapse duplicates before dispatch.
+- Text-only body (~90 characters visible on desktop, ~200 on mobile). No inline links, HTML, or markdown - the whole notification click-targets the matching record's Id via Salesforce's `setTargetId`.
+- No rich attachments, no threading, no delivery receipts beyond Salesforce's own retention.</value>
+    </values>
+    <values>
+        <field>SuggestedConfigurationJson__c</field>
+        <value xsi:type="xsd:string">{
+  "notificationTypeDeveloperName": "LoggerCustomNotification",
+  "titleTemplate": "Nebula Logger: {RuleName}",
+  "bodyTemplate": "[{LoggingLevel__c}] {Message__c}"
+}</value>
+    </values>
+    <values>
+        <field>SupportsChannelIdentifier__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsEmailAddress__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsNamedCredential__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsUser__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsWebhookUrl__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+</CustomMetadata>
