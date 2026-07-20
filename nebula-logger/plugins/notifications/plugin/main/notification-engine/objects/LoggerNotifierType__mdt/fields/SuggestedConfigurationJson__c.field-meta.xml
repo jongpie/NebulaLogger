@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SuggestedConfigurationJson__c</fullName>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <inlineHelpText>Starter JSON for ConfigurationJson__c that admins can load into a recipient with one click, then customize. Should be a valid JSON object literal that demonstrates the shape of the notifier's per-recipient configuration.</inlineHelpText>
+    <inlineHelpText>Starter JSON for ConfigurationJson__c that admins can load with one click. Authored as a top-level map keyed by source SObject API name (LogEntry__c, Log__c, etc.), each pointing at the suggested configuration for a rule targeting that SObject. A "*" key acts as the fallback for any SObject not spelled out. Example: {"LogEntry__c": {"sourceFields": [...]}, "*": {"sourceFields": ["Name"]}}.</inlineHelpText>
     <label>Suggested Configuration JSON</label>
     <length>32768</length>
     <type>LongTextArea</type>

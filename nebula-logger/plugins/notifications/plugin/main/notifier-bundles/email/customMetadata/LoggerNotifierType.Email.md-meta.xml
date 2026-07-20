@@ -79,14 +79,31 @@ Salesforce enforces org-wide daily email limits (5,000 external addresses/day fo
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  &quot;sourceFields&quot;: [
-    &quot;LoggingLevel__c&quot;,
-    &quot;Message__c&quot;,
-    &quot;StackTrace__c&quot;,
-    &quot;ExceptionType__c&quot;
-  ],
-  &quot;includeNullValues&quot;: false,
-  &quot;subjectTemplate&quot;: &quot;Nebula Logger: {!matchCount} {!LoggingLevel__c} matched {!ruleName}&quot;
+  &quot;LogEntry__c&quot;: {
+    &quot;sourceFields&quot;: [
+      &quot;LoggingLevel__c&quot;,
+      &quot;Message__c&quot;,
+      &quot;StackTrace__c&quot;,
+      &quot;ExceptionType__c&quot;
+    ],
+    &quot;includeNullValues&quot;: false,
+    &quot;subjectTemplate&quot;: &quot;Nebula Logger: {!matchCount} {!LoggingLevel__c} matched {!ruleName}&quot;
+  },
+  &quot;Log__c&quot;: {
+    &quot;sourceFields&quot;: [
+      &quot;Name&quot;,
+      &quot;TransactionId__c&quot;,
+      &quot;TotalERRORLogEntries__c&quot;,
+      &quot;TotalWARNLogEntries__c&quot;
+    ],
+    &quot;includeNullValues&quot;: false,
+    &quot;subjectTemplate&quot;: &quot;Nebula Logger: {!matchCount} logs matched {!ruleName}&quot;
+  },
+  &quot;*&quot;: {
+    &quot;sourceFields&quot;: [&quot;Name&quot;],
+    &quot;includeNullValues&quot;: false,
+    &quot;subjectTemplate&quot;: &quot;Nebula Logger: {!matchCount} matches for {!ruleName}&quot;
+  }
 }</value>
     </values>
     <values>

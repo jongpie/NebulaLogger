@@ -70,27 +70,53 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
     <values>
         <field>SuggestedConfigurationJson__c</field>
         <value xsi:type="xsd:string">{
-  &quot;includeNullValues&quot;: false,
-  &quot;sourceFields&quot;: [
-    {
-      &quot;field&quot;: &quot;Log__r.LoggedBy__r.Username&quot;,
-      &quot;displayLabel&quot;: &quot;Logged By&quot;
-    },
-    &quot;Log__c&quot;,
-    &quot;LoggingLevel__c&quot;,
-    &quot;Message__c&quot;,
-    &quot;Origin__c&quot;,
-    &quot;StackTrace__c&quot;,
-    &quot;ExceptionType__c&quot;,
-    &quot;ExceptionStackTrace__c&quot;,
-    &quot;Log__r.OrganizationId__c&quot;,
-    &quot;Log__r.OrganizationType__c&quot;
-    &quot;Log__r.OrganizationInstanceName__c&quot;,
-    &quot;Log__r.OrganizationName__c&quot;,
-    &quot;Log__r.TotalLogEntries__c&quot;,
-    &quot;Log__r.TotalERRORLogEntries__c&quot;,
-    &quot;Log__r.TotalWARNLogEntries__c&quot;
-  ]
+  &quot;LogEntry__c&quot;: {
+    &quot;includeNullValues&quot;: false,
+    &quot;sourceFields&quot;: [
+      {
+        &quot;field&quot;: &quot;Log__r.LoggedBy__r.Username&quot;,
+        &quot;displayLabel&quot;: &quot;Logged By&quot;
+      },
+      &quot;Log__c&quot;,
+      &quot;LoggingLevel__c&quot;,
+      &quot;Message__c&quot;,
+      &quot;Origin__c&quot;,
+      &quot;StackTrace__c&quot;,
+      &quot;ExceptionType__c&quot;,
+      &quot;ExceptionStackTrace__c&quot;,
+      &quot;Log__r.OrganizationId__c&quot;,
+      &quot;Log__r.OrganizationType__c&quot;,
+      &quot;Log__r.OrganizationInstanceName__c&quot;,
+      &quot;Log__r.OrganizationName__c&quot;,
+      &quot;Log__r.TotalLogEntries__c&quot;,
+      &quot;Log__r.TotalERRORLogEntries__c&quot;,
+      &quot;Log__r.TotalWARNLogEntries__c&quot;
+    ]
+  },
+  &quot;Log__c&quot;: {
+    &quot;includeNullValues&quot;: false,
+    &quot;sourceFields&quot;: [
+      {
+        &quot;field&quot;: &quot;LoggedBy__r.Username&quot;,
+        &quot;displayLabel&quot;: &quot;Logged By&quot;
+      },
+      &quot;Name&quot;,
+      &quot;TransactionId__c&quot;,
+      &quot;OrganizationId__c&quot;,
+      &quot;OrganizationType__c&quot;,
+      &quot;OrganizationInstanceName__c&quot;,
+      &quot;OrganizationName__c&quot;,
+      &quot;TotalLogEntries__c&quot;,
+      &quot;TotalERRORLogEntries__c&quot;,
+      &quot;TotalWARNLogEntries__c&quot;,
+      &quot;StartTime__c&quot;,
+      &quot;EndTime__c&quot;
+    ]
+  },
+  &quot;*&quot;: {
+    &quot;includeNullValues&quot;: false,
+    &quot;sourceFields&quot;: [&quot;Name&quot;]
+  }
 }</value>
     </values>
     <values>

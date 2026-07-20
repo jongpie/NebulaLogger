@@ -86,7 +86,11 @@ const MOCK_EMAIL_NOTIFIER_TYPE = {
   IsUserRequired__c: false,
   NotifierApexClassName__c: 'EmailLoggerNotifier',
   SetupGuidanceMarkdown__c: '',
-  SuggestedConfigurationJson__c: '{}',
+  // SObject-keyed with a `"*"` fallback bucket - shape matches what production CMDT records ship.
+  // The empty-object bucket is the resolver's "notifier ships no meaningful suggested config"
+  // signal; the LWC treats a resolver result of '{}' as auto-populating to '{}', which matches
+  // the pre-change behavior for Email.
+  SuggestedConfigurationJson__c: '{"*":{}}',
   SupportsChannelIdentifier__c: false,
   SupportsEmailAddress__c: true,
   SupportsNamedCredential__c: false,
@@ -112,6 +116,10 @@ const flushPromises = async () => {
 // the platform's async-action state settles before it receives the close.
 const flushMacroTasks = async () => {
   await flushPromises();
+  // eslint-disable-next-line @lwc/lwc/no-async-operation -- test-only helper: jsdom needs a real
+  // macro-task tick so the LWC's own `setTimeout(fn, 0)` close-dispatch callback runs before the
+  // assertion. There's no LWC-idiomatic replacement here - the LWC framework's own restriction is
+  // about component code, not jest test harness.
   await new Promise(resolve => setTimeout(resolve, 0));
 };
 
@@ -1241,7 +1249,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushMacroTasks();
 
     expect(LightningConfirm.open).not.toHaveBeenCalled();
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).toBeNull();
+    expect(element.isConnected).toBe(false);
   });
 
   it('closes immediately on Escape in edit mode when the admin has NOT touched the prefilled rule', async () => {
@@ -1282,7 +1290,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushMacroTasks();
 
     expect(LightningConfirm.open).not.toHaveBeenCalled();
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).toBeNull();
+    expect(element.isConnected).toBe(false);
   });
 
   it('prompts LightningConfirm on Escape in edit mode once the admin edits a prefilled field', async () => {
@@ -1347,7 +1355,7 @@ describe('c-logger-notification-rule-guided-form', () => {
         theme: 'warning'
       })
     );
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).toBeNull();
+    expect(element.isConnected).toBe(false);
   });
 
   it('keeps the form open on Escape when the confirm dialog is cancelled', async () => {
@@ -1371,7 +1379,7 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     expect(LightningConfirm.open).toHaveBeenCalledTimes(1);
     // Cancelled confirm → LWC is still attached to the DOM.
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).not.toBeNull();
+    expect(element.isConnected).toBe(true);
   });
 
   it('does not stack additional LightningConfirm dialogs when Escape is hit repeatedly while the discard confirm is already open', async () => {
@@ -1503,7 +1511,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     await flushMacroTasks();
 
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).toBeNull();
+    expect(element.isConnected).toBe(false);
   });
 
   it('renders the at-least-one warning banner on a recipient whose Email notifier requires User__c OR EmailAddress__c and neither is set', async () => {
@@ -1829,7 +1837,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushMacroTasks();
 
     expect(LightningConfirm.open).not.toHaveBeenCalled();
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).toBeNull();
+    expect(element.isConnected).toBe(false);
   });
 
   it('prompts LightningConfirm on Cancel click when the admin has typed a rule Name and actually removes the modal on confirm', async () => {
@@ -1853,7 +1861,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushMacroTasks();
 
     expect(LightningConfirm.open).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).toBeNull();
+    expect(element.isConnected).toBe(false);
   });
 
   it('keeps the modal in the DOM on Cancel click when the admin cancels the LightningConfirm dialog', async () => {
@@ -1876,7 +1884,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushMacroTasks();
 
     expect(LightningConfirm.open).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('c-logger-notification-rule-guided-form')).not.toBeNull();
+    expect(element.isConnected).toBe(true);
   });
 
   it('renders step 1 with the Source SObject Type combobox unset (admin must choose, no silent LogEntry__c default)', async () => {
@@ -2218,9 +2226,26 @@ describe('c-logger-notification-rule-guided-form', () => {
   //     the row-level Load Suggested Configuration + Form/JSON toggle. ---
 
   // Helper: a Slack-shaped notifier with a non-trivial SuggestedConfigurationJson__c payload.
-  // Distinct from MOCK_EMAIL_NOTIFIER_TYPE (which ships `'{}'` as its suggested JSON) so we can
-  // observe an actual payload landing in the recipient's textarea when the service is picked.
-  const SLACK_SUGGESTED_JSON = '{\n  "channel": "#alerts",\n  "sourceFields": [\n    "LoggingLevel__c",\n    "Message__c"\n  ]\n}';
+  // Distinct from MOCK_EMAIL_NOTIFIER_TYPE (which ships `'{"*":{}}'` as its suggested JSON) so we
+  // can observe an actual payload landing in the recipient's textarea when the service is picked.
+  // The stored shape is SObject-keyed (LogEntry__c-focused + Log__c-focused + `"*"` fallback);
+  // `SLACK_SUGGESTED_JSON_LOG_ENTRY` is the pretty-printed LogEntry__c bucket the resolver produces
+  // for a rule whose Source SObject Type is `LogEntry__c` (which is what `fillStep1RequiredFields`
+  // sets), so tests assert on that shape directly.
+  const SLACK_SUGGESTED_STORED_JSON = JSON.stringify({
+    LogEntry__c: {
+      channel: '#alerts',
+      sourceFields: ['LoggingLevel__c', 'Message__c']
+    },
+    Log__c: {
+      channel: '#alerts',
+      sourceFields: ['Name', 'TransactionId__c']
+    },
+    '*': {
+      sourceFields: ['Name']
+    }
+  });
+  const SLACK_SUGGESTED_JSON_LOG_ENTRY = JSON.stringify({ channel: '#alerts', sourceFields: ['LoggingLevel__c', 'Message__c'] }, null, 2);
   const MOCK_SLACK_NOTIFIER_TYPE = {
     ...MOCK_EMAIL_NOTIFIER_TYPE,
     DeveloperName: 'Slack',
@@ -2231,7 +2256,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     SupportsChannelIdentifier__c: true,
     SupportsEmailAddress__c: false,
     SupportsUser__c: false,
-    SuggestedConfigurationJson__c: SLACK_SUGGESTED_JSON
+    SuggestedConfigurationJson__c: SLACK_SUGGESTED_STORED_JSON
   };
   const MOCK_SLACK_SERVICE = { ...MOCK_EMAIL_SERVICE, Id: 'a08000000000002AAA', Name: 'Slack', NotifierApexClassName__c: 'SlackLoggerNotifier' };
 
@@ -2336,7 +2361,7 @@ describe('c-logger-notification-rule-guided-form', () => {
   });
 
   it('overwrites ConfigurationJson__c when the picked service changes (Email → Slack), regardless of prior content', async () => {
-    // Email ships an empty '{}' suggested JSON; Slack ships the full SLACK_SUGGESTED_JSON. Picking
+    // Email ships an empty `"*":{}` bucket; Slack ships the full SLACK_SUGGESTED_STORED_JSON. Picking
     // Email first, then switching to Slack, should replace the config JSON with Slack's suggestion.
     // We inspect the underlying JSON via the toggle path (flip to JSON view to read the raw text)
     // rather than the textarea directly, since Form view is now the default.
@@ -2390,10 +2415,153 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
     expect(findConfigTextarea(element).value).toBe('{"custom":"override"}');
 
-    // Click Load Suggested Configuration - textarea snaps back to the notifier's canonical suggested JSON.
+    // Click Load Suggested Configuration - textarea snaps back to the notifier's canonical suggested
+    // JSON for the currently-picked Source SObject Type (LogEntry__c, set by fillStep1RequiredFields).
     findLoadSuggestedButton(element).dispatchEvent(new CustomEvent('click'));
     await flushPromises();
-    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON);
+    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON_LOG_ENTRY);
+  });
+
+  // --- SObject-keyed SuggestedConfigurationJson__c resolution. The stored payload is a top-level
+  //     map keyed by source SObject API name with a `"*"` fallback bucket, so the LWC resolves it
+  //     against the currently-picked SourceSObjectType__c at auto-populate / Load-Suggested time. ---
+
+  // Same three-bucket shape as MOCK_SLACK_NOTIFIER_TYPE but stripped of the `"*"` fallback bucket
+  // so tests can observe the empty-string / hidden-button case when neither an SObject-specific nor
+  // fallback bucket exists.
+  const SLACK_SUGGESTED_STORED_JSON_NO_FALLBACK = JSON.stringify({
+    LogEntry__c: {
+      channel: '#alerts',
+      sourceFields: ['LoggingLevel__c', 'Message__c']
+    }
+  });
+  const MOCK_SLACK_NOTIFIER_TYPE_NO_FALLBACK = {
+    ...MOCK_SLACK_NOTIFIER_TYPE,
+    SuggestedConfigurationJson__c: SLACK_SUGGESTED_STORED_JSON_NO_FALLBACK
+  };
+  const SLACK_SUGGESTED_JSON_LOG = JSON.stringify({ channel: '#alerts', sourceFields: ['Name', 'TransactionId__c'] }, null, 2);
+  const SLACK_SUGGESTED_JSON_FALLBACK = JSON.stringify({ sourceFields: ['Name'] }, null, 2);
+
+  // Step 1 baseline sets Source SObject Type to `LogEntry__c`. Some tests need to switch it to a
+  // different value (Log__c or an SObject with no dedicated bucket) BEFORE picking a service so the
+  // service-pick auto-populate resolves against the right key.
+  const setSourceSObjectType = async (element, value) => {
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    sourceCombo.value = value;
+    sourceCombo.dispatchEvent(new CustomEvent('change'));
+    await flushPromises();
+  };
+
+  it('auto-populates the LogEntry__c bucket when the rule targets LogEntry__c', async () => {
+    const element = createElement('c-logger-notification-rule-guided-form', { is: LoggerNotificationRuleGuidedForm });
+    document.body.appendChild(element);
+    getNotifierTypes.emit([MOCK_SLACK_NOTIFIER_TYPE]);
+    getAvailableServices.emit([MOCK_SLACK_SERVICE]);
+    await flushPromises();
+
+    // fillStep1RequiredFields sets SourceSObjectType__c to LogEntry__c by default.
+    await advanceToRecipientsStep(element);
+    await addRecipientAndSelectSlackService(element);
+    clickModeButton(element, 'json');
+    await flushPromises();
+
+    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON_LOG_ENTRY);
+  });
+
+  it('auto-populates the Log__c bucket when the rule targets Log__c', async () => {
+    const element = createElement('c-logger-notification-rule-guided-form', { is: LoggerNotificationRuleGuidedForm });
+    document.body.appendChild(element);
+    getNotifierTypes.emit([MOCK_SLACK_NOTIFIER_TYPE]);
+    getAvailableServices.emit([MOCK_SLACK_SERVICE]);
+    await flushPromises();
+
+    // Fill Step 1 with LogEntry__c defaults (satisfies the required Name + filter fields), then
+    // override the picked SObject to Log__c so the auto-populate resolves against that bucket.
+    await fillStep1RequiredFields(element);
+    await setSourceSObjectType(element, 'Log__c');
+    await advanceToRecipientsStep(element);
+    await addRecipientAndSelectSlackService(element);
+    clickModeButton(element, 'json');
+    await flushPromises();
+
+    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON_LOG);
+  });
+
+  it('falls back to the "*" bucket when the rule targets an SObject with no dedicated bucket', async () => {
+    const element = createElement('c-logger-notification-rule-guided-form', { is: LoggerNotificationRuleGuidedForm });
+    document.body.appendChild(element);
+    getNotifierTypes.emit([MOCK_SLACK_NOTIFIER_TYPE]);
+    getAvailableServices.emit([MOCK_SLACK_SERVICE]);
+    await flushPromises();
+
+    await fillStep1RequiredFields(element);
+    // LogEntryTag__c isn't a real SObject in the picklist, but the resolver operates on the string
+    // regardless - unknown keys route to the `"*"` fallback bucket.
+    await setSourceSObjectType(element, 'LogEntryTag__c');
+    await advanceToRecipientsStep(element);
+    await addRecipientAndSelectSlackService(element);
+    clickModeButton(element, 'json');
+    await flushPromises();
+
+    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON_FALLBACK);
+  });
+
+  it('hides the "Load Suggested Configuration" button and stamps empty config when neither an SObject-specific nor a "*" bucket resolves', async () => {
+    const element = createElement('c-logger-notification-rule-guided-form', { is: LoggerNotificationRuleGuidedForm });
+    document.body.appendChild(element);
+    getNotifierTypes.emit([MOCK_SLACK_NOTIFIER_TYPE_NO_FALLBACK]);
+    getAvailableServices.emit([MOCK_SLACK_SERVICE]);
+    await flushPromises();
+
+    await fillStep1RequiredFields(element);
+    await setSourceSObjectType(element, 'LogEntryTag__c');
+    await advanceToRecipientsStep(element);
+    await addRecipientAndSelectSlackService(element);
+
+    // No bucket resolves -> "Load Suggested Configuration" button hides + auto-populated
+    // ConfigurationJson__c is empty (Form view renders zero pair rows).
+    expect(findLoadSuggestedButton(element)).toBeNull();
+    expect(findFormPairKeyInputs(element)).toHaveLength(0);
+    clickModeButton(element, 'json');
+    await flushPromises();
+    expect(findConfigTextarea(element).value).toBe('');
+  });
+
+  it('resolves the SObject-specific bucket at Load-Suggested click time using the current SourceSObjectType__c value', async () => {
+    // The Load Suggested Configuration button reads the CURRENT rule.SourceSObjectType__c on each
+    // click, so an admin who first picked LogEntry__c, added a Slack recipient (auto-populated with
+    // LogEntry__c bucket), then stepped back and switched to Log__c, sees the Log__c bucket the
+    // NEXT time they hit Load Suggested Configuration.
+    const element = createElement('c-logger-notification-rule-guided-form', { is: LoggerNotificationRuleGuidedForm });
+    document.body.appendChild(element);
+    getNotifierTypes.emit([MOCK_SLACK_NOTIFIER_TYPE]);
+    getAvailableServices.emit([MOCK_SLACK_SERVICE]);
+    await flushPromises();
+
+    // Pick LogEntry__c on Step 1, advance to Step 3, add a Slack recipient. Auto-populate seeds
+    // ConfigurationJson__c with the LogEntry__c bucket.
+    await advanceToRecipientsStep(element);
+    await addRecipientAndSelectSlackService(element);
+    clickModeButton(element, 'json');
+    await flushPromises();
+    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON_LOG_ENTRY);
+
+    // Step back to Step 1, switch SObject to Log__c, advance back to Step 3, click Load Suggested.
+    // The button resolves against Log__c on the click, so the textarea flips to that bucket.
+    const previousButton = Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find(btn => btn.label === 'Previous');
+    previousButton.dispatchEvent(new CustomEvent('click'));
+    await flushPromises();
+    previousButton.dispatchEvent(new CustomEvent('click'));
+    await flushPromises();
+    await setSourceSObjectType(element, 'Log__c');
+    const nextButton = Array.from(element.shadowRoot.querySelectorAll('lightning-button')).find(btn => btn.label === 'Next');
+    nextButton.dispatchEvent(new CustomEvent('click'));
+    await flushPromises();
+    nextButton.dispatchEvent(new CustomEvent('click'));
+    await flushPromises();
+    findLoadSuggestedButton(element).dispatchEvent(new CustomEvent('click'));
+    await flushPromises();
+    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON_LOG);
   });
 
   it('toggles the recipient row between Form view (default) and JSON view', async () => {
@@ -2418,7 +2586,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
     expect(findFormPairKeyInputs(element)).toHaveLength(0);
     expect(findConfigTextarea(element)).not.toBeNull();
-    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON);
+    expect(findConfigTextarea(element).value).toBe(SLACK_SUGGESTED_JSON_LOG_ENTRY);
     // Button variants swap: JSON is now brand-filled, Form is neutral.
     expect(findJsonModeButton(element).variant).toBe('brand');
     expect(findFormModeButton(element).variant).toBe('neutral');
