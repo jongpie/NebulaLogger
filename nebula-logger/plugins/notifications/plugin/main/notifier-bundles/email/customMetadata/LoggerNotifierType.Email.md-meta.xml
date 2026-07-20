@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Email</label>
+    <protected>false</protected>
+    <values>
+        <field>AtLeastOneRequiredRecipientFields__c</field>
+        <value xsi:type="xsd:string">User__c
+EmailAddress__c</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Sends notifications via Salesforce's built-in Messaging.SingleEmailMessage. No HTTP callout required - uses org email deliverability. Each recipient carries the target email address (or points at a User record whose email is used). Subject to Salesforce daily email limits.</value>
+    </values>
+    <values>
+        <field>DisplayLabel__c</field>
+        <value xsi:type="xsd:string">Email</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsChannelIdentifierRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsEmailAddressRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsUserRequired__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>NotifierApexClassName__c</field>
+        <value xsi:type="xsd:string">EmailLoggerNotifier</value>
+    </values>
+    <values>
+        <field>SetupGuidanceMarkdown__c</field>
+        <value xsi:type="xsd:string">## Email setup
+
+The Email notifier uses Salesforce's built-in outbound email. There's nothing to configure on the service itself - just create the service and add recipients.
+
+### Requirements
+
+1. **Email deliverability** must be enabled for the org: Setup -&gt; **Deliverability** -&gt; **Access Level** = `All email`
+2. The **running user** must have `Send Email` enabled on their profile / permission set (for outbound messages triggered from anonymous Apex or sync contexts). Async notifier dispatch runs as the Automated Process user - make sure that user's profile permits outbound email
+3. Each recipient must set either `Email Address` (raw email address) or `User` (lookup to a User whose email is used)
+
+### Sender-domain compliance (DKIM / DMARC alignment)
+
+Salesforce enforces DMARC alignment for outbound email as part of the industry-wide bulk-sender requirements rolled out with Winter '24 / Spring '25. A message whose `From` domain does not have a DKIM key registered in the org - and is not sent through an Org-Wide Email Address whose domain is properly aligned - is silently dropped by the outbound relay **even though `Messaging.sendEmail` returns `isSuccess = true`**. The delivery row will show `Delivered` because Salesforce accepted the API call; the mail server never accepted the actual message.
+
+This is why:
+
+- **Scratch orgs and freshly created Developer Edition orgs cannot reliably deliver email.** They have no DKIM keys and no Org-Wide Email Addresses by default. Even with Deliverability = `All email`, sends made from `&lt;user&gt;@salesforce.com`-style addresses are dropped at the relay. Test the Email notifier in a sandbox / DE org that has DKIM + an aligned Org-Wide Email Address configured, not a scratch org.
+- **Production orgs should configure both** before enabling this notifier for real recipients:
+  1. Setup -&gt; **DKIM Keys** -&gt; create + activate a DKIM key for the sending domain; publish the CNAME records Salesforce provides
+  2. Setup -&gt; **Organization-Wide Email Addresses** -&gt; add an OWEA whose domain matches the DKIM key, and grant it to the profile(s) that will run notifier dispatch (including Automated Process)
+  3. The recipient's `User` (or `Email Address`) is unrelated to the sender domain - the sender comes from the running user's email or the OWEA. Aligning the *sender* is the fix.
+- To troubleshoot a silently dropped send, use Setup -&gt; **Email Log Files** -&gt; **Request an Email Log**. Salesforce records the rejection reason (SPF / DKIM / DMARC failure) on rows that the API-level `SendEmailResult` reports as successful.
+
+### Recipient configuration (JSON)
+
+The recipient's `Configuration (JSON)` field controls what gets rendered in the email body and (optionally) the subject line.
+
+- `sourceFields` - which source-record fields render in the body. Each entry is either a bare string (`"LoggingLevel__c"`) or an object (`{"field": "Log__c", "displayLabel": "Parent Log"}`). Object entries support `displayField` (a different field whose value is rendered) and `displayLabel` (a label override in place of the field's describe label). Dotted paths (`Log__r.LoggedBy__r.Name`) are supported and are hydrated via SOQL at delivery time.
+- `includeNullValues` - `true` renders blank fields as `(empty)`; the default `false` drops them.
+- `subjectTemplate` - custom subject line with `{!token}` merge tokens. Built-in tokens: `{!ruleName}`, `{!matchCount}`. Any other token is treated as a field API name on the first matching record and supports dotted paths (`{!Log__r.Name}`). Unknown tokens resolve to an empty string; a blank / all-blank template falls back to the default subject.
+
+### Daily limits
+
+Salesforce enforces org-wide daily email limits (5,000 external addresses/day for production, lower for trial and dev orgs). Notifications that exceed the limit fail with `Failed` status and an error message on the delivery row.</value>
+    </values>
+    <values>
+        <field>SuggestedConfigurationJson__c</field>
+        <value xsi:type="xsd:string">{
+  "sourceFields": [
+    "LoggingLevel__c",
+    "Message__c",
+    "StackTrace__c",
+    "ExceptionType__c"
+  ],
+  "includeNullValues": false,
+  "subjectTemplate": "Nebula Logger: {!matchCount} {!LoggingLevel__c} matched {!ruleName}"
+}</value>
+    </values>
+    <values>
+        <field>SupportsChannelIdentifier__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsEmailAddress__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsNamedCredential__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>SupportsUser__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SupportsWebhookUrl__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+</CustomMetadata>
