@@ -40,7 +40,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     'ExceptionType__c'
   };
 
-  private static final String NULL_VALUE_PLACEHOLDER = '`(null/no value)`';
+  private static final String NULL_VALUE_PLACEHOLDER = '(null/no value)';
 
   /**
    * @description Called by `LoggerNotifierAsyncDispatcher` in an async, callout-legal context.
@@ -243,30 +243,19 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
       return new FieldDto(label, NULL_VALUE_PLACEHOLDER, isWide == false);
     }
     String stringValue = String.valueOf(rawValue);
-    String rendered = isWide ? '```' + this.truncate(stringValue, 2000) + '```' : stringValue;
-    String linkedValue = this.applyLinkIfApplicable(record, spec, primaryDescribe, rendered);
-    return new FieldDto(label, linkedValue, isWide == false);
+    String renderedValue = isWide ? '```' + this.truncate(stringValue, 2000) + '```' : '`' + stringValue + '`';
+    // Slack's `<url|text>` mrkdwn wrapping only kicks in when the primary field points at a specific record
+    // (a Name on the source record, a parent Name via `.Name`, or a REFERENCE lookup). Everything else stays
+    // as plain rendered text.
+    Id linkTarget = resolveLinkTarget(record, spec.field, primaryDescribe);
+    return new FieldDto(label, wrapAsLink(linkTarget, renderedValue), isWide == false);
   }
 
-  /**
-   * @description Wraps the rendered value in Slack's `<url|text>` mrkdwn syntax when the primary field is a
-   *              Name (on the source record or on a parent) or a REFERENCE lookup. The link target is the
-   *              record whose data the field describes - the source record's Id for a plain `Name`, the
-   *              parent record's Id (via the immediate `__r` hop) for a dotted `.Name`, and the field's
-   *              own value (which is itself an Id) for a REFERENCE. Everything else returns unchanged.
-   */
-  private String applyLinkIfApplicable(
-    SObject record,
-    LoggerNotifiableConfiguration.SourceFieldSpec spec,
-    Schema.DescribeFieldResult primaryDescribe,
-    String rendered
-  ) {
-    Id linkTarget = resolveLinkTarget(record, spec.field, primaryDescribe);
+  private static String wrapAsLink(Id linkTarget, String rendered) {
     if (linkTarget == null) {
       return rendered;
     }
-    String orgUrl = System.URL.getOrgDomainUrl().toExternalForm();
-    return '<' + orgUrl + '/' + linkTarget + '|' + rendered + '>';
+    return '<' + System.URL.getOrgDomainUrl().toExternalForm() + '/' + linkTarget + '|' + rendered + '>';
   }
 
   private static Id resolveLinkTarget(SObject record, String fieldPath, Schema.DescribeFieldResult primaryDescribe) {
@@ -480,29 +469,8 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     }
     Map<Id, SObject> hydratedById = new Map<Id, SObject>();
     for (Schema.SObjectType type : idsByType.keySet()) {
-      Set<Id> ids = idsByType.get(type);
-      // Include Id, Name (when the object has one), and LoggingLevel__c (used for color-coding on LogEntry)
-      // alongside the configured paths so the attachment's title + color logic still work after hydration
-      // replaces the trigger-supplied record. Use a Set to deduplicate so a configured path that happens to
-      // repeat one of these fields doesn't produce a `duplicate field` SOQL error.
-      Map<String, Schema.SObjectField> fieldMap = type.getDescribe().fields.getMap();
-      Set<String> selectFieldSet = new Set<String>{ 'Id' };
-      if (fieldMap.containsKey('name')) {
-        selectFieldSet.add('Name');
-      }
-      if (fieldMap.containsKey('logginglevel__c')) {
-        selectFieldSet.add('LoggingLevel__c');
-      }
-      selectFieldSet.addAll(fieldPaths);
-      String query = 'SELECT ' + String.join(new List<String>(selectFieldSet), ', ') + ' FROM ' + type.getDescribe().getName() + ' WHERE Id IN :ids';
-      try {
-        for (SObject queried : System.Database.query(query)) {
-          hydratedById.put((Id) queried.get('Id'), queried);
-        }
-      } catch (System.QueryException ex) {
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-          Logger.warn('SlackLoggerNotifier - could not hydrate records for field paths ' + fieldPaths + ': ' + ex.getMessage());
-        }
+      for (SObject queried : queryHydratedRecords(type, idsByType.get(type), fieldPaths)) {
+        hydratedById.put((Id) queried.get('Id'), queried);
       }
     }
     List<SObject> result = new List<SObject>();
@@ -512,6 +480,36 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
       result.add(hydrated != null ? hydrated : record);
     }
     return result;
+  }
+
+  /**
+   * @description Runs the hydration SELECT for a single object type. Adds Id, Name (when the object has one),
+   *              and LoggingLevel__c (used for color-coding on LogEntry) alongside the configured paths so
+   *              the attachment's title + color logic still work after hydration replaces the trigger-supplied
+   *              record. Uses a Set to deduplicate the field list so a configured path that happens to repeat
+   *              one of these fields doesn't produce a `duplicate field` SOQL error. If the query fails
+   *              (invalid path, missing field access, etc.) an empty list is returned so the caller falls back
+   *              to the un-hydrated records.
+   */
+  private static List<SObject> queryHydratedRecords(Schema.SObjectType type, Set<Id> ids, List<String> fieldPaths) {
+    Map<String, Schema.SObjectField> fieldMap = type.getDescribe().fields.getMap();
+    Set<String> selectFieldSet = new Set<String>{ 'Id' };
+    if (fieldMap.containsKey('name')) {
+      selectFieldSet.add('Name');
+    }
+    if (fieldMap.containsKey('logginglevel__c')) {
+      selectFieldSet.add('LoggingLevel__c');
+    }
+    selectFieldSet.addAll(fieldPaths);
+    String query = 'SELECT ' + String.join(new List<String>(selectFieldSet), ', ') + ' FROM ' + type.getDescribe().getName() + ' WHERE Id IN :ids';
+    try {
+      return System.Database.queryWithBinds(query, new Map<String, Object>{ 'ids' => ids }, System.AccessLevel.SYSTEM_MODE);
+    } catch (System.QueryException ex) {
+      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
+        Logger.warn('SlackLoggerNotifier - could not hydrate records for field paths ' + fieldPaths + ': ' + ex.getMessage());
+      }
+      return new List<SObject>();
+    }
   }
 
   private static Boolean isWideDisplayType(Schema.DisplayType type) {
@@ -588,6 +586,7 @@ public without sharing class SlackLoggerNotifier implements LoggerNotifiable {
     public String value;
     public Boolean isShort;
 
+    @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
     public FieldDto(String title, String value, Boolean isShort) {
       this.title = title;
       this.value = value;

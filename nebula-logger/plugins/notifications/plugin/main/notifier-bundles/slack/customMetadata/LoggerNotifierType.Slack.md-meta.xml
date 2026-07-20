@@ -85,6 +85,11 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
     &quot;ExceptionStackTrace__c&quot;,
     &quot;Log__r.OrganizationId__c&quot;,
     &quot;Log__r.OrganizationType__c&quot;
+    &quot;Log__r.OrganizationInstanceName__c&quot;,
+    &quot;Log__r.OrganizationName__c&quot;,
+    &quot;Log__r.TotalLogEntries__c&quot;,
+    &quot;Log__r.TotalERRORLogEntries__c&quot;,
+    &quot;Log__r.TotalWARNLogEntries__c&quot;
   ]
 }</value>
     </values>
