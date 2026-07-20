@@ -31,26 +31,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.MatchedSObjectType__c</fieldItem>
-                <identifier>RecordMatchedSObjectType_cField2</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchedRecordLink__c</fieldItem>
-                <identifier>RecordMatchedRecordLink_cField2</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.LoggerNotificationService__c</fieldItem>
                 <identifier>HeaderService</identifier>
             </fieldInstance>
@@ -127,26 +107,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoggerNotificationMatch__c</fieldItem>
                 <identifier>DetailMatch</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchedSObjectType__c</fieldItem>
-                <identifier>RecordMatchedSObjectType_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MatchedRecordLink__c</fieldItem>
-                <identifier>RecordMatchedRecordLink_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>detailInformationLeft</name>
