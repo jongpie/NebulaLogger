@@ -58,16 +58,19 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
   }
 
   private void invokeNotifier(PendingDispatch dispatch, Id jobId, List<LoggerNotificationDelivery__c> deliveriesToUpdate) {
-    LoggerNotifier notifier = newNotifierInstance(dispatch.service?.NotifierApexClassName__c);
+    LoggerNotifier notifier = newNotifierInstance(dispatch.recipient.LoggerNotificationService__r.NotifierApexClassName__c);
     List<LoggerNotificationDelivery__c> deliveries = this.rehydrateDeliveries(dispatch);
     if (notifier == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('Nebula Logger Notifications - async dispatcher could not instantiate notifier class ' + dispatch.service?.NotifierApexClassName__c);
+        Logger.warn(
+          'Nebula Logger Notifications - async dispatcher could not instantiate notifier class ' +
+          dispatch.recipient.LoggerNotificationService__r.NotifierApexClassName__c
+        );
       }
       if (deliveries != null) {
         LoggerNotifierResult skipped = new LoggerNotifierResult();
         skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
-        skipped.errorMessage = 'Could not instantiate notifier class ' + dispatch.service?.NotifierApexClassName__c;
+        skipped.errorMessage = 'Could not instantiate notifier class ' + dispatch.recipient.LoggerNotificationService__r.NotifierApexClassName__c;
         skipped.jobId = jobId;
         Datetime now = System.now();
         skipped.finalizeDeliveries(deliveries, now, now);
@@ -75,14 +78,17 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
       }
       return;
     }
-    LoggerNotifierRequest request = new LoggerNotifierRequest(dispatch.notificationRule, dispatch.recipient, dispatch.service, dispatch.matchingRecords);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(dispatch.recipient, dispatch.matchingRecords);
     Datetime dispatchStart = System.now();
     LoggerNotifierResult result;
     try {
       result = notifier.sendNotification(request);
     } catch (System.Exception ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.error('Nebula Logger Notifications - async notifier ' + dispatch.service?.NotifierApexClassName__c + ' threw an exception', ex);
+        Logger.error(
+          'Nebula Logger Notifications - async notifier ' + dispatch.recipient.LoggerNotificationService__r.NotifierApexClassName__c + ' threw an exception',
+          ex
+        );
       }
       result = new LoggerNotifierResult();
       result.status = LoggerNotifierResult.STATUS_FAILED;
@@ -135,26 +141,22 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
    *              can update them with the delivery outcome.
    */
   public class PendingDispatch {
-    public LoggerNotificationRule__c notificationRule { get; private set; }
-    public LoggerNotificationRecipient__c recipient { get; private set; }
-    public LoggerNotificationService__c service { get; private set; }
-    public List<SObject> matchingRecords { get; private set; }
-    // Populated by the runtime when delivery history is enabled. In-memory only during the enqueuing
-    // transaction; the dispatcher uses the Ids to update the deliveries after the callout completes.
-    public List<LoggerNotificationDelivery__c> pendingDeliveries;
+    // The recipient carries its own rule + service via `LoggerNotificationRule__r` and
+    // `LoggerNotificationService__r`; callers read them off the recipient directly.
+    public final LoggerNotificationRecipient__c recipient;
+    public final List<SObject> matchingRecords;
+    // Set at construction time by the runtime when delivery history is enabled. In-memory only during
+    // the enqueuing transaction; the dispatcher reads their Ids into `pendingDeliveryIds` after DML so
+    // it can update them once the callout completes.
+    public final List<LoggerNotificationDelivery__c> pendingDeliveries;
+    // Populated by the runtime AFTER the pending deliveries are inserted; the dispatcher rehydrates
+    // records by Id from these values at execute time.
     public List<Id> pendingDeliveryIds;
 
-    @SuppressWarnings('PMD.ExcessiveParameterList')
-    public PendingDispatch(
-      LoggerNotificationRule__c notificationRule,
-      LoggerNotificationRecipient__c recipient,
-      LoggerNotificationService__c service,
-      List<SObject> matchingRecords
-    ) {
-      this.notificationRule = notificationRule;
+    public PendingDispatch(LoggerNotificationRecipient__c recipient, List<SObject> matchingRecords, List<LoggerNotificationDelivery__c> pendingDeliveries) {
       this.recipient = recipient;
-      this.service = service;
       this.matchingRecords = matchingRecords;
+      this.pendingDeliveries = pendingDeliveries;
     }
   }
 }

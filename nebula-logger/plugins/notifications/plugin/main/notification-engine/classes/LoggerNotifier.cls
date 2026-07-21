@@ -28,16 +28,16 @@ public abstract class LoggerNotifier {
   public abstract LoggerNotifierResult sendNotification(LoggerNotifierRequest request);
 
   /**
-   * @description Builds a default `SourceFieldSpec` list from a notifier's built-in fallback field names.
+   * @description Builds a default `SourceFieldDefinition` list from a notifier's built-in fallback field names.
    *              Used when the recipient's `ConfigurationJson__c` does not specify `sourceFields`.
    * @param fieldNames The bare field API names the notifier falls back to.
-   * @return A list of specs with `displayField` and `displayLabel` unset (the notifier's renderer uses the
-   *         describe-provided label at render time).
+   * @return A list of `SourceFieldDefinition` entries with `displayField` and `displayLabel` unset (the
+   *         notifier's renderer uses the describe-provided label at render time).
    */
-  public static List<LoggerNotifierConfiguration.SourceFieldSpec> buildDefaultSpecs(List<String> fieldNames) {
-    List<LoggerNotifierConfiguration.SourceFieldSpec> defaults = new List<LoggerNotifierConfiguration.SourceFieldSpec>();
+  public static List<LoggerNotifierConfiguration.SourceFieldDefinition> buildDefaultSourceFields(List<String> fieldNames) {
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> defaults = new List<LoggerNotifierConfiguration.SourceFieldDefinition>();
     for (String fieldName : fieldNames) {
-      defaults.add(new LoggerNotifierConfiguration.SourceFieldSpec(fieldName, null, null));
+      defaults.add(new LoggerNotifierConfiguration.SourceFieldDefinition(fieldName, null, null));
     }
     return defaults;
   }

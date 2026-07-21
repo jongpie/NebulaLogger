@@ -7,33 +7,31 @@
 @IsTest(IsParallel=true)
 private class LoggerNotifierRequest_Tests {
   @IsTest
-  static void it_should_expose_all_constructor_arguments_as_readonly_properties() {
+  static void it_should_expose_constructor_arguments_and_derive_rule_and_service_from_the_recipient() {
     LoggerNotificationService__c service = new LoggerNotificationService__c(
       Name = 'Slack',
       NotifierApexClassName__c = 'FakeSlackNotifier',
       WebhookUrl__c = 'https://example.com/webhook'
     );
-    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
     LoggerNotificationRule__c notificationRule = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = notificationRule;
+    recipient.LoggerNotificationService__r = service;
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c() };
 
-    LoggerNotifierRequest request = new LoggerNotifierRequest(notificationRule, recipient, service, matchingRecords);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, matchingRecords);
 
-    System.Assert.areEqual(notificationRule, request.notificationRule);
     System.Assert.areEqual(recipient, request.recipient);
-    System.Assert.areEqual(service, request.service);
+    System.Assert.areEqual(notificationRule, request.recipient.LoggerNotificationRule__r);
+    System.Assert.areEqual(service, request.recipient.LoggerNotificationService__r);
     System.Assert.areEqual(matchingRecords, request.matchingRecords);
     System.Assert.areEqual(1, request.matchingRecords.size());
+    System.Assert.isNotNull(request.configuration, 'Configuration should always be non-null');
   }
 
   @IsTest
   static void it_should_support_being_consumed_by_a_LoggerNotifier_implementation() {
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      new LoggerNotificationRule__c(),
-      new LoggerNotificationRecipient__c(),
-      new LoggerNotificationService__c(),
-      new List<SObject>()
-    );
+    LoggerNotifierRequest request = new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>());
     LocalMockNotifier mockNotifier = new LocalMockNotifier();
 
     mockNotifier.sendNotification(request);

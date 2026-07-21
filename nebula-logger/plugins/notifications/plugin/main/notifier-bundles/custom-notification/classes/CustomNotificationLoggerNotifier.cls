@@ -12,7 +12,7 @@
  *
  *              Recipient configuration (read from `LoggerNotifierRequest.configuration`, which parses the
  *              recipient's `ConfigurationJson__c`):
- *                - `User__c` on the recipient - single user (required if the config JSON doesn't specify recipients)
+ *                - `User__c` on the recipient - single user (required if the configuration JSON doesn't specify recipients)
  *                - `notificationTypeDeveloperName` (string, required) - matches a `CustomNotificationType.DeveloperName`
  *                - `recipientUserIds` (string list, optional) - additional users
  *                - `recipientGroupIds` (string list, optional) - public / queue groups
@@ -23,7 +23,7 @@
  *                    `titleTemplate`. Defaults to the record's Name (or its Id when the SObject has no
  *                    Name field).
  *
- *              At least one recipient (either `User__c` or an entry in the config JSON) must resolve.
+ *              At least one recipient (either `User__c` or an entry in the configuration JSON) must resolve.
  */
 public without sharing class CustomNotificationLoggerNotifier extends LoggerNotifier {
   private static final Integer MAX_TITLE_LENGTH = 80;
@@ -165,7 +165,7 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
 
   private String resolveToken(String token, LoggerNotifierRequest request, SObject record) {
     if (MERGE_KEY_RULE_NAME.equalsIgnoreCase(token)) {
-      return request.notificationRule == null ? '' : String.valueOf(request.notificationRule.Name);
+      return request.recipient.LoggerNotificationRule__r == null ? '' : String.valueOf(request.recipient.LoggerNotificationRule__r.Name);
     }
     Object value = LoggerNotifier.getValueByPath(record, token);
     return value == null ? '' : String.valueOf(value);
@@ -182,8 +182,11 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     return recipientIds;
   }
 
-  private void addIdsFromConfig(Set<String> target, LoggerNotifierConfiguration config, String key) {
-    List<String> values = config.getStringList(key);
+  // TODO: move this into LoggerNotifierConfiguration as a getStringSet(key) accessor - matches the
+  // shape of the existing getString / getBoolean / getStringList / getSourceFields methods and drops
+  // the awkward "hand me a target Set and I'll append" signature.
+  private void addIdsFromConfig(Set<String> target, LoggerNotifierConfiguration configuration, String key) {
+    List<String> values = configuration.getStringList(key);
     if (values == null) {
       return;
     }

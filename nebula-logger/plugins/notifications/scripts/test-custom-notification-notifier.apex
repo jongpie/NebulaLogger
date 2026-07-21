@@ -52,17 +52,17 @@ if (String.isNotBlank(bodyTemplate)) {
   configPayload.put('bodyTemplate', bodyTemplate);
 }
 
-LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Name = ruleName, SourceSObjectType__c = String.valueOf(matchingRecord.getSObjectType()));
-LoggerNotificationService__c service = new LoggerNotificationService__c(
-  Name = 'Manual test service',
-  NotifierApexClassName__c = 'CustomNotificationLoggerNotifier',
-  IsEnabled__c = true
-);
 LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
   User__c = recipientUserId,
   ConfigurationJson__c = System.JSON.serialize(configPayload)
 );
-LoggerNotifierRequest request = new LoggerNotifierRequest(rule, recipient, service, new List<SObject>{ matchingRecord });
+recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = ruleName, SourceSObjectType__c = String.valueOf(matchingRecord.getSObjectType()));
+recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
+  Name = 'Manual test service',
+  NotifierApexClassName__c = 'CustomNotificationLoggerNotifier',
+  IsEnabled__c = true
+);
+LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ matchingRecord });
 
 System.debug('Recipient user: ' + recipientUserId);
 System.debug('Config payload: ' + System.JSON.serialize(configPayload));

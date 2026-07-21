@@ -32,24 +32,6 @@ public class LoggerNotifierConfiguration {
     this.rawConfig = parseRawConfig(recipient);
   }
 
-  private static Map<String, Object> parseRawConfig(LoggerNotificationRecipient__c recipient) {
-    if (recipient == null || String.isBlank(recipient.ConfigurationJson__c)) {
-      return new Map<String, Object>();
-    }
-    try {
-      Object parsed = System.JSON.deserializeUntyped(recipient.ConfigurationJson__c);
-      if (parsed instanceof Map<String, Object>) {
-        return (Map<String, Object>) parsed;
-      }
-      return new Map<String, Object>();
-    } catch (System.JSONException ex) {
-      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('LoggerNotifierConfiguration - could not parse ConfigurationJson__c on recipient ' + recipient.Id, ex);
-      }
-      return new Map<String, Object>();
-    }
-  }
-
   /**
    * @description Returns the string value stored at `key` in the config JSON. Returns null when the key
    *              is absent, when its value is not a string, or when its value is a blank string. Callers
@@ -70,6 +52,7 @@ public class LoggerNotifierConfiguration {
    *              toggle-style options (e.g. Slack's `includeNullValues`) where the built-in behavior
    *              is applied unless the admin explicitly opts out or in.
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public Boolean getBoolean(String key, Boolean defaultValue) {
     if (this.rawConfig.containsKey(key) == false) {
       return defaultValue;
@@ -112,27 +95,27 @@ public class LoggerNotifierConfiguration {
    *              `sourceFields` at all (meaning: use the notifier's built-in default set).
    *
    *              Notifiers that need the display overrides (label, display field) should use
-   *              `getSourceFieldSpecs()` instead.
+   *              `getSourceFields()` instead.
    */
-  public List<String> getSourceFields() {
-    List<SourceFieldSpec> specs = this.getSourceFieldSpecs();
-    if (specs == null) {
+  public List<String> getSourceFieldPaths() {
+    List<SourceFieldDefinition> sourceFields = this.getSourceFields();
+    if (sourceFields == null) {
       return null;
     }
     List<String> result = new List<String>();
-    for (SourceFieldSpec spec : specs) {
-      result.add(spec.field);
+    for (SourceFieldDefinition definition : sourceFields) {
+      result.add(definition.sourceField);
     }
     return result;
   }
 
   /**
-   * @description Returns the ordered list of source-field specs, each capturing the underlying `field` plus
-   *              any `displayField` / `displayLabel` overrides. Returns null when `sourceFields` is absent
-   *              from the config. An empty list is returned literally so admins can opt out of rendering
-   *              any fields.
+   * @description Returns the ordered list of `SourceFieldDefinition` entries, each capturing the underlying
+   *              `sourceField` plus any `displayField` / `displayLabel` overrides. Returns null when
+   *              `sourceFields` is absent from the config. An empty list is returned literally so admins
+   *              can opt out of rendering any fields.
    */
-  public List<SourceFieldSpec> getSourceFieldSpecs() {
+  public List<SourceFieldDefinition> getSourceFields() {
     if (this.rawConfig.containsKey('sourceFields') == false) {
       return null;
     }
@@ -140,35 +123,53 @@ public class LoggerNotifierConfiguration {
     if ((value instanceof List<Object>) == false) {
       return null;
     }
-    List<SourceFieldSpec> result = new List<SourceFieldSpec>();
-    for (Object entry : (List<Object>) value) {
-      SourceFieldSpec spec = specFromRawEntry(entry);
-      if (spec != null) {
-        result.add(spec);
+    List<SourceFieldDefinition> result = new List<SourceFieldDefinition>();
+    for (Object rawSourceField : (List<Object>) value) {
+      SourceFieldDefinition definition = sourceFieldFromRawValue(rawSourceField);
+      if (definition != null) {
+        result.add(definition);
       }
     }
     return result;
   }
 
-  private static SourceFieldSpec specFromRawEntry(Object entry) {
-    if (entry == null) {
+  private static Map<String, Object> parseRawConfig(LoggerNotificationRecipient__c recipient) {
+    if (recipient == null || String.isBlank(recipient.ConfigurationJson__c)) {
+      return new Map<String, Object>();
+    }
+    try {
+      Object parsed = System.JSON.deserializeUntyped(recipient.ConfigurationJson__c);
+      if (parsed instanceof Map<String, Object>) {
+        return (Map<String, Object>) parsed;
+      }
+      return new Map<String, Object>();
+    } catch (System.JSONException ex) {
+      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
+        Logger.warn('LoggerNotifierConfiguration - could not parse ConfigurationJson__c on recipient ' + recipient.Id, ex);
+      }
+      return new Map<String, Object>();
+    }
+  }
+
+  private static SourceFieldDefinition sourceFieldFromRawValue(Object rawSourceField) {
+    if (rawSourceField == null) {
       return null;
     }
-    if (entry instanceof String) {
-      String fieldName = (String) entry;
-      return String.isBlank(fieldName) ? null : new SourceFieldSpec(fieldName, null, null);
+    if (rawSourceField instanceof String) {
+      String fieldName = (String) rawSourceField;
+      return String.isBlank(fieldName) ? null : new SourceFieldDefinition(fieldName, null, null);
     }
-    if ((entry instanceof Map<String, Object>) == false) {
+    if ((rawSourceField instanceof Map<String, Object>) == false) {
       return null;
     }
-    Map<String, Object> asMap = (Map<String, Object>) entry;
-    Object fieldValue = asMap.get('field');
+    Map<String, Object> sourceFieldMap = (Map<String, Object>) rawSourceField;
+    Object fieldValue = sourceFieldMap.get('field');
     if ((fieldValue instanceof String) == false || String.isBlank((String) fieldValue)) {
       return null;
     }
-    Object displayFieldValue = asMap.get('displayField');
-    Object displayLabelValue = asMap.get('displayLabel');
-    return new SourceFieldSpec(
+    Object displayFieldValue = sourceFieldMap.get('displayField');
+    Object displayLabelValue = sourceFieldMap.get('displayLabel');
+    return new SourceFieldDefinition(
       (String) fieldValue,
       displayFieldValue instanceof String && String.isNotBlank((String) displayFieldValue) ? (String) displayFieldValue : null,
       displayLabelValue instanceof String && String.isNotBlank((String) displayLabelValue) ? (String) displayLabelValue : null
@@ -176,23 +177,23 @@ public class LoggerNotifierConfiguration {
   }
 
   /**
-   * @description Describes one entry in a recipient's `sourceFields` config. The `field` API name drives
+   * @description Describes one entry in a recipient's `sourceFields` config. The `sourceField` API name drives
    *              hydration, linkification, and the default label / DisplayType lookup. The two optional
    *              overrides let admins tweak either the value (`displayField`) or the label (`displayLabel`)
    *              without changing what the underlying field points at.
    */
-  public class SourceFieldSpec {
+  public class SourceFieldDefinition {
     /** @description The primary field API name / dotted path. Never blank. */
-    public String field { get; private set; }
+    public final String sourceField;
 
-    /** @description Optional field API name / dotted path whose value replaces `field`'s value at render time. */
-    public String displayField { get; private set; }
+    /** @description Optional field API name / dotted path whose value replaces `sourceField`'s value at render time. */
+    public final String displayField;
 
     /** @description Optional literal label used instead of the field's describe-provided label. */
-    public String displayLabel { get; private set; }
+    public final String displayLabel;
 
-    public SourceFieldSpec(String field, String displayField, String displayLabel) {
-      this.field = field;
+    public SourceFieldDefinition(String sourceField, String displayField, String displayLabel) {
+      this.sourceField = sourceField;
       this.displayField = displayField;
       this.displayLabel = displayLabel;
     }

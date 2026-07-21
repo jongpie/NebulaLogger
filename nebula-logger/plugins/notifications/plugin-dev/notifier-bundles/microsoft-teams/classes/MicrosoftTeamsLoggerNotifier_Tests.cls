@@ -13,9 +13,7 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
     notifier.sendNotification(null);
-    notifier.sendNotification(
-      new LoggerNotifierRequest(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
-    );
+    notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), null));
 
     System.Assert.isNull(calloutMock.request);
   }
@@ -94,8 +92,9 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
   }
 
   private static LoggerNotifierRequest buildRequest(String webhookUrl, String namedCredentialDeveloperName) {
-    LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
-    LoggerNotificationService__c service = new LoggerNotificationService__c(
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
+    recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
       Name = 'Teams',
       NotifierApexClassName__c = 'MicrosoftTeamsLoggerNotifier',
       IsEnabled__c = true,
@@ -103,6 +102,6 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
-    return new LoggerNotifierRequest(rule, new LoggerNotificationRecipient__c(), service, matchingRecords);
+    return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }
