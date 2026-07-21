@@ -29,7 +29,7 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
    * @param pendingDispatches The list of rule+recipient+service+records tuples to deliver.
    */
   public LoggerNotificationAsyncDispatcher(List<PendingDispatch> pendingDispatches) {
-    this.pendingDispatches = pendingDispatches != null ? pendingDispatches : new List<PendingDispatch>();
+    this.pendingDispatches = pendingDispatches ?? new List<PendingDispatch>();
   }
 
   /**
