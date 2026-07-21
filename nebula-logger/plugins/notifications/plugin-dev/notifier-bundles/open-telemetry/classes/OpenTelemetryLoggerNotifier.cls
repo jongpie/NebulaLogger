@@ -170,7 +170,7 @@ public without sharing class OpenTelemetryLoggerNotifier extends LoggerNotifier 
     if (loggingLevel == null) {
       return SEVERITY_NUMBER_INFO;
     }
-    switch on loggingLevel {
+    switch on loggingLevel?.toUpperCase() {
       when 'ERROR' {
         return SEVERITY_NUMBER_ERROR;
       }

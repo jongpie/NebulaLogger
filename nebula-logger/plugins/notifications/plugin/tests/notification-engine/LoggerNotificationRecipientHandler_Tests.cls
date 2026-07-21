@@ -53,17 +53,17 @@ private class LoggerNotificationRecipientHandler_Tests {
     LoggerNotificationRecipient__c recipient = buildValidRecipient();
     recipient.ConfigurationJson__c = '{"foo":';
 
-    System.DmlException thrown;
+    System.DmlException thrownException;
     try {
       LoggerDataStore.getDatabase().insertRecord(recipient);
     } catch (System.DmlException ex) {
-      thrown = ex;
+      thrownException = ex;
     }
 
-    System.Assert.isNotNull(thrown, 'Malformed JSON should have blocked the insert');
+    System.Assert.isNotNull(thrownException, 'Malformed JSON should have blocked the insert');
     System.Assert.isTrue(
-      thrown.getMessage().contains('Configuration JSON is not valid JSON'),
-      'Error message should identify the parse failure: ' + thrown.getMessage()
+      thrownException.getMessage().contains('Configuration JSON is not valid JSON'),
+      'Error message should identify the parse failure: ' + thrownException.getMessage()
     );
   }
 
@@ -72,17 +72,17 @@ private class LoggerNotificationRecipientHandler_Tests {
     LoggerNotificationRecipient__c recipient = buildValidRecipient();
     recipient.ConfigurationJson__c = '["foo","bar"]';
 
-    System.DmlException thrown;
+    System.DmlException thrownException;
     try {
       LoggerDataStore.getDatabase().insertRecord(recipient);
     } catch (System.DmlException ex) {
-      thrown = ex;
+      thrownException = ex;
     }
 
-    System.Assert.isNotNull(thrown, 'A top-level JSON array should have blocked the insert');
+    System.Assert.isNotNull(thrownException, 'A top-level JSON array should have blocked the insert');
     System.Assert.isTrue(
-      thrown.getMessage().contains('must be a JSON object'),
-      'Error message should identify the top-level-shape failure: ' + thrown.getMessage()
+      thrownException.getMessage().contains('must be a JSON object'),
+      'Error message should identify the top-level-shape failure: ' + thrownException.getMessage()
     );
   }
 
@@ -91,17 +91,17 @@ private class LoggerNotificationRecipientHandler_Tests {
     LoggerNotificationRecipient__c recipient = buildValidRecipient();
     recipient.ConfigurationJson__c = '"just a string"';
 
-    System.DmlException thrown;
+    System.DmlException thrownException;
     try {
       LoggerDataStore.getDatabase().insertRecord(recipient);
     } catch (System.DmlException ex) {
-      thrown = ex;
+      thrownException = ex;
     }
 
-    System.Assert.isNotNull(thrown, 'A top-level JSON string should have blocked the insert');
+    System.Assert.isNotNull(thrownException, 'A top-level JSON string should have blocked the insert');
     System.Assert.isTrue(
-      thrown.getMessage().contains('must be a JSON object'),
-      'Error message should identify the top-level-shape failure: ' + thrown.getMessage()
+      thrownException.getMessage().contains('must be a JSON object'),
+      'Error message should identify the top-level-shape failure: ' + thrownException.getMessage()
     );
   }
 
@@ -110,15 +110,15 @@ private class LoggerNotificationRecipientHandler_Tests {
     LoggerNotificationRecipient__c recipient = buildValidRecipient();
     recipient.ConfigurationJson__c = '42';
 
-    System.DmlException thrown;
+    System.DmlException thrownException;
     try {
       LoggerDataStore.getDatabase().insertRecord(recipient);
     } catch (System.DmlException ex) {
-      thrown = ex;
+      thrownException = ex;
     }
 
-    System.Assert.isNotNull(thrown, 'A top-level JSON number should have blocked the insert');
-    System.Assert.isTrue(thrown.getMessage().contains('must be a JSON object'));
+    System.Assert.isNotNull(thrownException, 'A top-level JSON number should have blocked the insert');
+    System.Assert.isTrue(thrownException.getMessage().contains('must be a JSON object'));
   }
 
   @IsTest
@@ -142,15 +142,15 @@ private class LoggerNotificationRecipientHandler_Tests {
 
     recipient.ConfigurationJson__c = '["nope"]';
 
-    System.DmlException thrown;
+    System.DmlException thrownException;
     try {
       LoggerDataStore.getDatabase().updateRecord(recipient);
     } catch (System.DmlException ex) {
-      thrown = ex;
+      thrownException = ex;
     }
 
-    System.Assert.isNotNull(thrown, 'An update to a top-level array should have blocked the update');
-    System.Assert.isTrue(thrown.getMessage().contains('must be a JSON object'));
+    System.Assert.isNotNull(thrownException, 'An update to a top-level array should have blocked the update');
+    System.Assert.isTrue(thrownException.getMessage().contains('must be a JSON object'));
   }
 
   @IsTest

@@ -115,7 +115,11 @@ private class LoggerNotificationAsyncDispatcher_Tests {
       ),
       LoggerNotificationRecipient__c.class
     );
-    return new LoggerNotificationAsyncDispatcher.PendingDispatch(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') }, null);
+    return new LoggerNotificationAsyncDispatcher.PendingDispatch(
+      recipient,
+      new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) },
+      null
+    );
   }
 
   public class MockNotifier extends LoggerNotifier {

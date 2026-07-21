@@ -8,6 +8,9 @@
 private class LoggerNotifier_Tests {
   @IsTest
   static void it_should_return_one_spec_per_field_name_with_no_overrides() {
+    // TODO eliminate this, the list of source fields will vary based on rule's SourceSObjectType__c,
+    // so definining defaults needs to be sobject-specific.
+    // The recipients should provide a list of source fields, so there shouldn't be a need for default fields.
     List<String> fieldNames = new List<String>{ 'LoggingLevel__c', 'Message__c', 'Origin__c' };
 
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = LoggerNotifier.buildDefaultSourceFields(fieldNames);
@@ -41,15 +44,15 @@ private class LoggerNotifier_Tests {
 
   @IsTest
   static void it_should_return_the_direct_field_value() {
-    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'boom');
+    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'boom');
 
-    System.Assert.areEqual('ERROR', LoggerNotifier.getValueByPath(logEntry, 'LoggingLevel__c'));
+    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), LoggerNotifier.getValueByPath(logEntry, 'LoggingLevel__c'));
     System.Assert.areEqual('boom', LoggerNotifier.getValueByPath(logEntry, 'Message__c'));
   }
 
   @IsTest
   static void it_should_return_null_for_an_unknown_field_on_the_record() {
-    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR');
+    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name());
 
     System.Assert.isNull(LoggerNotifier.getValueByPath(logEntry, 'ThisFieldDoesNotExist__c'), 'Unknown fields should return null rather than throwing');
   }
@@ -68,7 +71,7 @@ private class LoggerNotifier_Tests {
 
   @IsTest
   static void it_should_return_null_when_a_parent_hop_is_not_populated() {
-    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR');
+    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name());
 
     System.Assert.isNull(
       LoggerNotifier.getValueByPath(logEntry, 'Log__r.Name'),
@@ -78,7 +81,7 @@ private class LoggerNotifier_Tests {
 
   @IsTest
   static void it_should_return_null_when_a_relationship_segment_is_unknown() {
-    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR');
+    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name());
 
     System.Assert.isNull(
       LoggerNotifier.getValueByPath(logEntry, 'NoSuchRelationship__r.Name'),
@@ -131,7 +134,7 @@ private class LoggerNotifier_Tests {
 
   @IsTest
   static void it_should_return_records_untouched_when_no_dotted_paths_are_configured() {
-    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') };
+    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
     List<String> flatPaths = new List<String>{ 'LoggingLevel__c', 'Message__c' };
 
     List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(records, flatPaths);
@@ -149,7 +152,7 @@ private class LoggerNotifier_Tests {
 
   @IsTest
   static void it_should_return_records_untouched_when_field_paths_are_null_or_empty() {
-    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') };
+    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
 
     System.Assert.isTrue(LoggerNotifier.hydrateRecordsWithFieldPaths(records, null) === records);
     System.Assert.isTrue(LoggerNotifier.hydrateRecordsWithFieldPaths(records, new List<String>()) === records);
@@ -158,7 +161,7 @@ private class LoggerNotifier_Tests {
   @IsTest
   static void it_should_leave_records_without_ids_untouched() {
     // Records without a persisted Id cannot be re-queried, so the hydration falls through and returns them unchanged.
-    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') };
+    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
 
     List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(records, new List<String>{ 'Log__r.Name' });
 
@@ -170,12 +173,12 @@ private class LoggerNotifier_Tests {
   static void it_should_hydrate_parent_lookups_when_dotted_paths_are_configured() {
     Log__c log = new Log__c(TransactionId__c = 'test-transaction');
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     // Log__c.Name is auto-numbered; Salesforce only populates it into the local record on requery.
     String expectedParentName = [SELECT Name FROM Log__c WHERE Id = :log.Id].Name;
     // The trigger-supplied record only carries the FK; Log__r.Name is unpopulated in-memory.
-    LogEntry__c triggerCopy = new LogEntry__c(Id = logEntry.Id, Log__c = log.Id, LoggingLevel__c = 'ERROR');
+    LogEntry__c triggerCopy = new LogEntry__c(Id = logEntry.Id, Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name());
 
     List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(new List<SObject>{ triggerCopy }, new List<String>{ 'Log__r.Name' });
 
@@ -193,10 +196,10 @@ private class LoggerNotifier_Tests {
     // paths from the SELECT lets the good ones still hydrate.
     Log__c log = new Log__c(TransactionId__c = 'drop-unresolvable');
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     String expectedParentName = [SELECT Name FROM Log__c WHERE Id = :log.Id].Name;
-    LogEntry__c triggerCopy = new LogEntry__c(Id = logEntry.Id, Log__c = log.Id, LoggingLevel__c = 'ERROR');
+    LogEntry__c triggerCopy = new LogEntry__c(Id = logEntry.Id, Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name());
 
     List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(
       new List<SObject>{ triggerCopy },

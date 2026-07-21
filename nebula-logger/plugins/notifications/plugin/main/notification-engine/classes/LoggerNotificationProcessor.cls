@@ -61,16 +61,16 @@ public virtual without sharing class LoggerNotificationProcessor {
       return;
     }
 
-    List<RuleWorkItem> workItems = this.buildWorkItems(applicableRules, records, sobjectType);
-    List<LoggerNotificationMatch__c> matchesToInsert = collectMatchesToInsert(workItems);
+    List<RuleEvaluation> evaluations = this.buildEvaluations(applicableRules, records, sobjectType);
+    List<LoggerNotificationMatch__c> matchesToInsert = collectMatchesToInsert(evaluations);
     LoggerDataStore.getDatabase().insertRecords(matchesToInsert);
     List<LoggerNotificationDelivery__c> deliveriesToInsert = new List<LoggerNotificationDelivery__c>();
     List<LoggerNotificationAsyncDispatcher.PendingDispatch> asyncDispatches = new List<LoggerNotificationAsyncDispatcher.PendingDispatch>();
-    for (RuleWorkItem work : workItems) {
-      if (work.shouldDispatch) {
-        this.dispatchToRecipients(work, deliveriesToInsert, asyncDispatches);
+    for (RuleEvaluation evaluation : evaluations) {
+      if (evaluation.shouldDispatch) {
+        this.dispatchToRecipients(evaluation, deliveriesToInsert, asyncDispatches);
       } else {
-        this.buildSuppressedDeliveries(work, deliveriesToInsert);
+        this.buildSuppressedDeliveries(evaluation, deliveriesToInsert);
       }
     }
     LoggerDataStore.getDatabase().insertRecords(deliveriesToInsert);
@@ -78,30 +78,30 @@ public virtual without sharing class LoggerNotificationProcessor {
     this.enqueueAsyncDispatches(asyncDispatches);
   }
 
-  private List<RuleWorkItem> buildWorkItems(List<LoggerNotificationRule__c> applicableRules, List<SObject> records, Schema.SObjectType sobjectType) {
-    List<RuleWorkItem> items = new List<RuleWorkItem>();
+  private List<RuleEvaluation> buildEvaluations(List<LoggerNotificationRule__c> applicableRules, List<SObject> records, Schema.SObjectType sobjectType) {
+    List<RuleEvaluation> evaluations = new List<RuleEvaluation>();
     for (LoggerNotificationRule__c rule : applicableRules) {
       List<SObject> matchingRecords = this.filterEvaluator.evaluate(sobjectType, rule.SourceSObjectFilter__c, records);
       if (matchingRecords.isEmpty()) {
         continue;
       }
       matchingRecords = deduplicateMatchingRecords(matchingRecords, rule.DeduplicationSourceField__c);
-      RuleWorkItem work = new RuleWorkItem();
-      work.rule = rule;
-      work.matchingRecords = matchingRecords;
-      work.shouldDispatch = this.shouldSuppressForThreshold(rule, matchingRecords.size()) == false;
+      RuleEvaluation evaluation = new RuleEvaluation();
+      evaluation.rule = rule;
+      evaluation.matchingRecords = matchingRecords;
+      evaluation.shouldDispatch = this.shouldSuppressForThreshold(rule, matchingRecords.size()) == false;
       // Only persist match records for rules that were loaded from the database. Rules that were hydrated
       // in memory (e.g. tests using LoggerNotificationProcessor.setCachedRules with a non-inserted rule) still get
       // dispatched, but skip DML because the required master-detail parent isn't set.
       if (rule.Id != null && rule.IsMatchHistoryEnabled__c == true) {
-        work.matches = new List<LoggerNotificationMatch__c>();
+        evaluation.matches = new List<LoggerNotificationMatch__c>();
         for (SObject match : matchingRecords) {
-          work.matches.add(this.buildMatchRecord(rule, sobjectType, match));
+          evaluation.matches.add(this.buildMatchRecord(rule, sobjectType, match));
         }
       }
-      items.add(work);
+      evaluations.add(evaluation);
     }
-    return items;
+    return evaluations;
   }
 
   /**
@@ -134,23 +134,23 @@ public virtual without sharing class LoggerNotificationProcessor {
     return deduplicated;
   }
 
-  private static List<LoggerNotificationMatch__c> collectMatchesToInsert(List<RuleWorkItem> workItems) {
+  private static List<LoggerNotificationMatch__c> collectMatchesToInsert(List<RuleEvaluation> evaluations) {
     List<LoggerNotificationMatch__c> all = new List<LoggerNotificationMatch__c>();
-    for (RuleWorkItem work : workItems) {
-      if (work.matches != null) {
-        all.addAll(work.matches);
+    for (RuleEvaluation evaluation : evaluations) {
+      if (evaluation.matches != null) {
+        all.addAll(evaluation.matches);
       }
     }
-    // After matches are inserted (by caller), record their Ids on the work item for delivery FK use.
+    // After matches are inserted (by caller), record their Ids on the evaluation for delivery FK use.
     return all;
   }
 
   private void dispatchToRecipients(
-    RuleWorkItem work,
+    RuleEvaluation evaluation,
     List<LoggerNotificationDelivery__c> deliveriesToInsert,
     List<LoggerNotificationAsyncDispatcher.PendingDispatch> asyncDispatches
   ) {
-    LoggerNotificationRule__c rule = work.rule;
+    LoggerNotificationRule__c rule = evaluation.rule;
     if (rule.LoggerNotificationRecipients__r == null || rule.LoggerNotificationRecipients__r.isEmpty()) {
       return;
     }
@@ -161,25 +161,25 @@ public virtual without sharing class LoggerNotificationProcessor {
     // pipeline uniform, isolates notifier failures from the source-record transaction (so a
     // rolled-back LogEntry insert also cancels the pending notifications), and gives every
     // notifier its own governor limit budget instead of sharing the source trigger's.
-    Boolean canPersistDeliveries = work.matches != null && rule.IsDeliveryHistoryEnabled__c == true;
+    Boolean canPersistDeliveries = evaluation.matches != null && rule.IsDeliveryHistoryEnabled__c == true;
     for (LoggerNotificationRecipient__c recipient : rule.LoggerNotificationRecipients__r) {
       List<LoggerNotificationDelivery__c> deliveriesForRecipient = canPersistDeliveries && recipient.Id != null
-        ? this.buildPendingDeliveries(rule, work.matches, recipient)
+        ? this.buildPendingDeliveries(rule, evaluation.matches, recipient)
         : null;
       recipient.LoggerNotificationRule__r = rule;
-      asyncDispatches.add(new LoggerNotificationAsyncDispatcher.PendingDispatch(recipient, work.matchingRecords, deliveriesForRecipient));
+      asyncDispatches.add(new LoggerNotificationAsyncDispatcher.PendingDispatch(recipient, evaluation.matchingRecords, deliveriesForRecipient));
       if (deliveriesForRecipient != null) {
         deliveriesToInsert.addAll(deliveriesForRecipient);
       }
     }
   }
 
-  private void buildSuppressedDeliveries(RuleWorkItem work, List<LoggerNotificationDelivery__c> deliveriesToInsert) {
-    LoggerNotificationRule__c rule = work.rule;
+  private void buildSuppressedDeliveries(RuleEvaluation evaluation, List<LoggerNotificationDelivery__c> deliveriesToInsert) {
+    LoggerNotificationRule__c rule = evaluation.rule;
     if (rule.LoggerNotificationRecipients__r == null || rule.LoggerNotificationRecipients__r.isEmpty()) {
       return;
     }
-    if (work.matches == null || rule.IsDeliveryHistoryEnabled__c != true) {
+    if (evaluation.matches == null || rule.IsDeliveryHistoryEnabled__c != true) {
       return;
     }
     Date retentionDate = computeRetentionDate(rule.NumberOfDaysToRetainDeliveries__c);
@@ -187,7 +187,7 @@ public virtual without sharing class LoggerNotificationProcessor {
       if (recipient.Id == null) {
         continue;
       }
-      for (LoggerNotificationMatch__c match : work.matches) {
+      for (LoggerNotificationMatch__c match : evaluation.matches) {
         LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c(
           AttemptCount__c = 0,
           LoggerNotificationMatch__c = match.Id,
@@ -422,7 +422,7 @@ public virtual without sharing class LoggerNotificationProcessor {
     cachedRulesBySObjectTypeName = bucketBySObjectTypeName(rules);
   }
 
-  private class RuleWorkItem {
+  private class RuleEvaluation {
     private LoggerNotificationRule__c rule;
     private List<SObject> matchingRecords;
     private List<LoggerNotificationMatch__c> matches;

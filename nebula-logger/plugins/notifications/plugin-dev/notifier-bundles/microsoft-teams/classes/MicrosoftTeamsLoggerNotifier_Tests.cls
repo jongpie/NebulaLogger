@@ -68,9 +68,9 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
   static void it_should_color_error_records_attention() {
     MicrosoftTeamsLoggerNotifier notifier = new MicrosoftTeamsLoggerNotifier();
 
-    String error = notifier.overallColor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
-    String warn = notifier.overallColor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'WARN') });
-    String info = notifier.overallColor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'INFO') });
+    String error = notifier.overallColor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
+    String warn = notifier.overallColor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.WARN.name()) });
+    String info = notifier.overallColor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()) });
 
     System.Assert.areEqual(MicrosoftTeamsLoggerNotifier.COLOR_ATTENTION, error);
     System.Assert.areEqual(MicrosoftTeamsLoggerNotifier.COLOR_WARNING, warn);
@@ -81,9 +81,9 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
   static void it_should_prefer_attention_when_any_record_is_error() {
     MicrosoftTeamsLoggerNotifier notifier = new MicrosoftTeamsLoggerNotifier();
     List<SObject> mixed = new List<SObject>{
-      new LogEntry__c(LoggingLevel__c = 'INFO'),
-      new LogEntry__c(LoggingLevel__c = 'ERROR'),
-      new LogEntry__c(LoggingLevel__c = 'WARN')
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.WARN.name())
     };
 
     String color = notifier.overallColor(mixed);
@@ -101,7 +101,9 @@ private class MicrosoftTeamsLoggerNotifier_Tests {
       WebhookUrl__c = webhookUrl,
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
-    List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
+    List<SObject> matchingRecords = new List<SObject>{
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'Something went wrong')
+    };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }
