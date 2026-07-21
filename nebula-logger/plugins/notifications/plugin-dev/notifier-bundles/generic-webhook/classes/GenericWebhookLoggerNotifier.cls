@@ -46,8 +46,6 @@ public without sharing class GenericWebhookLoggerNotifier extends LoggerNotifier
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('GenericWebhookLoggerNotifier - response received').setHttpResponseDetails(response);
     }
-    // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
-    // Logger.saveLog();
     return new LoggerNotifierResult(httpRequest, response, this.collectHeaderNames(request));
   }
 
@@ -81,7 +79,8 @@ public without sharing class GenericWebhookLoggerNotifier extends LoggerNotifier
         httpRequest.setHeader(headerName, String.valueOf(((Map<String, Object>) headersRaw).get(headerName)));
       }
     }
-    return httpRequest;  }
+    return httpRequest;
+  }
 
   private String resolveEndpoint(LoggerNotificationService__c service, Map<String, Object> config) {
     if (String.isNotBlank(service.NamedCredentialDeveloperName__c)) {

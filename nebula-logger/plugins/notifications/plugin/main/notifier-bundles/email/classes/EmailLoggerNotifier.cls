@@ -77,8 +77,6 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     if (errors.isEmpty() == false) {
       outcome.errorMessage = String.join(errors, '\n');
     }
-    // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
-    // Logger.saveLog();
     return outcome;
   }
 

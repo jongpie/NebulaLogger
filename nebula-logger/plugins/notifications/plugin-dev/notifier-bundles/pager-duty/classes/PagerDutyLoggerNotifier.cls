@@ -48,8 +48,6 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('PagerDutyLoggerNotifier - response received').setHttpResponseDetails(response);
     }
-    // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
-    // Logger.saveLog();
     return new LoggerNotifierResult(httpRequest, response, new List<String>{ 'Content-Type', 'Accept' });
   }
 

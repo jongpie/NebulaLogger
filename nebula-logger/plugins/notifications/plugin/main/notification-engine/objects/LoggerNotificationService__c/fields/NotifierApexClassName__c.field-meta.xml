@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>NotifierApexClassName__c</fullName>
-    <inlineHelpText>The fully-qualified Apex class name of a class implementing LoggerPlugin.Notifiable. This class is invoked at runtime to actually deliver notifications for recipients that reference this service.</inlineHelpText>
+    <inlineHelpText>The fully-qualified Apex class name of a subclass of LoggerNotifier. This class is invoked at runtime to actually deliver notifications for recipients that reference this service.</inlineHelpText>
     <label>Notifier Apex Class Name</label>
     <length>240</length>
     <required>true</required>

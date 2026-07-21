@@ -211,11 +211,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerNotificationMatch__c.TotalDeliveries__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>LoggerNotificationRecipient__c.ChannelIdentifier__c</field>
         <readable>true</readable>
@@ -271,11 +266,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerNotificationRule__c.IsOriginOrganizationIdValid__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>LoggerNotificationRule__c.MatchCountThreshold__c</field>
         <readable>true</readable>
@@ -318,11 +308,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LoggerNotificationService__c.IsEnabled__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerNotificationService__c.IsOriginOrganizationIdValid__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

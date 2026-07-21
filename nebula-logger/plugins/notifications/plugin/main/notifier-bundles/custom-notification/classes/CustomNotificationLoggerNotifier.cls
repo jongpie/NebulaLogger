@@ -83,8 +83,6 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
         }
       }
     }
-    // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
-    // Logger.saveLog();
     LoggerNotifierResult outcome = new LoggerNotifierResult();
     if (failureCount == 0) {
       outcome.status = LoggerNotifierResult.STATUS_DELIVERED;

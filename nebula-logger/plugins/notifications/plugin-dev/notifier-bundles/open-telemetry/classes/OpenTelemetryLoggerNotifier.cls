@@ -62,8 +62,6 @@ public without sharing class OpenTelemetryLoggerNotifier extends LoggerNotifier 
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('OpenTelemetryLoggerNotifier - response received').setHttpResponseDetails(response);
     }
-    // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
-    // Logger.saveLog();
     // Apex HttpRequest has no getHeaderKeys(), so the notifier hands the runtime every header name it set
     // (Content-Type + any admin-configured header names from the same JSON blob buildRequest parses).
     List<String> knownHeaderNames = new List<String>{ 'Content-Type' };
@@ -93,7 +91,8 @@ public without sharing class OpenTelemetryLoggerNotifier extends LoggerNotifier 
         httpRequest.setHeader(headerName, String.valueOf(((Map<String, Object>) headersRaw).get(headerName)));
       }
     }
-    return httpRequest;  }
+    return httpRequest;
+  }
 
   @TestVisible
   private String buildPayload(LoggerNotifierRequest request, Map<String, Object> config) {

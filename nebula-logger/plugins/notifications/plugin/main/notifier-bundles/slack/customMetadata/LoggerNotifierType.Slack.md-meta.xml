@@ -74,8 +74,8 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
     &quot;includeNullValues&quot;: false,
     &quot;sourceFields&quot;: [
       {
-        &quot;field&quot;: &quot;Log__r.LoggedBy__r.Username&quot;,
-        &quot;displayLabel&quot;: &quot;Logged By&quot;
+        &quot;field&quot;: &quot;Log__r.LoggedBy__c&quot;,
+        &quot;displayField&quot;: &quot;Log__r.LoggedBy__r.Username&quot;
       },
       &quot;Log__c&quot;,
       &quot;LoggingLevel__c&quot;,

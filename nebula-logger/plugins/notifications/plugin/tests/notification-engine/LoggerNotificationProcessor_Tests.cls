@@ -661,9 +661,9 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(2, deliveries.size(), 'One delivery record per recipient - two recipients means two delivery records for the one match');
     Set<Id> deliveryRecipientIds = new Set<Id>();
     Set<Id> deliveryServiceIds = new Set<Id>();
-    for (LoggerNotificationDelivery__c row : deliveries) {
-      deliveryRecipientIds.add(row.LoggerNotificationRecipient__c);
-      deliveryServiceIds.add(row.LoggerNotificationService__c);
+    for (LoggerNotificationDelivery__c delivery : deliveries) {
+      deliveryRecipientIds.add(delivery.LoggerNotificationRecipient__c);
+      deliveryServiceIds.add(delivery.LoggerNotificationService__c);
     }
     System.Assert.areEqual(
       new Set<Id>{ persistedRecipientOne.Id, persistedRecipientTwo.Id },
@@ -988,7 +988,7 @@ private class LoggerNotificationProcessor_Tests {
   static void it_should_stamp_match_and_delivery_retention_dates_independently_from_the_rules_two_retention_fields() {
     // Match records stamp RetentionDate__c from NumberOfDaysToRetainMatches__c; delivery records stamp
     // from NumberOfDaysToRetainDeliveries__c. The two values can differ (subject to the handler's
-    // "deliveries <= matches" constraint), so the runtime has to read the right field for each row
+    // "deliveries <= matches" constraint), so the runtime has to read the right field for each record
     // rather than sharing a single value.
     Integer matchRetentionDays = 30;
     Integer deliveryRetentionDays = 7;

@@ -7,7 +7,7 @@
 @IsTest(IsParallel=true)
 private class LoggerNotifierResult_Tests {
   @IsTest
-  static void fromHttpResponse_should_mark_2xx_as_delivered_and_capture_response_body_and_headers() {
+  static void it_should_mark_2xx_as_delivered_and_capture_response_body_and_headers() {
     System.HttpResponse response = buildResponse(200, 'OK', '{"ok":true}');
     response.setHeader('Content-Type', 'application/json');
 
@@ -24,7 +24,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void fromHttpResponse_should_mark_non_2xx_as_failed_and_capture_response_body_and_headers() {
+  static void it_should_mark_non_2xx_as_failed_and_capture_response_body_and_headers() {
     System.HttpResponse response = buildResponse(500, 'Internal Server Error', '{"error":"boom"}');
     response.setHeader('Content-Type', 'application/json');
     response.setHeader('X-Trace-Id', 'abc-123');
@@ -41,7 +41,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void fromHttpRequestAndResponse_should_capture_request_url_method_and_body_always() {
+  static void it_should_capture_request_url_method_and_body_always() {
     System.HttpRequest request = new System.HttpRequest();
     request.setEndpoint('https://example.com/webhook');
     request.setMethod('POST');
@@ -58,7 +58,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void fromHttpRequestAndResponse_should_only_capture_headers_the_notifier_names() {
+  static void it_should_only_capture_headers_the_notifier_names() {
     // Apex HttpRequest offers no getHeaderKeys(), so the runtime can only capture headers the notifier
     // hands forward. Whatever names the notifier passes get captured verbatim - this is enumeration,
     // not a security filter. Admin-facing allowlisting is tracked as a separate backlog item.
@@ -81,7 +81,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void fromHttpRequestAndResponse_should_return_null_headers_when_no_names_supplied() {
+  static void it_should_return_null_headers_when_no_names_supplied() {
     System.HttpRequest request = new System.HttpRequest();
     request.setEndpoint('https://example.com/webhook');
     request.setMethod('POST');
@@ -94,7 +94,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void fromHttpRequestAndResponse_should_omit_named_headers_that_were_never_set() {
+  static void it_should_omit_named_headers_that_were_never_set() {
     System.HttpRequest request = new System.HttpRequest();
     request.setEndpoint('https://example.com/webhook');
     request.setMethod('POST');
@@ -108,7 +108,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void fromHttpRequestAndResponse_should_still_carry_response_fields_forward() {
+  static void it_should_still_carry_response_fields_forward() {
     System.HttpRequest request = new System.HttpRequest();
     request.setEndpoint('https://example.com/webhook');
     request.setMethod('POST');
@@ -122,7 +122,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void finalizeDeliveries_should_stamp_the_queueable_job_id_onto_deliveries_that_have_none_yet() {
+  static void it_should_stamp_the_queueable_job_id_onto_deliveries_that_have_none_yet() {
     Id fakeJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
     List<LoggerNotificationDelivery__c> deliveries = new List<LoggerNotificationDelivery__c>{
       new LoggerNotificationDelivery__c(),
@@ -141,7 +141,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void finalizeDeliveries_should_not_overwrite_an_existing_job_id_on_a_delivery() {
+  static void it_should_not_overwrite_an_existing_job_id_on_a_delivery() {
     // Preserving the first-attempt job id is the whole point of the "only when blank" guard - a re-enqueue
     // after a callout-limit exhaustion runs in a different Queueable job, but the first-attempt job id is
     // the one admins want to correlate to Apex Jobs / logs.
@@ -158,7 +158,7 @@ private class LoggerNotifierResult_Tests {
   }
 
   @IsTest
-  static void finalizeDeliveries_should_leave_job_id_null_when_the_result_carries_no_job_id() {
+  static void it_should_leave_job_id_null_when_the_result_carries_no_job_id() {
     LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c();
     LoggerNotifierResult result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
     Datetime dispatchStart = System.now();

@@ -7,7 +7,6 @@
  * @group Plugins
  * @description Delivers a `LoggerNotifierRequest` to Slack. The `LoggerNotificationRecipient__c` referenced
  *              by the rule provides either a `WebhookUrl__c` (Incoming Webhooks) or a
-
  *              `NamedCredentialDeveloperName__c` plus optional `ChannelIdentifier__c` (Web API via
  *              `chat.postMessage`).
  *
@@ -71,11 +70,6 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.error('SlackLoggerNotifier - callout failed', ex);
       }
-      // TODO: notifiers currently log via Nebula Logger for diagnostics, which can re-trigger the
-      // notifications plugin when the resulting LogEntry__c records match another rule (or the same one).
-      // Commented out for now; see Backlog.md for the discussion on removing all Logger.* calls from
-      // notifier bundles.
-      // Logger.saveLog();
       LoggerNotifierResult failed = new LoggerNotifierResult();
       failed.status = LoggerNotifierResult.STATUS_FAILED;
       failed.errorMessage = ex.getMessage();
@@ -95,8 +89,6 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.finest('SlackLoggerNotifier - response received').setHttpResponseDetails(response);
     }
-    // See Backlog.md: notifier-side Logger.saveLog() re-fires the notifications plugin trigger; commented out for now.
-    // Logger.saveLog();
     LoggerNotifierResult result = new LoggerNotifierResult(httpRequest, response, KNOWN_REQUEST_HEADERS);
     interpretSlackResponse(response, result);
     return result;

@@ -7,7 +7,7 @@
 @IsTest(IsParallel=true)
 private class LoggerNotifier_Tests {
   @IsTest
-  static void buildDefaultSpecs_should_return_one_spec_per_field_name_with_no_overrides() {
+  static void it_should_return_one_spec_per_field_name_with_no_overrides() {
     List<String> fieldNames = new List<String>{ 'LoggingLevel__c', 'Message__c', 'Origin__c' };
 
     List<LoggerNotifierConfiguration.SourceFieldSpec> specs = LoggerNotifier.buildDefaultSpecs(fieldNames);
@@ -21,26 +21,26 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void buildDefaultSpecs_should_return_an_empty_list_when_field_names_is_empty() {
+  static void it_should_return_an_empty_list_when_field_names_is_empty() {
     List<LoggerNotifierConfiguration.SourceFieldSpec> specs = LoggerNotifier.buildDefaultSpecs(new List<String>());
 
     System.Assert.areEqual(0, specs.size(), 'An empty input list should yield an empty spec list');
   }
 
   @IsTest
-  static void getValueByPath_should_return_null_when_record_is_null() {
+  static void it_should_return_null_when_record_is_null() {
     System.Assert.isNull(LoggerNotifier.getValueByPath(null, 'LoggingLevel__c'));
   }
 
   @IsTest
-  static void getValueByPath_should_return_null_when_field_path_is_blank() {
+  static void it_should_return_null_when_field_path_is_blank() {
     System.Assert.isNull(LoggerNotifier.getValueByPath(new LogEntry__c(), null));
     System.Assert.isNull(LoggerNotifier.getValueByPath(new LogEntry__c(), ''));
     System.Assert.isNull(LoggerNotifier.getValueByPath(new LogEntry__c(), '  '));
   }
 
   @IsTest
-  static void getValueByPath_should_return_the_direct_field_value() {
+  static void it_should_return_the_direct_field_value() {
     LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'boom');
 
     System.Assert.areEqual('ERROR', LoggerNotifier.getValueByPath(logEntry, 'LoggingLevel__c'));
@@ -48,14 +48,14 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void getValueByPath_should_return_null_for_an_unknown_field_on_the_record() {
+  static void it_should_return_null_for_an_unknown_field_on_the_record() {
     LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR');
 
     System.Assert.isNull(LoggerNotifier.getValueByPath(logEntry, 'ThisFieldDoesNotExist__c'), 'Unknown fields should return null rather than throwing');
   }
 
   @IsTest
-  static void getValueByPath_should_walk_dotted_relationship_paths_using_json_hydration() {
+  static void it_should_walk_dotted_relationship_paths_using_json_hydration() {
     // In-memory parent-relationship hydration goes through JSON deserialization; the LogEntry__c has
     // a Log__r sub-record with its own Name populated.
     LogEntry__c logEntry = (LogEntry__c) System.JSON.deserialize(
@@ -67,7 +67,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void getValueByPath_should_return_null_when_a_parent_hop_is_not_populated() {
+  static void it_should_return_null_when_a_parent_hop_is_not_populated() {
     LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR');
 
     System.Assert.isNull(
@@ -77,7 +77,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void getValueByPath_should_return_null_when_a_relationship_segment_is_unknown() {
+  static void it_should_return_null_when_a_relationship_segment_is_unknown() {
     LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = 'ERROR');
 
     System.Assert.isNull(
@@ -87,18 +87,18 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void getDescribeByPath_should_return_null_when_type_is_null() {
+  static void it_should_return_null_when_type_is_null() {
     System.Assert.isNull(LoggerNotifier.getDescribeByPath(null, 'LoggingLevel__c'));
   }
 
   @IsTest
-  static void getDescribeByPath_should_return_null_when_field_path_is_blank() {
+  static void it_should_return_null_describe_when_field_path_is_blank() {
     System.Assert.isNull(LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, null));
     System.Assert.isNull(LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, ''));
   }
 
   @IsTest
-  static void getDescribeByPath_should_return_the_direct_field_describe() {
+  static void it_should_return_the_direct_field_describe() {
     Schema.DescribeFieldResult describe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'LoggingLevel__c');
 
     System.Assert.isNotNull(describe);
@@ -106,7 +106,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void getDescribeByPath_should_return_null_when_the_terminal_field_does_not_exist() {
+  static void it_should_return_null_when_the_terminal_field_does_not_exist() {
     System.Assert.isNull(
       LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'ThisFieldDoesNotExist__c'),
       'An unknown terminal field should return null rather than throwing'
@@ -114,7 +114,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void getDescribeByPath_should_walk_dotted_relationship_paths_and_describe_the_terminal_field() {
+  static void it_should_walk_dotted_relationship_paths_and_describe_the_terminal_field() {
     Schema.DescribeFieldResult describe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'Log__r.Name');
 
     System.Assert.isNotNull(describe, 'Log__r.Name should resolve to the Name field on Log__c');
@@ -122,7 +122,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void getDescribeByPath_should_return_null_when_a_relationship_segment_is_unknown() {
+  static void it_should_return_null_describe_when_a_relationship_segment_is_unknown() {
     System.Assert.isNull(
       LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'NoSuchRelationship__r.Name'),
       'An unknown relationship segment should return null rather than throwing'
@@ -130,7 +130,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void hydrateRecordsWithFieldPaths_should_return_records_untouched_when_no_dotted_paths_are_configured() {
+  static void it_should_return_records_untouched_when_no_dotted_paths_are_configured() {
     List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') };
     List<String> flatPaths = new List<String>{ 'LoggingLevel__c', 'Message__c' };
 
@@ -141,14 +141,14 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void hydrateRecordsWithFieldPaths_should_return_records_untouched_when_records_are_null_or_empty() {
+  static void it_should_return_records_untouched_when_records_are_null_or_empty() {
     System.Assert.isNull(LoggerNotifier.hydrateRecordsWithFieldPaths(null, new List<String>{ 'Log__r.Name' }));
     List<SObject> empty = new List<SObject>();
     System.Assert.isTrue(LoggerNotifier.hydrateRecordsWithFieldPaths(empty, new List<String>{ 'Log__r.Name' }) === empty);
   }
 
   @IsTest
-  static void hydrateRecordsWithFieldPaths_should_return_records_untouched_when_field_paths_are_null_or_empty() {
+  static void it_should_return_records_untouched_when_field_paths_are_null_or_empty() {
     List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') };
 
     System.Assert.isTrue(LoggerNotifier.hydrateRecordsWithFieldPaths(records, null) === records);
@@ -156,7 +156,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void hydrateRecordsWithFieldPaths_should_leave_records_without_ids_untouched() {
+  static void it_should_leave_records_without_ids_untouched() {
     // Records without a persisted Id cannot be re-queried, so the hydration falls through and returns them unchanged.
     List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') };
 
@@ -167,7 +167,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void hydrateRecordsWithFieldPaths_should_hydrate_parent_lookups_when_dotted_paths_are_configured() {
+  static void it_should_hydrate_parent_lookups_when_dotted_paths_are_configured() {
     Log__c log = new Log__c(TransactionId__c = 'test-transaction');
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
@@ -187,7 +187,7 @@ private class LoggerNotifier_Tests {
   }
 
   @IsTest
-  static void hydrateRecordsWithFieldPaths_should_drop_unresolvable_paths_from_the_select() {
+  static void it_should_drop_unresolvable_paths_from_the_select() {
     // A single bogus configured path used to poison the whole SELECT, which fell back to un-hydrated
     // records and made every OTHER configured field render as its null placeholder. Dropping unresolvable
     // paths from the SELECT lets the good ones still hydrate.
