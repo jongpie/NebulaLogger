@@ -12,14 +12,7 @@ private class CustomNotificationLoggerNotifier_Tests {
 
     // Should not throw
     notifier.sendNotification(null);
-    notifier.sendNotification(
-      new LoggerNotifierRequest(
-        new LoggerNotificationRule__c(),
-        new LoggerNotificationRecipient__c(),
-        new LoggerNotificationService__c(),
-        new List<SObject>()
-      )
-    );
+    notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>()));
   }
 
   @IsTest
@@ -148,13 +141,14 @@ private class CustomNotificationLoggerNotifier_Tests {
   @IsTest
   static void it_should_truncate_a_very_long_rendered_title() {
     CustomNotificationLoggerNotifier notifier = new CustomNotificationLoggerNotifier();
-    LoggerNotificationRule__c longRule = new LoggerNotificationRule__c(Name = 'x'.repeat(200), SourceSObjectType__c = 'LogEntry__c');
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      longRule,
-      new LoggerNotificationRecipient__c(User__c = System.UserInfo.getUserId()),
-      new LoggerNotificationService__c(Name = 'Bell', NotifierApexClassName__c = 'CustomNotificationLoggerNotifier', IsEnabled__c = true),
-      new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'msg') }
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(User__c = System.UserInfo.getUserId());
+    recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = 'x'.repeat(200), SourceSObjectType__c = 'LogEntry__c');
+    recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
+      Name = 'Bell',
+      NotifierApexClassName__c = 'CustomNotificationLoggerNotifier',
+      IsEnabled__c = true
     );
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'msg') });
 
     String title = notifier.buildTitle(request, request.matchingRecords.get(0), null);
 
@@ -163,13 +157,13 @@ private class CustomNotificationLoggerNotifier_Tests {
   }
 
   private static LoggerNotifierRequest buildRequest(LoggerNotificationRecipient__c recipient) {
-    LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
-    LoggerNotificationService__c service = new LoggerNotificationService__c(
+    recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
+    recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
       Name = 'Custom Notification',
       NotifierApexClassName__c = 'CustomNotificationLoggerNotifier',
       IsEnabled__c = true
     );
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
-    return new LoggerNotifierRequest(rule, recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }

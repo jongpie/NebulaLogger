@@ -43,6 +43,7 @@ public with sharing class LoggerNotificationFormController {
         SupportsWebhookUrl__c
       FROM LoggerNotifierType__mdt
       WHERE IsEnabled__c = TRUE
+      WITH SYSTEM_MODE
       ORDER BY DisplayLabel__c ASC
     ];
   }
@@ -81,6 +82,7 @@ public with sharing class LoggerNotificationFormController {
         SupportsWebhookUrl__c
       FROM LoggerNotifierType__mdt
       WHERE IsEnabled__c = TRUE AND NotifierApexClassName__c = :notifierApexClassName
+      WITH SYSTEM_MODE
       LIMIT 1
     ];
     return matches.isEmpty() ? null : matches.get(0);
@@ -174,6 +176,7 @@ public with sharing class LoggerNotificationFormController {
       SELECT Id, IsEnabled__c, Name, NotifierApexClassName__c
       FROM LoggerNotificationService__c
       WHERE IsEnabled__c = TRUE
+      WITH USER_MODE
       ORDER BY Name ASC
     ];
   }
@@ -246,6 +249,7 @@ public with sharing class LoggerNotificationFormController {
         SourceSObjectType__c
       FROM LoggerNotificationRule__c
       WHERE Id = :ruleId
+      WITH USER_MODE
       LIMIT 1
     ];
     if (rules.isEmpty()) {
@@ -255,6 +259,7 @@ public with sharing class LoggerNotificationFormController {
       SELECT ChannelIdentifier__c, ConfigurationJson__c, EmailAddress__c, Id, IsEnabled__c, LoggerNotificationRule__c, LoggerNotificationService__c, User__c
       FROM LoggerNotificationRecipient__c
       WHERE LoggerNotificationRule__c = :ruleId
+      WITH USER_MODE
       ORDER BY CreatedDate ASC
     ];
     RuleWithRecipients result = new RuleWithRecipients();
@@ -289,15 +294,13 @@ public with sharing class LoggerNotificationFormController {
    * @return                       The rule's Id (same as the input; returned for parity with `saveRuleWithRecipients`).
    */
   @AuraEnabled
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   public static Id updateRuleWithRecipients(
     LoggerNotificationRule__c rule,
     List<LoggerNotificationRecipient__c> recipientsToInsert,
     List<LoggerNotificationRecipient__c> recipientsToUpdate,
     List<Id> recipientIdsToDelete
   ) {
-    if (rule == null || rule.Id == null) {
-      throw new System.AuraHandledException('A rule with an Id is required for update.');
-    }
     System.Savepoint savepoint = System.Database.setSavepoint();
     try {
       LoggerDataStore.getDatabase().updateRecord(rule);
@@ -329,7 +332,7 @@ public with sharing class LoggerNotificationFormController {
         }
         LoggerDataStore.getDatabase().insertRecords(recipientsToInsert);
       }
-      if (recipientIdsToDelete != null && !recipientIdsToDelete.isEmpty()) {
+      if (recipientIdsToDelete != null && recipientIdsToDelete.isEmpty() == false) {
         // Query first + delete concrete records so a stale Id (recipient was already deleted elsewhere)
         // fails loudly rather than silently succeeding. Using a `delete` on Ids skips the existence
         // check the trigger layer would otherwise apply. The `.isEmpty()` guard is here to skip the
@@ -339,6 +342,7 @@ public with sharing class LoggerNotificationFormController {
           SELECT Id
           FROM LoggerNotificationRecipient__c
           WHERE Id IN :recipientIdsToDelete AND LoggerNotificationRule__c = :rule.Id
+          WITH USER_MODE
         ];
         LoggerDataStore.getDatabase().deleteRecords(toDelete);
       }

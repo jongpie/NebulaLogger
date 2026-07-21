@@ -65,7 +65,7 @@ public without sharing class GenericWebhookLoggerNotifier extends LoggerNotifier
   @TestVisible
   private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     Map<String, Object> config = this.parseConfiguration(request.recipient.ConfigurationJson__c);
-    String endpoint = this.resolveEndpoint(request.service, config);
+    String endpoint = this.resolveEndpoint(request.recipient.LoggerNotificationService__r, config);
     if (String.isBlank(endpoint)) {
       return null;
     }
@@ -109,10 +109,10 @@ public without sharing class GenericWebhookLoggerNotifier extends LoggerNotifier
   private String buildPayload(LoggerNotifierRequest request) {
     Map<String, Object> envelope = new Map<String, Object>();
     envelope.put('organizationId', System.UserInfo.getOrganizationId());
-    envelope.put('ruleName', request.notificationRule.Name);
-    envelope.put('ruleId', request.notificationRule.Id);
-    envelope.put('ruleFilter', request.notificationRule.SourceSObjectFilter__c);
-    envelope.put('serviceName', request.service?.Name);
+    envelope.put('ruleName', request.recipient.LoggerNotificationRule__r.Name);
+    envelope.put('ruleId', request.recipient.LoggerNotificationRule__r.Id);
+    envelope.put('ruleFilter', request.recipient.LoggerNotificationRule__r.SourceSObjectFilter__c);
+    envelope.put('serviceName', request.recipient.LoggerNotificationService__r.Name);
     envelope.put('channelIdentifier', request.recipient.ChannelIdentifier__c);
     envelope.put('matchCount', request.matchingRecords.size());
     List<Map<String, Object>> records = new List<Map<String, Object>>();

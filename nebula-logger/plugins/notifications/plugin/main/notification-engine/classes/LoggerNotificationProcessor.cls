@@ -163,18 +163,11 @@ public virtual without sharing class LoggerNotificationProcessor {
     // notifier its own governor limit budget instead of sharing the source trigger's.
     Boolean canPersistDeliveries = work.matches != null && rule.IsDeliveryHistoryEnabled__c == true;
     for (LoggerNotificationRecipient__c recipient : rule.LoggerNotificationRecipients__r) {
-      LoggerNotificationService__c service = recipient.LoggerNotificationService__r;
       List<LoggerNotificationDelivery__c> deliveriesForRecipient = canPersistDeliveries && recipient.Id != null
         ? this.buildPendingDeliveries(rule, work.matches, recipient)
         : null;
-      LoggerNotificationAsyncDispatcher.PendingDispatch pending = new LoggerNotificationAsyncDispatcher.PendingDispatch(
-        rule,
-        recipient,
-        service,
-        work.matchingRecords
-      );
-      pending.pendingDeliveries = deliveriesForRecipient;
-      asyncDispatches.add(pending);
+      recipient.LoggerNotificationRule__r = rule;
+      asyncDispatches.add(new LoggerNotificationAsyncDispatcher.PendingDispatch(recipient, work.matchingRecords, deliveriesForRecipient));
       if (deliveriesForRecipient != null) {
         deliveriesToInsert.addAll(deliveriesForRecipient);
       }
@@ -196,13 +189,13 @@ public virtual without sharing class LoggerNotificationProcessor {
       }
       for (LoggerNotificationMatch__c match : work.matches) {
         LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c(
-          LoggerNotificationRule__c = rule.Id,
+          AttemptCount__c = 0,
           LoggerNotificationMatch__c = match.Id,
           LoggerNotificationRecipient__c = recipient.Id,
+          LoggerNotificationRule__c = rule.Id,
           LoggerNotificationService__c = recipient.LoggerNotificationService__c,
-          Status__c = LoggerNotifierResult.STATUS_SUPPRESSED_BY_THRESHOLD,
-          AttemptCount__c = 0,
-          RetentionDate__c = retentionDate
+          RetentionDate__c = retentionDate,
+          Status__c = LoggerNotifierResult.STATUS_SUPPRESSED_BY_THRESHOLD
         );
         deliveriesToInsert.add(delivery);
       }

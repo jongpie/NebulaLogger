@@ -13,14 +13,7 @@ private class GoogleChatLoggerNotifier_Tests {
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
     notifier.sendNotification(null);
-    notifier.sendNotification(
-      new LoggerNotifierRequest(
-        new LoggerNotificationRule__c(),
-        new LoggerNotificationRecipient__c(),
-        new LoggerNotificationService__c(),
-        new List<SObject>()
-      )
-    );
+    notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>()));
 
     System.Assert.isNull(calloutMock.request);
   }
@@ -73,8 +66,9 @@ private class GoogleChatLoggerNotifier_Tests {
   }
 
   private static LoggerNotifierRequest buildRequest(String webhookUrl, String namedCredentialDeveloperName) {
-    LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
-    LoggerNotificationService__c service = new LoggerNotificationService__c(
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
+    recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
       Name = 'Google Chat',
       NotifierApexClassName__c = 'GoogleChatLoggerNotifier',
       IsEnabled__c = true,
@@ -82,6 +76,6 @@ private class GoogleChatLoggerNotifier_Tests {
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'boom') };
-    return new LoggerNotifierRequest(rule, new LoggerNotificationRecipient__c(), service, matchingRecords);
+    return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }

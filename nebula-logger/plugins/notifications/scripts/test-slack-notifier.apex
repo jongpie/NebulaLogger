@@ -66,19 +66,19 @@ if (sourceFieldsConfig != null) {
   configPayload.put('sourceFields', sourceFieldsConfig);
 }
 
-LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Name = ruleName, SourceSObjectType__c = String.valueOf(matchingRecord.getSObjectType()));
-LoggerNotificationService__c service = new LoggerNotificationService__c(
+LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+  ChannelIdentifier__c = channelIdentifier,
+  ConfigurationJson__c = configPayload.isEmpty() ? null : System.JSON.serialize(configPayload)
+);
+recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = ruleName, SourceSObjectType__c = String.valueOf(matchingRecord.getSObjectType()));
+recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
   Name = 'Manual test Slack service',
   NotifierApexClassName__c = 'SlackLoggerNotifier',
   IsEnabled__c = true,
   NamedCredentialDeveloperName__c = String.isBlank(namedCredentialDeveloperName) ? null : namedCredentialDeveloperName,
   WebhookUrl__c = String.isBlank(webhookUrl) ? null : webhookUrl
 );
-LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
-  ChannelIdentifier__c = channelIdentifier,
-  ConfigurationJson__c = configPayload.isEmpty() ? null : System.JSON.serialize(configPayload)
-);
-LoggerNotifierRequest request = new LoggerNotifierRequest(rule, recipient, service, new List<SObject>{ matchingRecord });
+LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ matchingRecord });
 
 System.debug('Slack mode: ' + (String.isNotBlank(namedCredentialDeveloperName) ? 'Named Credential ' + namedCredentialDeveloperName : 'Webhook'));
 System.debug('Channel: ' + channelIdentifier);

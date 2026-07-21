@@ -10,17 +10,14 @@ private class EmailLoggerNotifier_Tests {
   static void it_should_short_circuit_when_context_is_null_or_records_are_empty() {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
 
-    notifier.sendNotification(null);
-    notifier.sendNotification(
-      new LoggerNotifierRequest(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
+    System.Assert.isNull(notifier.sendNotification(null), 'A null request should short-circuit with a null result');
+    System.Assert.isNull(
+      notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), null)),
+      'A null matchingRecords should short-circuit with a null result'
     );
-    notifier.sendNotification(
-      new LoggerNotifierRequest(
-        new LoggerNotificationRule__c(),
-        new LoggerNotificationRecipient__c(),
-        new LoggerNotificationService__c(),
-        new List<SObject>()
-      )
+    System.Assert.isNull(
+      notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>())),
+      'An empty matchingRecords list should short-circuit with a null result'
     );
   }
 
@@ -29,7 +26,7 @@ private class EmailLoggerNotifier_Tests {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c());
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, null);
 
     System.Assert.isNull(email, 'Email should be null when neither user nor address is set');
   }
@@ -40,7 +37,7 @@ private class EmailLoggerNotifier_Tests {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(User__c = currentUserId));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, null);
 
     System.Assert.isNotNull(email);
     System.Assert.areEqual(currentUserId, email.getTargetObjectId());
@@ -52,7 +49,7 @@ private class EmailLoggerNotifier_Tests {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, null);
 
     System.Assert.isNotNull(email);
     System.Assert.areEqual(new List<String>{ 'alerts@example.com' }, email.getToAddresses());
@@ -65,7 +62,7 @@ private class EmailLoggerNotifier_Tests {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(User__c = currentUserId, EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, null);
 
     System.Assert.areEqual(currentUserId, email.getTargetObjectId());
     System.Assert.isNull(email.getToAddresses());
@@ -76,7 +73,7 @@ private class EmailLoggerNotifier_Tests {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, null);
 
     String body = email.getPlainTextBody();
     System.Assert.isTrue(body.contains('Logging Level: ERROR'), 'Body should include LoggingLevel__c: ' + body);
@@ -91,8 +88,8 @@ private class EmailLoggerNotifier_Tests {
       new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com', ConfigurationJson__c = '{"sourceFields":["Message__c"]}')
     );
 
-    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, specs, false, null);
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = request.configuration.getSourceFields();
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, sourceFields, false, null);
 
     String body = email.getPlainTextBody();
     System.Assert.isTrue(body.contains('Message: Something went wrong'), 'Body should include the configured field: ' + body);
@@ -106,7 +103,7 @@ private class EmailLoggerNotifier_Tests {
     String json = '{"sourceFields":[{"field":"Message__c","displayLabel":"What Happened"}]}';
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com', ConfigurationJson__c = json));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, request.configuration.getSourceFieldSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, request.configuration.getSourceFields(), false, null);
 
     String body = email.getPlainTextBody();
     System.Assert.isTrue(body.contains('What Happened: Something went wrong'), 'displayLabel should replace the field label: ' + body);
@@ -120,7 +117,7 @@ private class EmailLoggerNotifier_Tests {
       new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com', ConfigurationJson__c = '{"sourceFields":["Message__c","StackTrace__c"]}')
     );
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, request.configuration.getSourceFieldSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, request.configuration.getSourceFields(), false, null);
 
     String body = email.getPlainTextBody();
     System.Assert.isTrue(body.contains('Message: '), 'Populated fields should render: ' + body);
@@ -136,7 +133,7 @@ private class EmailLoggerNotifier_Tests {
     Messaging.SingleEmailMessage email = notifier.buildEmail(
       request,
       request.matchingRecords,
-      request.configuration.getSourceFieldSpecs(),
+      request.configuration.getSourceFields(),
       request.configuration.getBoolean('includeNullValues', false),
       null
     );
@@ -150,9 +147,9 @@ private class EmailLoggerNotifier_Tests {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, null);
 
-    System.Assert.areEqual('Nebula Logger: 2 log records matched Test rule', email.getSubject());
+    System.Assert.areEqual('Nebula Logger: 2 records matched Test rule', email.getSubject());
   }
 
   @IsTest
@@ -161,7 +158,7 @@ private class EmailLoggerNotifier_Tests {
     String template = '[{!matchCount}] {!ruleName}';
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, template);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, template);
 
     System.Assert.areEqual('[2] Test rule', email.getSubject());
   }
@@ -172,7 +169,7 @@ private class EmailLoggerNotifier_Tests {
     String template = '{!LoggingLevel__c}: {!Message__c}';
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, template);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, template);
 
     System.Assert.areEqual('ERROR: Something went wrong', email.getSubject());
   }
@@ -183,7 +180,7 @@ private class EmailLoggerNotifier_Tests {
     String template = '{!ruleName}|{!NotARealField__c}|{!matchCount}';
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, template);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, template);
 
     System.Assert.areEqual('Test rule||2', email.getSubject());
   }
@@ -194,9 +191,9 @@ private class EmailLoggerNotifier_Tests {
     String template = '{!NotARealField__c}';
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, template);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, template);
 
-    System.Assert.areEqual('Nebula Logger: 2 log records matched Test rule', email.getSubject());
+    System.Assert.areEqual('Nebula Logger: 2 records matched Test rule', email.getSubject());
   }
 
   @IsTest
@@ -205,7 +202,7 @@ private class EmailLoggerNotifier_Tests {
     String template = '{!RULENAME} / {!MATCHCOUNT}';
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, template);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, template);
 
     System.Assert.areEqual('Test rule / 2', email.getSubject());
   }
@@ -241,7 +238,7 @@ private class EmailLoggerNotifier_Tests {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com'));
 
-    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSpecs(), false, null);
+    Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, defaultSourceFields(), false, null);
 
     String body = email.getPlainTextBody();
     System.Assert.isTrue(body.contains('Rule: Test rule'), 'Body should include the rule name: ' + body);
@@ -250,12 +247,12 @@ private class EmailLoggerNotifier_Tests {
   }
 
   private static LoggerNotifierRequest buildRequest(LoggerNotificationRecipient__c recipient) {
-    LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
+    recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(
       Name = 'Test rule',
       SourceSObjectType__c = 'LogEntry__c',
       SourceSObjectFilter__c = 'ISPICKVAL(LoggingLevel__c, \'ERROR\')'
     );
-    LoggerNotificationService__c service = new LoggerNotificationService__c(
+    recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
       Name = 'Email',
       NotifierApexClassName__c = 'EmailLoggerNotifier',
       IsEnabled__c = true
@@ -264,15 +261,15 @@ private class EmailLoggerNotifier_Tests {
       new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong'),
       new LogEntry__c(LoggingLevel__c = 'WARN', Message__c = 'Heads up')
     };
-    return new LoggerNotifierRequest(rule, recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 
-  private static List<LoggerNotifierConfiguration.SourceFieldSpec> defaultSpecs() {
-    return new List<LoggerNotifierConfiguration.SourceFieldSpec>{
-      new LoggerNotifierConfiguration.SourceFieldSpec('LoggingLevel__c', null, null),
-      new LoggerNotifierConfiguration.SourceFieldSpec('Origin__c', null, null),
-      new LoggerNotifierConfiguration.SourceFieldSpec('Message__c', null, null),
-      new LoggerNotifierConfiguration.SourceFieldSpec('StackTrace__c', null, null)
+  private static List<LoggerNotifierConfiguration.SourceFieldDefinition> defaultSourceFields() {
+    return new List<LoggerNotifierConfiguration.SourceFieldDefinition>{
+      new LoggerNotifierConfiguration.SourceFieldDefinition(Schema.LogEntry__c.LoggingLevel__c.toString(), null, null),
+      new LoggerNotifierConfiguration.SourceFieldDefinition(Schema.LogEntry__c.Origin__c.toString(), null, null),
+      new LoggerNotifierConfiguration.SourceFieldDefinition(Schema.LogEntry__c.Message__c.toString(), null, null),
+      new LoggerNotifierConfiguration.SourceFieldDefinition(Schema.LogEntry__c.StackTrace__c.toString(), null, null)
     };
   }
 }

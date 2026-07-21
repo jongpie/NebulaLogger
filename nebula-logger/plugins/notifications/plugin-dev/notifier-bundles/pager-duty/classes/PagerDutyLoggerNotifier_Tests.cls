@@ -13,14 +13,7 @@ private class PagerDutyLoggerNotifier_Tests {
     System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
 
     notifier.sendNotification(null);
-    notifier.sendNotification(
-      new LoggerNotifierRequest(
-        new LoggerNotificationRule__c(),
-        new LoggerNotificationRecipient__c(),
-        new LoggerNotificationService__c(),
-        new List<SObject>()
-      )
-    );
+    notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>()));
 
     System.Assert.isNull(calloutMock.request);
   }
@@ -105,12 +98,10 @@ private class PagerDutyLoggerNotifier_Tests {
     Id entryId = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType);
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Id = ruleId, Name = 'r');
     List<SObject> records = new List<SObject>{ new LogEntry__c(Id = entryId, LoggingLevel__c = 'ERROR') };
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      rule,
-      new LoggerNotificationRecipient__c(),
-      new LoggerNotificationService__c(Name = 'pd'),
-      records
-    );
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = rule;
+    recipient.LoggerNotificationService__r = new LoggerNotificationService__c(Name = 'pd');
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, records);
 
     String key = notifier.buildDedupKey(request);
 
@@ -152,12 +143,12 @@ private class PagerDutyLoggerNotifier_Tests {
   }
 
   private static LoggerNotifierRequest buildRequest(String webhookUrl, String namedCredentialDeveloperName, LoggerNotificationRecipient__c recipient) {
-    LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
+    recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(
       Name = 'Prod ERROR alerts',
       SourceSObjectType__c = 'LogEntry__c',
       SourceSObjectFilter__c = 'ISPICKVAL(LoggingLevel__c, \'ERROR\')'
     );
-    LoggerNotificationService__c service = new LoggerNotificationService__c(
+    recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
       Name = 'PagerDuty',
       NotifierApexClassName__c = 'PagerDutyLoggerNotifier',
       IsEnabled__c = true,
@@ -165,6 +156,6 @@ private class PagerDutyLoggerNotifier_Tests {
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
     List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
-    return new LoggerNotifierRequest(rule, recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }

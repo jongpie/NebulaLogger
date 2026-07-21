@@ -74,10 +74,10 @@ public without sharing class OpenTelemetryLoggerNotifier extends LoggerNotifier 
 
   private System.HttpRequest buildRequest(LoggerNotifierRequest request, Map<String, Object> config) {
     String endpoint;
-    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c + LOGS_PATH;
-    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
-      endpoint = request.service.WebhookUrl__c;
+    if (String.isNotBlank(request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c + LOGS_PATH;
+    } else if (String.isNotBlank(request.recipient.LoggerNotificationService__r.WebhookUrl__c)) {
+      endpoint = request.recipient.LoggerNotificationService__r.WebhookUrl__c;
     } else {
       return null;
     }
@@ -129,9 +129,9 @@ public without sharing class OpenTelemetryLoggerNotifier extends LoggerNotifier 
 
   private List<Map<String, Object>> buildLogAttributes(LoggerNotifierRequest request, SObject record) {
     List<Map<String, Object>> attributes = new List<Map<String, Object>>();
-    this.addAttributeIfPresent(attributes, 'nebula.rule.name', request.notificationRule.Name);
-    this.addAttributeIfPresent(attributes, 'nebula.rule.id', String.valueOf(request.notificationRule.Id));
-    this.addAttributeIfPresent(attributes, 'nebula.service.name', request.service?.Name);
+    this.addAttributeIfPresent(attributes, 'nebula.rule.name', request.recipient.LoggerNotificationRule__r.Name);
+    this.addAttributeIfPresent(attributes, 'nebula.rule.id', String.valueOf(request.recipient.LoggerNotificationRule__r.Id));
+    this.addAttributeIfPresent(attributes, 'nebula.service.name', request.recipient.LoggerNotificationService__r.Name);
     this.addAttributeIfPresent(attributes, 'log.record.type', String.valueOf(record.getSObjectType()));
     Id recordId = (Id) record.get('Id');
     if (recordId != null) {

@@ -16,17 +16,8 @@ private class SlackLoggerNotifier_Tests {
     SlackLoggerNotifier notifier = new SlackLoggerNotifier();
 
     notifier.sendNotification(null);
-    notifier.sendNotification(
-      new LoggerNotifierRequest(new LoggerNotificationRule__c(), new LoggerNotificationRecipient__c(), new LoggerNotificationService__c(), null)
-    );
-    notifier.sendNotification(
-      new LoggerNotifierRequest(
-        new LoggerNotificationRule__c(),
-        new LoggerNotificationRecipient__c(),
-        new LoggerNotificationService__c(),
-        new List<SObject>()
-      )
-    );
+    notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), null));
+    notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>()));
 
     System.Assert.isNull(calloutMock.request, 'No callout should have been made');
   }
@@ -164,20 +155,18 @@ private class SlackLoggerNotifier_Tests {
     String payload = sendAndCapture(request);
 
     // The top-level text field uses <url|text> mrkdwn syntax natively (no mrkdwn_in opt-in needed at that level).
-    String expectedLinkSuffix = '|' + request.notificationRule.Name + '>';
+    String expectedLinkSuffix = '|' + request.recipient.LoggerNotificationRule__r.Name + '>';
     System.Assert.isTrue(payload.contains(expectedLinkSuffix), 'The rule should render as a Slack mrkdwn link ending with |<rule name>>: ' + payload);
-    System.Assert.isTrue(payload.contains(request.notificationRule.Id), 'The link should point at the notification record Id: ' + payload);
+    System.Assert.isTrue(payload.contains(request.recipient.LoggerNotificationRule__r.Id), 'The link should point at the notification record Id: ' + payload);
     System.Assert.isFalse(payload.contains('"Rule"'), 'The rule should no longer appear as an attachment field: ' + payload);
   }
 
   @IsTest
   static void it_should_render_the_rule_name_as_plain_text_when_the_rule_has_no_id() {
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      new LoggerNotificationRule__c(Name = 'In-memory rule'),
-      new LoggerNotificationRecipient__c(),
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') }
-    );
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = 'In-memory rule');
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
 
     String payload = sendAndCapture(request);
 
@@ -195,12 +184,9 @@ private class SlackLoggerNotifier_Tests {
     log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","Log__r.Name"]}');
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      recipient,
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ logEntry }
-    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ logEntry });
 
     String payload = sendAndCapture(request);
 
@@ -220,12 +206,9 @@ private class SlackLoggerNotifier_Tests {
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Name"]}');
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      recipient,
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ logEntry }
-    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ logEntry });
 
     String payload = sendAndCapture(request);
 
@@ -245,12 +228,9 @@ private class SlackLoggerNotifier_Tests {
 
     // Configure the raw lookup (Log__c) with no displayField - the runtime should auto-fall-back to Log__r.Name.
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Log__c"]}');
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      recipient,
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ logEntry }
-    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ logEntry });
 
     String payload = sendAndCapture(request);
 
@@ -270,12 +250,9 @@ private class SlackLoggerNotifier_Tests {
 
     String json = '{"sourceFields":[{"field":"Log__c","displayField":"Log__r.LoggedByUsername__c"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      recipient,
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ logEntry }
-    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ logEntry });
 
     String payload = sendAndCapture(request);
 
@@ -293,12 +270,9 @@ private class SlackLoggerNotifier_Tests {
 
     String json = '{"sourceFields":[{"field":"LoggingLevel__c","displayLabel":"Severity"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      recipient,
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ logEntry }
-    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ logEntry });
 
     String payload = sendAndCapture(request);
 
@@ -314,12 +288,10 @@ private class SlackLoggerNotifier_Tests {
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      new LoggerNotificationRecipient__c(),
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ logEntry }
-    );
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ logEntry });
 
     String payload = sendAndCapture(request);
 
@@ -431,12 +403,9 @@ private class SlackLoggerNotifier_Tests {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
       ConfigurationJson__c = '{"sourceFields":["ThisFieldDoesNotExist__c","Log__r.Name","LoggingLevel__c","Message__c"],"includeNullValues":true}'
     );
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      recipient,
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ logEntry }
-    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ logEntry });
 
     String payload = sendAndCapture(request);
 
@@ -457,10 +426,11 @@ private class SlackLoggerNotifier_Tests {
   static void it_should_suppress_null_valued_fields_by_default() {
     // StackTrace__c is left null on the record; the default field set includes it, so it should be dropped
     // from the rendered payload when the recipient has no config.
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
     LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      new LoggerNotificationRecipient__c(),
-      buildService('https://example.com/hook', null),
+      recipient,
       new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Only a message') }
     );
 
@@ -475,12 +445,9 @@ private class SlackLoggerNotifier_Tests {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
       ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","StackTrace__c"],"includeNullValues":true}'
     );
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      recipient,
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') }
-    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
 
     String payload = sendAndCapture(request);
 
@@ -501,12 +468,10 @@ private class SlackLoggerNotifier_Tests {
   }
 
   private static String capturePayloadForLoggingLevel(String loggingLevel) {
-    LoggerNotifierRequest request = new LoggerNotifierRequest(
-      buildRule(),
-      new LoggerNotificationRecipient__c(),
-      buildService('https://example.com/hook', null),
-      new List<SObject>{ new LogEntry__c(LoggingLevel__c = loggingLevel) }
-    );
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = loggingLevel) });
     return sendAndCapture(request);
   }
 
@@ -540,10 +505,12 @@ private class SlackLoggerNotifier_Tests {
   }
 
   private static LoggerNotifierRequest buildRequest(LoggerNotificationService__c service, LoggerNotificationRecipient__c recipient) {
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = service;
     List<SObject> matchingRecords = new List<SObject>{
       new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong', StackTrace__c = 'Line 1\nLine 2'),
       new LogEntry__c(LoggingLevel__c = 'WARN', Message__c = 'Heads up')
     };
-    return new LoggerNotifierRequest(buildRule(), recipient, service, matchingRecords);
+    return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }

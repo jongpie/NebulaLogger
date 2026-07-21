@@ -5,30 +5,23 @@
 
 /**
  * @group Plugins
- * @description DTO passed to `LoggerNotifier` implementations at delivery time. Carries the rule that
- *              matched, the recipient configuration, the service configuration, and the log records
- *              that satisfied the rule's `SourceSObjectFilter__c` expression.
+ * @description DTO passed to `LoggerNotifier` implementations at delivery time. Carries the recipient
+ *              (which itself carries its parent rule + service via `LoggerNotificationRule__r` and
+ *              `LoggerNotificationService__r`) and the logging records that satisfied the rule's
+ *              `SourceSObjectFilter__c` expression.
  */
 public class LoggerNotifierRequest {
   /**
-   * @description The `LoggerNotificationRule__c` rule that matched the records.
+   * @description The specific `LoggerNotificationRecipient__c` this delivery is targeting. Its parent
+   *              lookups (`LoggerNotificationRule__r` and `LoggerNotificationService__r`) carry the
+   *              rule that matched and the service that owns this recipient.
    */
-  public LoggerNotificationRule__c notificationRule { get; private set; }
+  public final LoggerNotificationRecipient__c recipient;
 
   /**
-   * @description The specific `LoggerNotificationRecipient__c` this delivery is targeting.
+   * @description The logging records (`Log__c`, `LogEntry__c`, etc.) that matched the rule filter.
    */
-  public LoggerNotificationRecipient__c recipient { get; private set; }
-
-  /**
-   * @description The `LoggerNotificationService__c` referenced by the recipient.
-   */
-  public LoggerNotificationService__c service { get; private set; }
-
-  /**
-   * @description The log records (`LogEntry__c` or `LogEntryEvent__e`) that matched the rule.
-   */
-  public List<SObject> matchingRecords { get; private set; }
+  public final List<SObject> matchingRecords;
 
   /**
    * @description Typed accessor over the recipient's `ConfigurationJson__c` payload. Notifiers
@@ -36,17 +29,10 @@ public class LoggerNotifierRequest {
    *              parsing raw JSON. Never null; a recipient with no configuration yields an empty config
    *              whose getters return null / empty defaults.
    */
-  public LoggerNotifierConfiguration configuration { get; private set; }
+  public final LoggerNotifierConfiguration configuration;
 
-  public LoggerNotifierRequest(
-    LoggerNotificationRule__c notificationRule,
-    LoggerNotificationRecipient__c recipient,
-    LoggerNotificationService__c service,
-    List<SObject> matchingRecords
-  ) {
-    this.notificationRule = notificationRule;
+  public LoggerNotifierRequest(LoggerNotificationRecipient__c recipient, List<SObject> matchingRecords) {
     this.recipient = recipient;
-    this.service = service;
     this.matchingRecords = matchingRecords;
     this.configuration = new LoggerNotifierConfiguration(recipient);
   }
