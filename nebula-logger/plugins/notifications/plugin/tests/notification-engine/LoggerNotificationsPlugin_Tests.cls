@@ -75,7 +75,7 @@ private class LoggerNotificationsPlugin_Tests {
   @IsTest
   static void it_should_ignore_logEntryEvent_after_insert() {
     // LogEntryEvent__e is not a supported source SObject type - platform events have no IDs, so we
-    // cannot record LoggerNotificationMatch__c rows against them. The plugin should silently skip.
+    // cannot record LoggerNotificationMatch__c records against them. The plugin should silently skip.
     RecordingNotifier notifier = installRecordingNotifier();
     LoggerNotificationsPlugin plugin = new LoggerNotificationsPlugin();
     List<SObject> records = new List<SObject>{ new LogEntryEvent__e(LoggingLevel__c = 'ERROR') };
@@ -141,8 +141,8 @@ private class LoggerNotificationsPlugin_Tests {
   static void it_should_return_purgeable_registrations_for_match_and_delivery_with_delivery_ahead_of_match() {
     // Delivery is a master-detail child of Match, so the plugin lists delivery first in its
     // returned list. The purger preserves iteration order, so this is how the plugin communicates
-    // "delete delivery rows before their parent match rows". Each registration declares its
-    // RetentionDate__c field for the cutoff comparison and clusters its rows by master-detail
+    // "delete delivery records before their parent match records". Each registration declares its
+    // RetentionDate__c field for the cutoff comparison and clusters its records by master-detail
     // parent for ORDER BY so batches acquire one parent lock per cluster instead of interleaving
     // locks across many parents.
     List<LoggerPurgeRegistration> registrations = new LoggerNotificationsPlugin().getPurgeRegistrations();
@@ -153,7 +153,7 @@ private class LoggerNotificationsPlugin_Tests {
     System.Assert.areEqual(
       Schema.LoggerNotificationDelivery__c.SObjectType,
       deliveryRegistration.sobjectType,
-      'Delivery should appear ahead of Match so the child rows purge first'
+      'Delivery should appear ahead of Match so the child deliveries purge first'
     );
     System.Assert.areEqual(
       Schema.LoggerNotificationDelivery__c.RetentionDate__c,
@@ -166,7 +166,7 @@ private class LoggerNotificationsPlugin_Tests {
         Schema.LoggerNotificationDelivery__c.LoggerNotificationRecipient__c
       },
       deliveryRegistration.sortByFields,
-      'Delivery ORDER BY should cluster rows by master-detail parent + recipient to reduce lock scope'
+      'Delivery ORDER BY should cluster deliveries by master-detail parent + recipient to reduce lock scope'
     );
 
     LoggerPurgeRegistration matchRegistration = registrations.get(1);
@@ -179,7 +179,7 @@ private class LoggerNotificationsPlugin_Tests {
     System.Assert.areEqual(
       new List<Schema.SObjectField>{ Schema.LoggerNotificationMatch__c.LoggerNotificationRule__c },
       matchRegistration.sortByFields,
-      'Match ORDER BY should cluster rows by master-detail parent (LoggerNotificationRule__c)'
+      'Match ORDER BY should cluster deliveries by master-detail parent (LoggerNotificationRule__c)'
     );
   }
 

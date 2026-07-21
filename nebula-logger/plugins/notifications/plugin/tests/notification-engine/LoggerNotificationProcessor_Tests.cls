@@ -260,7 +260,11 @@ private class LoggerNotificationProcessor_Tests {
   static void it_should_compute_cutoff_correctly_for_each_unit() {
     Datetime now = Datetime.newInstance(2026, 1, 15, 12, 0, 0);
 
-    System.Assert.areEqual(now.addMinutes(-5), LoggerNotificationProcessor.computeCutoff(now, 5, 'Minutes'), 'Minutes cutoff should be exactly 5 minutes before now');
+    System.Assert.areEqual(
+      now.addMinutes(-5),
+      LoggerNotificationProcessor.computeCutoff(now, 5, 'Minutes'),
+      'Minutes cutoff should be exactly 5 minutes before now'
+    );
     System.Assert.areEqual(now.addHours(-2), LoggerNotificationProcessor.computeCutoff(now, 2, 'Hours'), 'Hours cutoff should be exactly 2 hours before now');
     System.Assert.areEqual(now.addDays(-1), LoggerNotificationProcessor.computeCutoff(now, 1, 'Days'), 'Days cutoff should be exactly 1 day before now');
     System.Assert.isNull(LoggerNotificationProcessor.computeCutoff(now, 5, 'Fortnights'), 'Unknown units should produce null');
@@ -370,12 +374,12 @@ private class LoggerNotificationProcessor_Tests {
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__c IN :matches
     ];
-    System.Assert.areEqual(2, deliveries.size(), 'A suppressed-by-threshold delivery row should still be recorded per (match, recipient) tuple');
+    System.Assert.areEqual(2, deliveries.size(), 'A suppressed-by-threshold delivery record should still be recorded per (match, recipient) tuple');
     for (LoggerNotificationDelivery__c delivery : deliveries) {
       System.Assert.areEqual(
         LoggerNotifierResult.STATUS_SUPPRESSED_BY_THRESHOLD,
         delivery.Status__c,
-        'Suppressed rows should carry the SUPPRESSED_BY_THRESHOLD status'
+        'Suppressed deliveries should carry the SUPPRESSED_BY_THRESHOLD status'
       );
       System.Assert.areEqual(persistedRecipient.Id, delivery.LoggerNotificationRecipient__c, 'Delivery should point at the recipient it would have gone to');
       System.Assert.areEqual(service.Id, delivery.LoggerNotificationService__c, 'Delivery should denormalize the recipient service Id');
@@ -389,7 +393,7 @@ private class LoggerNotificationProcessor_Tests {
   static void it_should_only_record_suppressed_deliveries_for_valid_recipients() {
     // Exercised end-to-end against the DB (no setCachedRules) so the runtime's SOQL subquery filter is
     // what drops disabled and cloned-in-from-another-org services before threshold suppression records
-    // its "would have delivered here" rows.
+    // its "would have delivered here" deliveries.
     LoggerNotificationRule__c persistedRule = buildRule();
     persistedRule.IsMatchThresholdEnabled__c = true;
     persistedRule.MatchCountThreshold__c = 10;
@@ -429,7 +433,7 @@ private class LoggerNotificationProcessor_Tests {
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :persistedRule.Id
     ];
-    System.Assert.areEqual(1, deliveries.size(), 'Only the enabled + valid-origin recipient should get a suppressed delivery row');
+    System.Assert.areEqual(1, deliveries.size(), 'Only the enabled + valid-origin recipient should get a suppressed delivery record');
     System.Assert.areEqual(enabledRecipient.Id, deliveries.get(0).LoggerNotificationRecipient__c);
     System.Assert.areEqual(LoggerNotifierResult.STATUS_SUPPRESSED_BY_THRESHOLD, deliveries.get(0).Status__c);
   }
@@ -471,12 +475,12 @@ private class LoggerNotificationProcessor_Tests {
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
 
     Integer matchCount = [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :persistedRule.Id];
-    System.Assert.areEqual(0, matchCount, 'Match rows should not be persisted when IsMatchHistoryEnabled__c is false');
+    System.Assert.areEqual(0, matchCount, 'Match records should not be persisted when IsMatchHistoryEnabled__c is false');
     Integer deliveryCount = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = :persistedRecipient.Id];
     System.Assert.areEqual(
       0,
       deliveryCount,
-      'Suppressed delivery rows require match rows to reference, so they must not be recorded when match history is disabled'
+      'Suppressed delivery records require match records to reference, so they must not be recorded when match history is disabled'
     );
   }
 
@@ -517,7 +521,7 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(
       0,
       deliveryCount,
-      'Delivery rows should not be recorded when IsDeliveryHistoryEnabled__c is false, even for suppressed-by-threshold outcomes'
+      'Delivery records should not be recorded when IsDeliveryHistoryEnabled__c is false, even for suppressed-by-threshold outcomes'
     );
   }
 
@@ -646,7 +650,7 @@ private class LoggerNotificationProcessor_Tests {
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :persistedRule.Id
     ];
-    System.Assert.areEqual(1, matches.size(), 'Match rows are now one-per-matched-record (not per recipient)');
+    System.Assert.areEqual(1, matches.size(), 'Match records are now one-per-matched-record (not per recipient)');
     System.Assert.areEqual(String.valueOf(matchingEntry.Id), matches.get(0).MatchedRecordId__c);
 
     List<LoggerNotificationDelivery__c> deliveries = [
@@ -654,7 +658,7 @@ private class LoggerNotificationProcessor_Tests {
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__c = :matches.get(0).Id
     ];
-    System.Assert.areEqual(2, deliveries.size(), 'One delivery row per recipient - two recipients means two delivery rows for the one match');
+    System.Assert.areEqual(2, deliveries.size(), 'One delivery record per recipient - two recipients means two delivery records for the one match');
     Set<Id> deliveryRecipientIds = new Set<Id>();
     Set<Id> deliveryServiceIds = new Set<Id>();
     for (LoggerNotificationDelivery__c row : deliveries) {
@@ -664,12 +668,12 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(
       new Set<Id>{ persistedRecipientOne.Id, persistedRecipientTwo.Id },
       deliveryRecipientIds,
-      'Each recipient should have its own delivery row'
+      'Each recipient should have its own delivery record'
     );
     System.Assert.areEqual(
       new Set<Id>{ serviceOne.Id, serviceTwo.Id },
       deliveryServiceIds,
-      'The denormalized service field should also be set on each delivery row'
+      'The denormalized service field should also be set on each delivery record'
     );
     System.Assert.areEqual(2, mockNotifierInvocationCount, 'Both recipients should have received the notification');
   }
@@ -735,7 +739,7 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_count_matches_for_threshold_naturally_deduplicated() {
-    // Match rows are now one-per-matched-record (not per recipient), so a plain COUNT(Id) is
+    // Match records are now one-per-matched-record (not per recipient), so a plain COUNT(Id) is
     // already deduplicated. Two recipients pointing at the same rule should not inflate the count.
     LoggerNotificationRule__c persistedRule = buildRule();
     persistedRule.IsMatchThresholdEnabled__c = true;
@@ -829,12 +833,12 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(
       0,
       [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c IN :ruleIds],
-      'Rules with zero enabled recipients should be skipped before any match rows are inserted'
+      'Rules with zero enabled recipients should be skipped before any match records are inserted'
     );
     System.Assert.areEqual(
       0,
       [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRule__c IN :ruleIds],
-      'Rules with zero enabled recipients should not produce delivery rows'
+      'Rules with zero enabled recipients should not produce delivery records'
     );
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Dispatch should not fire for rules with zero enabled recipients');
   }
@@ -874,7 +878,7 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(
       persistedRule.Id,
       deliveries.get(0).LoggerNotificationRule__c,
-      'Delivery rows should carry the denormalized rule Id for report/list-view filtering'
+      'Delivery records should carry the denormalized rule Id for report/list-view filtering'
     );
   }
 
@@ -982,7 +986,7 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_stamp_match_and_delivery_retention_dates_independently_from_the_rules_two_retention_fields() {
-    // Match rows stamp RetentionDate__c from NumberOfDaysToRetainMatches__c; delivery rows stamp
+    // Match records stamp RetentionDate__c from NumberOfDaysToRetainMatches__c; delivery records stamp
     // from NumberOfDaysToRetainDeliveries__c. The two values can differ (subject to the handler's
     // "deliveries <= matches" constraint), so the runtime has to read the right field for each row
     // rather than sharing a single value.
@@ -1024,7 +1028,7 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(
       expectedMatchRetentionDate,
       matches.get(0).RetentionDate__c,
-      'Match rows should stamp RetentionDate__c from NumberOfDaysToRetainMatches__c'
+      'Match records should stamp RetentionDate__c from NumberOfDaysToRetainMatches__c'
     );
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT Id, RetentionDate__c
@@ -1035,14 +1039,14 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(
       expectedDeliveryRetentionDate,
       deliveries.get(0).RetentionDate__c,
-      'Delivery rows should stamp RetentionDate__c from NumberOfDaysToRetainDeliveries__c'
+      'Delivery records should stamp RetentionDate__c from NumberOfDaysToRetainDeliveries__c'
     );
   }
 
   @IsTest
   static void it_should_leave_retention_date_null_when_the_rules_retention_days_is_null_or_non_positive() {
-    // Null / zero / negative retention on either field means "keep that object's rows forever" -
-    // the runtime stamps RetentionDate__c as null and LogBatchPurger's WHERE clause skips rows
+    // Null / zero / negative retention on either field means "keep that object's records forever" -
+    // the runtime stamps RetentionDate__c as null and LogBatchPurger's WHERE clause skips records
     // without a retention date. Test with both fields null so we exercise both stamping paths.
     LoggerNotificationRule__c persistedRule = buildRule();
     persistedRule.NumberOfDaysToRetainMatches__c = null;
@@ -1075,61 +1079,14 @@ private class LoggerNotificationProcessor_Tests {
       WHERE LoggerNotificationRule__c = :persistedRule.Id
       LIMIT 1
     ];
-    System.Assert.isNull(match.RetentionDate__c, 'Null NumberOfDaysToRetainMatches__c should leave the match row untouched by LogBatchPurger');
+    System.Assert.isNull(match.RetentionDate__c, 'Null NumberOfDaysToRetainMatches__c should leave the match record untouched by LogBatchPurger');
     LoggerNotificationDelivery__c delivery = [
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationRecipient__c = :persistedRecipient.Id
       LIMIT 1
     ];
-    System.Assert.isNull(delivery.RetentionDate__c, 'Null NumberOfDaysToRetainDeliveries__c should leave the delivery row untouched by LogBatchPurger');
-  }
-
-  @IsTest
-  static void it_should_stamp_the_queueable_job_id_from_the_result_onto_delivery_rows_that_have_none_yet() {
-    Id fakeJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
-    List<LoggerNotificationDelivery__c> deliveries = new List<LoggerNotificationDelivery__c>{
-      new LoggerNotificationDelivery__c(),
-      new LoggerNotificationDelivery__c()
-    };
-    LoggerNotifierResult result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
-    result.jobId = fakeJobId;
-    Datetime dispatchStart = System.now();
-    Datetime dispatchEnd = dispatchStart.addSeconds(1);
-
-    LoggerNotificationProcessor.applyResultToDeliveries(deliveries, result, dispatchStart, dispatchEnd);
-
-    for (LoggerNotificationDelivery__c delivery : deliveries) {
-      System.Assert.areEqual(fakeJobId, delivery.JobId__c, 'JobId__c should have been stamped on delivery rows that had none: ' + delivery);
-    }
-  }
-
-  @IsTest
-  static void it_should_not_overwrite_an_existing_job_id_on_a_delivery_row() {
-    // Preserving the first-attempt job id is the whole point of the "only when blank" guard - a re-enqueue
-    // after a callout-limit exhaustion runs in a different Queueable job, but the first-attempt job id is
-    // the one admins want to correlate to Apex Jobs / logs.
-    Id firstJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
-    Id secondJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
-    LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c(JobId__c = firstJobId);
-    LoggerNotifierResult result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
-    result.jobId = secondJobId;
-    Datetime dispatchStart = System.now();
-
-    LoggerNotificationProcessor.applyResultToDeliveries(new List<LoggerNotificationDelivery__c>{ delivery }, result, dispatchStart, dispatchStart);
-
-    System.Assert.areEqual(firstJobId, delivery.JobId__c, 'First-attempt job id should not be overwritten by a re-enqueue');
-  }
-
-  @IsTest
-  static void it_should_leave_job_id_null_when_the_result_carries_no_job_id() {
-    LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c();
-    LoggerNotifierResult result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
-    Datetime dispatchStart = System.now();
-
-    LoggerNotificationProcessor.applyResultToDeliveries(new List<LoggerNotificationDelivery__c>{ delivery }, result, dispatchStart, dispatchStart);
-
-    System.Assert.isNull(delivery.JobId__c, 'JobId__c should stay null when the result carries no jobId');
+    System.Assert.isNull(delivery.RetentionDate__c, 'Null NumberOfDaysToRetainDeliveries__c should leave the delivery record untouched by LogBatchPurger');
   }
 
   // Test helpers

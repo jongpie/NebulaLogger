@@ -121,6 +121,53 @@ private class LoggerNotifierResult_Tests {
     System.Assert.areEqual('{"error":"boom"}', result.responseBody, 'Response body should still be captured on non-2xx');
   }
 
+  @IsTest
+  static void finalizeDeliveries_should_stamp_the_queueable_job_id_onto_deliveries_that_have_none_yet() {
+    Id fakeJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
+    List<LoggerNotificationDelivery__c> deliveries = new List<LoggerNotificationDelivery__c>{
+      new LoggerNotificationDelivery__c(),
+      new LoggerNotificationDelivery__c()
+    };
+    LoggerNotifierResult result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
+    result.jobId = fakeJobId;
+    Datetime dispatchStart = System.now();
+    Datetime dispatchEnd = dispatchStart.addSeconds(1);
+
+    result.finalizeDeliveries(deliveries, dispatchStart, dispatchEnd);
+
+    for (LoggerNotificationDelivery__c delivery : deliveries) {
+      System.Assert.areEqual(fakeJobId, delivery.JobId__c, 'JobId__c should have been stamped on delivery records that had none: ' + delivery);
+    }
+  }
+
+  @IsTest
+  static void finalizeDeliveries_should_not_overwrite_an_existing_job_id_on_a_delivery() {
+    // Preserving the first-attempt job id is the whole point of the "only when blank" guard - a re-enqueue
+    // after a callout-limit exhaustion runs in a different Queueable job, but the first-attempt job id is
+    // the one admins want to correlate to Apex Jobs / logs.
+    Id firstJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
+    Id secondJobId = LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
+    LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c(JobId__c = firstJobId);
+    LoggerNotifierResult result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
+    result.jobId = secondJobId;
+    Datetime dispatchStart = System.now();
+
+    result.finalizeDeliveries(new List<LoggerNotificationDelivery__c>{ delivery }, dispatchStart, dispatchStart);
+
+    System.Assert.areEqual(firstJobId, delivery.JobId__c, 'First-attempt job id should not be overwritten by a re-enqueue');
+  }
+
+  @IsTest
+  static void finalizeDeliveries_should_leave_job_id_null_when_the_result_carries_no_job_id() {
+    LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c();
+    LoggerNotifierResult result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
+    Datetime dispatchStart = System.now();
+
+    result.finalizeDeliveries(new List<LoggerNotificationDelivery__c>{ delivery }, dispatchStart, dispatchStart);
+
+    System.Assert.isNull(delivery.JobId__c, 'JobId__c should stay null when the result carries no jobId');
+  }
+
   private static System.HttpResponse buildResponse(Integer statusCode, String statusReason, String body) {
     System.HttpResponse response = new System.HttpResponse();
     response.setStatusCode(statusCode);

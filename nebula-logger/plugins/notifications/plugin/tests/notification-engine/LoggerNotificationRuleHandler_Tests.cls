@@ -228,7 +228,7 @@ private class LoggerNotificationRuleHandler_Tests {
   // rule. Reset those flags to their real defaults after the builder runs.
   @IsTest
   static void it_should_reject_a_rule_whose_delivery_retention_exceeds_match_retention() {
-    // Delivery rows are master-detail children of match rows - a deleted match cascades its deliveries
+    // Delivery records are master-detail children of match records - a deleted match cascades its deliveries
     // with it, so a delivery retention longer than match retention would never take effect. Handler
     // blocks the save with a field-level error rather than let admins persist an ineffective config.
     LoggerNotificationRule__c notificationRule = buildValidNotification();
@@ -270,7 +270,7 @@ private class LoggerNotificationRuleHandler_Tests {
   @IsTest
   static void it_should_allow_a_null_match_or_delivery_retention_value() {
     // A null on either side means "keep forever" for that object. If matches never age out, delivery
-    // rows (whether retained forever or on a fixed schedule) also never get cascade-deleted before
+    // records (whether retained forever or on a fixed schedule) also never get cascade-deleted before
     // their retention date, so the constraint doesn't apply.
     LoggerNotificationRule__c ruleWithNullMatches = buildValidNotification();
     ruleWithNullMatches.NumberOfDaysToRetainMatches__c = null;

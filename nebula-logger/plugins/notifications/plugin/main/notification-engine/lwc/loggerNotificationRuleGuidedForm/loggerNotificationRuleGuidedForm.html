@@ -26,7 +26,7 @@
       </ul>
 
       <template lwc:if={errorMessage}>
-        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_small" role="alert">{errorMessage}</div>
+        <div class="slds-notify slds-notify_alert slds-theme_error slds-m-bottom_small" role="alert">{errorMessage}</div>
       </template>
 
       <template lwc:if={isStep1}>
@@ -87,8 +87,8 @@
           ></lightning-combobox>
           <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
             Optional deduplication field: when set, matching records are collapsed to one match per unique value of the field. For LogEntry__c rules, set to
-            <code>Log__c</code> to alert once per Log instead of once per entry. Only direct fields on the Source SObject Type are supported (parent-relationship
-            paths like <code>Log__r.Name</code> aren't).
+            <code>Log__c</code> to alert once per Log instead of once per entry. Only direct fields on the Source SObject Type are supported
+            (parent-relationship paths like <code>Log__r.Name</code> aren't).
           </p>
         </template>
 
@@ -108,21 +108,21 @@
           <p class="slds-text-body_small slds-m-bottom_x-small"><strong>What these flags do &amp; how they affect data volume</strong></p>
           <ul class="slds-list_dotted slds-text-body_small">
             <li>
-              <strong>Match History</strong> stores a <code>LoggerNotificationMatch__c</code> row every time an incoming record satisfies this rule's filter.
-              One match row per matched source record. Turn this OFF to fire notifications without leaving an audit trail - useful for high-volume rules where
-              you only care about the outbound message.
+              <strong>Match History</strong> stores a <code>LoggerNotificationMatch__c</code> record every time an incoming record satisfies this rule's filter.
+              One match record per matched source record. Turn this OFF to fire notifications without leaving an audit trail - useful for high-volume rules
+              where you only care about the outbound message.
             </li>
             <li>
-              <strong>Delivery History</strong> stores a <code>LoggerNotificationDelivery__c</code> row for every (match, recipient) pair - one row per
-              recipient per match. Requires Match History because delivery rows are master-detail children of match rows.
+              <strong>Delivery History</strong> stores a <code>LoggerNotificationDelivery__c</code> record for every (match, recipient) pair - one record per
+              recipient per match. Requires Match History because delivery records are master-detail children of match records.
             </li>
             <li>
-              <strong>Match Threshold</strong> counts recent match rows in a rolling window; the rule only fires once the count crosses the threshold. Requires
-              Match History because it counts stored match rows over time.
+              <strong>Match Threshold</strong> counts recent match records in a rolling window; the rule only fires once the count crosses the threshold.
+              Requires Match History because it counts stored match records over time.
             </li>
           </ul>
           <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
-            <strong>Data-volume tip:</strong> a single noisy rule can generate thousands of match + delivery rows per day. Consider using the
+            <strong>Data-volume tip:</strong> a single noisy rule can generate thousands of match + delivery records per day. Consider using the
             <code>Deduplication Source Field</code> on Step 1 to collapse matches - e.g. deduplicate by <code>Log__c</code> so a Log with 50 error entries only
             produces one match, not 50.
           </p>
@@ -140,7 +140,7 @@
           <lightning-input
             type="number"
             label="Days to Retain Matches"
-            field-level-help="Number of days that this rule's match rows are retained before LogBatchPurger deletes them. Defaults to 14. Leave blank to keep match rows forever."
+            field-level-help="Number of days that this rule's match records are retained before LogBatchPurger deletes them. Defaults to 14. Leave blank to keep match records forever."
             data-field="NumberOfDaysToRetainMatches__c"
             value={rule.NumberOfDaysToRetainMatches__c}
             min="1"
@@ -159,7 +159,7 @@
             <lightning-input
               type="number"
               label="Days to Retain Deliveries"
-              field-level-help="Number of days that this rule's delivery rows are retained before LogBatchPurger deletes them. Must be less than or equal to Days to Retain Matches - deliveries are master-detail children of matches, so a deleted match cascades its deliveries with it. Defaults to 7 (typically shorter than Days to Retain Matches so callout payloads clear out sooner). Leave blank to keep delivery rows forever."
+              field-level-help="Number of days that this rule's delivery records are retained before LogBatchPurger deletes them. Must be less than or equal to Days to Retain Matches - deliveries are master-detail children of matches, so a deleted match cascades its deliveries with it. Defaults to 7 (typically shorter than Days to Retain Matches so callout payloads clear out sooner). Leave blank to keep delivery records forever."
               data-field="NumberOfDaysToRetainDeliveries__c"
               value={rule.NumberOfDaysToRetainDeliveries__c}
               min="1"
@@ -220,8 +220,9 @@
 
         <template lwc:if={showMatchHistoryOffMessage}>
           <p class="slds-text-body_small slds-text-color_weak slds-m-top_small">
-            With Match History off, notifications still fire but no <code>LoggerNotificationMatch__c</code> or <code>LoggerNotificationDelivery__c</code> rows
-            are stored, and match thresholds are unavailable (they need stored match rows to count against).
+            With Match History off, notifications still fire but no <code>LoggerNotificationMatch__c</code> or
+            <code>LoggerNotificationDelivery__c</code> records are stored, and match thresholds are unavailable (they need stored match records to count
+            against).
           </p>
         </template>
       </template>
@@ -234,7 +235,7 @@
         </p>
 
         <template lwc:if={showNoServicesEmptyState}>
-          <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info slds-m-bottom_small slds-text-body_small" role="alert">
+          <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_small slds-text-body_small" role="alert">
             <p class="slds-m-bottom_x-small">
               <strong>No notification services exist yet.</strong> Every recipient points at a service (Slack, Email, PagerDuty, etc.), so you'll need to create
               at least one before you can add recipients.
@@ -318,7 +319,7 @@
               </template>
 
               <template lwc:if={recipient.showAtLeastOneRequiredWarning}>
-                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-top_x-small slds-text-body_small" role="alert">
+                <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-top_x-small slds-text-body_small" role="alert">
                   Populate at least one of: {recipient.atLeastOneRequiredLabel}.
                 </div>
               </template>
@@ -362,19 +363,13 @@
                 </div>
 
                 <template lwc:if={recipient.configEditorToggleError}>
-                  <div
-                    class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-bottom_x-small slds-text-body_small"
-                    role="alert"
-                  >
+                  <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-bottom_x-small slds-text-body_small" role="alert">
                     {recipient.configEditorToggleError}
                   </div>
                 </template>
 
                 <template lwc:if={recipient.showRowJsonInvalidHint}>
-                  <div
-                    class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning slds-m-bottom_x-small slds-text-body_small"
-                    role="alert"
-                  >
+                  <div class="slds-notify slds-notify_alert slds-theme_warning slds-m-bottom_x-small slds-text-body_small" role="alert">
                     Row stuck in JSON view - the current JSON is malformed or not a top-level object. Fix the JSON below (or clear it) to enable Form view
                     again.
                   </div>
@@ -395,8 +390,7 @@
                     data-field="ConfigurationJson__c"
                     onchange={handleRecipientFieldChange}
                   >
-{recipient.ConfigurationJson__c}</textarea
-                  >
+{recipient.ConfigurationJson__c}</textarea>
                 </template>
 
                 <template lwc:if={recipient.showFormEditor}>
@@ -429,8 +423,7 @@
                         data-pair-index={pairIndex}
                         onchange={handleConfigPairValueChange}
                       >
-{pair.valueText}</textarea
-                      >
+{pair.valueText}</textarea>
                       <lightning-button-icon
                         icon-name="utility:delete"
                         variant="bare"
