@@ -68,7 +68,8 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
     httpRequest.setMethod('POST');
     httpRequest.setHeader('Content-Type', 'application/json');
     httpRequest.setHeader('Accept', 'application/json');
-    return httpRequest;  }
+    return httpRequest;
+  }
 
   @TestVisible
   private String buildPayload(LoggerNotifierRequest request, String routingKey, String eventAction) {
@@ -109,9 +110,9 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
     SObject first = request.matchingRecords.get(0);
     String firstMessage = this.tryGetString(first, 'Message__c');
     if (String.isNotBlank(firstMessage)) {
-      return this.truncate(base + ' - ' + firstMessage, 1024);
+      return (base + ' - ' + firstMessage)?.abbreviate(1024);
     }
-    return this.truncate(base, 1024);
+    return base?.abbreviate(1024);
   }
 
   @TestVisible
@@ -158,7 +159,7 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
       }
       String message = this.tryGetString(record, 'Message__c');
       if (String.isNotBlank(message)) {
-        summary.put('message', this.truncate(message, 500));
+        summary.put('message', message?.abbreviate(500));
       }
       recordSummaries.add(summary);
     }
@@ -200,13 +201,6 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
   private String tryGetConfigString(Map<String, Object> config, String key) {
     Object value = config.get(key);
     return value == null ? null : String.valueOf(value);
-  }
-
-  private String truncate(String value, Integer maxLength) {
-    if (value == null || value.length() <= maxLength) {
-      return value;
-    }
-    return value.substring(0, maxLength - 3) + '...';
   }
 
   private Map<String, Object> parseConfiguration(String rawJson) {

@@ -40,14 +40,14 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     }
     List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
     if (specs == null) {
-      specs = buildDefaultSpecs(DEFAULT_SOURCE_FIELDS);
+      specs = LoggerNotifier.buildDefaultSpecs(DEFAULT_SOURCE_FIELDS);
     }
     Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
     String subjectTemplate = request.configuration.getString('subjectTemplate');
 
     Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     List<String> hydrationPaths = collectHydrationPaths(specs, subjectTemplate, sourceType);
-    List<SObject> hydratedRecords = hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
+    List<SObject> hydratedRecords = LoggerNotifier.hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
 
     Messaging.SingleEmailMessage email = this.buildEmail(request, hydratedRecords, specs, includeNullValues, subjectTemplate);
     if (email == null) {
@@ -149,7 +149,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     if (firstRecord == null) {
       return '';
     }
-    Object value = getValueByPath(firstRecord, tokenName);
+    Object value = LoggerNotifier.getValueByPath(firstRecord, tokenName);
     return value == null ? '' : String.valueOf(value);
   }
 
@@ -194,12 +194,12 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     LoggerNotifierConfiguration.SourceFieldSpec spec,
     Boolean includeNullValues
   ) {
-    Schema.DescribeFieldResult primaryDescribe = getDescribeByPath(sourceType, spec.field);
+    Schema.DescribeFieldResult primaryDescribe = LoggerNotifier.getDescribeByPath(sourceType, spec.field);
     if (primaryDescribe == null) {
       return null;
     }
     String valuePath = String.isNotBlank(spec.displayField) ? spec.displayField : spec.field;
-    Object rawValue = getValueByPath(record, valuePath);
+    Object rawValue = LoggerNotifier.getValueByPath(record, valuePath);
     String label = String.isNotBlank(spec.displayLabel) ? spec.displayLabel : primaryDescribe.getLabel();
     if (rawValue == null || String.isBlank(String.valueOf(rawValue))) {
       if (includeNullValues == false) {
@@ -231,7 +231,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
         if (tokenName.equalsIgnoreCase('ruleName') || tokenName.equalsIgnoreCase('matchCount')) {
           continue;
         }
-        if (getDescribeByPath(sourceType, tokenName) != null) {
+        if (LoggerNotifier.getDescribeByPath(sourceType, tokenName) != null) {
           pathSet.add(tokenName);
         }
       }

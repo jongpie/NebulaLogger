@@ -35,9 +35,9 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
   private static final String CONFIG_KEY_TITLE_TEMPLATE = 'titleTemplate';
   private static final String CONFIG_KEY_BODY_TEMPLATE = 'bodyTemplate';
 
-  private static final String TOKEN_RULE_NAME = 'RuleName';
+  private static final String MERGE_KEY_RULE_NAME = 'RuleName';
 
-  private static final String DEFAULT_TITLE_TEMPLATE = 'Nebula Logger: {' + TOKEN_RULE_NAME + '}';
+  private static final String DEFAULT_TITLE_TEMPLATE = 'Nebula Logger: {' + MERGE_KEY_RULE_NAME + '}';
 
   private static final System.Pattern MERGE_TOKEN_PATTERN = System.Pattern.compile('\\{([A-Za-z0-9_.]+)\\}');
 
@@ -51,42 +51,26 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     }
     String notificationTypeDeveloperName = request.configuration.getString(CONFIG_KEY_NOTIFICATION_TYPE);
     if (String.isBlank(notificationTypeDeveloperName)) {
-      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('CustomNotificationLoggerNotifier - ConfigurationJson__c must set ' + CONFIG_KEY_NOTIFICATION_TYPE + '; skipping');
-      }
-      LoggerNotifierResult skipped = new LoggerNotifierResult();
-      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
-      skipped.errorMessage = CONFIG_KEY_NOTIFICATION_TYPE + ' missing from ConfigurationJson__c';
-      // TODO revisit this part, it might be better to throw (or at least construct) a relevant Exception instance instead
-      skipped.errorStackTrace = new LoggerStackTrace().ParsedStackTraceString;
-      return skipped;
+      return buildSkipped(
+        'CustomNotificationLoggerNotifier - ConfigurationJson__c must set ' + CONFIG_KEY_NOTIFICATION_TYPE + '; skipping',
+        CONFIG_KEY_NOTIFICATION_TYPE + ' missing from ConfigurationJson__c'
+      );
     }
     Set<String> recipientIds = this.resolveRecipientIds(request);
     if (recipientIds.isEmpty()) {
-      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('CustomNotificationLoggerNotifier - no recipient users or groups resolved; skipping');
-      }
-      LoggerNotifierResult skipped = new LoggerNotifierResult();
-      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
-      skipped.errorMessage = 'No recipient users or groups resolved';
-      return skipped;
+      return buildSkipped('CustomNotificationLoggerNotifier - no recipient users or groups resolved; skipping', 'No recipient users or groups resolved');
     }
     Id typeId = this.lookupNotificationTypeId(notificationTypeDeveloperName);
     if (typeId == null) {
-      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('CustomNotificationLoggerNotifier - could not resolve CustomNotificationType DeveloperName ' + notificationTypeDeveloperName);
-      }
-      LoggerNotifierResult skipped = new LoggerNotifierResult();
-      skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
-      skipped.errorMessage = 'CustomNotificationType__mdt DeveloperName ' + notificationTypeDeveloperName + ' not found';
-      return skipped;
+      return buildSkipped(
+        'CustomNotificationLoggerNotifier - could not resolve CustomNotificationType DeveloperName ' + notificationTypeDeveloperName,
+        'CustomNotificationType__mdt DeveloperName ' + notificationTypeDeveloperName + ' not found'
+      );
     }
-    String titleTemplate = request.configuration.getString(CONFIG_KEY_TITLE_TEMPLATE);
-    String bodyTemplate = request.configuration.getString(CONFIG_KEY_BODY_TEMPLATE);
     Integer failureCount = 0;
     String firstError;
     for (SObject record : request.matchingRecords) {
-      Messaging.CustomNotification customNotification = this.buildNotification(request, record, typeId, titleTemplate, bodyTemplate);
+      Messaging.CustomNotification customNotification = this.buildNotification(request, record, typeId);
       try {
         customNotification.send(recipientIds);
       } catch (System.Exception ex) {
@@ -111,14 +95,25 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     return outcome;
   }
 
+  /**
+   * @description Builds a `STATUS_SKIPPED` result with a system-messages warning and an admin-facing
+   *              error message. Kept as a helper so `sendNotification`'s three guard clauses stay
+   *              structurally identical instead of drifting.
+   */
+  private static LoggerNotifierResult buildSkipped(String warnMessage, String errorMessage) {
+    if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
+      Logger.warn(warnMessage);
+    }
+    LoggerNotifierResult skipped = new LoggerNotifierResult();
+    skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
+    skipped.errorMessage = errorMessage;
+    return skipped;
+  }
+
   @TestVisible
-  private Messaging.CustomNotification buildNotification(
-    LoggerNotifierRequest request,
-    SObject record,
-    Id typeId,
-    String titleTemplate,
-    String bodyTemplate
-  ) {
+  private Messaging.CustomNotification buildNotification(LoggerNotifierRequest request, SObject record, Id typeId) {
+    String titleTemplate = request.configuration.getString(CONFIG_KEY_TITLE_TEMPLATE);
+    String bodyTemplate = request.configuration.getString(CONFIG_KEY_BODY_TEMPLATE);
     Messaging.CustomNotification customNotification = new Messaging.CustomNotification();
     customNotification.setNotificationTypeId(typeId);
     customNotification.setTitle(this.buildTitle(request, record, titleTemplate));
@@ -131,15 +126,15 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
   private String buildTitle(LoggerNotifierRequest request, SObject record, String template) {
     String effectiveTemplate = String.isBlank(template) ? DEFAULT_TITLE_TEMPLATE : template;
     String rendered = this.renderTemplate(effectiveTemplate, request, record);
-    return this.truncate(rendered, MAX_TITLE_LENGTH);
+    return rendered?.abbreviate(MAX_TITLE_LENGTH);
   }
 
   @TestVisible
   private String buildBody(LoggerNotifierRequest request, SObject record, String template) {
     if (String.isNotBlank(template)) {
-      return this.truncate(this.renderTemplate(template, request, record), MAX_BODY_LENGTH);
+      return this.renderTemplate(template, request, record)?.abbreviate(MAX_BODY_LENGTH);
     }
-    return this.truncate(this.defaultBody(record), MAX_BODY_LENGTH);
+    return this.defaultBody(record)?.abbreviate(MAX_BODY_LENGTH);
   }
 
   private String defaultBody(SObject record) {
@@ -171,34 +166,11 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
   }
 
   private String resolveToken(String token, LoggerNotifierRequest request, SObject record) {
-    if (TOKEN_RULE_NAME.equalsIgnoreCase(token)) {
+    if (MERGE_KEY_RULE_NAME.equalsIgnoreCase(token)) {
       return request.notificationRule == null ? '' : String.valueOf(request.notificationRule.Name);
     }
-    Object value = this.resolveFieldPath(record, token);
+    Object value = LoggerNotifier.getValueByPath(record, token);
     return value == null ? '' : String.valueOf(value);
-  }
-
-  private Object resolveFieldPath(SObject record, String fieldPath) {
-    if (record == null || String.isBlank(fieldPath)) {
-      return null;
-    }
-    List<String> parts = fieldPath.split('\\.');
-    SObject current = record;
-    for (Integer i = 0; i < parts.size() - 1; i++) {
-      try {
-        current = current.getSObject(parts.get(i));
-      } catch (System.SObjectException ex) {
-        return null;
-      }
-      if (current == null) {
-        return null;
-      }
-    }
-    try {
-      return current.get(parts.get(parts.size() - 1));
-    } catch (System.SObjectException ex) {
-      return null;
-    }
   }
 
   @TestVisible
@@ -222,7 +194,14 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
 
   @TestVisible
   private Id lookupNotificationTypeId(String developerName) {
-    List<CustomNotificationType> results = [SELECT Id FROM CustomNotificationType WHERE DeveloperName = :developerName LIMIT 1];
+    // CustomNotificationType is an admin-managed metadata table; SYSTEM_MODE keeps the lookup working
+    // regardless of the async-executing user's object-level permissions on it.
+    List<CustomNotificationType> results = [
+      SELECT Id
+      FROM CustomNotificationType
+      WHERE DeveloperName = :developerName
+      WITH SYSTEM_MODE
+    ];
     return results.isEmpty() ? null : results.get(0).Id;
   }
 
@@ -237,12 +216,5 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     } catch (System.SObjectException ex) {
       return null;
     }
-  }
-
-  private String truncate(String value, Integer maxLength) {
-    if (value == null || value.length() <= maxLength) {
-      return value;
-    }
-    return value.substring(0, maxLength - 3) + '...';
   }
 }

@@ -63,7 +63,8 @@ public without sharing class MicrosoftTeamsLoggerNotifier extends LoggerNotifier
     httpRequest.setEndpoint(endpoint);
     httpRequest.setMethod('POST');
     httpRequest.setHeader('Content-Type', 'application/json');
-    return httpRequest;  }
+    return httpRequest;
+  }
 
   @TestVisible
   private String buildPayload(LoggerNotifierRequest request) {
@@ -104,7 +105,7 @@ public without sharing class MicrosoftTeamsLoggerNotifier extends LoggerNotifier
     List<Map<String, Object>> facts = new List<Map<String, Object>>();
     this.addFactIfPresent(facts, 'Logging Level', this.tryGetString(record, 'LoggingLevel__c'));
     this.addFactIfPresent(facts, 'Origin', this.tryGetString(record, 'Origin__c'));
-    this.addFactIfPresent(facts, 'Message', this.truncate(this.tryGetString(record, 'Message__c'), 500));
+    this.addFactIfPresent(facts, 'Message', this.tryGetString(record, 'Message__c')?.abbreviate(500));
     this.addFactIfPresent(facts, 'Exception Type', this.tryGetString(record, 'ExceptionType__c'));
     Id recordId = (Id) record.get('Id');
     if (recordId != null) {
@@ -147,12 +148,5 @@ public without sharing class MicrosoftTeamsLoggerNotifier extends LoggerNotifier
     }
     Object value = record.get(fieldName);
     return value == null ? null : String.valueOf(value);
-  }
-
-  private String truncate(String value, Integer maxLength) {
-    if (value == null || value.length() <= maxLength) {
-      return value;
-    }
-    return value.substring(0, maxLength) + '...(truncated)';
   }
 }
