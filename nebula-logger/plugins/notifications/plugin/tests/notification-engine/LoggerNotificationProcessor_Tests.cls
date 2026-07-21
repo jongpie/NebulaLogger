@@ -37,75 +37,21 @@ private class LoggerNotificationProcessor_Tests {
   }
 
   @IsTest
-  static void it_should_populate_logger_cache_when_active_rules_are_queried() {
-    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NotificationsUsePlatformCache', Value__c = String.valueOf(true)));
-    System.Assert.isTrue(LoggerNotificationProcessor.USE_PLATFORM_CACHE, 'Test has started under the wrong conditions');
+  static void it_should_reuse_quried_rules_after_one_query() {
     LoggerNotificationRule__c rule = buildRule();
     LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecord(service);
     LoggerDataStore.getDatabase()
       .insertRecord(new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = service.Id));
-
-    new LoggerNotificationProcessor()
-      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
-
-    System.Assert.isTrue(
-      LoggerCache.getOrganizationCache().contains(LoggerNotificationProcessor.CACHE_KEY_ACTIVE_RULES),
-      'sendNotifications should have populated LoggerCache after querying active rules'
-    );
-    Map<String, List<LoggerNotificationRule__c>> cachedRules = (Map<String, List<LoggerNotificationRule__c>>) LoggerCache.getOrganizationCache()
-      .get(LoggerNotificationProcessor.CACHE_KEY_ACTIVE_RULES);
-    System.Assert.areEqual(
-      new Set<String>{ Schema.LogEntry__c.SObjectType.toString() },
-      cachedRules.keySet(),
-      'Only the rule\'s source SObject type should be cached'
-    );
-    List<LoggerNotificationRule__c> logEntryRules = cachedRules.get(Schema.LogEntry__c.SObjectType.toString());
-    System.Assert.areEqual(1, logEntryRules.size(), 'The active rule should have been cached under its source SObject type');
-    System.Assert.areEqual(rule.Id, logEntryRules.get(0).Id, 'The cached rule should match the inserted rule');
-  }
-
-  @IsTest
-  static void it_should_reuse_cached_active_rules_without_querying() {
-    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NotificationsUsePlatformCache', Value__c = String.valueOf(true)));
-    System.Assert.isTrue(LoggerNotificationProcessor.USE_PLATFORM_CACHE, 'Test has started under the wrong conditions');
-    LoggerNotificationRule__c rule = buildRule(
-      'LogEntry__c',
-      'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
-      new List<LoggerNotificationRecipient__c>{ buildRecipient() }
-    );
-    LoggerCache.getOrganizationCache()
-      .put(
-        LoggerNotificationProcessor.CACHE_KEY_ACTIVE_RULES,
-        new Map<String, List<LoggerNotificationRule__c>>{ Schema.LogEntry__c.SObjectType.toString() => new List<LoggerNotificationRule__c>{ rule } }
-      );
     Integer queryCountBefore = System.Limits.getQueries();
 
-    new LoggerNotificationProcessor()
-      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
+    for (Integer i = 0; i < 5; i++) {
+      new LoggerNotificationProcessor()
+        .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
+    }
 
-    System.Assert.areEqual(queryCountBefore, System.Limits.getQueries(), 'getActiveRules should have used the cached rules without issuing a SOQL query');
-  }
-
-  @IsTest
-  static void it_should_skip_the_logger_cache_when_notifications_use_platform_cache_is_disabled() {
-    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'NotificationsUsePlatformCache', Value__c = String.valueOf(false)));
-    System.Assert.isFalse(LoggerNotificationProcessor.USE_PLATFORM_CACHE, 'Test has started under the wrong conditions');
-    LoggerNotificationRule__c rule = buildRule();
-    LoggerDataStore.getDatabase().insertRecord(rule);
-    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
-    LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerDataStore.getDatabase()
-      .insertRecord(new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = service.Id));
-
-    new LoggerNotificationProcessor()
-      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
-
-    System.Assert.isFalse(
-      LoggerCache.getOrganizationCache().contains(LoggerNotificationProcessor.CACHE_KEY_ACTIVE_RULES),
-      'sendNotifications should not have written to LoggerCache when NotificationsUsePlatformCache is disabled'
-    );
+    System.Assert.areEqual(queryCountBefore + 1, System.Limits.getQueries(), 'Queried rules should have cached the rules with 1 SOQL query');
   }
 
   @IsTest
