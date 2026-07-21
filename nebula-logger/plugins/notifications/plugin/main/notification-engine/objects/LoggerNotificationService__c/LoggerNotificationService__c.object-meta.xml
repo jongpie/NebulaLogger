@@ -144,7 +144,7 @@
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>Registers a notification service (e.g. Slack, Email, Microsoft Teams) that can be referenced by LoggerNotificationRecipient__c records. Each service specifies an Apex class implementing LoggerPlugin.Notifiable that handles the actual delivery.</description>
+    <description>Registers a notification service (e.g. Slack, Email, Microsoft Teams) that can be referenced by LoggerNotificationRecipient__c records. Each service specifies an Apex class extending LoggerNotifier that handles the actual delivery.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
