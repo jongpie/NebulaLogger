@@ -10,7 +10,7 @@
  *              Queueable and enqueues it once per transaction. The Queueable rehydrates each
  *              request, instantiates the notifier class, invokes `sendNotification` in an async
  *              request where callouts are legal, and updates the pre-inserted
- *              `LoggerNotificationDelivery__c` rows with the outcome.
+ *              `LoggerNotificationDelivery__c` records with the outcome.
  *
  *              Even non-callout notifiers (Email, CustomNotification) run here rather than in
  *              the source trigger transaction. That way notifier failures never break the record
@@ -59,19 +59,19 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
 
   private void invokeNotifier(PendingDispatch dispatch, Id jobId, List<LoggerNotificationDelivery__c> deliveriesToUpdate) {
     LoggerNotifier notifier = newNotifierInstance(dispatch.service?.NotifierApexClassName__c);
-    List<LoggerNotificationDelivery__c> deliveryRows = this.rehydrateDeliveryRows(dispatch);
+    List<LoggerNotificationDelivery__c> deliveries = this.rehydrateDeliveries(dispatch);
     if (notifier == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('Nebula Logger Notifications - async dispatcher could not instantiate notifier class ' + dispatch.service?.NotifierApexClassName__c);
       }
-      if (deliveryRows != null) {
+      if (deliveries != null) {
         LoggerNotifierResult skipped = new LoggerNotifierResult();
         skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
         skipped.errorMessage = 'Could not instantiate notifier class ' + dispatch.service?.NotifierApexClassName__c;
         skipped.jobId = jobId;
         Datetime now = System.now();
-        LoggerNotificationProcessor.applyResultToDeliveries(deliveryRows, skipped, now, now);
-        deliveriesToUpdate.addAll(deliveryRows);
+        skipped.finalizeDeliveries(deliveries, now, now);
+        deliveriesToUpdate.addAll(deliveries);
       }
       return;
     }
@@ -90,25 +90,25 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
       result.errorStackTrace = ex.getStackTraceString();
     }
     Datetime dispatchEnd = System.now();
-    if (deliveryRows != null) {
+    if (deliveries != null) {
       if (result == null) {
         result = new LoggerNotifierResult(LoggerNotifierResult.STATUS_DELIVERED, null);
       }
       result.jobId = jobId;
-      LoggerNotificationProcessor.applyResultToDeliveries(deliveryRows, result, dispatchStart, dispatchEnd);
-      deliveriesToUpdate.addAll(deliveryRows);
+      result.finalizeDeliveries(deliveries, dispatchStart, dispatchEnd);
+      deliveriesToUpdate.addAll(deliveries);
     }
   }
 
-  private List<LoggerNotificationDelivery__c> rehydrateDeliveryRows(PendingDispatch dispatch) {
+  private List<LoggerNotificationDelivery__c> rehydrateDeliveries(PendingDispatch dispatch) {
     if (dispatch.pendingDeliveryIds == null || dispatch.pendingDeliveryIds.isEmpty()) {
       return null;
     }
-    List<LoggerNotificationDelivery__c> rows = new List<LoggerNotificationDelivery__c>();
+    List<LoggerNotificationDelivery__c> deliveries = new List<LoggerNotificationDelivery__c>();
     for (Id deliveryId : dispatch.pendingDeliveryIds) {
-      rows.add(new LoggerNotificationDelivery__c(Id = deliveryId));
+      deliveries.add(new LoggerNotificationDelivery__c(Id = deliveryId));
     }
-    return rows;
+    return deliveries;
   }
 
   @TestVisible
@@ -131,7 +131,7 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
   /**
    * @description DTO representing one pending dispatch - a single (rule, recipient, service, records)
    *              tuple that will be delivered by a `LoggerNotifier` implementation. Optionally carries
-   *              the Ids of pre-inserted `LoggerNotificationDelivery__c` rows so the async dispatcher
+   *              the Ids of pre-inserted `LoggerNotificationDelivery__c` records so the async dispatcher
    *              can update them with the delivery outcome.
    */
   public class PendingDispatch {
@@ -140,10 +140,11 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
     public LoggerNotificationService__c service { get; private set; }
     public List<SObject> matchingRecords { get; private set; }
     // Populated by the runtime when delivery history is enabled. In-memory only during the enqueuing
-    // transaction; the dispatcher uses the Ids to update the rows after the callout completes.
+    // transaction; the dispatcher uses the Ids to update the deliveries after the callout completes.
     public List<LoggerNotificationDelivery__c> pendingDeliveries;
     public List<Id> pendingDeliveryIds;
 
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     public PendingDispatch(
       LoggerNotificationRule__c notificationRule,
       LoggerNotificationRecipient__c recipient,

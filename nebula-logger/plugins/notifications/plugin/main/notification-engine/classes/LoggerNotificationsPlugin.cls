@@ -12,7 +12,7 @@
  *              evaluation and dispatch work to `LoggerNotificationProcessor`.
  *
  *              Also implements `LoggerPlugin.Purgeable` so `LogBatchPurger` picks up
- *              `LoggerNotificationMatch__c` and `LoggerNotificationDelivery__c` and cleans up rows
+ *              `LoggerNotificationMatch__c` and `LoggerNotificationDelivery__c` and cleans up records
  *              older than their `RetentionDate__c`. Registration is wired via
  *              `LoggerPlugin__mdt.BatchPurgeRegistrarApexClass__c` on the plugin's CMDT
  *              record; the purger's constructor instantiates this class and calls
@@ -55,15 +55,15 @@ public without sharing class LoggerNotificationsPlugin implements LoggerPlugin.T
    * @description Called by `LogBatchPurger` at batch start when `LoggerPlugin.LoggerNotifications`
    *              CMDT record has `BatchPurgeRegistrarApexClass__c` = `LoggerNotificationsPlugin`.
    *              Delivery is a master-detail child of Match, so delivery is placed first in the
-   *              returned list - the purger preserves list order so child rows are deleted before
-   *              the purger tries to delete their parent match rows.
+   *              returned list - the purger preserves list order so child records are deleted before
+   *              the purger tries to delete their parent match records.
    */
   public List<LoggerPurgeRegistration> getPurgeRegistrations() {
     // Sort by the master-detail parent (and, for deliveries, by the intermediate parent chain) so
-    // each batch clusters child rows under their parent. Deleting a batch's worth of rows in
+    // each batch clusters child records under their parent. Deleting a batch's worth of records in
     // parent-clustered order takes one row-level lock per parent instead of interleaving locks
     // across many parents, which cuts parallel-batch lock contention on high-volume rules.
-    // Sorting by RetentionDate__c would only affect which rows die first within a run - it does
+    // Sorting by RetentionDate__c would only affect which records die first within a run - it does
     // nothing to reduce lock scope, so it's not the right choice here.
     return new List<LoggerPurgeRegistration>{
       new LoggerPurgeRegistration(

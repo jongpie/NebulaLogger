@@ -37,14 +37,14 @@ public without sharing class LoggerNotificationRuleHandler extends LoggerSObject
   }
 
   private void validateRetentionDays(List<SObject> records) {
-    // Delivery rows are master-detail children of match rows, so a match row's cascade delete takes
-    // its delivery rows with it. If a rule specified a longer delivery retention than match retention,
-    // the delivery rows would still get deleted early (via cascade) and the configured value would
+    // Delivery records are master-detail children of match records, so a match record's cascade delete takes
+    // its delivery records with it. If a rule specified a longer delivery retention than match retention,
+    // the delivery records would still get deleted early (via cascade) and the configured value would
     // silently misbehave. Rejecting the mismatch at save time keeps the storage semantics honest.
     for (SObject record : records) {
       LoggerNotificationRule__c rule = (LoggerNotificationRule__c) record;
       // Null on either side means "keep forever" for that object, which never runs afoul of the
-      // "delivery cascades with match" problem - a null match retention leaves the match row (and
+      // "delivery cascades with match" problem - a null match retention leaves the match record (and
       // therefore its delivery children) untouched by the purger regardless of the delivery value.
       if (rule.NumberOfDaysToRetainMatches__c == null || rule.NumberOfDaysToRetainDeliveries__c == null) {
         continue;
@@ -55,7 +55,7 @@ public without sharing class LoggerNotificationRuleHandler extends LoggerSObject
             rule.NumberOfDaysToRetainDeliveries__c +
             ') cannot be greater than Days to Retain Matches (' +
             rule.NumberOfDaysToRetainMatches__c +
-            '). Delivery rows are master-detail children of match rows, so a deleted match cascades its deliveries with it - a longer delivery retention would never take effect.'
+            '). Delivery records are master-detail children of match records, so a deleted match cascades its deliveries with it - a longer delivery retention would never take effect.'
         );
       }
     }
@@ -69,12 +69,12 @@ public without sharing class LoggerNotificationRuleHandler extends LoggerSObject
       LoggerNotificationRule__c rule = (LoggerNotificationRule__c) record;
       if (rule.IsDeliveryHistoryEnabled__c == true && rule.IsMatchHistoryEnabled__c == false) {
         rule.IsDeliveryHistoryEnabled__c.addError(
-          'Delivery History Enabled cannot be TRUE when Match History Enabled is FALSE. Delivery rows are master-detail children of match rows, so match history must be stored.'
+          'Delivery History Enabled cannot be TRUE when Match History Enabled is FALSE. Delivery records are master-detail children of match records, so match history must be stored.'
         );
       }
       if (rule.IsMatchThresholdEnabled__c == true && rule.IsMatchHistoryEnabled__c == false) {
         rule.IsMatchThresholdEnabled__c.addError(
-          'Match Threshold Enabled cannot be TRUE when Match History Enabled is FALSE. The threshold-over-time feature counts prior match rows, so match history must be stored.'
+          'Match Threshold Enabled cannot be TRUE when Match History Enabled is FALSE. The threshold-over-time feature counts prior match records, so match history must be stored.'
         );
       }
     }

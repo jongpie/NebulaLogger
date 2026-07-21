@@ -8,7 +8,7 @@
  * @description The runtime for the notifications plugin. Evaluates active `LoggerNotificationRule__c` rules
  *              against inbound records (LogEntry__c / Log__c / LoggerScenario__c / LogEntryTag__c / LoggerTag__c,
  *              depending on the rule's `SourceSObjectType__c`), optionally persists `LoggerNotificationMatch__c`
- *              rows (one per matched source record) and `LoggerNotificationDelivery__c` rows (one per
+ *              records (one per matched source record) and `LoggerNotificationDelivery__c` records (one per
  *              (match, recipient) tuple), and dispatches to each recipient's configured `LoggerNotifier`
  *              implementation.
  *
@@ -16,10 +16,10 @@
  *              Dispatch is not affected by these flags - a rule with both flags OFF still fires its
  *              notifiers, it just leaves no persistent trail.
  *
- *              Delivery rows carry the outcome of each notifier invocation - status, HTTP details, external
- *              reference, error message. Synchronous notifiers are invoked before the delivery row is
+ *              Delivery records carry the outcome of each notifier invocation - status, HTTP details, external
+ *              reference, error message. Synchronous notifiers are invoked before the delivery record is
  *              inserted so its final status is baked in on insert. Callout-required notifiers are invoked
- *              from the async dispatcher, which updates the pending delivery row on completion.
+ *              from the async dispatcher, which updates the pending delivery record on completion.
  *
  *              Rules with `IsOriginOrganizationIdValid__c = FALSE` are ignored so that rules cloned into a
  *              refreshed sandbox from another org do not fire until an admin re-saves them in the current org.
@@ -56,13 +56,12 @@ public virtual without sharing class LoggerNotificationProcessor {
     if (sobjectType == null || records == null || records.isEmpty()) {
       return;
     }
-    String sobjectTypeName = sobjectType.toString();
-    List<LoggerNotificationRule__c> applicableRules = getActiveRulesBySObjectTypeName().get(sobjectTypeName);
+    List<LoggerNotificationRule__c> applicableRules = getActiveRulesBySObjectTypeName().get(sobjectType.toString());
     if (applicableRules == null || applicableRules.isEmpty()) {
       return;
     }
 
-    List<RuleWorkItem> workItems = this.buildWorkItems(applicableRules, records, sobjectType, sobjectTypeName);
+    List<RuleWorkItem> workItems = this.buildWorkItems(applicableRules, records, sobjectType);
     List<LoggerNotificationMatch__c> matchesToInsert = collectMatchesToInsert(workItems);
     LoggerDataStore.getDatabase().insertRecords(matchesToInsert);
     List<LoggerNotificationDelivery__c> deliveriesToInsert = new List<LoggerNotificationDelivery__c>();
@@ -79,12 +78,7 @@ public virtual without sharing class LoggerNotificationProcessor {
     this.enqueueAsyncDispatches(asyncDispatches);
   }
 
-  private List<RuleWorkItem> buildWorkItems(
-    List<LoggerNotificationRule__c> applicableRules,
-    List<SObject> records,
-    Schema.SObjectType sobjectType,
-    String sobjectTypeName
-  ) {
+  private List<RuleWorkItem> buildWorkItems(List<LoggerNotificationRule__c> applicableRules, List<SObject> records, Schema.SObjectType sobjectType) {
     List<RuleWorkItem> items = new List<RuleWorkItem>();
     for (LoggerNotificationRule__c rule : applicableRules) {
       List<SObject> matchingRecords = this.filterEvaluator.evaluate(sobjectType, rule.SourceSObjectFilter__c, records);
@@ -96,13 +90,13 @@ public virtual without sharing class LoggerNotificationProcessor {
       work.rule = rule;
       work.matchingRecords = matchingRecords;
       work.shouldDispatch = this.shouldSuppressForThreshold(rule, matchingRecords.size()) == false;
-      // Only persist match rows for rules that were loaded from the database. Rules that were hydrated
+      // Only persist match records for rules that were loaded from the database. Rules that were hydrated
       // in memory (e.g. tests using LoggerNotificationProcessor.setCachedRules with a non-inserted rule) still get
       // dispatched, but skip DML because the required master-detail parent isn't set.
       if (rule.Id != null && rule.IsMatchHistoryEnabled__c == true) {
         work.matches = new List<LoggerNotificationMatch__c>();
         for (SObject match : matchingRecords) {
-          work.matches.add(this.buildMatchRow(rule, sobjectType, sobjectTypeName, match));
+          work.matches.add(this.buildMatchRecord(rule, sobjectType, match));
         }
       }
       items.add(work);
@@ -171,9 +165,14 @@ public virtual without sharing class LoggerNotificationProcessor {
     for (LoggerNotificationRecipient__c recipient : rule.LoggerNotificationRecipients__r) {
       LoggerNotificationService__c service = recipient.LoggerNotificationService__r;
       List<LoggerNotificationDelivery__c> deliveriesForRecipient = canPersistDeliveries && recipient.Id != null
-        ? this.buildPendingDeliveryRows(rule, work.matches, recipient)
+        ? this.buildPendingDeliveries(rule, work.matches, recipient)
         : null;
-      LoggerNotificationAsyncDispatcher.PendingDispatch pending = new LoggerNotificationAsyncDispatcher.PendingDispatch(rule, recipient, service, work.matchingRecords);
+      LoggerNotificationAsyncDispatcher.PendingDispatch pending = new LoggerNotificationAsyncDispatcher.PendingDispatch(
+        rule,
+        recipient,
+        service,
+        work.matchingRecords
+      );
       pending.pendingDeliveries = deliveriesForRecipient;
       asyncDispatches.add(pending);
       if (deliveriesForRecipient != null) {
@@ -216,22 +215,22 @@ public virtual without sharing class LoggerNotificationProcessor {
         continue;
       }
       List<Id> ids = new List<Id>();
-      for (LoggerNotificationDelivery__c row : dispatch.pendingDeliveries) {
-        if (row.Id != null) {
-          ids.add(row.Id);
+      for (LoggerNotificationDelivery__c delivery : dispatch.pendingDeliveries) {
+        if (delivery.Id != null) {
+          ids.add(delivery.Id);
         }
       }
       dispatch.pendingDeliveryIds = ids;
     }
   }
 
-  private List<LoggerNotificationDelivery__c> buildPendingDeliveryRows(
+  private List<LoggerNotificationDelivery__c> buildPendingDeliveries(
     LoggerNotificationRule__c rule,
     List<LoggerNotificationMatch__c> matches,
     LoggerNotificationRecipient__c recipient
   ) {
     Date retentionDate = computeRetentionDate(rule.NumberOfDaysToRetainDeliveries__c);
-    List<LoggerNotificationDelivery__c> rows = new List<LoggerNotificationDelivery__c>();
+    List<LoggerNotificationDelivery__c> deliveries = new List<LoggerNotificationDelivery__c>();
     for (LoggerNotificationMatch__c match : matches) {
       LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c(
         LoggerNotificationRule__c = rule.Id,
@@ -242,81 +241,17 @@ public virtual without sharing class LoggerNotificationProcessor {
         AttemptCount__c = 0,
         RetentionDate__c = retentionDate
       );
-      rows.add(delivery);
+      deliveries.add(delivery);
     }
-    return rows;
+    return deliveries;
   }
 
   /**
-   * @description Copies the outcome of one notifier invocation onto every delivery row for that
-   *              (rule, recipient) dispatch. Also stamps timing fields. Used by both the sync
-   *              runtime and the async dispatcher.
-   * @param deliveries The delivery rows to update.
-   * @param result The outcome returned by the notifier (null is treated as a bare success).
-   * @param dispatchStart When the notifier invocation started.
-   * @param dispatchEnd When the notifier invocation returned.
-   */
-  public static void applyResultToDeliveries(
-    List<LoggerNotificationDelivery__c> deliveries,
-    LoggerNotifierResult result,
-    Datetime dispatchStart,
-    Datetime dispatchEnd
-  ) {
-    if (deliveries == null || deliveries.isEmpty()) {
-      return;
-    }
-    String status = result != null && String.isNotBlank(result.status) ? result.status : LoggerNotifierResult.STATUS_DELIVERED;
-    Integer httpStatusCode = result != null ? result.httpStatusCode : null;
-    String httpStatusReason = result != null ? result.httpStatusReason : null;
-    String responseBody = result != null ? result.responseBody : null;
-    String responseHeaders = result != null ? result.responseHeaders : null;
-    String errorMessage = result != null ? result.errorMessage : null;
-    String errorStackTrace = result != null ? result.errorStackTrace : null;
-    String externalReferenceId = result != null ? result.externalReferenceId : null;
-    String externalReferenceUrl = result != null ? result.externalReferenceUrl : null;
-    String requestUrl = result != null ? truncateForRow(result.requestUrl, 1300) : null;
-    String requestMethod = result != null ? truncateForRow(result.requestMethod, 10) : null;
-    String requestBody = result != null ? truncateForRow(result.requestBody, 32768) : null;
-    String requestHeaders = result != null ? truncateForRow(result.requestHeaders, 32768) : null;
-    Id jobId = result != null ? result.jobId : null;
-    Long durationMs = dispatchStart != null && dispatchEnd != null ? (dispatchEnd.getTime() - dispatchStart.getTime()) : null;
-    for (LoggerNotificationDelivery__c row : deliveries) {
-      row.Status__c = status;
-      row.HttpStatusCode__c = httpStatusCode;
-      row.HttpStatusReason__c = httpStatusReason;
-      row.ResponseBody__c = responseBody;
-      row.ResponseHeaders__c = responseHeaders;
-      row.ErrorMessage__c = errorMessage;
-      row.ErrorStackTrace__c = errorStackTrace;
-      row.ExternalReferenceId__c = externalReferenceId;
-      row.ExternalReferenceUrl__c = externalReferenceUrl;
-      row.RequestUrl__c = requestUrl;
-      row.RequestMethod__c = requestMethod;
-      row.RequestBody__c = requestBody;
-      row.RequestHeaders__c = requestHeaders;
-      row.DispatchTimestamp__c = dispatchStart;
-      row.CompletedTimestamp__c = dispatchEnd;
-      row.DurationMilliseconds__c = durationMs;
-      row.AttemptCount__c = (row.AttemptCount__c == null ? 0 : row.AttemptCount__c) + 1;
-      if (jobId != null && String.isBlank(row.JobId__c)) {
-        row.JobId__c = jobId;
-      }
-    }
-  }
-
-  private static String truncateForRow(String value, Integer maxLength) {
-    if (value == null || value.length() <= maxLength) {
-      return value;
-    }
-    return value.substring(0, maxLength - 15) + '...(truncated)';
-  }
-
-  /**
-   * @description Computes the `RetentionDate__c` value stamped onto a match or delivery row from the
-   *              rule's per-object retention field. A null / non-positive value means "keep the row
-   *              forever" - LogBatchPurger's WHERE clauses skip rows whose RetentionDate__c is null,
+   * @description Computes the `RetentionDate__c` value stamped onto a match or delivery record from the
+   *              rule's per-object retention field. A null / non-positive value means "keep the record
+   *              forever" - LogBatchPurger's WHERE clauses skip records whose RetentionDate__c is null,
    *              so leaving it blank is the way an admin opts a rule's history out of automatic purging.
-   *              Match rows use `NumberOfDaysToRetainMatches__c`; delivery rows use
+   *              Match records use `NumberOfDaysToRetainMatches__c`; delivery records use
    *              `NumberOfDaysToRetainDeliveries__c`.
    */
   private static Date computeRetentionDate(Decimal daysToRetain) {
@@ -327,26 +262,26 @@ public virtual without sharing class LoggerNotificationProcessor {
   }
 
   @TestVisible
-  private LoggerNotificationMatch__c buildMatchRow(LoggerNotificationRule__c rule, Schema.SObjectType sobjectType, String sobjectTypeName, SObject matched) {
+  private LoggerNotificationMatch__c buildMatchRecord(LoggerNotificationRule__c rule, Schema.SObjectType sobjectType, SObject matched) {
     Id matchedId = (Id) matched.get('Id');
-    LoggerNotificationMatch__c row = new LoggerNotificationMatch__c(
+    LoggerNotificationMatch__c matchRecord = new LoggerNotificationMatch__c(
       LoggerNotificationRule__c = rule.Id,
       MatchedRecordId__c = matchedId == null ? null : String.valueOf(matchedId),
-      MatchedSObjectType__c = sobjectTypeName,
+      MatchedSObjectType__c = sobjectType.toString(),
       RetentionDate__c = computeRetentionDate(rule.NumberOfDaysToRetainMatches__c)
     );
     if (sobjectType == Schema.LogEntry__c.SObjectType) {
-      row.LogEntry__c = matchedId;
+      matchRecord.LogEntry__c = matchedId;
     } else if (sobjectType == Schema.LogEntryTag__c.SObjectType) {
-      row.LogEntryTag__c = matchedId;
+      matchRecord.LogEntryTag__c = matchedId;
     } else if (sobjectType == Schema.Log__c.SObjectType) {
-      row.Log__c = matchedId;
+      matchRecord.Log__c = matchedId;
     } else if (sobjectType == Schema.LoggerScenario__c.SObjectType) {
-      row.LoggerScenario__c = matchedId;
+      matchRecord.LoggerScenario__c = matchedId;
     } else if (sobjectType == Schema.LoggerTag__c.SObjectType) {
-      row.LoggerTag__c = matchedId;
+      matchRecord.LoggerTag__c = matchedId;
     }
-    return row;
+    return matchRecord;
   }
 
   private void enqueueAsyncDispatches(List<LoggerNotificationAsyncDispatcher.PendingDispatch> dispatches) {
@@ -391,6 +326,7 @@ public virtual without sharing class LoggerNotificationProcessor {
       SELECT COUNT()
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :rule.Id AND CreatedDate >= :cutoff
+      WITH SYSTEM_MODE
     ];
   }
 
@@ -460,6 +396,7 @@ public virtual without sharing class LoggerNotificationProcessor {
         )
       FROM LoggerNotificationRule__c
       WHERE IsEnabled__c = TRUE AND IsOriginOrganizationIdValid__c = TRUE AND TotalEnabledRecipients__c > 0
+      WITH SYSTEM_MODE
       ORDER BY Name ASC
     ];
     cachedRulesBySObjectTypeName = bucketBySObjectTypeName(rules);

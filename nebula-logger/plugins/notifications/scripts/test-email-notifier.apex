@@ -38,7 +38,7 @@ String sourceSObjectFilter = '';
 List<LogEntry__c> recentEntries = [SELECT Id, Name, LoggingLevel__c, Message__c, Origin__c, StackTrace__c FROM LogEntry__c ORDER BY CreatedDate DESC LIMIT 1];
 if (recentEntries.isEmpty()) {
   throw new System.IllegalArgumentException(
-    'No LogEntry__c rows exist in the org - run a Logger recipe or an anonymous Apex block that logs something before invoking this script'
+    'No LogEntry__c records exist in the org - run a Logger recipe or an anonymous Apex block that logs something before invoking this script'
   );
 }
 SObject matchingRecord = recentEntries.get(0);

@@ -7,13 +7,13 @@
  * @group Plugins
  * @description DTO returned by a `LoggerNotifier` implementation describing the outcome of a delivery attempt.
  *              The `LoggerNotificationProcessor` runtime uses this to populate the corresponding `LoggerNotificationDelivery__c`
- *              row - status, HTTP details, external reference, error message, etc. All fields are optional; a
+ *              record - status, HTTP details, external reference, error message, etc. All fields are optional; a
  *              notifier that returns a bare `new LoggerNotifierResult()` (or `null`) is treated as a plain success.
  */
 public class LoggerNotifierResult {
   /**
    * @description Sentinel values the runtime writes for `Status__c`. The picklist is unrestricted so admins can
-   *              add their own values without a package upgrade breaking existing rows.
+   *              add their own values without a package upgrade breaking existing records.
    */
   public static final String STATUS_PENDING = 'Pending';
   public static final String STATUS_DELIVERED = 'Delivered';
@@ -101,7 +101,7 @@ public class LoggerNotifierResult {
   /**
    * @description Apex Job ID of the Queueable that ran this delivery, when the caller is the async
    *              dispatcher. The runtime stamps this onto `LoggerNotificationDelivery__c.JobId__c`
-   *              only when the row does not already have one, so re-enqueues past the callout limit
+   *              only when the record does not already have one, so re-enqueues past the callout limit
    *              keep the first attempt's job id. Left blank by notifiers themselves.
    */
   public Id jobId;
@@ -109,6 +109,7 @@ public class LoggerNotifierResult {
   /**
    * @description Default constructor - all fields left blank, treated as a plain success by the runtime.
    */
+  @SuppressWarnings('PMD.EmptyStatementBlock')
   public LoggerNotifierResult() {
   }
 
@@ -144,7 +145,7 @@ public class LoggerNotifierResult {
 
   /**
    * @description Constructor that captures both request and response context. Notifiers should prefer this
-   *              over the response-only constructor so `LoggerNotificationDelivery__c` rows retain the URL,
+   *              over the response-only constructor so `LoggerNotificationDelivery__c` records retain the URL,
    *              method, body, and every header the notifier set alongside the response side. Both request
    *              and response bodies are captured on every delivery so admins can inspect exactly what was
    *              sent and received on both successful and failed deliveries.
@@ -197,5 +198,47 @@ public class LoggerNotifierResult {
       }
     }
     return lines.isEmpty() ? null : String.join(lines, '\n');
+  }
+
+  /**
+   * @description Copies this result's fields onto every delivery record for one (rule, recipient) dispatch
+   *              and stamps the timing fields. Called by both the sync runtime and the async dispatcher.
+   *              A blank `status` on this result defaults to `STATUS_DELIVERED`.
+   * @param deliveries The delivery records to update.
+   * @param dispatchStart When the notifier invocation started.
+   * @param dispatchEnd When the notifier invocation returned.
+   */
+  public void finalizeDeliveries(List<LoggerNotificationDelivery__c> deliveries, Datetime dispatchStart, Datetime dispatchEnd) {
+    if (deliveries == null || deliveries.isEmpty()) {
+      return;
+    }
+    String effectiveStatus = String.isNotBlank(this.status) ? this.status : STATUS_DELIVERED;
+    Long durationMs = dispatchStart != null && dispatchEnd != null ? (dispatchEnd.getTime() - dispatchStart.getTime()) : null;
+    String truncatedRequestUrl = LoggerDataStore.truncateFieldValue(Schema.LoggerNotificationDelivery__c.RequestUrl__c, this.requestUrl);
+    String truncatedRequestMethod = LoggerDataStore.truncateFieldValue(Schema.LoggerNotificationDelivery__c.RequestMethod__c, this.requestMethod);
+    String truncatedRequestBody = LoggerDataStore.truncateFieldValue(Schema.LoggerNotificationDelivery__c.RequestBody__c, this.requestBody);
+    String truncatedRequestHeaders = LoggerDataStore.truncateFieldValue(Schema.LoggerNotificationDelivery__c.RequestHeaders__c, this.requestHeaders);
+    for (LoggerNotificationDelivery__c delivery : deliveries) {
+      delivery.Status__c = effectiveStatus;
+      delivery.HttpStatusCode__c = this.httpStatusCode;
+      delivery.HttpStatusReason__c = this.httpStatusReason;
+      delivery.ResponseBody__c = this.responseBody;
+      delivery.ResponseHeaders__c = this.responseHeaders;
+      delivery.ErrorMessage__c = this.errorMessage;
+      delivery.ErrorStackTrace__c = this.errorStackTrace;
+      delivery.ExternalReferenceId__c = this.externalReferenceId;
+      delivery.ExternalReferenceUrl__c = this.externalReferenceUrl;
+      delivery.RequestUrl__c = truncatedRequestUrl;
+      delivery.RequestMethod__c = truncatedRequestMethod;
+      delivery.RequestBody__c = truncatedRequestBody;
+      delivery.RequestHeaders__c = truncatedRequestHeaders;
+      delivery.DispatchTimestamp__c = dispatchStart;
+      delivery.CompletedTimestamp__c = dispatchEnd;
+      delivery.DurationMilliseconds__c = durationMs;
+      delivery.AttemptCount__c = (delivery.AttemptCount__c == null ? 0 : delivery.AttemptCount__c) + 1;
+      if (this.jobId != null && String.isBlank(delivery.JobId__c)) {
+        delivery.JobId__c = this.jobId;
+      }
+    }
   }
 }
