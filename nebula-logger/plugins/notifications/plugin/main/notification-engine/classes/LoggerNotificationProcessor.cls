@@ -26,11 +26,6 @@
  */
 public virtual without sharing class LoggerNotificationProcessor {
   @TestVisible
-  private static final String CACHE_KEY_ACTIVE_RULES = 'LoggerNotificationRules';
-  @TestVisible
-  private static final Boolean USE_PLATFORM_CACHE = LoggerParameter.getBoolean('NotificationsUsePlatformCache', true);
-
-  @TestVisible
   private static Map<String, List<LoggerNotificationRule__c>> cachedRulesBySObjectTypeName;
   @TestVisible
   private static RuleFilterEvaluator filterEvaluatorOverride;
@@ -346,11 +341,6 @@ public virtual without sharing class LoggerNotificationProcessor {
       return cachedRulesBySObjectTypeName;
     }
 
-    if (USE_PLATFORM_CACHE && LoggerCache.getOrganizationCache().contains(CACHE_KEY_ACTIVE_RULES)) {
-      cachedRulesBySObjectTypeName = (Map<String, List<LoggerNotificationRule__c>>) LoggerCache.getOrganizationCache().get(CACHE_KEY_ACTIVE_RULES);
-      return cachedRulesBySObjectTypeName;
-    }
-
     List<LoggerNotificationRule__c> rules = [
       SELECT
         Comments__c,
@@ -393,10 +383,6 @@ public virtual without sharing class LoggerNotificationProcessor {
       ORDER BY Name ASC
     ];
     cachedRulesBySObjectTypeName = bucketBySObjectTypeName(rules);
-
-    if (USE_PLATFORM_CACHE) {
-      LoggerCache.getOrganizationCache().put(CACHE_KEY_ACTIVE_RULES, cachedRulesBySObjectTypeName);
-    }
 
     return cachedRulesBySObjectTypeName;
   }
