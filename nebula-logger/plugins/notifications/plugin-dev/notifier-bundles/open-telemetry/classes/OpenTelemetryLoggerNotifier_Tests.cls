@@ -90,11 +90,11 @@ private class OpenTelemetryLoggerNotifier_Tests {
   static void it_should_map_logging_levels_to_otel_severity_numbers() {
     OpenTelemetryLoggerNotifier notifier = new OpenTelemetryLoggerNotifier();
 
-    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_ERROR, notifier.severityNumberFor('ERROR'));
-    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_WARN, notifier.severityNumberFor('WARN'));
-    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_INFO, notifier.severityNumberFor('INFO'));
-    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_DEBUG, notifier.severityNumberFor('DEBUG'));
-    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_DEBUG, notifier.severityNumberFor('FINEST'));
+    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_ERROR, notifier.severityNumberFor(System.LoggingLevel.ERROR.name()));
+    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_WARN, notifier.severityNumberFor(System.LoggingLevel.WARN.name()));
+    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_INFO, notifier.severityNumberFor(System.LoggingLevel.INFO.name()));
+    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_DEBUG, notifier.severityNumberFor(System.LoggingLevel.DEBUG.name()));
+    System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_DEBUG, notifier.severityNumberFor(System.LoggingLevel.FINEST.name()));
     System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_INFO, notifier.severityNumberFor('SOMETHING_ELSE'));
     System.Assert.areEqual(OpenTelemetryLoggerNotifier.SEVERITY_NUMBER_INFO, notifier.severityNumberFor(null));
   }
@@ -129,7 +129,9 @@ private class OpenTelemetryLoggerNotifier_Tests {
       WebhookUrl__c = webhookUrl,
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
-    List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
+    List<SObject> matchingRecords = new List<SObject>{
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'Something went wrong')
+    };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }

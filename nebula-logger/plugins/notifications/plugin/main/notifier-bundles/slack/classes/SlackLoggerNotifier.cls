@@ -31,12 +31,17 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
   // header it set. Content-Type is the only header this notifier sets today.
   private static final List<String> KNOWN_REQUEST_HEADERS = new List<String>{ 'Content-Type' };
 
+  // TODO eliminate this, the list of source fields will vary based on rule's SourceSObjectType__c,
+  // so definining defaults needs to be sobject-specific.
+  // The recipients should provide a list of source fields, so there shouldn't be a need for default fields.
   private static final List<String> DEFAULT_SOURCE_FIELDS = new List<String>{
+    'LoggedBy__c',
     'LoggingLevel__c',
     'Origin__c',
     'Message__c',
     'StackTrace__c',
-    'ExceptionType__c'
+    'ExceptionType__c',
+    'Exception'
   };
 
   private static final String NULL_VALUE_PLACEHOLDER = '`(null/no value)`';
@@ -359,10 +364,10 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     // TODO BAD! stop assuming everything is probably LogEntry__c
     String loggingLevel = this.tryGetString(record, 'LoggingLevel__c');
     // TODO BAD! Stop hardcoding LoggingLevel enum values
-    if (loggingLevel == 'ERROR') {
+    if (loggingLevel == System.LoggingLevel.ERROR.name()) {
       return NOTIFICATION_COLOR_RED;
     }
-    if (loggingLevel == 'WARN') {
+    if (loggingLevel == System.LoggingLevel.WARN.name()) {
       return NOTIFICATION_COLOR_ORANGE;
     }
     return NOTIFICATION_COLOR_GREEN;

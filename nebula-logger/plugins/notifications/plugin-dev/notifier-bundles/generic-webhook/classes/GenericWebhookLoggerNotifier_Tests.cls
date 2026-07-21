@@ -132,8 +132,8 @@ private class GenericWebhookLoggerNotifier_Tests {
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
     List<SObject> matchingRecords = new List<SObject>{
-      new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'first'),
-      new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'second')
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'first'),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'second')
     };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }

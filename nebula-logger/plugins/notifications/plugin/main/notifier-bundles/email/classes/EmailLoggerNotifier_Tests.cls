@@ -258,8 +258,8 @@ private class EmailLoggerNotifier_Tests {
       IsEnabled__c = true
     );
     List<SObject> matchingRecords = new List<SObject>{
-      new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong'),
-      new LogEntry__c(LoggingLevel__c = 'WARN', Message__c = 'Heads up')
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'Something went wrong'),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.WARN.name(), Message__c = 'Heads up')
     };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }

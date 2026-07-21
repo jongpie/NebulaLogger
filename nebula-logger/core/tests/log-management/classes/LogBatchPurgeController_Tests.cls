@@ -45,7 +45,7 @@ private class LogBatchPurgeController_Tests {
 
     Map<String, Object> metrics = LogBatchPurgeController.getMetrics('TODAY');
 
-    Assert.isNotNull(metrics);
+    System.Assert.isNotNull(metrics);
     assertPurgeActionCountsForKey(metrics, 'Log__c', expectedRecordCountWithPurgeActionDelete, expectedRecordCountWithPurgeActionCustom);
   }
 
@@ -94,7 +94,7 @@ private class LogBatchPurgeController_Tests {
 
     Map<String, Object> metrics = LogBatchPurgeController.getMetrics('TODAY');
 
-    Assert.isNotNull(metrics);
+    System.Assert.isNotNull(metrics);
     assertPurgeActionCountsForKey(metrics, 'LogEntry__c', expectedRecordCountWithPurgeActionDelete, expectedRecordCountWithPurgeActionCustom);
   }
 
@@ -107,7 +107,7 @@ private class LogBatchPurgeController_Tests {
 
     Map<String, Object> metrics = LogBatchPurgeController.getMetrics('TODAY');
 
-    Assert.isNotNull(metrics);
+    System.Assert.isNotNull(metrics);
     assertPurgeActionCountsForKey(metrics, 'LogEntryTag__c', expectedRecordCountWithPurgeActionDelete, expectedRecordCountWithPurgeActionCustom);
   }
 

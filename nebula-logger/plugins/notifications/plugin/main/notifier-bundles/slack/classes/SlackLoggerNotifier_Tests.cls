@@ -80,19 +80,19 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_color_error_entries_red() {
-    String payload = capturePayloadForLoggingLevel('ERROR');
+    String payload = capturePayloadForLoggingLevel(System.LoggingLevel.ERROR.name());
     System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_RED), 'ERROR attachments should be red: ' + payload);
   }
 
   @IsTest
   static void it_should_color_warn_entries_orange() {
-    String payload = capturePayloadForLoggingLevel('WARN');
+    String payload = capturePayloadForLoggingLevel(System.LoggingLevel.WARN.name());
     System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_ORANGE), 'WARN attachments should be orange: ' + payload);
   }
 
   @IsTest
   static void it_should_color_non_error_non_warn_entries_green() {
-    String payload = capturePayloadForLoggingLevel('INFO');
+    String payload = capturePayloadForLoggingLevel(System.LoggingLevel.INFO.name());
     System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_GREEN), 'Non-error/non-warn attachments should be green: ' + payload);
   }
 
@@ -166,7 +166,10 @@ private class SlackLoggerNotifier_Tests {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
     recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(Name = 'In-memory rule');
     recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
-    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
+      recipient,
+      new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) }
+    );
 
     String payload = sendAndCapture(request);
 
@@ -179,7 +182,12 @@ private class SlackLoggerNotifier_Tests {
     // Set up a real Log__c + LogEntry__c so the hydration SOQL can requery the entry with Log__r.Name populated.
     Log__c log = new Log__c(TransactionId__c = 'txn-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now(), Message__c = 'Something broke');
+    LogEntry__c logEntry = new LogEntry__c(
+      Log__c = log.Id,
+      LoggingLevel__c = System.LoggingLevel.ERROR.name(),
+      Timestamp__c = System.now(),
+      Message__c = 'Something broke'
+    );
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
 
@@ -201,7 +209,7 @@ private class SlackLoggerNotifier_Tests {
   static void it_should_render_the_source_records_own_name_as_a_field_and_link_to_the_source_record() {
     Log__c log = new Log__c(TransactionId__c = 'txn-source-name-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
@@ -222,7 +230,7 @@ private class SlackLoggerNotifier_Tests {
   static void it_should_render_a_reference_field_as_the_parents_name_when_no_display_field_is_specified() {
     Log__c log = new Log__c(TransactionId__c = 'txn-ref-fallback-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
 
@@ -245,7 +253,7 @@ private class SlackLoggerNotifier_Tests {
   static void it_should_use_the_display_field_value_when_provided() {
     Log__c log = new Log__c(TransactionId__c = 'txn-displayfield-' + System.now().getTime(), LoggedByUsername__c = 'run-anon@example.com');
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     String json = '{"sourceFields":[{"field":"Log__c","displayField":"Log__r.LoggedByUsername__c"}]}';
@@ -265,7 +273,7 @@ private class SlackLoggerNotifier_Tests {
   static void it_should_use_the_display_label_when_provided() {
     Log__c log = new Log__c(TransactionId__c = 'txn-displaylabel-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     String json = '{"sourceFields":[{"field":"LoggingLevel__c","displayLabel":"Severity"}]}';
@@ -284,7 +292,7 @@ private class SlackLoggerNotifier_Tests {
   static void it_should_prefix_the_attachment_title_with_the_source_objects_label() {
     Log__c log = new Log__c(TransactionId__c = 'txn-title-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
     logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
@@ -397,7 +405,12 @@ private class SlackLoggerNotifier_Tests {
     // sibling test above, which uses in-memory records with no Ids and short-circuits before SOQL).
     Log__c log = new Log__c(TransactionId__c = 'txn-bad-path-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now(), Message__c = 'Something broke');
+    LogEntry__c logEntry = new LogEntry__c(
+      Log__c = log.Id,
+      LoggingLevel__c = System.LoggingLevel.ERROR.name(),
+      Timestamp__c = System.now(),
+      Message__c = 'Something broke'
+    );
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
@@ -431,7 +444,7 @@ private class SlackLoggerNotifier_Tests {
     recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
     LoggerNotifierRequest request = new LoggerNotifierRequest(
       recipient,
-      new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Only a message') }
+      new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'Only a message') }
     );
 
     String payload = sendAndCapture(request);
@@ -447,7 +460,10 @@ private class SlackLoggerNotifier_Tests {
     );
     recipient.LoggerNotificationRule__r = buildRule();
     recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
-    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
+      recipient,
+      new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) }
+    );
 
     String payload = sendAndCapture(request);
 
@@ -508,8 +524,8 @@ private class SlackLoggerNotifier_Tests {
     recipient.LoggerNotificationRule__r = buildRule();
     recipient.LoggerNotificationService__r = service;
     List<SObject> matchingRecords = new List<SObject>{
-      new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong', StackTrace__c = 'Line 1\nLine 2'),
-      new LogEntry__c(LoggingLevel__c = 'WARN', Message__c = 'Heads up')
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'Something went wrong', StackTrace__c = 'Line 1\nLine 2'),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.WARN.name(), Message__c = 'Heads up')
     };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }

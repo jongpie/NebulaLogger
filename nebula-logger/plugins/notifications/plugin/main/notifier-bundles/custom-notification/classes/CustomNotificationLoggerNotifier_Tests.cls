@@ -10,9 +10,15 @@ private class CustomNotificationLoggerNotifier_Tests {
   static void it_should_short_circuit_when_context_is_null_or_has_no_records() {
     CustomNotificationLoggerNotifier notifier = new CustomNotificationLoggerNotifier();
 
-    // Should not throw
-    notifier.sendNotification(null);
-    notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>()));
+    System.DmlException thrownException;
+    try {
+      notifier.sendNotification(null);
+      notifier.sendNotification(new LoggerNotifierRequest(new LoggerNotificationRecipient__c(), new List<SObject>()));
+    } catch (System.DmlException ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNull(thrownException, 'An exception should not have been thrown');
   }
 
   @IsTest
@@ -67,7 +73,7 @@ private class CustomNotificationLoggerNotifier_Tests {
   @IsTest
   static void it_should_resolve_recipient_group_ids_from_json_config() {
     CustomNotificationLoggerNotifier notifier = new CustomNotificationLoggerNotifier();
-    String groupId = '00G000000000001';
+    String groupId = LoggerMockDataCreator.createId(Schema.Group.SObjectType);
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"recipientGroupIds":["' + groupId + '"]}'));
 
     Set<String> recipientIds = notifier.resolveRecipientIds(request);
@@ -148,7 +154,10 @@ private class CustomNotificationLoggerNotifier_Tests {
       NotifierApexClassName__c = 'CustomNotificationLoggerNotifier',
       IsEnabled__c = true
     );
-    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'msg') });
+    LoggerNotifierRequest request = new LoggerNotifierRequest(
+      recipient,
+      new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'msg') }
+    );
 
     String title = notifier.buildTitle(request, request.matchingRecords.get(0), null);
 
@@ -163,7 +172,9 @@ private class CustomNotificationLoggerNotifier_Tests {
       NotifierApexClassName__c = 'CustomNotificationLoggerNotifier',
       IsEnabled__c = true
     );
-    List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
+    List<SObject> matchingRecords = new List<SObject>{
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'Something went wrong')
+    };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }

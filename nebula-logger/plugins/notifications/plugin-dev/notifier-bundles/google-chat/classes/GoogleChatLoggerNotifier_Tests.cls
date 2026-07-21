@@ -75,7 +75,7 @@ private class GoogleChatLoggerNotifier_Tests {
       WebhookUrl__c = webhookUrl,
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
-    List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'boom') };
+    List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'boom') };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }

@@ -26,6 +26,9 @@
  *              to the default subject.
  */
 public without sharing class EmailLoggerNotifier extends LoggerNotifier {
+  // TODO eliminate this, the list of source fields will vary based on rule's SourceSObjectType__c,
+  // so definining defaults needs to be sobject-specific.
+  // The recipients should provide a list of source fields, so there shouldn't be a need for default fields.
   private static final List<String> DEFAULT_SOURCE_FIELDS = new List<String>{ 'LoggingLevel__c', 'Origin__c', 'Message__c', 'StackTrace__c' };
   private static final String NULL_VALUE_PLACEHOLDER = '(empty)';
   private static final System.Pattern MERGE_TOKEN_PATTERN = System.Pattern.compile('\\{!([^{}]+)\\}');

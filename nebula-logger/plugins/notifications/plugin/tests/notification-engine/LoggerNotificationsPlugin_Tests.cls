@@ -63,7 +63,7 @@ private class LoggerNotificationsPlugin_Tests {
   static void it_should_delegate_logEntry_after_insert_to_the_notifier() {
     RecordingNotifier notifier = installRecordingNotifier();
     LoggerNotificationsPlugin plugin = new LoggerNotificationsPlugin();
-    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') };
+    List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
 
     plugin.execute(new LoggerPlugin__mdt(), new LoggerTriggerableContext(Schema.LogEntry__c.SObjectType, System.TriggerOperation.AFTER_INSERT, records));
 
@@ -78,7 +78,7 @@ private class LoggerNotificationsPlugin_Tests {
     // cannot record LoggerNotificationMatch__c records against them. The plugin should silently skip.
     RecordingNotifier notifier = installRecordingNotifier();
     LoggerNotificationsPlugin plugin = new LoggerNotificationsPlugin();
-    List<SObject> records = new List<SObject>{ new LogEntryEvent__e(LoggingLevel__c = 'ERROR') };
+    List<SObject> records = new List<SObject>{ new LogEntryEvent__e(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
 
     plugin.execute(new LoggerPlugin__mdt(), new LoggerTriggerableContext(Schema.LogEntryEvent__e.SObjectType, System.TriggerOperation.AFTER_INSERT, records));
 

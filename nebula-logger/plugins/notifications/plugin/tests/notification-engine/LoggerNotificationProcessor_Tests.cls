@@ -47,7 +47,8 @@ private class LoggerNotificationProcessor_Tests {
     LoggerDataStore.getDatabase()
       .insertRecord(new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = service.Id));
 
-    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    new LoggerNotificationProcessor()
+      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
 
     System.Assert.isTrue(
       LoggerCache.getOrganizationCache().contains(LoggerNotificationProcessor.CACHE_KEY_ACTIVE_RULES),
@@ -81,7 +82,8 @@ private class LoggerNotificationProcessor_Tests {
       );
     Integer queryCountBefore = System.Limits.getQueries();
 
-    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    new LoggerNotificationProcessor()
+      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
 
     System.Assert.areEqual(queryCountBefore, System.Limits.getQueries(), 'getActiveRules should have used the cached rules without issuing a SOQL query');
   }
@@ -97,7 +99,8 @@ private class LoggerNotificationProcessor_Tests {
     LoggerDataStore.getDatabase()
       .insertRecord(new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = service.Id));
 
-    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    new LoggerNotificationProcessor()
+      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
 
     System.Assert.isFalse(
       LoggerCache.getOrganizationCache().contains(LoggerNotificationProcessor.CACHE_KEY_ACTIVE_RULES),
@@ -112,7 +115,7 @@ private class LoggerNotificationProcessor_Tests {
     resetMockNotifier();
     LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
 
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Rules for a different sobject type should be ignored');
   }
@@ -163,7 +166,7 @@ private class LoggerNotificationProcessor_Tests {
       );
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     resetMockNotifier();
@@ -189,9 +192,9 @@ private class LoggerNotificationProcessor_Tests {
     resetMockNotifier();
     LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
     List<SObject> records = new List<SObject>{
-      new LogEntry__c(LoggingLevel__c = 'ERROR'),
-      new LogEntry__c(LoggingLevel__c = 'INFO'),
-      new LogEntry__c(LoggingLevel__c = 'ERROR')
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name())
     };
 
     System.Test.startTest();
@@ -201,7 +204,7 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(1, mockNotifierInvocationCount);
     System.Assert.areEqual(2, mockNotifierLastRequest.matchingRecords.size());
     for (SObject match : mockNotifierLastRequest.matchingRecords) {
-      System.Assert.areEqual('ERROR', ((LogEntry__c) match).LoggingLevel__c);
+      System.Assert.areEqual(System.LoggingLevel.ERROR.name(), ((LogEntry__c) match).LoggingLevel__c);
     }
   }
 
@@ -216,7 +219,7 @@ private class LoggerNotificationProcessor_Tests {
     resetMockNotifier();
     LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'INFO') });
+    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()) });
 
     System.Assert.areEqual(0, mockNotifierInvocationCount);
   }
@@ -234,7 +237,7 @@ private class LoggerNotificationProcessor_Tests {
     LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
     System.Test.stopTest();
 
     System.Assert.areEqual(2, mockNotifierInvocationCount, 'Both recipients should have been invoked, including the one after the throw');
@@ -251,7 +254,7 @@ private class LoggerNotificationProcessor_Tests {
     resetMockNotifier();
     LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
 
     System.Assert.areEqual(0, mockNotifierInvocationCount);
   }
@@ -277,8 +280,8 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
-    LogEntry__c nonMatchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'INFO', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c nonMatchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ matchingEntry, nonMatchingEntry });
 
     seedCachedRuleFromPersisted(persistedRule);
@@ -312,7 +315,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     seedCachedRuleFromPersisted(persistedRule);
@@ -342,8 +345,8 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c firstEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
-    LogEntry__c secondEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c firstEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c secondEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ firstEntry, secondEntry });
 
     LoggerNotificationRecipient__c hydratedRecipient = new LoggerNotificationRecipient__c(
@@ -423,7 +426,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
@@ -459,7 +462,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     LoggerNotificationRecipient__c hydratedRecipient = new LoggerNotificationRecipient__c(
@@ -503,7 +506,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
     LoggerNotificationRecipient__c hydratedRecipient = new LoggerNotificationRecipient__c(
@@ -539,7 +542,7 @@ private class LoggerNotificationProcessor_Tests {
     LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Notifier should not fire synchronously - it should be queued');
     System.Assert.areEqual(1, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
     System.Test.stopTest();
@@ -565,7 +568,7 @@ private class LoggerNotificationProcessor_Tests {
     LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
     System.Assert.areEqual(1, System.Limits.getQueueableJobs(), 'Both recipients should have been batched into one Queueable job');
     System.Test.stopTest();
 
@@ -584,9 +587,9 @@ private class LoggerNotificationProcessor_Tests {
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     List<LogEntry__c> entries = new List<LogEntry__c>{
-      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now()),
-      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now()),
-      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now())
+      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
+      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
+      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now())
     };
     LoggerDataStore.getDatabase().insertRecords(entries);
 
@@ -612,7 +615,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
     LoggerNotificationRecipient__c persistedRecipientOne = new LoggerNotificationRecipient__c(
@@ -687,7 +690,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
     seedCachedRuleFromPersisted(persistedRule);
@@ -717,7 +720,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
     LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
@@ -762,8 +765,8 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c priorEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
-    LogEntry__c currentEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c priorEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c currentEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ priorEntry, currentEntry });
     LoggerDataStore.getDatabase()
       .insertRecord(
@@ -822,7 +825,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
     resetMockNotifier();
@@ -857,7 +860,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
     LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
@@ -891,10 +894,10 @@ private class LoggerNotificationProcessor_Tests {
     persistedRule.DeduplicationSourceField__c = 'Log__c';
     LoggerDataStore.getDatabase().insertRecord(persistedRule);
     List<LogEntry__c> entries = new List<LogEntry__c>{
-      new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now()),
-      new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now()),
-      new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now()),
-      new LogEntry__c(Log__c = logB.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now())
+      new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
+      new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
+      new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
+      new LogEntry__c(Log__c = logB.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now())
     };
     LoggerDataStore.getDatabase().insertRecords(entries);
 
@@ -921,8 +924,18 @@ private class LoggerNotificationProcessor_Tests {
     LoggerNotificationRule__c persistedRule = buildRule();
     persistedRule.DeduplicationSourceField__c = 'Log__c';
     LoggerDataStore.getDatabase().insertRecord(persistedRule);
-    LogEntry__c firstEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now(), Message__c = 'first');
-    LogEntry__c secondEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now(), Message__c = 'second');
+    LogEntry__c firstEntry = new LogEntry__c(
+      Log__c = log.Id,
+      LoggingLevel__c = System.LoggingLevel.ERROR.name(),
+      Timestamp__c = System.now(),
+      Message__c = 'first'
+    );
+    LogEntry__c secondEntry = new LogEntry__c(
+      Log__c = log.Id,
+      LoggingLevel__c = System.LoggingLevel.ERROR.name(),
+      Timestamp__c = System.now(),
+      Message__c = 'second'
+    );
     LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ firstEntry, secondEntry });
 
     seedCachedRuleFromPersisted(persistedRule);
@@ -944,8 +957,8 @@ private class LoggerNotificationProcessor_Tests {
     persistedRule.DeduplicationSourceField__c = null;
     LoggerDataStore.getDatabase().insertRecord(persistedRule);
     List<LogEntry__c> entries = new List<LogEntry__c>{
-      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now()),
-      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now())
+      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
+      new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now())
     };
     LoggerDataStore.getDatabase().insertRecords(entries);
 
@@ -964,8 +977,8 @@ private class LoggerNotificationProcessor_Tests {
     // Two records with the same non-null deduplication value collapse to one; a record with a null value
     // survives in its own group.
     List<SObject> matching = new List<SObject>{
-      new LogEntry__c(Log__c = null, LoggingLevel__c = 'ERROR'),
-      new LogEntry__c(Log__c = null, LoggingLevel__c = 'ERROR')
+      new LogEntry__c(Log__c = null, LoggingLevel__c = System.LoggingLevel.ERROR.name()),
+      new LogEntry__c(Log__c = null, LoggingLevel__c = System.LoggingLevel.ERROR.name())
     };
 
     List<SObject> result = LoggerNotificationProcessor.deduplicateMatchingRecords(matching, 'Log__c');
@@ -977,7 +990,10 @@ private class LoggerNotificationProcessor_Tests {
   static void it_should_not_deduplicate_when_the_deduplication_source_field_does_not_exist_on_the_source_sobject() {
     // Fallback path: an admin somehow saved a bogus field name that snuck past validation. Rather than
     // throw at runtime, the runtime treats it as "no deduplication" so notifications still fire.
-    List<SObject> matching = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR'), new LogEntry__c(LoggingLevel__c = 'ERROR') };
+    List<SObject> matching = new List<SObject>{
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()),
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name())
+    };
 
     List<SObject> result = LoggerNotificationProcessor.deduplicateMatchingRecords(matching, 'ThisFieldDoesNotExist__c');
 
@@ -1006,7 +1022,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
     LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
@@ -1062,7 +1078,7 @@ private class LoggerNotificationProcessor_Tests {
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR', Timestamp__c = System.now());
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
     LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
