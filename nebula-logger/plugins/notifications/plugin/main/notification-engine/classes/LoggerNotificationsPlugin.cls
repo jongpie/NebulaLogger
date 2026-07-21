@@ -47,7 +47,7 @@ public without sharing class LoggerNotificationsPlugin implements LoggerPlugin.T
     if (SUPPORTED_SOURCE_TYPES.contains(input.sobjectType) == false) {
       return;
     }
-    LoggerNotificationProcessor notifier = notifierOverride != null ? notifierOverride : new LoggerNotificationProcessor();
+    LoggerNotificationProcessor notifier = notifierOverride ?? new LoggerNotificationProcessor();
     notifier.sendNotifications(input.sobjectType, input.triggerNew);
   }
 

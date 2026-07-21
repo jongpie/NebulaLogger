@@ -162,7 +162,7 @@ public abstract class LoggerNotifier {
     for (SObject record : records) {
       Id recordId = (Id) record.get('Id');
       SObject hydrated = recordId == null ? null : hydratedById.get(recordId);
-      result.add(hydrated != null ? hydrated : record);
+      result.add(hydrated ?? record);
     }
     return result;
   }

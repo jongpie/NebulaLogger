@@ -41,7 +41,7 @@ public virtual without sharing class LoggerNotificationProcessor {
    * @description Default constructor.
    */
   public LoggerNotificationProcessor() {
-    this.filterEvaluator = filterEvaluatorOverride != null ? filterEvaluatorOverride : new RuleFilterEvaluator();
+    this.filterEvaluator = filterEvaluatorOverride ?? new RuleFilterEvaluator();
   }
 
   /**
