@@ -54,7 +54,8 @@ public without sharing class GoogleChatLoggerNotifier extends LoggerNotifier {
     httpRequest.setEndpoint(endpoint);
     httpRequest.setMethod('POST');
     httpRequest.setHeader('Content-Type', 'application/json; charset=UTF-8');
-    return httpRequest;  }
+    return httpRequest;
+  }
 
   @TestVisible
   private String buildPayload(LoggerNotifierRequest request) {
@@ -82,7 +83,7 @@ public without sharing class GoogleChatLoggerNotifier extends LoggerNotifier {
     List<Map<String, Object>> widgets = new List<Map<String, Object>>();
     this.addWidgetIfPresent(widgets, 'Logging Level', this.tryGetString(record, 'LoggingLevel__c'));
     this.addWidgetIfPresent(widgets, 'Origin', this.tryGetString(record, 'Origin__c'));
-    this.addWidgetIfPresent(widgets, 'Message', this.truncate(this.tryGetString(record, 'Message__c'), 1000));
+    this.addWidgetIfPresent(widgets, 'Message', this.tryGetString(record, 'Message__c')?.abbreviate(1000));
     this.addWidgetIfPresent(widgets, 'Exception Type', this.tryGetString(record, 'ExceptionType__c'));
     Id recordId = (Id) record.get('Id');
     if (recordId != null) {
@@ -107,12 +108,5 @@ public without sharing class GoogleChatLoggerNotifier extends LoggerNotifier {
     }
     Object value = record.get(fieldName);
     return value == null ? null : String.valueOf(value);
-  }
-
-  private String truncate(String value, Integer maxLength) {
-    if (value == null || value.length() <= maxLength) {
-      return value;
-    }
-    return value.substring(0, maxLength) + '...(truncated)';
   }
 }
