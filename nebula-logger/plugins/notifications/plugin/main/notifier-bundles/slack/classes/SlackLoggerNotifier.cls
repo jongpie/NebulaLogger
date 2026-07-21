@@ -72,7 +72,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
         Logger.error('SlackLoggerNotifier - callout failed', ex);
       }
       // TODO: notifiers currently log via Nebula Logger for diagnostics, which can re-trigger the
-      // notifications plugin when the resulting LogEntry__c rows match another rule (or the same one).
+      // notifications plugin when the resulting LogEntry__c records match another rule (or the same one).
       // Commented out for now; see Backlog.md for the discussion on removing all Logger.* calls from
       // notifier bundles.
       // Logger.saveLog();
@@ -430,7 +430,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
 
   /**
    * @description Typed shape of Slack's `chat.postMessage` response used to extract the message
-   *              identifier and channel for external-reference capture on the delivery row. Extra
+   *              identifier and channel for external-reference capture on the delivery record. Extra
    *              fields Slack returns (`message`, `warning`, `response_metadata`, etc.) are ignored
    *              by the deserializer.
    */
