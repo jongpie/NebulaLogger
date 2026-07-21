@@ -69,9 +69,9 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
       }
       if (deliveries != null) {
         LoggerNotifierResult skipped = new LoggerNotifierResult();
-        skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
         skipped.errorMessage = 'Could not instantiate notifier class ' + dispatch.recipient.LoggerNotificationService__r.NotifierApexClassName__c;
         skipped.jobId = jobId;
+        skipped.status = LoggerNotifierResult.STATUS_SKIPPED;
         Datetime now = System.now();
         skipped.finalizeDeliveries(deliveries, now, now);
         deliveriesToUpdate.addAll(deliveries);
@@ -117,8 +117,8 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
     return deliveries;
   }
 
-  @TestVisible
   private Boolean isCalloutLimitReached() {
+    // TODO remove this method probably
     return System.Limits.getCallouts() >= (System.Limits.getLimitCallouts() - 1);
   }
 

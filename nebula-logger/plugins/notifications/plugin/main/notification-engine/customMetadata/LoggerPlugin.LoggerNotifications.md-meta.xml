@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Evaluates active LoggerNotificationRule__c records against inbound logging records and dispatches to each rule&apos;s recipients (Slack, email, etc.). Registered as an AFTER_INSERT plugin for LogEntry__c, LogEntryTag__c, Log__c, LoggerScenario__c, and LoggerTag__c so rules can opt into any of these evaluation points via LoggerNotificationRule__c.SourceSObjectType__c.</value>
+        <value xsi:type="xsd:string">Adds the ability to configure notification rules for logging records and sends notifications to each rule&apos;s configured recipients (Slack, email, etc.).</value>
     </values>
     <values>
         <field>ExecutionOrder__c</field>
@@ -36,7 +36,7 @@
     </values>
     <values>
         <field>PluginApiName__c</field>
-        <value xsi:type="xsd:string">LoggerNotifications</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>PluginType__c</field>

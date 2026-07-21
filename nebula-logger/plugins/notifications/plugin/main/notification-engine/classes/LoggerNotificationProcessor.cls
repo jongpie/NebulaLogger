@@ -25,19 +25,9 @@
  *              refreshed sandbox from another org do not fire until an admin re-saves them in the current org.
  */
 public virtual without sharing class LoggerNotificationProcessor {
-  @TestVisible
   private static Map<String, List<LoggerNotificationRule__c>> cachedRulesBySObjectTypeName;
-  @TestVisible
-  private static RuleFilterEvaluator filterEvaluatorOverride;
 
-  private final RuleFilterEvaluator filterEvaluator;
-
-  /**
-   * @description Default constructor.
-   */
-  public LoggerNotificationProcessor() {
-    this.filterEvaluator = filterEvaluatorOverride ?? new RuleFilterEvaluator();
-  }
+  private final RuleFilterEvaluator filterEvaluator = new RuleFilterEvaluator();
 
   /**
    * @description Entry point invoked by the trigger-side integration. Loads active rules for the given
@@ -48,9 +38,11 @@ public virtual without sharing class LoggerNotificationProcessor {
    * @param records The inbound records to evaluate.
    */
   public virtual void sendNotifications(Schema.SObjectType sobjectType, List<SObject> records) {
+    // TODO the LoggerNotificatonsPlugin class shouldn't even call this method if these conditions are true
     if (sobjectType == null || records == null || records.isEmpty()) {
       return;
     }
+
     List<LoggerNotificationRule__c> applicableRules = getActiveRulesBySObjectTypeName().get(sobjectType.toString());
     if (applicableRules == null || applicableRules.isEmpty()) {
       return;
@@ -106,7 +98,6 @@ public virtual without sharing class LoggerNotificationProcessor {
    *              are returned untouched; if the field does not exist on the source SObject each record
    *              gets its own group (i.e. no deduplication happens - safe fallback rather than throwing).
    */
-  @TestVisible
   private static List<SObject> deduplicateMatchingRecords(List<SObject> matchingRecords, String deduplicationSourceField) {
     if (String.isBlank(deduplicationSourceField) || matchingRecords == null || matchingRecords.isEmpty()) {
       return matchingRecords;
@@ -130,23 +121,21 @@ public virtual without sharing class LoggerNotificationProcessor {
   }
 
   private static List<LoggerNotificationMatch__c> collectMatchesToInsert(List<RuleEvaluation> evaluations) {
-    List<LoggerNotificationMatch__c> all = new List<LoggerNotificationMatch__c>();
+    List<LoggerNotificationMatch__c> matches = new List<LoggerNotificationMatch__c>();
     for (RuleEvaluation evaluation : evaluations) {
       if (evaluation.matches != null) {
-        all.addAll(evaluation.matches);
+        matches.addAll(evaluation.matches);
       }
     }
-    // After matches are inserted (by caller), record their Ids on the evaluation for delivery FK use.
-    return all;
+    return matches;
   }
 
   private void dispatchToRecipients(
     RuleEvaluation evaluation,
     List<LoggerNotificationDelivery__c> deliveriesToInsert,
-    List<LoggerNotificationAsyncDispatcher.PendingDispatch> asyncDispatches
+    List<LoggerNotificationAsyncDispatcher.PendingDispatch> pendingDispatches
   ) {
-    LoggerNotificationRule__c rule = evaluation.rule;
-    if (rule.LoggerNotificationRecipients__r == null || rule.LoggerNotificationRecipients__r.isEmpty()) {
+    if (evaluation.rule.LoggerNotificationRecipients__r == null || evaluation.rule.LoggerNotificationRecipients__r.isEmpty()) {
       return;
     }
     // Every recipient goes through the async dispatcher, regardless of whether the notifier
@@ -156,13 +145,13 @@ public virtual without sharing class LoggerNotificationProcessor {
     // pipeline uniform, isolates notifier failures from the source-record transaction (so a
     // rolled-back LogEntry insert also cancels the pending notifications), and gives every
     // notifier its own governor limit budget instead of sharing the source trigger's.
-    Boolean canPersistDeliveries = evaluation.matches != null && rule.IsDeliveryHistoryEnabled__c == true;
-    for (LoggerNotificationRecipient__c recipient : rule.LoggerNotificationRecipients__r) {
+    Boolean canPersistDeliveries = evaluation.matches != null && evaluation.rule.IsDeliveryHistoryEnabled__c == true;
+    for (LoggerNotificationRecipient__c recipient : evaluation.rule.LoggerNotificationRecipients__r) {
       List<LoggerNotificationDelivery__c> deliveriesForRecipient = canPersistDeliveries && recipient.Id != null
-        ? this.buildPendingDeliveries(rule, evaluation.matches, recipient)
+        ? this.buildPendingDeliveries(evaluation.rule, evaluation.matches, recipient)
         : null;
-      recipient.LoggerNotificationRule__r = rule;
-      asyncDispatches.add(new LoggerNotificationAsyncDispatcher.PendingDispatch(recipient, evaluation.matchingRecords, deliveriesForRecipient));
+      recipient.LoggerNotificationRule__r = evaluation.rule;
+      pendingDispatches.add(new LoggerNotificationAsyncDispatcher.PendingDispatch(recipient, evaluation.matchingRecords, deliveriesForRecipient));
       if (deliveriesForRecipient != null) {
         deliveriesToInsert.addAll(deliveriesForRecipient);
       }
@@ -170,15 +159,14 @@ public virtual without sharing class LoggerNotificationProcessor {
   }
 
   private void buildSuppressedDeliveries(RuleEvaluation evaluation, List<LoggerNotificationDelivery__c> deliveriesToInsert) {
-    LoggerNotificationRule__c rule = evaluation.rule;
-    if (rule.LoggerNotificationRecipients__r == null || rule.LoggerNotificationRecipients__r.isEmpty()) {
+    if (evaluation.rule.LoggerNotificationRecipients__r == null || evaluation.rule.LoggerNotificationRecipients__r.isEmpty()) {
       return;
     }
-    if (evaluation.matches == null || rule.IsDeliveryHistoryEnabled__c != true) {
+    if (evaluation.matches == null || evaluation.rule.IsDeliveryHistoryEnabled__c == false) {
       return;
     }
-    Date retentionDate = computeRetentionDate(rule.NumberOfDaysToRetainDeliveries__c);
-    for (LoggerNotificationRecipient__c recipient : rule.LoggerNotificationRecipients__r) {
+    Date retentionDate = computeRetentionDate(evaluation.rule.NumberOfDaysToRetainDeliveries__c);
+    for (LoggerNotificationRecipient__c recipient : evaluation.rule.LoggerNotificationRecipients__r) {
       if (recipient.Id == null) {
         continue;
       }
@@ -187,7 +175,7 @@ public virtual without sharing class LoggerNotificationProcessor {
           AttemptCount__c = 0,
           LoggerNotificationMatch__c = match.Id,
           LoggerNotificationRecipient__c = recipient.Id,
-          LoggerNotificationRule__c = rule.Id,
+          LoggerNotificationRule__c = evaluation.rule.Id,
           LoggerNotificationService__c = recipient.LoggerNotificationService__c,
           RetentionDate__c = retentionDate,
           Status__c = LoggerNotifierResult.STATUS_SUPPRESSED_BY_THRESHOLD
@@ -202,13 +190,12 @@ public virtual without sharing class LoggerNotificationProcessor {
       if (dispatch.pendingDeliveries == null || dispatch.pendingDeliveries.isEmpty()) {
         continue;
       }
-      List<Id> ids = new List<Id>();
+      dispatch.pendingDeliveryIds = new List<Id>();
       for (LoggerNotificationDelivery__c delivery : dispatch.pendingDeliveries) {
         if (delivery.Id != null) {
-          ids.add(delivery.Id);
+          dispatch.pendingDeliveryIds.add(delivery.Id);
         }
       }
-      dispatch.pendingDeliveryIds = ids;
     }
   }
 
@@ -221,13 +208,13 @@ public virtual without sharing class LoggerNotificationProcessor {
     List<LoggerNotificationDelivery__c> deliveries = new List<LoggerNotificationDelivery__c>();
     for (LoggerNotificationMatch__c match : matches) {
       LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c(
-        LoggerNotificationRule__c = rule.Id,
+        AttemptCount__c = 0,
         LoggerNotificationMatch__c = match.Id,
         LoggerNotificationRecipient__c = recipient.Id,
+        LoggerNotificationRule__c = rule.Id,
         LoggerNotificationService__c = recipient.LoggerNotificationService__c,
-        Status__c = LoggerNotifierResult.STATUS_PENDING,
-        AttemptCount__c = 0,
-        RetentionDate__c = retentionDate
+        RetentionDate__c = retentionDate,
+        Status__c = LoggerNotifierResult.STATUS_PENDING
       );
       deliveries.add(delivery);
     }
@@ -249,25 +236,32 @@ public virtual without sharing class LoggerNotificationProcessor {
     return System.today().addDays(daysToRetain.intValue());
   }
 
-  @TestVisible
+  @SuppressWarnings('PMD.UnusedLocalVariable') // The switch statement syntax is terrible & requires a local variable ＼（〇_ｏ）／
   private LoggerNotificationMatch__c buildMatchRecord(LoggerNotificationRule__c rule, Schema.SObjectType sobjectType, SObject matched) {
     Id matchedId = (Id) matched.get('Id');
     LoggerNotificationMatch__c matchRecord = new LoggerNotificationMatch__c(
       LoggerNotificationRule__c = rule.Id,
-      MatchedRecordId__c = matchedId == null ? null : String.valueOf(matchedId),
+      MatchedRecordId__c = matchedId,
       MatchedSObjectType__c = sobjectType.toString(),
       RetentionDate__c = computeRetentionDate(rule.NumberOfDaysToRetainMatches__c)
     );
-    if (sobjectType == Schema.LogEntry__c.SObjectType) {
-      matchRecord.LogEntry__c = matchedId;
-    } else if (sobjectType == Schema.LogEntryTag__c.SObjectType) {
-      matchRecord.LogEntryTag__c = matchedId;
-    } else if (sobjectType == Schema.Log__c.SObjectType) {
-      matchRecord.Log__c = matchedId;
-    } else if (sobjectType == Schema.LoggerScenario__c.SObjectType) {
-      matchRecord.LoggerScenario__c = matchedId;
-    } else if (sobjectType == Schema.LoggerTag__c.SObjectType) {
-      matchRecord.LoggerTag__c = matchedId;
+
+    switch on sobjectType.newSObject() {
+      when LogEntry__c logEntry {
+        matchRecord.LogEntry__c = matchedId;
+      }
+      when LogEntryTag__c logEntryTag {
+        matchRecord.LogEntryTag__c = matchedId;
+      }
+      when Log__c log {
+        matchRecord.Log__c = matchedId;
+      }
+      when LoggerScenario__c loggerScenario {
+        matchRecord.LoggerScenario__c = matchedId;
+      }
+      when LoggerTag__c loggerTag {
+        matchRecord.LoggerTag__c = matchedId;
+      }
     }
     return matchRecord;
   }
@@ -276,6 +270,7 @@ public virtual without sharing class LoggerNotificationProcessor {
     if (dispatches.isEmpty()) {
       return;
     }
+    // TODO uhhhh reenqueue, don't return
     if (System.Limits.getQueueableJobs() >= System.Limits.getLimitQueueableJobs()) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('Nebula Logger Notifications - queueable limit reached, skipping ' + dispatches.size() + ' async notifier dispatch(es)');
@@ -286,12 +281,11 @@ public virtual without sharing class LoggerNotificationProcessor {
   }
 
   private Boolean shouldSuppressForThreshold(LoggerNotificationRule__c rule, Integer currentMatchCount) {
-    if (rule.IsMatchThresholdEnabled__c != true) {
+    // TODO I hate all of this logic
+    if (rule.IsMatchThresholdEnabled__c == false || rule.MatchCountThreshold__c == null || rule.MatchCountThreshold__c <= 0) {
       return false;
     }
-    if (rule.MatchCountThreshold__c == null || rule.MatchCountThreshold__c <= 0) {
-      return false;
-    }
+
     Integer priorMatchCount = this.countPriorMatchesInWindow(rule);
     return (priorMatchCount + currentMatchCount) < (Integer) rule.MatchCountThreshold__c;
   }
@@ -318,7 +312,6 @@ public virtual without sharing class LoggerNotificationProcessor {
     ];
   }
 
-  @TestVisible
   private static Datetime computeCutoff(Datetime now, Integer increment, String unit) {
     switch on unit {
       when 'Minutes' {
@@ -390,15 +383,17 @@ public virtual without sharing class LoggerNotificationProcessor {
   private static Map<String, List<LoggerNotificationRule__c>> bucketBySObjectTypeName(List<LoggerNotificationRule__c> rules) {
     Map<String, List<LoggerNotificationRule__c>> bucketed = new Map<String, List<LoggerNotificationRule__c>>();
     for (LoggerNotificationRule__c rule : rules) {
-      Schema.SObjectType resolved = LoggerNotificationRuleHandler.resolveSObjectType(rule.SourceSObjectType__c);
-      if (resolved == null) {
+      Schema.SObjectType resolvedSObjectType = LoggerNotificationRuleHandler.resolveSObjectType(rule.SourceSObjectType__c);
+
+      if (resolvedSObjectType == null) {
         continue;
       }
-      String key = resolved.toString();
-      if (bucketed.containsKey(key) == false) {
-        bucketed.put(key, new List<LoggerNotificationRule__c>());
+
+      String sobjectApiName = resolvedSObjectType.toString();
+      if (bucketed.containsKey(sobjectApiName) == false) {
+        bucketed.put(sobjectApiName, new List<LoggerNotificationRule__c>());
       }
-      bucketed.get(key).add(rule);
+      bucketed.get(sobjectApiName).add(rule);
     }
     return bucketed;
   }
@@ -415,18 +410,11 @@ public virtual without sharing class LoggerNotificationProcessor {
     private Boolean shouldDispatch;
   }
 
-  /**
-   * @description Compiles and evaluates a `LoggerNotificationRule__c.SourceSObjectFilter__c` formula expression against records of
-   *              the rule's `SourceSObjectType__c`. Wraps Salesforce's `FormulaEval.FormulaBuilder` API and caches
-   *              compiled formulas per (SObjectType, formula) pair so repeated evaluations in the same transaction
-   *              do not recompile.
-   */
-  @TestVisible
   private class RuleFilterEvaluator {
-    @TestVisible
     private final Map<String, FormulaEval.FormulaInstance> cachedInstances = new Map<String, FormulaEval.FormulaInstance>();
 
     public Boolean evaluate(Schema.SObjectType sobjectType, String filter, SObject record) {
+      // TODO I'm not convinced these checks are all needed - why wouldn't we have an sobjectype or record or filter?
       if (String.isBlank(filter) || sobjectType == null || record == null) {
         return false;
       }
@@ -445,6 +433,7 @@ public virtual without sharing class LoggerNotificationProcessor {
 
     public List<SObject> evaluate(Schema.SObjectType sobjectType, String filter, List<SObject> records) {
       List<SObject> matches = new List<SObject>();
+      // TODO I'm not convinced these checks are all needed - why wouldn't we have an sobjectype or record or filter?
       if (String.isBlank(filter) || sobjectType == null || records == null || records.isEmpty()) {
         return matches;
       }
@@ -455,6 +444,7 @@ public virtual without sharing class LoggerNotificationProcessor {
       for (SObject record : records) {
         try {
           Object result = formulaInstance.evaluate(record);
+          // TODO yuck!
           if (result instanceof Boolean && (Boolean) result) {
             matches.add(record);
           }
@@ -483,6 +473,7 @@ public virtual without sharing class LoggerNotificationProcessor {
       return instance;
     }
 
+    // TODO get rid of these logging methods?
     private void logCompilationFailure(Schema.SObjectType sobjectType, String filter, System.Exception ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('Nebula Logger Notifications - failed to compile filter for ' + sobjectType + ': ' + filter, ex);
