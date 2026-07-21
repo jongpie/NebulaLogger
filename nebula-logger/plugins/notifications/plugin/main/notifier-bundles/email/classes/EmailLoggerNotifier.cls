@@ -40,7 +40,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     }
     List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
     if (specs == null) {
-      specs = buildDefaultSpecs();
+      specs = buildDefaultSpecs(DEFAULT_SOURCE_FIELDS);
     }
     Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
     String subjectTemplate = request.configuration.getString('subjectTemplate');
@@ -82,6 +82,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     return outcome;
   }
 
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   @TestVisible
   private Messaging.SingleEmailMessage buildEmail(
     LoggerNotifierRequest request,
@@ -152,6 +153,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     return value == null ? '' : String.valueOf(value);
   }
 
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   private String buildBody(
     LoggerNotifierRequest request,
     List<SObject> hydratedRecords,
@@ -185,6 +187,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     return String.join(lines, '\n');
   }
 
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   private static String renderField(
     SObject record,
     Schema.SObjectType sourceType,
@@ -205,14 +208,6 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
       return label + ': ' + NULL_VALUE_PLACEHOLDER;
     }
     return label + ': ' + String.valueOf(rawValue);
-  }
-
-  private static List<LoggerNotifierConfiguration.SourceFieldSpec> buildDefaultSpecs() {
-    List<LoggerNotifierConfiguration.SourceFieldSpec> defaults = new List<LoggerNotifierConfiguration.SourceFieldSpec>();
-    for (String fieldName : DEFAULT_SOURCE_FIELDS) {
-      defaults.add(new LoggerNotifierConfiguration.SourceFieldSpec(fieldName, null, null));
-    }
-    return defaults;
   }
 
   private static List<String> collectHydrationPaths(
@@ -243,119 +238,5 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     }
     List<String> paths = new List<String>(pathSet);
     return paths;
-  }
-
-  private static Object getValueByPath(SObject record, String fieldPath) {
-    if (record == null || String.isBlank(fieldPath)) {
-      return null;
-    }
-    List<String> parts = fieldPath.split('\\.');
-    SObject current = record;
-    for (Integer i = 0; i < parts.size() - 1; i++) {
-      if (current == null) {
-        return null;
-      }
-      try {
-        current = current.getSObject(parts.get(i));
-      } catch (System.SObjectException ex) {
-        return null;
-      }
-    }
-    if (current == null) {
-      return null;
-    }
-    try {
-      return current.get(parts.get(parts.size() - 1));
-    } catch (System.SObjectException ex) {
-      return null;
-    }
-  }
-
-  private static Schema.DescribeFieldResult getDescribeByPath(Schema.SObjectType startType, String fieldPath) {
-    if (startType == null || String.isBlank(fieldPath)) {
-      return null;
-    }
-    List<String> parts = fieldPath.split('\\.');
-    Schema.SObjectType currentType = startType;
-    for (Integer i = 0; i < parts.size() - 1; i++) {
-      Schema.SObjectType nextType = getRelatedType(currentType, parts.get(i));
-      if (nextType == null) {
-        return null;
-      }
-      currentType = nextType;
-    }
-    Schema.SObjectField finalToken = currentType.getDescribe().fields.getMap().get(parts.get(parts.size() - 1).toLowerCase());
-    return finalToken == null ? null : finalToken.getDescribe();
-  }
-
-  private static Schema.SObjectType getRelatedType(Schema.SObjectType currentType, String relationshipSegment) {
-    for (Schema.SObjectField field : currentType.getDescribe().fields.getMap().values()) {
-      Schema.DescribeFieldResult describe = field.getDescribe();
-      if (relationshipSegment.equalsIgnoreCase(describe.getRelationshipName())) {
-        List<Schema.SObjectType> refs = describe.getReferenceTo();
-        if (refs.isEmpty() == false) {
-          return refs.get(0);
-        }
-      }
-    }
-    return null;
-  }
-
-  private static List<SObject> hydrateRecordsWithFieldPaths(List<SObject> records, List<String> fieldPaths) {
-    if (records == null || records.isEmpty() || fieldPaths == null || fieldPaths.isEmpty()) {
-      return records;
-    }
-    Boolean anyDottedPath = false;
-    for (String path : fieldPaths) {
-      if (path != null && path.contains('.')) {
-        anyDottedPath = true;
-        break;
-      }
-    }
-    if (anyDottedPath == false) {
-      return records;
-    }
-    Map<Schema.SObjectType, Set<Id>> idsByType = new Map<Schema.SObjectType, Set<Id>>();
-    for (SObject record : records) {
-      Id recordId = (Id) record.get('Id');
-      if (recordId == null) {
-        continue;
-      }
-      Schema.SObjectType type = record.getSObjectType();
-      if (idsByType.containsKey(type) == false) {
-        idsByType.put(type, new Set<Id>());
-      }
-      idsByType.get(type).add(recordId);
-    }
-    if (idsByType.isEmpty()) {
-      return records;
-    }
-    Map<Id, SObject> hydratedById = new Map<Id, SObject>();
-    for (Schema.SObjectType type : idsByType.keySet()) {
-      Set<Id> ids = idsByType.get(type);
-      Map<String, Schema.SObjectField> fieldMap = type.getDescribe().fields.getMap();
-      Set<String> selectFieldSet = new Set<String>{ 'Id' };
-      if (fieldMap.containsKey('name')) {
-        selectFieldSet.add('Name');
-      }
-      selectFieldSet.addAll(fieldPaths);
-      String query = 'SELECT ' + String.join(new List<String>(selectFieldSet), ', ') + ' FROM ' + type.getDescribe().getName() + ' WHERE Id IN :ids';
-      try {
-        for (SObject queried : System.Database.query(query)) {
-          hydratedById.put((Id) queried.get('Id'), queried);
-        }
-      } catch (System.QueryException ex) {
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-          Logger.warn('EmailLoggerNotifier - could not hydrate records for field paths ' + fieldPaths + ': ' + ex.getMessage());
-        }
-      }
-    }
-    List<SObject> result = new List<SObject>();
-    for (SObject record : records) {
-      Id recordId = (Id) record.get('Id');
-      SObject hydrated = recordId == null ? null : hydratedById.get(recordId);
-      result.add(hydrated != null ? hydrated : record);
-    }
-    return result;
   }
 }
