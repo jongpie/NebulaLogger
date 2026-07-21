@@ -12,26 +12,20 @@
  *
  *              Recipient configuration (read from `LoggerNotifierRequest.configuration`, which parses the
  *              recipient's `ConfigurationJson__c`):
- *                - `User__c` on the recipient - single user (required if the configuration JSON doesn't specify recipients)
+ *                - `User__c` on the recipient - the single target user (required)
  *                - `notificationTypeDeveloperName` (string, required) - matches a `CustomNotificationType.DeveloperName`
- *                - `recipientUserIds` (string list, optional) - additional users
- *                - `recipientGroupIds` (string list, optional) - public / queue groups
  *                - `titleTemplate` (string, optional) - Custom Notification title. Merge tokens `{FieldName__c}`
  *                    resolve against the current matching record; `{RuleName}` resolves to the rule's Name.
  *                    Defaults to `Nebula Logger: {RuleName}`.
  *                - `bodyTemplate` (string, optional) - Custom Notification body. Same merge tokens as
  *                    `titleTemplate`. Defaults to the record's Name (or its Id when the SObject has no
  *                    Name field).
- *
- *              At least one recipient (either `User__c` or an entry in the configuration JSON) must resolve.
  */
 public without sharing class CustomNotificationLoggerNotifier extends LoggerNotifier {
   private static final Integer MAX_TITLE_LENGTH = 80;
   private static final Integer MAX_BODY_LENGTH = 750;
 
   private static final String CONFIG_KEY_NOTIFICATION_TYPE = 'notificationTypeDeveloperName';
-  private static final String CONFIG_KEY_RECIPIENT_USER_IDS = 'recipientUserIds';
-  private static final String CONFIG_KEY_RECIPIENT_GROUP_IDS = 'recipientGroupIds';
   private static final String CONFIG_KEY_TITLE_TEMPLATE = 'titleTemplate';
   private static final String CONFIG_KEY_BODY_TEMPLATE = 'bodyTemplate';
 
@@ -41,27 +35,29 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
 
   private static final System.Pattern MERGE_TOKEN_PATTERN = System.Pattern.compile('\\{([A-Za-z0-9_.]+)\\}');
 
+  @TestVisible
+  private static Sender sender = new RealSender();
+
   /**
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async context.
-   * @param request The rule + recipient + service + matching records to deliver.
+   * @param notifierRequest The rule + recipient + service + matching records to deliver.
    */
-  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
-    if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
+  public override LoggerNotifierResult sendNotification(LoggerNotifierRequest notifierRequest) {
+    if (notifierRequest == null || notifierRequest.recipient == null || notifierRequest.matchingRecords == null || notifierRequest.matchingRecords.isEmpty()) {
       return null;
     }
-    String notificationTypeDeveloperName = request.configuration.getString(CONFIG_KEY_NOTIFICATION_TYPE);
+    String notificationTypeDeveloperName = notifierRequest.configuration.getString(CONFIG_KEY_NOTIFICATION_TYPE);
     if (String.isBlank(notificationTypeDeveloperName)) {
       return buildSkipped(
         'CustomNotificationLoggerNotifier - ConfigurationJson__c must set ' + CONFIG_KEY_NOTIFICATION_TYPE + '; skipping',
         CONFIG_KEY_NOTIFICATION_TYPE + ' missing from ConfigurationJson__c'
       );
     }
-    Set<String> recipientIds = this.resolveRecipientIds(request);
-    if (recipientIds.isEmpty()) {
-      return buildSkipped('CustomNotificationLoggerNotifier - no recipient users or groups resolved; skipping', 'No recipient users or groups resolved');
+    if (notifierRequest.recipient.User__c == null) {
+      return buildSkipped('CustomNotificationLoggerNotifier - recipient has no User__c set; skipping', 'Recipient User__c is required');
     }
-    Id typeId = this.lookupNotificationTypeId(notificationTypeDeveloperName);
-    if (typeId == null) {
+    Id customNotificationTypeId = this.lookupNotificationTypeId(notificationTypeDeveloperName);
+    if (customNotificationTypeId == null) {
       return buildSkipped(
         'CustomNotificationLoggerNotifier - could not resolve CustomNotificationType DeveloperName ' + notificationTypeDeveloperName,
         'CustomNotificationType__mdt DeveloperName ' + notificationTypeDeveloperName + ' not found'
@@ -69,10 +65,10 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     }
     Integer failureCount = 0;
     String firstError;
-    for (SObject record : request.matchingRecords) {
-      Messaging.CustomNotification customNotification = this.buildNotification(request, record, typeId);
+    for (SObject matchingRecord : notifierRequest.matchingRecords) {
+      Payload payload = this.buildPayload(notifierRequest, matchingRecord, customNotificationTypeId);
       try {
-        customNotification.send(recipientIds);
+        sender.send(payload);
       } catch (System.Exception ex) {
         failureCount++;
         if (String.isBlank(firstError)) {
@@ -88,7 +84,7 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
       outcome.status = LoggerNotifierResult.STATUS_DELIVERED;
     } else {
       outcome.status = LoggerNotifierResult.STATUS_FAILED;
-      outcome.errorMessage = failureCount + ' of ' + request.matchingRecords.size() + ' notifications failed; first error: ' + firstError;
+      outcome.errorMessage = failureCount + ' of ' + notifierRequest.matchingRecords.size() + ' notifications failed; first error: ' + firstError;
     }
     return outcome;
   }
@@ -108,29 +104,27 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     return skipped;
   }
 
-  @TestVisible
-  private Messaging.CustomNotification buildNotification(LoggerNotifierRequest request, SObject record, Id typeId) {
-    String titleTemplate = request.configuration.getString(CONFIG_KEY_TITLE_TEMPLATE);
-    String bodyTemplate = request.configuration.getString(CONFIG_KEY_BODY_TEMPLATE);
-    Messaging.CustomNotification customNotification = new Messaging.CustomNotification();
-    customNotification.setNotificationTypeId(typeId);
-    customNotification.setTitle(this.buildTitle(request, record, titleTemplate));
-    customNotification.setBody(this.buildBody(request, record, bodyTemplate));
-    customNotification.setTargetId((Id) record.get('Id'));
-    return customNotification;
+  private Payload buildPayload(LoggerNotifierRequest notifierRequest, SObject matchingRecord, Id customNotificationTypeId) {
+    String titleTemplate = notifierRequest.configuration.getString(CONFIG_KEY_TITLE_TEMPLATE);
+    String bodyTemplate = notifierRequest.configuration.getString(CONFIG_KEY_BODY_TEMPLATE);
+    Payload payload = new Payload();
+    payload.notificationTypeId = customNotificationTypeId;
+    payload.title = this.buildTitle(notifierRequest, matchingRecord, titleTemplate);
+    payload.body = this.buildBody(notifierRequest, matchingRecord, bodyTemplate);
+    payload.targetId = (Id) matchingRecord.get('Id');
+    payload.recipientUserId = notifierRequest.recipient.User__c;
+    return payload;
   }
 
-  @TestVisible
-  private String buildTitle(LoggerNotifierRequest request, SObject record, String template) {
+  private String buildTitle(LoggerNotifierRequest notifierRequest, SObject record, String template) {
     String effectiveTemplate = String.isBlank(template) ? DEFAULT_TITLE_TEMPLATE : template;
-    String rendered = this.renderTemplate(effectiveTemplate, request, record);
+    String rendered = this.renderTemplate(effectiveTemplate, notifierRequest, record);
     return rendered?.abbreviate(MAX_TITLE_LENGTH);
   }
 
-  @TestVisible
-  private String buildBody(LoggerNotifierRequest request, SObject record, String template) {
+  private String buildBody(LoggerNotifierRequest notifierRequest, SObject record, String template) {
     if (String.isNotBlank(template)) {
-      return this.renderTemplate(template, request, record)?.abbreviate(MAX_BODY_LENGTH);
+      return this.renderTemplate(template, notifierRequest, record)?.abbreviate(MAX_BODY_LENGTH);
     }
     return this.defaultBody(record)?.abbreviate(MAX_BODY_LENGTH);
   }
@@ -144,8 +138,7 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     return recordId == null ? '' : String.valueOf(recordId);
   }
 
-  @TestVisible
-  private String renderTemplate(String template, LoggerNotifierRequest request, SObject record) {
+  private String renderTemplate(String template, LoggerNotifierRequest notifierRequest, SObject record) {
     if (String.isBlank(template)) {
       return '';
     }
@@ -155,7 +148,7 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     while (matcher.find()) {
       parts.add(template.substring(cursor, matcher.start()));
       String token = matcher.group(1);
-      String resolved = this.resolveToken(token, request, record);
+      String resolved = this.resolveToken(token, notifierRequest, record);
       parts.add(resolved == null ? '' : resolved);
       cursor = matcher.end();
     }
@@ -163,37 +156,14 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
     return String.join(parts, '');
   }
 
-  private String resolveToken(String token, LoggerNotifierRequest request, SObject record) {
+  private String resolveToken(String token, LoggerNotifierRequest notifierRequest, SObject record) {
     if (MERGE_KEY_RULE_NAME.equalsIgnoreCase(token)) {
-      return request.recipient.LoggerNotificationRule__r == null ? '' : String.valueOf(request.recipient.LoggerNotificationRule__r.Name);
+      return notifierRequest.recipient.LoggerNotificationRule__r == null ? '' : String.valueOf(notifierRequest.recipient.LoggerNotificationRule__r.Name);
     }
     Object value = LoggerNotifier.getValueByPath(record, token);
     return value == null ? '' : String.valueOf(value);
   }
 
-  @TestVisible
-  private Set<String> resolveRecipientIds(LoggerNotifierRequest request) {
-    Set<String> recipientIds = new Set<String>();
-    if (request.recipient.User__c != null) {
-      recipientIds.add(String.valueOf(request.recipient.User__c));
-    }
-    this.addIdsFromConfig(recipientIds, request.configuration, CONFIG_KEY_RECIPIENT_USER_IDS);
-    this.addIdsFromConfig(recipientIds, request.configuration, CONFIG_KEY_RECIPIENT_GROUP_IDS);
-    return recipientIds;
-  }
-
-  // TODO: move this into LoggerNotifierConfiguration as a getStringSet(key) accessor - matches the
-  // shape of the existing getString / getBoolean / getStringList / getSourceFields methods and drops
-  // the awkward "hand me a target Set and I'll append" signature.
-  private void addIdsFromConfig(Set<String> target, LoggerNotifierConfiguration configuration, String key) {
-    List<String> values = configuration.getStringList(key);
-    if (values == null) {
-      return;
-    }
-    target.addAll(values);
-  }
-
-  @TestVisible
   private Id lookupNotificationTypeId(String developerName) {
     // CustomNotificationType is an admin-managed metadata table; SYSTEM_MODE keeps the lookup working
     // regardless of the async-executing user's object-level permissions on it.
@@ -216,6 +186,39 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
       return value == null ? null : String.valueOf(value);
     } catch (System.SObjectException ex) {
       return null;
+    }
+  }
+
+  /**
+   * @description DTO capturing every value the notifier will set on a `Messaging.CustomNotification`
+   *              plus the target user. `RealSender` translates this to a live Custom Notification and
+   *              dispatches it; tests inject a capturing `Sender` implementation and assert on the DTO.
+   */
+  public class Payload {
+    public String title;
+    public String body;
+    public Id notificationTypeId;
+    public Id recipientUserId;
+    public Id targetId;
+  }
+
+  /**
+   * @description Seam over `Messaging.CustomNotification.send(...)`. `RealSender` is the production
+   *              implementation; tests replace `CustomNotificationLoggerNotifier.sender` with a
+   *              capturing implementation so they can assert on the `Payload` values.
+   */
+  public interface Sender {
+    void send(Payload payload);
+  }
+
+  private class RealSender implements Sender {
+    public void send(Payload payload) {
+      Messaging.CustomNotification notification = new Messaging.CustomNotification();
+      notification.setNotificationTypeId(payload.notificationTypeId);
+      notification.setTitle(payload.title);
+      notification.setBody(payload.body);
+      notification.setTargetId(payload.targetId);
+      notification.send(new Set<String>{ payload.recipientUserId });
     }
   }
 }

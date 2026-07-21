@@ -5,15 +5,111 @@
 
 /**
  * @group Extra Tests
- * @description Integration test class used to validate that the bundled records in LoggerNotifierType__mdt
- *              have the expected default values.
- * @see LoggerNotifier
+ * @description Integration test class used to validate that the bundled CMDT records in the
+ *              notifications plugin have the expected default values.
  */
 @SuppressWarnings('PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
-private class CMDT_LoggerNotifierType_Tests {
+private class CMDT_LoggerNotificationsPlugin_Tests {
   @IsTest
-  static void it_has_correct_record_for_custom_notification() {
+  static void it_has_correct_record_for_logger_notifications_plugin() {
+    LoggerPlugin__mdt bundledRecord = LoggerPlugin__mdt.getInstance('LoggerNotifications');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.areEqual(LoggerNotificationsPlugin.class.getName(), bundledRecord.BatchPurgeRegistrarApexClass__c);
+    System.Assert.isNull(bundledRecord.BatchPurgerApexClass__c);
+    System.Assert.isNull(bundledRecord.BatchPurgerExecutionOrder__c);
+    System.Assert.isNull(bundledRecord.BatchPurgerFlowName__c);
+    System.Assert.areEqual(
+      'Adds the ability to configure notification rules for logging records and sends notifications to each rule\'s configured recipients (Slack, email, etc.).',
+      bundledRecord.Description__c
+    );
+    System.Assert.isNull(bundledRecord.ExecutionOrder__c);
+    System.Assert.isTrue(bundledRecord.IsEnabled__c);
+    System.Assert.isNull(bundledRecord.Link__c);
+    System.Assert.areEqual('Logger Notifications', bundledRecord.Label);
+    System.Assert.isNull(bundledRecord.PluginApiName__c);
+    System.Assert.areEqual('Apex', bundledRecord.PluginType__c);
+    System.Assert.areEqual(LoggerNotificationsPlugin.class.getName(), bundledRecord.SObjectHandlerApexClass__c);
+    System.Assert.areEqual(100.0, bundledRecord.SObjectHandlerExecutionOrder__c);
+    System.Assert.isNull(bundledRecord.SObjectHandlerFlowName__c);
+    System.Assert.isNull(bundledRecord.SObjectType__c);
+    System.Assert.areEqual('v1.0.0', bundledRecord.VersionNumber__c);
+  }
+
+  @IsTest
+  static void it_does_not_have_record_for_logger_notification_delivery_sobject_handler() {
+    List<LoggerSObjectHandler__mdt> bundledRecords = [
+      SELECT Id
+      FROM LoggerSObjectHandler__mdt
+      WHERE
+        DeveloperName = 'LoggerNotificationDeliveryHandler'
+        OR SObjectType__r.QualifiedApiName = :Schema.LoggerNotificationDelivery__c.SObjectType.getDescribe().getLocalName()
+    ];
+
+    System.Assert.isTrue(bundledRecords.isEmpty(), 'No record or handler should be present for LoggerNotificationDelivery__c');
+  }
+
+  @IsTest
+  static void it_does_not_have_record_for_logger_notification_match_sobject_handler() {
+    List<LoggerSObjectHandler__mdt> bundledRecords = [
+      SELECT Id
+      FROM LoggerSObjectHandler__mdt
+      WHERE
+        DeveloperName = 'LoggerNotificationMatchHandler'
+        OR SObjectType__r.QualifiedApiName = :Schema.LoggerNotificationMatch__c.SObjectType.getDescribe().getLocalName()
+    ];
+
+    System.Assert.isTrue(bundledRecords.isEmpty(), 'No record or handler should be present for LoggerNotificationMatch__c');
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_logger_notification_recipient_sobject_handler() {
+    LoggerSObjectHandler__mdt bundledRecord = LoggerSObjectHandler__mdt.getInstance('LoggerNotificationRecipientHandler');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isTrue(bundledRecord.IsEnabled__c, 'Record should be enabled');
+    System.Assert.areEqual('LoggerNotificationRecipient__c config', bundledRecord.Label);
+    System.Assert.areEqual(LoggerNotificationRecipientHandler.class.getName(), bundledRecord.SObjectHandlerApexClass__c);
+    System.Assert.isNull(bundledRecord.SObjectTypeOverride__c, 'SObject Type Override should be null');
+    // Relationship fields have to be queried, so query the CMDT record to get it
+    String configuredSObjectApiName = [SELECT SObjectType__r.QualifiedApiName FROM LoggerSObjectHandler__mdt WHERE DeveloperName = :bundledRecord.DeveloperName]
+    .SObjectType__r.QualifiedApiName;
+    System.Assert.areEqual(Schema.LoggerNotificationRecipient__c.SObjectType.getDescribe().getLocalName(), configuredSObjectApiName);
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_logger_notification_rule_sobject_handler() {
+    LoggerSObjectHandler__mdt bundledRecord = LoggerSObjectHandler__mdt.getInstance('LoggerNotificationRuleHandler');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isTrue(bundledRecord.IsEnabled__c, 'Record should be enabled');
+    System.Assert.areEqual('LoggerNotificationRule__c config', bundledRecord.Label);
+    System.Assert.areEqual(LoggerNotificationRuleHandler.class.getName(), bundledRecord.SObjectHandlerApexClass__c);
+    System.Assert.isNull(bundledRecord.SObjectTypeOverride__c, 'SObject Type Override should be null');
+    // Relationship fields have to be queried, so query the CMDT record to get it
+    String configuredSObjectApiName = [SELECT SObjectType__r.QualifiedApiName FROM LoggerSObjectHandler__mdt WHERE DeveloperName = :bundledRecord.DeveloperName]
+    .SObjectType__r.QualifiedApiName;
+    System.Assert.areEqual(Schema.LoggerNotificationRule__c.SObjectType.getDescribe().getLocalName(), configuredSObjectApiName);
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_logger_notification_Service_sobject_handler() {
+    LoggerSObjectHandler__mdt bundledRecord = LoggerSObjectHandler__mdt.getInstance('LoggerNotificationServiceHandler');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isTrue(bundledRecord.IsEnabled__c, 'Record should be enabled');
+    System.Assert.areEqual('LoggerNotificationService__c config', bundledRecord.Label);
+    System.Assert.areEqual(LoggerNotificationServiceHandler.class.getName(), bundledRecord.SObjectHandlerApexClass__c);
+    System.Assert.isNull(bundledRecord.SObjectTypeOverride__c, 'SObject Type Override should be null');
+    // Relationship fields have to be queried, so query the CMDT record to get it
+    String configuredSObjectApiName = [SELECT SObjectType__r.QualifiedApiName FROM LoggerSObjectHandler__mdt WHERE DeveloperName = :bundledRecord.DeveloperName]
+    .SObjectType__r.QualifiedApiName;
+    System.Assert.areEqual(Schema.LoggerNotificationService__c.SObjectType.getDescribe().getLocalName(), configuredSObjectApiName);
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_custom_notification_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('CustomNotification');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
@@ -40,7 +136,7 @@ private class CMDT_LoggerNotifierType_Tests {
   }
 
   @IsTest
-  static void it_has_correct_record_for_email() {
+  static void it_has_correct_record_for_email_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('Email');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
@@ -70,7 +166,7 @@ private class CMDT_LoggerNotifierType_Tests {
   }
 
   @IsTest
-  static void it_has_correct_record_for_generic_webhook() {
+  static void it_has_correct_record_for_generic_webhook_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('GenericWebhook');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
@@ -100,7 +196,7 @@ private class CMDT_LoggerNotifierType_Tests {
   }
 
   @IsTest
-  static void it_has_correct_record_for_google_chat() {
+  static void it_has_correct_record_for_google_chat_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('GoogleChat');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
@@ -130,7 +226,7 @@ private class CMDT_LoggerNotifierType_Tests {
   }
 
   @IsTest
-  static void it_has_correct_record_for_microsoft_teams() {
+  static void it_has_correct_record_for_microsoft_teams_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('MicrosoftTeams');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
@@ -160,7 +256,7 @@ private class CMDT_LoggerNotifierType_Tests {
   }
 
   @IsTest
-  static void it_has_correct_record_for_open_telemetry() {
+  static void it_has_correct_record_for_open_telemetry_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('OpenTelemetry');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
@@ -190,7 +286,7 @@ private class CMDT_LoggerNotifierType_Tests {
   }
 
   @IsTest
-  static void it_has_correct_record_for_pager_duty() {
+  static void it_has_correct_record_for_pager_duty_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('PagerDuty');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
@@ -220,7 +316,7 @@ private class CMDT_LoggerNotifierType_Tests {
   }
 
   @IsTest
-  static void it_has_correct_record_for_slack() {
+  static void it_has_correct_record_for_slack_notifier_type() {
     LoggerNotifierType__mdt bundledRecord = LoggerNotifierType__mdt.getInstance('Slack');
 
     System.Assert.isNotNull(bundledRecord, 'Record is missing');
