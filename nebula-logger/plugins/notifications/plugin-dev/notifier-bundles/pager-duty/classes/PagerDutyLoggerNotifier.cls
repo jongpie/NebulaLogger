@@ -54,10 +54,10 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
   @TestVisible
   private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c + '/v2/enqueue';
-    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
-      endpoint = request.service.WebhookUrl__c;
+    if (String.isNotBlank(request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c + '/v2/enqueue';
+    } else if (String.isNotBlank(request.recipient.LoggerNotificationService__r.WebhookUrl__c)) {
+      endpoint = request.recipient.LoggerNotificationService__r.WebhookUrl__c;
     } else {
       endpoint = DEFAULT_ENDPOINT;
     }
@@ -83,7 +83,9 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
   @TestVisible
   private String buildDedupKey(LoggerNotifierRequest request) {
     Id firstMatchId = this.firstRecordIdOrNull(request.matchingRecords);
-    String rulePart = request.notificationRule.Id != null ? String.valueOf(request.notificationRule.Id) : request.notificationRule.Name;
+    String rulePart = request.recipient.LoggerNotificationRule__r.Id != null
+      ? String.valueOf(request.recipient.LoggerNotificationRule__r.Id)
+      : request.recipient.LoggerNotificationRule__r.Name;
     String recordPart = firstMatchId != null ? String.valueOf(firstMatchId) : String.valueOf(request.matchingRecords.size());
     return 'nebula-logger:' + rulePart + ':' + recordPart;
   }
@@ -94,8 +96,8 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
     payload.put('severity', this.severityFor(request.matchingRecords));
     payload.put('source', this.buildSource());
     payload.put('component', 'nebula-logger');
-    payload.put('group', request.notificationRule.Name);
-    payload.put('class', request.service?.Name);
+    payload.put('group', request.recipient.LoggerNotificationRule__r.Name);
+    payload.put('class', request.recipient.LoggerNotificationService__r.Name);
     payload.put('custom_details', this.buildCustomDetails(request));
     return payload;
   }
@@ -104,7 +106,7 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
   private String buildSummary(LoggerNotifierRequest request) {
     Integer matchCount = request.matchingRecords.size();
     String noun = matchCount == 1 ? 'record' : 'records';
-    String base = 'Nebula Logger: ' + request.notificationRule.Name + ' - ' + matchCount + ' ' + noun + ' matched';
+    String base = 'Nebula Logger: ' + request.recipient.LoggerNotificationRule__r.Name + ' - ' + matchCount + ' ' + noun + ' matched';
     SObject first = request.matchingRecords.get(0);
     String firstMessage = this.tryGetString(first, 'Message__c');
     if (String.isNotBlank(firstMessage)) {
@@ -140,9 +142,9 @@ public without sharing class PagerDutyLoggerNotifier extends LoggerNotifier {
 
   private Map<String, Object> buildCustomDetails(LoggerNotifierRequest request) {
     Map<String, Object> details = new Map<String, Object>();
-    details.put('rule', request.notificationRule.Name);
-    details.put('ruleId', request.notificationRule.Id);
-    details.put('filter', request.notificationRule.SourceSObjectFilter__c);
+    details.put('rule', request.recipient.LoggerNotificationRule__r.Name);
+    details.put('ruleId', request.recipient.LoggerNotificationRule__r.Id);
+    details.put('filter', request.recipient.LoggerNotificationRule__r.SourceSObjectFilter__c);
     details.put('matchCount', request.matchingRecords.size());
     List<Map<String, Object>> recordSummaries = new List<Map<String, Object>>();
     for (SObject record : request.matchingRecords) {

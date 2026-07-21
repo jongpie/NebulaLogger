@@ -50,23 +50,23 @@ if (recipientUserId == null && String.isBlank(recipientEmailAddress)) {
 }
 
 // ---- Build the request -------------------------------------------------------
-LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
-  Name = ruleName,
-  SourceSObjectType__c = String.valueOf(matchingRecord.getSObjectType()),
-  SourceSObjectFilter__c = String.isBlank(sourceSObjectFilter) ? null : sourceSObjectFilter
-);
-LoggerNotificationService__c service = new LoggerNotificationService__c(
-  Name = 'Manual test email service',
-  NotifierApexClassName__c = 'EmailLoggerNotifier',
-  IsEnabled__c = true
-);
 LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
   // User__c takes precedence over EmailAddress__c in the notifier; leaving both
   // set here is a config bug that this script's validation above already caught.
   User__c = String.isBlank(recipientEmailAddress) ? recipientUserId : null,
   EmailAddress__c = String.isBlank(recipientEmailAddress) ? null : recipientEmailAddress
 );
-LoggerNotifierRequest request = new LoggerNotifierRequest(rule, recipient, service, new List<SObject>{ matchingRecord });
+recipient.LoggerNotificationRule__r = new LoggerNotificationRule__c(
+  Name = ruleName,
+  SourceSObjectType__c = String.valueOf(matchingRecord.getSObjectType()),
+  SourceSObjectFilter__c = String.isBlank(sourceSObjectFilter) ? null : sourceSObjectFilter
+);
+recipient.LoggerNotificationService__r = new LoggerNotificationService__c(
+  Name = 'Manual test email service',
+  NotifierApexClassName__c = 'EmailLoggerNotifier',
+  IsEnabled__c = true
+);
+LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ matchingRecord });
 
 System.debug('Email target: ' + (String.isNotBlank(recipientEmailAddress) ? 'external address ' + recipientEmailAddress : 'user ' + recipientUserId));
 

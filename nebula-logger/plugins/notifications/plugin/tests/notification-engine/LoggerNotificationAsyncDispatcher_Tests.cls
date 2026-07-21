@@ -101,9 +101,21 @@ private class LoggerNotificationAsyncDispatcher_Tests {
       OriginOrganizationId__c = System.UserInfo.getOrganizationId(),
       WebhookUrl__c = 'https://example.com/webhook'
     );
-    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Name = 'Test rule', SourceSObjectType__c = 'LogEntry__c');
-    return new LoggerNotificationAsyncDispatcher.PendingDispatch(rule, recipient, service, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    // PendingDispatch snapshots rule + service from the recipient's parent relationships at construction
+    // time, so both __r lookups have to be populated on the recipient. In-memory SObject relationships
+    // aren't directly assignable in Apex; round-trip through JSON to attach them.
+    LoggerNotificationRecipient__c recipient = (LoggerNotificationRecipient__c) System.JSON.deserialize(
+      System.JSON.serialize(
+        new Map<String, Object>{
+          'attributes' => new Map<String, String>{ 'type' => 'LoggerNotificationRecipient__c' },
+          'LoggerNotificationRule__r' => rule,
+          'LoggerNotificationService__r' => service
+        }
+      ),
+      LoggerNotificationRecipient__c.class
+    );
+    return new LoggerNotificationAsyncDispatcher.PendingDispatch(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') }, null);
   }
 
   public class MockNotifier extends LoggerNotifier {

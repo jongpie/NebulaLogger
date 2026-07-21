@@ -10,21 +10,21 @@ private class LoggerNotifier_Tests {
   static void it_should_return_one_spec_per_field_name_with_no_overrides() {
     List<String> fieldNames = new List<String>{ 'LoggingLevel__c', 'Message__c', 'Origin__c' };
 
-    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = LoggerNotifier.buildDefaultSpecs(fieldNames);
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = LoggerNotifier.buildDefaultSourceFields(fieldNames);
 
-    System.Assert.areEqual(3, specs.size());
+    System.Assert.areEqual(3, sourceFields.size());
     for (Integer i = 0; i < fieldNames.size(); i++) {
-      System.Assert.areEqual(fieldNames.get(i), specs.get(i).field, 'Order should match the input list');
-      System.Assert.isNull(specs.get(i).displayField, 'Default specs should not override the display field');
-      System.Assert.isNull(specs.get(i).displayLabel, 'Default specs should not override the display label');
+      System.Assert.areEqual(fieldNames.get(i), sourceFields.get(i).sourceField, 'Order should match the input list');
+      System.Assert.isNull(sourceFields.get(i).displayField, 'Default sourceFields should not override the display field');
+      System.Assert.isNull(sourceFields.get(i).displayLabel, 'Default sourceFields should not override the display label');
     }
   }
 
   @IsTest
   static void it_should_return_an_empty_list_when_field_names_is_empty() {
-    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = LoggerNotifier.buildDefaultSpecs(new List<String>());
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = LoggerNotifier.buildDefaultSourceFields(new List<String>());
 
-    System.Assert.areEqual(0, specs.size(), 'An empty input list should yield an empty spec list');
+    System.Assert.areEqual(0, sourceFields.size(), 'An empty input list should yield an empty sourceField list');
   }
 
   @IsTest

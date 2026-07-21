@@ -41,10 +41,10 @@ public without sharing class GoogleChatLoggerNotifier extends LoggerNotifier {
 
   private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c;
-    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
-      endpoint = request.service.WebhookUrl__c;
+    if (String.isNotBlank(request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c;
+    } else if (String.isNotBlank(request.recipient.LoggerNotificationService__r.WebhookUrl__c)) {
+      endpoint = request.recipient.LoggerNotificationService__r.WebhookUrl__c;
     } else {
       return null;
     }
@@ -58,7 +58,7 @@ public without sharing class GoogleChatLoggerNotifier extends LoggerNotifier {
   @TestVisible
   private String buildPayload(LoggerNotifierRequest request) {
     Map<String, Object> envelope = new Map<String, Object>();
-    envelope.put('text', 'Nebula Logger: ' + request.notificationRule.Name + ' - ' + request.matchingRecords.size() + ' record(s) matched');
+    envelope.put('text', 'Nebula Logger: ' + request.recipient.LoggerNotificationRule__r.Name + ' - ' + request.matchingRecords.size() + ' record(s) matched');
     envelope.put('cardsV2', new List<Map<String, Object>>{ this.buildCard(request) });
     return System.JSON.serialize(envelope, true);
   }
@@ -71,7 +71,10 @@ public without sharing class GoogleChatLoggerNotifier extends LoggerNotifier {
     return new Map<String, Object>{
       'cardId' => 'nebula-logger-notification',
       'card' => new Map<String, Object>{
-        'header' => new Map<String, Object>{ 'title' => request.notificationRule.Name, 'subtitle' => request.matchingRecords.size() + ' record(s) matched' },
+        'header' => new Map<String, Object>{
+          'title' => request.recipient.LoggerNotificationRule__r.Name,
+          'subtitle' => request.matchingRecords.size() + ' record(s) matched'
+        },
         'sections' => sections
       }
     };

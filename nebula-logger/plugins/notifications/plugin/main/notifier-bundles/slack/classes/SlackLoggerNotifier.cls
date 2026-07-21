@@ -137,11 +137,11 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
 
   private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
+    if (String.isNotBlank(request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c)) {
       // Web API mode: callout: named credential + chat.postMessage path
-      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c + '/chat.postMessage';
-    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
-      endpoint = request.service.WebhookUrl__c;
+      endpoint = 'callout:' + request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c + '/chat.postMessage';
+    } else if (String.isNotBlank(request.recipient.LoggerNotificationService__r.WebhookUrl__c)) {
+      endpoint = request.recipient.LoggerNotificationService__r.WebhookUrl__c;
     } else {
       return null;
     }
@@ -156,30 +156,33 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     NotificationDto notification = new NotificationDto();
     // Top-level text is Slack's summary line above the attachments. It uses <url|text> mrkdwn syntax
     // automatically (no opt-in flag needed at this level), so linkifying the rule name here Just Works.
-    notification.text = 'Nebula Logger notification for ' + this.buildRuleLink(request.notificationRule);
-    if (String.isNotBlank(request.recipient.ChannelIdentifier__c) && String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
+    notification.text = 'Nebula Logger notification for ' + this.buildRuleLink(request.recipient.LoggerNotificationRule__r);
+    if (
+      String.isNotBlank(request.recipient.ChannelIdentifier__c) &&
+      String.isNotBlank(request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c)
+    ) {
       // Only the Web API mode uses the channel field on the payload; webhooks are pre-scoped to a channel
       notification.channel = request.recipient.ChannelIdentifier__c;
     }
-    List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
-    if (specs == null) {
-      specs = LoggerNotifier.buildDefaultSpecs(DEFAULT_SOURCE_FIELDS);
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = request.configuration.getSourceFields();
+    if (sourceFields == null) {
+      sourceFields = LoggerNotifier.buildDefaultSourceFields(DEFAULT_SOURCE_FIELDS);
     }
     Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
     Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     // Compute every schema path we'll need to resolve values against - the primary field, any overridden
     // display field, and (for REFERENCE-typed primaries with no display override) the parent record's Name.
-    List<String> hydrationPaths = collectHydrationPaths(specs, sourceType);
+    List<String> hydrationPaths = collectHydrationPaths(sourceFields, sourceType);
     List<SObject> hydratedRecords = LoggerNotifier.hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
     notification.attachments = new List<AttachmentDto>();
     for (SObject record : hydratedRecords) {
-      notification.attachments.add(this.buildAttachment(record, specs, includeNullValues));
+      notification.attachments.add(this.buildAttachment(record, sourceFields, includeNullValues));
     }
     // 'short' is a reserved word in Apex, so it's serialized as `isShort` here and swapped in the JSON string
     return System.JSON.serialize(notification, true).replace('"isShort"', '"short"');
   }
 
-  private AttachmentDto buildAttachment(SObject record, List<LoggerNotifierConfiguration.SourceFieldSpec> specs, Boolean includeNullValues) {
+  private AttachmentDto buildAttachment(SObject record, List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields, Boolean includeNullValues) {
     AttachmentDto attachment = new AttachmentDto();
     attachment.color = this.getColorForRecord(record);
     attachment.title = this.getRecordTitle(record);
@@ -188,10 +191,10 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     attachment.mrkdwn_in = new List<String>{ 'fields' };
     attachment.fields = new List<FieldDto>();
 
-    for (LoggerNotifierConfiguration.SourceFieldSpec spec : specs) {
-      FieldDto rendered = this.renderField(record, spec, includeNullValues);
-      if (rendered != null) {
-        attachment.fields.add(rendered);
+    for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
+      FieldDto renderedField = this.renderField(record, definition, includeNullValues);
+      if (renderedField != null) {
+        attachment.fields.add(renderedField);
       }
     }
     return attachment;
@@ -205,21 +208,23 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     return '<' + ruleLink + '|' + rule.Name + '>';
   }
 
-  private FieldDto renderField(SObject record, LoggerNotifierConfiguration.SourceFieldSpec spec, Boolean includeNullValues) {
-    Schema.DescribeFieldResult primaryDescribe = LoggerNotifier.getDescribeByPath(record.getSObjectType(), spec.field);
+  private FieldDto renderField(SObject record, LoggerNotifierConfiguration.SourceFieldDefinition definition, Boolean includeNullValues) {
+    Schema.DescribeFieldResult primaryDescribe = LoggerNotifier.getDescribeByPath(record.getSObjectType(), definition.sourceField);
     if (primaryDescribe == null) {
       return null;
     }
     // Resolve the display value: explicit displayField > REFERENCE parent Name fallback > primary value.
-    String valuePath = String.isNotBlank(spec.displayField)
-      ? spec.displayField
-      : (primaryDescribe.getType() == Schema.DisplayType.REFERENCE ? deriveParentNamePath(spec.field, record.getSObjectType()) : spec.field);
+    String valuePath = String.isNotBlank(definition.displayField)
+      ? definition.displayField
+      : (primaryDescribe.getType() == Schema.DisplayType.REFERENCE
+          ? deriveParentNamePath(definition.sourceField, record.getSObjectType())
+          : definition.sourceField);
     if (valuePath == null) {
-      valuePath = spec.field;
+      valuePath = definition.sourceField;
     }
     Object rawValue = LoggerNotifier.getValueByPath(record, valuePath);
     Boolean isWide = isWideDisplayType(primaryDescribe.getType());
-    String label = String.isNotBlank(spec.displayLabel) ? spec.displayLabel : primaryDescribe.getLabel();
+    String label = String.isNotBlank(definition.displayLabel) ? definition.displayLabel : primaryDescribe.getLabel();
     if (rawValue == null || String.isBlank(String.valueOf(rawValue))) {
       if (includeNullValues == false) {
         return null;
@@ -231,7 +236,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     // Slack's `<url|text>` mrkdwn wrapping only kicks in when the primary field points at a specific record
     // (a Name on the source record, a parent Name via `.Name`, or a REFERENCE lookup). Everything else stays
     // as plain rendered text.
-    Id linkTarget = resolveLinkTarget(record, spec.field, primaryDescribe);
+    Id linkTarget = resolveLinkTarget(record, definition.sourceField, primaryDescribe);
     return new FieldDto(label, wrapAsLink(linkTarget, renderedValue), isWide == false);
   }
 
@@ -319,20 +324,20 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     return String.join(parts, '.');
   }
 
-  private static List<String> collectHydrationPaths(List<LoggerNotifierConfiguration.SourceFieldSpec> specs, Schema.SObjectType sourceType) {
+  private static List<String> collectHydrationPaths(List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields, Schema.SObjectType sourceType) {
     Set<String> pathSet = new Set<String>();
-    for (LoggerNotifierConfiguration.SourceFieldSpec spec : specs) {
-      if (String.isNotBlank(spec.field)) {
-        pathSet.add(spec.field);
+    for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
+      if (String.isNotBlank(definition.sourceField)) {
+        pathSet.add(definition.sourceField);
       }
-      if (String.isNotBlank(spec.displayField)) {
-        pathSet.add(spec.displayField);
+      if (String.isNotBlank(definition.displayField)) {
+        pathSet.add(definition.displayField);
       } else {
         // REFERENCE primary field with no explicit display override: pull the parent's Name too so the
         // renderer can substitute it for the raw Id at render time.
-        Schema.DescribeFieldResult describe = LoggerNotifier.getDescribeByPath(sourceType, spec.field);
+        Schema.DescribeFieldResult describe = LoggerNotifier.getDescribeByPath(sourceType, definition.sourceField);
         if (describe != null && describe.getType() == Schema.DisplayType.REFERENCE) {
-          String parentNamePath = deriveParentNamePath(spec.field, sourceType);
+          String parentNamePath = deriveParentNamePath(definition.sourceField, sourceType);
           if (parentNamePath != null) {
             pathSet.add(parentNamePath);
           }
@@ -343,6 +348,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     return paths;
   }
 
+  // TODO BAD! This method poitless, it's 3 lines to call a 1 line of code. Using Schema.DisplayType might not be the best option either.
   private static Boolean isWideDisplayType(Schema.DisplayType type) {
     // Long-form values (Long Text Area, Rich Text Area, encrypted long text) get their own Slack row and
     // a code block for readability; scalar fields render as half-width tiles.
@@ -364,11 +370,13 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
 
   private String getRecordTitle(SObject record) {
     String objectLabel = record.getSObjectType().getDescribe().getLabel();
+    // TODO BAD! All of the custom objects in scope have a Name field (and it'll be populated)
     String name = this.tryGetString(record, 'Name');
     return String.isNotBlank(name) ? objectLabel + ' ' + name : objectLabel;
   }
 
   private String getRecordLink(SObject record) {
+    // TODO BAD! All of the custom objects in scope have an Id field (and it'll be populated)
     Id recordId = (Id) record.get('Id');
     if (recordId == null) {
       return null;

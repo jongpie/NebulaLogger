@@ -50,10 +50,10 @@ public without sharing class MicrosoftTeamsLoggerNotifier extends LoggerNotifier
 
   private System.HttpRequest buildRequest(LoggerNotifierRequest request) {
     String endpoint;
-    if (String.isNotBlank(request.service.NamedCredentialDeveloperName__c)) {
-      endpoint = 'callout:' + request.service.NamedCredentialDeveloperName__c;
-    } else if (String.isNotBlank(request.service.WebhookUrl__c)) {
-      endpoint = request.service.WebhookUrl__c;
+    if (String.isNotBlank(request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c)) {
+      endpoint = 'callout:' + request.recipient.LoggerNotificationService__r.NamedCredentialDeveloperName__c;
+    } else if (String.isNotBlank(request.recipient.LoggerNotificationService__r.WebhookUrl__c)) {
+      endpoint = request.recipient.LoggerNotificationService__r.WebhookUrl__c;
     } else {
       return null;
     }
@@ -82,7 +82,7 @@ public without sharing class MicrosoftTeamsLoggerNotifier extends LoggerNotifier
         'size' => 'Large',
         'weight' => 'Bolder',
         'color' => this.overallColor(request.matchingRecords),
-        'text' => 'Nebula Logger: ' + request.notificationRule.Name
+        'text' => 'Nebula Logger: ' + request.recipient.LoggerNotificationRule__r.Name
       }
     );
     body.add(
