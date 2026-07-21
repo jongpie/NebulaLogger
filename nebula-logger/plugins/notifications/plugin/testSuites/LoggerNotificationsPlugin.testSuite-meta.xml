@@ -12,5 +12,6 @@
     <testClassName>LoggerNotifierConfiguration_Tests</testClassName>
     <testClassName>LoggerNotifierRequest_Tests</testClassName>
     <testClassName>LoggerNotifierResult_Tests</testClassName>
+    <testClassName>LoggerNotifier_Tests</testClassName>
     <testClassName>SlackLoggerNotifier_Tests</testClassName>
 </ApexTestSuite>

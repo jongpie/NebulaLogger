@@ -171,7 +171,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     }
     List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
     if (specs == null) {
-      specs = buildDefaultSpecs();
+      specs = buildDefaultSpecs(DEFAULT_SOURCE_FIELDS);
     }
     Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
     Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
@@ -185,14 +185,6 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     }
     // 'short' is a reserved word in Apex, so it's serialized as `isShort` here and swapped in the JSON string
     return System.JSON.serialize(notification, true).replace('"isShort"', '"short"');
-  }
-
-  private static List<LoggerNotifierConfiguration.SourceFieldSpec> buildDefaultSpecs() {
-    List<LoggerNotifierConfiguration.SourceFieldSpec> defaults = new List<LoggerNotifierConfiguration.SourceFieldSpec>();
-    for (String fieldName : DEFAULT_SOURCE_FIELDS) {
-      defaults.add(new LoggerNotifierConfiguration.SourceFieldSpec(fieldName, null, null));
-    }
-    return defaults;
   }
 
   private AttachmentDto buildAttachment(SObject record, List<LoggerNotifierConfiguration.SourceFieldSpec> specs, Boolean includeNullValues) {
@@ -357,168 +349,6 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     }
     List<String> paths = new List<String>(pathSet);
     return paths;
-  }
-
-  /**
-   * @description Walks a dotted field path (e.g. `Log__r.Name`) on a hydrated SObject. Returns null on any
-   *              broken hop - unknown relationship name, missing parent, unknown final field.
-   */
-  private static Object getValueByPath(SObject record, String fieldPath) {
-    if (record == null || String.isBlank(fieldPath)) {
-      return null;
-    }
-    List<String> parts = fieldPath.split('\\.');
-    SObject current = record;
-    for (Integer i = 0; i < parts.size() - 1; i++) {
-      if (current == null) {
-        return null;
-      }
-      try {
-        current = current.getSObject(parts.get(i));
-      } catch (System.SObjectException ex) {
-        return null;
-      }
-    }
-    if (current == null) {
-      return null;
-    }
-    try {
-      return current.get(parts.get(parts.size() - 1));
-    } catch (System.SObjectException ex) {
-      return null;
-    }
-  }
-
-  /**
-   * @description Traverses the schema graph for a dotted field path and returns the terminal field's
-   *              describe (used for label + DisplayType). Handles both custom `__r` relationships and
-   *              standard relationships (Owner, CreatedBy, etc.) uniformly by matching each segment
-   *              against `DescribeFieldResult.getRelationshipName()` on the current type.
-   */
-  private static Schema.DescribeFieldResult getDescribeByPath(Schema.SObjectType startType, String fieldPath) {
-    if (startType == null || String.isBlank(fieldPath)) {
-      return null;
-    }
-    List<String> parts = fieldPath.split('\\.');
-    Schema.SObjectType currentType = startType;
-    for (Integer i = 0; i < parts.size() - 1; i++) {
-      Schema.SObjectType nextType = getRelatedType(currentType, parts.get(i));
-      if (nextType == null) {
-        return null;
-      }
-      currentType = nextType;
-    }
-    Schema.SObjectField finalToken = currentType.getDescribe().fields.getMap().get(parts.get(parts.size() - 1).toLowerCase());
-    return finalToken == null ? null : finalToken.getDescribe();
-  }
-
-  private static Schema.SObjectType getRelatedType(Schema.SObjectType currentType, String relationshipSegment) {
-    for (Schema.SObjectField field : currentType.getDescribe().fields.getMap().values()) {
-      Schema.DescribeFieldResult describe = field.getDescribe();
-      if (relationshipSegment.equalsIgnoreCase(describe.getRelationshipName())) {
-        List<Schema.SObjectType> refs = describe.getReferenceTo();
-        if (refs.isEmpty() == false) {
-          return refs.get(0);
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
-   * @description When configured source fields include parent-relationship paths (containing a `.`), the
-   *              trigger-supplied `matchingRecords` don't have those parent lookups populated - Salesforce
-   *              only fills them in on records loaded via SOQL that explicitly selected them. This helper
-   *              re-queries the records by Id with a SELECT that includes every configured path (dotted
-   *              or not), so subsequent `getValueByPath` calls resolve cleanly. Records without Ids are
-   *              left as-is (e.g. platform events, or synthetic in-memory records used by tests). If any
-   *              configured path is invalid the whole query fails; the un-hydrated records are returned
-   *              and `renderField` just drops fields it can't resolve.
-   * @param records The matching records to hydrate.
-   * @param fieldPaths The configured field paths - both flat field names and dotted relationships.
-   * @return A new list of hydrated records, in the same order as `records`.
-   */
-  private static List<SObject> hydrateRecordsWithFieldPaths(List<SObject> records, List<String> fieldPaths) {
-    if (records == null || records.isEmpty() || fieldPaths == null || fieldPaths.isEmpty()) {
-      return records;
-    }
-    Boolean anyDottedPath = false;
-    for (String path : fieldPaths) {
-      if (path != null && path.contains('.')) {
-        anyDottedPath = true;
-        break;
-      }
-    }
-    if (anyDottedPath == false) {
-      return records;
-    }
-    Map<Schema.SObjectType, Set<Id>> idsByType = new Map<Schema.SObjectType, Set<Id>>();
-    for (SObject record : records) {
-      Id recordId = (Id) record.get('Id');
-      if (recordId == null) {
-        continue;
-      }
-      Schema.SObjectType type = record.getSObjectType();
-      if (idsByType.containsKey(type) == false) {
-        idsByType.put(type, new Set<Id>());
-      }
-      idsByType.get(type).add(recordId);
-    }
-    if (idsByType.isEmpty()) {
-      return records;
-    }
-    Map<Id, SObject> hydratedById = new Map<Id, SObject>();
-    for (Schema.SObjectType type : idsByType.keySet()) {
-      for (SObject queried : queryHydratedRecords(type, idsByType.get(type), fieldPaths)) {
-        hydratedById.put((Id) queried.get('Id'), queried);
-      }
-    }
-    List<SObject> result = new List<SObject>();
-    for (SObject record : records) {
-      Id recordId = (Id) record.get('Id');
-      SObject hydrated = recordId == null ? null : hydratedById.get(recordId);
-      result.add(hydrated != null ? hydrated : record);
-    }
-    return result;
-  }
-
-  /**
-   * @description Runs the hydration SELECT for a single object type. Adds Id, Name (when the object has one),
-   *              and LoggingLevel__c (used for color-coding on LogEntry) alongside the configured paths so
-   *              the attachment's title + color logic still work after hydration replaces the trigger-supplied
-   *              record. Uses a Set to deduplicate the field list so a configured path that happens to repeat
-   *              one of these fields doesn't produce a `duplicate field` SOQL error. If the query fails
-   *              (invalid path, missing field access, etc.) an empty list is returned so the caller falls back
-   *              to the un-hydrated records.
-   */
-  private static List<SObject> queryHydratedRecords(Schema.SObjectType type, Set<Id> ids, List<String> fieldPaths) {
-    Map<String, Schema.SObjectField> fieldMap = type.getDescribe().fields.getMap();
-    Set<String> selectFieldSet = new Set<String>{ 'Id' };
-    if (fieldMap.containsKey('name')) {
-      selectFieldSet.add('Name');
-    }
-    if (fieldMap.containsKey('logginglevel__c')) {
-      selectFieldSet.add('LoggingLevel__c');
-    }
-    // Filter out configured paths that don't resolve against the source type's describe. A single bad
-    // path used to poison the whole SELECT via QueryException, which fell back to un-hydrated records
-    // and made every OTHER configured field render as its null placeholder. Dropping unresolvable paths
-    // here lets the good ones still hydrate; `renderField` already silently drops unresolvable paths at
-    // render time, so the two layers stay consistent.
-    for (String path : fieldPaths) {
-      if (getDescribeByPath(type, path) != null) {
-        selectFieldSet.add(path);
-      }
-    }
-    String query = 'SELECT ' + String.join(new List<String>(selectFieldSet), ', ') + ' FROM ' + type.getDescribe().getName() + ' WHERE Id IN :ids';
-    try {
-      return System.Database.queryWithBinds(query, new Map<String, Object>{ 'ids' => ids }, System.AccessLevel.SYSTEM_MODE);
-    } catch (System.QueryException ex) {
-      if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('SlackLoggerNotifier - could not hydrate records for field paths ' + fieldPaths + ': ' + ex.getMessage());
-      }
-      return new List<SObject>();
-    }
   }
 
   private static Boolean isWideDisplayType(Schema.DisplayType type) {
