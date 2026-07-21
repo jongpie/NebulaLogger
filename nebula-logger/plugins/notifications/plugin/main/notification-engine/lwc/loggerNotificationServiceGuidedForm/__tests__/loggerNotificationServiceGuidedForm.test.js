@@ -213,7 +213,7 @@ describe('c-logger-notification-service-guided-form', () => {
 
     // The Name input-field's value binding is populated from defaultServiceName.
     const inputFields = Array.from(element.shadowRoot.querySelectorAll('lightning-input-field'));
-    const nameField = inputFields.find(f => f.fieldName === 'Name');
+    const nameField = inputFields.find(field => field.fieldName === 'Name');
     expect(nameField).toBeDefined();
     expect(nameField.value).toBe('Slack');
   });

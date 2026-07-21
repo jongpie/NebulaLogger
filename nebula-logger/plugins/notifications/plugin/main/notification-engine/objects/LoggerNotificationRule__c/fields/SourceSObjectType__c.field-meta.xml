@@ -8,28 +8,27 @@
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
-        <restricted>false</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
-            <value>
-                <fullName>LogEntry__c</fullName>
-                <default>false</default>
-                <label>LogEntry__c</label>
-            </value>
             <value>
                 <fullName>Log__c</fullName>
                 <default>false</default>
                 <label>Log__c</label>
             </value>
             <value>
-                <fullName>LoggerScenario__c</fullName>
+                <fullName>LogEntry__c</fullName>
                 <default>false</default>
-                <label>LoggerScenario__c</label>
+                <label>LogEntry__c</label>
             </value>
             <value>
                 <fullName>LogEntryTag__c</fullName>
                 <default>false</default>
                 <label>LogEntryTag__c</label>
+            </value>
+            <value>
+                <fullName>LoggerScenario__c</fullName>
+                <default>false</default>
+                <label>LoggerScenario__c</label>
             </value>
             <value>
                 <fullName>LoggerTag__c</fullName>

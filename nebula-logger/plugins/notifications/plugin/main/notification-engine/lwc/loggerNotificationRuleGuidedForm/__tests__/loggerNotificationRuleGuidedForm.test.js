@@ -116,10 +116,7 @@ const flushPromises = async () => {
 // the platform's async-action state settles before it receives the close.
 const flushMacroTasks = async () => {
   await flushPromises();
-  // eslint-disable-next-line @lwc/lwc/no-async-operation -- test-only helper: jsdom needs a real
-  // macro-task tick so the LWC's own `setTimeout(fn, 0)` close-dispatch callback runs before the
-  // assertion. There's no LWC-idiomatic replacement here - the LWC framework's own restriction is
-  // about component code, not jest test harness.
+  /* eslint-disable-next-line @lwc/lwc/no-async-operation */
   await new Promise(resolve => setTimeout(resolve, 0));
 };
 
@@ -130,13 +127,13 @@ const flushMacroTasks = async () => {
 // `reportValidity()` returns false when the field is required + empty, which blocks Next. That's
 // intentional runtime behavior; the shared helper keeps the tests aligned.
 const fillStep1RequiredFields = async element => {
-  const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+  const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
   if (sourceCombo && !sourceCombo.value) {
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
   }
-  const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+  const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
   if (nameInput && !nameInput.value) {
     nameInput.value = 'Test rule';
     nameInput.dispatchEvent(new CustomEvent('change'));
@@ -173,7 +170,7 @@ const addRecipientAndSelectEmailService = async element => {
   // The recipient service combobox is data-field="LoggerNotificationService__c" on the rule form
   // template. Setting .value + firing 'change' mimics an admin picking a service from the dropdown.
   const serviceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(
-    c => c.dataset && c.dataset.field === 'LoggerNotificationService__c'
+    combobox => combobox.dataset && combobox.dataset.field === 'LoggerNotificationService__c'
   );
   serviceCombo.value = MOCK_EMAIL_SERVICE.Id;
   serviceCombo.dispatchEvent(new CustomEvent('change'));
@@ -272,7 +269,9 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Fresh mount - no Source SObject Type picked yet.
     expect(element.shadowRoot.querySelector('c-logger-notification-formula-editor')).toBeNull();
-    const dedupBeforePick = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Deduplication Source Field');
+    const dedupBeforePick = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(
+      combobox => combobox.label === 'Deduplication Source Field'
+    );
     expect(dedupBeforePick).toBeUndefined();
   });
 
@@ -283,13 +282,15 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Picking a Source SObject Type flips the `hasSourceSObjectTypePicked` gate and both controls
     // mount on the next render.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
     expect(element.shadowRoot.querySelector('c-logger-notification-formula-editor')).not.toBeNull();
-    const dedupAfterPick = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Deduplication Source Field');
+    const dedupAfterPick = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(
+      combobox => combobox.label === 'Deduplication Source Field'
+    );
     expect(dedupAfterPick).toBeDefined();
   });
 
@@ -316,7 +317,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     expect(element.shadowRoot.querySelector('c-logger-notification-formula-editor')).not.toBeNull();
-    const dedup = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Deduplication Source Field');
+    const dedup = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Deduplication Source Field');
     expect(dedup).toBeDefined();
   });
 
@@ -382,9 +383,9 @@ describe('c-logger-notification-rule-guided-form', () => {
     expect(getRuleWithRecipients).toHaveBeenCalledWith({ ruleId: 'a09000000000001AAA' });
     // The rule's fields should now be reflected in the DOM. Step 1's Name input carries the
     // prefilled value.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     expect(nameInput.value).toBe('Loud errors');
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     expect(sourceCombo.value).toBe('LogEntry__c');
   });
 
@@ -486,7 +487,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     // Set Source SObject Type to LogEntry__c so the reactive `$rule.SourceSObjectType__c` binding
     // on the getFieldsForSObject wire has a value to send. The deduplication combobox lives on
     // Step 1 (combined Basics + Filter) so no Next click needed to reach it.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -505,7 +506,7 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Locate the deduplication combobox by its data-field attribute.
     const combos = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox'));
-    const deduplicationCombo = combos.find(c => c.dataset && c.dataset.field === 'DeduplicationSourceField__c');
+    const deduplicationCombo = combos.find(combobox => combobox.dataset && combobox.dataset.field === 'DeduplicationSourceField__c');
     expect(deduplicationCombo).toBeDefined();
     // The first option is the placeholder "(none)"; the wire-emitted fields follow.
     expect(deduplicationCombo.options[0]).toEqual({ label: '(none)', value: '' });
@@ -531,7 +532,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     // Fire change on the Source SObject Type combobox rather than reaching into the LWC's private
     // `rule` field. The suggestion buttons now live on Step 1 (combined Basics + Filter), so no
     // Next click needed.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = sourceType;
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -612,7 +613,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     return clickNext().then(() => {
       const step2Header = element.shadowRoot.querySelector('h2');
       expect(step2Header.textContent).toContain('Step 2');
-      const inputLabels = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).map(c => c.label);
+      const inputLabels = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).map(input => input.label);
       expect(inputLabels).toContain('Is Match History Enabled');
       expect(inputLabels).toContain('Is Delivery History Enabled');
       expect(inputLabels).toContain('Is Match Threshold Enabled');
@@ -638,7 +639,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     const matchesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainMatches__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainMatches__c'
     );
     expect(matchesInput).toBeDefined();
     expect(matchesInput.label).toBe('Days to Retain Matches');
@@ -646,7 +647,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     expect(matchesInput.value).toBe(14);
 
     const deliveriesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
     );
     expect(deliveriesInput).toBeDefined();
     expect(deliveriesInput.label).toBe('Days to Retain Deliveries');
@@ -670,14 +671,14 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     const matchesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainMatches__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainMatches__c'
     );
     matchesInput.value = 45;
     matchesInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
     const deliveriesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
     );
     expect(deliveriesInput.max).toBe(45);
   });
@@ -698,16 +699,16 @@ describe('c-logger-notification-rule-guided-form', () => {
     nextButton.dispatchEvent(new CustomEvent('click'));
     await flushPromises();
 
-    const matchHistoryCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Is Match History Enabled');
+    const matchHistoryCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Is Match History Enabled');
     matchHistoryCheckbox.checked = false;
     matchHistoryCheckbox.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
     const matchesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainMatches__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainMatches__c'
     );
     const deliveriesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
     );
     expect(matchesInput).toBeUndefined();
     expect(deliveriesInput).toBeUndefined();
@@ -727,16 +728,18 @@ describe('c-logger-notification-rule-guided-form', () => {
     nextButton.dispatchEvent(new CustomEvent('click'));
     await flushPromises();
 
-    const deliveryHistoryCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Is Delivery History Enabled');
+    const deliveryHistoryCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
+      input => input.label === 'Is Delivery History Enabled'
+    );
     deliveryHistoryCheckbox.checked = false;
     deliveryHistoryCheckbox.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
     const matchesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainMatches__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainMatches__c'
     );
     const deliveriesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
     );
     expect(matchesInput).toBeDefined();
     expect(deliveriesInput).toBeUndefined();
@@ -754,12 +757,12 @@ describe('c-logger-notification-rule-guided-form', () => {
     getAvailableServices.emit([MOCK_EMAIL_SERVICE]);
     await flushPromises();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -773,13 +776,13 @@ describe('c-logger-notification-rule-guided-form', () => {
     };
     await clickNext();
     const matchesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainMatches__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainMatches__c'
     );
     matchesInput.value = 45;
     matchesInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
     const deliveriesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
     );
     deliveriesInput.value = 15;
     deliveriesInput.dispatchEvent(new CustomEvent('change'));
@@ -788,7 +791,9 @@ describe('c-logger-notification-rule-guided-form', () => {
     // Storage & Threshold → Recipients.
     await clickNext();
     await addRecipientAndSelectEmailService(element);
-    const emailInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.dataset && i.dataset.field === 'EmailAddress__c');
+    const emailInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
+      input => input.dataset && input.dataset.field === 'EmailAddress__c'
+    );
     emailInput.value = 'alerts@example.com';
     emailInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -844,10 +849,10 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     const matchesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainMatches__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainMatches__c'
     );
     const deliveriesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
     );
     expect(matchesInput.value).toBe(60);
     expect(deliveriesInput.value).toBe(7);
@@ -891,10 +896,10 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     const matchesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainMatches__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainMatches__c'
     );
     const deliveriesInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-      i => i.dataset && i.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
+      input => input.dataset && input.dataset.field === 'NumberOfDaysToRetainDeliveries__c'
     );
     expect(matchesInput.value).toBeNull();
     expect(deliveriesInput.value).toBeNull();
@@ -917,7 +922,7 @@ describe('c-logger-notification-rule-guided-form', () => {
         .then(() => flushPromises());
     // One Next reaches Storage & Threshold (Step 2).
     return clickNext().then(() => {
-      const inputLabels = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).map(i => i.label);
+      const inputLabels = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).map(input => input.label);
       expect(inputLabels).not.toContain('Match Count Threshold');
       expect(inputLabels).not.toContain('Time Period Increment');
     });
@@ -943,31 +948,31 @@ describe('c-logger-notification-rule-guided-form', () => {
     await clickNext();
 
     // Turn on the threshold checkbox so the detail inputs render.
-    const thresholdCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Is Match Threshold Enabled');
+    const thresholdCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Is Match Threshold Enabled');
     thresholdCheckbox.checked = true;
     thresholdCheckbox.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
     // With every field still blank, no summary paragraph should render.
-    const findSummary = () => Array.from(element.shadowRoot.querySelectorAll('p')).find(p => p.textContent.includes('The rule will fire once'));
+    const findSummary = () => Array.from(element.shadowRoot.querySelectorAll('p')).find(paragraph => paragraph.textContent.includes('The rule will fire once'));
     expect(findSummary()).toBeUndefined();
 
     // Populate count only - still no summary.
-    const countInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Match Count Threshold');
+    const countInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Match Count Threshold');
     countInput.value = '5';
     countInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
     expect(findSummary()).toBeUndefined();
 
     // Populate the increment - still not enough (unit missing).
-    const incrementInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Time Period Increment');
+    const incrementInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Time Period Increment');
     incrementInput.value = '10';
     incrementInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
     expect(findSummary()).toBeUndefined();
 
     // Populate the unit - now the summary should appear.
-    const unitCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Time Period Unit');
+    const unitCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Time Period Unit');
     unitCombo.value = 'Minutes';
     unitCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -994,23 +999,23 @@ describe('c-logger-notification-rule-guided-form', () => {
     };
     await clickNext();
 
-    const thresholdCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Is Match Threshold Enabled');
+    const thresholdCheckbox = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Is Match Threshold Enabled');
     thresholdCheckbox.checked = true;
     thresholdCheckbox.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
-    const countInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Match Count Threshold');
+    const countInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Match Count Threshold');
     countInput.value = '1';
     countInput.dispatchEvent(new CustomEvent('change'));
-    const incrementInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Time Period Increment');
+    const incrementInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Time Period Increment');
     incrementInput.value = '1';
     incrementInput.dispatchEvent(new CustomEvent('change'));
-    const unitCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Time Period Unit');
+    const unitCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Time Period Unit');
     unitCombo.value = 'Hours';
     unitCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
-    const summary = Array.from(element.shadowRoot.querySelectorAll('p')).find(p => p.textContent.includes('The rule will fire once'));
+    const summary = Array.from(element.shadowRoot.querySelectorAll('p')).find(paragraph => paragraph.textContent.includes('The rule will fire once'));
     expect(summary).toBeDefined();
     // "1 match" (not "1 matches") and "1-hour" (not "1-hours") - the singularization matters when
     // the increment is 1 or the count is 1.
@@ -1066,13 +1071,13 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Basics + Filter live on Step 1. Populate the required fields and the filter, then click Next
     // to trigger the callout - no intermediate step to walk to.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     // Flush before querying for the filter editor - it's gated on `hasSourceSObjectTypePicked`
     // and only mounts after the source-change re-renders.
     await flushPromises();
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'E2E rule';
     nameInput.dispatchEvent(new CustomEvent('change'));
     // Source SObject Filter is now rendered by c-logger-notification-formula-editor (a syntax-
@@ -1113,12 +1118,12 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Basics + Filter are combined into Step 1. Set the required fields + a bogus filter, then
     // click Next - the filter validator runs before the wizard advances.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'E2E rule';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1160,12 +1165,12 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Basics + Filter live on Step 1. Populate the three required fields inline and click Next
     // once to trigger the filter-validation callout.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'E2E rule';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1211,12 +1216,12 @@ describe('c-logger-notification-rule-guided-form', () => {
     // tests, so this test used to prove "handleNextStep short-circuits on empty filter." That
     // short-circuit still exists in the source and remains correct - but the observable path in
     // tests now is "required-field gate blocks Next," which is the more precise assertion anyway.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'E2E rule';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1316,7 +1321,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     // Type a different Name - the snapshot no longer matches current state.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Renamed rule';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1337,7 +1342,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await Promise.resolve();
 
     // Simulate typing a Name value - the change handler updates the reactive rule object.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     expect(nameInput).toBeDefined();
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
@@ -1367,7 +1372,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     document.body.appendChild(element);
     await Promise.resolve();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await Promise.resolve();
@@ -1400,7 +1405,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     document.body.appendChild(element);
     await Promise.resolve();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await Promise.resolve();
@@ -1433,7 +1438,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await Promise.resolve();
 
     // Type a Name so the form is dirty.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await Promise.resolve();
@@ -1501,7 +1506,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     document.body.appendChild(element);
     await Promise.resolve();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await Promise.resolve();
@@ -1547,7 +1552,9 @@ describe('c-logger-notification-rule-guided-form', () => {
     await addRecipientAndSelectEmailService(element);
 
     // Populate EmailAddress__c via the record-picker/input's change event.
-    const emailInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.dataset && i.dataset.field === 'EmailAddress__c');
+    const emailInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
+      input => input.dataset && input.dataset.field === 'EmailAddress__c'
+    );
     expect(emailInput).toBeDefined();
     emailInput.value = 'alerts@example.com';
     emailInput.dispatchEvent(new CustomEvent('change'));
@@ -1567,7 +1574,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     // Fill the required rule Name so the save doesn't get blocked on some OTHER validation.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1602,7 +1609,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     getAvailableServices.emit([MOCK_EMAIL_SERVICE]);
     await flushPromises();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1610,7 +1617,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     // Set Source SObject Type - it has no default, so a save with it blank would send an empty
     // string to Apex and fail the trigger's resolveSObjectType check. This test verifies the
     // happy-path save, so pick a real value.
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = 'LogEntry__c';
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1619,7 +1626,9 @@ describe('c-logger-notification-rule-guided-form', () => {
     await addRecipientAndSelectEmailService(element);
 
     // Populate EmailAddress__c so the at-least-one constraint is satisfied.
-    const emailInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.dataset && i.dataset.field === 'EmailAddress__c');
+    const emailInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
+      input => input.dataset && input.dataset.field === 'EmailAddress__c'
+    );
     emailInput.value = 'alerts@example.com';
     emailInput.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
@@ -1753,7 +1762,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
 
     const serviceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(
-      c => c.dataset && c.dataset.field === 'LoggerNotificationService__c'
+      combobox => combobox.dataset && combobox.dataset.field === 'LoggerNotificationService__c'
     );
     expect(serviceCombo).toBeDefined();
     expect(serviceCombo.value).toBe(MOCK_EMAIL_SERVICE.Id);
@@ -1792,7 +1801,7 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Only the existing recipient row is present (no duplicate row) and its combobox is auto-selected.
     const serviceCombos = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).filter(
-      c => c.dataset && c.dataset.field === 'LoggerNotificationService__c'
+      combobox => combobox.dataset && combobox.dataset.field === 'LoggerNotificationService__c'
     );
     expect(serviceCombos).toHaveLength(1);
     expect(serviceCombos[0].value).toBe(MOCK_EMAIL_SERVICE.Id);
@@ -1817,7 +1826,7 @@ describe('c-logger-notification-rule-guided-form', () => {
 
     // Modal resolved with null - no recipient row should have been seeded.
     const serviceCombos = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).filter(
-      c => c.dataset && c.dataset.field === 'LoggerNotificationService__c'
+      combobox => combobox.dataset && combobox.dataset.field === 'LoggerNotificationService__c'
     );
     expect(serviceCombos).toHaveLength(0);
   });
@@ -1849,7 +1858,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     await Promise.resolve();
 
     // Simulate typing a Name.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await Promise.resolve();
@@ -1872,7 +1881,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     document.body.appendChild(element);
     await Promise.resolve();
 
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     nameInput.value = 'Loud errors';
     nameInput.dispatchEvent(new CustomEvent('change'));
     await Promise.resolve();
@@ -1894,7 +1903,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     document.body.appendChild(element);
     await Promise.resolve();
 
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     expect(sourceCombo).toBeDefined();
     // Empty value (not 'LogEntry__c') - admins must consciously pick.
     expect(sourceCombo.value).toBe('');
@@ -1911,7 +1920,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     // this is how the sfdx-lwc-jest stub exposes "invalid" state, since the stub's default
     // reportValidity() returns undefined (treated as valid) and the stub has no real value/required
     // wiring to fail against.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
     expect(nameInput).toBeDefined();
     nameInput.reportValidity = jest.fn().mockReturnValue(false);
 
@@ -1961,9 +1970,9 @@ describe('c-logger-notification-rule-guided-form', () => {
     // Multiple inputs live in step 1: Name (input), Source SObject Type (combobox), Comments (textarea).
     // Even if the FIRST field is invalid, the handler should still call reportValidity on the rest
     // so the admin sees every failing field at once instead of playing whack-a-mole.
-    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(i => i.label === 'Name');
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
-    const commentsTextarea = Array.from(element.shadowRoot.querySelectorAll('lightning-textarea')).find(t => t.label === 'Comments');
+    const nameInput = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(input => input.label === 'Name');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
+    const commentsTextarea = Array.from(element.shadowRoot.querySelectorAll('lightning-textarea')).find(textarea => textarea.label === 'Comments');
     nameInput.reportValidity = jest.fn().mockReturnValue(false);
     sourceCombo.reportValidity = jest.fn().mockReturnValue(true);
     commentsTextarea.reportValidity = jest.fn().mockReturnValue(true);
@@ -2070,7 +2079,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     // would silently corrupt assertions.
     const findEmailInputByLocalId = localId =>
       Array.from(element.shadowRoot.querySelectorAll('lightning-input')).find(
-        i => i.dataset && i.dataset.field === 'EmailAddress__c' && i.dataset.localId === localId
+        input => input.dataset && input.dataset.field === 'EmailAddress__c' && input.dataset.localId === localId
       );
     // Recipient rows come out of loadExistingRule with localIds 'local-1', 'local-2' (LWC's
     // nextLocalRecipientId starts at 0 and increments per prefill).
@@ -2095,14 +2104,16 @@ describe('c-logger-notification-rule-guided-form', () => {
     await flushPromises();
     // The newly-added row is the last recipient's service combobox on the page.
     const allServiceCombos = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).filter(
-      c => c.dataset && c.dataset.field === 'LoggerNotificationService__c'
+      combobox => combobox.dataset && combobox.dataset.field === 'LoggerNotificationService__c'
     );
     const newServiceCombo = allServiceCombos[allServiceCombos.length - 1];
     newServiceCombo.value = MOCK_EMAIL_SERVICE.Id;
     newServiceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
     // Now that the new row's service is set, its Email input is the last on the page.
-    const allEmailInputs = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).filter(i => i.dataset && i.dataset.field === 'EmailAddress__c');
+    const allEmailInputs = Array.from(element.shadowRoot.querySelectorAll('lightning-input')).filter(
+      input => input.dataset && input.dataset.field === 'EmailAddress__c'
+    );
     const newRecipientEmailInput = allEmailInputs[allEmailInputs.length - 1];
     newRecipientEmailInput.value = 'new@example.com';
     newRecipientEmailInput.dispatchEvent(new CustomEvent('change'));
@@ -2304,7 +2315,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     // multiple times to add multiple rows, `.find()` (first-match) would land on row 0's combobox
     // every time and no-op the subsequent picks; `.filter().pop()` targets the newest row.
     const serviceCombos = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).filter(
-      c => c.dataset && c.dataset.field === 'LoggerNotificationService__c'
+      combobox => combobox.dataset && combobox.dataset.field === 'LoggerNotificationService__c'
     );
     const serviceCombo = serviceCombos[serviceCombos.length - 1];
     serviceCombo.value = MOCK_SLACK_SERVICE.Id;
@@ -2379,7 +2390,7 @@ describe('c-logger-notification-rule-guided-form', () => {
     expect(findFormPairKeyInputs(element)).toHaveLength(0);
 
     const serviceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(
-      c => c.dataset && c.dataset.field === 'LoggerNotificationService__c'
+      combobox => combobox.dataset && combobox.dataset.field === 'LoggerNotificationService__c'
     );
     serviceCombo.value = MOCK_SLACK_SERVICE.Id;
     serviceCombo.dispatchEvent(new CustomEvent('change'));
@@ -2446,7 +2457,7 @@ describe('c-logger-notification-rule-guided-form', () => {
   // different value (Log__c or an SObject with no dedicated bucket) BEFORE picking a service so the
   // service-pick auto-populate resolves against the right key.
   const setSourceSObjectType = async (element, value) => {
-    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(c => c.label === 'Source SObject Type');
+    const sourceCombo = Array.from(element.shadowRoot.querySelectorAll('lightning-combobox')).find(combobox => combobox.label === 'Source SObject Type');
     sourceCombo.value = value;
     sourceCombo.dispatchEvent(new CustomEvent('change'));
     await flushPromises();
