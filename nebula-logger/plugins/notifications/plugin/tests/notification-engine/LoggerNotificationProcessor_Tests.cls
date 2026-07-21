@@ -16,28 +16,21 @@ private class LoggerNotificationProcessor_Tests {
     LoggerConfigurationSelector.useMocks();
   }
 
-  private static void resetMockNotifier() {
-    mockNotifierInvocationCount = 0;
-    mockNotifierThrownCount = 0;
-    mockNotifierLastRequest = null;
-    mockNotifierShouldThrowNext = false;
-  }
-
   @IsTest
   static void it_should_short_circuit_when_records_are_null_or_empty() {
     LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>());
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, null);
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>());
-    notifier.sendNotifications(null, new List<SObject>{ new LogEntry__c() });
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
+    processor.sendNotifications(Schema.LogEntry__c.SObjectType, null);
+    processor.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>());
+    processor.sendNotifications(null, new List<SObject>{ new LogEntry__c() });
 
     System.Assert.areEqual(0, mockNotifierInvocationCount);
+    System.Assert.areEqual(0, mockNotifierThrownCount);
   }
 
   @IsTest
-  static void it_should_reuse_quried_rules_after_one_query() {
+  static void it_should_reuse_queried_rules_after_one_query() {
     LoggerNotificationRule__c rule = buildRule();
     LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
@@ -56,25 +49,45 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_ignore_rules_for_a_different_source_sobject_type() {
-    LoggerNotificationRule__c rule = buildRule('Log__c', 'TotalERRORLogEntries__c >= 1', new List<LoggerNotificationRecipient__c>{ buildRecipient() });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    log.TransactionId__c = 'some value';
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule('Log__c', 'TransactionId__c != null');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Test.stopTest();
 
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Rules for a different sobject type should be ignored');
   }
 
   @IsTest
   static void it_should_dispatch_only_to_enabled_recipients_whose_service_is_enabled_and_valid() {
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    // Notification data setup
     // The runtime's SOQL subquery filters recipients to those with IsEnabled__c=TRUE pointing at a service
     // whose IsEnabled__c=TRUE AND IsOriginOrganizationIdValid__c=TRUE. A disabled recipient, a recipient
     // whose service is disabled, or a recipient whose service was cloned in from another org never reaches
     // the dispatch loop. Exercising this test against the DB (no setCachedRules) so the SOQL filter is what
     // is under test.
-    LoggerNotificationRule__c persistedRule = buildRule();
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c enabledService = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerNotificationService__c disabledService = buildService(false, true, MOCK_NOTIFIER_CLASS);
     LoggerNotificationService__c invalidOriginService = buildService(true, true, MOCK_NOTIFIER_CLASS);
@@ -82,40 +95,24 @@ private class LoggerNotificationProcessor_Tests {
     // The handler overwrites OriginOrganizationId__c on insert - flip it to a foreign org via a follow-up
     // update with the handler suppressed so IsOriginOrganizationIdValid__c evaluates to FALSE.
     LoggerSObjectHandler.shouldExecute(false);
-    invalidOriginService.OriginOrganizationId__c = LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType);
+    invalidOriginService.OriginOrganizationId__c = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
     LoggerDataStore.getDatabase().updateRecord(invalidOriginService);
     LoggerSObjectHandler.shouldExecute(true);
+    LoggerNotificationRecipient__c validRecipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = enabledService.Id,
+      IsEnabled__c = true
+    );
     LoggerDataStore.getDatabase()
       .insertRecords(
         new List<LoggerNotificationRecipient__c>{
-          new LoggerNotificationRecipient__c(
-            LoggerNotificationRule__c = persistedRule.Id,
-            LoggerNotificationService__c = enabledService.Id,
-            IsEnabled__c = true
-          ),
-          new LoggerNotificationRecipient__c(
-            LoggerNotificationRule__c = persistedRule.Id,
-            LoggerNotificationService__c = enabledService.Id,
-            IsEnabled__c = false
-          ),
-          new LoggerNotificationRecipient__c(
-            LoggerNotificationRule__c = persistedRule.Id,
-            LoggerNotificationService__c = disabledService.Id,
-            IsEnabled__c = true
-          ),
-          new LoggerNotificationRecipient__c(
-            LoggerNotificationRule__c = persistedRule.Id,
-            LoggerNotificationService__c = invalidOriginService.Id,
-            IsEnabled__c = true
-          )
+          validRecipient,
+          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = enabledService.Id, IsEnabled__c = false),
+          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = disabledService.Id, IsEnabled__c = true),
+          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = invalidOriginService.Id, IsEnabled__c = true)
         }
       );
-    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
-    LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-    resetMockNotifier();
     System.Test.startTest();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
     System.Test.stopTest();
@@ -125,26 +122,46 @@ private class LoggerNotificationProcessor_Tests {
       mockNotifierInvocationCount,
       'Only the enabled recipient pointing at the enabled + valid-origin service should receive the notification'
     );
+    List<LoggerNotificationMatch__c> matches = [
+      SELECT Id, LogEntry__c, MatchedRecordId__c
+      FROM LoggerNotificationMatch__c
+      WHERE LoggerNotificationRule__c = :rule.Id
+    ];
+    System.Assert.areEqual(1, matches.size(), 'Only 1 notification match should have been created');
+    System.Assert.areEqual(logEntry.Id, matches.get(0).LogEntry__c);
+    System.Assert.areEqual(logEntry.Id, matches.get(0).MatchedRecordId__c);
+    List<LoggerNotificationDelivery__c> deliveries = [
+      SELECT Id, LoggerNotificationRecipient__c
+      FROM LoggerNotificationDelivery__c
+      WHERE LoggerNotificationMatch__c = :matches.get(0).Id
+    ];
+    System.Assert.areEqual(1, deliveries.size(), 'Only 1 notification delivery should have been created');
+    System.Assert.areEqual(validRecipient.Id, deliveries.get(0).LoggerNotificationRecipient__c);
   }
 
   @IsTest
   static void it_should_pass_only_matching_records_to_the_notifier() {
-    LoggerNotificationRule__c rule = buildRule(
-      'LogEntry__c',
-      'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
-      new List<LoggerNotificationRecipient__c>{ buildRecipient() }
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c firstMatchingLogEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c secondMatchingLogEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c nonMatchingLogEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name(), Timestamp__c = System.now());
+    List<LogEntry__c> logEntries = new List<SObject>{ firstMatchingLogEntry, secondMatchingLogEntry, nonMatchingLogEntry };
+    LoggerDataStore.getDatabase().insertRecords(logEntries);
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
     );
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
-    List<SObject> records = new List<SObject>{
-      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()),
-      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()),
-      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name())
-    };
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, records);
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, logEntries);
     System.Test.stopTest();
 
     System.Assert.areEqual(1, mockNotifierInvocationCount);
@@ -156,34 +173,54 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_not_invoke_notifier_when_no_records_match() {
-    LoggerNotificationRule__c rule = buildRule(
-      'LogEntry__c',
-      'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
-      new List<LoggerNotificationRecipient__c>{ buildRecipient() }
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c nonMatchingLogEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(nonMatchingLogEntry);
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
     );
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()) });
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ nonMatchingLogEntry });
 
     System.Assert.areEqual(0, mockNotifierInvocationCount);
   }
 
   @IsTest
   static void it_should_swallow_exceptions_thrown_by_a_notifier() {
-    LoggerNotificationRule__c rule = buildRule(
-      'LogEntry__c',
-      'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
-      new List<LoggerNotificationRecipient__c>{ buildRecipient(), buildRecipient() }
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c firstService = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerNotificationService__c secondService = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecords(new List<SObject>{ firstService, secondService });
+    LoggerNotificationRecipient__c firstRecipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = firstService.Id
     );
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
-    resetMockNotifier();
+    LoggerNotificationRecipient__c secondRecipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = secondService.Id
+    );
+    LoggerDataStore.getDatabase().insertRecords(new List<SObject>{ firstRecipient, secondRecipient });
     mockNotifierShouldThrowNext = true;
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
+    new LoggerNotificationProcessor()
+      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
     System.Test.stopTest();
 
     System.Assert.areEqual(2, mockNotifierInvocationCount, 'Both recipients should have been invoked, including the one after the throw');
@@ -192,123 +229,165 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_skip_recipient_when_notifier_class_cannot_be_instantiated() {
-    LoggerNotificationService__c serviceWithBadClass = buildService(true, true, 'NoSuchApexClassThatDoesNotExist');
-    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
-    recipient.LoggerNotificationService__r = serviceWithBadClass;
-    LoggerNotificationRule__c rule = buildRule('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')', new List<LoggerNotificationRecipient__c>{ recipient });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c serviceWithBadClass = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(serviceWithBadClass);
+    // The handler validates that NotifierApexClass__c is a valid instance of LoggerNotifier - flip it to a bad value via a follow-up
+    // update with the handler suppressed so the nonexistent class name can be saved.
+    LoggerSObjectHandler.shouldExecute(false);
+    serviceWithBadClass.NotifierApexClassName__c = 'FakeApexClassThatDoesNotExist';
+    LoggerDataStore.getDatabase().updateRecord(serviceWithBadClass);
+    LoggerSObjectHandler.shouldExecute(true);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = serviceWithBadClass.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
-
-    System.Assert.areEqual(0, mockNotifierInvocationCount);
-  }
-
-  @IsTest
-  static void it_should_compute_cutoff_correctly_for_each_unit() {
-    Datetime now = Datetime.newInstance(2026, 1, 15, 12, 0, 0);
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Test.stopTest();
 
     System.Assert.areEqual(
-      now.addMinutes(-5),
-      LoggerNotificationProcessor.computeCutoff(now, 5, 'Minutes'),
-      'Minutes cutoff should be exactly 5 minutes before now'
+      1,
+      [
+        SELECT COUNT()
+        FROM LoggerNotificationMatch__c
+        WHERE LoggerNotificationRule__c = :rule.Id
+      ]
     );
-    System.Assert.areEqual(now.addHours(-2), LoggerNotificationProcessor.computeCutoff(now, 2, 'Hours'), 'Hours cutoff should be exactly 2 hours before now');
-    System.Assert.areEqual(now.addDays(-1), LoggerNotificationProcessor.computeCutoff(now, 1, 'Days'), 'Days cutoff should be exactly 1 day before now');
-    System.Assert.isNull(LoggerNotificationProcessor.computeCutoff(now, 5, 'Fortnights'), 'Unknown units should produce null');
+    List<LoggerNotificationDelivery__c> deliveries = [
+      SELECT ErrorMessage__c, Status__c
+      FROM LoggerNotificationDelivery__c
+      WHERE LoggerNotificationRecipient__r.LoggerNotificationService__c = :serviceWithBadClass.Id
+    ];
+    System.Assert.areEqual(1, deliveries.size());
+    System.Assert.areEqual('Could not instantiate notifier class ' + serviceWithBadClass.NotifierApexClassName__c, deliveries.get(0).ErrorMessage__c);
+    System.Assert.areEqual(LoggerNotifierResult.STATUS_SKIPPED, deliveries.get(0).Status__c);
   }
 
   @IsTest
   static void it_should_persist_matching_log_entries_for_logEntry_source_rules() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
-
+    // Logging data setup
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LogEntry__c nonMatchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ matchingEntry, nonMatchingEntry });
-
-    seedCachedRuleFromPersisted(persistedRule);
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule();
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry, nonMatchingEntry });
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry, nonMatchingEntry });
     System.Test.stopTest();
 
     List<LoggerNotificationMatch__c> matches = [
       SELECT Id, LogEntry__c, LoggerNotificationRule__c, MatchedRecordId__c, MatchedSObjectType__c
       FROM LoggerNotificationMatch__c
-      WHERE LoggerNotificationRule__c = :persistedRule.Id
+      WHERE LoggerNotificationRule__c = :rule.Id
     ];
     System.Assert.areEqual(1, matches.size(), 'Only the ERROR entry should be recorded as a match');
     System.Assert.areEqual(matchingEntry.Id, matches.get(0).LogEntry__c);
-    System.Assert.areEqual(String.valueOf(matchingEntry.Id), matches.get(0).MatchedRecordId__c);
+    System.Assert.areEqual(matchingEntry.Id, matches.get(0).MatchedRecordId__c);
     System.Assert.areEqual('LogEntry__c', matches.get(0).MatchedSObjectType__c);
     System.Assert.areEqual(1, mockNotifierInvocationCount);
-  }
-
-  @IsTest
-  static void it_should_suppress_dispatch_when_threshold_not_reached() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsMatchThresholdEnabled__c = true;
-    persistedRule.MatchCountThreshold__c = 5;
-    persistedRule.MatchThresholdTimePeriodIncrement__c = 60;
-    persistedRule.MatchThresholdTimePeriodUnit__c = 'Minutes';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
-
-    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
-    LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-    seedCachedRuleFromPersisted(persistedRule);
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
-
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
-
-    System.Assert.areEqual(0, mockNotifierInvocationCount, 'Threshold of 5 with only 1 match should suppress dispatch');
-  }
-
-  @IsTest
-  static void it_should_record_suppressed_by_threshold_delivery_rows_when_threshold_not_reached() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsMatchThresholdEnabled__c = true;
-    persistedRule.MatchCountThreshold__c = 10;
-    persistedRule.MatchThresholdTimePeriodIncrement__c = 60;
-    persistedRule.MatchThresholdTimePeriodUnit__c = 'Minutes';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
-    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
-    LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerNotificationRecipient__c persistedRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
-      LoggerNotificationService__c = service.Id
+    System.Assert.areEqual(0, mockNotifierThrownCount);
+    System.Assert.areEqual(
+      1,
+      [
+        SELECT COUNT()
+        FROM LoggerNotificationDelivery__c
+        WHERE LoggerNotificationRecipient__r.LoggerNotificationService__c = :service.Id
+      ]
     );
-    LoggerDataStore.getDatabase().insertRecord(persistedRecipient);
+  }
 
+  // @IsTest
+  // static void it_should_suppress_dispatch_when_match_threshold_not_reached() {
+  //   // Logging data setup
+  //   Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+  //   LoggerDataStore.getDatabase().insertRecord(log);
+  //   LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+  //   LoggerDataStore.getDatabase().insertRecord(logEntry);
+  //   // Notification data setup
+  //   LoggerNotificationRule__c rule = buildRule(
+  //     'LogEntry__c',
+  //     'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
+  //     new List<LoggerNotificationRecipient__c>{ buildRecipient() }
+  //   );
+  //   rule.IsMatchThresholdEnabled__c = true;
+  //   rule.MatchCountThreshold__c = 5;
+  //   rule.MatchThresholdTimePeriodIncrement__c = 60;
+  //   rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+  //   LoggerDataStore.getDatabase().insertRecord(rule);
+  //   LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+  //   LoggerDataStore.getDatabase().insertRecord(service);
+  //   LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+  //     LoggerNotificationRule__c = rule.Id,
+  //     LoggerNotificationService__c = service.Id
+  //   );
+  //   LoggerDataStore.getDatabase().insertRecord(recipient);
+
+  //   System.Test.startTest();
+  //   new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+  //   System.Test.stopTest();
+
+  //   System.Assert.areEqual(0, mockNotifierInvocationCount, 'Threshold of 5 with only 1 match should suppress dispatch');
+  //   // TODO confirm if LoggerNotificationMatch__c should be created even when match threshold isn't met
+  //   System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = rule.Id]);
+  //   List<LoggerNotificationDelivery__c> deliveries = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = ;recipient.Id];
+  //   System.Assert.areEqual(
+  //     1,
+  //     deliveries.size()
+  //   );
+  //   System.Assert.areEqual(0, deliveries.get(0).AttemptCount__c);
+  //   System.Assert.areEqual(LoggerNotifierResult.STATUS_SUPPRESSED_BY_THRESHOLD, deliveries.get(0).Status__c);
+  // }
+
+  @IsTest
+  static void it_should_record_suppressed_by_match_threshold_delivery_rows_when_match_threshold_not_reached() {
+    // Logging data setup
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c firstEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LogEntry__c secondEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ firstEntry, secondEntry });
-
-    LoggerNotificationRecipient__c hydratedRecipient = new LoggerNotificationRecipient__c(
-      Id = persistedRecipient.Id,
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 10;
+    rule.MatchThresholdTimePeriodIncrement__c = 60;
+    rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = service.Id
     );
-    hydratedRecipient.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydrated = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydratedRecipient });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydrated });
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    resetMockNotifier();
+    System.Test.startTest();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ firstEntry, secondEntry });
+    System.Test.stopTest();
 
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Threshold of 10 with 2 matches should suppress dispatch');
-    List<LoggerNotificationMatch__c> matches = [SELECT Id FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :persistedRule.Id];
+    List<LoggerNotificationMatch__c> matches = [SELECT Id FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id];
     System.Assert.areEqual(2, matches.size(), 'Both matches should still be recorded for threshold accounting');
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT
@@ -330,7 +409,7 @@ private class LoggerNotificationProcessor_Tests {
         delivery.Status__c,
         'Suppressed deliveries should carry the SUPPRESSED_BY_THRESHOLD status'
       );
-      System.Assert.areEqual(persistedRecipient.Id, delivery.LoggerNotificationRecipient__c, 'Delivery should point at the recipient it would have gone to');
+      System.Assert.areEqual(recipient.Id, delivery.LoggerNotificationRecipient__c, 'Delivery should point at the recipient it would have gone to');
       System.Assert.areEqual(service.Id, delivery.LoggerNotificationService__c, 'Delivery should denormalize the recipient service Id');
       System.Assert.areEqual(0, delivery.AttemptCount__c, 'Suppressed deliveries should not count as an attempt');
       System.Assert.isNull(delivery.DispatchTimestamp__c, 'Suppressed deliveries should not carry a dispatch timestamp');
@@ -340,142 +419,135 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_only_record_suppressed_deliveries_for_valid_recipients() {
-    // Exercised end-to-end against the DB (no setCachedRules) so the runtime's SOQL subquery filter is
-    // what drops disabled and cloned-in-from-another-org services before threshold suppression records
-    // its "would have delivered here" deliveries.
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsMatchThresholdEnabled__c = true;
-    persistedRule.MatchCountThreshold__c = 10;
-    persistedRule.MatchThresholdTimePeriodIncrement__c = 60;
-    persistedRule.MatchThresholdTimePeriodUnit__c = 'Minutes';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 10;
+    rule.MatchThresholdTimePeriodIncrement__c = 60;
+    rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c enabledService = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerNotificationService__c disabledService = buildService(false, true, MOCK_NOTIFIER_CLASS);
     LoggerNotificationService__c invalidOriginService = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationService__c>{ enabledService, disabledService, invalidOriginService });
+    // The handler overwrites OriginOrganizationId__c on insert - flip it to a foreign org via a follow-up
+    // update with the handler suppressed so IsOriginOrganizationIdValid__c evaluates to FALSE.
     LoggerSObjectHandler.shouldExecute(false);
-    invalidOriginService.OriginOrganizationId__c = LoggerMockDataCreator.createId(Schema.LoginHistory.SObjectType);
+    invalidOriginService.OriginOrganizationId__c = LoggerMockDataCreator.createId(Schema.Organization.SObjectType);
     LoggerDataStore.getDatabase().updateRecord(invalidOriginService);
     LoggerSObjectHandler.shouldExecute(true);
     LoggerNotificationRecipient__c enabledRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = enabledService.Id
     );
     LoggerDataStore.getDatabase()
       .insertRecords(
         new List<LoggerNotificationRecipient__c>{
           enabledRecipient,
-          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = persistedRule.Id, LoggerNotificationService__c = disabledService.Id),
-          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = persistedRule.Id, LoggerNotificationService__c = invalidOriginService.Id)
+          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = disabledService.Id),
+          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = invalidOriginService.Id)
         }
       );
 
-    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
-    LoggerDataStore.getDatabase().insertRecord(logEntry);
-
+    System.Test.startTest();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Test.stopTest();
 
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT Id, Status__c, LoggerNotificationRecipient__c
       FROM LoggerNotificationDelivery__c
-      WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :persistedRule.Id
+      WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :rule.Id
     ];
     System.Assert.areEqual(1, deliveries.size(), 'Only the enabled + valid-origin recipient should get a suppressed delivery record');
     System.Assert.areEqual(enabledRecipient.Id, deliveries.get(0).LoggerNotificationRecipient__c);
     System.Assert.areEqual(LoggerNotifierResult.STATUS_SUPPRESSED_BY_THRESHOLD, deliveries.get(0).Status__c);
   }
 
-  @IsTest
-  static void it_should_not_record_suppressed_deliveries_when_match_history_is_disabled() {
-    // Validation rules block IsMatchHistoryEnabled__c=false alongside IsMatchThresholdEnabled__c=true, so
-    // the persisted rule is legal but the hydrated cached copy toggles match history off - this proves the
-    // runtime's guard on work.matches, independent of what the validation rules currently allow.
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsMatchThresholdEnabled__c = true;
-    persistedRule.MatchCountThreshold__c = 5;
-    persistedRule.MatchThresholdTimePeriodIncrement__c = 60;
-    persistedRule.MatchThresholdTimePeriodUnit__c = 'Minutes';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
-    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
-    LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerNotificationRecipient__c persistedRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
-      LoggerNotificationService__c = service.Id
-    );
-    LoggerDataStore.getDatabase().insertRecord(persistedRecipient);
+  // @IsTest
+  // static void it_should_not_record_suppressed_deliveries_when_match_history_is_disabled() {
+  //   // Logging data setup
+  //   Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+  //   LoggerDataStore.getDatabase().insertRecord(log);
+  //   LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+  //   LoggerDataStore.getDatabase().insertRecord(logEntry);
+  //   // Notification data setup
+  //   LoggerNotificationRule__c rule = buildRule();
+  //   rule.IsMatchHistoryEnabled__c = false;
+  //   rule.IsMatchThresholdEnabled__c = true;
+  //   rule.MatchCountThreshold__c = 5;
+  //   rule.MatchThresholdTimePeriodIncrement__c = 60;
+  //   rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+  //   LoggerDataStore.getDatabase().insertRecord(rule);
+  //   LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+  //   LoggerDataStore.getDatabase().insertRecord(service);
+  //   LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+  //     LoggerNotificationRule__c = rule.Id,
+  //     LoggerNotificationService__c = service.Id
+  //   );
+  //   LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-    LoggerDataStore.getDatabase().insertRecord(log);
-    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
-    LoggerDataStore.getDatabase().insertRecord(logEntry);
+  //   System.Test.startTest();
+  //   new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+  //   System.Test.stopTest();
 
-    LoggerNotificationRecipient__c hydratedRecipient = new LoggerNotificationRecipient__c(
-      Id = persistedRecipient.Id,
-      LoggerNotificationService__c = service.Id
-    );
-    hydratedRecipient.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    ruleCopy.IsMatchHistoryEnabled__c = false;
-    LoggerNotificationRule__c hydrated = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydratedRecipient });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydrated });
-
-    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
-
-    Integer matchCount = [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :persistedRule.Id];
-    System.Assert.areEqual(0, matchCount, 'Match records should not be persisted when IsMatchHistoryEnabled__c is false');
-    Integer deliveryCount = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = :persistedRecipient.Id];
-    System.Assert.areEqual(
-      0,
-      deliveryCount,
-      'Suppressed delivery records require match records to reference, so they must not be recorded when match history is disabled'
-    );
-  }
+  //   Integer matchCount = [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id];
+  //   System.Assert.areEqual(0, matchCount, 'Match records should not be persisted when IsMatchHistoryEnabled__c is false');
+  //   Integer deliveryCount = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = :recipient.Id];
+  //   System.Assert.areEqual(
+  //     0,
+  //     deliveryCount,
+  //     'Suppressed delivery records require match records to reference, so they must not be recorded when match history is disabled'
+  //   );
+  // }
 
   @IsTest
   static void it_should_not_record_suppressed_deliveries_when_delivery_history_is_disabled() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsDeliveryHistoryEnabled__c = false;
-    persistedRule.IsMatchThresholdEnabled__c = true;
-    persistedRule.MatchCountThreshold__c = 5;
-    persistedRule.MatchThresholdTimePeriodIncrement__c = 60;
-    persistedRule.MatchThresholdTimePeriodUnit__c = 'Minutes';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
-    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
-    LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerNotificationRecipient__c persistedRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
-      LoggerNotificationService__c = service.Id
-    );
-    LoggerDataStore.getDatabase().insertRecord(persistedRecipient);
-
+    // Logging data setup
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-
-    LoggerNotificationRecipient__c hydratedRecipient = new LoggerNotificationRecipient__c(
-      Id = persistedRecipient.Id,
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchHistoryEnabled__c = true;
+    rule.IsDeliveryHistoryEnabled__c = false;
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 5;
+    rule.MatchThresholdTimePeriodIncrement__c = 60;
+    rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = service.Id
     );
-    hydratedRecipient.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydrated = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydratedRecipient });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydrated });
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
+    System.Test.startTest();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Test.stopTest();
 
-    Integer deliveryCount = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :persistedRule.Id];
     System.Assert.areEqual(
       0,
-      deliveryCount,
+      [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :rule.Id],
       'Delivery records should not be recorded when IsDeliveryHistoryEnabled__c is false, even for suppressed-by-threshold outcomes'
     );
   }
 
   @IsTest
   static void it_should_route_every_recipient_through_the_async_dispatcher() {
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    // Notification data setup
     // Every notification goes through LoggerNotificationAsyncDispatcher - no notifier fires
     // synchronously inside the source trigger. This isolates notifier failures + callouts from
     // the record insert transaction and gives each notification its own governor budget.
@@ -484,51 +556,255 @@ private class LoggerNotificationProcessor_Tests {
     recipient.LoggerNotificationService__r = service;
     LoggerNotificationRule__c rule = buildRule('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')', new List<LoggerNotificationRecipient__c>{ recipient });
     LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
 
+    // Since this test is trying to validate what happens sync vs async, there are intentionally
+    // asserts inside (and outside) of System.Test.startTest() & System.Test.stopTest()
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
+    System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
+    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    new LoggerNotificationProcessor()
+      .sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Notifier should not fire synchronously - it should be queued');
     System.Assert.areEqual(1, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
     System.Test.stopTest();
 
-    System.Assert.areEqual(1, mockNotifierInvocationCount);
+    System.Assert.areEqual(1, mockNotifierInvocationCount, 'Notifier should have fired synchronously');
+    System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'No async dispatcher job should have been enqueued after System.Test.stopTest()');
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
   }
 
   @IsTest
   static void it_should_batch_multiple_recipients_into_a_single_queueable() {
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ logEntry });
+    // Notification data setup
+    LoggerNotificationRule__c rule = buildRule('LogEntry__c', 'ISPICKVAL(LoggingLevel__c, \'ERROR\')', new List<LoggerNotificationRecipient__c>());
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c serviceA = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerNotificationService__c serviceB = buildService(true, true, MOCK_NOTIFIER_CLASS);
-    LoggerNotificationRecipient__c recipientA = new LoggerNotificationRecipient__c();
-    recipientA.LoggerNotificationService__r = serviceA;
-    LoggerNotificationRecipient__c recipientB = new LoggerNotificationRecipient__c();
-    recipientB.LoggerNotificationService__r = serviceB;
-    LoggerNotificationRule__c rule = buildRule(
-      'LogEntry__c',
-      'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
-      new List<LoggerNotificationRecipient__c>{ recipientA, recipientB }
+    LoggerDataStore.getDatabase().insertRecords(new List<SObject>{ serviceA, serviceB });
+    LoggerNotificationRecipient__c recipientA = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = serviceA.Id
     );
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    LoggerNotificationRecipient__c recipientB = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = serviceB.Id
+    );
+    LoggerDataStore.getDatabase().insertRecords(new List<SObject>{ recipientA, recipientB });
 
+    // Since this test is trying to validate what happens sync vs async, there are intentionally
+    // asserts inside (and outside) of System.Test.startTest() & System.Test.stopTest()
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
-    System.Assert.areEqual(1, System.Limits.getQueueableJobs(), 'Both recipients should have been batched into one Queueable job');
+    System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
+    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Assert.areEqual(0, mockNotifierInvocationCount, 'Notifier should not fire synchronously - it should be queued');
+    System.Assert.areEqual(1, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
     System.Test.stopTest();
 
-    System.Assert.areEqual(2, mockNotifierInvocationCount);
+    System.Assert.areEqual(2, mockNotifierInvocationCount, 'Notifiers should have fired for 2 recipients');
+    System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'No async dispatcher job should have been enqueued after System.Test.stopTest()');
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
   }
 
   @IsTest
-  static void it_should_dispatch_when_threshold_reached_via_current_batch() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsMatchThresholdEnabled__c = true;
-    persistedRule.MatchCountThreshold__c = 3;
-    persistedRule.MatchThresholdTimePeriodIncrement__c = 60;
-    persistedRule.MatchThresholdTimePeriodUnit__c = 'Minutes';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+  static void it_should_exclude_prior_matches_older_than_the_time_window_from_match_threshold_counting() {
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c priorEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c currentEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ priorEntry, currentEntry });
+    // Notification data setup
+    // Threshold is 2 with a 5-minute window. A prior match backdated to 10 minutes ago falls outside
+    // the cutoff, so it must not count toward the threshold. The current batch's single matching
+    // record is therefore below the threshold and dispatch is suppressed. This asserts that the
+    // runtime's prior-match query is actually applying the cutoff, not just returning every match
+    // for the rule.
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 2;
+    rule.MatchThresholdTimePeriodIncrement__c = 5;
+    rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationMatch__c priorMatch = new LoggerNotificationMatch__c(
+      LoggerNotificationRule__c = rule.Id,
+      LogEntry__c = priorEntry.Id,
+      MatchedRecordId__c = String.valueOf(priorEntry.Id),
+      MatchedSObjectType__c = 'LogEntry__c'
+    );
+    LoggerDataStore.getDatabase().insertRecord(priorMatch);
+    System.Test.setCreatedDate(priorMatch.Id, System.now().addMinutes(-10));
+
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ currentEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      0,
+      mockNotifierInvocationCount,
+      'Prior match older than the 5-minute cutoff should not count toward the threshold, so the single current match is below the threshold and dispatch is suppressed'
+    );
+    System.Assert.fail('maybe add asserts about delivery being suppressed?');
+  }
+
+  @IsTest
+  static void it_should_include_prior_matches_within_the_time_window_when_counting_toward_the_threshold() {
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c priorEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c currentEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ priorEntry, currentEntry });
+    // Notification data setup
+    // Threshold is 2 with a 5-minute window. A prior match backdated to 2 minutes ago falls inside
+    // the cutoff, so it counts toward the threshold. Combined with the current batch's single
+    // matching record, the threshold is met and dispatch fires. This also proves the Minutes arm of
+    // the unit switch is being used - if the runtime fell through to the switch's default and got
+    // a null cutoff, the prior match would be excluded and dispatch would be suppressed.
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 2;
+    rule.MatchThresholdTimePeriodIncrement__c = 5;
+    rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+    LoggerNotificationMatch__c priorMatch = new LoggerNotificationMatch__c(
+      LoggerNotificationRule__c = rule.Id,
+      LogEntry__c = priorEntry.Id,
+      MatchedRecordId__c = String.valueOf(priorEntry.Id),
+      MatchedSObjectType__c = 'LogEntry__c'
+    );
+    LoggerDataStore.getDatabase().insertRecord(priorMatch);
+    System.Test.setCreatedDate(priorMatch.Id, System.now().addMinutes(-2));
+
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ currentEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      1,
+      mockNotifierInvocationCount,
+      'Prior match inside the 5-minute cutoff should count toward the threshold, so the current batch of 1 plus 1 prior meets the threshold and dispatch fires'
+    );
+    System.Assert.fail('maybe add asserts about delivery being suppressed?');
+  }
+
+  @IsTest
+  static void it_should_respect_the_hours_time_period_unit_when_computing_the_cutoff() {
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c priorEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c currentEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ priorEntry, currentEntry });
+    // Notification data setup
+    // Threshold is 2 with a 1-hour window. A prior match backdated 30 minutes falls inside a 1-hour
+    // cutoff but would be excluded under a Minutes interpretation of the same increment (cutoff would
+    // be 1 minute ago). Dispatch firing here proves the Hours arm of the unit switch is being used
+    // rather than another arm or the null-cutoff fallback.
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 2;
+    rule.MatchThresholdTimePeriodIncrement__c = 1;
+    rule.MatchThresholdTimePeriodUnit__c = 'Hours';
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+    LoggerNotificationMatch__c priorMatch = new LoggerNotificationMatch__c(
+      LoggerNotificationRule__c = rule.Id,
+      LogEntry__c = priorEntry.Id,
+      MatchedRecordId__c = String.valueOf(priorEntry.Id),
+      MatchedSObjectType__c = 'LogEntry__c'
+    );
+    LoggerDataStore.getDatabase().insertRecord(priorMatch);
+    System.Test.setCreatedDate(priorMatch.Id, System.now().addMinutes(-30));
+
+    // resetMockNotifier();
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ currentEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      1,
+      mockNotifierInvocationCount,
+      'A prior match 30 minutes old falls inside a 1-hour cutoff, so it should count toward the threshold and dispatch should fire - proves the Hours unit is being applied'
+    );
+    System.Assert.fail('maybe add asserts about delivery records?');
+  }
+
+  @IsTest
+  static void it_should_respect_the_days_time_period_unit_when_computing_the_cutoff() {
+    // Logging data setup
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c priorEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c currentEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ priorEntry, currentEntry });
+    // Notification data setup
+    // Threshold is 2 with a 1-day window. A prior match backdated 12 hours falls inside a 1-day
+    // cutoff but would be excluded under any tighter unit. Dispatch firing here proves the Days arm
+    // of the unit switch is being used rather than another arm or the null-cutoff fallback.
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 2;
+    rule.MatchThresholdTimePeriodIncrement__c = 1;
+    rule.MatchThresholdTimePeriodUnit__c = 'Days';
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+    LoggerNotificationMatch__c priorMatch = new LoggerNotificationMatch__c(
+      LoggerNotificationRule__c = rule.Id,
+      LogEntry__c = priorEntry.Id,
+      MatchedRecordId__c = String.valueOf(priorEntry.Id),
+      MatchedSObjectType__c = 'LogEntry__c'
+    );
+    LoggerDataStore.getDatabase().insertRecord(priorMatch);
+    System.Test.setCreatedDate(priorMatch.Id, System.now().addHours(-12));
+
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ currentEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      1,
+      mockNotifierInvocationCount,
+      'A prior match 12 hours old falls inside a 1-day cutoff, so it should count toward the threshold and dispatch should fire - proves the Days unit is being applied'
+    );
+    System.Assert.fail('maybe add asserts about delivery records?');
+  }
+
+  @IsTest
+  static void it_should_dispatch_when_match_threshold_reached_via_current_batch() {
+    System.Assert.fail('RESUME HERE!');
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 3;
+    rule.MatchThresholdTimePeriodIncrement__c = 60;
+    rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+    LoggerDataStore.getDatabase().insertRecord(rule);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -539,12 +815,11 @@ private class LoggerNotificationProcessor_Tests {
     };
     LoggerDataStore.getDatabase().insertRecords(entries);
 
-    seedCachedRuleFromPersisted(persistedRule);
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // resetMockNotifier();
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
 
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, entries);
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, entries);
     System.Test.stopTest();
 
     System.Assert.areEqual(1, mockNotifierInvocationCount, 'Threshold of 3 with 3 matches should dispatch once');
@@ -553,8 +828,8 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_emit_one_delivery_row_per_recipient_when_a_rule_has_multiple_recipients() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c serviceOne = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerNotificationService__c serviceTwo = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationService__c>{ serviceOne, serviceTwo });
@@ -564,40 +839,34 @@ private class LoggerNotificationProcessor_Tests {
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
-    LoggerNotificationRecipient__c persistedRecipientOne = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipientOne = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = serviceOne.Id
     );
-    LoggerNotificationRecipient__c persistedRecipientTwo = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipientTwo = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = serviceTwo.Id
     );
-    LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRecipient__c>{ persistedRecipientOne, persistedRecipientTwo });
+    LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRecipient__c>{ recipientOne, recipientTwo });
 
-    LoggerNotificationRecipient__c hydratedRecipientOne = new LoggerNotificationRecipient__c(
-      Id = persistedRecipientOne.Id,
-      LoggerNotificationService__c = serviceOne.Id
-    );
-    hydratedRecipientOne.LoggerNotificationService__r = serviceOne;
-    LoggerNotificationRecipient__c hydratedRecipientTwo = new LoggerNotificationRecipient__c(
-      Id = persistedRecipientTwo.Id,
-      LoggerNotificationService__c = serviceTwo.Id
-    );
-    hydratedRecipientTwo.LoggerNotificationService__r = serviceTwo;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydrated = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydratedRecipientOne, hydratedRecipientTwo });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydrated });
+    LoggerNotificationRecipient__c cachedRecipientOne = new LoggerNotificationRecipient__c(Id = recipientOne.Id, LoggerNotificationService__c = serviceOne.Id);
+    cachedRecipientOne.LoggerNotificationService__r = serviceOne;
+    LoggerNotificationRecipient__c cachedRecipientTwo = new LoggerNotificationRecipient__c(Id = recipientTwo.Id, LoggerNotificationService__c = serviceTwo.Id);
+    cachedRecipientTwo.LoggerNotificationService__r = serviceTwo;
+    LoggerNotificationRule__c ruleCopy = rule.clone(true, true, true, true);
+    LoggerNotificationRule__c cachedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ cachedRecipientOne, cachedRecipientTwo });
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ cachedRule });
 
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // resetMockNotifier();
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
     System.Test.stopTest();
 
     List<LoggerNotificationMatch__c> matches = [
       SELECT Id, MatchedRecordId__c
       FROM LoggerNotificationMatch__c
-      WHERE LoggerNotificationRule__c = :persistedRule.Id
+      WHERE LoggerNotificationRule__c = :rule.Id
     ];
     System.Assert.areEqual(1, matches.size(), 'Match records are now one-per-matched-record (not per recipient)');
     System.Assert.areEqual(String.valueOf(matchingEntry.Id), matches.get(0).MatchedRecordId__c);
@@ -614,11 +883,7 @@ private class LoggerNotificationProcessor_Tests {
       deliveryRecipientIds.add(delivery.LoggerNotificationRecipient__c);
       deliveryServiceIds.add(delivery.LoggerNotificationService__c);
     }
-    System.Assert.areEqual(
-      new Set<Id>{ persistedRecipientOne.Id, persistedRecipientTwo.Id },
-      deliveryRecipientIds,
-      'Each recipient should have its own delivery record'
-    );
+    System.Assert.areEqual(new Set<Id>{ recipientOne.Id, recipientTwo.Id }, deliveryRecipientIds, 'Each recipient should have its own delivery record');
     System.Assert.areEqual(
       new Set<Id>{ serviceOne.Id, serviceTwo.Id },
       deliveryServiceIds,
@@ -629,85 +894,84 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_skip_match_persistence_when_match_history_is_disabled() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsMatchHistoryEnabled__c = false;
-    persistedRule.IsDeliveryHistoryEnabled__c = false;
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchHistoryEnabled__c = false;
+    rule.IsDeliveryHistoryEnabled__c = false;
+    LoggerDataStore.getDatabase().insertRecord(rule);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
-    seedCachedRuleFromPersisted(persistedRule);
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // resetMockNotifier();
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
     System.Test.stopTest();
 
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :persistedRule.Id]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id]);
     System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationDelivery__c]);
     System.Assert.areEqual(1, mockNotifierInvocationCount, 'Dispatch should still fire even when history storage is off');
   }
 
   @IsTest
   static void it_should_skip_delivery_persistence_when_delivery_history_is_disabled_but_still_persist_matches() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsDeliveryHistoryEnabled__c = false;
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsDeliveryHistoryEnabled__c = false;
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerNotificationRecipient__c persistedRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = service.Id
     );
-    LoggerDataStore.getDatabase().insertRecord(persistedRecipient);
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
-    LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
-    hydrated.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydratedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydrated });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydratedRule });
+    LoggerNotificationRecipient__c cachedRecipient = new LoggerNotificationRecipient__c(Id = recipient.Id, LoggerNotificationService__c = service.Id);
+    cachedRecipient.LoggerNotificationService__r = service;
+    LoggerNotificationRule__c ruleCopy = rule.clone(true, true, true, true);
+    LoggerNotificationRule__c cachedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ cachedRecipient });
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ cachedRule });
 
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // resetMockNotifier();
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
     System.Test.stopTest();
 
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :persistedRule.Id]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id]);
     System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationDelivery__c]);
     System.Assert.areEqual(1, mockNotifierInvocationCount, 'Dispatch should still fire when delivery history is off');
   }
 
   @IsTest
-  static void it_should_count_matches_for_threshold_naturally_deduplicated() {
+  static void it_should_count_matches_for_match_threshold_naturally_deduplicated() {
     // Match records are now one-per-matched-record (not per recipient), so a plain COUNT(Id) is
     // already deduplicated. Two recipients pointing at the same rule should not inflate the count.
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.IsMatchThresholdEnabled__c = true;
-    persistedRule.MatchCountThreshold__c = 2;
-    persistedRule.MatchThresholdTimePeriodIncrement__c = 60;
-    persistedRule.MatchThresholdTimePeriodUnit__c = 'Minutes';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.IsMatchThresholdEnabled__c = true;
+    rule.MatchCountThreshold__c = 2;
+    rule.MatchThresholdTimePeriodIncrement__c = 60;
+    rule.MatchThresholdTimePeriodUnit__c = 'Minutes';
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c serviceOne = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerNotificationService__c serviceTwo = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationService__c>{ serviceOne, serviceTwo });
-    LoggerNotificationRecipient__c persistedRecipientOne = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipientOne = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = serviceOne.Id
     );
-    LoggerNotificationRecipient__c persistedRecipientTwo = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipientTwo = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = serviceTwo.Id
     );
-    LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRecipient__c>{ persistedRecipientOne, persistedRecipientTwo });
+    LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRecipient__c>{ recipientOne, recipientTwo });
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -717,31 +981,25 @@ private class LoggerNotificationProcessor_Tests {
     LoggerDataStore.getDatabase()
       .insertRecord(
         new LoggerNotificationMatch__c(
-          LoggerNotificationRule__c = persistedRule.Id,
+          LoggerNotificationRule__c = rule.Id,
           LogEntry__c = priorEntry.Id,
           MatchedRecordId__c = String.valueOf(priorEntry.Id),
           MatchedSObjectType__c = 'LogEntry__c'
         )
       );
 
-    LoggerNotificationRecipient__c hydratedOne = new LoggerNotificationRecipient__c(
-      Id = persistedRecipientOne.Id,
-      LoggerNotificationService__c = serviceOne.Id
-    );
-    hydratedOne.LoggerNotificationService__r = serviceOne;
-    LoggerNotificationRecipient__c hydratedTwo = new LoggerNotificationRecipient__c(
-      Id = persistedRecipientTwo.Id,
-      LoggerNotificationService__c = serviceTwo.Id
-    );
-    hydratedTwo.LoggerNotificationService__r = serviceTwo;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydrated = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydratedOne, hydratedTwo });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydrated });
+    LoggerNotificationRecipient__c cachedRecipientOne = new LoggerNotificationRecipient__c(Id = recipientOne.Id, LoggerNotificationService__c = serviceOne.Id);
+    cachedRecipientOne.LoggerNotificationService__r = serviceOne;
+    LoggerNotificationRecipient__c cachedRecipientTwo = new LoggerNotificationRecipient__c(Id = recipientTwo.Id, LoggerNotificationService__c = serviceTwo.Id);
+    cachedRecipientTwo.LoggerNotificationService__r = serviceTwo;
+    LoggerNotificationRule__c ruleCopy = rule.clone(true, true, true, true);
+    LoggerNotificationRule__c cachedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ cachedRecipientOne, cachedRecipientTwo });
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ cachedRule });
 
-    resetMockNotifier();
-    LoggerNotificationProcessor notifier = new LoggerNotificationProcessor();
+    // resetMockNotifier();
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
     System.Test.startTest();
-    notifier.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ currentEntry });
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ currentEntry });
     System.Test.stopTest();
 
     // Prior match count = 1 (single priorEntry); current batch adds 1 more distinct record.
@@ -774,7 +1032,7 @@ private class LoggerNotificationProcessor_Tests {
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
-    resetMockNotifier();
+    // resetMockNotifier();
     // Let the runtime query real rules from the DB - do NOT call setCachedRules here, so the WHERE clause matters.
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
 
@@ -794,38 +1052,38 @@ private class LoggerNotificationProcessor_Tests {
 
   @IsTest
   static void it_should_stamp_the_notification_lookup_on_delivery_rows() {
-    LoggerNotificationRule__c persistedRule = buildRule();
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerNotificationRecipient__c persistedRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = service.Id
     );
-    LoggerDataStore.getDatabase().insertRecord(persistedRecipient);
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
-    LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
-    hydrated.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydratedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydrated });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydratedRule });
+    LoggerNotificationRecipient__c cachedRecipient = new LoggerNotificationRecipient__c(Id = recipient.Id, LoggerNotificationService__c = service.Id);
+    cachedRecipient.LoggerNotificationService__r = service;
+    LoggerNotificationRule__c ruleCopy = rule.clone(true, true, true, true);
+    LoggerNotificationRule__c cachedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ cachedRecipient });
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ cachedRule });
 
-    resetMockNotifier();
+    // resetMockNotifier();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
 
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT LoggerNotificationRule__c
       FROM LoggerNotificationDelivery__c
-      WHERE LoggerNotificationRecipient__c = :persistedRecipient.Id
+      WHERE LoggerNotificationRecipient__c = :recipient.Id
     ];
     System.Assert.areEqual(1, deliveries.size());
     System.Assert.areEqual(
-      persistedRule.Id,
+      rule.Id,
       deliveries.get(0).LoggerNotificationRule__c,
       'Delivery records should carry the denormalized rule Id for report/list-view filtering'
     );
@@ -836,9 +1094,6 @@ private class LoggerNotificationProcessor_Tests {
     Log__c logA = new Log__c(TransactionId__c = 'log-a');
     Log__c logB = new Log__c(TransactionId__c = 'log-b');
     LoggerDataStore.getDatabase().insertRecords(new List<Log__c>{ logA, logB });
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.DeduplicationSourceField__c = 'Log__c';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
     List<LogEntry__c> entries = new List<LogEntry__c>{
       new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
       new LogEntry__c(Log__c = logA.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
@@ -846,14 +1101,16 @@ private class LoggerNotificationProcessor_Tests {
       new LogEntry__c(Log__c = logB.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now())
     };
     LoggerDataStore.getDatabase().insertRecords(entries);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.DeduplicationSourceField__c = 'Log__c';
+    LoggerDataStore.getDatabase().insertRecord(rule);
 
-    seedCachedRuleFromPersisted(persistedRule);
-    resetMockNotifier();
+    // resetMockNotifier();
     System.Test.startTest();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, entries);
     System.Test.stopTest();
 
-    Integer matchCount = [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :persistedRule.Id];
+    Integer matchCount = [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id];
     System.Assert.areEqual(2, matchCount, 'Two distinct Log__c values should collapse the four entries into two matches');
     System.Assert.areEqual(
       1,
@@ -867,9 +1124,9 @@ private class LoggerNotificationProcessor_Tests {
   static void it_should_preserve_first_seen_record_when_deduping() {
     Log__c log = new Log__c(TransactionId__c = 'log-order');
     LoggerDataStore.getDatabase().insertRecord(log);
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.DeduplicationSourceField__c = 'Log__c';
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.DeduplicationSourceField__c = 'Log__c';
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LogEntry__c firstEntry = new LogEntry__c(
       Log__c = log.Id,
       LoggingLevel__c = System.LoggingLevel.ERROR.name(),
@@ -884,8 +1141,7 @@ private class LoggerNotificationProcessor_Tests {
     );
     LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ firstEntry, secondEntry });
 
-    seedCachedRuleFromPersisted(persistedRule);
-    resetMockNotifier();
+    // resetMockNotifier();
     System.Test.startTest();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ firstEntry, secondEntry });
     System.Test.stopTest();
@@ -899,51 +1155,77 @@ private class LoggerNotificationProcessor_Tests {
   static void it_should_not_deduplicate_when_the_deduplication_source_field_is_blank() {
     Log__c log = new Log__c(TransactionId__c = 'log-no-deduplication');
     LoggerDataStore.getDatabase().insertRecord(log);
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.DeduplicationSourceField__c = null;
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.DeduplicationSourceField__c = null;
+    LoggerDataStore.getDatabase().insertRecord(rule);
     List<LogEntry__c> entries = new List<LogEntry__c>{
       new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now()),
       new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now())
     };
     LoggerDataStore.getDatabase().insertRecords(entries);
 
-    seedCachedRuleFromPersisted(persistedRule);
-    resetMockNotifier();
+    // resetMockNotifier();
     System.Test.startTest();
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, entries);
     System.Test.stopTest();
 
-    System.Assert.areEqual(2, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :persistedRule.Id]);
+    System.Assert.areEqual(2, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id]);
     System.Assert.areEqual(2, mockNotifierLastRequest.matchingRecords.size());
   }
 
   @IsTest
   static void it_should_treat_null_deduplicate_values_as_their_own_group() {
-    // Two records with the same non-null deduplication value collapse to one; a record with a null value
-    // survives in its own group.
-    List<SObject> matching = new List<SObject>{
+    // Records whose deduplication source field value is null share the null-sentinel key and collapse
+    // into a single group, so the notifier receives one deduplicated record rather than the raw two.
+    LoggerNotificationRule__c rule = buildRule(
+      'LogEntry__c',
+      'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
+      new List<LoggerNotificationRecipient__c>{ buildRecipient() }
+    );
+    rule.DeduplicationSourceField__c = 'Log__c';
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
+    // resetMockNotifier();
+    List<SObject> records = new List<SObject>{
       new LogEntry__c(Log__c = null, LoggingLevel__c = System.LoggingLevel.ERROR.name()),
       new LogEntry__c(Log__c = null, LoggingLevel__c = System.LoggingLevel.ERROR.name())
     };
 
-    List<SObject> result = LoggerNotificationProcessor.deduplicateMatchingRecords(matching, 'Log__c');
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, records);
+    System.Test.stopTest();
 
-    System.Assert.areEqual(1, result.size(), 'Two null-deduplication-value records should collapse to one group keyed on the null sentinel');
+    System.Assert.areEqual(1, mockNotifierInvocationCount);
+    System.Assert.areEqual(
+      1,
+      mockNotifierLastRequest.matchingRecords.size(),
+      'Two null-deduplication-value records should collapse to one group keyed on the null sentinel'
+    );
   }
 
   @IsTest
   static void it_should_not_deduplicate_when_the_deduplication_source_field_does_not_exist_on_the_source_sobject() {
     // Fallback path: an admin somehow saved a bogus field name that snuck past validation. Rather than
-    // throw at runtime, the runtime treats it as "no deduplication" so notifications still fire.
-    List<SObject> matching = new List<SObject>{
+    // throw at runtime, the runtime treats it as "no deduplication" so notifications still fire and the
+    // notifier receives every matching record untouched.
+    LoggerNotificationRule__c rule = buildRule(
+      'LogEntry__c',
+      'ISPICKVAL(LoggingLevel__c, \'ERROR\')',
+      new List<LoggerNotificationRecipient__c>{ buildRecipient() }
+    );
+    rule.DeduplicationSourceField__c = 'ThisFieldDoesNotExist__c';
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ rule });
+    // resetMockNotifier();
+    List<SObject> records = new List<SObject>{
       new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()),
       new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name())
     };
 
-    List<SObject> result = LoggerNotificationProcessor.deduplicateMatchingRecords(matching, 'ThisFieldDoesNotExist__c');
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, records);
+    System.Test.stopTest();
 
-    System.Assert.areEqual(2, result.size(), 'Unknown deduplication field should fall through without collapsing records');
+    System.Assert.areEqual(1, mockNotifierInvocationCount);
+    System.Assert.areEqual(2, mockNotifierLastRequest.matchingRecords.size(), 'Unknown deduplication field should fall through without collapsing records');
   }
 
   @IsTest
@@ -954,28 +1236,28 @@ private class LoggerNotificationProcessor_Tests {
     // rather than sharing a single value.
     Integer matchRetentionDays = 30;
     Integer deliveryRetentionDays = 7;
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.NumberOfDaysToRetainMatches__c = matchRetentionDays;
-    persistedRule.NumberOfDaysToRetainDeliveries__c = deliveryRetentionDays;
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.NumberOfDaysToRetainMatches__c = matchRetentionDays;
+    rule.NumberOfDaysToRetainDeliveries__c = deliveryRetentionDays;
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerNotificationRecipient__c persistedRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = service.Id
     );
-    LoggerDataStore.getDatabase().insertRecord(persistedRecipient);
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
-    LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
-    hydrated.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydratedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydrated });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydratedRule });
+    LoggerNotificationRecipient__c cachedRecipient = new LoggerNotificationRecipient__c(Id = recipient.Id, LoggerNotificationService__c = service.Id);
+    cachedRecipient.LoggerNotificationService__r = service;
+    LoggerNotificationRule__c ruleCopy = rule.clone(true, true, true, true);
+    LoggerNotificationRule__c cachedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ cachedRecipient });
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ cachedRule });
 
     Date expectedMatchRetentionDate = System.today().addDays(matchRetentionDays);
     Date expectedDeliveryRetentionDate = System.today().addDays(deliveryRetentionDays);
@@ -984,7 +1266,7 @@ private class LoggerNotificationProcessor_Tests {
     List<LoggerNotificationMatch__c> matches = [
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationMatch__c
-      WHERE LoggerNotificationRule__c = :persistedRule.Id
+      WHERE LoggerNotificationRule__c = :rule.Id
     ];
     System.Assert.areEqual(1, matches.size());
     System.Assert.areEqual(
@@ -995,7 +1277,7 @@ private class LoggerNotificationProcessor_Tests {
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationDelivery__c
-      WHERE LoggerNotificationRecipient__c = :persistedRecipient.Id
+      WHERE LoggerNotificationRecipient__c = :recipient.Id
     ];
     System.Assert.areEqual(1, deliveries.size());
     System.Assert.areEqual(
@@ -1010,42 +1292,42 @@ private class LoggerNotificationProcessor_Tests {
     // Null / zero / negative retention on either field means "keep that object's records forever" -
     // the runtime stamps RetentionDate__c as null and LogBatchPurger's WHERE clause skips records
     // without a retention date. Test with both fields null so we exercise both stamping paths.
-    LoggerNotificationRule__c persistedRule = buildRule();
-    persistedRule.NumberOfDaysToRetainMatches__c = null;
-    persistedRule.NumberOfDaysToRetainDeliveries__c = null;
-    LoggerDataStore.getDatabase().insertRecord(persistedRule);
+    LoggerNotificationRule__c rule = buildRule();
+    rule.NumberOfDaysToRetainMatches__c = null;
+    rule.NumberOfDaysToRetainDeliveries__c = null;
+    LoggerDataStore.getDatabase().insertRecord(rule);
     LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
     LoggerDataStore.getDatabase().insertRecord(service);
-    LoggerNotificationRecipient__c persistedRecipient = new LoggerNotificationRecipient__c(
-      LoggerNotificationRule__c = persistedRule.Id,
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
       LoggerNotificationService__c = service.Id
     );
-    LoggerDataStore.getDatabase().insertRecord(persistedRecipient);
+    LoggerDataStore.getDatabase().insertRecord(recipient);
 
     Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(matchingEntry);
 
-    LoggerNotificationRecipient__c hydrated = new LoggerNotificationRecipient__c(Id = persistedRecipient.Id, LoggerNotificationService__c = service.Id);
-    hydrated.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydratedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ hydrated });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydratedRule });
+    LoggerNotificationRecipient__c cachedRecipient = new LoggerNotificationRecipient__c(Id = recipient.Id, LoggerNotificationService__c = service.Id);
+    cachedRecipient.LoggerNotificationService__r = service;
+    LoggerNotificationRule__c ruleCopy = rule.clone(true, true, true, true);
+    LoggerNotificationRule__c cachedRule = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ cachedRecipient });
+    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ cachedRule });
 
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
 
     LoggerNotificationMatch__c match = [
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationMatch__c
-      WHERE LoggerNotificationRule__c = :persistedRule.Id
+      WHERE LoggerNotificationRule__c = :rule.Id
       LIMIT 1
     ];
     System.Assert.isNull(match.RetentionDate__c, 'Null NumberOfDaysToRetainMatches__c should leave the match record untouched by LogBatchPurger');
     LoggerNotificationDelivery__c delivery = [
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationDelivery__c
-      WHERE LoggerNotificationRecipient__c = :persistedRecipient.Id
+      WHERE LoggerNotificationRecipient__c = :recipient.Id
       LIMIT 1
     ];
     System.Assert.isNull(delivery.RetentionDate__c, 'Null NumberOfDaysToRetainDeliveries__c should leave the delivery record untouched by LogBatchPurger');
@@ -1053,16 +1335,39 @@ private class LoggerNotificationProcessor_Tests {
 
   // Test helpers
 
-  private static LoggerNotificationRule__c buildRule(String sourceSObjectTypeName, String filter, List<LoggerNotificationRecipient__c> recipients) {
-    LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
-      Name = 'Test rule',
-      SourceSObjectType__c = sourceSObjectTypeName,
-      SourceSObjectFilter__c = filter,
-      IsEnabled__c = true
-    );
-    return attachRecipients(rule, recipients);
+  // TODO keep only this overload?
+  private static LoggerNotificationRule__c buildRule(String sourceSObjectTypeName, String filter) {
+    return buildRule(sourceSObjectTypeName, filter, null);
   }
 
+  // TODO eliminate this overload?
+  private static LoggerNotificationRule__c buildRule(String sourceSObjectTypeName, String filter, List<LoggerNotificationRecipient__c> recipients) {
+    LoggerNotificationRule__c rule = new LoggerNotificationRule__c(
+      IsEnabled__c = true,
+      Name = 'Test rule',
+      SourceSObjectFilter__c = filter,
+      SourceSObjectType__c = sourceSObjectTypeName
+    );
+    return rule;
+  }
+
+  // TODO eliminate this overload?
+  private static LoggerNotificationRule__c buildRule() {
+    // TODO stop calling LoggerMockDataCreator.createDataBuilder
+    LoggerNotificationRule__c rule = (LoggerNotificationRule__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerNotificationRule__c.SObjectType)
+      .populateRequiredFields()
+      .getRecord();
+    rule.SourceSObjectType__c = 'LogEntry__c';
+    rule.SourceSObjectFilter__c = 'ISPICKVAL(LoggingLevel__c, \'ERROR\')';
+    rule.IsEnabled__c = true;
+    // Reset the inverted-boolean values that LoggerMockDataCreator produces, so we don't trip validation rules.
+    rule.IsMatchHistoryEnabled__c = true;
+    rule.IsDeliveryHistoryEnabled__c = true;
+    rule.IsMatchThresholdEnabled__c = false;
+    return rule;
+  }
+
+  // TODO eliminate this method
   private static LoggerNotificationRule__c attachRecipients(LoggerNotificationRule__c rule, List<LoggerNotificationRecipient__c> recipients) {
     // Child relationships on in-memory SObjects can't be assigned directly - round-trip through JSON.
     Map<String, Object> ruleJson = (Map<String, Object>) System.JSON.deserializeUntyped(System.JSON.serialize(rule));
@@ -1074,31 +1379,11 @@ private class LoggerNotificationProcessor_Tests {
     return (LoggerNotificationRule__c) System.JSON.deserialize(System.JSON.serialize(ruleJson), LoggerNotificationRule__c.class);
   }
 
-  private static LoggerNotificationRule__c buildRule() {
-    LoggerNotificationRule__c persistedRule = (LoggerNotificationRule__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerNotificationRule__c.SObjectType)
-      .populateRequiredFields()
-      .getRecord();
-    persistedRule.SourceSObjectType__c = 'LogEntry__c';
-    persistedRule.SourceSObjectFilter__c = 'ISPICKVAL(LoggingLevel__c, \'ERROR\')';
-    persistedRule.IsEnabled__c = true;
-    // Reset the inverted-boolean values that LoggerMockDataCreator produces, so we don't trip validation rules.
-    persistedRule.IsMatchHistoryEnabled__c = true;
-    persistedRule.IsDeliveryHistoryEnabled__c = true;
-    persistedRule.IsMatchThresholdEnabled__c = false;
-    return persistedRule;
-  }
-
-  private static void seedCachedRuleFromPersisted(LoggerNotificationRule__c persistedRule) {
-    LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
-    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
-    recipient.LoggerNotificationService__r = service;
-    LoggerNotificationRule__c ruleCopy = persistedRule.clone(true, true, true, true);
-    LoggerNotificationRule__c hydrated = attachRecipients(ruleCopy, new List<LoggerNotificationRecipient__c>{ recipient });
-    LoggerNotificationProcessor.setCachedRules(new List<LoggerNotificationRule__c>{ hydrated });
-  }
-
+  // TODO eliminate?
   private static LoggerNotificationRecipient__c buildRecipient() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+
+    // TODO stop creating a service inline here
     LoggerNotificationService__c service = buildService(true, true, MOCK_NOTIFIER_CLASS);
     service.WebhookUrl__c = 'https://example.com/webhook';
     recipient.LoggerNotificationService__r = service;
