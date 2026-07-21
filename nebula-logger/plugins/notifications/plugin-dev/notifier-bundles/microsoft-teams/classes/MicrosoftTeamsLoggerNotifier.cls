@@ -124,9 +124,9 @@ public without sharing class MicrosoftTeamsLoggerNotifier extends LoggerNotifier
     Boolean hasWarn = false;
     for (SObject record : records) {
       String level = this.tryGetString(record, 'LoggingLevel__c');
-      if (level == 'ERROR') {
+      if (level == System.LoggingLevel.ERROR.name()) {
         hasError = true;
-      } else if (level == 'WARN') {
+      } else if (level == System.LoggingLevel.WARN.name()) {
         hasWarn = true;
       }
     }

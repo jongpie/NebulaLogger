@@ -174,8 +174,8 @@ public with sharing class LogBatchPurgeController {
     if (String.isBlank(registered.registeredQuery)) {
       return 0;
     }
-    Pattern queryPattern = Pattern.compile('(?i)FROM\\s+(\\S+)\\s+WHERE\\s+(\\S+)\\s+<=');
-    Matcher matcher = queryPattern.matcher(registered.registeredQuery);
+    System.Pattern queryPattern = System.Pattern.compile('(?i)FROM\\s+(\\S+)\\s+WHERE\\s+(\\S+)\\s+<=');
+    System.Matcher matcher = queryPattern.matcher(registered.registeredQuery);
     if (matcher.find() == false) {
       return 0;
     }

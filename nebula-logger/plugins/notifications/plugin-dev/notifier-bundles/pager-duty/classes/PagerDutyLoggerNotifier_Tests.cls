@@ -80,10 +80,15 @@ private class PagerDutyLoggerNotifier_Tests {
   static void it_should_map_severity_to_error_when_any_record_is_error() {
     PagerDutyLoggerNotifier notifier = new PagerDutyLoggerNotifier();
 
-    String error = notifier.severityFor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR') });
-    String warn = notifier.severityFor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'WARN') });
-    String info = notifier.severityFor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'INFO') });
-    String mixed = notifier.severityFor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'INFO'), new LogEntry__c(LoggingLevel__c = 'ERROR') });
+    String error = notifier.severityFor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) });
+    String warn = notifier.severityFor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.WARN.name()) });
+    String info = notifier.severityFor(new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()) });
+    String mixed = notifier.severityFor(
+      new List<SObject>{
+        new LogEntry__c(LoggingLevel__c = System.LoggingLevel.INFO.name()),
+        new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name())
+      }
+    );
 
     System.Assert.areEqual('error', error);
     System.Assert.areEqual('warning', warn);
@@ -97,7 +102,7 @@ private class PagerDutyLoggerNotifier_Tests {
     Id ruleId = LoggerMockDataCreator.createId(Schema.LoggerNotificationRule__c.SObjectType);
     Id entryId = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType);
     LoggerNotificationRule__c rule = new LoggerNotificationRule__c(Id = ruleId, Name = 'r');
-    List<SObject> records = new List<SObject>{ new LogEntry__c(Id = entryId, LoggingLevel__c = 'ERROR') };
+    List<SObject> records = new List<SObject>{ new LogEntry__c(Id = entryId, LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
     recipient.LoggerNotificationRule__r = rule;
     recipient.LoggerNotificationService__r = new LoggerNotificationService__c(Name = 'pd');
@@ -155,7 +160,9 @@ private class PagerDutyLoggerNotifier_Tests {
       WebhookUrl__c = webhookUrl,
       NamedCredentialDeveloperName__c = namedCredentialDeveloperName
     );
-    List<SObject> matchingRecords = new List<SObject>{ new LogEntry__c(LoggingLevel__c = 'ERROR', Message__c = 'Something went wrong') };
+    List<SObject> matchingRecords = new List<SObject>{
+      new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name(), Message__c = 'Something went wrong')
+    };
     return new LoggerNotifierRequest(recipient, matchingRecords);
   }
 }
