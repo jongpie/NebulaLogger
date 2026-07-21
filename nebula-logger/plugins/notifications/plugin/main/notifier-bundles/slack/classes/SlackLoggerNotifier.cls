@@ -171,14 +171,14 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     }
     List<LoggerNotifierConfiguration.SourceFieldSpec> specs = request.configuration.getSourceFieldSpecs();
     if (specs == null) {
-      specs = buildDefaultSpecs(DEFAULT_SOURCE_FIELDS);
+      specs = LoggerNotifier.buildDefaultSpecs(DEFAULT_SOURCE_FIELDS);
     }
     Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
     Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     // Compute every schema path we'll need to resolve values against - the primary field, any overridden
     // display field, and (for REFERENCE-typed primaries with no display override) the parent record's Name.
     List<String> hydrationPaths = collectHydrationPaths(specs, sourceType);
-    List<SObject> hydratedRecords = hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
+    List<SObject> hydratedRecords = LoggerNotifier.hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
     notification.attachments = new List<AttachmentDto>();
     for (SObject record : hydratedRecords) {
       notification.attachments.add(this.buildAttachment(record, specs, includeNullValues));
@@ -214,7 +214,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
   }
 
   private FieldDto renderField(SObject record, LoggerNotifierConfiguration.SourceFieldSpec spec, Boolean includeNullValues) {
-    Schema.DescribeFieldResult primaryDescribe = getDescribeByPath(record.getSObjectType(), spec.field);
+    Schema.DescribeFieldResult primaryDescribe = LoggerNotifier.getDescribeByPath(record.getSObjectType(), spec.field);
     if (primaryDescribe == null) {
       return null;
     }
@@ -225,7 +225,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     if (valuePath == null) {
       valuePath = spec.field;
     }
-    Object rawValue = getValueByPath(record, valuePath);
+    Object rawValue = LoggerNotifier.getValueByPath(record, valuePath);
     Boolean isWide = isWideDisplayType(primaryDescribe.getType());
     String label = String.isNotBlank(spec.displayLabel) ? spec.displayLabel : primaryDescribe.getLabel();
     if (rawValue == null || String.isBlank(String.valueOf(rawValue))) {
@@ -235,7 +235,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
       return new FieldDto(label, NULL_VALUE_PLACEHOLDER, isWide == false);
     }
     String stringValue = String.valueOf(rawValue);
-    String renderedValue = isWide ? '```' + this.truncate(stringValue, 2000) + '```' : '`' + stringValue + '`';
+    String renderedValue = isWide ? '```' + stringValue?.abbreviate(2000) + '```' : '`' + stringValue + '`';
     // Slack's `<url|text>` mrkdwn wrapping only kicks in when the primary field points at a specific record
     // (a Name on the source record, a parent Name via `.Name`, or a REFERENCE lookup). Everything else stays
     // as plain rendered text.
@@ -252,7 +252,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
 
   private static Id resolveLinkTarget(SObject record, String fieldPath, Schema.DescribeFieldResult primaryDescribe) {
     if (primaryDescribe.getType() == Schema.DisplayType.REFERENCE) {
-      Object value = getValueByPath(record, fieldPath);
+      Object value = LoggerNotifier.getValueByPath(record, fieldPath);
       return value instanceof Id ? (Id) value : null;
     }
     List<String> parts = fieldPath.split('\\.');
@@ -304,7 +304,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
    *              Returns null if the parent type has no `Name` field (e.g. junctions, some managed objects).
    */
   private static String deriveParentNamePath(String fieldPath, Schema.SObjectType startType) {
-    Schema.DescribeFieldResult describe = getDescribeByPath(startType, fieldPath);
+    Schema.DescribeFieldResult describe = LoggerNotifier.getDescribeByPath(startType, fieldPath);
     if (describe == null || describe.getType() != Schema.DisplayType.REFERENCE) {
       return null;
     }
@@ -338,7 +338,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
       } else {
         // REFERENCE primary field with no explicit display override: pull the parent's Name too so the
         // renderer can substitute it for the raw Id at render time.
-        Schema.DescribeFieldResult describe = getDescribeByPath(sourceType, spec.field);
+        Schema.DescribeFieldResult describe = LoggerNotifier.getDescribeByPath(sourceType, spec.field);
         if (describe != null && describe.getType() == Schema.DisplayType.REFERENCE) {
           String parentNamePath = deriveParentNamePath(spec.field, sourceType);
           if (parentNamePath != null) {
@@ -396,13 +396,6 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
       // Field exists on the schema but wasn't queried on this record instance - treat as absent.
       return null;
     }
-  }
-
-  private String truncate(String value, Integer maxLength) {
-    if (value == null || value.length() <= maxLength) {
-      return value;
-    }
-    return value.substring(0, maxLength) + '...(truncated)';
   }
 
   // Slack payload DTOs
