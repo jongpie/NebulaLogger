@@ -516,10 +516,9 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         return false;
       }
       try {
-        // Run the plugin's SOQL as-is (it may already carry ORDER BY / LIMIT) and just check whether
-        // the first record exists. This is cheaper than counting because we only need the yes/no answer,
-        // and safer than trying to inject LIMIT 1 into an arbitrary caller-supplied query.
-        List<SObject> sample = System.Database.query(soql);
+        // TODO revisit this - if there are too many plugins/custom objects registered (100+),
+        // then the SOQL query limits would be exceeded
+        List<SObject> sample = System.Database.query(soql + ' LIMIT 1');
         return sample.isEmpty() == false;
       } catch (System.QueryException ex) {
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
@@ -538,7 +537,11 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     }
 
     private Integer getLogEntryCount() {
-      return [SELECT COUNT() FROM LogEntry__c WHERE Log__r.LogRetentionDate__c <= :RETENTION_END_DATE AND Log__r.LogRetentionDate__c != NULL];
+      return [
+        SELECT COUNT()
+        FROM LogEntry__c
+        WHERE Log__r.LogRetentionDate__c <= :RETENTION_END_DATE AND Log__r.LogRetentionDate__c != NULL
+      ];
     }
   }
 }

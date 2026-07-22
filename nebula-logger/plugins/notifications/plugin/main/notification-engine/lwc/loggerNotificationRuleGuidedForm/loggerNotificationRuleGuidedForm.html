@@ -13,6 +13,7 @@
       <ul class="slds-path__nav slds-m-bottom_medium">
         <template for:each={steps} for:item="step">
           <li key={step.number} class={step.cssClass}>
+            <!-- TODO revisit using <a> here. Anchor element used as a button with onclick handler but no href, potentially lacking keyboard accessibility. -->
             <a class="slds-path__link" onclick={handleStepClick} data-step={step.number}>
               <span class="slds-path__stage">
                 <template lwc:if={step.isComplete}>
